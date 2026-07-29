@@ -1,0 +1,89 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+
+\definecolor{UCBblue}{RGB}{0, 51, 153}
+\definecolor{UCBgray}{RGB}{100, 100, 100}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{UCBblue}{\textbf{Ingeniería Mecatrónica - UCB Tarija}}}
+\fancyhead[R]{\textcolor{UCBgray}{Taller de Nivelación - Módulo 3}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{UCBblue}\leaders\hrule height \headrulewidth\hfill}}
+
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{\textcolor{UCBblue}{Guía de Modelado Analítico: El Plano Complejo y Fasores}}}\\
+    \vspace{0.3cm}
+    {\large \textbf{Fase CDIO: Concebir y Diseñar (Corriente Alterna)}}\\
+    \vspace{0.5cm}
+    \textbf{Estudiante:} \rule{8cm}{0.4pt} \quad \textbf{Fecha:} \rule{3cm}{0.4pt}
+\end{center}
+
+\vspace{0.5cm}
+
+\section*{1. Fundamentación: De la Resistencia a la Impedancia}
+En sistemas de Corriente Alterna (CA), los actuadores mecatrónicos (como los servomotores) presentan bobinados que almacenan energía magnética. Esto provoca que el voltaje y la corriente se \textit{desfasen} en el tiempo. Para modelar esto analíticamente, expandimos la resistencia unidimensional a una \textbf{Impedancia Compleja ($\mathbf{Z}$)} bidimensional.
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=UCBblue,title=\textbf{Forma Rectangular vs. Forma Polar}]
+\textbf{Forma Rectangular:} Útil para sumar y restar impedancias en serie.
+$$ \mathbf{Z} = R + jX $$
+\textit{(Donde $R$ es la resistencia en ohmios y $X$ es la reactancia inductiva/capacitiva en ohmios. El operador $j = \sqrt{-1}$).}
+
+\vspace{0.3cm}
+\textbf{Forma Polar (Fasor):} Útil para multiplicar y dividir (Ley de Ohm: $\mathbf{I} = \mathbf{V}/\mathbf{Z}$).
+$$ \mathbf{Z} = |\mathbf{Z}|\angle\theta $$
+\textit{(Donde $|\mathbf{Z}|$ es la magnitud total de oposición y $\theta$ es el ángulo de desfase).}
+\end{tcolorbox}
+
+\section*{2. Herramientas de Conversión Analítica}
+Antes de delegar el cálculo a Python, el ingeniero debe dominar la trigonometría subyacente. Basándonos en el Teorema de Pitágoras y trigonometría básica en el plano complejo:
+
+\begin{itemize}
+    \item \textbf{De Rectangular a Polar:}
+    $$ |\mathbf{Z}| = \sqrt{R^2 + X^2} \quad \text{y} \quad \theta = \arctan\left(\frac{X}{R}\right) $$
+    \item \textbf{De Polar a Rectangular:}
+    $$ R = |\mathbf{Z}| \cos(\theta) \quad \text{y} \quad X = |\mathbf{Z}| \sin(\theta) $$
+\end{itemize}
+
+\newpage
+
+\section*{3. Misión de Ingeniería: Diagnóstico Fasorial a Pulso}
+
+Un robot manipulador posee una articulación cuyo motor de inducción modela una impedancia de bobinado equivalente a $\mathbf{Z}_1 = 50 + j25 \, \Omega$. Se le aplica una fuente de voltaje alterna modelada por el fasor $\mathbf{V} = 100\angle0^\circ$ V.
+
+\vspace{0.3cm}
+\textbf{A. Conversión a Forma Polar} \\
+Utilizando su calculadora científica, transforme la impedancia del motor $\mathbf{Z}_1$ a su forma polar ($|\mathbf{Z}|\angle\theta$). \textit{Nota: Asegúrese de que su calculadora esté configurada en grados (DEG).}
+
+\begin{tcolorbox}[colback=white,colframe=UCBgray,height=4cm,valign=top]
+\textit{Desarrollo del cálculo de magnitud y ángulo:}
+\end{tcolorbox}
+
+\textbf{B. Evaluación de la Ley de Ohm en CA} \\
+Dado que en corriente alterna la Ley de Ohm se expresa como $\mathbf{I} = \frac{\mathbf{V}}{\mathbf{Z}}$, y sabiendo que para dividir fasores \textit{se dividen las magnitudes y se restan los ángulos} ($\frac{M_1\angle\theta_1}{M_2\angle\theta_2} = \frac{M_1}{M_2}\angle(\theta_1 - \theta_2)$):
+
+Calcule el fasor de corriente $\mathbf{I}$ que circulará por el motor.
+
+\begin{tcolorbox}[colback=white,colframe=UCBgray,height=4cm,valign=top]
+\textit{Desarrollo analítico de la división fasorial:}
+\end{tcolorbox}
+
+\section*{4. Transición al Entorno Computacional}
+Verificaremos estos cálculos analíticos de trigonometría espacial construyendo nuestro primer solucionador fasorial.
+\begin{enumerate}
+    \item Abra su entorno Jupyter y ejecute el \texttt{Notebook\_03\_Intro\_Fasores.ipynb}.
+    \item Declare la variable compleja utilizando la sintaxis nativa de Python: \texttt{Z1 = 50 + 25j}.
+    \item Utilice las funciones de la librería \texttt{NumPy} (\texttt{np.abs()} y \texttt{np.angle()}) para corroborar el diagnóstico de su cálculo manual.
+\end{enumerate}
+
+\end{document}

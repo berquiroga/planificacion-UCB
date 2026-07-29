@@ -1,0 +1,23 @@
+# Archivos temporales y auxiliares de LaTeX
+*.aux
+*.bbl
+*.blg
+*.brf
+*.fdb_latexmk
+*.fls
+*.lof
+*.log
+*.lot
+*.out
+*.toc
+*.synctex.gz
+*.nav
+*.snm
+*.vrb
+
+# Editores y SO
+.vscode/
+.DS_Store
+
+# Opcional: Descomenta la siguiente línea si NO quieres subir los PDFs al repositorio
+# *.pdf

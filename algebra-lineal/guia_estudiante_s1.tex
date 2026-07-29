@@ -1,0 +1,124 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+
+% Configuración de colores
+\definecolor{UCBblue}{RGB}{0, 51, 153}
+\definecolor{UCBgray}{RGB}{100, 100, 100}
+
+% Configuración de encabezado y pie de página
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{UCBblue}{\textbf{Ingeniería Mecatrónica - UCB Tarija}}}
+\fancyhead[R]{\textcolor{UCBgray}{Taller de Nivelación - Sesión 1}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{UCBblue}\leaders\hrule height \headrulewidth\hfill}}
+
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{\textcolor{UCBblue}{Misión de Ingeniería 1: Modelado de Redes de Potencia}}}\\
+    \vspace{0.3cm}
+    {\large \textbf{Fase CDIO: Concebir (Just-In-Time Physics)}}\\
+    \vspace{0.5cm}
+    \textbf{Estudiante:} \rule{8cm}{0.4pt} \quad \textbf{Fecha:} \rule{3cm}{0.4pt}
+\end{center}
+
+\vspace{0.5cm}
+
+\section*{1. El Concepto Físico: Entendiendo la Electricidad}
+Antes de escribir código, debemos entender la física del problema. Imagina que el circuito eléctrico es un sistema de tuberías de agua en una planta industrial:
+\begin{itemize}
+    \item \textbf{Voltaje (V):} Es la bomba de agua. Aplica presión para empujar el fluido.
+    \item \textbf{Corriente (I):} Es el caudal de agua fluyendo por las tuberías (Amperios).
+    \item \textbf{Resistencia (R):} Son estrechamientos en la tubería que dificultan el paso del agua (Ohmios).
+    \item \textbf{Malla:} Es cualquier circuito cerrado (como una pista de carreras) que el agua puede recorrer.
+\end{itemize}
+
+\section*{2. La Receta Algorítmica: El Método de Mallas (LVK)}
+Para programar simuladores, los ingenieros no resuelven ecuaciones al azar; siguen un algoritmo estricto para construir una \textbf{Matriz de Resistencias ($\mathbf{R}$)}. Sigue estos 3 pasos infalibles:
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=UCBblue,title=\textbf{El Algoritmo Visual para Matrices}]
+\textbf{Paso 1: Asignar Sentidos} \\
+Dibuja una flecha circular en sentido horario ($\circlearrowright$) dentro de cada malla. Nómbralas $I_1, I_2, I_3$.
+
+\vspace{0.2cm}
+\textbf{Paso 2: La Diagonal Principal (Resistencias Propias)} \\
+Para encontrar el valor de $R_{11}$ (Malla 1), simplemente suma \textbf{todas} las resistencias que toca la flecha $I_1$. Repite para $R_{22}$ y $R_{33}$. \textit{Regla de oro: Estos valores siempre son positivos.}
+
+\vspace{0.2cm}
+\textbf{Paso 3: Fuera de la Diagonal (Resistencias Mutuas)} \\
+Mira la "frontera" entre dos mallas. La resistencia que está justo al medio es la compartida. Si buscas $R_{12}$, anota la resistencia entre la Malla 1 y la Malla 2, pero \textbf{cámbiale el signo a negativo}. \textit{Regla de oro: En redes pasivas, $R_{12}$ es exactamente igual a $R_{21}$ (Simetría).}
+\end{tcolorbox}
+
+\section*{3. Tratamiento de las Fuentes de Poder (Vector $\mathbf{V}$)}
+Para construir el lado derecho de nuestra ecuación ($\mathbf{R}\mathbf{I} = \mathbf{V}$), sigue el giro de tu flecha de corriente:
+\begin{itemize}
+    \item Si la flecha choca primero con la línea corta (negativo) del símbolo de la batería, el voltaje "sube", por lo que se anota \textbf{positivo} en el vector.
+    \item Si choca primero con la línea larga (positivo), el voltaje cae, se anota \textbf{negativo}.
+\end{itemize}
+
+\newpage
+
+\section*{4. Misión Práctica: Desarrollo Manuscrito}
+
+\begin{figure}[h!]
+    \centering
+    % Placeholder para que el docente pegue la imagen exportada de LTSpice
+    \framebox[12cm][c]{\rule{0pt}{5cm} \textit{Espacio reservado para el plano esquemático del actuador (Docente: Insertar imagen LTSpice aquí)}}
+    \caption{Plano de distribución de potencia de 3 mallas.}
+\end{figure}
+
+Dado el circuito superior con los siguientes valores de componentes:
+$$R_1=10\Omega, \quad R_2=22\Omega, \quad R_3=15\Omega, \quad R_4=33\Omega, \quad R_5=47\Omega, \quad R_6=12\Omega$$
+$$V_{s1} = 24V \text{ (Malla 1)}, \quad V_{s2} = 0V \text{ (Malla 2)}, \quad V_{s3} = -12V \text{ (Malla 3)}$$
+
+\textbf{A.} Utilizando "La Receta Algorítmica", llena los espacios para estructurar el sistema canónico $\mathbf{R}\mathbf{I} = \mathbf{V}$:
+
+\vspace{0.5cm}
+
+$$
+\begin{bmatrix}
+ (R_1 + \dots \dots + R_3) & -R_2 & -R_3 \\
+ \dots \dots \dots \dots \dots & (\dots \dots + R_4 + \dots \dots) & -R_5 \\
+ \dots \dots \dots \dots \dots & \dots \dots \dots \dots \dots & (R_3 + \dots \dots + R_6)
+\end{bmatrix}
+\begin{bmatrix}
+ I_1 \\
+ I_2 \\
+ I_3
+\end{bmatrix}
+=
+\begin{bmatrix}
+ 24.0 \\
+ \dots \dots \\
+ \dots \dots
+\end{bmatrix}
+$$
+
+\vspace{0.5cm}
+
+\textbf{B.} Reemplaza los valores numéricos y calcula a mano el determinante de la matriz $\mathbf{R}$ para diagnosticar si existe un cortocircuito ($\det(\mathbf{R}) = 0$). Usa la Regla de Sarrus o cofactores.
+
+\vspace{0.3cm}
+\begin{tcolorbox}[colback=white,colframe=UCBgray,height=6cm,valign=top]
+\textit{Espacio para desarrollo del determinante (Sarrus):}
+\end{tcolorbox}
+
+\section*{5. Operar: Hacia el Gemelo Digital}
+Una vez que hayas certificado tu modelo matemático manuscrito:
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item Abre tu entorno de programación (Jupyter).
+    \item Ejecuta el \texttt{Notebook\_01\_Mallas.ipynb}.
+    \item Transcribe los valores de tu matriz $\mathbf{R}$ al código Python.
+    \item Verifica que la celda de \texttt{assert} apruebe tu matriz. ¡Si es simétrica, has superado la fase de Diseño!
+\end{enumerate}
+
+\end{document}

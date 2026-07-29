@@ -1,0 +1,126 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+
+% Configuración de colores corporativos UCB
+\definecolor{UCBblue}{RGB}{0, 51, 153}
+\definecolor{UCBgray}{RGB}{100, 100, 100}
+\definecolor{UCBred}{RGB}{153, 0, 0}
+
+% Configuración de encabezado y pie de página
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{UCBblue}{\textbf{Ingeniería Mecatrónica - UCB Tarija}}}
+\fancyhead[R]{\textcolor{UCBgray}{Taller de Nivelación - Módulos 1 \& 2}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{UCBblue}\leaders\hrule height \headrulewidth\hfill}}
+
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{\textcolor{UCBblue}{Guía de Modelado Analítico: Sistematización de Redes de Potencia}}}\\
+    \vspace{0.3cm}
+    {\large \textbf{Fase CDIO: Concebir (El Puente Físico-Matemático)}}\\
+    \vspace{0.5cm}
+    \textbf{Estudiante:} \rule{8cm}{0.4pt} \quad \textbf{Fecha:} \rule{3cm}{0.4pt}
+\end{center}
+
+\vspace{0.5cm}
+
+\section*{1. El Puente Físico-Matemático}
+Para el diseño de sistemas mecatrónicos, un sistema de ecuaciones lineales no representa un conjunto de números abstractos, sino el modelo determinista de una máquina en operación.
+\begin{itemize}
+    \item \textbf{La Matriz de Impedancias ($\mathbf{R}$):} Constituye el \textit{mapa topológico} del hardware, definiendo la interconexión física de la red.
+    \item \textbf{El Vector de Estado ($\mathbf{I}$):} Cuantifica el flujo real de carga que energizará los actuadores físicos.
+    \item \textbf{El Sistema Canónico ($\mathbf{R}\mathbf{I} = \mathbf{V}$):} Define el \textit{punto de equilibrio energético} donde las fuerzas electromotrices se igualan a las pérdidas por disipación térmica.
+\end{itemize}
+
+\section*{2. Conservación de la Energía (Heurística del Campo Conservativo)}
+La Ley de Voltajes de Kirchhoff ($\sum V = 0$) es la manifestación macroscópica de la conservación de la energía en un circuito. Para comprenderla, emplearemos la heurística de una masa de prueba en un campo gravitatorio cerrado (análogo a un excursionista en la montaña):
+\begin{enumerate}
+    \item \textbf{Fuentes de Voltaje ($\mathbf{V}$):} Actúan como un sistema de elevación (ej. teleférico), aportando energía potencial al sistema.
+    \item \textbf{Resistencias ($\mathbf{R}$):} Representan el descenso por un terreno irregular, donde la energía potencial se disipa irreversiblemente en forma de calor.
+    \item \textbf{Principio de Lazo Cerrado:} Al completar un recorrido cerrado (retorno al campamento base), la ganancia neta de energía debe ser nula; la energía inyectada por las fuentes equivale exactamente a la disipada por las resistencias.
+\end{enumerate}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=UCBblue,title=\textbf{Procedimiento de Ensamblaje Matricial}]
+\textbf{Paso 1: Convención de Estado} \\
+Asigne una corriente de lazo en sentido horario ($\circlearrowright$) a cada malla.
+
+\vspace{0.2cm}
+\textbf{Paso 2: Elementos de la Diagonal Principal ($R_{kk}$)} \\
+La impedancia propia de la malla $k$ ($R_{kk}$) es la suma algebraica de \textbf{todas} las resistencias de dicha malla. \\
+\textit{Condición de viabilidad: $R_{kk}$ es estrictamente positivo ($R_{kk} > 0$).}
+
+\vspace{0.2cm}
+\textbf{Paso 3: Elementos Extradiagonales ($R_{kj}$)} \\
+La impedancia mutua entre la malla $k$ y $j$ ($R_{kj}$) es la resistencia en la frontera compartida, \textbf{precedida por un signo negativo}. \\
+\textit{Condición de viabilidad: La matriz debe ser estructuralmente simétrica ($R_{kj} = R_{jk}$).}
+\end{tcolorbox}
+
+\newpage
+
+\section*{3. Desarrollo Analítico: Misión de Ingeniería}
+
+\begin{figure}[h!]
+    \centering
+    \framebox[14cm][c]{\rule{0pt}{6cm} \textit{[Espacio reservado: Inserte aquí la exportación del esquemático desde LTSpice]}}
+    \caption{Topología coplanar de la red de distribución de potencia mecatrónica.}
+\end{figure}
+
+Parámetros de hardware:
+$$R_1=10\Omega, \quad R_2=22\Omega, \quad R_3=15\Omega, \quad R_4=33\Omega, \quad R_5=47\Omega, \quad R_6=12\Omega$$
+$$V_{s1} = 24\text{ V (Lazo 1)}, \quad V_{s2} = 0\text{ V (Lazo 2)}, \quad V_{s3} = -12\text{ V (Lazo 3)}$$
+
+\textbf{A.} Ejecute el procedimiento algorítmico para estructurar el sistema $\mathbf{R}\mathbf{I} = \mathbf{V}$:
+
+\vspace{0.5cm}
+
+$$
+\begin{bmatrix}
+ (R_1 + \dots \dots + R_3) & -R_2 & -R_3 \\
+ \dots \dots \dots \dots \dots & (\dots \dots + R_4 + \dots \dots) & -R_5 \\
+ \dots \dots \dots \dots \dots & \dots \dots \dots \dots \dots & (R_3 + \dots \dots + R_6)
+\end{bmatrix}
+\begin{bmatrix}
+ I_1 \\
+ I_2 \\
+ I_3
+\end{bmatrix}
+=
+\begin{bmatrix}
+ 24.0 \\
+ \dots \dots \\
+ \dots \dots
+\end{bmatrix}
+$$
+
+\vspace{0.5cm}
+
+\section*{4. Diagnóstico de Falla Catastrófica (La Matriz Singular)}
+En ingeniería, delegar cálculos a ciegas a un software es un riesgo inaceptable. Antes de simular, debemos calcular el determinante principal ($\det(\mathbf{R})$). 
+
+Si $\det(\mathbf{R}) = 0$, el sistema analítico ha colapsado. Físicamente, esto implica un error de diseño severo: un \textbf{cortocircuito ideal} (lazo sin resistencia disipativa) o una colisión de fuentes de distinto potencial en paralelo. 
+
+\textbf{B.} Reemplace los parámetros por sus valores nominales y evalúe el determinante mediante la Regla de Sarrus para descartar singularidades.
+
+\vspace{0.3cm}
+\begin{tcolorbox}[colback=white,colframe=UCBred,height=4cm,valign=top]
+\textit{Espacio para el desarrollo del cálculo de $\det(\mathbf{R})$:}
+\end{tcolorbox}
+
+\section*{5. Transición al Entorno Computacional (Gemelo Digital)}
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item Abra los archivos \texttt{Notebook\_01\_Mallas.ipynb} y \texttt{Notebook\_02\_Cramer.ipynb}.
+    \item Declare la matriz $\mathbf{R}$ utilizando \texttt{NumPy}.
+    \item Ejecute las celdas de aserción (\texttt{assert}). El manejo de excepciones (\texttt{try-except LinAlgError}) capturará cualquier singularidad antes de que el solver falle.
+\end{enumerate}
+
+\end{document}

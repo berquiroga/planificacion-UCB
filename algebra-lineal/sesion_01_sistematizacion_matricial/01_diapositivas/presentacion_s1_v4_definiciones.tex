@@ -1,0 +1,115 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{default}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tcolorbox}
+
+\definecolor{UCBblue}{RGB}{0, 51, 153}
+\setbeamercolor{palette primary}{bg=UCBblue,fg=white}
+\setbeamercolor{palette secondary}{bg=UCBblue,fg=white}
+\setbeamercolor{palette tertiary}{bg=UCBblue,fg=white}
+\setbeamercolor{titlelike}{bg=UCBblue,fg=white}
+\setbeamercolor{item}{fg=UCBblue}
+
+\title[Nivelación - Sesión 1]{Taller de Nivelación Intensiva:\\ Álgebra Lineal Aplicada a la Teoría de Redes}
+\subtitle{Módulos 1 \& 2: Definiciones Fundamentales y Sistematización}
+\author[M.Sc. Ing. B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Carrera de Ingeniería Mecatrónica\\ Universidad Católica Boliviana "San Pablo" Sede Tarija}
+\date{28 de Julio de 2026}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Agenda de la Sesión}
+    \tableofcontents
+\end{frame}
+
+\section{Definiciones Fundamentales (El Puente Físico-Matemático)}
+
+\begin{frame}{1. Ley de Voltajes de Kirchhoff (LVK) y Matrices}
+    \textbf{Ley de Voltajes de Kirchhoff ($\sum V = 0$):} Es la manifestación macroscópica del principio de conservación de la energía. En un lazo cerrado (malla), la energía inyectada por las fuentes (elevación de potencial) debe igualar a la energía disipada por las resistencias (caída de potencial).
+    
+    \vspace{0.3cm}
+    \begin{itemize}
+        \item \textbf{La Matriz ($\mathbf{R}$):} El \textit{mapa topológico} del hardware. Almacena la oposición geométrica al flujo de electrones.
+        \item \textbf{El Vector de Estado ($\mathbf{I}$):} La incógnita de ingeniería; el flujo de carga real (Amperios) que energizará los actuadores.
+        \item \textbf{El Sistema ($\mathbf{R}\mathbf{I} = \mathbf{V}$):} Representa el \textit{punto de equilibrio energético} determinista de la red.
+    \end{itemize}
+\end{frame}
+
+\section{Determinantes: Escalonamiento y Limitaciones}
+
+\begin{frame}{2. El Determinante: Concepto Base ($2\times2$)}
+    El determinante ($\det(\mathbf{R})$) es un escalar que indica el factor de escala volumétrica de la transformación lineal. Físicamente, valida si nuestro circuito tiene un único punto de equilibrio.
+    
+    \vspace{0.3cm}
+    \textbf{El caso fundamental ($2\times2$):}
+    Para un sistema de dos mallas, la definición algebraica es el producto cruzado:
+    \begin{equation*}
+        \mathbf{R} = \begin{bmatrix} a & b \\ c & d \end{bmatrix} \implies \det(\mathbf{R}) = ad - bc
+    \end{equation*}
+    
+    \textit{Si $\det(\mathbf{R}) = 0$, las dos ecuaciones (mallas) son linealmente dependientes. Físicamente: redundancia o conflicto topológico.}
+\end{frame}
+
+\begin{frame}{3. Extensión a $3\times3$: La Regla de Sarrus}
+    Para redes de 3 mallas, la abstracción del producto cruzado se sistematiza mediante la \textbf{Regla de Sarrus} (duplicando las dos primeras columnas):
+    
+    \begin{equation*}
+        \det(\mathbf{R}) = (R_{11}R_{22}R_{33} + R_{12}R_{23}R_{31} + R_{13}R_{21}R_{32}) - (R_{13}R_{22}R_{31} + R_{11}R_{23}R_{32} + R_{12}R_{21}R_{33})
+    \end{equation*}
+    
+    \begin{alertblock}{Limitación Crítica en Ingeniería}
+        \textbf{La Regla de Sarrus es una heurística visual exclusiva para matrices $3\times3$.} No existe un "Sarrus para $4\times4$". Para redes de mayor dimensionalidad, el ingeniero debe abandonar este método y utilizar expansión por cofactores (Laplace) o, en la práctica industrial, factorizaciones computacionales (LU).
+    \end{alertblock}
+\end{frame}
+
+\section{Singularidad y Regla de Cramer}
+
+\begin{frame}{4. Diagnóstico de Singularidad}
+    \begin{block}{La Matriz Singular ($\det(\mathbf{R}) = 0$)}
+        Cuando la matemática colapsa, detecta un fallo físico severo:
+        \begin{itemize}
+            \item \textbf{Fuentes en Conflicto:} Baterías de distinto potencial forzadas en paralelo (explosión térmica).
+            \item \textbf{Cortocircuito Ideal:} Lazo cerrado sin impedancia propia limitante. La corriente tiende a infinito ($I \to \infty$).
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{5. Regla de Cramer}
+    Método analítico directo que utiliza determinantes proporcionales para aislar variables de estado.
+    \begin{equation*}
+        I_k = \frac{\det(\mathbf{R}_k)}{\det(\mathbf{R})}
+    \end{equation*}
+    Donde $\mathbf{R}_k$ es la matriz topológica $\mathbf{R}$ sustituyendo su $k$-ésima columna por el vector de excitación $\mathbf{V}$. 
+    
+    \vspace{0.2cm}
+    \textit{Aplicación CDIO:} Lo utilizaremos manualmente hoy para comprender la sensibilidad de la corriente ante cambios en la fuente, antes de programarlo en \texttt{Python}.
+\end{frame}
+
+\section{Transición al Entorno Computacional}
+\begin{frame}{Validación y Co-Programación (Python + NumPy)}
+    \textbf{Fase CDIO: Diseñar e Implementar}
+    \begin{enumerate}
+        \item Inicialicen el entorno Jupyter Notebook (\texttt{Notebook\_01} y \texttt{Notebook\_02}).
+        \item Transcriban el modelo analítico de equilibrio a un tensor (\texttt{np.array}).
+        \item Validaremos las propiedades de la red:
+        \begin{itemize}
+            \item Simetría Estructural: \texttt{assert np.array\_equal(R, R.T)}
+        \end{itemize}
+        \item Sistematizaremos el determinante con \texttt{np.linalg.det(R)} para superar las limitaciones algorítmicas de Sarrus.
+    \end{enumerate}
+    
+    \vspace{0.5cm}
+    \begin{center}
+        \textit{Fin de la fundamentación conceptual. Iniciamos el despliegue computacional.}
+    \end{center}
+\end{frame}
+
+\end{document}

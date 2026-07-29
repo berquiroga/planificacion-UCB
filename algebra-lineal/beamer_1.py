@@ -1,0 +1,155 @@
+import subprocess
+import os
+
+latex_code = r"""\documentclass[aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{default}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+
+% Configuración de colores institucionales sugeridos
+\definecolor{UCBblue}{RGB}{0, 51, 153}
+\setbeamercolor{palette primary}{bg=UCBblue,fg=white}
+\setbeamercolor{palette secondary}{bg=UCBblue,fg=white}
+\setbeamercolor{palette tertiary}{bg=UCBblue,fg=white}
+\setbeamercolor{titlelike}{bg=UCBblue,fg=white}
+\setbeamercolor{item}{fg=UCBblue}
+
+\title[Nivelación - Sesión 1]{Taller de Nivelación Intensiva:\\ Álgebra Lineal Aplicada a la Teoría de Redes}
+\subtitle{Módulos 1 \& 2: Formulación Matricial y Diagnóstico de Singularidad}
+\author[M.Sc. Ing. B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Carrera de Ingeniería Mecatrónica\\ Universidad Católica Boliviana "San Pablo" Sede Tarija}
+\date{28 de Julio de 2026}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Agenda de la Sesión}
+    \tableofcontents
+\end{frame}
+
+\section{Contexto Industrial y Metodológico}
+\begin{frame}{El "Motor" de los Simuladores}
+    \begin{itemize}
+        \item \textbf{Problema Industrial:} Los ingenieros diseñan redes eléctricas complejas, pero los simuladores (como LTSpice) resuelven ecuaciones abstractas en segundo plano.
+        \item \textbf{Objetivo del Taller (Just-In-Time Mathematics):} Conectar la topología física de los circuitos con su representación matricial antes de tocar un simulador.
+        \item \textbf{Paradigma CDIO:} 
+        \begin{itemize}
+            \item \textbf{Concebir:} Ecuaciones de Kirchhoff (LVK) a partir del esquemático.
+            \item \textbf{Diseñar:} Ensamblaje de la matriz de resistencias $\mathbf{R}$.
+            \item \textbf{Implementar:} Programación estructurada en Python (\texttt{NumPy}).
+            \item \textbf{Operar:} Resolución analítica y captura de excepciones (cortocircuitos).
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\section{De LVK a la Formulación Matricial}
+\begin{frame}{Leyes de Kirchhoff (LVK) y Mallas}
+    \begin{block}{Ley de Voltajes de Kirchhoff (LVK)}
+        La suma algebraica de las caídas de tensión a lo largo de cualquier malla cerrada es igual a cero: $\sum_{k=1}^{n} V_k = 0$.
+    \end{block}
+    
+    \vspace{0.3cm}
+    Para un sistema de $N$ mallas puramente resistivas, esto se generaliza a la forma matricial canónica:
+    \begin{equation}
+        \mathbf{R} \mathbf{I} = \mathbf{V}
+    \end{equation}
+    
+    Donde:
+    \begin{itemize}
+        \item $\mathbf{R} \in \mathbb{R}^{N \times N}$: Matriz de resistencias de malla.
+        \item $\mathbf{I} \in \mathbb{R}^{N}$: Vector columna de corrientes (nuestras variables de estado incógnitas).
+        \item $\mathbf{V} \in \mathbb{R}^{N}$: Vector columna de tensiones de excitación independientes.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Anatomía Topológica de la Matriz $\mathbf{R}$}
+    \begin{columns}
+        \column{0.5\textwidth}
+        Para una red de 3 mallas:
+        \begin{equation*}
+            \mathbf{R} = 
+            \begin{bmatrix}
+            R_{11} & -R_{12} & -R_{13} \\
+            -R_{21} & R_{22} & -R_{23} \\
+            -R_{31} & -R_{32} & R_{33}
+            \end{bmatrix}
+        \end{equation*}
+        
+        \column{0.5\textwidth}
+        \textbf{Firma Física de una Red Pasiva:}
+        \begin{itemize}
+            \item \textbf{Diagonal Principal ($R_{ii}$):} Suma de todas las resistencias de la malla $i$. \textit{Debe ser estrictamente positiva.}
+            \item \textbf{Fuera de la Diagonal ($R_{ij}$):} Resistencias compartidas. \textit{Negativas por convención de direcciones asignadas.}
+            \item \textbf{Simetría Estructural:} En ausencia de fuentes dependientes, $R_{ij} = R_{ji}$. Así, $\mathbf{R} = \mathbf{R}^T$.
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\section{Determinantes, Cramer y Singularidad}
+\begin{frame}{El Determinante y la Física del Circuito}
+    El determinante principal $\Delta_R = \det(\mathbf{R})$ define la viabilidad matemática y física del sistema.
+    
+    \vspace{0.5cm}
+    \begin{alertblock}{Diagnóstico de Singularidad Matricial}
+        Si $\det(\mathbf{R}) = 0$, la matriz es \textbf{singular}. El sistema carece de solución única.
+    \end{alertblock}
+    
+    \vspace{0.2cm}
+    \textbf{Interpretación de falla en Ingeniería:}
+    \begin{itemize}
+        \item Topología de red inconsistente en el diseño.
+        \item Presencia de un \textbf{cortocircuito ideal} en bucle cerrado.
+        \item Dependencia lineal total entre nodos (fuentes de corriente en serie conflictivas).
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Resolución Analítica: Regla de Cramer}
+    Para sistemas de baja escala (hasta $3\times3$), utilizamos la Regla de Cramer:
+    
+    \begin{equation}
+        I_k = \frac{\det(\mathbf{R}_k)}{\det(\mathbf{R})}
+    \end{equation}
+    
+    \begin{itemize}
+        \item $\mathbf{R}_k$ es la matriz $\mathbf{R}$ con la $k$-ésima columna reemplazada por el vector de excitación $\mathbf{V}$.
+        \item \textbf{Limitación Computacional:} Su complejidad factorial $O(N!)$ la hace prohibitiva en la industria para grandes redes, donde preferimos factorizaciones directas (LU o Cholesky). Sin embargo, proporciona una fundamentación clave para el análisis de sensibilidad.
+    \end{itemize}
+\end{frame}
+
+\section{Transición al Live-Coding}
+\begin{frame}{Integración Computacional (Python + NumPy)}
+    \textbf{Dinámica de Co-Programación:}
+    \begin{enumerate}
+        \item Inicien su entorno Jupyter y abran el archivo \texttt{Notebook\_01\_Mallas.ipynb}.
+        \item Trasladaremos el análisis de malla manual de la pizarra a tensores multidimensionales \texttt{np.array}.
+        \item Cerraremos la fase de diseño evaluando bloqueos robustos: usaremos \texttt{assert np.allclose(R, R.T)} para forzar la validación de la simetría antes de resolver.
+        \item Posteriormente en \texttt{Notebook\_02\_Cramer.ipynb}, programaremos manejadores de fallas (\texttt{try-except LinAlgError}) para diagnosticar topologías singulares.
+    \end{enumerate}
+    
+    \vspace{0.5cm}
+    \begin{center}
+        \textit{Fin de la fase teórica. ¡Pasamos al entorno de desarrollo!}
+    \end{center}
+\end{frame}
+
+\end{document}
+"""
+
+with open("presentacion_s1.tex", "w", encoding="utf-8") as f:
+    f.write(latex_code)
+    
+# Compilamos el archivo a PDF
+compile_cmd = ["pdflatex", "-interaction=nonstopmode", "presentacion_s1.tex"]
+result = subprocess.run(compile_cmd, capture_output=True, text=True)
+
+if os.path.exists("presentacion_s1.pdf"):
+    print("El archivo PDF y TEX fueron generados con éxito.")
+else:
+    print("Hubo un error al compilar el archivo PDF.")

@@ -1,0 +1,128 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+
+% Configuración de colores corporativos UCB
+\definecolor{UCBblue}{RGB}{0, 51, 153}
+\definecolor{UCBgray}{RGB}{100, 100, 100}
+
+% Configuración de encabezado y pie de página
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{UCBblue}{\textbf{Ingeniería Mecatrónica - UCB Tarija}}}
+\fancyhead[R]{\textcolor{UCBgray}{Taller de Nivelación - Módulo 1}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{UCBblue}\leaders\hrule height \headrulewidth\hfill}}
+
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{\textcolor{UCBblue}{Guía de Modelado Analítico: Sistematización de Redes de Potencia}}}\\
+    \vspace{0.3cm}
+    {\large \textbf{Fase CDIO: Concebir (Modelado Físico-Matemático)}}\\
+    \vspace{0.5cm}
+    \textbf{Estudiante:} \rule{8cm}{0.4pt} \quad \textbf{Fecha:} \rule{3cm}{0.4pt}
+\end{center}
+
+\vspace{0.5cm}
+
+\section*{1. Fundamentación Física: La Red de Potencia}
+El diseño de sistemas mecatrónicos requiere el dimensionamiento preciso de las etapas de potencia (drivers, cableado, protecciones). Para modelar matemáticamente este comportamiento, recurrimos a analogías fundamentales:
+\begin{itemize}
+    \item \textbf{Voltaje (V):} Representa el gradiente de potencial o fuerza electromotriz. Es análogo a la presión generada por una bomba en un sistema hidráulico.
+    \item \textbf{Corriente (I):} Cuantifica el flujo de carga a través de un conductor (Amperios), análogo al caudal volumétrico.
+    \item \textbf{Resistencia (R):} Cuantifica la oposición geométrica y material al flujo de carga (Ohmios).
+    \item \textbf{Malla (Lazo Independiente):} Trayectoria cerrada elemental dentro del circuito que no contiene otras trayectorias en su interior.
+\end{itemize}
+
+\section*{2. Sistematización Algorítmica: Formulación Matricial (LVK)}
+La resolución computacional de circuitos mediante herramientas científicas (Python/MATLAB) requiere transponer la topología física a una estructura de datos matricial canónica: $\mathbf{R}\mathbf{I} = \mathbf{V}$. 
+
+Para ensamblar la \textbf{Matriz de Resistencias de Lazo ($\mathbf{R}$)}, aplique el siguiente procedimiento sistemático:
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=UCBblue,title=\textbf{Procedimiento de Ensamblaje Matricial}]
+\textbf{Paso 1: Convención de Estado} \\
+Asigne convencionalmente una corriente de lazo en sentido horario ($\circlearrowright$) a cada malla independiente. Denomínelas $I_1, I_2, \dots, I_N$.
+
+\vspace{0.2cm}
+\textbf{Paso 2: Elementos de la Diagonal Principal ($R_{kk}$)} \\
+La impedancia propia de la malla $k$ (elemento $R_{kk}$) equivale a la suma algebraica de \textbf{todas} las resistencias que conforman dicha malla. \\
+\textit{Condición de viabilidad: En redes pasivas, $R_{kk}$ es estrictamente positivo ($R_{kk} > 0$).}
+
+\vspace{0.2cm}
+\textbf{Paso 3: Elementos Extradiagonales ($R_{kj}$)} \\
+La impedancia mutua entre la malla $k$ y la malla $j$ (elemento $R_{kj}$) corresponde al valor de la resistencia compartida en la frontera topológica de ambas mallas, \textbf{precedida por un signo negativo}. \\
+\textit{Condición de viabilidad: La matriz resultante debe ser estructuralmente simétrica ($R_{kj} = R_{jk}$).}
+\end{tcolorbox}
+
+\section*{3. Condición de Excitación (Vector $\mathbf{V}$)}
+Para formular el vector columna de fuentes independientes $\mathbf{V}$, evalúe el recorrido de la corriente de malla a través de los elementos activos (baterías/fuentes):
+\begin{itemize}
+    \item Si el recorrido horario ingresa por el terminal \textbf{negativo} de la fuente, se considera una elevación de potencial y el valor se ingresa como \textbf{positivo} en el vector.
+    \item Si ingresa por el terminal \textbf{positivo}, representa una caída de potencial y se ingresa como \textbf{negativo}.
+\end{itemize}
+
+\newpage
+
+\section*{4. Desarrollo Analítico: Misión de Ingeniería}
+
+\begin{figure}[h!]
+    \centering
+    % Placeholder para la imagen de LTSpice
+    \framebox[14cm][c]{\rule{0pt}{6cm} \textit{[Espacio reservado: Inserte aquí la exportación del esquemático desde LTSpice]}}
+    \caption{Topología coplanar de la red de distribución de potencia mecatrónica (3 Mallas independientes).}
+\end{figure}
+
+Considere la topología superior con los siguientes parámetros de hardware:
+$$R_1=10\Omega, \quad R_2=22\Omega, \quad R_3=15\Omega, \quad R_4=33\Omega, \quad R_5=47\Omega, \quad R_6=12\Omega$$
+$$V_{s1} = 24\text{ V (Lazo 1)}, \quad V_{s2} = 0\text{ V (Lazo 2)}, \quad V_{s3} = -12\text{ V (Lazo 3)}$$
+
+\textbf{A.} Ejecute el procedimiento de sistematización algorítmica para estructurar analíticamente el sistema canónico de ecuaciones $\mathbf{R}\mathbf{I} = \mathbf{V}$. Complete el tensor:
+
+\vspace{0.5cm}
+
+$$
+\begin{bmatrix}
+ (R_1 + \dots \dots + R_3) & -R_2 & -R_3 \\
+ \dots \dots \dots \dots \dots & (\dots \dots + R_4 + \dots \dots) & -R_5 \\
+ \dots \dots \dots \dots \dots & \dots \dots \dots \dots \dots & (R_3 + \dots \dots + R_6)
+\end{bmatrix}
+\begin{bmatrix}
+ I_1 \\
+ I_2 \\
+ I_3
+\end{bmatrix}
+=
+\begin{bmatrix}
+ 24.0 \\
+ \dots \dots \\
+ \dots \dots
+\end{bmatrix}
+$$
+
+\vspace{0.5cm}
+
+\textbf{B.} Reemplace los parámetros por sus valores nominales y evalúe el determinante principal de la matriz ($\det(\mathbf{R})$). Justifique físicamente por qué $\det(\mathbf{R}) \neq 0$ es un requerimiento crítico para descartar condiciones de cortocircuito o inconsistencias topológicas.
+
+\vspace{0.3cm}
+\begin{tcolorbox}[colback=white,colframe=UCBgray,height=6.5cm,valign=top]
+\textit{Espacio para el desarrollo del cálculo (Regla de Sarrus o Cofactores) y justificación física:}
+\end{tcolorbox}
+
+\section*{5. Transición al Entorno Computacional (Gemelo Digital)}
+Una vez certificado su modelo matemático analítico, proceda a la fase de Implementación:
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item Inicialice su entorno de desarrollo local (Jupyter Notebooks).
+    \item Abra el archivo de trabajo asignado: \texttt{Notebook\_01\_Mallas.ipynb}.
+    \item Declare la matriz $\mathbf{R}$ utilizando arreglos bidimensionales en \texttt{NumPy}.
+    \item Ejecute la celda de pruebas unitarias (\texttt{assert}). Si el código valida la simetría y positividad de la diagonal, su modelo es computacionalmente robusto.
+\end{enumerate}
+
+\end{document}

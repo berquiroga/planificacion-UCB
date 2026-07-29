@@ -1,0 +1,108 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+
+% Configuración de colores corporativos UCB
+\definecolor{UCBblue}{RGB}{0, 51, 153}
+\definecolor{UCBgray}{RGB}{100, 100, 100}
+
+% Configuración de encabezado y pie de página
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{UCBblue}{\textbf{Ingeniería Mecatrónica - UCB Tarija}}}
+\fancyhead[R]{\textcolor{UCBgray}{Guión de Clase - Sesión 1}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{UCBblue}\leaders\hrule height \headrulewidth\hfill}}
+
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{\textcolor{UCBblue}{PLANIFICACIÓN DIDÁCTICA Y GUIÓN DE CLASE}}}\\
+    \vspace{0.3cm}
+    {\large \textbf{Sesión 1: Sistematización Matricial y Diagnóstico de Singularidad}}\\
+    \vspace{0.5cm}
+    \textbf{Asignatura:} Taller de Nivelación - Álgebra Lineal Aplicada a la Teoría de Redes \\
+    \textbf{Docente:} M.Sc. Ing. Bernardo Quiroga Turdera \quad \textbf{Duración:} 120 Minutos
+\end{center}
+
+\vspace{0.5cm}
+
+\section*{1. Metadatos de la Sesión}
+\begin{itemize}
+    \item \textbf{Módulos:} 1 y 2.
+    \item \textbf{Estrategia Didáctica:} \textit{Just-In-Time Physics}, Aprendizaje Activo, \textit{Live-Coding}.
+    \item \textbf{Alineamiento CDIO:} Concebir (Física/Matemática) $\rightarrow$ Diseñar (Matriz Analítica) $\rightarrow$ Implementar (Python).
+    \item \textbf{Entregables Activos:} Diapositivas Beamer (\texttt{v4}), Guía Analítica del Estudiante, Jupyter Notebooks 01 y 02.
+\end{itemize}
+
+\section*{2. Cronograma de Ejecución}
+\begin{table}[h!]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{@{} c c X l @{}}
+        \toprule
+        \textbf{Hora} & \textbf{Fase CDIO} & \textbf{Actividad Principal} & \textbf{Material de Soporte} \\
+        \midrule
+        17:00 - 17:15 & \textbf{Concebir} & Motivación industrial y el Puente Físico-Matemático. & Beamer (Slides 1-3) \\
+        17:15 - 17:35 & \textbf{Concebir} & Conservación de energía, Sarrus y matriz singular. & Beamer (Slides 4-6) \\
+        17:35 - 18:00 & \textbf{Diseñar} & Misión de Ingeniería: Ensamblaje y cálculo manual. & Guía Estudiante (PDF) \\
+        18:00 - 18:20 & \textbf{Implementar} & \textit{Live-Coding}: Matriz $\mathbf{R}$ y validación con \texttt{assert}. & Notebook 01 \\
+        18:20 - 18:45 & \textbf{Operar} & Singularidades (\texttt{LinAlgError}) y Regla de Cramer. & Notebook 02 \\
+        18:45 - 19:00 & \textbf{Evaluar} & Síntesis, validación cruzada y cierre socrático. & Pizarra / Discusión \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\section*{3. Desarrollo Detallado por Fases}
+
+\subsection*{Fase 1: Fundamentación Teórica (17:00 - 17:35)}
+\textit{Objetivo: Establecer el modelo mental físico antes de manipular tensores.}
+\begin{itemize}
+    \item \textbf{Apertura Industrial:} Proyectar el esquemático de LTSpice. Enmarcar el problema: \textit{"En la arquitectura de un robot móvil, múltiples drivers comparten retornos de corriente. Energizar sin calcular el flujo de carga fundirá el hardware."}
+    \item \textbf{Heurística del Campo Conservativo:} Introducir la Ley de Voltajes de Kirchhoff (LVK) mediante la analogía del excursionista para explicar el equilibrio energético ($\sum V = 0$).
+    \item \textbf{Escalonamiento y Límites:} Definir el determinante $2\times2$, escalar a la Regla de Sarrus $3\times3$ y \textbf{advertir explícitamente} que Sarrus colapsa para dimensiones $\ge 4\times4$, justificando así la necesidad del cómputo científico.
+    \item \textbf{La Matriz Singular:} Relacionar $\det(\mathbf{R}) = 0$ con fallas críticas (cortocircuito ideal o fuentes de distinto potencial en paralelo).
+\end{itemize}
+
+\subsection*{Fase 2: Desarrollo Analítico Autónomo (17:35 - 18:00)}
+\textit{Objetivo: Forzar el razonamiento algorítmico y reducir la carga cognitiva sin pantallas.}
+\begin{itemize}
+    \item \textbf{Dinámica de la Guía:} Distribuir la Guía de Modelado Analítico impresa. Los estudiantes ensamblan la matriz de impedancias $\mathbf{R}$ (diagonal positiva, mutuas negativas).
+    \item \textbf{Monitoreo Activo (Errores Frecuentes):} 
+    \begin{enumerate}
+        \item Olvidar el signo negativo en resistencias de frontera.
+        \item Errores de signo en la fuente de $12\text{V}$ (evaluar dirección de entrada de la corriente).
+        \item Errores aritméticos en las diagonales ascendentes de Sarrus.
+    \end{enumerate}
+\end{itemize}
+
+\subsection*{Fase 3: Transición al Gemelo Digital - Live Coding (18:00 - 18:45)}
+\textit{Objetivo: Transponer el modelo analítico validado al entorno de cómputo científico.}
+\begin{itemize}
+    \item \textbf{Notebook 01 (Mallas):} Transcripción de la topología a tensores bidimensionales (\texttt{np.array}). El docente ejecuta el bloque \texttt{assert np.array\_equal(R, R.T)} demostrando cómo Python certifica la simetría exigida por la física.
+    \item \textbf{Notebook 02 (Cramer y Diagnóstico):} Sistematización de $\det(\mathbf{R})$ mediante \texttt{np.linalg.det(R)}. 
+    \item \textbf{Ingeniería Robusta:} Provocar un fallo intencional en la matriz para activar el bloque \texttt{try-except LinAlgError}, demostrando cómo aislar singularidades computacionalmente. Implementar la Regla de Cramer para aislar $I_1$.
+\end{itemize}
+
+\subsection*{Fase 4: Síntesis y Cierre (18:45 - 19:00)}
+\textit{Objetivo: Consolidar los resultados de aprendizaje mediante validación cruzada.}
+\begin{tcolorbox}[colback=white,colframe=UCBgray,title=\textbf{Preguntas Socráticas de Cierre}]
+\begin{enumerate}
+    \item \textit{"¿Por qué la simetría de la matriz $\mathbf{R}$ representa una garantía física y no una mera coincidencia matemática?"}
+    \item \textit{"Si agregáramos un cuarto actuador (Malla 4), ¿por qué nuestro modelo en papel basado en Sarrus colapsaría, pero nuestro bloque de Python sobreviviría?"}
+\end{enumerate}
+\end{tcolorbox}
+\begin{itemize}
+    \item \textbf{Validación:} Contrastar el valor manual de $I_1$ con la salida de NumPy.
+    \item \textbf{Apertura Sesión 2:} Adelantar que el dominio puramente resistivo en CC escalará a Corriente Alterna (CA), transformando escalares en impedancias complejas $\mathbf{Z}(j\omega)$ y requiriendo el operador \texttt{1j}.
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,93 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{default}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{tcolorbox}
+
+\definecolor{UCBblue}{RGB}{0, 51, 153}
+\setbeamercolor{palette primary}{bg=UCBblue,fg=white}
+\setbeamercolor{palette secondary}{bg=UCBblue,fg=white}
+\setbeamercolor{palette tertiary}{bg=UCBblue,fg=white}
+\setbeamercolor{titlelike}{bg=UCBblue,fg=white}
+\setbeamercolor{item}{fg=UCBblue}
+
+\title[Nivelación - Sesión 2]{Taller de Nivelación Intensiva:\\ Álgebra Lineal Aplicada a la Teoría de Redes}
+\subtitle{Módulo 3: El Límite de la CC y el Análisis Fasorial}
+\author[M.Sc. Ing. B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Carrera de Ingeniería Mecatrónica\\ Universidad Católica Boliviana "San Pablo"}
+\date{29 de Julio de 2026}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Agenda de la Sesión}
+    \tableofcontents
+\end{frame}
+
+\section{El Límite de la Corriente Continua (CC)}
+\begin{frame}{¿Por qué la Corriente Continua no es suficiente?}
+    Hasta ahora, hemos modelado sistemas en \textbf{Corriente Continua (CC)}, donde la energía fluye de manera constante e invariable en el tiempo.
+    
+    \vspace{0.3cm}
+    \begin{alertblock}{El Problema Industrial}
+    La inmensa mayoría de los actuadores industriales (motores de inducción), la red eléctrica global y las señales de los sensores operan en \textbf{Corriente Alterna (CA)}. En CA, el voltaje y la corriente son ondas senoidales que cambian de magnitud y polaridad cíclicamente.
+    \end{alertblock}
+    
+    \vspace{0.2cm}
+    \textit{Consecuencia analítica:} Una matriz de resistencias puras ($\mathbf{R}$) ya no puede capturar la dinámica de componentes que almacenan energía (bobinas y capacitores).
+\end{frame}
+
+\section{El Plano Complejo y la Impedancia}
+\begin{frame}{La Evolución de la Resistencia: La Impedancia ($\mathbf{Z}$)}
+    En CA, la oposición al flujo de electrones tiene dos dimensiones físicas que se modelan en el \textbf{Plano Complejo ($s$)}:
+    
+    \vspace{0.3cm}
+    \begin{itemize}
+        \item \textbf{Parte Real ($R$):} La resistencia clásica que disipa energía en forma de calor.
+        \item \textbf{Parte Imaginaria ($X$):} La \textit{reactancia}. Representa la energía que se almacena y se devuelve al circuito (campos magnéticos en bobinas, campos eléctricos en capacitores).
+    \end{itemize}
+    
+    \vspace{0.3cm}
+    \begin{tcolorbox}[colback=blue!5!white,colframe=UCBblue,title=Definición Matemática de la Impedancia]
+    $$ \mathbf{Z} = R + jX $$
+    Donde $j$ es el operador imaginario ($\sqrt{-1}$). En ingeniería eléctrica usamos $j$ en lugar de $i$ para no confundirlo con la variable de corriente.
+    \end{tcolorbox}
+\end{frame}
+
+\section{El Concepto de Fasor}
+\begin{frame}{De la Onda en el Tiempo al Vector en el Espacio}
+    Manejar senoides puras ($v(t) = V_m \cos(\omega t + \theta)$) en sistemas de ecuaciones matriciales genera cálculos trigonométricos intratables.
+    
+    \vspace{0.3cm}
+    \textbf{La Solución de Ingeniería (Transformada Fasorial):}
+    Congelamos el tiempo y representamos la onda como un vector estático (Fasor) que tiene dos propiedades fundamentales:
+    \begin{enumerate}
+        \item \textbf{Magnitud ($|\mathbf{Z}|$):} La longitud del vector (cuánta oposición total existe).
+        \item \textbf{Fase ($\theta$):} El ángulo del vector (el desfase temporal entre el voltaje y la corriente).
+    \end{enumerate}
+\end{frame}
+
+\section{Transición al Gemelo Digital}
+\begin{frame}{Sintaxis en Python para el Dominio Fasorial}
+    \textbf{Fase CDIO: Implementar}
+    
+    \vspace{0.3cm}
+    Python está diseñado nativamente para el cómputo científico y soporta números complejos sin librerías externas adicionales para su declaración:
+    \begin{itemize}
+        \item \textbf{Operador Imaginario:} En Python, se utiliza el sufijo \texttt{j} adyacente al número (Ej. \texttt{1j}, \texttt{5+2j}).
+        \item \textbf{Magnitud (Forma Polar):} Extraída computacionalmente con \texttt{np.abs(Z)}.
+        \item \textbf{Fase o Ángulo:} Extraída con \texttt{np.angle(Z, deg=True)}.
+    \end{itemize}
+    
+    \vspace{0.5cm}
+    \begin{center}
+        \textit{Pasemos a la Guía Analítica para comprender la conversión trigonométrica antes de programar.}
+    \end{center}
+\end{frame}
+
+\end{document}

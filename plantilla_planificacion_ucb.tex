@@ -1,0 +1,616 @@
+\documentclass[11pt, letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage[left=2cm, right=2cm, top=2.5cm, bottom=2.5cm]{geometry}
+\usepackage{tabularx}
+\usepackage{xltabular} % Reemplazo superior a ltablex para tablas largas
+\usepackage{multirow}
+\usepackage{pdflscape}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{colortbl}
+\usepackage{tcolorbox}
+\usepackage{array}
+\usepackage{enumitem} % Para control de espaciado en listas dentro de tablas
+\usepackage{amsmath}
+
+% --- VARIABLES DEL DOCUMENTO ---
+\newcommand{\sigla}{IMT-342}
+\newcommand{\semestre}{8vo Semestre}
+\newcommand{\asignatura}{Robótica}
+\newcommand{\docente}{M.Sc. Ing. Bernardo Quiroga Turdera}
+\newcommand{\correo}{bquiroga.t@ucb.edu.bo}
+\newcommand{\gestion}{2-2026}
+\newcommand{\prereq}{IMT-341 Control II y IMT-322 Sistemas Embebidos II}
+\newcommand{\creditos}{6}
+\newcommand{\carga}{100 horas académicas}
+
+% --- ESTILOS GLOBALES ---
+\tcbset{
+    ovalstyle/.style={
+        colback=white,
+        colframe=black,
+        arc=3mm,
+        boxrule=1.2pt,
+        halign=center,
+        valign=center,
+        top=4pt, bottom=4pt,
+        left=2pt, right=2pt,
+        nobeforeafter
+    }
+}
+
+% Configuración para listas dentro de tablas (más compactas)
+\newlist{tabitemize}{itemize}{1}
+\setlist[tabitemize]{label=\textbullet, nosep, leftmargin=*, before=\vspace{-0.5\baselineskip}, after=\vspace{-0.5\baselineskip}}
+
+\begin{document}
+
+% ================= ENCABEZADO =================
+\noindent
+\begin{minipage}{\linewidth}
+    \begin{tcolorbox}[ovalstyle, width=\linewidth]
+        \textbf{\Large UNIVERSIDAD CATÓLICA BOLIVIANA ``SAN PABLO''}\\[0.2cm]
+        \textbf{\large DEPARTAMENTO DE CIENCIAS DE LA TECNOLOGÍA E INNOVACIÓN}\\[0.2cm]
+        \textbf{\large Carrera de Ingeniería Mecatrónica}
+    \end{tcolorbox} \\[0.3cm]
+
+    % Fila 1
+    \begin{tcolorbox}[ovalstyle, width=0.195\linewidth]
+        Sigla y Código:\\\textbf{\sigla}
+    \end{tcolorbox}%
+    \hfill%
+    \begin{tcolorbox}[ovalstyle, width=0.59\linewidth]
+        Nombre de la asignatura:\\\textbf{\asignatura}
+    \end{tcolorbox}%
+    \hfill%
+    \begin{tcolorbox}[ovalstyle, width=0.195\linewidth]
+        Semestre:\\\textbf{\semestre}
+    \end{tcolorbox} \\[0.15cm]
+
+    % Fila 2
+    \begin{tcolorbox}[ovalstyle, width=0.745\linewidth]
+        Docente: \textbf{\docente} \\
+        e-mail: \textbf{\correo}
+    \end{tcolorbox}%
+    \hfill%
+    \begin{tcolorbox}[ovalstyle, width=0.245\linewidth]
+        Gestión:\\\textbf{\gestion}
+    \end{tcolorbox} \\[0.15cm]
+
+    % Fila 3
+    \begin{tcolorbox}[ovalstyle, width=0.49\linewidth]
+        \centerline{%
+            \begin{tabular}{|c|c|}
+                \hline
+                \textbf{Días} & \textbf{Horas} \\ \hline
+                Martes & 16:00 - 18:00 \\
+                Jueves & 16:00 - 17:45 \\ \hline
+            \end{tabular}%
+        }
+    \end{tcolorbox}%
+    \hfill%
+    \begin{tcolorbox}[ovalstyle, width=0.49\linewidth]
+        \centerline{%
+            \begin{tabular}{|c|c|}
+                \hline
+                \textbf{Carga Horaria} & \textbf{Créditos} \\ \hline
+                \carga & \creditos \\ \hline
+            \end{tabular}%
+        }
+    \end{tcolorbox} \\[0.15cm] 
+
+    % Fila 4
+    \begin{tcolorbox}[ovalstyle, width=\linewidth, halign=left]
+        Prerrequisitos: \\
+        \textbf{\prereq}
+    \end{tcolorbox}
+\end{minipage}
+
+\vspace{0.6cm}
+
+% ================= 1. JUSTIFICACIÓN =================
+\section*{1. JUSTIFICACIÓN (Sociocultural, profesional y disciplinar)}
+% \textit{\small (La justificación puede obtenerse del mismo programa de contenidos básicos, el cual usted puede complementar)}\\[0.2cm]
+
+Un profesional de la carrera de Ingeniería Mecatrónica requiere dominar las tecnologías de frontera en automatización flexible e Industria 4.0. La asignatura de Robótica (IMT-342) funciona como una materia de síntesis que integra de forma horizontal y vertical las ciencias exactas, la programación concurrente, el diseño mecánico/electrónico, el modelado dinámico multi-cuerpo y el procesamiento digital de señales exteroceptivas.
+
+A través del uso del manipulador industrial ABB IRB 120 de 6 GDL y el middleware de código abierto ROS (Robot Operating System), el estudiante se enfrenta a problemas reales de ingeniería. El curso capacita al futuro ingeniero para concebir, diseñar, implementar y operar celdas autónomas inteligentes guiadas por percepción artificial, bajo normativas globales de seguridad y eficiencia energética, dotándolo de un perfil profesional de alta empleabilidad nacional e internacional.
+
+% ================= 2. COMPETENCIAS =================
+\section*{2. COMPETENCIAS QUE DESARROLLAR}
+\subsection*{2.1. COMPETENCIA DE LA ASIGNATURA}
+
+Diseñar, simular y/o implementar sistemas robóticos para reemplazar o colaborar a la acción humana en tareas complejas, repetitivas y de alto riesgo, utilizando teorías y técnicas de robótica.
+
+\subsection*{2.2. COMPETENCIAS GENÉRICAS}
+% \textit{\small (Las competencias genéricas son pertenecientes a la Universidad y usted las puede obtener del documento ``Modelo Institucional'' en la página 46. El mismo que puede descargarlo del siguiente enlace: \url{https://tja.ucb.edu.bo/wp-content/uploads/2023/07/Modelo-Institucional-UCB-Digital.pdf}. De todas las competencias que se plantea la universidad usted debe seleccionar las que podrá trabajar en su asignatura de manera consciente y las declara en este apartado)}\\[0.2cm]
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Comunicación y pensamiento crítico:} Comunicar oralmente y por escrito en lengua materna y en idioma extranjero, de ser pertinente en idioma originario, de manera estructuralmente correcta y fluida, en situaciones cotidianas, académicas, laborales y de contexto, demostrando capacidad de evaluar y analizar la consistencia de los razonamientos (pensamiento crítico).
+    
+    \item \textbf{Ética y deontología profesional:} Incorporar la ética y moral heterónoma en la toma de decisiones y en sus acciones en los ámbitos profesional, social y personal, demostrando coherencia entre el pensar, el hacer y el sentir. Cumpliendo los códigos de ética profesional (deontología).
+    
+    \item \textbf{Investigación:} Realizar investigaciones desde la epistemología o gnoseología filosófica que cumplen las exigencias científicas con oportunidad, pertinencia y ética. Permiten la reflexión de la propia ciencia en sentido ético.
+    
+    \item \textbf{Manejo de Tecnología:} Incorporar el uso de tecnologías de la información y comunicación, así como tecnología especializada en el desarrollo de las actividades ordinarias y laborales con empleo de TIC, TAC y TEP.
+    
+    \item \textbf{Cultura de paz:} Rechazar la violencia y evitar conflictos, entablando relaciones comunicativas asertivas, dialógicas y empáticas, demostrando capacidad para la resolución de problemas de forma pacífica, con profundo respeto a la vida, al ser humano y a la dignidad de las personas.
+    
+    \item \textbf{Responsabilidad Social y Ambiental:} Asumir responsabilidad sobre el impacto de su actuación personal y profesional, sobre la sociedad y el medio ambiente, de manera crítica, respetuosa, comprometida y solidaria, dentro del concepto de ecología integral.
+\end{itemize}
+
+\subsection*{2.3. DERIVACIÓN DE LA COMPETENCIA}
+
+\renewcommand{\arraystretch}{1.4} 
+\small
+% Optimización de columnas: Se fijan los extremos para maximizar el área de los Saberes (X).
+\begin{xltabular}{\textwidth}{|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\centering\arraybackslash}p{2.5cm}|}
+
+% --- INICIO DEFINICIÓN DE ENCABEZADOS PARA MÚLTIPLES PÁGINAS ---
+\hline
+\multirow{2}{=}{\centering\textbf{Elementos de Competencia}} & \multicolumn{3}{c|}{\textbf{Saberes}} & \multirow{2}{=}{\centering\textbf{Unidades de Aprendizaje}} \\ \cline{2-4}
+& \centering\textbf{Procedimentales} & \centering\textbf{Conceptuales} & \centering\textbf{Actitudinales} & \\ \hline
+\endfirsthead
+
+\hline
+\multirow{2}{=}{\centering\textbf{Elementos de Competencia}} & \multicolumn{3}{c|}{\textbf{Saberes}} & \multirow{2}{=}{\centering\textbf{Unidades de Aprendizaje}} \\ \cline{2-4}
+& \centering\textbf{Procedimentales} & \centering\textbf{Conceptuales} & \centering\textbf{Actitudinales} & \\ \hline
+\endhead
+
+\hline
+\multicolumn{5}{|r|}{\textit{\footnotesize Continúa en la siguiente página...}} \\ \hline
+\endfoot
+
+\hline
+\endlastfoot
+% --- FIN DEFINICIÓN DE ENCABEZADOS ---
+
+% --- ELEMENTO 1 ---
+\textbf{Elemento de competencia 1:}\newline Describe matemáticamente la posición, orientación y configuración geométrica de un manipulador industrial de 6 GDL mediante matrices de transformación homogénea, cuaterniones unitarios y la convención de Denavit-Hartenberg (D-H) para predecir la pose del efector final en función de las coordenadas articulares.
+& \begin{tabitemize}
+    \item Diseña y modela sistemas robóticos.
+    \item Deduce manualmente la tabla de parámetros de Denavit-Hartenberg (D-H) para el manipulador industrial ABB IRB 120.
+    \item Estructura e implementa el Gemelo Digital cinemático del robot en formato XML descriptivo (URDF) modular para ROS/RViz.
+\end{tabitemize}
+& \begin{tabitemize}
+    \item Definición y clasificación de robots.
+    \item Morfología del robot: estructura mecánica, transmisiones y reductores, actuadores, sensores y elementos terminales.
+    \item Modelado de robots, las transformadas espaciales en $SO(3)$ y $SE(3)$.
+    \item Cinemática directa necesaria para resolver un sistema robótico.
+    \item Parametrización angular mediante Ángulos de Euler, Cuaterniones Unitarios e interpolación SLERP.
+\end{tabitemize}
+& \begin{tabitemize}
+    \item Creativo al momento de desarrollar sistemas robóticos.
+    \item Metódico en el modelado de robots.
+\end{tabitemize}
+& Unidad I:\newline Morfología, Geometría del Espacio y Cinemática Directa
+\\ \hline
+
+% --- ELEMENTO 2 ---
+\textbf{Elemento de competencia 2:}\newline Resuelve analíticamente la cinemática inversa aprovechando el desacoplamiento de la muñeca esférica, y modela la relación de velocidades e inercias mediante el Jacobiano geométrico y la formulación de Lagrange-Euler, para diseñar generadores de trayectorias continuas libres de singularidades.
+& \begin{tabitemize}
+    \item Controla la planeación de movimiento.
+    \item Resuelve analíticamente la cinemática inversa mediante el método de desacoplamiento de Pieper para muñecas esféricas.
+    \item Formula el Jacobiano geométrico y calcula velocidades articulares en el espacio de la tarea.
+    \item Diagnostica singularidades cinemáticas y calcula torques dinámicos mediante la formulación de Lagrange-Euler.
+    \item Genera trayectorias continuas temporales con perfiles trapezoidales de velocidad (LSPB).
+\end{tabitemize}
+& \begin{tabitemize}
+    \item Cinemática inversa necesaria para resolver un sistema robótico.
+    \item Planeación de movimiento.
+    \item Desacoplamiento cinemático de Pieper para manipuladores de 6 GDL.
+    \item Cinemática diferencial: Jacobiano geométrico, determinante y configuraciones singulares.
+    \item Dinámica multi-cuerpo: Ecuación de Lagrange-Euler ($\tau = M(q)\ddot{q} + C(q,\dot{q})\dot{q} + g(q)$) y dualidad estática/dinámica.
+    \item Nociones de redundancia cinemática (7 GDL vs 6 GDL) y proyección en el espacio nulo.
+\end{tabitemize}  
+& \begin{tabitemize}
+    \item Metódico en el modelado de robots.
+    \item Analítico y crítico frente a las restricciones físicas de potencia, aceleración y singularidades mecánicas de los actuadores.
+\end{tabitemize}
+& Unidad II:\newline Resolvedores Analíticos, Control Diferencial y Dinámica
+\\ \hline
+
+% --- ELEMENTO 3 ---
+\textbf{Elemento de competencia 3:}\newline Procesos flujos de imágenes tridimensionales mediante calibración de cámaras, detección de características geométricas/color y transformaciones de coordenadas de la cámara al sistema de referencia base del robot (Eye-to-Hand) para guiar la acción del manipulador en entornos dinámicos.
+& \begin{tabitemize}
+    \item Controla la interacción del robot con su espacio.
+    \item Procesa y segmenta flujos de imágenes digitales mediante espacio de color HSV, contornos y momentos de Hu en OpenCV.
+    \item Calibra parámetros intrínsecos ($K$) y rectifica distorsiones ópticas de lentes en ROS.
+    \item Calcula la matriz de Homografía Plana Hand-Eye mediante Transformación Lineal Directa (DLT) y la Descomposición en Valores Singulares ($SVD$).
+\end{tabitemize}
+& \begin{tabitemize}
+    \item Visión por computadora.
+    \item Modelo de cámara Pinhole, matriz intrínseca $K$ y coeficientes de distorsión radial de Taylor.
+    \item Geometría proyectiva plana: Homografía y algoritmo DLT.
+    \item Descomposición en Valores Singulares ($SVD$) aplicada a la minimización del error de localización cuadrático medio.
+\end{tabitemize}
+& \begin{tabitemize}
+    \item Riguroso y metódico en la calibración metrológica y en la reducción del error experimental.
+\end{tabitemize}
+& Unidad III:\newline Visión Artificial y Fusión Sensorial Ojo-Mano
+\\ \hline
+
+% --- ELEMENTO 4 ---
+\textbf{Elemento de competencia 4:}\newline Integra los módulos de percepción, planificación de trayectorias y control cinemático bajo la arquitectura de ROS / ROS-Industrial y programación nativa en RAPID, operando de manera física y segura el manipulador industrial ABB IRB 120 bajo normativas internacionales de seguridad robótica.
+& \begin{tabitemize}
+    \item Integra plataformas robóticas industriales y simuladores.
+    \item Programa rutinas de control en lenguaje nativo RAPID sobre el controlador ABB IRC5.
+    \item Calibra mecánicamente la herramienta de extremo (TCP) y los sistemas de coordenadas de trabajo (\texttt{wobjdata}).
+    \item Configura nodos de comunicación remota asíncrona mediante sockets TCP/IP con el driver \texttt{abb\_driver} de ROS-Industrial.
+    \item Aplica normas internacionales de seguridad industrial (ISO 10218-1/2) en el laboratorio real.
+\end{tabitemize}
+& \begin{tabitemize}
+    \item Sistema Operativo de Robótica (ROS).
+    \item Robótica Industrial.
+    \item Sintaxis y estructuras de datos en RAPID (\texttt{robtarget}, \texttt{jointtarget}, \texttt{tooldata}, \texttt{wobjdata}).
+    \item Arquitectura ROS-Industrial y comunicación asíncrona TCP/IP (Simple Message).
+    \item Máquinas de Estados Finitos (FSM) concurrentes para celdas integradas.
+    \item Normativa de seguridad robótica industrial ISO 10218-1/2 e ISO/TS 15066.
+\end{tabitemize}
+& \begin{tabitemize}
+    \item Creativo al momento de desarrollar sistemas robóticos.
+    \item Responsable y proactivo en el cumplimiento estricto de normas de seguridad industrial para proteger la integridad humana y del hardware.
+\end{tabitemize}
+& Unidad IV:\newline Middleware Industrial, Lenguaje RAPID y Seguridad Robótica
+\\ \hline
+
+\end{xltabular}
+\normalsize
+
+% ================= 3. PLANIFICACIÓN =================
+\section*{3. PLANIFICACIÓN Y CRONOGRAMA}
+\textbf{PLANIFICACIÓN DEL PROCESO DE ENSEÑANZA – APRENDIZAJE}\\
+\textit{\small (La planificación debe ser por semana y debe estar detallada).}
+
+\vspace{0.3cm}
+\small
+\renewcommand{\arraystretch}{1.5}
+% Ajuste maestro de columnas: Se redujo RS (0.6cm) para darle espacio a P (4.2cm) y RA (2.8cm). Saberes sigue adaptativa (X).
+\begin{xltabular}{\textwidth}{|>{\centering\arraybackslash}p{2.2cm}|>{\raggedright\arraybackslash}X|>{\centering\arraybackslash}p{1.4cm}|>{\raggedright\arraybackslash}p{4.2cm}|>{\centering\arraybackslash}p{0.6cm}|>{\raggedright\arraybackslash}p{2.8cm}|}
+
+% --- INICIO DEFINICIÓN DE ENCABEZADOS PARA MÚLTIPLES PÁGINAS ---
+\hline
+\multirow{2}{=}{\centering \textbf{Unidad de Aprendizaje}} & 
+\multirow{2}{=}{\centering \textbf{Saberes conceptuales, procedimentales y actitudinales}} & 
+\multirow{2}{=}{\centering \textbf{Semanas}} & 
+% Cálculo del ancho multicelda: 4.2 + 0.6 + 2.8 = 7.6cm + márgenes
+\multicolumn{3}{>{\centering\arraybackslash}p{\dimexpr 7.6cm + 4\tabcolsep + 2\arrayrulewidth \relax}|}{\textbf{Estrategias y actividades de enseñanza-aprendizaje}} \\ \cline{4-6}
+& & & \centering\textbf{P*} & \centering\textbf{RS} & \centering\textbf{RA} \arraybackslash \\ \hline
+\endfirsthead 
+
+\hline
+\multirow{2}{=}{\centering \textbf{Unidad de Aprendizaje}} & 
+\multirow{2}{=}{\centering \textbf{Saberes conceptuales, procedimentales y actitudinales}} & 
+\multirow{2}{=}{\centering \textbf{Semanas}} & 
+\multicolumn{3}{>{\centering\arraybackslash}p{\dimexpr 7.6cm + 4\tabcolsep + 2\arrayrulewidth \relax}|}{\textbf{Estrategias y actividades de enseñanza-aprendizaje}} \\ \cline{4-6}
+& & & \centering\textbf{P*} & \centering\textbf{RS} & \centering\textbf{RA} \arraybackslash \\ \hline
+\endhead 
+
+\hline
+\multicolumn{6}{|r|}{\textit{\footnotesize Continúa en la siguiente página...}} \\ \hline
+\endfoot 
+
+\hline
+\endlastfoot 
+% --- FIN DEFINICIÓN DE ENCABEZADOS ---
+
+% ================= UNIDAD 1 (5 Semanas) =================
+\multirow{5}{=}{\centering Unidad I: Morfología, Geometría del Espacio y Cinemática Directa} 
+&   \begin{tabitemize}
+        \item \textbf{Saber Hacer (Procedimental):} Configura el entorno de computación científica Python.
+        \item \textbf{Saber (Conceptual):} Definición y morfología del robot: estructura mecánica, actuadores y sensores.
+        \item \textbf{Saber Ser (Actitudinal):} Muestra compromiso y disposición para el trabajo cooperativo.
+    \end{tabitemize}
+& Sem. 1 \newline \tiny 03 - 07 Ago 
+& \textbf{Ma (2h):} Presentación, sílabo, Examen Diagnóstico. \newline \textbf{Ju:} \textit{Feriado Nacional (6 de Agosto).}
+& & \textbf{Autónomo:} Lectura de requerimientos del PFI y configuración de repositorio. \\ \cline{2-6}
+
+&   \begin{tabitemize}
+        \item \textbf{Saber Hacer (Procedimental):} Diseña y modela sistemas robóticos mediante álgebra espacial.
+        \item \textbf{Saber (Conceptual):} Modelado de robots y transformaciones espaciales en $SO(3)$.
+        \item \textbf{Saber Ser (Actitudinal):} Creativo al momento de desarrollar sistemas robóticos.
+    \end{tabitemize}
+& Sem. 2 \newline \tiny 10 - 14 Ago 
+& \textbf{Ma (2h):} Matrices $SO(3)$ e inalterabilidad de eje. \newline \textbf{Ju (2h):} Ángulos de Euler y \textit{Gimbal Lock}. Taller Python ($R^{-1} = R^T$).
+& & \textbf{Autónomo:} Instalación de Ubuntu 24.04 LTS y configuración de entorno ROS. \\ \cline{2-6}
+
+&   \begin{tabitemize}
+        \item \textbf{Saber Hacer (Procedimental):} Construye el Gemelo Digital en formato XML (URDF) para ROS/RViz.
+        \item \textbf{Saber (Conceptual):} Grupo Euclidiano $SE(3)$, cuaterniones unitarios e interpolación SLERP.
+        \item \textbf{Saber Ser (Actitudinal):} Metódico en el modelado tridimensional de cadenas cinemáticas.
+    \end{tabitemize} 
+& Sem. 3 \newline \tiny 17 - 21 Ago 
+& \textbf{Ma (2h):} Grupo $SE(3)$ y matrices de $4 \times 4$. \newline \textbf{Ju (2h):} Cuaterniones unitarios, SLERP y Lab ROS.
+& & \textbf{Autónomo:} Estudio analítico de transformaciones compuestas y mallas CAD \texttt{.stl}. \\ \cline{2-6}
+
+&   \begin{tabitemize}
+        \item \textbf{Saber Hacer (Procedimental):} Deduce la tabla de parámetros de Denavit-Hartenberg (D-H).
+        \item \textbf{Saber (Conceptual):} Cinemática directa. Convención de Denavit-Hartenberg estándar.
+        \item \textbf{Saber Ser (Actitudinal):} Riguroso en el análisis de marcos de referencia geométricos.
+    \end{tabitemize}
+& Sem. 4 \newline \tiny 24 - 28 Ago 
+& \textbf{Ma (2h):} Reglas convención D-H. \newline \textbf{Ju (2h):} Tabla D-H del ABB IRB 120. Lab programación XML (URDF).
+& & \textbf{Autónomo:} Modularización del paquete de ROS y ajuste de límites angulares. \\ \cline{2-6}
+
+&   \begin{tabitemize}
+        \item \textbf{Saber Hacer (Procedimental):} Valida el modelo cinemático directo en simulación computacional.
+        \item \textbf{Saber (Conceptual):} Cálculo del espacio de trabajo matricial.
+        \item \textbf{Saber Ser (Actitudinal):} Ético en la presentación y verificación de datos de simulación.
+    \end{tabitemize}
+& Sem. 5 \newline \tiny 31 Ago - 04 Sep 
+& \textbf{Ma (2h):} Cinemática directa analítica y espacio de trabajo. \newline \textbf{Ju (2h):} \textbf{Evaluación Continua 1 (Defensa Hito 1 PFI)}.
+& & \textbf{Autónomo:} Matriz de pruebas de error de truncamiento ($< 10^{-6}\text{ m}$) en Git. \\ \hline
+
+% ================= UNIDAD 2 (4 Semanas) =================
+\multirow{4}{=}{\centering Unidad II: Resolvedores Analíticos, Control Diferencial y Dinámica} 
+&   \begin{tabitemize}
+        \item \textbf{Saber Hacer (Procedimental):} Resuelve analíticamente la cinemática inversa por desacoplamiento de Pieper.
+        \item \textbf{Saber (Conceptual):} Cinemática inversa y multiplicidad de soluciones geométricas.
+        \item \textbf{Saber Ser (Actitudinal):} Metódico en la resolución algebraica de mecanismos.
+    \end{tabitemize}
+& Sem. 6 \newline \tiny 07 - 11 Sep 
+& \textbf{Ma (2h):} Cinemática inversa y multiplicidad (8 posturas). \newline \textbf{Ju (2h):} Método de Pieper y función matemática \texttt{atan2}.
+& & \textbf{Autónomo:} Resolución de guía algebraica de desacoplamiento de muñeca. \\ \cline{2-6}
+
+&   \begin{tabitemize}
+        \item \textbf{Saber Hacer (Procedimental):} Formula la matriz Jacobiana y calcula velocidades articulares.
+        \item \textbf{Saber (Conceptual):} Cinemática diferencial: Jacobiano geométrico. Redundancia cinemática (7 GDL).
+        \item \textbf{Saber Ser (Actitudinal):} Analítico frente a las restricciones espaciales del entorno.
+    \end{tabitemize}
+& Sem. 7 \newline \tiny 14 - 18 Sep 
+& \textbf{Ma (2h):} Velocidad espacial (\textit{Twist}) y Jacobiano $J(q)$. \newline \textbf{Ju (2h):} Columnas Jacobianas. Lab Jacobiano variable en Python.
+& & \textbf{Autónomo:} Pruebas de determinantes y rangos numéricos con NumPy. \\ \cline{2-6}
+
+&   \begin{tabitemize}
+        \item \textbf{Saber Hacer (Procedimental):} Diagnostica singularidades y calcula torques por Lagrange-Euler.
+        \item \textbf{Saber (Conceptual):} Singularidades. Dinámica de Lagrange-Euler y dualidad estática/dinámica.
+        \item \textbf{Saber Ser (Actitudinal):} Crítico frente a las limitaciones mecánicas y de potencia.
+    \end{tabitemize}
+& Sem. 8 \newline \tiny 21 - 25 Sep 
+& \textbf{Ma (2h):} Singularidades ($\det(J)=0$) y Lagrange-Euler ($\tau = M\ddot{q}+C\dot{q}+g$). \newline \textbf{Ju (2h):} Dualidad Estática/Cinemática. Simulación dinámica.
+& & \textbf{Autónomo:} Análisis de la conservación de energía virtual. \\ \cline{2-6}
+
+&   \begin{tabitemize}
+        \item \textbf{Saber Hacer (Procedimental):} Controla planeación de movimiento y genera perfiles trapezoidales (LSPB).
+        \item \textbf{Saber (Conceptual):} Planeación de movimiento de punto a punto.
+        \item \textbf{Saber Ser (Actitudinal):} Preciso en la generación de perfiles temporales cinemáticos.
+    \end{tabitemize}
+& Sem. 9 \newline \tiny 28 Sep - 02 Oct 
+& \textbf{Ma (2h):} Planificación de trayectorias (perfiles LSPB). \newline \textbf{Ju (2h):} \textbf{Evaluación Continua 2 (Defensa Hito 2 PFI)}.
+& & \textbf{Autónomo:} Jupyter Notebook de diagnóstico de picos de torque. \\ \hline
+
+% ================= NIVELACIÓN Y RECUPERACIÓN =================
+\multirow{1}{=}{\centering Nivelación y Recuperación (Eje Transversal)} 
+&   \begin{tabitemize}
+        \item \textbf{Saber Hacer (Procedimental):} Depura código de ROS y refuerza álgebra matricial.
+        \item \textbf{Saber (Conceptual):} Consolidación de cinemática, diferencial y dinámica.
+        \item \textbf{Saber Ser (Actitudinal):} Proactivo en la recuperación e iteración de saberes de ingeniería.
+    \end{tabitemize}
+& Sem. 10 \newline \tiny 05 - 09 Oct 
+& \textbf{Ma (2h):} Taller depuración ROS / Reforzamiento matricial. \newline \textbf{Ju (2h):} \textbf{Primer Examen Recuperatorio}.
+& & \textbf{Autónomo:} Tutoría asincrónica guiada y corrección en repositorios Git. \\ \hline
+
+% ================= UNIDAD 3 (3 Semanas) =================
+\multirow{3}{=}{\centering Unidad III: Visión Artificial y Fusión Sensorial Ojo-Mano} 
+&   \begin{tabitemize}
+        \item \textbf{Saber Hacer (Procedimental):} Calibra parámetros ópticos en ROS con \texttt{camera\_calibration}.
+        \item \textbf{Saber (Conceptual):} Modelo Pinhole, matriz intrínseca $K$ y distorsión radial de Taylor.
+        \item \textbf{Saber Ser (Actitudinal):} Riguroso en la calibración metrológica.
+    \end{tabitemize}
+& Sem. 11 \newline \tiny 12 - 16 Oct 
+& \textbf{Ma (2h):} Óptica geométrica y Modelo Pinhole. Matriz $K$. \newline \textbf{Ju (2h):} Lab presencial: calibración intrínseca con ROS y patrón.
+& & \textbf{Autónomo:} Archivo \texttt{camera\_info.yaml} y rectificación de video. \\ \cline{2-6}
+
+&   \begin{tabitemize}
+        \item \textbf{Saber Hacer (Procedimental):} Calcula matriz de Homografía Hand-Eye por DLT y $SVD$.
+        \item \textbf{Saber (Conceptual):} Geometría proyectiva plana (Homografía) y minimización por $SVD$.
+        \item \textbf{Saber Ser (Actitudinal):} Metódico en la reducción del error experimental proyectivo.
+    \end{tabitemize}
+& Sem. 12 \newline \tiny 19 - 23 Oct 
+& \textbf{Ma (2h):} Geometría proyectiva y Matriz de Homografía ($H$). \newline \textbf{Ju (2h):} Algoritmo DLT. Lab de cálculo de $SVD$ con robot físico.
+& & \textbf{Autónomo:} Nodo \texttt{hand\_eye\_solver.py} e integración en ROS. \\ \cline{2-6}
+
+&   \begin{tabitemize}
+        \item \textbf{Saber Hacer (Procedimental):} Segmenta imágenes en OpenCV (HSV, contornos, momentos de Hu).
+        \item \textbf{Saber (Conceptual):} Visión por computadora y procesamiento de imágenes.
+        \item \textbf{Saber Ser (Actitudinal):} Preciso en el aislamiento de características visuales.
+    \end{tabitemize}
+& Sem. 13 \newline \tiny 26 - 30 Oct 
+& \textbf{Ma (2h):} Filtro HSV, contornos y momentos de Hu en OpenCV. \newline \textbf{Ju (2h):} \textbf{Evaluación Continua 3 (Defensa Hito 3 PFI)}.
+& & \textbf{Autónomo:} Notebook de validación del error cuadrático medio (RMSE). \\ \hline
+
+% ================= UNIDAD 4 (3 Semanas) =================
+\multirow{3}{=}{\centering Unidad IV: Middleware Industrial, Lenguaje RAPID y Seguridad Robótica} 
+&   \begin{tabitemize}
+        \item \textbf{Saber Hacer (Procedimental):} Programa rutinas en RAPID. Calibra TCP y \texttt{wobjdata}.
+        \item \textbf{Saber (Conceptual):} Robótica industrial y sintaxis RAPID (\texttt{robtarget}, \texttt{wobjdata}).
+        \item \textbf{Saber Ser (Actitudinal):} Creativo al desarrollar rutinas industriales integradas.
+    \end{tabitemize}
+& Sem. 14 \newline \tiny 02 - 06 Nov 
+& \textbf{Ma (2h):} Controladores ABB IRC5 y RAPID (\texttt{MoveJ}/\texttt{MoveL}). \newline \textbf{Ju (2h):} Calibración manual de TCP con Teach Pendant.
+& & \textbf{Autónomo:} Simulación de rutinas de paletizado en RobotStudio. \\ \cline{2-6}
+
+&   \begin{tabitemize}
+        \item \textbf{Saber Hacer (Procedimental):} Configura sockets TCP/IP asíncronos con ROS-Industrial.
+        \item \textbf{Saber (Conceptual):} Arquitectura ROS-Industrial y comunicación remota (Simple Message).
+        \item \textbf{Saber Ser (Actitudinal):} Responsable en el manejo e integración de redes industriales.
+    \end{tabitemize}
+& Sem. 15 \newline \tiny 09 - 13 Nov 
+& \textbf{Ma (2h):} Redes locales, tareas de fondo y sockets asíncronos. \newline \textbf{Ju (2h):} Envío remoto de tramas cartesianas ROS $\rightarrow$ IRC5.
+& & \textbf{Autónomo:} Pruebas de estrés de red Ethernet y medición de latencias. \\ \cline{2-6}
+
+&   \begin{tabitemize}
+        \item \textbf{Saber Hacer (Procedimental):} Aplica norma ISO 10218 en la celda real. Controla el hardware.
+        \item \textbf{Saber (Conceptual):} Máquinas de Estado Concurrente (FSM). Seguridad ISO 10218-1/2.
+        \item \textbf{Saber Ser (Actitudinal):} Proactivo en el cumplimiento de normas de seguridad industrial.
+    \end{tabitemize}
+& Sem. 16 \newline \tiny 16 - 20 Nov 
+& \textbf{Ma (2h):} Ajuste fino de la FSM concurrente y atenuación mecánica. \newline \textbf{Ju (2h):} \textbf{Evaluación Continua 4 (Defensa Final PFI)}.
+& & \textbf{Autónomo:} Redacción final del artículo científico formato IEEE. \\ \hline
+
+% ================= CIERRE Y RECUPERACIÓN =================
+\multirow{1}{=}{\centering Cierre y Recuperación (Eje Transversal)} 
+&   \begin{tabitemize}
+        \item \textbf{Saber Hacer (Procedimental):} Resuelve examen final de recuperación. Firma actas de conformidad.
+        \item \textbf{Saber (Conceptual):} Consolidación de percepción, integración y operación segura.
+        \item \textbf{Saber Ser (Actitudinal):} Ético y transparente en el cierre del proceso académico.
+    \end{tabitemize}
+& Sem. 17 \newline \tiny 23 - 27 Nov 
+& \textbf{Ma (2h):} \textbf{Segundo Examen Recuperatorio}. \newline \textbf{Ju (2h):} Revisión planillas habilitación y firma de actas.
+& & \textbf{Autónomo:} Cierre digital de repositorios Git y planillas centralizadas. \\ \hline
+
+\end{xltabular}
+
+\vspace{0.15cm}
+\textit{\footnotesize *P: Presencial, RS: Remota Síncrona, RA: Remota Asíncrona (actividades en plataforma)}
+\normalsize
+
+% ================= 4. EVALUACIÓN (LANDSCAPE) =================
+\newpage
+\begin{landscape}
+\section*{4. SISTEMAS DE EVALUACIÓN}
+
+\renewcommand{\arraystretch}{1.5}
+\small
+\begin{xltabular}{\linewidth}{|>{\raggedright\arraybackslash}p{4.5cm}|c|>{\raggedright\arraybackslash}X|c|c|c|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|c|}
+\hline
+\multirow{2}{=}{\centering\textbf{Elemento de Competencia}} & \multirow{2}{*}{\textbf{SEM}} & \multirow{2}{=}{\centering\textbf{Estrategias y/o Actividades de Evaluación}} & \multicolumn{3}{c|}{\textbf{Modalidad}} & \multirow{2}{=}{\centering\textbf{Evidencias y/o Instrumentos}} & \multirow{2}{=}{\centering\textbf{Criterios de Evaluación}} & \multirow{2}{*}{\textbf{\%}} \\ \cline{4-6}
+& & & \textbf{P} & \textbf{RS} & \textbf{RA} & & & \\ \hline
+\endfirsthead
+
+\hline
+\multirow{2}{=}{\centering\textbf{Elemento de Competencia}} & \multirow{2}{*}{\textbf{SEM}} & \multirow{2}{=}{\centering\textbf{Estrategias y/o Actividades de Evaluación}} & \multicolumn{3}{c|}{\textbf{Modalidad}} & \multirow{2}{=}{\centering\textbf{Evidencias y/o Instrumentos}} & \multirow{2}{=}{\centering\textbf{Criterios de Evaluación}} & \multirow{2}{*}{\textbf{\%}} \\ \cline{4-6}
+& & & \textbf{P} & \textbf{RS} & \textbf{RA} & & & \\ \hline
+\endhead
+
+\hline
+\multicolumn{9}{|r|}{\textit{\footnotesize Continúa en la siguiente página...}} \\ \hline
+\endfoot
+
+\hline
+\endlastfoot
+
+% --- DIAGNÓSTICA ---
+Competencias previas:\newline (Evaluación Diagnóstica) 
+& 1 & Examen Diagnóstico escrito individual. & \textbf{X} & & 
+& Prueba de álgebra lineal, matrices, cálculo diferencial y lógica de programación. 
+& \begin{tabitemize}
+    \item Identifica y resuelve operaciones con matrices de rotación $2\text{D}$ y vectores.
+    \item Obtiene funciones de transferencia y determina la estabilidad de sistemas de $2\text{do}$ orden.
+    \item Escribe pseudocódigo estructurado para operaciones matriciales sin librerías de caja negra.
+\end{tabitemize}
+& 0\% \\ \hline
+
+% --- EC1 ---
+\textbf{Elemento de competencia 1:}\newline Describe matemáticamente la pose y morfología de un robot de 6 GDL mediante transformaciones homogéneas, cuaterniones y D-H en simulación. 
+& 5 & 1. Examen Escrito Individual 1. \newline 2. Evaluación Hito 1 PFI. & \textbf{X} & & \textbf{X}
+& 1. Práctica teórica escrita. \newline 2. Gemelo Digital URDF, repositorio Git y video demostrativo. 
+& \begin{tabitemize}
+    \item Asigna correctamente los sistemas de coordenadas locales D-H e identifica los offsets de las juntas.
+    \item Construye un archivo URDF modular, libre de errores sintácticos XML, acoplando las mallas \texttt{.stl}.
+    \item Demuestra la validez cinemática mediante una matriz de pruebas con error vectorial $\Delta E < 10^{-6}\text{ m}$.
+    \item Mantiene un historial secuencial de commits lógicos en el repositorio Git.
+\end{tabitemize} 
+& 25\% \\ \hline
+
+% --- EC2 ---
+\textbf{Elemento de competencia 2:}\newline Resuelve analíticamente la cinemática inversa, el Jacobiano y la dinámica para diseñar trayectorias continuas libres de singularidades. 
+& 9 & 1. Examen Escrito Individual 2. \newline 2. Defensa del Hito 2 PFI. & \textbf{X} & & \textbf{X}
+& 1. Prueba escrita. \newline 2. Resolvedor en Python, perfiles LSPB en Gazebo y Jupyter Notebook. 
+& \begin{tabitemize}
+    \item Despeja y programa analíticamente las 8 soluciones trigonométricas de Pieper sin métodos iterativos.
+    \item Genera perfiles de velocidad LSPB continuos sin saltos discretos de posición.
+    \item Demuestra empíricamente mediante gráficas la divergencia de velocidades y torques cuando $\det(J) \to 0$.
+    \item Presenta un Jupyter Notebook estructurado con ecuaciones LaTeX y código documentado.
+\end{tabitemize} 
+& 25\% \\ \hline
+
+% --- NODO 1 ---
+\cellcolor{gray!20}\textbf{Nodo 1 de Nivelación y Regularización (Primer Momento Recuperatorio)} 
+& 10 & Examen teórico-práctico presencial en computadora. & \textbf{X} & & 
+& Prueba de nivelación (EC1 y EC2). 
+& Sustituye y regulariza las calificaciones reprobadas o insatisfactorias de los bloques EC1 y/o EC2. 
+& Sust. \\ \hline
+
+% --- EC3 ---
+\textbf{Elemento de competencia 3:}\newline Procesa imágenes tridimensionales mediante calibración de cámaras, OpenCV y homografía plana por SVD para guiar al robot. 
+& 13 & 1. Informe Metrológico Óptico. \newline 2. Defensa del Hito 3 PFI. & \textbf{X} & & \textbf{X}
+& 1. Archivo \texttt{camera\_info.yaml} y reporte de rectificación. \newline 2. Nodo de visión en ROS y calibración Hand-Eye sobre el robot ABB. 
+& \begin{tabitemize}
+    \item Demuestra un error cuadrático medio de reproyección en la calibración intrínseca $\text{RMSE} < 0.5\text{ px}$.
+    \item Construye manualmente la matriz de restricciones $A$ e invoca la $SVD$ propia sin usar funciones de caja negra.
+    \item Logra un error absoluto físico real de guiado espacial sobre el robot medido con vernier $\Delta E < 1.5\text{ mm}$.
+    \item Documenta de forma rigurosa la dispersión metrológica del error.
+\end{tabitemize} 
+& 25\% \\ \hline
+
+% --- EC4 ---
+\textbf{Elemento de competencia 4:}\newline Integra percepción, trayectorias y control bajo ROS-Industrial/RAPID, operando de forma segura el ABB IRB 120 bajo norma ISO 10218. 
+& 16 & 1. Artículo Científico Formato IEEE. \newline 2. Defensa del Hito 4 PFI (Cierre Global). & \textbf{X} & & \textbf{X}
+& 1. Documento de ingeniería consolidado y defensa oral. \newline 2. Demostración física de la celda de paletizado autónomo y auditoría ISO 10218. 
+& \begin{tabitemize}
+    \item Estructura una Máquina de Estados Concurrente (FSM) asíncrona libre de condiciones de carrera.
+    \item Integra la comunicación TCP/IP con estructuras \texttt{robtarget} mediante el driver \texttt{abb\_driver}.
+    \item Ejecuta paradas de seguridad automatizadas ante desconexiones de red con latencias $< 15\text{ ms}$.
+    \item Redacta y sustenta un artículo corto siguiendo estrictamente el formato IEEE.
+\end{tabitemize} 
+& 25\% \\ \hline
+
+% --- NODO 2 ---
+\cellcolor{gray!20}\textbf{Nodo 2 de Cierre Académico (Segundo Momento Recuperatorio)} 
+& 17 & Examen práctico presencial en laboratorio. & \textbf{X} & & 
+& Prueba de nivelación (EC3 y EC4). 
+& Sustituye y regulariza las calificaciones reprobadas o insatisfactorias de los bloques EC3 y/o EC4. 
+& Sust. \\ \hline
+
+\multicolumn{8}{|r|}{\textbf{PUNTAJE TOTAL DE HABILITACIÓN (Evaluación Continua Ponderada al 50\%)}} & \textbf{100\%} \\ \hline
+\hline
+
+% --- EVALUACIÓN FINAL INTEGRADORA ---
+\textbf{Competencia de la asignatura (Evaluación Final - 50\%):}\newline Despliegue industrial robótico autónomo. 
+& 18 & 1. Componente A (Práctico - 60\%): Auditoría de rendimiento e interrogación. \newline 2. Componente B (Teórico - 40\%): Examen escrito individual de integración. & \textbf{X} & & 
+& 1. Celda operando físicamente (5 piezas aleatorias). \newline 2. Resolución manual de D-H, Jacobiano y $SVD$. 
+& \begin{tabitemize}
+    \item Opera de forma 100\% autónoma la celda mecatrónica cumpliendo las cotas de precisión ($< 1.5\text{ mm}$) y tiempo ($< 8\text{ s}$).
+    \item Demuestra dominio individual absoluto sobre la autoría y funcionamiento del código de integración.
+    \item Resuelve con rigor analítico problemas teóricos complejos de cinemática, dinámica y algebra proyectiva.
+\end{tabitemize}
+& 100\% \\ \hline
+
+\multicolumn{8}{|r|}{\textbf{NOTA FINAL DE LA ASIGNATURA}} & \textbf{100\%} \\ \hline
+
+\end{xltabular}
+
+\vspace{0.2cm}
+\noindent\textbf{Normativa de Aprobación:} $\text{Nota Final} = (\text{Evaluación Continua} \times 0.50) + (\text{Evaluación Final} \times 0.50)$. Habilitación mínima obligatoria: $50/100$ puntos en el bloque de Evaluación Continua.
+\normalsize
+\end{landscape} % Asegura el cierre de la tabla de evaluación apaisada
+\clearpage      % Fuerza el retorno limpio a la orientación vertical (retrato)
+ 
+% ================= 5. BIBLIOGRAFÍA =================
+\section*{5. BIBLIOGRAFÍA CIENTÍFICA Y TECNOLÓGICA ACTUALIZADA (ESTÁNDAR IEEE)}
+
+Para dar cumplimiento a la modernización de recursos y erradicar la obsolescencia de textos desactualizados, se establece el siguiente inventario oficial de consulta:\\[0.2cm]
+
+\textbf{Bibliografía Básica (Textos Guía Obligatorios):}
+\begin{enumerate}[label={[\arabic*]}, leftmargin=*, nosep]
+    \item J. J. Craig, \textit{Robótica: Introducción al modelado, la planificación y el control}, 3ra ed. Pearson Educación, 2006. (Uso: Texto fundamental para iniciar el semestre. Su enfoque para introducir las transformaciones homogéneas en $SE(3)$ y la convención de Denavit-Hartenberg resulta accesible y didáctico para estudiantes de pregrado).
+    
+    \item B. Siciliano, L. Sciavicco, L. Villani, y G. Oriolo, \textit{Robotics: Modelling, Planning and Control}, 1ra ed. Springer Science \& Business Media, 2010. (Uso: Referencia clave para el EC2. Proporciona el rigor matemático necesario para la deducción del Jacobiano geométrico, el análisis matricial de las singularidades de la muñeca y la formulación multicuerpo de la ecuación dinámica de Lagrange-Euler).
+    
+    \item G. Bradski y A. Kaehler, \textit{Learning OpenCV 3: Computer Vision with the OpenCV Library}, 1ra ed. O'Reilly Media, 2016. (Uso: Texto estructurado para el EC3. Sustituye el enfoque empírico por un marco formal de procesamiento digital de imágenes. Guía al estudiante en el modelado de cámaras pinhole, estimación geométrica de matrices intrínsecas, rectificación de distorsión de lentes y umbralización por espacios HSV en Python).
+    
+    \item M. Quigley, B. Gerkey, y W. D. Smart, \textit{Programming Robots with ROS: A Practical Introduction to the Robot Operating System}, 1ra ed. O'Reilly Media, 2015. (Uso: Complementa la arquitectura de software de la materia. Es un manual técnico que permite a los estudiantes modularizar nodos, configurar tópicos asíncronos de comunicación e integrar mallas \texttt{.stl} en la descripción cinemática del gemelo digital).
+\end{enumerate}
+
+\vspace{0.4cm}
+\textbf{Bibliografía Complementaria y Manuales Técnicos Industriales:}
+\begin{enumerate}[label={[\arabic*]}, resume, leftmargin=*, nosep]
+    \item M. W. Spong, S. Hutchinson, y M. Vidyasagar, \textit{Robot Modeling and Control}, 2da ed. John Wiley \& Sons, 2020. (Uso: Soporte didáctico avanzado para el bloque dinámico, adecuado para contrastar las simplificaciones energéticas en sistemas articulados complejos).
+    
+    \item R. Hartley y A. Zisserman, \textit{Multiple View Geometry in Computer Vision}, 2da ed. Cambridge University Press, 2004. (Uso: Texto de consulta especializada. Contiene el sustento algebraico del algoritmo DLT y el comportamiento del espacio nulo en matrices de restricciones homogéneas resueltas por $SVD$).
+    
+    \item ABB Robotics, \textit{Technical Reference Manual: RAPID Instructions, Functions and Data types (Controller IRC5)}. Documentación Oficial de Fábrica, 2023. (Uso: Documentación técnica para el trabajo de campo del EC4. Fomenta la lectura de manuales industriales y provee la sintaxis de estructuras como \texttt{robtarget}, comandos síncronos de trayectoria (\texttt{MoveL}/\texttt{MoveJ}) y configuraciones de E/S necesarias para operar de forma segura el hardware del laboratorio).
+\end{enumerate}
+
+\end{document}
