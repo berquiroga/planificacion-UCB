@@ -1,0 +1,94 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+
+% Configuración de colores corporativos UCB
+\definecolor{UCBblue}{RGB}{0, 51, 153}
+\definecolor{UCBgray}{RGB}{100, 100, 100}
+\definecolor{UCBred}{RGB}{153, 0, 0}
+
+% Configuración de encabezado y pie de página
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{UCBblue}{\textbf{Ingeniería Mecatrónica - UCB Tarija}}}
+\fancyhead[R]{\textcolor{UCBgray}{Guión de Clase Ajustado - Sesión 3}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{UCBblue}\leaders\hrule height \headrulewidth\hfill}}
+
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{\textcolor{UCBblue}{PLANIFICACIÓN DIDÁCTICA Y GUIÓN DE CLASE}}}\\
+    \vspace{0.3cm}
+    {\large \textbf{Sesión 3 (Ajustada): Análisis Fasorial y Dinámica Frecuencial}}\\
+    \vspace{0.5cm}
+    \textbf{Asignatura:} Taller de Nivelación / Introducción a la Mecatrónica \\
+    \textbf{Docente:} M.Sc. Ing. Bernardo Quiroga Turdera \quad \textbf{Duración:} 120 Minutos
+\end{center}
+
+\vspace{0.3cm}
+
+\section*{1. Metadatos y Alineamiento Constructivo}
+\begin{itemize}
+    \item \textbf{Módulos:} 3 (Cierre) y 4 (Algoritmo Híbrido).
+    \item \textbf{Resultados de Aprendizaje (ABET 1 y 6):} Formular matrices con impedancias complejas y modelar dinámicas frecuenciales generando visualizaciones logarítmicas de ingeniería.
+    \item \textbf{Estrategia Didáctica:} Aprendizaje Basado en Problemas (ABP) enfocado en la transición de la estática (fasor único) a la dinámica espectral (barrido).
+    \item \textbf{Entregables Activos:} Notebook 03 (v2), Diapositivas Beamer S3, Guía Analítica S3, Notebook 04.
+\end{itemize}
+
+\section*{2. Cronograma de Ejecución (120 Minutos)}
+\begin{table}[h!]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{@{} c c X l @{}}
+        \toprule
+        \textbf{Hora} & \textbf{Fase CDIO} & \textbf{Actividad Principal} & \textbf{Soporte} \\
+        \midrule
+        17:00 - 17:35 & \textbf{Implementar} & \textbf{El Gemelo Fasorial:} Matrices complejas (\texttt{1j}), \texttt{np.abs} y \texttt{np.linalg.solve} estático. & Notebook 03 \\
+        17:35 - 17:55 & \textbf{Concebir} & \textbf{Límite Estático:} Reactancias dinámicas ($\omega$) y necesidad de escalas logarítmicas. & Beamer S3 \\
+        17:55 - 18:15 & \textbf{Diseñar} & \textbf{El Límite Humano:} Cálculo a pulso de magnitudes en dos extremos frecuenciales. & Guía S3 \\
+        18:15 - 18:45 & \textbf{Operar} & \textbf{Automatización:} Funciones modulares (\texttt{def}), \texttt{np.logspace} y ploteo (\texttt{plt.semilogx}). & Notebook 04 \\
+        18:45 - 19:00 & \textbf{Evaluar} & \textbf{Diagnóstico:} Análisis visual de resonancia y cierre de la sesión. & Pizarra \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\section*{3. Desarrollo Detallado por Fases}
+
+\subsection*{Fase 1: Implementación Fasorial Estática (17:00 - 17:35)}
+\textit{Objetivo: Demostrar que el álgebra lineal es una arquitectura universal (CC y CA).}
+\begin{itemize}
+    \item \textbf{Despliegue Notebook 03:} Los estudiantes declaran impedancias usando la constante nativa \texttt{1j}.
+    \item \textbf{El Momento Eureka:} Resolver el sistema $\mathbf{Z}\mathbf{I} = \mathbf{V}$ usando exactamente la misma función \texttt{np.linalg.solve} de la sesión anterior, demostrando que Python maneja la trigonometría subyacente automáticamente.
+\end{itemize}
+
+\subsection*{Fase 2: El Quiebre Epistemológico (17:35 - 17:55)}
+\textit{Objetivo: Justificar la entrada de la variable $\omega$ (Frecuencia) y la escala de Bode.}
+\begin{itemize}
+    \item \textbf{Intervención del Docente:} \textit{"El código que acaban de correr asume que el motor gira a velocidad constante. En la realidad, las señales aceleran y los sensores captan ruido. La impedancia $\mathbf{Z}$ mutará"}.
+    \item \textbf{Clase Magistral:} Uso de las diapositivas Beamer S3 para introducir las funciones $X_L = \omega L$ y $X_C = -1/\omega C$. Explicar el concepto de "Década" logarítmica.
+\end{itemize}
+
+\subsection*{Fase 3: Misión de Ingeniería y Frustración Constructiva (17:55 - 18:15)}
+\textit{Objetivo: Generar la necesidad inminente de la programación modular.}
+\begin{itemize}
+    \item \textbf{Cálculo Manual:} Resolver la Guía Analítica S3 calculando magnitudes para $\omega = 100$ y $\omega = 10,000$.
+    \item \textbf{El Límite Humano:} Cuando la actividad consuma demasiado tiempo, pausar la clase y afirmar que para un análisis espectral se necesitan 1,000 puntos, lo que legitima el paso al Notebook 04.
+\end{itemize}
+
+\subsection*{Fase 4: Automatización y Dashboarding (18:15 - 19:00)}
+\textit{Objetivo: Programar como ingenieros (Modularidad y Visualización).}
+\begin{itemize}
+    \item \textbf{Notebook 04:} Empaquetar la física en la función \texttt{def resolver\_red(w):}. Ejecutar un bucle \texttt{for} iterando sobre un vector de frecuencias \texttt{np.logspace}.
+    \item \textbf{Detección de Resonancia:} Renderizar el gráfico con \texttt{plt.semilogx}. Realizar la evaluación socrática final: \textit{"En el pico de la gráfica, las reactancias del capacitor y la bobina se anularon mutuamente. ¿Qué riesgos implica esto en el encendido de un actuador mecatrónico real?"}
+\end{itemize}
+
+\end{document}

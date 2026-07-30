@@ -1,0 +1,61 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{tcolorbox}
+
+\definecolor{UCBblue}{RGB}{0, 51, 153}
+\definecolor{UCBgray}{RGB}{100, 100, 100}
+\definecolor{UCBred}{RGB}{153, 0, 0}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{UCBblue}{\textbf{Ingeniería Mecatrónica - UCB Tarija}}}
+\fancyhead[R]{\textcolor{UCBgray}{Taller de Nivelación - Módulo 4}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{UCBblue}\leaders\hrule height \headrulewidth\hfill}}
+
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{\textcolor{UCBblue}{Guía de Modelado Analítico: Dinámica Frecuencial}}}\\
+    \vspace{0.3cm}
+    {\large \textbf{Fase CDIO: Concebir (La Necesidad de Automatizar)}}\\
+    \vspace{0.5cm}
+    \textbf{Estudiante:} \rule{8cm}{0.4pt} \quad \textbf{Fecha:} \rule{3cm}{0.4pt}
+\end{center}
+
+\vspace{0.5cm}
+
+\section*{1. Fundamentación: Reactancia Dinámica}
+La impedancia total de un sistema mecatrónico no es una constante; es una función de la frecuencia angular ($\omega$) a la que operan sus fuentes. 
+$$ \mathbf{Z}_L(\omega) = j\omega L \quad \text{(Inductor)} \quad \quad \mathbf{Z}_C(\omega) = -j\frac{1}{\omega C} \quad \text{(Capacitor)} $$
+
+\section*{2. Misión de Ingeniería: El Límite Humano}
+Se le encomienda diseñar un filtro pasivo en serie con $R = 10\Omega$, $L = 10\text{mH}$ ($0.01\text{H}$) y $C = 100\mu\text{F}$ ($0.0001\text{F}$). Voltaje de entrada: $\mathbf{V} = 10\angle0^\circ$ V. 
+La impedancia total es $\mathbf{Z}_{eq} = R + j\left(\omega L - \frac{1}{\omega C}\right)$.
+
+Para comprender el espectro de este filtro, usted decide calcular la magnitud de la corriente ($|\mathbf{I}| = \frac{|\mathbf{V}|}{|\mathbf{Z}_{eq}|}$) manualmente en dos extremos frecuenciales.
+
+\vspace{0.3cm}
+\textbf{A. Cálculo en Baja Frecuencia ($\omega = 100$ rad/s):}
+\begin{tcolorbox}[colback=white,colframe=UCBgray,height=4cm,valign=top]
+\textit{Desarrollo analítico para $\omega=100$: Calcule $\mathbf{Z}_{eq}$ y luego $|\mathbf{I}|$.}
+\end{tcolorbox}
+
+\textbf{B. Cálculo en Alta Frecuencia ($\omega = 10000$ rad/s):}
+\begin{tcolorbox}[colback=white,colframe=UCBgray,height=4cm,valign=top]
+\textit{Desarrollo analítico para $\omega=10000$: Calcule $\mathbf{Z}_{eq}$ y luego $|\mathbf{I}|$.}
+\end{tcolorbox}
+
+\section*{3. Reflexión (Transición al Código)}
+Ha demorado varios minutos en calcular solo \textit{dos} puntos del espectro. Para encontrar la frecuencia exacta de resonancia (donde la corriente es máxima), necesitaríamos calcular miles de puntos intermedios.
+\begin{tcolorbox}[colback=red!5!white,colframe=UCBred,title=\textbf{El Propósito de la Programación Modular}]
+En ingeniería, no programamos por lujo, sino por supervivencia computacional. En el \texttt{Notebook\_04}, encapsularemos estas ecuaciones en una función (\texttt{def}) de Python y automatizaremos este cálculo tedioso $10,000$ veces por segundo usando \texttt{NumPy}.
+\end{tcolorbox}
+
+\end{document}

@@ -1,0 +1,78 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{default}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{tcolorbox}
+
+\definecolor{UCBblue}{RGB}{0, 51, 153}
+\setbeamercolor{palette primary}{bg=UCBblue,fg=white}
+\setbeamercolor{palette secondary}{bg=UCBblue,fg=white}
+\setbeamercolor{palette tertiary}{bg=UCBblue,fg=white}
+\setbeamercolor{titlelike}{bg=UCBblue,fg=white}
+\setbeamercolor{item}{fg=UCBblue}
+
+\title[Nivelación - Sesión 3]{Taller de Nivelación / Introducción a la Mecatrónica:\\ Álgebra Lineal Aplicada a la Teoría de Redes}
+\subtitle{Módulo 4: Dinámica Frecuencial y Visualización Logarítmica}
+\author[M.Sc. Ing. B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Carrera de Ingeniería Mecatrónica\\ Universidad Católica Boliviana "San Pablo"}
+\date{30 de Julio de 2026}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Agenda de la Sesión}
+    \tableofcontents
+\end{frame}
+
+\section{Reactancias Dinámicas}
+\begin{frame}{La Dependencia de la Frecuencia ($\omega$)}
+    En la sesión anterior analizamos fasores a una frecuencia estática. Sin embargo, en mecatrónica las señales cambian (aceleración de motores, ruido de sensores).
+    
+    La reactancia ($X$) no es constante; depende de la frecuencia angular ($\omega = 2\pi f$):
+    \vspace{0.3cm}
+    \begin{itemize}
+        \item \textbf{Bobina (Inductor):} $\mathbf{Z}_L = j\omega L$. A mayor frecuencia, \textit{mayor} oposición. Bloquea cambios rápidos.
+        \item \textbf{Capacitor:} $\mathbf{Z}_C = -j\frac{1}{\omega C}$. A mayor frecuencia, \textit{menor} oposición. Deja pasar el ruido de alta frecuencia.
+    \end{itemize}
+\end{frame}
+
+\section{El Problema del Espectro}
+\begin{frame}{¿Por qué necesitamos computación modular?}
+    Si queremos diseñar un filtro para nuestro robot, no basta con calcular la matriz $\mathbf{Z}$ a $50\text{ Hz}$. Debemos evaluar el sistema desde $1\text{ Hz}$ hasta $10,000\text{ Hz}$.
+    
+    \vspace{0.3cm}
+    \begin{alertblock}{La Barrera del Cálculo Analítico}
+    Resolver a pulso un sistema fasorial para $1,000$ frecuencias distintas es humanamente inviable. Es aquí donde la abstracción de la \textbf{Programación Modular (Funciones)} justifica su existencia en la ingeniería.
+    \end{alertblock}
+\end{frame}
+
+\section{Visualización y Escalas Logarítmicas}
+\begin{frame}{Representando el Espectro: Ejes Semilogarítmicos}
+    Si graficamos de $1$ a $10,000\text{ rad/s}$ en un eje lineal estándar, las frecuencias bajas se comprimirán en el primer milímetro del gráfico, ocultando dinámicas vitales (como la resonancia).
+    
+    \vspace{0.3cm}
+    \textbf{La solución (Gráficos de Bode preliminares):}
+    Utilizamos escalas \textit{logarítmicas} para el eje X (Frecuencia).
+    \begin{itemize}
+        \item \textbf{Década:} Un intervalo donde el valor se multiplica por $10$ (de $1$ a $10$, de $10$ a $100$, etc.). Cada década ocupa el mismo espacio visual.
+    \end{itemize}
+\end{frame}
+
+\section{Transición Computacional}
+\begin{frame}{Herramientas en Python para el Análisis Espectral}
+    \textbf{Fase CDIO: Diseñar e Implementar}
+    
+    En el \texttt{Notebook\_04}, integraremos tres herramientas clave:
+    \begin{enumerate}
+        \item \textbf{Modularidad (\texttt{def}):} Empaquetaremos nuestra matriz $\mathbf{Z}$ y el solver \texttt{np.linalg.solve} dentro de una función dependiente de $\omega$.
+        \item \textbf{Vectores Logarítmicos (\texttt{np.logspace}):} Generaremos arreglos de prueba espaciados por décadas.
+        \item \textbf{Dashboarding (\texttt{plt.semilogx}):} Utilizaremos \texttt{Matplotlib} para plotear la magnitud de la corriente y encontrar el punto de resonancia visualmente.
+    \end{enumerate}
+\end{frame}
+
+\end{document}
