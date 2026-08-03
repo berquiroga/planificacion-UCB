@@ -1,0 +1,164 @@
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+% Paquetes esenciales para Ingeniería
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage{circuitikz}
+
+% Configuración del tema Beamer (Estilo sobrio e institucional)
+\usetheme{Madrid}
+\usecolortheme{default}
+\setbeamertemplate{navigation symbols}{} % Oculta los símbolos de navegación inferiores
+\setbeamertemplate{footline}[frame number] % Muestra solo el número de diapositiva
+\setbeamercolor{title}{bg=blue!80!black, fg=white}
+\setbeamercolor{frametitle}{bg=blue!80!black, fg=white}
+\setbeamercolor{itemize item}{fg=blue!80!black}
+
+% Configuración de unidades
+\sisetup{
+    output-decimal-marker = {.},
+    inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+% --- PORTADA ---
+\title[IMT-221 \textbar{} Sesión 1]{Circuitos Electrónicos II (IMT-221)}
+\subtitle{Bienvenida y Análisis Dinámico de CA}
+\author{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' - Sede Tarija \\ Carrera de Ingeniería Mecatrónica}
+\date{03 de agosto de 2026}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Bienvenidos al Taller de Ingeniería}
+    Esta asignatura no es una lista de temas teóricos para memorizar. Es el espacio donde construirán un \textbf{sistema de control analógico de precisión}, real e inmune al ruido industrial.
+    
+    \vspace{0.5cm}
+    \begin{block}{Nuestra Meta}
+        Transición sistemática del análisis pasivo de circuitos al control dinámico activo continuo.
+    \end{block}
+\end{frame}
+
+\begin{frame}{Metodología de Trabajo}
+    \begin{itemize}
+        \item \textbf{Enfoque ``Python-First'':} Procesamiento de datos experimentales, gráficos de Bode y análisis estadísticos mediante \texttt{numpy}, \texttt{scipy} y \texttt{matplotlib}.
+        \vspace{0.3cm}
+        \item \textbf{Modelo F.I.V.E. para Laboratorios:}
+        \begin{enumerate}
+            \item \textbf{F}undamentación (Modelos matemáticos teóricos).
+            \item \textbf{I}mplementación (Montaje de hardware real).
+            \item \textbf{V}alidación (Contraste entre teoría vs. práctica).
+            \item \textbf{E}videncia (Reporte técnico con estándar IEEE).
+        \end{enumerate}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Sistema de Evaluación (100\%)}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{Evaluación Continua (50\%)}
+            \begin{itemize}
+                \item \textbf{EC1 (Sem 1-4):} Análisis CA, Impedancias y Bode pasivo. (Incluye Hito 1 PFI).
+                \item \textbf{EC2 (Sem 5-17):} Op-Amps reales, Filtros, PID y Potencia. (Incluye Hitos 2 y 3).
+                \item \textit{Recuperatorios:} Semanas 5 y 17 para nivelación teórica.
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Evaluación Final Híbrida (50\%)}
+            \begin{itemize}
+                \item \textbf{Comp. A (40\% Grupal):} Prueba de estrés en vivo al prototipo físico en el laboratorio.
+                \item \textbf{Comp. B (60\% Individual):} Examen escrito de rediseño analítico sobre fallas de su propio hardware.
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Evaluación Diagnóstica}
+    \begin{alertblock}{Instrucciones - Tiempo: 30 minutos}
+        Esta prueba no tiene ponderación sumativa, pero es un \textbf{requisito obligatorio} para medir las competencias previas.
+    \end{alertblock}
+    
+    \vspace{0.3cm}
+    \textbf{Áreas a evaluar:}
+    \begin{itemize}
+        \item Álgebra de números complejos y fasores básicos.
+        \item Leyes de Kirchhoff en corriente continua.
+        \item Dinámica temporal en capacitores.
+        \item Parámetros fundamentales de señales senoidales.
+    \end{itemize}
+    \vspace{0.3cm}
+    \centering \textit{(Proceder a la entrega de las hojas de evaluación)}
+\end{frame}
+
+\begin{frame}{Tema 1.1: Análisis Dinámico de CA}
+    \textbf{Definición Matemática de una Señal Senoidal}
+    
+    Toda excitación senoidal permanente se modela como:
+    \begin{equation*}
+        v(t) = V_m \cos(\omega t + \phi)
+    \end{equation*}
+    
+    \begin{itemize}
+        \item $V_m$: Amplitud pico de la señal \unit{\volt}.
+        \item $\omega = 2\pi f$: Frecuencia angular \unit{\radian\per\second}.
+        \item $f = 1/T$: Frecuencia cíclica \unit{\hertz} (\SI{50}{\hertz} nominal en Bolivia).
+        \item $\phi$: Ángulo de fase inicial \unit{\radian} o \unit{\degree}.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{El Valor Eficaz (RMS)}
+    \textbf{Pregunta detonante:} \textit{¿Por qué el multímetro marca \SI{220}{\volt} si la tensión alterna promedia cero en el tiempo?}
+    
+    \vspace{0.3cm}
+    El valor eficaz es el equivalente en CC que entrega la \textbf{misma potencia promedio} a una resistencia pura $R$.
+    
+    \begin{equation*}
+        P_{avg} = \frac{1}{T} \int_{0}^{T} \frac{V_m^2}{R} \cos^2(\omega t + \phi) dt = \frac{V_m^2}{2R} = \frac{V_{RMS}^2}{R}
+    \end{equation*}
+    
+    \begin{equation*}
+        \therefore V_{RMS} = \frac{V_m}{\sqrt{2}} \approx 0.7071 \cdot V_m
+    \end{equation*}
+    
+    \begin{exampleblock}{Aplicación de Ingeniería}
+        Para la red local de $V_{RMS} = \SI{220}{\volt}$, los componentes deben soportar un pico real de $V_m = 220 \cdot \sqrt{2} \approx \SI{311.12}{\volt}$.
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Introducción a la Transformación Fasorial}
+    Para evitar resolver ecuaciones diferenciales en el dominio del tiempo, transformamos la señal al dominio frecuencial usando la \textbf{Identidad de Euler}:
+    
+    \begin{equation*}
+        e^{\pm j\theta} = \cos(\theta) \pm j\sin(\theta)
+    \end{equation*}
+    
+    El \textbf{Fasor} ($\hat{V}$) captura únicamente la amplitud y la fase, omitiendo la dependencia temporal:
+    
+    \begin{equation*}
+        \hat{V} = V_m e^{j\phi} = V_m \angle \phi
+    \end{equation*}
+    \begin{equation*}
+        \text{O en convención RMS: } \hat{V}_{RMS} = \frac{V_m}{\sqrt{2}} \angle \phi
+    \end{equation*}
+\end{frame}
+
+\begin{frame}{Próximos Pasos (Laboratorio 1 - Miércoles)}
+    \begin{block}{Obligatorio para la próxima sesión (09:00 - 10:45)}
+        \begin{enumerate}
+            \item \textbf{Software:} Instalar \texttt{LTSpice} y su entorno \texttt{Python (3.10+)}.
+            \item \textbf{Lectura:} Capítulo 9 (Análisis sinusoidal) de \textit{Hayt \& Kemmerly}.
+        \end{enumerate}
+    \end{block}
+    
+    \vspace{0.3cm}
+    \textbf{Anuncio del Laboratorio 1:}
+    El miércoles iniciaremos la simulación e instrumentación del \textit{Puente de Wheatstone} alimentado en CA para acondicionar el sensor térmico de nuestro Proyecto Final Integrador.
+\end{frame}
+
+\end{document}

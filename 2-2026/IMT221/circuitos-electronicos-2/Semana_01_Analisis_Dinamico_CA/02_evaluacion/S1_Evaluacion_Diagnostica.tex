@@ -1,0 +1,89 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc} % Vital para la correcta codificación de tildes y caracteres especiales (|)
+\usepackage[spanish,es-tabla]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{geometry}
+\geometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+\usepackage{fancyhdr}
+\usepackage{circuitikz}
+\usepackage{siunitx} % Estándar internacional para unidades de ingeniería
+
+% Configuración de siunitx para el contexto de ingeniería
+\sisetup{
+    output-decimal-marker = {.},
+    inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{IMT-221 \textbar{} Evaluación Diagnóstica}
+\lhead{Ingeniería Mecatrónica \textbar{} UCB Sede Tarija}
+\cfoot{\thepage}
+
+\begin{document}
+
+\begin{center}
+    \textbf{\Large UNIVERSIDAD CATÓLICA BOLIVIANA ``SAN PABLO'' - SEDE TARIJA}\\[0.3cm]
+    \textbf{\large Carrera de Ingeniería Mecatrónica \textbar{} Circuitos Electrónicos II (IMT-221)}\\[0.5cm]
+    \textbf{\Large EVALUACIÓN DIAGNÓSTICA - GESTIÓN II-2026}
+\end{center}
+
+\vspace{0.5cm}
+\noindent \textbf{Estudiante:} \rule{8cm}{0.4pt} \hfill \textbf{Fecha:} 03 de agosto de 2026
+
+% Se reemplazó el salto '\\' problemático por un \vspace seguro.
+\vspace{0.5cm}
+\noindent \textbf{Instrucciones:} Resuelva los siguientes ejercicios de forma manuscrita. Esta prueba no tiene ponderación sumativa en la nota continua, pero es un requisito obligatorio para medir las competencias previas del grupo.
+
+\vspace{0.5cm}
+\noindent \textbf{Pregunta 1: Álgebra de Números Complejos (25\%)} \\
+Dado el número complejo en forma rectangular $Z = -6 + j8$:
+\begin{enumerate}
+    \item Conviértalo a su forma polar ($R \angle \theta$) y a su forma exponencial ($R e^{j\theta}$).
+    \item Calcule su inverso complejo $1/Z$ en forma rectangular.
+\end{enumerate}
+
+\vspace{0.5cm}
+\noindent \textbf{Pregunta 2: Análisis de Nodos en CC (25\%)} \\
+Para el siguiente circuito de corriente continua, determine la tensión en el nodo $V_A$ aplicando la Ley de Corrientes de Kirchhoff (LCK):
+
+\begin{center}
+\begin{circuitikz}[american, scale=1.2, transform shape]
+    % Malla principal exterior
+    % Se utiliza 'l' para la etiqueta (nombre) y 'a' para la anotación (valor)
+    \draw (0,0) to[V, l=$V_s$, a=\SI{24}{\volt}] (0,2) 
+                to[R, l=$R_1$, a=\SI{4}{\ohm}] (3,2) 
+                to[R, l=$R_2$, a=\SI{12}{\ohm}] (6,2)
+                to[I, l=$I_o$, a=\SI{2}{\ampere}] (6,0) 
+                -- (0,0);
+                
+    % Rama central con polos de conexión automáticos (*-*)
+    \draw (3,2) to[R, l=$R_3$, a=\SI{6}{\ohm}, *-*] (3,0);
+    
+    % Referencia a tierra (GND) aislada para evitar conflictos de trazo
+    \draw (0,0) node[ground]{};
+    
+    % Etiqueta del nodo VA declarada de forma independiente
+    \node[above=0.1cm] at (3,2) {$V_A$};
+\end{circuitikz}
+\end{center}
+
+\vspace{0.5cm}
+\noindent \textbf{Pregunta 3: Relación Voltaje-Corriente en Capacitores (25\%)} \\
+Un capacitor de $C = \SI{4.7}{\micro\farad}$ se encuentra inicialmente descargado ($v_c(0) = \SI{0}{\volt}$). Si se le inyecta un pulso de corriente constante de $i_c(t) = \SI{10}{\milli\ampere}$ durante un intervalo de $t = 0$ a $t = \SI{5}{\milli\second}$:
+\begin{enumerate}
+    \item Calcule la tensión final en los bornes del capacitor $v_c(\SI{5}{\milli\second})$.
+    \item Determine la energía almacenada en el campo eléctrico en ese instante ($W = \frac{1}{2} C v^2$).
+\end{enumerate}
+
+\vspace{0.5cm}
+\noindent \textbf{Pregunta 4: Parámetros de Ondas Senoidales (25\%)} \\
+Una señal de tensión de corriente alterna capturada en un osciloscopio está descrita por:
+$$v(t) = 170 \cos(314.16 t - 45^\circ) \, [\unit{\volt}]$$
+\begin{enumerate}
+    \item Indique el valor pico de tensión ($V_p$) y la frecuencia de la señal en Hertz ($f$).
+    \item Calcule la tensión Eficaz o RMS ($V_{RMS}$).
+\end{enumerate}
+
+\end{document}
