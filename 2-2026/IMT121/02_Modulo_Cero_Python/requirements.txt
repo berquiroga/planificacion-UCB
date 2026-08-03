@@ -1,0 +1,7 @@
+# IMT-121: Circuitos Electrónicos I
+# Dependencias para Análisis Matricial y Procesamiento de Señales
+
+numpy==1.26.4          # Álgebra lineal y matrices
+scipy==1.13.0          # Resolución de EDOs y diagramas de Bode (Futuro)
+matplotlib==3.8.4      # Graficación de respuestas en frecuencia y tiempo
+jupyter==1.0.0         # Para ejecutar los notebooks del Módulo Cero

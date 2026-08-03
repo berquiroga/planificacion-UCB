@@ -1,0 +1,89 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+
+\geometry{left=2cm, right=2cm, top=2.5cm, bottom=2.5cm}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{Universidad Católica Boliviana ``San Pablo''}}
+\rhead{\textbf{IMT-121: Circuitos Electrónicos I}}
+\cfoot{\thepage}
+
+\begin{document}
+
+\begin{center}
+    \Large \textbf{SOLUCIONARIO -- Evaluación Diagnóstica Inicial} \\
+    \vspace{0.2cm}
+    \normalsize \textit{Uso Exclusivo del Docente -- Criterios de Corrección}
+\end{center}
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.5cm}
+
+\section*{Sección I: Álgebra Lineal Aplicada}
+
+\textbf{Problema 1. Formulación Matricial Canónica}
+\\
+\textbf{Solución Esperada:} El estudiante debe aislar los coeficientes de las variables $(I_1, I_2, I_3)$ respetando sus signos y posiciones, construyendo el sistema $\mathbf{A}\mathbf{x} = \mathbf{b}$.
+
+\begin{equation}
+    \begin{bmatrix}
+        12 & -4 & -8 \\
+        -4 & 10 & -2 \\
+        -8 & -2 & 15
+    \end{bmatrix}
+    \begin{bmatrix}
+        I_1 \\
+        I_2 \\
+        I_3
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        10 \\
+        0 \\
+        -5
+    \end{bmatrix}
+\end{equation}
+
+\textit{Criterio de evaluación:} Validar que la matriz $\mathbf{A}$ resultante sea simétrica respecto a su diagonal principal (una propiedad intrínseca de las matrices de resistencia en mallas sin fuentes dependientes).
+
+\vspace{0.5cm}
+\textbf{Problema 2. Análisis del Determinante}
+\\
+\textbf{Solución Esperada:}
+\begin{enumerate}
+    \item \textbf{Condición Matemática:} Para que un sistema lineal cuadrado posea solución única, la matriz de coeficientes debe ser no singular, es decir, su determinante debe ser distinto de cero ($\det(\mathbf{A}) \neq 0$).
+    \item \textbf{Implicación Física ($\det(\mathbf{A}) = 0$):} Matemáticamente, indica que las filas (ecuaciones) son linealmente dependientes. Físicamente, significa que la topología del circuito está mal definida (por ejemplo, se ha formulado una ecuación de lazo redundante o hay un cortocircuito ideal en paralelo con una fuente de corriente), impidiendo que la corriente se distribuya de forma única.
+\end{enumerate}
+
+\vspace{0.5cm}
+\section*{Sección II: Fenomenología Eléctrica Básica}
+
+\textbf{Problema 3. Corriente vs. Voltaje}
+\\
+\textbf{Solución Esperada:}
+\begin{itemize}
+    \item \textbf{Corriente Eléctrica ($I$):} Es la tasa de flujo de carga eléctrica a través de una sección transversal en el tiempo ($I = \frac{dq}{dt}$). (Analogía: El caudal o flujo de agua en una tubería).
+    \item \textbf{Voltaje ($V$):} Es la diferencia de potencial eléctrico, es decir, el trabajo o energía por unidad de carga requerido para mover los electrones de un punto a otro ($V = \frac{dw}{dq}$). (Analogía: La diferencia de presión generada por una bomba de agua).
+\end{itemize}
+\textit{Criterio:} No aceptar respuestas circulares ("el voltaje es lo que da la pila"). Se exige rigor conceptual físico.
+
+\vspace{0.5cm}
+\textbf{Problema 4. Error de Instrumentación (Cortocircuito)}
+\\
+\textbf{Solución Esperada:}
+Un amperímetro ideal tiene una resistencia interna de $0\,\Omega$ (en la práctica, muy cercana a cero). Si se conecta en paralelo a una fuente de tensión, el circuito resultante tiene una resistencia total equivalente a la resistencia interna del instrumento ($R_{\text{int}}$).
+Por la Ley de Ohm:
+\begin{equation}
+    I = \frac{V_s}{R_{\text{int}}} \approx \frac{12\text{ V}}{0.01\,\Omega} = 1200\text{ A}
+\end{equation}
+\textbf{Fenómeno resultante:} Esta altísima corriente excede masivamente la capacidad de disipación del instrumento, provocando la fusión inmediata de su fusible interno de protección y potencialmente destruyendo el equipo o causando un arco eléctrico peligroso para el operario.
+
+\end{document}

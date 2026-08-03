@@ -1,0 +1,95 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+
+% Configuración de márgenes y colores
+\geometry{left=2.5cm, right=2.5cm, top=3cm, bottom=3cm}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+% Configuración de encabezados
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textcolor{ucbblue}{\textbf{Ingeniería Mecatrónica | Ingeniería Biomédica}}}
+\rhead{\textbf{IMT-121: Circuitos Electrónicos I}}
+\cfoot{\thepage}
+
+\begin{document}
+
+\begin{center}
+    \vspace*{0.5cm}
+    \LARGE \textbf{GUÍA DEL PROYECTO FINAL INTEGRADOR (PFI)} \\
+    \vspace{0.5cm}
+    \Large \textit{Sistema Pasivo de Acondicionamiento de Señal, Adaptación de Impedancias y Caracterización por Redes de Dos Puertos para Transductores y Bioseñales} \\
+    \vspace{0.8cm}
+    \normalsize
+    \textbf{Gestión Académica:} Semestre II/2026 \\
+    \textbf{Docente:} M.Sc. Ing. Bernardo Quiroga Turdera \\
+    \textbf{Institución:} Universidad Católica Boliviana ``San Pablo'' --- Sede Tarija
+    \vspace{1cm}
+\end{center}
+
+\hrule
+\vspace{0.5cm}
+
+\section{Visión General del Proyecto}
+Bajo el estándar internacional \textbf{CDIO} (\textit{Conceive--Design--Implement--Operate}) y los criterios \textbf{ABET}, el Proyecto Final Integrador (PFI) de \textit{Circuitos Electrónicos I} es el eje articulador donde el estudiante aplica la teoría de redes lineales pasivas de CC y CA a un problema real de medición y acoplamiento.
+
+\section{Tracks Duales de Especialización}
+Los equipos elegirán una de las siguientes rutas según su disciplina:
+
+\vspace{0.3cm}
+\noindent
+\begin{tabularx}{\textwidth}{@{} p{3.5cm} X X @{}}
+\toprule
+\textbf{Dimensión} & \textbf{Track A: Ingeniería Biomédica} & \textbf{Track B: Ingeniería Mecatrónica} \\ \midrule
+\textbf{Dominio Físico} & Redes de atenuación pasiva, acoplamiento $RC$ y modelado de impedancia de electrodos para bioseñales. & Redes pasivas para puentes de medición ($R, L, C$), acondicionamiento de galgas y celdas de carga. \\ \addlinespace
+\textbf{Desafío Principal} & Filtrado pasivo de interferencias ($50\text{ Hz}$ y alta frecuencia) sin distorsión de fase. & Adaptación de impedancia pasiva para máxima transferencia de potencia y supresión de armónicos pasiva. \\ \addlinespace
+\textbf{Caracterización} & Modelado del canal de medición biomédico como una Red de Dos Puertos ($\mathbf{Z}, \mathbf{T}$). & Modelado de la red de acoplamiento del sensor como una Red de Dos Puertos ($\mathbf{Z}, \mathbf{h}$). \\ \bottomrule
+\end{tabularx}
+\vspace{0.3cm}
+
+\section{Escalonamiento del Proyecto (Hitos por Elemento de Competencia)}
+
+\subsection*{HITO 1 (Semanas 1 a 4 --- EC1): Modelado Matricial en CC}
+\begin{itemize}
+    \item \textbf{Aporte al PFI:} Formulación matricial canónica $\mathbf{A}\mathbf{x} = \mathbf{b}$ de la red de polarización y atenuación resistiva de entrada.
+    \item \textbf{Entregable:} Script en Python (\texttt{NumPy}) con la solución matricial y simulación \texttt{.op} en LTSpice.
+\end{itemize}
+
+\subsection*{HITO 2 (Semanas 5 a 8 --- EC2): Máxima Transferencia de Potencia}
+\begin{itemize}
+    \item \textbf{Aporte al PFI:} Reducción de la red del sensor mediante equivalentes de Thévenin/Norton y determinación de la carga óptima $R_L$ para transferencia máxima pasiva.
+    \item \textbf{Entregable:} Cálculo manuscrito en \LaTeX{} y verificación experimental en laboratorio con bancada resistiva.
+\end{itemize}
+
+\subsection*{HITO 3 (Semanas 9 a 12 --- EC3): Régimen Sinusoidal y Filtros Pasivos}
+\begin{itemize}
+    \item \textbf{Aporte al PFI:} Diseño e implementación de filtrado pasivo (pasa-bajos/muesca) para atenuar ruido industrial ($50\text{ Hz}$) y análisis de resonancia $RLC$.
+    \item \textbf{Entregable:} Diagrama de Bode pasivo teórico en Python (\texttt{semilogx}), simulación \texttt{.ac} en LTSpice y respuesta medida en osciloscopio.
+\end{itemize}
+
+\subsection*{HITO 4 (Semanas 13 a 16 --- EC4): Parámetros de Dos Puertos e Integración}
+\begin{itemize}
+    \item \textbf{Aporte al PFI:} Caracterización de la red completa mediante matrices ($\mathbf{Z}, \mathbf{Y}, \mathbf{T}, \mathbf{h}$) y fabricación de la PCB pasiva final.
+    \item \textbf{Entregables:} Placa PCB ensamblada, Matriz de Cuadripolo experimental, Informe técnico IEEE y Defensa Oral en vivo.
+\end{itemize}
+
+\section{Matriz de Validación Tripartita}
+Cada hito exige certificar el Principio de Validación Tripartita:
+\begin{equation*}
+    \text{Modelo Analítico} \quad \longleftrightarrow \quad \text{Simulación (LTSpice)} \quad \longleftrightarrow \quad \text{Medición (Osciloscopio/DMM)}
+\end{equation*}
+Con un criterio de calidad estricto de error relativo porcentual:
+\begin{equation}
+    \varepsilon_r = \left\vert \frac{V_{\text{medido}} - V_{\text{teórico}}}{V_{\text{teórico}}} \right\vert \times 100\% \le 5\%
+\end{equation}
+
+\end{document}

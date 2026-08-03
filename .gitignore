@@ -1,23 +1,66 @@
-# Archivos temporales y auxiliares de LaTeX
+# ==========================================
+# Entornos Virtuales y Paquetes (Python)
+# ==========================================
+venv/
+env/
+.env
+__pycache__/
+*.py[cod]
+*$py.class
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ==========================================
+# Jupyter Notebooks
+# ==========================================
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/
+
+# ==========================================
+# Compilación de LaTeX (Informes y Diapositivas)
+# ==========================================
 *.aux
 *.bbl
 *.blg
 *.brf
 *.fdb_latexmk
 *.fls
-*.lof
 *.log
-*.lot
-*.out
-*.toc
-*.synctex.gz
 *.nav
+*.out
 *.snm
+*.synctex.gz
+*.toc
 *.vrb
+*.bcf
+*.run.xml
+# Nota: No ignoramos *.pdf para que los entregables finales sí se suban al repositorio.
 
-# Editores y SO
+# ==========================================
+# Entornos de Desarrollo (IDE)
+# ==========================================
 .vscode/
-.DS_Store
+.idea/
+*.swp
+*.swo
 
-# Opcional: Descomenta la siguiente línea si NO quieres subir los PDFs al repositorio
-# *.pdf
+# ==========================================
+# Simuladores y Software de Ingeniería
+# ==========================================
+# LTSpice
+*.raw
+*.net
+*.op.raw
+*.log
+
+# MATLAB / Simulink
+*.asv
+*.slxc
+slprj/
+
+# ==========================================
+# Archivos del Sistema Operativo
+# ==========================================
+.DS_Store
+Thumbs.db
+desktop.ini

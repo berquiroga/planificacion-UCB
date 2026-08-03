@@ -1,0 +1,175 @@
+\documentclass[aspectratio=169]{beamer}
+
+% Paquetes esenciales
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{circuitikz} % Para el ejercicio diagnóstico
+\usepackage{hyperref}
+
+% Configuración del tema (Estilo profesional y limpio)
+\usetheme{Boadilla}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+% Metadatos de la presentación
+\title[Circuitos Electrónicos I]{Fundamentos Matriciales e Ingeniería Basada en Evidencia}
+\subtitle{Sesión 01: Introducción y Puente Matricial}
+\author[M.Sc. Ing. Bernardo Quiroga T.]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{
+    Carrera de Ingeniería Mecatrónica\\
+    Universidad Católica Boliviana ``San Pablo''\\
+    Sede Tarija
+}
+\date{3 de Agosto de 2026}
+
+\begin{document}
+
+% ---------------------------------------------------
+% Diapositiva de Título
+% ---------------------------------------------------
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% ---------------------------------------------------
+% Filosofía del Curso
+% ---------------------------------------------------
+\begin{frame}{Filosofía del Curso: Estándar CDIO}
+    \textbf{¿Qué diferencia a un técnico de un ingeniero mecatrónico o biomédico?}
+    \vspace{0.5cm}
+    
+    En esta asignatura operaremos bajo el estándar \textbf{CDIO} (Concebir, Diseñar, Implementar, Operar) y los principios de la \textbf{Ingeniería Basada en Evidencia}.
+    
+    \vspace{0.5cm}
+    \begin{itemize}
+        \item \textbf{Cero pasividad:} No memorizaremos ecuaciones abstractas sin contexto.
+        \item \textbf{Modelado Físico:} Traduciremos topologías eléctricas a modelos matemáticos.
+        \item \textbf{Validación computacional:} Usaremos simuladores (gemelos digitales) antes de encender una fuente real.
+        \item \textbf{Control de Calidad:} Todo hardware construido debe coincidir con la predicción matemática con un margen de error $\epsilon_r \le 5\%$.
+    \end{itemize}
+\end{frame}
+
+% ---------------------------------------------------
+% Proyecto Final Integrador (PFI)
+% ---------------------------------------------------
+\begin{frame}{Proyecto Final Integrador (PFI)}
+    \begin{block}{Sistema Inteligente de Acondicionamiento de Señal}
+        Diseño, simulación y validación de hardware para adquisición de bioseñales y sensores industriales.
+    \end{block}
+    
+    \vspace{0.3cm}
+    \textbf{Aplicaciones por Perfil Profesional:}
+    \begin{itemize}
+        \item \textbf{Ingeniería Biomédica:} Captura y filtrado analógico de señales bioeléctricas (EMG/ECG) con supresión de ruido de red (50 Hz).
+        \item \textbf{Ingeniería Mecatrónica:} Acondicionamiento de celdas de carga y galgas extensiométricas para monitoreo de torque en lazo cerrado.
+    \end{itemize}
+    
+    \vspace{0.3cm}
+    \emph{Nota: Cada Elemento de Competencia del semestre aporta un bloque funcional a este sistema integrador.}
+\end{frame}
+
+% ---------------------------------------------------
+% El Puente Matricial
+% ---------------------------------------------------
+\begin{frame}{El Pacto Pedagógico: El Puente Matricial}
+    Sabemos que la formación matemática previa en álgebra tiene matices distintos en el aula. \textbf{Nadie está en desventaja.}
+    
+    \vspace{0.5cm}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \textbf{Lo que NO haremos:}
+            \begin{itemize}
+                \item Teoría de espacios vectoriales abstractos.
+                \item Inversión de matrices $5\times 5$ a mano.
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Lo que SÍ haremos:}
+            \begin{itemize}
+                \item \textbf{Mecánica matricial operativa}.
+                \item Estructurar sistemas canónicos $\mathbf{A}\mathbf{x} = \mathbf{b}$.
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.5cm}
+    Del cálculo pesado se encargarán \textbf{Python} y \textbf{LTSpice}. Su trabajo como ingenieros es \textbf{modelar la física correctamente} extrayendo la topología del circuito.
+\end{frame}
+
+% ---------------------------------------------------
+% Ejercicio Diagnóstico (Dinámica Activa)
+% ---------------------------------------------------
+\begin{frame}{Desafío Diagnóstico: El Sensor de Dos Nodos (15 min)}
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            \begin{center}
+            \begin{circuitikz}[scale=0.8, transform shape]
+                \draw 
+                (0,0) to[V, l=$12\text{V}$] (0,3)
+                to[R, l=$R_1$, a=$100\Omega$] (3,3)
+                to[short, -*] (3,3) node[above]{$V_1$}
+                to[R, l=$R_2$, a=$220\Omega$] (3,0)
+                to[short, -*] (3,0)
+                (3,3) to[short] (6,3)
+                to[R, l=$R_3$, a=$330\Omega$] (6,0)
+                (0,0) -- (6,0)
+                (3,0) node[ground]{};
+            \end{circuitikz}
+            \end{center}
+        \end{column}
+        \begin{column}{0.6\textwidth}
+            \textbf{Consigna (En parejas):}
+            \begin{enumerate}
+                \item Escriban la ecuación de suma de corrientes (LCK) en el nodo $V_1$ ($\sum I = 0$).
+                \item Reordenen la ecuación dejando $V_1$ a la izquierda y los términos constantes a la derecha.
+                \item Expresen el resultado como: \\ 
+                $V_1 \cdot (\text{Conductancia Total}) = I_{\text{fuente}}$
+            \end{enumerate}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ---------------------------------------------------
+% Solución del Ejercicio
+% ---------------------------------------------------
+\begin{frame}{Construcción Intuitiva de Matrices}
+    \textbf{Paso 1:} $\frac{V_1 - 12}{100} + \frac{V_1}{220} + \frac{V_1}{330} = 0$
+    
+    \vspace{0.3cm}
+    \textbf{Paso 2:} $V_1 \left( \frac{1}{100} + \frac{1}{220} + \frac{1}{330} \right) = \frac{12}{100}$
+    
+    \vspace{0.3cm}
+    \textbf{Conclusión:}
+    \begin{equation*}
+        \mathbf{G}\mathbf{V} = \mathbf{I}
+    \end{equation*}
+    La matriz de conductancia ($\mathbf{G}$) se forma \textbf{sumando los inversos} de las resistencias conectadas al nodo. ¡Desmitifiquemos las matrices desde el primer día!
+\end{frame}
+
+% ---------------------------------------------------
+% Tareas y Compromisos
+% ---------------------------------------------------
+\begin{frame}{Compromisos para la Próxima Sesión}
+    \begin{block}{1. Módulo Cero Asincrónico}
+        Completar en su tiempo de estudio independiente el \textbf{Jupyter Notebook 1 y 2} (Nivelación en Python y Sistemas Lineales) disponibles en el repositorio.
+    \end{block}
+    
+    \begin{block}{2. Infraestructura Tecnológica}
+        Instalar en sus equipos personales:
+        \begin{itemize}
+            \item \textbf{Python 3.12} (Distribución Anaconda o VS Code).
+            \item \textbf{LTSpice XVII}.
+        \end{itemize}
+    \end{block}
+    
+    \begin{block}{3. Lectura Previa Fundamental}
+        \textbf{C.K. Alexander \& M.N.O. Sadiku.} \textit{Fundamentos de Circuitos Eléctricos}. Leer detenidamente los Capítulos 1 y 2.
+    \end{block}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,65 @@
+\documentclass[aspectratio=169]{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+
+% Tema oscuro de alto contraste para Teleprompter en Tablet
+\setbeamercolor{normal text}{fg=white,bg=black!90}
+\setbeamercolor{structure}{fg=cyan}
+\setbeamercolor{frametitle}{fg=white,bg=black!80}
+\setbeamertemplate{navigation symbols}{}
+
+\title{Guía Docente: Sesión 01 - Tiempos y Guion}
+\author{M.Sc. Ing. Bernardo Quiroga Turdera}
+\date{Semestre II/2026}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+    \begin{center}
+        \textbf{Duración Total: 90 Minutos}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Bloque 1: Bienvenida y CDIO (00 - 15 min)}
+    \textbf{Objetivo:} Establecer rigor y erradicar el aprendizaje pasivo.
+    \begin{itemize}
+        \item \textbf{Acción:} Bienvenida a Mecatrónica y Biomédica.
+        \item \textbf{Discurso:} "Cero prácticas de prueba y error. Ingeniería Basada en Evidencia."
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Bloque 2: Proyecto Final Integrador (15 - 35 min)}
+    \textbf{Objetivo:} Mostrar el PFI como un sistema estrictamente pasivo de acondicionamiento.
+    \begin{itemize}
+        \item \textbf{Biomédica:} Acoplamiento pasivo RC y atenuación de ruido de 50 Hz.
+        \item \textbf{Mecatrónica:} Adaptación de impedancia en puentes RLC.
+        \item \textbf{Pregunta Detonante:} "¿De qué sirve un microcontrolador de 32 bits si nuestra red pasiva analógica no está adaptada para la máxima transferencia de potencia?"
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Bloque 3: El Puente Matricial (35 - 55 min)}
+    \textbf{Objetivo:} Desmitificar el uso del Álgebra Lineal.
+    \begin{itemize}
+        \item \textbf{Discurso:} "No necesitamos teóricos de espacios vectoriales, sino mecánicos matriciales operativos."
+        \item Explicar que \textbf{Python} (NumPy) y \textbf{LTSpice} asumen la carga de cómputo. Su labor es extraer la topología $\mathbf{A}\mathbf{x} = \mathbf{b}$.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Bloque 4: Ejercicio Diagnóstico (55 - 80 min)}
+    \textbf{Consigna:} Circuito de 2 lazos ($V_s = 12\text{V}$, $R_1=100\Omega, R_2=220\Omega, R_3=330\Omega$).
+    \vspace{0.3cm}
+    
+    \textbf{Cierre:} Mostrar que la suma de inversos conforma la conductancia total. Es intuitivo. Posteriormente, recolectar la \textbf{Evaluación Diagnóstica}.
+\end{frame}
+
+\begin{frame}{Bloque 5: Módulo Cero y Cierre (80 - 90 min)}
+    \textbf{Objetivo:} Asignación de entorno computacional.
+    \begin{itemize}
+        \item \textbf{Plataforma:} Asignar repositorio Git (Python 3.12, LTSpice XVII).
+        \item \textbf{Lectura:} Capítulos 1 y 2 de Alexander \& Sadiku.
+    \end{itemize}
+\end{frame}
+
+\end{document}
