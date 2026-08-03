@@ -1,0 +1,102 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{geometry}
+\geometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+\usepackage{fancyhdr}
+\usepackage{siunitx}
+\usepackage{xcolor}
+
+% Configuración de siunitx
+\sisetup{
+    output-decimal-marker = {.},
+    inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\textcolor{blue!80!black}{IMT-221 \textbar{} Solucionario}}
+\lhead{\textcolor{blue!80!black}{Ingeniería Mecatrónica \textbar{} UCB Sede Tarija}}
+\cfoot{\thepage}
+
+\begin{document}
+
+\begin{center}
+    \textbf{\Large UNIVERSIDAD CATÓLICA BOLIVIANA ``SAN PABLO'' - SEDE TARIJA}\\[0.3cm]
+    \textbf{\large Carrera de Ingeniería Mecatrónica \textbar{} Circuitos Electrónicos II (IMT-221)}\\[0.5cm]
+    \textbf{\Large SOLUCIONARIO: EVALUACIÓN DIAGNÓSTICA - GESTIÓN II-2026}
+\end{center}
+
+\vspace{0.5cm}
+\noindent\textcolor{blue!80!black}{\rule{\textwidth}{1pt}}
+
+\vspace{0.5cm}
+\noindent \textbf{Pregunta 1: Álgebra de Números Complejos (25\%)} \\
+Dado el número complejo en forma rectangular $Z = -6 + j8$:
+
+\textbf{1. Conversión a forma polar y exponencial (15\%)}
+\begin{itemize}
+    \item \textbf{Magnitud:} $R = \sqrt{(-6)^2 + 8^2} = \sqrt{36 + 64} = \sqrt{100} = 10$
+    \item \textbf{Fase:} Como la parte real es negativa y la imaginaria positiva, el fasor está en el segundo cuadrante.
+    $$\theta = 180^\circ - \arctan\left(\frac{8}{6}\right) = 180^\circ - 53.13^\circ = 126.87^\circ$$
+    \item \textbf{Resultados:}
+    Forma polar: $\mathbf{Z = 10 \angle 126.87^\circ}$ \quad \textbar \quad Forma exponencial: $\mathbf{Z = 10 e^{j126.87^\circ}}$
+\end{itemize}
+
+\textbf{2. Inverso complejo $1/Z$ en forma rectangular (10\%)}
+$$ \frac{1}{Z} = \frac{1}{-6 + j8} \cdot \frac{-6 - j8}{-6 - j8} = \frac{-6 - j8}{(-6)^2 + (8)^2} = \frac{-6 - j8}{100} $$
+$$ \mathbf{\frac{1}{Z} = -0.06 - j0.08} $$
+
+\vspace{0.5cm}
+\noindent \textbf{Pregunta 2: Análisis de Nodos en CC (25\%)} \\
+Determinar la tensión en el nodo $V_A$ aplicando la Ley de Corrientes de Kirchhoff (LCK).
+
+\textbf{Solución:}
+Asumiendo que las corrientes salen del nodo $V_A$:
+\begin{itemize}
+    \item Corriente hacia la fuente $V_s$: $I_1 = \frac{V_A - 24}{4}$
+    \item Corriente hacia tierra por $R_3$: $I_3 = \frac{V_A}{6}$
+    \item Corriente hacia la rama derecha: Dado que hay una fuente de corriente ideal $I_o = \SI{2}{\ampere}$ en serie con $R_2$, esta fija la corriente total de esa rama. Por lo tanto, la corriente que sale de $V_A$ hacia la derecha es exactamente \SI{2}{\ampere}.
+\end{itemize}
+
+Aplicando LCK ($\sum I_{salen} = 0$):
+$$ \frac{V_A - 24}{4} + \frac{V_A}{6} + 2 = 0 $$
+Multiplicando toda la ecuación por el mínimo común múltiplo (12) para eliminar denominadores:
+$$ 3(V_A - 24) + 2(V_A) + 24 = 0 $$
+$$ 3V_A - 72 + 2V_A + 24 = 0 $$
+$$ 5V_A - 48 = 0 \quad \Rightarrow \quad 5V_A = 48 \quad \Rightarrow \quad \mathbf{V_A = \SI{9.6}{\volt}} $$
+
+\vspace{0.5cm}
+\noindent \textbf{Pregunta 3: Relación Voltaje-Corriente en Capacitores (25\%)} \\
+Datos: $C = \SI{4.7}{\micro\farad}$, $v_c(0) = \SI{0}{\volt}$, $i_c(t) = \SI{10}{\milli\ampere}$ constante, $t = \SI{5}{\milli\second}$.
+
+\textbf{1. Tensión final $v_c(\SI{5}{\milli\second})$ (15\%)}
+La relación integral de tensión en un capacitor es:
+$$ v_c(t) = \frac{1}{C} \int_{0}^{t} i_c(\tau) d\tau + v_c(0) $$
+Al ser corriente constante, la integral se simplifica a una multiplicación escalar:
+$$ v_c(\SI{5}{\milli\second}) = \frac{1}{4.7 \times 10^{-6}} \left( 10 \times 10^{-3} \cdot 5 \times 10^{-3} \right) + 0 $$
+$$ v_c(\SI{5}{\milli\second}) = \frac{50 \times 10^{-6}}{4.7 \times 10^{-6}} = \frac{50}{4.7} \approx \mathbf{\SI{10.638}{\volt}} $$
+
+\textbf{2. Energía almacenada (10\%)}
+$$ W = \frac{1}{2} C v_c^2 = \frac{1}{2} (4.7 \times 10^{-6}) (10.638)^2 $$
+$$ W \approx \frac{1}{2} (4.7 \times 10^{-6}) (113.17) \approx \mathbf{\SI{265.95}{\micro\joule}} $$
+
+\vspace{0.5cm}
+\noindent \textbf{Pregunta 4: Parámetros de Ondas Senoidales (25\%)} \\
+Señal: $v(t) = 170 \cos(314.16 t - 45^\circ) \, [\unit{\volt}]$
+
+\textbf{1. Valor pico y frecuencia (15\%)}
+Por inspección directa de la forma general $v(t) = V_p \cos(\omega t + \phi)$:
+\begin{itemize}
+    \item Valor pico: $\mathbf{V_p = \SI{170}{\volt}}$
+    \item Frecuencia angular: $\omega = \SI{314.16}{\radian\per\second}$
+    \item Frecuencia cíclica: $f = \frac{\omega}{2\pi} = \frac{314.16}{2 \pi} \approx \mathbf{\SI{50}{\hertz}}$ (Frecuencia nominal de red en Bolivia).
+\end{itemize}
+
+\textbf{2. Tensión Eficaz o RMS (10\%)}
+Para una señal puramente sinusoidal, el valor eficaz es:
+$$ V_{RMS} = \frac{V_p}{\sqrt{2}} = \frac{170}{\sqrt{2}} \approx \mathbf{\SI{120.21}{\volt}} $$
+
+\end{document}
