@@ -5,11 +5,19 @@
 \usepackage[utf8]{inputenc}
 \usepackage[spanish]{babel}
 \usepackage{amsmath}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
 
 \title{Solucionario: Evaluación Diagnóstica}
-\author{Circuitos Electrónicos III (IMT-221)[cite: 1]}
+\author{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute{Circuitos Electrónicos III (IMT-221)}
+\date{Semestre 2-2026}
 
 \begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
 
 \begin{frame}{Solución I: Circuitos en DC}
     \textbf{1. Equivalente de Thévenin:}
@@ -20,44 +28,117 @@
     $$V_L = V_{th} \cdot \left( \frac{R_L}{R_{th} + R_L} \right) = 6.0 \cdot \left( \frac{1}{2.625} \right) = 2.285\text{ V}$$
 \end{frame}
 
-\begin{frame}{Solución II: Diodos y Acondicionamiento}
-    \textbf{1. Rectificador de media onda:}
-    \begin{itemize}
-        \item Conduce solo en semiciclo positivo cuando $v_{in} > 0.7\text{ V}$.
-        \item Voltaje pico: $V_p = 10\text{ V} - 0.7\text{ V} = 9.3\text{ V}$.
-    \end{itemize}
-    \vspace{0.3cm}
-    \textbf{2. Diodo Zener:}
-    \begin{itemize}
-        \item Actúa como regulador limitador.
-        \item Cuando la entrada supera los $5.8\text{ V}$ (es decir, $5.1\text{ V}$ Zener + $0.7\text{ V}$ diodo en serie, o si el Zener está directo a la carga, recorta a $5.1\text{ V}$).
-        \item Salida constante (recortada) a $5.1\text{ V}$.
-    \end{itemize}
+\begin{frame}{Solución II.1: Diodos - Rectificador de Media Onda}
+    El diodo conduce solo en el semiciclo positivo cuando $v_{in} > 0.7\text{ V}$. 
+    Voltaje pico alcanzado: $V_p = 10\text{ V} - 0.7\text{ V} = 9.3\text{ V}$.
+    
+    \vspace{0.1cm}
+    \begin{center}
+        \begin{tikzpicture}
+            \begin{axis}[
+                width=0.85\textwidth, height=4.2cm, % Mantiene la proporción optimizada
+                axis lines=middle,
+                domain=0:0.0333,
+                samples=200,
+                xlabel={$t\text{ (s)}$},
+                ylabel={$v(t)\text{ [V]}$},
+                % Ancla invertida para evitar recorte superior
+                ylabel style={anchor=north west, xshift=0.1cm, yshift=-0.1cm},
+                ymin=-12, ymax=13, % Espacio de respiro superior
+                xtick={0, 0.0083, 0.0166, 0.025, 0.0333},
+                xticklabels={0, $T/2$, $T$, $3T/2$, $2T$},
+                ytick={-10, 0, 10},
+                % Leyenda inferior horizontal para no superponer la gráfica
+                legend style={at={(0.5,-0.35)}, anchor=north, legend columns=-1, draw=none, fill=none, font=\small}
+            ]
+            % Señal de entrada
+            \addplot[blue, dashed, thick] {10*sin(deg(2*pi*60*x))};
+            \addlegendentry{$v_{in}(t)$}
+            
+            % Señal de salida rectificada
+            \addplot[red, thick] {max(0, 10*sin(deg(2*pi*60*x)) - 0.7)};
+            \addlegendentry{$v_{out}(t)\hspace{0.5cm}$} 
+            
+            % Líneas guía del voltaje pico
+            \draw[dotted, gray, thick] (axis cs:0,9.3) -- (axis cs:0.00416,9.3);
+            \draw[dotted, gray, thick] (axis cs:0.00416,0) -- (axis cs:0.00416,9.3) 
+                node[above right, text=black, font=\scriptsize] {$V_p = 9.3\text{ V}$};
+            \end{axis}
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Solución II.2: Diodos - Recorte con Zener}
+    Al colocar un Zener de $5.1\text{ V}$ en paralelo a la carga, este entra en ruptura inversa cuando intenta superar los $5.1\text{ V}$. Actúa limitando el pico de la señal.
+    
+    \vspace{0.1cm}
+    \begin{center}
+        \begin{tikzpicture}
+            \begin{axis}[
+                width=0.85\textwidth, height=4.2cm,
+                axis lines=middle,
+                domain=0:0.0333,
+                samples=200,
+                xlabel={$t\text{ (s)}$},
+                ylabel={$v_{out}(t)\text{ [V]}$},
+                ylabel style={anchor=north west, xshift=0.1cm, yshift=-0.1cm},
+                ymin=-2, ymax=13,
+                xtick={0, 0.0083, 0.0166},
+                xticklabels={0, $T/2$, $T$},
+                ytick={0, 5.1, 9.3},
+                legend style={at={(0.5,-0.35)}, anchor=north, legend columns=-1, draw=none, fill=none, font=\small}
+            ]
+            % Señal rectificada original
+            \addplot[gray, dashed, thick] {max(0, 10*sin(deg(2*pi*60*x)) - 0.7)};
+            \addlegendentry{Salida sin Zener}
+            
+            % Señal recortada por Zener
+            \addplot[red, thick] {min(5.1, max(0, 10*sin(deg(2*pi*60*x)) - 0.7))};
+            \addlegendentry{Salida con Zener}
+            \end{axis}
+        \end{tikzpicture}
+    \end{center}
 \end{frame}
 
 \begin{frame}{Solución III: BJT en DC}
-    \textbf{Punto de Operación Q:}
-    $$V_B \approx 15 \cdot \left( \frac{10}{43} \right) = 3.488\text{ V}$$
+    \textbf{Punto de Operación Q (Asumiendo $\beta$ alta):}
+    $$V_B \approx V_{CC} \cdot \left( \frac{R_2}{R_1 + R_2} \right) = 15 \cdot \left( \frac{10}{43} \right) = 3.488\text{ V}$$
     $$V_E = V_B - 0.7\text{ V} = 2.788\text{ V}$$
-    $$I_{CQ} \approx I_E = \frac{2.788\text{ V}}{1\text{ k}\Omega} = 2.788\text{ mA}$$
-    $$V_C = 15 - (2.788\text{ mA} \cdot 2.2\text{ k}\Omega) = 8.866\text{ V}$$
-    $$V_{CEQ} = 8.866\text{ V} - 2.788\text{ V} = 6.078\text{ V}$$
+    $$I_{CQ} \approx I_E = \frac{V_E}{R_E} = \frac{2.788\text{ V}}{1\text{ k}\Omega} = 2.788\text{ mA}$$
+    $$V_C = V_{CC} - I_{CQ} \cdot R_C = 15 - (2.788\text{ mA} \cdot 2.2\text{ k}\Omega) = 8.866\text{ V}$$
+    $$V_{CEQ} = V_C - V_E = 8.866\text{ V} - 2.788\text{ V} = 6.078\text{ V}$$
     \vspace{0.2cm}
-    \textbf{Región:} Activa Lineal ($V_{CEQ} > 0.3\text{ V}$ y $I_{CQ} > 0$).
+    \textbf{Región:} Activa Lineal ($V_{CEQ} = 6.078\text{ V} > 0.3\text{ V}$ y la unión Base-Emisor en directa).
 \end{frame}
 
-\begin{frame}{Solución IV y V: Frecuencia y Algoritmos}
-    \textbf{Frecuencia y Laplace:}
-    $$H(s) = \frac{1}{1 + s R C}$$
-    $$f_c = \frac{1}{2\pi R C} = \frac{1}{2\pi (10\times 10^3)(100\times 10^{-9})} = 159.15\text{ Hz}$$
-    Desfase en $f_c$: Exactamente $-45^\circ$.
-    \vspace{0.4cm}
+\begin{frame}{Solución IV: Respuesta Frecuencial}
+    \textbf{Función de Transferencia y Frecuencia de Corte:}
+    $$H(s) = \frac{1}{1 + s R C} \quad \implies \quad f_c = \frac{1}{2\pi R C} = 159.15\text{ Hz}$$
+    \vspace{0.1cm}
     
-    \textbf{Computación (Python):}
+    \textbf{Cálculo analítico del desfase en $f_c$:}
+    Sustituyendo $s = j\omega$ para régimen senoidal permanente, y sabiendo que en la frecuencia de corte $\omega_c = \frac{1}{RC}$:
+    $$H(j\omega_c) = \frac{1}{1 + j\omega_c R C} = \frac{1}{1 + j\left(\frac{1}{RC}\right) R C} = \frac{1}{1 + j}$$
+    El desfase $\phi$ corresponde al ángulo de la función de transferencia compleja:
+    $$\phi = \angle H(j\omega_c) = \angle(1) - \angle(1 + j)$$
+    $$\phi = 0^\circ - \arctan\left(\frac{\text{Im}}{\text{Re}}\right) = 0^\circ - \arctan(1) = -45^\circ$$
+\end{frame}
+
+\begin{frame}{Solución V: Computación Científica}
+    \textbf{Análisis del Algoritmo en Python:}
     \begin{itemize}
-        \item \textbf{Circuito físico:} Rectificador de media onda con diodo de silicio.
-        \item \textbf{Funciones Numpy:} \texttt{np.max(v\_out)} o \texttt{v\_out.max()}.
+        \item \textbf{Emulación Física:} El bloque de código \texttt{if v\_in[i] > 0.7} modela numéricamente la curva de conducción idealizada por tramos de un \textbf{diodo de silicio} en una topología de \textbf{rectificador de media onda}.
+        \item \textbf{Anulación de semiciclo:} La condición \texttt{else: v\_out[i] = 0.0} bloquea el paso de corriente, emulando la polarización inversa del semiconductor.
     \end{itemize}
+    \vspace{0.3cm}
+    \textbf{Librerías Científicas (NumPy):}
+    \begin{itemize}
+        \item Para extraer el valor pico del arreglo unidimensional resultante, se debe aplicar el método \texttt{np.max(v\_out)} o \texttt{v\_out.max()}.
+    \end{itemize}
+    
+    \begin{block}{Nota Pedagógica}
+        Este es el momento ideal para recalcar a los estudiantes por qué los bucles \texttt{for} en Python son ineficientes para procesar arreglos grandes frente a las operaciones vectorizadas de NumPy (ej. usando \texttt{np.where}).
+    \end{block}
 \end{frame}
 
 \end{document}

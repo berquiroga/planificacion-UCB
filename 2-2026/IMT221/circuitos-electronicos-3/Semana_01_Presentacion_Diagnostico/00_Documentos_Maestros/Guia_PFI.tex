@@ -11,11 +11,16 @@
 \usepackage{booktabs}
 \usepackage{enumitem}
 \usepackage{fancyhdr}
-\usepackage{hyperref}
-\usepackage{tikz} 
-% NOTA: Se eliminó usetikzlibrary{positioning} para evitar el error de compilación.
 
-% Configuración de hipervínculos
+% Paquetes para esquemas vectoriales
+\usepackage{tikz}
+% arrows.meta: necesario para las puntas de flecha tipo 'Stealth'
+% positioning: necesario para usar 'right=of'
+% babel: soluciona automáticamente los conflictos con babel-spanish y caracteres activos (<, >)
+\usetikzlibrary{positioning, arrows.meta, babel}
+
+% Configuración de hipervínculos (hyperref SIEMPRE debe ser el último paquete)
+\usepackage{hyperref}
 \hypersetup{
     colorlinks=true,
     linkcolor=blue!70!black,
@@ -25,11 +30,13 @@
 
 % Configuración de encabezados y pies de página
 \pagestyle{fancy}
+% Aumentado a 15pt para evitar la advertencia de compilación de fancyhdr con fuentes 11pt
+\setlength{\headheight}{15pt}
 \fancyhf{}
-\fancyhead[L]{\textbf{Circuitos Electrónicos III (IMT-221)}[cite: 1]}
+\fancyhead[L]{\textbf{Circuitos Electrónicos III (IMT-221)}}
 \fancyhead[R]{Proyecto Final Integrador (PFI)}
 \fancyfoot[C]{\thepage}
-\fancyfoot[R]{\footnotesize Semestre 2-2026[cite: 1]}
+\fancyfoot[R]{\footnotesize Semestre 2-2026}
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0.4pt}
 
@@ -54,8 +61,8 @@
 % PORTADA / ENCABEZADO
 % ==========================================
 \begin{center}
-    {\Large \textbf{UNIVERSIDAD CATÓLICA BOLIVIANA ``SAN PABLO'' – SEDE TARIJA[cite: 1]}}\\[0.2cm]
-    {\large Departamento de Ciencias de la Tecnología e Innovación[cite: 1]}\\[0.5cm]
+    {\Large \textbf{UNIVERSIDAD CATÓLICA BOLIVIANA ``SAN PABLO'' – SEDE TARIJA}}\\[0.2cm]
+    {\large Departamento de Ciencias de la Tecnología e Innovación}\\[0.5cm]
     
     \rule{\textwidth}{0.5pt}\\[0.4cm]
     {\huge \textbf{DOCUMENTO MAESTRO: PITCH Y GUÍA DE INICIO}}\\[0.2cm]
@@ -64,9 +71,9 @@
 \end{center}
 
 \begin{flushleft}
-    \textbf{Carrera:} Ingeniería Mecatrónica / Ingeniería Biomédica[cite: 1] \\
-    \textbf{Asignatura:} Circuitos Electrónicos III (IMT-221) – Semestre 2-2026[cite: 1] \\
-    \textbf{Docente:} M.Sc. Ing. Bernardo Quiroga Turdera[cite: 1]
+    \textbf{Carrera:} Ingeniería Mecatrónica / Ingeniería Biomédica \\
+    \textbf{Asignatura:} Circuitos Electrónicos III (IMT-221) – Semestre 2-2026 \\
+    \textbf{Docente:} M.Sc. Ing. Bernardo Quiroga Turdera
 \end{flushleft}
 
 \vspace{0.5cm}
@@ -87,7 +94,7 @@ En esta asignatura no construiremos circuitos de juguete ni memorizaremos fórmu
 
 El Proyecto Final Integrador (PFI) consiste en el \textbf{``Diseño, Simulación e Implementación de una Etapa Analógica Bidireccional de Potencia, Medición de Corriente y Protección''}. Para responder a tu perfil profesional específico, el proyecto adopta una aplicación diferenciada según tu carrera:
 
-\begin{info}[Para Estudiantes de Ingeniería Mecatrónica[cite: 1]]
+\begin{info}[Para Estudiantes de Ingeniería Mecatrónica]
     \textbf{Título del Proyecto:} Driver Inteligente de Lazo Cerrado para el Control de Velocidad y Torque de un Actuador DC.\\
     \textbf{Aplicación:} Robótica móvil, servocontroladores industriales y posicionamiento de precisión.
 \end{info}
@@ -105,27 +112,25 @@ El Proyecto Final Integrador (PFI) consiste en el \textbf{``Diseño, Simulación
 El proyecto no se entrega al final del semestre; se construye de forma incremental a lo largo de 4 Hitos evaluativos, donde cada unidad temática aporta un bloque físico funcional:
 
 \begin{center}
-\begin{tikzpicture}[scale=0.9, transform shape]
-    % Uso de tikzset (moderno) en lugar de tikzstyle
-    \tikzset{
-        hito/.style={rectangle, draw=blue!80!black, fill=blue!10, text width=3.5cm, text centered, rounded corners, minimum height=1.5cm, font=\small},
-        flecha/.style={thick,->,>=stealth}
-    }
+\resizebox{\textwidth}{!}{% <-- Ajusta todo el gráfico al ancho exacto de los márgenes
+\begin{tikzpicture}[
+    node distance=1.5cm, % Reducido ligeramente para mejor proporción
+    hito/.style={rectangle, draw=blue!80!black, fill=blue!10, text width=3.5cm, align=center, rounded corners, minimum height=1.5cm, font=\small},
+    flecha/.style={thick, ->, >=Stealth}
+]
+    \node[hito] (h1) {\textbf{Hito 1: Sem 4}\\Protección y Clamping};
+    \node[hito, right=of h1] (h2) {\textbf{Hito 2: Sem 8}\\Sensado por Shunt};
+    \node[hito, right=of h2] (h3) {\textbf{Hito 3: Sem 13}\\Puente H de Potencia};
+    \node[hito, right=of h3] (h4) {\textbf{Hito 4: Sem 16}\\Lazo Cerrado y Estabilidad};
 
-    % Posicionamiento absoluto para eliminar dependencias y evitar el error "of"
-    \node[hito] (h1) at (0,0) {\textbf{Hito 1: Sem 4[cite: 1]}\\Protección y Clamping};
-    \node[hito] (h2) at (4.5,0) {\textbf{Hito 2: Sem 8[cite: 1]}\\Sensado por Shunt};
-    \node[hito] (h3) at (9.0,0) {\textbf{Hito 3: Sem 13[cite: 1]}\\Puente H de Potencia};
-    \node[hito] (h4) at (13.5,0) {\textbf{Hito 4: Sem 16[cite: 1]}\\Lazo Cerrado y Estabilidad};
-
-    % Conexiones
     \draw[flecha] (h1) -- (h2);
     \draw[flecha] (h2) -- (h3);
     \draw[flecha] (h3) -- (h4);
-\end{tikzpicture}
+\end{tikzpicture}%
+}
 \end{center}
 
-\begin{description}[leftmargin=!, labelwidth=\widthof{\bfseries Hito 1 (Semana 4):}]
+\begin{description}[leftmargin=3.2cm]
     \item[Hito 1 (Semana 4):] \textbf{Módulo de Protección y Clamping Analógico.}\\
     Diseño e implementación de diodos Flyback para absorber transitorios inductivos y una red limitadora Zener ($0\text{ V}$ a $+5.1\text{ V}$) que protege el conversor analógico-digital (ADC).
     
@@ -144,7 +149,7 @@ El proyecto no se entrega al final del semestre; se construye de forma increment
 % ==========================================
 \section{Metodología de Trabajo: Los 4 Pilares Prácticos y Reglas del Juego}
 
-Cada entregable del proyecto se rige bajo la metodología internacional \textbf{CDIO (Concebir - Diseñar - Implementar - Operar)}[cite: 1]. Para aprobar cada hito, tu equipo debe demostrar cuatro pilares:
+Cada entregable del proyecto se rige bajo la metodología internacional \textbf{CDIO (Concebir - Diseñar - Implementar - Operar)}. Para aprobar cada hito, tu equipo debe demostrar cuatro pilares:
 
 \begin{enumerate}
     \item \textbf{Fundamentación Teórica en Python:} No se acepta el diseño por ensayo y error. Cada resistor, capacitor y transistor debe estar calculado mediante modelos matemáticos escritos en scripts interactivos de Python (Jupyter Notebooks).
@@ -162,7 +167,7 @@ Cada entregable del proyecto se rige bajo la metodología internacional \textbf{
 % ==========================================
 \section{Entregable Final y Evaluación (Semana 18)}
 
-El semestre culmina en la Semana 18 con dos entregables integradores[cite: 1]:
+El semestre culmina en la Semana 18 con dos entregables integradores:
 
 \begin{itemize}
     \item \textbf{Demostración del Hardware en Vivo:} Presentación pública de tu placa funcionando de forma estable ante un panel evaluador de ingenieros.
