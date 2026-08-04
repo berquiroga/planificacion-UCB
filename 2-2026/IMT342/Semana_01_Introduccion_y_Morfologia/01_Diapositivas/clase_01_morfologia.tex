@@ -1,0 +1,97 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{Boadilla}
+\usecolortheme{seahorse}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{amsmath}
+
+\title[Introducción y Morfología]{Clase 1: Introducción a la Robótica y Morfología de Manipuladores}
+\subtitle{Robótica (IMT-342)}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' \\ Sede Tarija}
+\date{4 de agosto de 2026}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Encuadre de la Asignatura}
+    \textbf{Competencia General:} \\
+    Diseñar, simular y/o implementar sistemas robóticos para reemplazar o colaborar a la acción humana en tareas complejas, repetitivas y de alto riesgo. %[cite: 1]
+    
+    \vspace{0.5cm}
+    \textbf{Sistema de Evaluación:} %[cite: 1]
+    \begin{itemize}
+        \item \textbf{50\% Evaluación Continua:} Hitos del Proyecto Final Integrador (PFI), laboratorios y exámenes cortos.
+        \item \textbf{50\% Evaluación Final:} Defensa de la celda robótica operando de manera 100\% autónoma.
+    \end{itemize}
+    \vspace{0.3cm}
+    \textit{Nota: La habilitación para la evaluación final requiere un mínimo de 50/100 puntos en la evaluación continua.} %[cite: 1]
+\end{frame}
+
+\begin{frame}{El Reto del Semestre (PFI)}
+    \begin{block}{Celda de Manufactura Flexible Inteligente}
+        Diseño, simulación e implementación de una celda de manufactura con el \textbf{ABB IRB 120} guiado por visión artificial.
+    \end{block}
+    
+    \textbf{Restricciones de Ingeniería:}
+    \begin{itemize}
+        \item Precisión exigida: Error absoluto lineal $< 1.5$ mm.
+        \item Tiempo de ciclo: $< 8$ segundos por pieza.
+        \item \textbf{Regla Anti-Caja Negra:} Prohibido usar librerías iterativas (MoveIt!) para cinemática. Todos los algoritmos matemáticos deben codificarse desde cero en Python.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Morfología de un Manipulador Industrial}
+    \textbf{Cadena Cinemática Abierta:}
+    Secuencia de eslabones rígidos unidos por articulaciones rotacionales (Juntas de Revolución $R$).
+    
+    \vspace{0.3cm}
+    \textbf{Anatomía del ABB IRB 120 (6 GDL):} %[cite: 1]
+    \begin{itemize}
+        \item \textbf{Base y Hombro (Juntas 1 y 2):} Posicionamiento espacial grueso.
+        \item \textbf{Codo (Junta 3):} Alcance en el plano vertical.
+        \item \textbf{Muñeca Esférica (Juntas 4, 5 y 6):} Orientación del efector final. Los tres ejes intersectan en un único punto común ($p_w$), clave para el Desacoplamiento de Pieper.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Actuación y Transmisión}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{Servomotores AC Brushless:}
+        \begin{itemize}
+            \item Control de corriente preciso.
+            \item Codificadores absolutos en cada junta.
+        \end{itemize}
+        
+        \vspace{0.3cm}
+        \textbf{Reductores Armónicos (Harmonic Drives):}
+        \begin{itemize}
+            \item Cero juego mecánico (backlash).
+            \item Alta relación de reducción en volumen compacto.
+        \end{itemize}
+        
+        \column{0.5\textwidth}
+        \textbf{Carga Útil y Espacio de Trabajo:}
+        \begin{itemize}
+            \item Alcance máximo: $580$ mm.
+            \item Carga útil nominal (Payload): $3$ kg.
+            \item Repetibilidad de posición: $0.01$ mm.
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Próximos Pasos}
+    \begin{block}{Para la próxima semana}
+        Dado que este jueves es feriado nacional (6 de agosto), nos reencontramos el próximo martes. 
+        \vspace{0.2cm}
+        
+        \textbf{Requisito obligatorio:}
+        Traer laptops con Ubuntu 24.04 LTS y ROS instalados para comenzar a trabajar con los archivos CAD y la geometría del Hito 1.
+    \end{block}
+\end{frame}
+
+\end{document}

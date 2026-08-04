@@ -1,0 +1,290 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins, breakable}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, calc, shapes.geometric, babel}
+\usepackage{hyperref}
+
+% Configuración de colores para código fuente Python
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.96,0.96,0.96}
+
+\lstset{
+    language=Python,
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen}\itshape,
+    keywordstyle=\color{blue}\bfseries,
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=4
+}
+
+% Entorno personalizado para los enunciados
+\newtcolorbox{enunciado}[1][]{
+    enhanced,
+    breakable,
+    colback=blue!5!white,
+    colframe=blue!80!black,
+    fonttitle=\bfseries,
+    title=Pregunta #1,
+    attach boxed title to top left={xshift=5mm, yshift=-2mm},
+    boxed title style={colback=blue!80!black}
+}
+
+\begin{document}
+
+% ==========================================
+% CABECERA INSTITUCIONAL REDISEÑADA
+% ==========================================
+\begin{center}
+    {\Large \textbf{UNIVERSIDAD CATÓLICA BOLIVIANA ``SAN PABLO'' – SEDE TARIJA}}\\[0.2cm]
+    {\large Departamento de Ciencias Exactas e Ingenierías | Carrera: Ingeniería Mecatrónica}\\[0.4cm]
+    
+    \rule{\textwidth}{0.5pt}\\[0.4cm]
+    {\huge \textbf{SOLUCIONARIO OFICIAL}}\\[0.2cm]
+    {\Large \textbf{EVALUACIÓN DIAGNÓSTICA – ROBÓTICA (IMT-342)}}\\[0.4cm]
+    \rule{\textwidth}{0.5pt}\\[0.4cm]
+\end{center}
+
+\begin{flushleft}
+    \textbf{Docente:} M.Sc. Ing. Bernardo Quiroga Turdera \\
+    \textbf{Gestión:} Semestre II-2026 \\
+    \textit{\textbf{Propósito:} Este documento sirve para revisar y tabular rápidamente las falencias del curso.}
+\end{flushleft}
+
+\vspace{0.4cm}
+
+% ==========================================
+% PARTE A
+% ==========================================
+\section*{Parte A: Álgebra Lineal y Geometría Espacial (40\%)}
+
+\begin{enunciado}[1: Rotación de un vector en 2D]
+Dado $p = [2, 3]^T$, calcular $p'$ tras una rotación de $\theta = 30^\circ$ en sentido antihorario.
+\end{enunciado}
+
+\textbf{Solución:}\\
+La matriz de rotación en 2D está dada por:
+$$R(\theta) = \begin{bmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{bmatrix}$$
+Evaluando para $\theta = 30^\circ$ ($\cos(30^\circ) = \frac{\sqrt{3}}{2} \approx 0.866$, $\sin(30^\circ) = \frac{1}{2} = 0.5$):
+$$R(30^\circ) = \begin{bmatrix} 0.866 & -0.500 \\ 0.500 & 0.866 \end{bmatrix}$$
+Multiplicando por el vector de entrada $p$:
+$$p' = R \cdot p = \begin{bmatrix} 0.866 & -0.500 \\ 0.500 & 0.866 \end{bmatrix} \begin{bmatrix} 2 \\ 3 \end{bmatrix} = \begin{bmatrix} 2(0.866) - 3(0.5) \\ 2(0.5) + 3(0.866) \end{bmatrix} = \begin{bmatrix} 0.232 \\ 3.598 \end{bmatrix}$$
+
+% Gráfica agregada 1
+\begin{center}
+\begin{tikzpicture}[>=Stealth, scale=0.9]
+    % Cuadrícula y ejes
+    \draw[lightgray, very thin, step=1cm] (-1,-1) grid (4,5);
+    \draw[->, thick] (-1,0) -- (4,0) node[right] {$x$};
+    \draw[->, thick] (0,-1) -- (0,5) node[above] {$y$};
+    
+    % Vector original
+    \draw[->, thick, blue] (0,0) -- (2,3) node[right, fill=white, inner sep=1pt] {$p = \begin{bmatrix}2\\3\end{bmatrix}$};
+    
+    % Vector rotado
+    \draw[->, thick, red] (0,0) -- (0.232, 3.598) node[above left, fill=white, inner sep=1pt] {$p' = \begin{bmatrix}0.23\\3.60\end{bmatrix}$};
+    
+    % Arco de ángulo
+    \draw[->, thick, green!60!black] (1,1.5) arc (56.31:86.31:1.8) node[midway, above right] {$30^\circ$};
+\end{tikzpicture}
+\end{center}
+
+\begin{enunciado}[2: Propiedades de la matriz de rotación en SO(3)]
+Demostrar por qué $\det(R) = +1$ y $R^{-1} = R^T$.
+\end{enunciado}
+
+\textbf{Solución:}
+\begin{itemize}
+    \item \textbf{Ortogonalidad ($R^{-1} = R^T$):} Una matriz de rotación está formada por columnas que representan los vectores unitarios de los ejes de un sistema de coordenadas proyectados sobre otro. Como los ejes son mutuamente ortogonales y de longitud unitaria, el producto escalar entre columnas distintas es $0$ y con la misma columna es $1$. Por definición, $R^T R = I$, lo que implica directamente que $R^{-1} = R^T$.
+    \item \textbf{Determinante ($\det(R) = +1$):} Aplicando la propiedad del determinante al producto de ortogonalidad:
+    $$\det(R^T R) = \det(R^T) \cdot \det(R) = (\det(R))^2 = \det(I) = 1 \implies \det(R) = \pm 1$$
+    Se escoge el signo positivo $+1$ porque $R$ representa una rotación propia que conserva la orientación de la regla de la mano derecha. Un determinante de $-1$ representaría una reflexión.
+\end{itemize}
+
+\begin{enunciado}[3: Significado de la Descomposición en Valores Singulares (SVD)]
+Explicar qué representa la descomposición $A = U \Sigma V^T$.
+\end{enunciado}
+
+\textbf{Solución:}
+\begin{itemize}
+    \item \textbf{$V$ (Vectores singulares derechos):} Representan una base ortonormal del espacio de entrada (dominio). Indican las direcciones principales antes de ser transformadas.
+    \item \textbf{$\Sigma$ (Valores singulares $\sigma_i$):} Es una matriz diagonal con valores reales no negativos que representan los factores de amplificación o escala a lo largo de cada eje principal.
+    \item \textbf{$U$ (Vectores singulares izquierdos):} Representan una base ortonormal del espacio de salida (rango). Indican las direcciones principales después de la transformación.
+\end{itemize}
+
+\textbf{Interpretación geométrica:} Una transformación lineal mapea una esfera unitaria en el espacio de entrada hacia una elipse en el espacio de salida, cuyos semiejes tienen longitudes $\sigma_i$ en las direcciones de los vectores $u_i$.
+
+% Gráfica agregada 2
+\begin{center}
+\begin{tikzpicture}[>=Stealth, scale=0.85]
+    % Espacio de entrada
+    \begin{scope}[shift={(0,0)}]
+        \draw[->, gray] (-2.5,0) -- (2.5,0);
+        \draw[->, gray] (0,-2.5) -- (0,2.5);
+        \draw[thick, blue!80!black] (0,0) circle (1.5);
+        \draw[->, thick, blue] (0,0) -- (1.5,0) node[below right] {$v_1$};
+        \draw[->, thick, blue] (0,0) -- (0,1.5) node[above left] {$v_2$};
+        \node[below] at (0,-2.5) {Espacio de Entrada ($V$)};
+    \end{scope}
+    
+    % Flecha de transformación
+    \draw[->, ultra thick, gray] (3.5, 0) -- (6.5, 0) node[midway, above, text=black] {Transformación $A$};
+    
+    % Espacio de salida
+    \begin{scope}[shift={(10,0)}, rotate=30]
+        % Rotar el sistema de coordenadas
+        \draw[->, gray, rotate=-30] (-3.5,0) -- (3.5,0);
+        \draw[->, gray, rotate=-30] (0,-3) -- (0,3);
+        \draw[thick, red!80!black] (0,0) ellipse (2.5cm and 1cm);
+        \draw[->, thick, red] (0,0) -- (2.5,0) node[right] {$\sigma_1 u_1$};
+        \draw[->, thick, red] (0,0) -- (0,1) node[above left] {$\sigma_2 u_2$};
+        \node[below, rotate=-30] at (0,-3) {Espacio de Salida ($U$)};
+    \end{scope}
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.5cm}
+
+% ==========================================
+% PARTE B
+% ==========================================
+\section*{Parte B: Teoría de Control Clásico (40\%)}
+
+\begin{enunciado}[4: Función de transferencia y comportamiento dinámico]
+Dada la ecuación $\ddot{\theta}(t) + 5\dot{\theta}(t) + 4\theta(t) = \tau(t)$, hallar $G(s)$ y el tipo de amortiguamiento.
+\end{enunciado}
+
+\textbf{Solución:}\\
+Aplicando la Transformada de Laplace con condiciones iniciales nulas:
+$$s^2 \Theta(s) + 5s \Theta(s) + 4 \Theta(s) = \tau(s)$$
+$$G(s) = \frac{\Theta(s)}{\tau(s)} = \frac{1}{s^2 + 5s + 4} = \frac{1}{(s+1)(s+4)}$$
+
+\textbf{Análisis de Polos:} Factorizando el denominador, los polos del sistema se ubican en $s_1 = -1$ y $s_2 = -4$.
+
+\textbf{Tipo de Amortiguamiento:} Dado que la ecuación característica tiene la forma $s^2 + 2\zeta\omega_n s + \omega_n^2$:
+$$\omega_n^2 = 4 \implies \omega_n = 2\text{ rad/s}$$
+$$2\zeta\omega_n = 5 \implies 2\zeta(2) = 5 \implies \zeta = \frac{5}{4} = 1.25$$
+Como el factor de amortiguamiento es $\zeta > 1$ (y los dos polos son reales, negativos y distintos), el sistema es \textbf{sobreamortiguado} (no presenta oscilaciones transitorias).
+
+% Gráfica agregada 3
+\begin{center}
+\begin{tikzpicture}[>=Stealth, scale=1]
+    % Plano complejo
+    \draw[->, thick] (-5.5, 0) -- (1.5, 0) node[right] {Eje Real ($\sigma$)};
+    \draw[->, thick] (0, -2) -- (0, 2) node[above] {Eje Imaginario ($j\omega$)};
+    
+    % Polos (X)
+    \node[red, font=\Large] at (-1,0) {$\times$};
+    \node[below right, font=\small] at (-1,0) {$s_1=-1$};
+    
+    \node[red, font=\Large] at (-4,0) {$\times$};
+    \node[below right, font=\small] at (-4,0) {$s_2=-4$};
+    
+    % Leyenda de estabilidad
+    \filldraw[fill=red!10, draw=red, dashed] (-5.5, -2) rectangle (0, 2);
+    \node[red!70!black, font=\small] at (-2.75, 1.5) {Región Estable};
+\end{tikzpicture}
+\end{center}
+
+\begin{enunciado}[5: Lazo de Control PID y efecto de la ganancia derivativa ($K_d$)]
+Diagrama de bloques de PID y efecto de $K_d$ sobre el ruido.
+\end{enunciado}
+
+\textbf{Solución:}
+
+\textbf{Diagrama de Bloques:}
+A la entrada se tiene la referencia $R(s)$, un sumador que calcula el error $E(s) = R(s) - Y(s)$, el controlador PID $C(s)$, la planta $P(s)$, y una realimentación unitaria negativa desde la salida hacia el sumador.
+
+% Gráfica agregada 4
+\begin{center}
+\begin{tikzpicture}[
+    auto, node distance=2cm, >=Stealth,
+    block/.style={draw=blue!80!black, fill=blue!5, rectangle, minimum height=1cm, align=center, thick},
+    sum/.style={draw=blue!80!black, fill=blue!5, circle, thick, minimum size=0.6cm, inner sep=0pt}
+]
+    % Nodos
+    \node[coordinate] (input) {};
+    \node[sum, right=1.5cm of input] (sum) {$\Sigma$};
+    \node[block, right=1.5cm of sum] (pid) {$C(s) = K_p + \frac{K_i}{s} + K_d s$};
+    \node[block, right=2cm of pid] (plant) {$P(s)$};
+    \node[coordinate, right=2cm of plant] (output) {};
+
+    % Conexiones
+    \draw[->, thick] (input) -- node {$R(s)$} (sum);
+    \draw[->, thick] (sum) -- node {$E(s)$} (pid);
+    \draw[->, thick] (pid) -- node {$U(s)$} (plant);
+    \draw[->, thick] (plant) -- node[name=y] {$Y(s)$} (output);
+    
+    % Realimentación
+    \draw[->, thick] (y) -- ++(0,-1.5) -| node[pos=0.95, right] {$-$} (sum);
+\end{tikzpicture}
+\end{center}
+
+\textbf{Efecto de $K_d$ sobre el ruido:} 
+La acción derivativa calcula la tasa de cambio instantánea del error ($\frac{de(t)}{dt}$). El ruido de alta frecuencia introducido por sensores tiene variaciones muy rápidas (alta pendiente), por lo que la derivada multiplica la amplitud de dicho ruido por la frecuencia de la señal ($\omega$). Un valor de $K_d$ excesivamente alto amplifica enormemente el ruido, provocando saturación en las etapas de potencia y vibraciones mecánicas (\textit{chattering}) en los servomotores.
+
+\vspace{0.5cm}
+
+% ==========================================
+% PARTE C
+% ==========================================
+\section*{Parte C: Lógica y Programación (20\%)}
+
+\begin{enunciado}[6: Algoritmo para transponer una matriz de $3 \times 3$]
+Algoritmo en Python/pseudocódigo sin librerías externas.
+\end{enunciado}
+
+\textbf{Solución:}
+\begin{lstlisting}
+# Matriz de entrada de 3x3
+A = [[1, 2, 3], 
+     [4, 5, 6], 
+     [7, 8, 9]]
+
+# Inicializacion de la matriz transpuesta con ceros
+A_T = [[0, 0, 0], 
+       [0, 0, 0], 
+       [0, 0, 0]]
+
+# Bucles anidados para la transposicion
+for i in range(3):
+    for j in range(3):
+        A_T[j][i] = A[i][j]
+
+# A_T resulta en [[1, 4, 7], [2, 5, 8], [3, 6, 9]]
+\end{lstlisting}
+
+\begin{enunciado}[7: Ejecución síncrona vs. asíncrona y Race Conditions]
+Diferencias entre procesos síncronos/asíncronos y definición de condición de carrera.
+\end{enunciado}
+
+\textbf{Solución:}
+\begin{itemize}
+    \item \textbf{Síncrono (Blocking):} La ejecución del programa se detiene y espera a que una tarea (como leer un puerto serie) termine por completo antes de continuar con la siguiente línea de código.
+    \item \textbf{Asíncrono (Event-driven):} El programa principal continúa su ejecución sin detenerse; la tarea se procesa en segundo plano y notifica su finalización mediante interrupciones o callbacks.
+    \item \textbf{Condición de Carrera (Race Condition):} Ocurre en sistemas concurrentes cuando dos o más hilos o procesos intentan acceder y modificar un recurso compartido (como una variable en memoria o un puerto de I/O) de forma simultánea. El resultado final depende impredeciblemente del orden exacto de ejecución de los hilos, pudiendo generar corrupción de datos o comportamientos erráticos en el robot.
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,185 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{xcolor} % Agregado para colores profesionales
+\usepackage{tikz}
+% Librerías modernas: positioning para ubicación relativa, babel para conflictos con español, arrows.meta para flechas Stealth
+\usetikzlibrary{positioning, arrows.meta, babel} 
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{hyperref} % hyperref siempre debe ser el último paquete de formato
+
+\geometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+\hypersetup{colorlinks=true, linkcolor=blue!70!black, urlcolor=blue!70!black}
+
+% Formato de secciones
+\titleformat{\section}{\large\bfseries\uppercase}{\thesection.}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+\begin{document}
+
+\begin{center}
+    \textbf{\Large GUÍA OFICIAL DEL ESTUDIANTE: PROYECTO FINAL INTEGRADOR (PFI)} \\
+    \vspace{0.3cm}
+    \textbf{\large UNIVERSIDAD CATÓLICA BOLIVIANA ``SAN PABLO'' -- SEDE TARIJA} \\
+    \vspace{0.2cm}
+    Departamento: Ciencias Exactas e Ingenierías | Carrera: Ingeniería Mecatrónica \\
+    Asignatura: Robótica (IMT-342) | Gestión: Semestre II-2026 \\
+    Docente: M.Sc. Ing. Bernardo Quiroga Turdera \\
+    \vspace{0.4cm}
+    \textit{\textbf{Documento: Pliego de Especificaciones Técnicas y Contrato de Ingeniería (PFI)}}
+\end{center}
+
+\vspace{0.5cm}
+\section{Ficha Técnica y Objetivos SMART}
+
+\subsection*{Título Oficial del Proyecto}
+\textbf{Celda de Manufactura Flexible Inteligente: Clasificación y Paletizado Autónomo por Visión Artificial sobre el ABB IRB 120.}
+
+\subsection*{Definición del Problema de Ingeniería}
+En la industria moderna de manufactura y distribución logística, la variabilidad de los productos exige celdas de automatización flexible capaces de adaptarse a cambios sin necesidad de reprogramación rígida ni mecanismos de guiado mecánico. 
+
+El equipo de ingeniería debe concebir, diseñar, implementar y operar (marco CDIO) una estación mecatrónica autónoma. Un operario colocará manualmente una pieza industrial (prismática o cilíndrica) en una posición $(x, y)$ y orientación $(\theta)$ arbitraria e impredecible dentro de una mesa de trabajo. El sistema deberá:
+\begin{itemize}[label=\checkmark]
+    \item Capturar y rectificar la imagen mediante una cámara USB cenital.
+    \item Detectar la pieza y calcular su matriz de transformación espacial respecto a la base del robot empleando homografía plana resuelta por Descomposición en Valores Singulares (SVD).
+    \item Generar una trayectoria continua con perfiles de velocidad suaves libres de singularidades.
+    \item Transmitir las órdenes por red industrial al controlador ABB IRC5 para aprehender la pieza con una pinza neumática y paletizarla ordenadamente.
+\end{itemize}
+
+\vspace{0.4cm}
+\begin{center}
+\begin{tikzpicture}[
+    node distance=0.6cm, 
+    auto, 
+    thick,
+    box/.style={draw=blue!80!black, fill=blue!5, rectangle, rounded corners, minimum width=7cm, minimum height=0.8cm, align=center, font=\small\bfseries},
+    arrow/.style={->, >=Stealth, thick, draw=gray!80!black}
+]
+    
+    \node[box] (cam) {[Cámara USB Cenital (2D)]};
+    \node[box, below=of cam] (cv) {[Nodo OpenCV / ROS (EC3)]};
+    \node[box, below=of cv] (ik) {[Resolvedor Pieper (EC2)]};
+    \node[box, below=of ik] (ros) {[Driver ROS-Industrial (EC4)]};
+    \node[box, below=of ros] (irc5) {[Controlador ABB IRC5]};
+    \node[box, below=of irc5] (robot) {[Robot ABB IRB 120 Real]};
+    
+    \draw[arrow] (cam) -- node[right, font=\footnotesize] {Flujo de Video} (cv);
+    \draw[arrow] (cv) -- node[right, font=\footnotesize] {Pose en mm} (ik);
+    \draw[arrow] (ik) -- node[right, font=\footnotesize] {Trayectoria LSPB} (ros);
+    \draw[arrow] (ros) -- node[right, font=\footnotesize] {Socket TCP/IP} (irc5);
+    \draw[arrow] (irc5) -- node[right, font=\footnotesize] {Comandos RAPID} (robot);
+\end{tikzpicture}
+\end{center}
+
+\subsection*{Objetivos Cuantitativos del Proyecto (KPIs de Desempeño)}
+\begin{itemize}
+    \item \textbf{KPI-1 (Precisión Posicional):} Error absoluto lineal de posicionamiento final entre el centro de la pinza y el centroide real de la pieza $\Delta E < 1.5\text{ mm}$.
+    \item \textbf{KPI-2 (Eficiencia Temporal):} Tiempo de ciclo total $t_{\text{ciclo}} < 8\text{ s}$ por pieza (desde detección hasta descarga).
+    \item \textbf{KPI-3 (Tasa de Éxito):} $> 90\%$ de clasificaciones autónomas correctas en 10 ejecuciones continuas sin colisiones.
+    \item \textbf{KPI-4 (Seguridad Industrial):} Detención automática de emergencia ante desconexión de red con latencia de respuesta $< 15\text{ ms}$ cumpliendo la norma ISO 10218-1/2.
+\end{itemize}
+
+\section{Arquitectura de Hardware y Software (BOM)}
+Para garantizar la homogeneidad en el desarrollo, cada equipo utilizará exclusivamente la siguiente infraestructura autorizada:
+
+\vspace{0.3cm}
+\noindent
+\begin{tabularx}{\textwidth}{@{} l l X @{}}
+\toprule
+\textbf{Categoría} & \textbf{Componente} & \textbf{Especificación Autorizada} \\
+\midrule
+Hardware & Manipulador Industrial & ABB IRB 120 de 6 GDL (Alcance: $580\text{ mm}$, Carga: $3\text{ kg}$). \\
+Controlador & Unidad de Potencia & ABB IRC5 con módulo Ethernet TCP/IP. \\
+Efector Final & Actuador Neumático & Pinza de doble efecto operada por electroválvulas (24 V). \\
+Sensor Óptico & Cámara USB Cenital & Sensor CMOS HD/FullHD, enfoque manual fijado, montaje a $80\text{ cm}$. \\
+Sistema Operat. & Entorno de Desarrollo & Linux Ubuntu 24.04 LTS (nativa o dual-boot). \\
+Middleware & Ecosistema Robótico & ROS (Robot Operating System) versión Noetic / Humble. \\
+Librerías & Entorno de Cómputo & Python 3.x, NumPy, OpenCV. \\
+Industrial & Simulación y Lenguaje & ABB RobotStudio y lenguaje nativo RAPID \texttt{.mod}. \\
+Metrología & Instrumento Verificación & Calibrador Vernier digital de precisión ($\pm 0.02\text{ mm}$). \\
+\bottomrule
+\end{tabularx}
+
+\section{Condiciones de Frontera y Reglas ``Anti-Caja Negra''}
+Para certificar la apropiación de las competencias matemáticas, el proyecto está sujeto a estas restricciones:
+\begin{enumerate}
+    \item \textbf{Prohibición de MoveIt! o Resolvedores Automáticos:} El cálculo de la cinemática inversa debe programarse en Python, aplicando analíticamente el Método de Pieper.
+    \item \textbf{Prohibición de \texttt{cv2.findHomography} Directo:} La estimación de la matriz de homografía $H$ debe programarse construyendo manualmente la matriz $A \in \mathbb{R}^{2N \times 9}$ del algoritmo DLT y extrayendo el espacio nulo mediante SVD.
+    \item \textbf{Prohibición de Coordenadas ``Hardcodeadas'':} Las posiciones de picking no pueden estar pregrabadas. Si el robot se desplaza sin que la cámara publique la pose en ROS, la prueba será anulada.
+    \item \textbf{Desactivación Estricta del Autofocus:} El enfoque de la cámara debe fijarse manualmente para evitar variar la distancia focal ($f_x, f_y$), lo que invalidaría la calibración intrínseca $K$.
+\end{enumerate}
+
+\section{Desglose Estructurado de Hitos (WBS) y Pasaportes}
+El proyecto se dividirá en cuatro (4) hitos evaluativos vinculados a las Unidades de la materia.
+
+\begin{description}[style=nextline, leftmargin=*]
+    \item[\textbf{Hito 1: Gemelo Digital URDF y Cinemática Directa (Semana 5)}]
+    \textbf{Entregable:} Paquete de ROS con el URDF modular del ABB IRB 120 acoplado con la pinza. \\
+    \textbf{Pasaporte de Aprobación:} La pose cartesiana $[x, y, z]$ de RViz debe coincidir con la función analítica en Python, registrando un error $\Delta E < 10^{-6}\text{ m}$.
+
+    \item[\textbf{Hito 2: Motor Cinemático Inverso (Pieper) y Perfiles LSPB (Semana 9)}]
+    \textbf{Entregable:} Nodo de ROS en Python que reciba una pose, ejecute Pieper y genere una trayectoria LSPB. \\
+    \textbf{Pasaporte de Aprobación:} Demostración en Jupyter Notebook de la divergencia analítica de velocidades y torques en singularidad ($q_5 = 0\text{ rad}$).
+
+    \item[\textbf{Hito 3: Localización Hand-Eye SVD y Segmentación en OpenCV (Semana 13)}]
+    \textbf{Entregable:} Archivo \texttt{camera\_info.yaml} y nodo de visión que publique la pose en milímetros. \\
+    \textbf{Pasaporte de Aprobación:} Error de reproyección intrínseca $\text{RMSE} < 0.5\text{ px}$ y error físico real $\Delta E < 1.5\text{ mm}$ medido con Vernier.
+
+    \item[\textbf{Hito 4: Integración Física, Red ROS-Industrial y Artículo IEEE (Semana 16)}]
+    \textbf{Entregable:} Operación física autónoma, código RAPID \texttt{.mod}, arquitectura FSM y artículo IEEE. \\
+    \textbf{Pasaporte de Aprobación:} Clasificación autónoma de 5 piezas con $t_{\text{ciclo}} < 8\text{ s}$ por pieza y desconexión segura ante fallas de red.
+\end{description}
+
+\section{Matriz de Pruebas de Rendimiento y Medición del Error}
+Durante las jornadas de defensa de los Hitos 3 y 4, se aplicará la siguiente metrología:
+
+\vspace{0.3cm}
+\begin{center}
+\begin{tikzpicture}[
+    node distance=0.5cm, 
+    auto, 
+    thick,
+    box/.style={draw=red!80!black, fill=red!5, rectangle, rounded corners, minimum width=6.5cm, minimum height=0.6cm, align=center, font=\small},
+    arrow/.style={->, >=Stealth, thick, draw=gray!80!black}
+]
+    
+    \node[box] (p1) {[Pieza en Mesa (Coordenada Aleatoria)]};
+    \node[box, below=of p1] (p2) {[Detección Óptica y Cálculo SVD]};
+    \node[box, below=of p2] (p3) {[Descenso del Robot ABB IRB 120]};
+    \node[box, below=of p3] (p4) {[Parada de Emergencia en Posición]};
+    \node[box, below=of p4] (p5) {[Medición con Calibrador Vernier del Desvío $\Delta E$]};
+    
+    \draw[arrow] (p1) -- (p2);
+    \draw[arrow] (p2) -- (p3);
+    \draw[arrow] (p3) -- (p4);
+    \draw[arrow] (p4) -- (p5);
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.3cm}
+\noindent \textbf{Cálculo del Error Absoluto Posicional:}
+$$ \Delta E = \sqrt{(x_{\text{calculado}} - x_{\text{real}})^2 + (y_{\text{calculado}} - y_{\text{real}})^2} $$
+Si el error $\Delta E \ge 1.5\text{ mm}$, el intento se contabiliza como fallido.
+
+\section{Estándares de Ingeniería de Software y Documentación}
+\subsection*{Convención para Repositorios Git}
+Se exige el uso de \textit{Conventional Commits} (ej. \texttt{feat(kinematics): add pieper solver class}). Las ramas principales serán \texttt{main}, \texttt{dev} y \texttt{feature/*}. Commits masivos al final del semestre serán penalizados.
+
+\subsection*{Formato del Artículo Científico Final}
+El informe final del Hito 4 debe redactarse obligatoriamente en formato de dos columnas IEEE (Transactions on Robotics) con una extensión de 4 a 6 páginas. Debe incluir: Abstract, Introduction, Kinematic \& Dynamic Modeling, Computer Vision, System Architecture, Experimental Results y Conclusions.
+
+\section{Protocolo de Seguridad Industrial (ISO 10218-1/2)}
+\begin{itemize}
+    \item \textbf{Operación en Modo Manual Reducido:} Durante calibraciones (Hitos 3 y 4), el selector del IRC5 debe estar en T1 (velocidad al 25\%).
+    \item \textbf{Pulsador de Habilitación (Deadman Switch):} Mantenerlo en posición intermedia; presionarlo a fondo o soltarlo debe detener el robot.
+    \item \textbf{Zona de Exclusión:} Nadie debe ingresar al radio de $580\text{ mm}$ en modo automático.
+    \item \textbf{Watchdog de Red:} El código RAPID debe detener el robot si la PC deja de enviar mensajes por más de $500\text{ ms}$.
+\end{itemize}
+
+\end{document}

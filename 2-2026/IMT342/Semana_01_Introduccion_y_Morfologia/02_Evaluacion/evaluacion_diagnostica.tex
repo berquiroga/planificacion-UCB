@@ -1,0 +1,61 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{geometry}
+\geometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+
+\begin{document}
+
+\begin{center}
+    \textbf{\Large UNIVERSIDAD CATÓLICA BOLIVIANA ``SAN PABLO'' -- SEDE TARIJA}\\
+    \vspace{0.2cm}
+    \textbf{Carrera: Ingeniería Mecatrónica | Asignatura: Robótica (IMT-342)} \\ %[cite: 1]
+    \textbf{Docente:} M.Sc. Ing. Bernardo Quiroga Turdera
+\end{center}
+
+\vspace{0.3cm}
+\noindent
+\textbf{Estudiante:} \rule{8cm}{0.4pt} \hfill \textbf{Fecha:} 04/08/2026 \\
+
+\noindent
+\textit{Instrucciones: Desarrolle de forma manuscrita los siguientes ejercicios. Esta prueba es formativa (ponderación 0\%) y busca identificar fortalezas y áreas de reforzamiento en matemática y control. Tiempo: 45 minutos.}
+
+\vspace{0.5cm}
+\noindent \textbf{Parte A: Álgebra Lineal y Geometría Espacial (40\%)}
+
+\begin{enumerate}
+    \item Dado un vector en el plano $p = [2, 3]^T$, obtenga la matriz de rotación $R \in \mathbb{R}^{2\times2}$ para un giro de $\theta = 30^\circ$ en sentido antihorario respecto al origen y calcule el vector resultante $p'$.
+    
+    \vspace{2.5cm}
+    \item Si $R \in \mathbb{R}^{3\times3}$ es una matriz de rotación pura en el espacio, demuestre por definición por qué se cumple estrictamente que $\det(R) = +1$ y que su inversa equivale a su transpuesta ($R^{-1} = R^T$).
+    
+    \vspace{2.5cm}
+    \item Explique brevemente qué representa físicamente la Descomposición en Valores Singulares (SVD) de una matriz de datos reales.
+    \vspace{2cm}
+\end{enumerate}
+
+\noindent \textbf{Parte B: Teoría de Control Clásico (40\%)}
+
+\begin{enumerate}
+    \setcounter{enumi}{3}
+    \item Un sistema físico dinámico está modelado por la ecuación diferencial:
+    $$ \ddot{\theta}(t) + 5\dot{\theta}(t) + 4\theta(t) = \tau(t) $$
+    Obtenga la función de transferencia $G(s) = \Theta(s)/\tau(s)$ en el dominio de Laplace y determine si el sistema es sobreamortiguado, subamortiguado o críticamente amortiguado.
+    
+    \vspace{3cm}
+    \item Dibuje el diagrama de bloques de un lazo de control PID en lazo cerrado con realimentación negativa y explique qué efecto físico tiene un exceso de ganancia derivativa ($K_d$) sobre el ruido de un sensor.
+    \vspace{3cm}
+\end{enumerate}
+
+\noindent \textbf{Parte C: Lógica y Programación (20\%)}
+
+\begin{enumerate}
+    \setcounter{enumi}{5}
+    \item Describa en pseudocódigo o código de Python un bucle anidado (\texttt{for}) para transponer una matriz de $3 \times 3$ sin usar funciones directas de NumPy.
+    
+    \vspace{3cm}
+    \item ¿Cuál es la diferencia entre un proceso de ejecución síncrono (blocking) y uno asíncrono gestionado por eventos en sistemas de tiempo real?
+\end{enumerate}
+
+\end{document}
