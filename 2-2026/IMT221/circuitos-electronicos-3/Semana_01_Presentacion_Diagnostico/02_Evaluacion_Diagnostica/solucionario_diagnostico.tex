@@ -1,0 +1,63 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{Boadilla}
+\usecolortheme{spruce}
+
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+
+\title{Solucionario: Evaluación Diagnóstica}
+\author{Circuitos Electrónicos III (IMT-221)[cite: 1]}
+
+\begin{document}
+
+\begin{frame}{Solución I: Circuitos en DC}
+    \textbf{1. Equivalente de Thévenin:}
+    $$V_{th} = V_S \cdot \left( \frac{R_3}{R_1 + R_2 + R_3} \right) = 12 \cdot \left( \frac{3.3}{6.5} \right) = 6.0\text{ V}$$
+    $$R_{th} = R_3 \parallel (R_1 + R_2) = 3.3\text{ k}\Omega \parallel 3.2\text{ k}\Omega = 1.625\text{ k}\Omega$$
+    \vspace{0.3cm}
+    \textbf{2. Voltaje en Carga:}
+    $$V_L = V_{th} \cdot \left( \frac{R_L}{R_{th} + R_L} \right) = 6.0 \cdot \left( \frac{1}{2.625} \right) = 2.285\text{ V}$$
+\end{frame}
+
+\begin{frame}{Solución II: Diodos y Acondicionamiento}
+    \textbf{1. Rectificador de media onda:}
+    \begin{itemize}
+        \item Conduce solo en semiciclo positivo cuando $v_{in} > 0.7\text{ V}$.
+        \item Voltaje pico: $V_p = 10\text{ V} - 0.7\text{ V} = 9.3\text{ V}$.
+    \end{itemize}
+    \vspace{0.3cm}
+    \textbf{2. Diodo Zener:}
+    \begin{itemize}
+        \item Actúa como regulador limitador.
+        \item Cuando la entrada supera los $5.8\text{ V}$ (es decir, $5.1\text{ V}$ Zener + $0.7\text{ V}$ diodo en serie, o si el Zener está directo a la carga, recorta a $5.1\text{ V}$).
+        \item Salida constante (recortada) a $5.1\text{ V}$.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Solución III: BJT en DC}
+    \textbf{Punto de Operación Q:}
+    $$V_B \approx 15 \cdot \left( \frac{10}{43} \right) = 3.488\text{ V}$$
+    $$V_E = V_B - 0.7\text{ V} = 2.788\text{ V}$$
+    $$I_{CQ} \approx I_E = \frac{2.788\text{ V}}{1\text{ k}\Omega} = 2.788\text{ mA}$$
+    $$V_C = 15 - (2.788\text{ mA} \cdot 2.2\text{ k}\Omega) = 8.866\text{ V}$$
+    $$V_{CEQ} = 8.866\text{ V} - 2.788\text{ V} = 6.078\text{ V}$$
+    \vspace{0.2cm}
+    \textbf{Región:} Activa Lineal ($V_{CEQ} > 0.3\text{ V}$ y $I_{CQ} > 0$).
+\end{frame}
+
+\begin{frame}{Solución IV y V: Frecuencia y Algoritmos}
+    \textbf{Frecuencia y Laplace:}
+    $$H(s) = \frac{1}{1 + s R C}$$
+    $$f_c = \frac{1}{2\pi R C} = \frac{1}{2\pi (10\times 10^3)(100\times 10^{-9})} = 159.15\text{ Hz}$$
+    Desfase en $f_c$: Exactamente $-45^\circ$.
+    \vspace{0.4cm}
+    
+    \textbf{Computación (Python):}
+    \begin{itemize}
+        \item \textbf{Circuito físico:} Rectificador de media onda con diodo de silicio.
+        \item \textbf{Funciones Numpy:} \texttt{np.max(v\_out)} o \texttt{v\_out.max()}.
+    \end{itemize}
+\end{frame}
+
+\end{document}

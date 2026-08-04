@@ -1,0 +1,107 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{Boadilla}
+\usecolortheme{crane}
+
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage[american]{circuitikz} % Estándar para dibujo de circuitos eléctricos
+
+\title{Evaluación Diagnóstica de Entrada}
+\subtitle{Circuitos Electrónicos III (IMT-221)}
+\author{Evaluación Formativa (45 minutos)}
+\date{Gestión 2-2026}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+    \begin{center}
+        \small Prepare sus hojas de respuestas. Uso permitido de calculadora científica.
+    \end{center}
+\end{frame}
+
+\begin{frame}{Sección I: Análisis en DC (20\%)}
+    Dado el circuito con $V_S = 12\text{ V}$, $R_1 = 1\text{ k}\Omega$, $R_2 = 2.2\text{ k}\Omega$ y $R_3 = 3.3\text{ k}\Omega$:
+    \vspace{0.2cm}
+    \begin{center}
+        \begin{circuitikz}[scale=0.9, transform shape]
+            \draw
+            (0,0) to[V, v=$V_S$] (0,3)
+            to[R, l=$R_1$] (3,3)
+            to[R, l=$R_2$] (3,1.5)
+            to[short, *-o] (4.5,1.5) node[right] {Nodo A}
+            (3,1.5) to[R, l=$R_3$] (3,0)
+            -- (0,0)
+            (3,0) node[ground] {};
+        \end{circuitikz}
+    \end{center}
+    \vspace{0.2cm}
+    1. Determine el equivalente de Thévenin ($V_{th}$ y $R_{th}$) en el Nodo A respecto a GND.\\
+    2. Si se conecta $R_L = 1\text{ k}\Omega$ en el Nodo A, calcule el voltaje real $V_L$ y la corriente total entregada por $V_S$.
+\end{frame}
+
+\begin{frame}{Sección II: Diodos y Acondicionamiento (20\%)}
+    Un rectificador de media onda utiliza un diodo estándar ($V_\gamma = 0.7\text{ V}$). Entrada: $v_{in}(t) = 10 \sin(2\pi \cdot 60 \cdot t)\text{ V}$.
+    \vspace{0.5cm}
+    \begin{enumerate}
+        \item Dibuje la señal de salida $v_{out}(t)$ sobre una carga $R = 1\text{ k}\Omega$, indicando el valor pico.
+        \item Si se coloca un diodo Zener de $V_Z = 5.1\text{ V}$ en paralelo con la carga, describa qué ocurre con la señal cuando la entrada supera los $+5.8\text{ V}$.
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{Sección III: BJT en DC (20\%)}
+    \begin{columns}
+        \column{0.6\textwidth}
+        Circuito de divisor de voltaje. Transistor NPN ($\beta = 100$, $V_{BE} = 0.7\text{ V}$). \\
+        Valores: $V_{CC} = 15\text{ V}$, $R_1 = 33\text{ k}\Omega$, $R_2 = 10\text{ k}\Omega$, $R_C = 2.2\text{ k}\Omega$, $R_E = 1\text{ k}\Omega$.
+        \vspace{0.3cm}
+        \begin{enumerate}
+            \item Calcule el punto de operación ($I_{CQ}$ y $V_{CEQ}$).
+            \item Indique en qué región opera el transistor (Corte, Activa, Saturación) y justifique.
+        \end{enumerate}
+        
+        \column{0.4\textwidth}
+        \begin{center}
+            \begin{circuitikz}[scale=0.75, transform shape]
+                \draw
+                (0,4) node[vcc]{$+V_{CC}$} to[R, l=$R_1$] (0,2) to[short, *-] (1.5,2)
+                (0,2) to[R, l=$R_2$] (0,0) node[ground]{}
+                (1.5,2) node[npn, anchor=B](Q1){}
+                (Q1.C) to[R, l_=$R_C$] (Q1.C |- 0,4) node[vcc]{$+V_{CC}$}
+                (Q1.E) to[R, l=$R_E$] (Q1.E |- 0,0) node[ground]{};
+            \end{circuitikz}
+        \end{center}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Sección IV: Respuesta Frecuencial (20\%)}
+    Filtro paso bajo RC pasivo ($R = 10\text{ k}\Omega$, $C = 100\text{ nF}$).
+    \vspace{0.5cm}
+    \begin{enumerate}
+        \item Obtenga la función de transferencia $H(s) = \frac{V_{out}(s)}{V_{in}(s)}$.
+        \item Calcule la frecuencia de corte a $-3\text{ dB}$ ($f_c$) en Hertz.
+        \item ¿Cuál es el desfase (en grados) si se aplica una señal de entrada con frecuencia exactamente igual a $f_c$?
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]{Sección V: Computación Científica (20\%)}
+    Analice el siguiente código Python:
+\begin{verbatim}
+import numpy as np
+t = np.linspace(0, 0.01, 1000)
+v_in = 5.0 * np.sin(2 * np.pi * 100.0 * t)
+v_out = np.zeros_like(v_in)
+for i in range(len(v_in)):
+    if v_in[i] > 0.7:
+        v_out[i] = v_in[i] - 0.7
+    else:
+        v_out[i] = 0.0
+\end{verbatim}
+    \begin{enumerate}
+        \item ¿Qué circuito físico simula este código?
+        \item ¿Qué funciones de \texttt{numpy} usaría para hallar el valor máximo?
+    \end{enumerate}
+\end{frame}
+
+\end{document}

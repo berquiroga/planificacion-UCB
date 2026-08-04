@@ -1,0 +1,90 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{Boadilla}
+\usecolortheme{seahorse}
+
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{graphicx}
+
+\title{Circuitos Electrónicos III (IMT-221)}
+\subtitle{Clase 1: Pitch del Proyecto Final Integrador (PFI)[cite: 1]}
+\author{M.Sc. Ing. Bernardo Quiroga Turdera[cite: 1]}
+\institute{Universidad Católica Boliviana ``San Pablo'' - Sede Tarija[cite: 1]}
+\date{Semestre 2-2026[cite: 1]}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{El Reto de Ingeniería}
+    \begin{block}{¿Por qué este proyecto?}
+        En el mundo profesional actual, los microcontroladores no pueden conectarse directamente con el mundo físico. Los sensores entregan señales inmersas en ruido, mientras que los actuadores demandan altas corrientes con dinámicas rápidas.
+    \end{block}
+    \vspace{0.5cm}
+    La electrónica analógica no es una disciplina del pasado; es la columna vertebral que permite a un sistema embebido medir con precisión y actuar sin destruirse. Asumirán el rol de \textbf{ingenieros de desarrollo de hardware analógico}.
+\end{frame}
+
+\begin{frame}{Definición y Contextualización Dual del PFI}
+    \textbf{Objetivo Central:} Diseño, Simulación e Implementación de una Etapa Analógica Bidireccional de Potencia, Medición de Corriente y Protección.
+    \vspace{0.3cm}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{Ingeniería Mecatrónica}[cite: 1]
+        \begin{itemize}
+            \item \textit{Proyecto:} Driver Inteligente de Lazo Cerrado (Velocidad/Torque DC).
+            \item \textit{Aplicación:} Robótica móvil y servocontroladores.
+        \end{itemize}
+        
+        \column{0.5\textwidth}
+        \textbf{Ingeniería Biomédica}[cite: 1]
+        \begin{itemize}
+            \item \textit{Proyecto:} Sensado Analógico para Detección de Oclusiones.
+            \item \textit{Aplicación:} Bombas de infusión clínica y soporte de vida.
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Arquitectura del Sistema: 4 Hitos de Madurez Técnica}
+    El proyecto se construye de forma incremental a lo largo del semestre:
+    \vspace{0.3cm}
+    \begin{enumerate}
+        \item \textbf{Hito 1 (Semana 4):} Módulo de Protección y Clamping ($0\text{ V}$ a $+5.1\text{ V}$).
+        \item \textbf{Hito 2 (Semana 8):} Sensado de Corriente de Precisión (Shunt $0.1\,\Omega$, $CMRR \ge 60\text{ dB}$).
+        \item \textbf{Hito 3 (Semana 13):} Módulo de Actuación y Potencia (Puente H discreto y análisis térmico).
+        \item \textbf{Hito 4 (Semana 16):} Lazo Cerrado y Estabilidad (Compensador Lead-Lag, $PM \ge 60^\circ$).
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{Metodología de Trabajo: CDIO}
+    Para aprobar cada hito, el equipo debe demostrar cuatro pilares:
+    \begin{itemize}
+        \item \textbf{Fundamentación en Python:} Cálculo matemático en Jupyter Notebooks. Cero ensayo y error.
+        \item \textbf{Simulación en LTSpice:} Validación transitoria y AC.
+        \item \textbf{Hardware:} Montaje ordenado y seguro en laboratorio.
+        \item \textbf{Validación con Instrumentación:} Captura en osciloscopio (.csv) y superposición de datos en Python.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Auditoría Dinámica e Inteligencia Artificial}
+    \begin{alertblock}{Política de Uso de IA}
+        La IA es un copiloto válido para generar código inicial. Sin embargo, la evaluación será \textbf{individual y en vivo}.
+    \end{alertblock}
+    \vspace{0.3cm}
+    Se solicitará modificar variables en caliente en Python (ej. cambiar frecuencia) y el estudiante deberá predecir verbalmente y demostrar en el osciloscopio el impacto físico. Si no se defiende, el hito es reprobado.
+\end{frame}
+
+\begin{frame}{Entregable Final (Semana 18)}
+    \begin{itemize}
+        \item \textbf{Demostración en Vivo:} Placa funcionando de forma estable ante un panel evaluador.
+        \item \textbf{Artículo Técnico (IEEE):} 4 páginas documentando modelado, simulaciones, cálculo térmico y estabilidad.
+    \end{itemize}
+    \vspace{0.5cm}
+    \begin{center}
+        \textbf{¿Preguntas antes de iniciar la Evaluación Diagnóstica?}
+    \end{center}
+\end{frame}
+
+\end{document}

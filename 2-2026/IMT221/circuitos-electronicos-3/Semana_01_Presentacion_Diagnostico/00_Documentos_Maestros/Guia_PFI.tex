@@ -1,0 +1,172 @@
+\documentclass[11pt, a4paper]{article}
+
+% Paquetes esenciales
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{tikz} 
+% NOTA: Se eliminó usetikzlibrary{positioning} para evitar el error de compilación.
+
+% Configuración de hipervínculos
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    urlcolor=blue!70!black,
+    pdftitle={Guía PFI - Circuitos Electrónicos III}
+}
+
+% Configuración de encabezados y pies de página
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textbf{Circuitos Electrónicos III (IMT-221)}[cite: 1]}
+\fancyhead[R]{Proyecto Final Integrador (PFI)}
+\fancyfoot[C]{\thepage}
+\fancyfoot[R]{\footnotesize Semestre 2-2026[cite: 1]}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Entornos personalizados
+\newtcolorbox{importante}[1][]{
+    colback=red!5!white,
+    colframe=red!75!black,
+    fonttitle=\bfseries,
+    title=#1
+}
+
+\newtcolorbox{info}[1][]{
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    fonttitle=\bfseries,
+    title=#1
+}
+
+\begin{document}
+
+% ==========================================
+% PORTADA / ENCABEZADO
+% ==========================================
+\begin{center}
+    {\Large \textbf{UNIVERSIDAD CATÓLICA BOLIVIANA ``SAN PABLO'' – SEDE TARIJA[cite: 1]}}\\[0.2cm]
+    {\large Departamento de Ciencias de la Tecnología e Innovación[cite: 1]}\\[0.5cm]
+    
+    \rule{\textwidth}{0.5pt}\\[0.4cm]
+    {\huge \textbf{DOCUMENTO MAESTRO: PITCH Y GUÍA DE INICIO}}\\[0.2cm]
+    {\Large \textbf{PROYECTO FINAL INTEGRADOR (PFI)}}\\[0.2cm]
+    \rule{\textwidth}{0.5pt}\\[0.5cm]
+\end{center}
+
+\begin{flushleft}
+    \textbf{Carrera:} Ingeniería Mecatrónica / Ingeniería Biomédica[cite: 1] \\
+    \textbf{Asignatura:} Circuitos Electrónicos III (IMT-221) – Semestre 2-2026[cite: 1] \\
+    \textbf{Docente:} M.Sc. Ing. Bernardo Quiroga Turdera[cite: 1]
+\end{flushleft}
+
+\vspace{0.5cm}
+
+% ==========================================
+% 1. EL RETO DE INGENIERÍA
+% ==========================================
+\section{El Reto de Ingeniería: ¿Por qué este proyecto?}
+
+En el mundo profesional actual, los microcontroladores y computadoras no pueden conectarse directamente con el mundo físico. Los sensores entregan señales extremadamente débiles e inmersas en ruido, mientras que los actuadores industriales o médicos demandan altas corrientes y voltajes con dinámicas rápidas. La electrónica analógica no es una disciplina del pasado; es la columna vertebral física que permite a un sistema embebido medir con precisión y actuar sin destruirse.
+
+En esta asignatura no construiremos circuitos de juguete ni memorizaremos fórmulas aisladas. Desde el primer día de clases, asumirás el rol de un ingeniero de desarrollo de hardware analógico, diseñando e implementando un sistema de potencia, sensado y control de lazo cerrado para un entorno real.
+
+% ==========================================
+% 2. DEFINICIÓN Y CONTEXTUALIZACIÓN DUAL
+% ==========================================
+\section{Definición y Contextualización Dual del Proyecto}
+
+El Proyecto Final Integrador (PFI) consiste en el \textbf{``Diseño, Simulación e Implementación de una Etapa Analógica Bidireccional de Potencia, Medición de Corriente y Protección''}. Para responder a tu perfil profesional específico, el proyecto adopta una aplicación diferenciada según tu carrera:
+
+\begin{info}[Para Estudiantes de Ingeniería Mecatrónica[cite: 1]]
+    \textbf{Título del Proyecto:} Driver Inteligente de Lazo Cerrado para el Control de Velocidad y Torque de un Actuador DC.\\
+    \textbf{Aplicación:} Robótica móvil, servocontroladores industriales y posicionamiento de precisión.
+\end{info}
+
+\begin{info}[Para Estudiantes de Ingeniería Biomédica]
+    \textbf{Título del Proyecto:} Etapa de Control de Presión y Sensado Analógico de Corriente para Detección de Oclusiones en Bombas de Infusión Clínica.\\
+    \textbf{Aplicación:} Equipos de soporte de vida y bombas volumétricas. Si la vía de fluidos de un paciente se obstruye, la corriente del motor se eleva de inmediato; tu circuito analógico detectará este cambio de milivoltios de forma instantánea y protegerá el sistema.
+\end{info}
+
+% ==========================================
+% 3. ARQUITECTURA DEL SISTEMA Y LOS 4 HITOS
+% ==========================================
+\section{Arquitectura del Sistema y los 4 Hitos de Madurez Técnica}
+
+El proyecto no se entrega al final del semestre; se construye de forma incremental a lo largo de 4 Hitos evaluativos, donde cada unidad temática aporta un bloque físico funcional:
+
+\begin{center}
+\begin{tikzpicture}[scale=0.9, transform shape]
+    % Uso de tikzset (moderno) en lugar de tikzstyle
+    \tikzset{
+        hito/.style={rectangle, draw=blue!80!black, fill=blue!10, text width=3.5cm, text centered, rounded corners, minimum height=1.5cm, font=\small},
+        flecha/.style={thick,->,>=stealth}
+    }
+
+    % Posicionamiento absoluto para eliminar dependencias y evitar el error "of"
+    \node[hito] (h1) at (0,0) {\textbf{Hito 1: Sem 4[cite: 1]}\\Protección y Clamping};
+    \node[hito] (h2) at (4.5,0) {\textbf{Hito 2: Sem 8[cite: 1]}\\Sensado por Shunt};
+    \node[hito] (h3) at (9.0,0) {\textbf{Hito 3: Sem 13[cite: 1]}\\Puente H de Potencia};
+    \node[hito] (h4) at (13.5,0) {\textbf{Hito 4: Sem 16[cite: 1]}\\Lazo Cerrado y Estabilidad};
+
+    % Conexiones
+    \draw[flecha] (h1) -- (h2);
+    \draw[flecha] (h2) -- (h3);
+    \draw[flecha] (h3) -- (h4);
+\end{tikzpicture}
+\end{center}
+
+\begin{description}[leftmargin=!, labelwidth=\widthof{\bfseries Hito 1 (Semana 4):}]
+    \item[Hito 1 (Semana 4):] \textbf{Módulo de Protección y Clamping Analógico.}\\
+    Diseño e implementación de diodos Flyback para absorber transitorios inductivos y una red limitadora Zener ($0\text{ V}$ a $+5.1\text{ V}$) que protege el conversor analógico-digital (ADC).
+    
+    \item[Hito 2 (Semana 8):] \textbf{Módulo de Sensado de Corriente de Precisión.}\\
+    Diseño de un amplificador diferencial discreto con transistores BJT para medir la caída de milivoltios en una resistencia shunt ($0.1\,\Omega$), eliminando el ruido eléctrico ($CMRR \ge 60\text{ dB}$).
+    
+    \item[Hito 3 (Semana 13):] \textbf{Módulo de Actuación y Potencia.}\\
+    Diseño de un Puente H discreto con MOSFETs complementarios (canal N y P) con sus respectivos excitadores de compuerta (Gate Drivers) discretos y disipadores térmicos dimensionados matemáticamente.
+    
+    \item[Hito 4 (Semana 16):] \textbf{Lazo Cerrado y Estabilidad Dinámica.}\\
+    Diseño de un compensador analógico Lead-Lag para cerrar el lazo de corriente, garantizando que el sistema sea estable ($PM \ge 60^\circ$) ante variaciones de carga.
+\end{description}
+
+% ==========================================
+% 4. METODOLOGÍA DE TRABAJO
+% ==========================================
+\section{Metodología de Trabajo: Los 4 Pilares Prácticos y Reglas del Juego}
+
+Cada entregable del proyecto se rige bajo la metodología internacional \textbf{CDIO (Concebir - Diseñar - Implementar - Operar)}[cite: 1]. Para aprobar cada hito, tu equipo debe demostrar cuatro pilares:
+
+\begin{enumerate}
+    \item \textbf{Fundamentación Teórica en Python:} No se acepta el diseño por ensayo y error. Cada resistor, capacitor y transistor debe estar calculado mediante modelos matemáticos escritos en scripts interactivos de Python (Jupyter Notebooks).
+    \item \textbf{Simulación en LTSpice:} Validación de las formas de onda teóricas antes de tocar el hardware.
+    \item \textbf{Implementación Física de Hardware:} Montaje ordenado, limpio y seguro del circuito en tarjeta de prototipos.
+    \item \textbf{Validación con Instrumentación Real:} Adquisición de señales en vivo mediante osciloscopio digital. Los archivos de datos \texttt{.csv} reales capturados en el laboratorio deberán importarse en Python para graficar la superposición entre la Teoría, la Simulación y la Práctica.
+\end{enumerate}
+
+\begin{importante}[Aviso de Control de Inteligencia Artificial (Política de Auditoría Dinámica)]
+    Puedes usar la IA como copiloto para generar código inicial. Sin embargo, la evaluación es \textbf{individual y en vivo en tu mesa de trabajo}. El docente te pedirá modificar variables en tu código de Python en caliente (por ejemplo, cambiar la frecuencia o una capacitancia) y deberás predecir verbalmente y demostrar en el osciloscopio el impacto físico en el circuito. \textbf{Si no puedes defender tu código, el hito no será aprobado.}
+\end{importante}
+
+% ==========================================
+% 5. ENTREGABLE FINAL
+% ==========================================
+\section{Entregable Final y Evaluación (Semana 18)}
+
+El semestre culmina en la Semana 18 con dos entregables integradores[cite: 1]:
+
+\begin{itemize}
+    \item \textbf{Demostración del Hardware en Vivo:} Presentación pública de tu placa funcionando de forma estable ante un panel evaluador de ingenieros.
+    \item \textbf{Artículo Técnico Corto (Formato IEEE):} Un reporte científico de 4 páginas que documenta el modelado, las simulaciones, el cálculo térmico y la validación de estabilidad de tu sistema analógico.
+\end{itemize}
+
+\end{document}
