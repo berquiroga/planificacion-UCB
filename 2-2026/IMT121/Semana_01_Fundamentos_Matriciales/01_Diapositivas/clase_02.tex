@@ -1,0 +1,184 @@
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+% --- Paquetes Fundamentales ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{lmodern}
+
+% --- Diseño Beamer ---
+\usetheme{Madrid}
+\usecolortheme{default}
+\setbeamertemplate{navigation symbols}{} % Pantalla limpia
+\setbeamertemplate{itemize items}[circle]
+
+% --- Matemáticas y Electrónica ---
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage[american]{circuitikz}
+
+% --- Código Fuente (Python) ---
+\usepackage{listings}
+\usepackage{xcolor}
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\scriptsize,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!50!black}\itshape,
+    stringstyle=\color{red!70!black},
+    showstringspaces=false,
+    frame=single,
+    backgroundcolor=\color{gray!5},
+    rulecolor=\color{gray!40},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    breaklines=true
+}
+
+% --- Configuración de siunitx ---
+\sisetup{output-decimal-marker = {,}}
+
+% --- Metadatos ---
+\title[Sesión 2: Redes en CC]{Formulación Matricial Canónica por Inspección Directa}
+\subtitle{IMT-121 Circuitos Electrónicos I}
+\author[B. Quiroga]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' -- Sede Tarija}
+\date{Sesión 02}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Estructura de la Sesión (90 min)}
+    \begin{block}{Ruta de Aprendizaje}
+        \begin{itemize}
+            \item \textbf{00--10 min:} Warm-up: Repaso activo (De la Ley de Kirchhoff a la Matriz).
+            \item \textbf{10--35 min:} Teoría de Formulación Matricial Canónica por Inspección.
+            \item \textbf{35--65 min:} Ejercicio Integrador $3\times 3$ (Pizarra + Live-Coding).
+            \item \textbf{65--80 min:} Aplicación al Hito 1 del PFI (Mecatrónica vs. Biomédica).
+            \item \textbf{80--90 min:} Lanzamiento de la Guía de Laboratorio \#1 y Cierre.
+        \end{itemize}
+    \end{block}
+    \vspace{0.5cm}
+    \textbf{Resultado de Aprendizaje (RA):} Traducir la topología de una red de $N$ lazos/nodos a un arreglo matricial simétrico por inspección visual y resolverlo mediante Python (NumPy).
+\end{frame}
+
+\begin{frame}{Método de Inspección Directa para Mallas ($\mathbf{R}\mathbf{I} = \mathbf{V}$)}
+    $$
+    \begin{bmatrix} R_{11} & R_{12} & R_{13} \\ R_{21} & R_{22} & R_{23} \\ R_{31} & R_{32} & R_{33} \end{bmatrix} 
+    \begin{bmatrix} I_1 \\ I_2 \\ I_3 \end{bmatrix} = 
+    \begin{bmatrix} V_{s1} \\ V_{s2} \\ V_{s3} \end{bmatrix}
+    $$
+    
+    \begin{itemize}
+        \item \textbf{Diagonal Principal ($R_{kk}$):} Suma positiva de todas las resistencias presentes en la malla $k$ ($R_{kk} > 0$).
+        \item \textbf{Términos Fuera de la Diagonal ($R_{kj}$):} Valor negativo de la resistencia compartida entre la malla $k$ y la malla $j$ ($R_{kj} = -R_{\text{enlace}}$).
+        \item \textbf{Propiedad Física Clave:} En redes pasivas, la matriz es \textit{estrictamente simétrica} ($R_{kj} = R_{jk}$).
+        \item \textbf{Vector de Fuentes ($V_{sk}$):} Suma algebraica de fuentes en la malla $k$ (Positivo si la corriente sale por el terminal $+$, impulsando el flujo).
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Método de Inspección Directa para Nodos ($\mathbf{G}\mathbf{V}_n = \mathbf{I}_s$)}
+    $$
+    \begin{bmatrix} G_{11} & G_{12} \\ G_{21} & G_{22} \end{bmatrix} 
+    \begin{bmatrix} V_1 \\ V_2 \end{bmatrix} = 
+    \begin{bmatrix} I_{s1} \\ I_{s2} \end{bmatrix}
+    $$
+    
+    \begin{itemize}
+        \item \textbf{Diagonal Principal ($G_{kk}$):} Suma positiva de todas las conductancias ($G_i = 1/R_i$) conectadas al nodo $k$.
+        \item \textbf{Términos Fuera de la Diagonal ($G_{kj}$):} Valor negativo de la conductancia conectada directamente entre el nodo $k$ y el nodo $j$.
+        \item \textbf{Vector de Fuentes ($I_{sk}$):} Suma de corrientes que \textit{entran} al nodo $k$ desde fuentes independientes.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Ejercicio Integrador: Red de $3\times 3$ Mallas}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{center}
+                \begin{circuitikz}[scale=0.75, transform shape]
+                    \draw 
+                    (0,0) to[V, v=$V_{s1}$] (0,3)
+                          to[R, l=$R_1$] (3,3)
+                          to[R, l=$R_2$, *-*] (3,0) -- (0,0);
+                    \draw 
+                    (3,3) to[R, l=$R_3$] (6,3)
+                          to[R, l=$R_4$, *-*] (6,0) -- (3,0);
+                    \draw 
+                    (6,3) to[R, l=$R_L$] (9,3)
+                          to[V, v_=$V_{s2}$] (9,0) -- (6,0);
+                \end{circuitikz}
+            \end{center}
+            \vspace{0.2cm}
+            \footnotesize
+            \textbf{Valores:} $V_{s1}=\qty{15}{\volt}$, $V_{s2}=\qty{-5}{\volt}$, $R_1=\qty{120}{\ohm}$, $R_2=\qty{220}{\ohm}$, $R_3=\qty{470}{\ohm}$, $R_4=\qty{330}{\ohm}$, $R_L=\qty{100}{\ohm}$.
+        \end{column}
+        
+        \begin{column}{0.5\textwidth}
+            \textbf{Paso 1: Armado Manuscrito}
+            \scriptsize
+            \begin{align*}
+                R_{11} &= 120 + 220 = 340\,\Omega \\
+                R_{22} &= 220 + 470 + 330 = 1020\,\Omega \\
+                R_{33} &= 330 + 100 = 430\,\Omega \\
+                R_{12} &= -220\,\Omega, \quad R_{23} = -330\,\Omega
+            \end{align*}
+            $$
+            \mathbf{R} = \begin{bmatrix} 
+            340 & -220 & 0 \\ 
+            -220 & 1020 & -330 \\ 
+            0 & -330 & 430 
+            \end{bmatrix}, \quad
+            \mathbf{V} = \begin{bmatrix} 15 \\ 0 \\ 5 \end{bmatrix}
+            $$
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Live-Coding en Python (NumPy)}
+\begin{lstlisting}
+import numpy as np
+
+# 1. Definicion de componentes (Ohms, Volts)
+R1, R2, R3, R4, RL = 120.0, 220.0, 470.0, 330.0, 100.0
+Vs1, Vs2 = 15.0, -5.0
+
+# 2. Matriz R por Inspeccion Directa
+R = np.array([
+    [R1 + R2,    -R2,           0.0    ],
+    [-R2,         R2 + R3 + R4, -R4    ],
+    [0.0,        -R4,           R4 + RL]
+], dtype=float)
+
+# 3. Vector de Fuentes y Solucion Matricial
+V = np.array([Vs1, 0.0, -Vs2], dtype=float)
+I = np.linalg.solve(R, V)
+
+# 4. Validacion
+V_carga = I[2] * RL
+print("Corrientes (mA):", np.round(I * 1000, 3))
+print(f"Voltaje en RL: {V_carga:.3f} V")
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{Conexión PFI y Tarea}
+    \begin{block}{Hito 1 del PFI}
+        \begin{itemize}
+            \item \textbf{Mecatrónica (Track B):} Red de equilibrio para celda de carga de puente completo de Wheatstone.
+            \item \textbf{Biomédica (Track A):} Red pasiva de atenuación para adaptar niveles de tensión de un sensor biomédico.
+        \end{itemize}
+    \end{block}
+    
+    \vspace{0.3cm}
+    \textbf{Consigna para Laboratorio \#1:}
+    \begin{enumerate}
+        \item Formar equipos oficiales de 3 estudiantes.
+        \item Crear repositorio \texttt{IMT121\_2026\_EquipoXX} en GitHub.
+        \item \textbf{Previo (Entregable 1):} Resolver circuito en papel, implementar el script NumPy y traer la simulación \texttt{.op} en LTSpice.
+    \end{enumerate}
+\end{frame}
+
+\end{document}

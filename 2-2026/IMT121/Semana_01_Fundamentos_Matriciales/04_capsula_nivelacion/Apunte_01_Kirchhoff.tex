@@ -1,0 +1,188 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- Paquetes Fundamentales ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[margin=2.5cm, headheight=15pt]{geometry}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage[colorlinks=true, linkcolor=ucbblue, urlcolor=ucbblue]{hyperref}
+
+% --- Matemáticas y Electrónica ---
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage[american]{circuitikz} % Añadido para los ejemplos prácticos
+
+% --- Elementos de Diseño Pedagógico ---
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+
+% --- Configuración de Colores y siunitx ---
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\sisetup{
+    output-decimal-marker = {,},
+    per-mode = symbol
+}
+
+% --- Estilos de Cajas (Tcolorbox) ---
+\tcbset{
+    caja_fisica/.style={
+        colback=ucbblue!5, 
+        colframe=ucbblue, 
+        fonttitle=\bfseries,
+        boxrule=0.8pt,
+        arc=3pt,
+        left=5pt, right=5pt, top=5pt, bottom=5pt
+    },
+    caja_clave/.style={
+        colback=green!5, 
+        colframe=green!50!black, 
+        fonttitle=\bfseries,
+        boxrule=0.8pt,
+        arc=3pt,
+        left=5pt, right=5pt, top=5pt, bottom=5pt
+    }
+}
+
+% --- Estilo de Página ---
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textcolor{ucbblue}{\textbf{Ingeniería Mecatrónica | Ingeniería Biomédica}}}
+\rhead{\textbf{IMT-121: Circuitos Electrónicos I}}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{ucbblue}\leaders\hrule height \headrulewidth\hfill}}
+
+\begin{document}
+
+\begin{center}
+    \vspace*{0.5cm}
+    {\LARGE \textbf{Cápsula Teórica 01: Fundamentos Fenomenológicos}} \\[0.3cm]
+    {\Large \textit{Voltaje, Corriente, Ley de Ohm y Leyes de Kirchhoff}} \\[0.8cm]
+    \normalsize
+    \textbf{Docente:} M.Sc. Ing. Bernardo Quiroga Turdera \\
+    \textbf{Gestión:} Semestre II/2026
+    \vspace{0.5cm}
+\end{center}
+
+\hrule
+\vspace{0.7cm}
+
+\section{Introducción: El Modelo Hidráulico}
+Para modelar circuitos electrónicos en ingeniería, primero debemos entender qué estamos midiendo. Utilizaremos la analogía de un circuito hidráulico cerrado, muy familiar en la mecatrónica.
+
+\begin{itemize}[label=\textcolor{ucbblue}{\textbullet}]
+    \item \textbf{Voltaje ($V$):} Representa la \textit{presión} generada por una bomba de agua. Es la fuerza electromotriz que empuja a los electrones. Se mide en Voltios (\unit{\volt}).
+    \item \textbf{Corriente ($I$):} Representa el \textit{caudal} de agua fluyendo por la tubería. Es la cantidad de carga que atraviesa un punto por segundo ($I = dq/dt$). Se mide en Amperios (\unit{\ampere}).
+    \item \textbf{Resistencia ($R$):} Representa un \textit{estrechamiento} en la tubería que dificulta el paso del agua, causando una caída de presión. Se mide en Ohmios (\unit{\ohm}).
+\end{itemize}
+
+\section{La Ley de Ohm (El Comportamiento del Material)}
+La Ley de Ohm establece la relación lineal entre el voltaje, la corriente y la resistencia en un material conductor ideal. Es la ecuación constitutiva de los componentes pasivos.
+
+\begin{equation}
+    V = I \cdot R
+\end{equation}
+
+\begin{tcolorbox}[caja_fisica, title=Interpretación Física]
+Para empujar una corriente $I$ a través de una resistencia $R$, la fuente debe aplicar un voltaje (presión) equivalente a $V$. Si la resistencia aumenta, se necesita más voltaje para mantener la misma corriente. Su forma inversa, utilizando la conductancia ($G = 1/R$), es $I = V \cdot G$.
+\end{tcolorbox}
+
+\section{Las Leyes de Kirchhoff (La Topología de la Red)}
+Mientras que la Ley de Ohm describe el componente, las Leyes de Kirchhoff dictan cómo se comportan esos componentes cuando se interconectan formando una red.
+
+\subsection{Ley de Corrientes de Kirchhoff - LCK (Nodos)}
+\textbf{Principio de Conservación de la Carga:} \textit{«La suma algebraica de todas las corrientes que entran y salen de un nodo (unión de cables) es igual a cero».}
+
+\begin{equation}
+    \sum_{k=1}^{N} I_k = 0
+\end{equation}
+
+\noindent\textbf{Interpretación Física:} Un nodo es una intersección de tuberías. No puede almacenar ni crear agua. Toda la corriente que entra por un cable debe salir obligatoriamente por los demás.
+
+\subsection{Ley de Voltajes de Kirchhoff - LVK (Mallas)}
+\textbf{Principio de Conservación de la Energía:} \textit{«La suma algebraica de todos los voltajes alrededor de cualquier lazo cerrado es igual a cero».}
+
+\begin{equation}
+    \sum_{k=1}^{N} V_k = 0
+\end{equation}
+
+\noindent\textbf{Interpretación Física:} Si subes $\qty{15}{\meter}$ impulsado por un motor (Fuente de Voltaje) y luego bajas $\qty{10}{\meter}$ y $\qty{5}{\meter}$ en dos bajadas consecutivas (Resistencias), al volver al punto de partida, tu cambio neto de altura es cero.
+
+\section{Ejemplos Prácticos: De la Física a la Ecuación}
+Para comprender cómo estas leyes forman matrices, analizaremos los casos más simples posibles.
+
+\subsection{Ejemplo 1: Lazo Único (LVK y Mallas)}
+Supongamos un circuito con una fuente de $\qty{12}{\volt}$ conectada en serie con dos resistencias: $R_1 = \qty{100}{\ohm}$ y $R_2 = \qty{200}{\ohm}$. Queremos hallar la corriente $I$ del lazo.
+
+\begin{minipage}{0.65\textwidth}
+    \textbf{Paso 1. Aplicar LVK:} La subida de tensión de la fuente menos las caídas en las resistencias debe ser cero.
+    \begin{align*}
+        \qty{12}{\volt} - V_{R1} - V_{R2} &= 0
+    \end{align*}
+    
+    \textbf{Paso 2. Aplicar Ley de Ohm:} Caída en resistencia $V = I \cdot R$.
+    \begin{align*}
+        12 - (I \cdot 100) - (I \cdot 200) &= 0
+    \end{align*}
+    
+    \textbf{Paso 3. Factorizar (El salto a la Matriz):} Reordenamos dejando las incógnitas de un lado y las fuentes del otro.
+    \begin{align*}
+        I \cdot (100 + 200) &= 12 \\
+        I \cdot (300) &= 12
+    \end{align*}
+\end{minipage}
+\begin{minipage}{0.35\textwidth}
+    \begin{center}
+        \begin{circuitikz}[scale=0.8, transform shape]
+            \draw (0,0) 
+            to[V, v=\qty{12}{\volt}] (0,3)
+            to[R, l=$R_1$, a=\qty{100}{\ohm}, i=$I$] (3,3)
+            to[R, l=$R_2$, a=\qty{200}{\ohm}] (3,0) -- (0,0);
+        \end{circuitikz}
+    \end{center}
+\end{minipage}
+
+\begin{tcolorbox}[caja_clave, title=Observación Clave]
+Este término factorizado, $I \cdot (\text{Suma de Resistencias}) = V_{\text{fuente}}$, es exactamente la celda de la diagonal principal de nuestra futura matriz de impedancias $\mathbf{R}\mathbf{I} = \mathbf{V}$.
+\end{tcolorbox}
+
+\subsection{Ejemplo 2: Nodo Único (LCK y Nodos)}
+Supongamos una fuente de corriente de $\qty{3}{\ampere}$ que alimenta un nodo donde la corriente se divide hacia dos resistencias en paralelo conectadas a tierra: $R_1 = \qty{10}{\ohm}$ y $R_2 = \qty{40}{\ohm}$. Queremos hallar el voltaje $V$ en el nodo.
+
+\begin{minipage}{0.65\textwidth}
+    \textbf{Paso 1. Aplicar LCK:} La corriente que entra menos las corrientes que salen debe ser cero.
+    \begin{align*}
+        \qty{3}{\ampere} - I_{R1} - I_{R2} &= 0
+    \end{align*}
+    
+    \textbf{Paso 2. Aplicar Ley de Ohm inversa:} Sabemos que $I = V/R$.
+    \begin{align*}
+        3 - \frac{V}{10} - \frac{V}{40} &= 0
+    \end{align*}
+    
+    \textbf{Paso 3. Factorizar (El salto a la Matriz):} Factorizando $V$.
+    \begin{align*}
+        V \cdot \left(\frac{1}{10} + \frac{1}{40}\right) &= 3 \\
+        V \cdot (G_1 + G_2) &= 3
+    \end{align*}
+\end{minipage}
+\begin{minipage}{0.35\textwidth}
+    \begin{center}
+        \begin{circuitikz}[scale=0.8, transform shape]
+            \draw (0,0) -- (4,0) node[ground]{};
+            \draw (0,0) to[I, l=\qty{3}{\ampere}] (0,3) -- (4,3) node[above]{$V$};
+            \draw (2,3) to[R, l=$R_1$, a=\qty{10}{\ohm}] (2,0);
+            \draw (4,3) to[R, l=$R_2$, a=\qty{40}{\ohm}] (4,0);
+        \end{circuitikz}
+    \end{center}
+\end{minipage}
+
+\begin{tcolorbox}[caja_clave, title=Observación Clave]
+Este término, $V \cdot (\text{Suma de Conductancias}) = I_{\text{fuente}}$, es la celda constitutiva de la matriz $\mathbf{G}\mathbf{V} = \mathbf{I}$. Sumar inversos de resistencia es simplemente sumar conductancias.
+\end{tcolorbox}
+
+\end{document}

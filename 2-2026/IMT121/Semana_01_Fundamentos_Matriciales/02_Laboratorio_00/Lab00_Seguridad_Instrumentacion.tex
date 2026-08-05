@@ -1,0 +1,183 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- Paquetes Fundamentales ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[margin=2.5cm, headheight=40pt]{geometry}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue]{hyperref}
+
+% --- Matemáticas y Electrónica ---
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage[american]{circuitikz}
+
+% --- Elementos de Diseño ---
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{listings}
+
+% --- Configuración de siunitx ---
+\sisetup{
+    output-decimal-marker = {,},
+    per-mode = symbol,
+    inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+% --- Configuración de Listings (Python) ---
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!50!black}\itshape,
+    stringstyle=\color{red!70!black},
+    showstringspaces=false,
+    frame=single,
+    backgroundcolor=\color{gray!5},
+    rulecolor=\color{gray!40},
+    numbers=left,
+    numberstyle=\tiny\color{gray}
+}
+
+% --- Estilo de Página ---
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{GUÍA DE LABORATORIO N$^\circ$ 1} \\ IMT-121 Circuitos Electrónicos I}
+\rhead{Carrera de Ingeniería Mecatrónica y Biomédica \\ Universidad Católica Boliviana ``San Pablo'' -- Tarija}
+\cfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{Formulación Matricial Canónica por Inspección Directa y Validación Tripartita de Redes Resistivas en CC}
+\end{center}
+
+\vspace{0.3cm}
+
+\noindent
+\textbf{Docente:} M.Sc. Ing. Bernardo Quiroga Turdera \\
+\textbf{Gestión:} Semestre II/2026 \hspace{2cm} \textbf{Duración:} 120 minutos \\
+\textbf{Modalidad:} Equipos de 3 estudiantes (Tríadas oficiales del PFI). \\
+\textbf{Enfoque:} CDIO (Implementar--Operar) y Criterio ABET 6 (Experimentación y Análisis).
+
+\vspace{0.4cm}
+\hrule
+\vspace{0.4cm}
+
+\section{Objetivos de Aprendizaje}
+\begin{itemize}
+    \item Formular por inspección visual directa la matriz canónica $\mathbf{R}$ ($3\times 3$) y $\mathbf{G}$ para una red de CC.
+    \item Implementar la solución computacional en Python (NumPy) y simulación \texttt{.op} en LTSpice XVII.
+    \item Construir la red física midiendo experimentalmente voltajes nodales y corrientes de lazo.
+    \item Validar la convergencia (teoría, simulación, hardware) mediante Error Relativo Porcentual ($\varepsilon_r \le 5\%$).
+\end{itemize}
+
+\section{Recursos y Equipamiento Requerido}
+\textbf{a. Hardware y Componentes:}
+\begin{itemize}[label=\raisebox{0.25ex}{\tiny$\bullet$}]
+    \item Fuente de alimentación regulada de CC ($\pm\qty{12}{\volt}$ o $\qty{0}{\volt}$--\qty{30}{\volt}).
+    \item Multímetro digital y Protoboard con jumpers.
+    \item Resistencias (1/4 W): $R_1 = \qty{120}{\ohm}$, $R_2 = \qty{220}{\ohm}$, $R_3 = \qty{470}{\ohm}$, $R_4 = \qty{330}{\ohm}$, $R_L = \qty{100}{\ohm}$.
+\end{itemize}
+
+\textbf{b. Software Científico:} Python 3.12 (NumPy, Matplotlib) y LTSpice XVII.
+
+\section{Desarrollo de la Práctica}
+
+\subsection*{PRINCIPIO 1: Fundamentación Teórica (Previo de Laboratorio)}
+\textit{Atención: Esta etapa debe ser desarrollada antes de ingresar al laboratorio.}
+
+Dada la red de $3\times 3$ mallas (Red de Polarización de Sensor/Electrodo - Hito 1 del PFI):
+
+\begin{center}
+    \begin{circuitikz}[scale=1, transform shape]
+        \draw 
+        (0,0) to[V, v=$V_{s1}$] (0,3)
+              to[R, l=$R_1$] (3,3)
+              to[R, l=$R_2$, *-*] (3,0) -- (0,0);
+        \draw 
+        (3,3) to[R, l=$R_3$] (6,3)
+              to[R, l=$R_4$, *-*] (6,0) -- (3,0);
+        \draw 
+        (6,3) to[R, l=$R_L$] (9,3)
+              to[V, v_=$V_{s2}$] (9,0) -- (6,0);
+    \end{circuitikz}
+\end{center}
+
+\begin{enumerate}
+    \item Mida con el multímetro el valor real $R_{\text{medido}}$ de cada resistencia y registre tolerancias.
+    \item Escriba la matriz canónica por inspección directa $\mathbf{R}\mathbf{I} = \mathbf{V}$:
+    $$
+    \begin{bmatrix} R_1 + R_2 & -R_2 & 0 \\ -R_2 & R_2 + R_3 + R_4 & -R_4 \\ 0 & -R_4 & R_4 + R_L \end{bmatrix} \begin{bmatrix} I_1 \\ I_2 \\ I_3 \end{bmatrix} = \begin{bmatrix} V_{s1} \\ 0 \\ -V_{s2} \end{bmatrix}
+    $$
+    \item Resuelva analíticamente $I_3$ y $V_{RL} = I_3 \cdot R_L$ usando la Regla de Cramer con valores medidos.
+\end{enumerate}
+
+\subsection*{PRINCIPIO 2: Implementación (Simulación + Código + Hardware)}
+\textbf{A. Simulación en LTSpice XVII:} Dibuje el esquema, asigne nombres de red (\texttt{N\_nodo1}, \texttt{N\_salida}), configure \texttt{.op} y exporte resultados.\\
+\textbf{B. Cómputo en Python:} Ejecute el siguiente bloque con sus valores medidos reales:
+\begin{lstlisting}
+import numpy as np
+# 1. Valores reales medidos
+R1, R2, R3, R4, RL = 121.2, 218.5, 465.0, 328.0, 99.1
+Vs1, Vs2 = 15.00, -5.00
+
+# 2. Formulacion Matricial
+R = np.array([
+    [R1 + R2, -R2, 0.0],
+    [-R2, R2 + R3 + R4, -R4],
+    [0.0, -R4, R4 + RL]
+], dtype=float)
+V = np.array([Vs1, 0.0, -Vs2], dtype=float)
+
+# 3. Solucion
+I_teorico = np.linalg.solve(R, V)
+print("Corrientes (mA):", np.round(I_teorico * 1000, 4))
+\end{lstlisting}
+\textbf{C. Montaje Físico:} Ensamble en protoboard ($V_{s1}=\qty{15}{\volt}$, $V_{s2}=\qty{-5}{\volt}$). Mida voltajes nodales y corriente $I_L$.
+
+\subsection*{PRINCIPIO 3: Validación Tripartita y Análisis de Error}
+Fórmula de Error Relativo: $\varepsilon_r = \left\vert \frac{X_{\text{medido}} - X_{\text{teórico}}}{X_{\text{teórico}}} \right\vert \times 100\%$
+
+\begin{table}[h!]
+    \centering
+    \begin{tabularx}{\textwidth}{@{}lXXXX@{}}
+        \toprule
+        \textbf{Variable} & \textbf{Teórico (Py)} & \textbf{Simulado (SPICE)} & \textbf{Medido (Real)} & \textbf{Error $\varepsilon_r$ (\%)} \\
+        \midrule
+        Voltaje Nodo 1 ($V_1$) & & & & \\
+        Voltaje Carga ($V_{RL}$) & & & & \\
+        Corriente Carga ($I_L$) & & & & \\
+        Potencia Carga ($P_L$) & & & & \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\textbf{Discusión Técnica (Informe):} ¿Justifica el Efecto de Carga del Multímetro ($R_{\text{int\_amp}} \approx \qty{1}{\ohm}$ y $R_{\text{vol}} \approx \qty{10}{\mega\ohm}$) las discrepancias en sus medidas?
+
+\subsection*{PRINCIPIO 4: Evidencias y Entregables}
+Subir a GitHub (\texttt{/Laboratorio\_1}): Script Jupyter (\texttt{.ipynb}), Archivos LTSpice (\texttt{.asc}, \texttt{.log}), Fotografía del montaje y \textbf{Informe Técnico IEEE (Max. 2 páginas)}.
+
+\section{Rúbrica de Evaluación (100 Puntos)}
+\begin{table}[h!]
+    \centering
+    \footnotesize
+    \begin{tabularx}{\textwidth}{@{}p{2.5cm}XXXc@{}}
+        \toprule
+        \textbf{Criterio} & \textbf{Insuficiente (0-50\%)} & \textbf{Competente (51-85\%)} & \textbf{Sobresaliente (86-100\%)} & \textbf{Pond.} \\
+        \midrule
+        \textbf{Modelado y Cómputo} & Inhabilidad para armar la matriz $R$ o errores graves en NumPy. & Matriz $R$ correcta, con pequeños errores en la medición previa. & Formulación impecable. Script modular automatizado con valores reales. & 30\% \\
+        \textbf{Simulación y Montaje} & Circuito mal armado o simulación inconclusa. & Circuito funcional, pero desordenado o sin calibración de fuentes. & Montaje profesional. Simulación \texttt{.op} con nodos claros y calibración precisa. & 30\% \\
+        \textbf{Validación ($\varepsilon_r$)} & Omite la tabla o el cálculo de error porcentual. & Completa la tabla, pero no justifica causas físicas de las discrepancias. & Análisis riguroso. Discute efecto de carga de instrumentos. & 30\% \\
+        \textbf{Reporte IEEE} & No sube archivos o entrega fuera de plazo. & Sube archivos, pero informe PDF no sigue plantilla IEEE. & Repositorio impecable. Informe IEEE sintético y profesional. & 10\% \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\end{document}

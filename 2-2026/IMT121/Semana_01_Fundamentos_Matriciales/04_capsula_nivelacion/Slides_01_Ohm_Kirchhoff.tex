@@ -1,0 +1,149 @@
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+% --- Paquetes Fundamentales ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{microtype}
+
+% --- Matemáticas y Electrónica ---
+\usepackage{siunitx}
+\usepackage[american]{circuitikz}
+
+% --- Configuración de siunitx ---
+\sisetup{output-decimal-marker = {,}, per-mode = symbol}
+
+% --- Diseño Beamer ---
+\usetheme{Boadilla}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize items}[circle]
+
+% --- Metadatos ---
+\title[Fundamentos: Ohm y Kirchhoff]{Cápsula de Nivelación: Los Cimientos del Análisis}
+\subtitle{De la Física a la Ecuación Lineal}
+\author[M.Sc. Ing. Bernardo Quiroga]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{IMT-121: Circuitos Electrónicos I}
+\date{Semestre II/2026}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{El Paradigma Hidráulico}
+    Para entender las matrices, primero debemos visualizar el fenómeno:
+    
+    \vspace{0.3cm}
+    \begin{columns}
+        \begin{column}{0.45\textwidth}
+            \begin{block}{Variable Eléctrica}
+                \begin{itemize}
+                    \item \textbf{Voltaje ($V$):} Tensión
+                    \item \textbf{Corriente ($I$):} Flujo de carga
+                    \item \textbf{Resistencia ($R$):} Oposición
+                \end{itemize}
+            \end{block}
+        \end{column}
+        
+        \begin{column}{0.45\textwidth}
+            \begin{block}{Analogía Hidráulica}
+                \begin{itemize}
+                    \item Presión de la bomba
+                    \item Caudal de agua (Litros/seg)
+                    \item Estrechamiento en la tubería
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.4cm}
+    \begin{alertblock}{Ley de Ohm}
+        $V = I \cdot R$ \quad $\rightarrow$ \quad ``La presión necesaria es proporcional al caudal y a la restricción del tubo''.
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Leyes de Kirchhoff: Las Reglas de Tránsito}
+    La Ley de Ohm describe el componente. \textbf{Kirchhoff describe la red.}
+    
+    \vspace{0.3cm}
+    \begin{block}{1. Ley de Corrientes (LCK) - Análisis Nodal}
+        \begin{itemize}
+            \item \textbf{Física:} Conservación de la carga ($\sum I = 0$).
+            \item \textbf{Sentido común:} El agua que entra a una intersección debe salir. Un nodo no almacena electrones.
+        \end{itemize}
+    \end{block}
+    
+    \vspace{0.1cm}
+    \begin{block}{2. Ley de Voltajes (LVK) - Análisis de Mallas}
+        \begin{itemize}
+            \item \textbf{Física:} Conservación de la energía ($\sum V = 0$).
+            \item \textbf{Sentido común:} Todo el voltaje que entrega la fuente de alimentación debe consumirse (caer) en los componentes del lazo.
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{Ejemplo 1: De LVK a la Ecuación de Malla}
+    \begin{columns}
+        \begin{column}{0.65\textwidth}
+            \textbf{1. Aplicamos Kirchhoff (LVK):}
+            $$12 - V_{R1} - V_{R2} = 0$$
+            
+            \textbf{2. Sustituimos con Ley de Ohm ($V = I \cdot R$):}
+            $$12 - (I \cdot 100) - (I \cdot 200) = 0$$
+            
+            \textbf{3. Factorizamos la corriente $I$:}
+            $$I \cdot (100 + 200) = 12$$
+        \end{column}
+        \begin{column}{0.35\textwidth}
+            \begin{center}
+                \begin{circuitikz}[scale=0.7, transform shape]
+                    \draw (0,0) 
+                    to[V, v=\qty{12}{\volt}] (0,3)
+                    to[R, l=$R_1$, a=\qty{100}{\ohm}, i=$I$] (3,3)
+                    to[R, l=$R_2$, a=\qty{200}{\ohm}] (3,0) -- (0,0);
+                \end{circuitikz}
+            \end{center}
+        \end{column}
+    \end{columns}
+
+    \vspace{0.2cm}
+    \begin{alertblock}{Conclusión Matricial}
+        La ecuación $I \cdot (\text{Suma de Resistencias}) = V_{\text{fuente}}$ demuestra que la diagonal principal de una matriz $\mathbf{R}\mathbf{I} = \mathbf{V}$ es simplemente la suma de las resistencias del lazo.
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejemplo 2: De LCK a la Ecuación de Nodo}
+    \begin{columns}
+        \begin{column}{0.65\textwidth}
+            \textbf{1. Aplicamos Kirchhoff (LCK):}
+            $$3 - I_{R1} - I_{R2} = 0$$
+            
+            \textbf{2. Sustituimos con Ley de Ohm ($I = V/R$):}
+            $$3 - \frac{V}{10} - \frac{V}{40} = 0$$
+            
+            \textbf{3. Factorizamos el voltaje $V$:}
+            $$V \cdot \left(\frac{1}{10} + \frac{1}{40}\right) = 3$$
+        \end{column}
+        \begin{column}{0.35\textwidth}
+            \begin{center}
+                \begin{circuitikz}[scale=0.7, transform shape]
+                    \draw (0,0) -- (4,0) node[ground]{};
+                    \draw (0,0) to[I, l=\qty{3}{\ampere}] (0,3) -- (4,3) node[above]{$V$};
+                    \draw (2,3) to[R, l=$R_1$, a=\qty{10}{\ohm}] (2,0);
+                    \draw (4,3) to[R, l=$R_2$, a=\qty{40}{\ohm}] (4,0);
+                \end{circuitikz}
+            \end{center}
+        \end{column}
+    \end{columns}
+
+    \vspace{0.2cm}
+    \begin{alertblock}{Conclusión Matricial}
+        La ecuación $V \cdot (\text{Suma de Conductancias}) = I_{\text{fuente}}$ demuestra que conformar la matriz $\mathbf{G}\mathbf{V} = \mathbf{I}$ requiere simplemente sumar los inversos de las resistencias conectadas al nodo.
+    \end{alertblock}
+\end{frame}
+
+\end{document}
