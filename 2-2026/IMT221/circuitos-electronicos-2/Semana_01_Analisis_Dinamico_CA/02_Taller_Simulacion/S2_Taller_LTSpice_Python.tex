@@ -1,0 +1,190 @@
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+% Paquetes esenciales para Ingeniería
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage{circuitikz}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Configuración de colores para código Python
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+% Configuración del tema Beamer
+\usetheme{Madrid}
+\usecolortheme{default}
+\setbeamertemplate{navigation symbols}{} 
+\setbeamertemplate{footline}[frame number] 
+\setbeamercolor{title}{bg=blue!80!black, fg=white}
+\setbeamercolor{frametitle}{bg=blue!80!black, fg=white}
+\setbeamercolor{itemize item}{fg=blue!80!black}
+
+% Configuración de unidades
+\sisetup{
+    output-decimal-marker = {.},
+    inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+% --- PORTADA ---
+\title[IMT-221 \textbar{} Sesión 2]{Taller de Simulación y Análisis de Datos}
+\subtitle{LTSpice y Python: Fundamentación del Modelo F.I.V.E.}
+\author{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' - Sede Tarija \\ Carrera de Ingeniería Mecatrónica}
+\date{05 de agosto de 2026}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Objetivos de la Sesión}
+    \begin{block}{Metodología MECA - Etapa de Fundamentación}
+        Antes de manipular hardware físico sujeto a interferencias electromagnéticas y tolerancias de fabricación, debemos construir una intuición analítica y visual impecable.
+    \end{block}
+    
+    \vspace{0.3cm}
+    \textbf{Hoy aprenderemos a:}
+    \begin{itemize}
+        \item Relacionar el desfase temporal matemático ($\Delta t$) con el ángulo fasorial ($\theta$).
+        \item Simular transitorios y respuestas en frecuencia (Bode) en \texttt{LTSpice}.
+        \item Exportar datos de simulación y procesarlos numéricamente en \texttt{Python} usando el paradigma ``Python-First''.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{1. Repaso Teórico: Impedancia Compleja}
+    La \textbf{Impedancia} $Z(j\omega)$ generaliza el concepto de resistencia al dominio de la frecuencia para componentes reactivos.
+    
+    \vspace{0.3cm}
+    \textbf{El Capacitor ideal:}
+    $$Z_C = \frac{1}{j\omega C} = -\frac{j}{\omega C} = \frac{1}{\omega C} \angle -90^\circ$$
+    
+    \textit{Significado físico:} En un capacitor, la tensión se retrasa exactamente \SI{90}{\degree} respecto a la corriente.
+    
+    \vspace{0.3cm}
+    \textbf{Conversión de Retraso Temporal a Ángulo de Fase:}
+    $$\theta = \omega \cdot \Delta t = 2\pi f \cdot \Delta t = 360^\circ \cdot f \cdot \Delta t$$
+\end{frame}
+
+\begin{frame}{2. Taller LTSpice Parte 1: Análisis Transitorio}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{Circuito RC Paso-Bajo}
+            \begin{itemize}
+                \item Resistencia: $R = \SI{1}{\kilo\ohm}$
+                \item Capacitor: $C = \SI{100}{\nano\farad}$
+            \end{itemize}
+            \vspace{0.3cm}
+            \textbf{Configuración de Simulación:}
+            \begin{itemize}
+                \item Fuente AC: \texttt{SINE(0 2 1000)} ($f = \SI{1}{\kilo\hertz}$)
+                \item Directiva de simulación: \texttt{.tran 5m}
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{alertblock}{Dinámica Práctica}
+                \begin{enumerate}
+                    \item Grafiquen $V(in)$ y $V(out)$ sobrepuestos.
+                    \item Usen los cursores de LTSpice para medir $\Delta t$ entre los picos.
+                    \item Calculen $\theta$ manualmente y verifiquen el desfase introducido por la red RC.
+                \end{enumerate}
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{3. Taller LTSpice Parte 2: Diagrama de Bode}
+    El Diagrama de Bode nos permite evaluar la Respuesta en Frecuencia completa del sistema.
+    
+    \vspace{0.3cm}
+    \textbf{Configuración de Simulación:}
+    \begin{itemize}
+        \item Cambiar la fuente a: \texttt{AC 1} (Amplitud unitaria).
+        \item Directiva de simulación: \texttt{.ac dec 100 10 100k} (Barrido por décadas, 100 puntos, de \SI{10}{\hertz} a \SI{100}{\kilo\hertz}).
+    \end{itemize}
+    
+    \vspace{0.3cm}
+    \begin{block}{Análisis Crítico en Aula}
+        \begin{itemize}
+            \item Grafiquen $V(out)$. Observen el Eje Izquierdo (Magnitud en dB) y el Derecho (Fase en grados).
+            \item Frecuencia de corte analítica: $f_c = \frac{1}{2\pi RC} \approx \SI{1.59}{\kilo\hertz}$.
+            \item \textbf{Verificación:} Usen el cursor para ubicar \SI{-3}{\decibel}. ¿Cuál es la fase exacta en este punto? (\textit{Debería ser} \SI{-45}{\degree}).
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{4. Exportación de Datos: LTSpice a Python}
+    \textbf{Paso a paso para exportar la curva de Bode:}
+    \begin{enumerate}
+        \item En la ventana de gráficos de LTSpice: \texttt{File} $\rightarrow$ \texttt{Export data as text}.
+        \item Seleccionen $V(out)$.
+        \item Guarden el archivo como \texttt{ltspice\_export.txt} en su directorio de trabajo.
+    \end{enumerate}
+    
+    \vspace{0.3cm}
+    \textit{Este archivo contiene un formato peculiar (Frecuencia, (Magnitud dB, Fase°)) que procesaremos con Python para crear nuestros reportes profesionales estandarizados.}
+\end{frame}
+
+\begin{frame}[fragile]{4. Puente LTSpice $\rightarrow$ Python: Análisis de Datos}
+    En su \texttt{Jupyter Notebook} o \texttt{VS Code}, ejecutaremos el siguiente bloque fundacional:
+    \begin{lstlisting}[language=Python]
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# 1. Leer archivo (LTSpice separa por tabulaciones)
+df = pd.read_csv('ltspice_export.txt', sep='\t')
+print(df.head())
+
+# (En el Laboratorio aplicaremos expresiones regulares 
+# para separar la magnitud y la fase de la tupla de texto)
+    \end{lstlisting}
+    \textit{La próxima semana utilizaremos esta misma lógica para automatizar el procesamiento de los archivos .CSV que extraeremos de los osciloscopios reales del laboratorio.}
+\end{frame}
+
+\begin{frame}{5. Preparación para el Laboratorio 1 (Semana 2)}
+    \begin{block}{BOM (Bill of Materials) - Obligatorio por Grupos}
+        Adquirir los siguientes componentes para la próxima sesión física:
+        \begin{itemize}
+            \item \textbf{Resistencias} (Película metálica, 1\% de tolerancia):
+                \begin{itemize}
+                    \item \SI{10}{\kilo\ohm} $\times 4$ unidades.
+                    \item \SI{1}{\kilo\ohm} $\times 2$ unidades.
+                \end{itemize}
+            \item \textbf{Capacitores} (Película de poliéster, 5\% de tolerancia):
+                \begin{itemize}
+                    \item \SI{4.7}{\nano\farad} $\times 2$ unidades.
+                    \item \SI{100}{\nano\farad} $\times 2$ unidades.
+                \end{itemize}
+            \item \textbf{Sensores:} Termistor NTC de \SI{10}{\kilo\ohm} a \SI{25}{\celsius} $\times 1$ unidad.
+            \item \textbf{Material fungible:} Protoboard, jumpers (cables de conexión) y cables coaxiales BNC-Caimán para la instrumentación.
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\end{document}

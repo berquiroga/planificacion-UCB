@@ -1,0 +1,133 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- Paquetes Fundamentales ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue]{hyperref}
+
+% --- Matemáticas y Electrónica ---
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage[american]{circuitikz}
+
+% --- Elementos de Diseño ---
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+% --- Configuración de siunitx ---
+\sisetup{
+    output-decimal-marker = {,},
+    per-mode = symbol,
+    inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+% --- Estilo de Página ---
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{Circuitos Electrónicos I}}
+\rhead{Ingeniería Mecatrónica -- UCB Tarija}
+\cfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% --- Metadatos del Documento ---
+\title{\vspace{-1.5cm}\Large\textbf{Plan de Clase: Sesión 02}\\
+\large Simulación Fasorial, LTSpice y Procesamiento en Python}
+\author{M.Sc. Ing. Bernardo Quiroga Turdera}
+\date{5 de agosto de 2026}
+
+\begin{document}
+
+\maketitle
+\vspace{-0.5cm}
+
+% --- Justificación Pedagógica ---
+\begin{tcolorbox}[colback=blue!5, colframe=blue!40!black, title=\textbf{Justificación Pedagógica (Enfoque CDIO)}]
+Iniciar en un entorno de simulación controlado elimina la carga cognitiva del manejo de hardware de primera mano. Los estudiantes primero construyen la intuición matemática y visual del desfase fasorial ($\Delta t \to \theta$) y los diagramas de Bode en LTSpice. La próxima semana, cuando utilicen el osciloscopio en el Laboratorio 1, ya sabrán exactamente qué forma de onda deben esperar, reduciendo la frustración por ruido o malas conexiones.
+\end{tcolorbox}
+
+\section*{Requerimientos de la Sesión (105 Minutos)}
+\begin{itemize}[label=$\circ$]
+    \item \textbf{Hardware:} Laptops de los estudiantes (no se requiere instrumentación física hoy).
+    \item \textbf{Software:} LTSpice y Python 3.10+ (Jupyter Notebook o VS Code con \texttt{numpy} y \texttt{matplotlib}).
+\end{itemize}
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.5cm}
+
+\section{Repaso Teórico de Pizarra: Impedancia Compleja (09:00 - 09:15)}
+Definición de impedancia $Z(j\omega)$ para $R$, $L$ y $C$. Demostración analítica de por qué el capacitor retrasa la tensión respecto a la corriente:
+\begin{equation}
+    Z_C = \frac{1}{j\omega C} = -\frac{j}{\omega C} = \frac{1}{\omega C} \angle -90^\circ
+\end{equation}
+Ecuación de conversión de retardo temporal a ángulo de fase:
+\begin{equation}
+    \theta = \omega \cdot \Delta t = 2\pi f \cdot \Delta t
+\end{equation}
+
+\section{Taller LTSpice I: Análisis Transitorio y Desfase (09:15 - 09:45)}
+Se modelará una red RC paso-bajo clásica para observar el comportamiento transitorio y medir $\Delta t$.
+
+\begin{center}
+    \begin{circuitikz}[scale=1.2, transform shape]
+        \draw 
+        (0,0) to[sV, l=$V_{in}$, v=\texttt{SINE(0 2 1k)}] (0,3)
+        to[R, l=$R$, a=\qty{1}{\kilo\ohm}] (3,3)
+        to[short, -o] (4.5,3) node[right]{$V_{out}$}
+        (3,3) to[C, l=$C$, a=\qty{100}{\nano\farad}] (3,0)
+        (0,0) -- (4.5,0) node[right]{GND}
+        (3,0) node[ground]{};
+    \end{circuitikz}
+\end{center}
+
+\textbf{Dinámica en el aula:}
+\begin{enumerate}
+    \item Configurar el comando de simulación temporal: \texttt{.tran 5m}.
+    \item Graficar $V(in)$ y $V(out)$ de forma sobrepuesta.
+    \item Usar los cursores de LTSpice para medir la diferencia de tiempo $\Delta t$ entre picos.
+    \item Calcular manualmente $\theta = 360^\circ \cdot f \cdot \Delta t$ y contrastar con la teoría.
+\end{enumerate}
+
+\section{Taller LTSpice II: Barrido de Frecuencia y Bode (09:45 - 10:15)}
+Transición al dominio de la frecuencia para analizar la respuesta del sistema.
+
+\textbf{Dinámica en el aula:}
+\begin{enumerate}
+    \item Cambiar la configuración de la fuente a \texttt{AC 1}.
+    \item Establecer el comando de simulación: \texttt{.ac dec 100 10 100k}.
+    \item Graficar $V(out)$ en escala logarítmica (Eje izquierdo: Magnitud dB, Eje derecho: Fase en grados).
+    \item Identificar la frecuencia de corte a \qty{-3}{\decibel}, donde $f_c \approx \qty{1.59}{\kilo\hertz}$, y verificar empíricamente que la fase es exactamente de $-45^\circ$.
+\end{enumerate}
+
+\section{Puente LTSpice a Python: Análisis de Datos (10:15 - 10:35)}
+Demostración de la cadena de herramientas de software que se utilizará en el Laboratorio 1.
+\begin{itemize}
+    \item \textbf{Exportación:} En la ventana de gráficos de LTSpice: \textit{File $\rightarrow$ Export data as text}.
+    \item \textbf{Procesamiento:} Escribir un script base en Jupyter Notebook para importar los datos (\texttt{.txt} o \texttt{.csv}) y graficarlos usando \texttt{matplotlib}.
+\end{itemize}
+
+\section{Cierre y Lista de Materiales - Laboratorio 1 (10:35 - 10:45)}
+Componentes requeridos por grupo de trabajo para la Sesión 03 (Laboratorio Físico):
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{@{}llc@{}}
+        \toprule
+        \textbf{Componente} & \textbf{Especificación} & \textbf{Cantidad} \\
+        \midrule
+        Resistencia & \qty{10}{\kilo\ohm}, Película metálica al 1\% & 4 \\
+        Resistencia & \qty{1}{\kilo\ohm}, Película metálica al 1\% & 2 \\
+        Capacitor & \qty{4.7}{\nano\farad}, Poliéster al 5\% & 2 \\
+        Capacitor & \qty{100}{\nano\farad}, Poliéster al 5\% & 2 \\
+        Termistor NTC & \qty{10}{\kilo\ohm} a \qty{25}{\celsius} & 1 \\
+        Accesorios & Protoboard, Jumpers, Cables BNC a Caimán & 1 kit \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\end{document}
