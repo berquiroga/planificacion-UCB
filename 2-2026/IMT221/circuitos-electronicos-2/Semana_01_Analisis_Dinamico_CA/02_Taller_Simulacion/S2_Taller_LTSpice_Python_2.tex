@@ -4,7 +4,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[spanish,es-tabla]{babel}
-\usepackage[margin=2.5cm]{geometry}
+% Ajuste de headheight para evitar advertencias y solapamientos de fancyhdr
+\usepackage[margin=2.5cm, headheight=15pt]{geometry} 
 \usepackage{graphicx}
 \usepackage{fancyhdr}
 \usepackage{xcolor}
@@ -27,7 +28,11 @@
     inter-unit-product = \ensuremath{{}\cdot{}}
 }
 
-% --- Estilo de Página ---
+% --- Macros Personalizadas para UI y Teclado ---
+\newcommand{\tecla}[1]{\colorbox{gray!20}{\texttt{\footnotesize\textbf{#1}}}}
+\newcommand{\menu}[1]{\textbf{\textsf{#1}}}
+
+% --- Estilo de Página (Sección Docente) ---
 \pagestyle{fancy}
 \fancyhf{}
 \lhead{\textbf{Circuitos Electrónicos I}}
@@ -95,15 +100,7 @@ Se modelará una red RC paso-bajo clásica para observar el comportamiento trans
 \end{enumerate}
 
 \section{Taller LTSpice II: Barrido de Frecuencia y Bode (09:45 - 10:15)}
-Transición al dominio de la frecuencia para analizar la respuesta del sistema.
-
-\textbf{Dinámica en el aula:}
-\begin{enumerate}
-    \item Cambiar la configuración de la fuente a \texttt{AC 1}.
-    \item Establecer el comando de simulación: \texttt{.ac dec 100 10 100k}.
-    \item Graficar $V(out)$ en escala logarítmica (Eje izquierdo: Magnitud dB, Eje derecho: Fase en grados).
-    \item Identificar la frecuencia de corte a \qty{-3}{\decibel}, donde $f_c \approx \qty{1.59}{\kilo\hertz}$, y verificar empíricamente que la fase es exactamente de $-45^\circ$.
-\end{enumerate}
+Transición al dominio de la frecuencia para analizar la respuesta del sistema. Identificar la frecuencia de corte a \qty{-3}{\decibel}, donde $f_c \approx \qty{1.59}{\kilo\hertz}$, y verificar empíricamente que la fase es de $-45^\circ$.
 
 \section{Puente LTSpice a Python: Análisis de Datos (10:15 - 10:35)}
 Demostración de la cadena de herramientas de software que se utilizará en el Laboratorio 1.
@@ -129,5 +126,94 @@ Componentes requeridos por grupo de trabajo para la Sesión 03 (Laboratorio Fís
         \bottomrule
     \end{tabular}
 \end{table}
+
+% =====================================================================
+% INICIO DEL HANDOUT PARA ESTUDIANTES
+% =====================================================================
+\newpage
+% Limpiamos explícitamente las cabeceras anteriores para evitar fantasmas
+\fancyhf{} 
+% Distribuimos en 3 zonas para evitar solapamientos
+\lhead{\textbf{Circuitos Electrónicos I}}
+\chead{\textcolor{gray}{Protocolo de Simulación}}
+\rhead{\textbf{Ingeniería Mecatrónica}}
+\cfoot{Página \thepage}
+
+\begin{center}
+    \Large\textbf{Protocolo de Simulación en LTSpice}\\
+    \large Análisis Dinámico y Respuesta en Frecuencia (Red RC)
+\end{center}
+\vspace{0.3cm}
+
+\begin{tcolorbox}[colback=gray!5, colframe=gray!60!black, title=\textbf{Objetivo del Protocolo}]
+Modelar una red pasiva RC paso-bajo, medir el desfase temporal $\Delta t$ en el dominio del tiempo y extraer la respuesta en frecuencia (Diagrama de Bode) para su posterior análisis numérico en Python.
+\end{tcolorbox}
+
+\subsection*{Paso 1: Captura del Esquemático (Schematic Capture)}
+\begin{enumerate}
+    \item Abre LTSpice y selecciona \menu{File $\rightarrow$ New Schematic} (o presiona \tecla{Ctrl + N}).
+    \item \textbf{Inserción de Componentes:}
+    \begin{itemize}[label=\raisebox{0.25ex}{\tiny$\bullet$}]
+        \item Presiona \tecla{V} para colocar una fuente de voltaje. Haz clic en el lienzo y presiona \tecla{Esc}.
+        \item Presiona \tecla{R} para colocar una resistencia. Presiona \tecla{Ctrl + R} para rotarla si es necesario.
+        \item Presiona \tecla{C} para colocar un capacitor.
+        \item Presiona \tecla{G} para colocar la referencia de Tierra (GND). \textit{Regla SPICE: Ninguna simulación correrá sin un nodo de tierra explícito.}
+    \end{itemize}
+    \item \textbf{Ruteo (Wiring):} Presiona \tecla{F3} y conecta los componentes formando un circuito serie (Fuente $\rightarrow$ Resistencia $\rightarrow$ Capacitor $\rightarrow$ Tierra).
+    \item \textbf{Asignación de Valores} (Haz clic derecho sobre cada componente):
+    \begin{itemize}[label=\raisebox{0.25ex}{\tiny$\bullet$}]
+        \item Resistencia: Escribe \tecla{1k} (\qty{1}{\kilo\ohm}).
+        \item Capacitor: Escribe \tecla{100n} (\qty{100}{\nano\farad}).
+    \end{itemize}
+    \item \textbf{Etiquetado de Nodos:} Presiona \tecla{F4} (Label Net), escribe \tecla{Vout}, marca la opción \menu{Port Type: Output} y coloca la etiqueta en el nodo entre la resistencia y el capacitor.
+\end{enumerate}
+
+\subsection*{Paso 2: Análisis Transitorio (Dominio del Tiempo)}
+El objetivo es observar el desfase temporal entre la señal de entrada y la salida.
+\begin{enumerate}
+    \item \textbf{Configuración de la Fuente de Excitación:} Haz clic derecho sobre la fuente, selecciona \menu{Advanced}, elige la función \menu{SINE} y configura:
+    \begin{itemize}[label=\raisebox{0.25ex}{\tiny$\bullet$}]
+        \item \menu{DC offset [V]}: 0
+        \item \menu{Amplitude [V]}: 2
+        \item \menu{Freq [Hz]}: 1000 (\qty{1}{\kilo\hertz})
+    \end{itemize}
+    \item \textbf{Directiva de Simulación:} Ve a \menu{Simulate $\rightarrow$ Edit Simulation Cmd}. En la pestaña \menu{Transient}, configura \menu{Stop time}: \tecla{5m} (\qty{5}{\milli\second}, 5 períodos de \qty{1}{\kilo\hertz}). Coloca el texto en el esquemático.
+    \item \textbf{Ejecución y Medición:} Presiona \menu{Run} (ícono del corredor). Haz clic en el cable de entrada para graficar $V(in)$ y en el nodo \tecla{Vout} para graficar la salida sobrepuesta.
+    \item \textbf{Uso de Cursores para medir $\Delta t$:}
+    \begin{itemize}[label=\raisebox{0.25ex}{\tiny$\bullet$}]
+        \item Haz clic izquierdo sobre el nombre de la traza $V(in)$ en el gráfico para activar el Cursor 1.
+        \item Haz clic derecho sobre la traza $V(out)$, selecciona \menu{Attached Cursor} y elige Cursor 2.
+        \item Arrastra el Cursor 1 al pico máximo de $V(in)$ y el Cursor 2 al pico de $V(out)$. 
+        \item Lee el valor \menu{Diff (Horz)} en la ventana: ese es el $\Delta t$.
+    \end{itemize}
+    \item \textbf{Cálculo:} Calcula manualmente $\theta = 360^\circ \cdot f \cdot \Delta t$.
+\end{enumerate}
+
+\subsection*{Paso 3: Análisis AC (Barrido de Frecuencia y Bode)}
+Pasamos al dominio de la frecuencia para evaluar la función de transferencia $H(j\omega)$.
+\begin{enumerate}
+    \item \textbf{Reconfiguración de la Fuente:} Haz clic derecho sobre la fuente. Busca \menu{Small signal AC analysis (.AC)}, asigna \menu{AC Amplitude}: 1 y \menu{AC Phase}: 0. Haz clic en OK.
+    \item \textbf{Directiva de Simulación:} Ve a \menu{Simulate $\rightarrow$ Edit Simulation Cmd}. En \menu{AC Analysis} configura:
+    \begin{itemize}[label=\raisebox{0.25ex}{\tiny$\bullet$}]
+        \item \menu{Type of Sweep}: Decade (Barrido logarítmico).
+        \item \menu{Number of points per decade}: 100
+        \item \menu{Start Frequency}: 10 \quad|\quad \menu{Stop Frequency}: 100k
+    \end{itemize}
+    \item \textbf{Lectura del Diagrama:} Presiona \menu{Run} y grafica \tecla{Vout}. Busca la Frecuencia de Corte desplazando el cursor hasta que la magnitud (eje izquierdo) marque $\approx \qty{-3.01}{\decibel}$. Verifica que coincida con $f_c \approx \qty{1.59}{\kilo\hertz}$ y la fase marque $\qty{-45}{\degree}$.
+\end{enumerate}
+
+\subsection*{Paso 4: Exportación de Datos a Python}
+Extraeremos la data cruda para el procesamiento computacional.
+\begin{enumerate}
+    \item Haz clic en la ventana del gráfico para activarla.
+    \item Ve al menú \menu{File $\rightarrow$ Export data as text}. Asegúrate de que \tecla{V(vout)} esté seleccionada.
+    \item Haz clic en \menu{Browse}, guarda el archivo en la carpeta de tu entorno de Python como \tecla{ltspice\_export.txt} y haz clic en OK.
+\end{enumerate}
+
+\vspace{0.5cm}
+% --- Nota del Docente (Solo para tu referencia, puedes comentar esto antes de imprimir) ---
+\begin{tcolorbox}[colback=green!5, colframe=green!40!black, title=\textbf{Dinámica Docente (Cierre de Sesión)}]
+Mientras ejecutan el Paso 2, camina por el laboratorio validando el uso de la ventana de cursores. El Paso 4 es el cierre perfecto: al ver la sintaxis que exporta LTSpice (\texttt{-3.01dB,-45.0°}), generas inmediatamente la necesidad de usar el script de \texttt{pandas} y Regex que les proporcionarás.
+\end{tcolorbox}
 
 \end{document}
