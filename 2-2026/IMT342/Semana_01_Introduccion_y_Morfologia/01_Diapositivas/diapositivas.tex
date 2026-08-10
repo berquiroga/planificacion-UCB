@@ -1,0 +1,535 @@
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+% ==========================================
+% PAQUETES Y CONFIGURACIÓN
+% ==========================================
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{booktabs}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins, breakable}
+\usepackage{listings}
+\usepackage{tikz}
+% Librería babel requerida para evitar colisiones con el símbolo '>' en español
+\usetikzlibrary{positioning, arrows.meta, calc, babel}
+
+% Tema y Colores (Estilo Académico Institucional)
+\mode<presentation> {
+    \usetheme{Madrid}
+    % Azul oscuro institucional (tipo UCB)
+    \definecolor{ucbblue}{RGB}{0, 51, 102} 
+    \usecolortheme[named=ucbblue]{structure}
+    \setbeamertemplate{navigation symbols}{} % Ocultar símbolos de navegación
+    \setbeamertemplate{itemize items}[circle]
+}
+
+% Configuración para código XML (URDF)
+\lstset{
+    language=XML,
+    basicstyle=\ttfamily\scriptsize,
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{red!70!black},
+    commentstyle=\color{green!60!black}\itshape,
+    backgroundcolor=\color{gray!5},
+    frame=single,
+    rulecolor=\color{lightgray},
+    showstringspaces=false
+}
+
+% ==========================================
+% COMANDOS PERSONALIZADOS
+% ==========================================
+% 1. Entorno para Notas Pedagógicas del Docente
+\newtcolorbox{notadocente}[1][Nota Pedagógica]{
+    enhanced,
+    colback=yellow!10!white,
+    colframe=yellow!60!black,
+    boxrule=0.5mm,
+    arc=1mm,
+    left=2mm, right=2mm, top=1mm, bottom=1mm,
+    fonttitle=\bfseries\small,
+    coltitle=black,
+    title=\textbf{#1:}
+}
+
+% 2. Placeholder elegante para imágenes pendientes
+\newcommand{\placeholderfig}[2][4cm]{
+    \begin{center}
+    \begin{tikzpicture}
+        \node[draw=gray, dashed, thick, fill=gray!10, text=gray!70, 
+              minimum width=0.9\linewidth, minimum height=#1, align=center, rounded corners] 
+              {\footnotesize \textbf{ESPACIO PARA IMAGEN:}\\#2};
+    \end{tikzpicture}
+    \end{center}
+}
+
+% ==========================================
+% METADATOS DE LA PRESENTACIÓN
+% ==========================================
+\title[Robótica Industrial (IMT-342)]{\LARGE Robótica Industrial (IMT-342)}
+\subtitle{\textbf{Unidad I: Morfología, Geometría del Espacio y Cinemática Directa}}
+\author[M.Sc. Bernardo Quiroga]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' -- Sede Tarija}
+\date{Semestre II-2026}
+
+\begin{document}
+
+% Portada
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% ==========================================
+% SEMANA 1 - CLASE 1
+% ==========================================
+\section{Morfología de Robots Industriales}
+
+\begin{frame}{Introducción y Morfología}
+    \framesubtitle{Arquitectura Física del ABB IRB 120}
+    
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{Conceptos Clave:}
+            \begin{itemize}
+                \item Definición de robot manipulador articulado (cadena cinemática abierta).
+                \item Estructura del semestre: Marco CDIO (Concebir, Diseñar, Implementar, Operar).
+                \item El Proyecto Final Integrador (PFI) como eje central.
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \placeholderfig[3.5cm]{Esquema 3D del manipulador\\ABB IRB 120 indicando sus 6 ejes}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.3cm}
+    \begin{notadocente}
+        Aclarar a los estudiantes que cada ecuación teórica vista en la pantalla se programará en ROS y se ejecutará en el robot real del laboratorio.
+    \end{notadocente}
+\end{frame}
+
+\begin{frame}{Eslabones, Articulaciones y Grados de Libertad}
+    \framesubtitle{Criterio de Grübler-Kutzbach}
+    
+    \begin{columns}[T]
+        \begin{column}{0.55\textwidth}
+            \textbf{Anatomía de la Cadena Cinemática:}
+            \begin{itemize}
+                \item \textbf{Juntas 1, 2 y 3 (Estructura Principal):} Posicionamiento grueso del extremo en el espacio $\mathbb{R}^3$.
+                \item \textbf{Juntas 4, 5 y 6 (Muñeca Esférica):} Orientación del efector final. Intersección en un punto común $p_w$.
+            \end{itemize}
+            
+            \vspace{0.2cm}
+            \textbf{Criterio de Movilidad espacial ($\lambda=6$):}
+            \begin{equation*}
+                \text{GDL} = \lambda (N - 1 - j) + \sum_{i=1}^{j} f_i
+            \end{equation*}
+        \end{column}
+        \begin{column}{0.45\textwidth}
+            \placeholderfig[4cm]{Diagrama mecánico explotado\\mostrando las 6 juntas (R)}
+        \end{column}
+    \end{columns}
+    
+    \begin{notadocente}[Nota para el Profesor]
+        Dibujar en la pizarra el punto $p_w$ (intersección 4, 5 y 6). Explicar que este detalle de diseño es el que permitirá resolver la cinemática inversa analíticamente en la Semana 6.
+    \end{notadocente}
+\end{frame}
+
+% ==========================================
+% SEMANA 2 - CLASE 1
+% ==========================================
+\section{Geometría de Rotación y Grupo SO(3)}
+
+\begin{frame}{El Grupo Especial Ortogonal $SO(3)$}
+    \framesubtitle{Matrices de Rotación en $2\text{D}$ y $3\text{D}$}
+    
+    \begin{columns}[c]
+        \begin{column}{0.4\textwidth}
+            \placeholderfig[3cm]{Mapeo de vectores entre\\marco $\{B\}$ y marco $\{A\}$}
+        \end{column}
+        \begin{column}{0.6\textwidth}
+            \textbf{Matriz de Rotación Directa:}
+            \renewcommand{\arraystretch}{1.3} % Da respiro a la matriz
+            \begin{equation*}
+                ^{A}R_{B} = \begin{bmatrix} 
+                \hat{x}_B \cdot \hat{x}_A & \hat{y}_B \cdot \hat{x}_A & \hat{z}_B \cdot \hat{x}_A \\ 
+                \hat{x}_B \cdot \hat{y}_A & \hat{y}_B \cdot \hat{y}_A & \hat{z}_B \cdot \hat{y}_A \\ 
+                \hat{x}_B \cdot \hat{z}_A & \hat{y}_B \cdot \hat{z}_A & \hat{z}_B \cdot \hat{z}_A 
+                \end{bmatrix}
+            \end{equation*}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.4cm}
+    \textbf{Propiedades Fundamentales de $SO(3)$:}
+    \begin{itemize}
+        \item \textbf{Ortogonalidad:} $R^T R = I \implies R^{-1} = R^T$ (La inversa es la transpuesta).
+        \item \textbf{Preservación de norma:} $\Vert R \cdot p \Vert = \Vert p \Vert$ (Transformación isométrica).
+        \item \textbf{Determinante propio:} $\det(R) = +1$ (Conserva sistemas dextrógiros).
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Ejes Fijos vs. Ejes Móviles}
+    \framesubtitle{Composición de Rotaciones Sucesivas}
+    
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \begin{block}{Rotación respecto a Ejes Fijos}
+                (Sistema Base $\{A\}$)
+                
+                \vspace{0.2cm}
+                \textbf{Regla:} Pre-multiplicación (por la izquierda).
+                $$R_{total} = R_z \cdot R_y \cdot R_x$$
+            \end{block}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{block}{Rotación respecto a Ejes Móviles}
+                (Sistema del Cuerpo $\{B\}$)
+                
+                \vspace{0.2cm}
+                \textbf{Regla:} Post-multiplicación (por la derecha).
+                $$R_{total} = R_x \cdot R_y \cdot R_z$$
+            \end{block}
+        \end{column}
+    \end{columns}
+
+    \vspace{0.2cm}
+    \placeholderfig[2cm]{Comparativa de diagramas de árbol de multiplicación matricial}
+    
+    \begin{notadocente}[Nota para el Profesor]
+        Hacer un ejercicio rápido en directo sosteniendo un objeto (ej. borrador). Girarlo respecto al aula (eje fijo) y luego respecto a su propia cara (eje móvil) para fijar el concepto visualmente.
+    \end{notadocente}
+\end{frame}
+
+% ==========================================
+% SEMANA 2 - CLASE 2
+% ==========================================
+\section{Parametrización Angular y Gimbal Lock}
+
+\begin{frame}{Parametrización Mínima de la Orientación}
+    \framesubtitle{Ángulos de Euler (Convención ZYZ)}
+    
+    \begin{columns}[T]
+        \begin{column}{0.4\textwidth}
+            \placeholderfig[3.5cm]{Secuencia de giros $(\phi, \theta, \psi)$\\sobre giroscopio 3D}
+            
+            \vspace{0.2cm}
+            \textbf{Concepto Clave:}\\
+            Representación de 9 elementos matriciales con solo \textbf{3 parámetros independientes}.
+        \end{column}
+        \begin{column}{0.6\textwidth}
+            \textbf{Matriz Euler ZYZ:}
+            
+            \vspace{0.2cm}
+            % Reducción de fuente para acomodar la matriz ancha
+            {\footnotesize
+            \renewcommand{\arraystretch}{1.5}
+            $R_{ZYZ}(\phi, \theta, \psi) =$
+            \begin{equation*}
+                \begin{bmatrix} 
+                c_\phi c_\theta c_\psi - s_\phi s_\psi & -c_\phi c_\theta s_\psi - s_\phi c_\psi & c_\phi s_\theta \\ 
+                s_\phi c_\theta c_\psi + c_\phi s_\psi & -s_\phi c_\theta s_\psi + c_\phi c_\psi & s_\phi s_\theta \\ 
+                -s_\theta c_\psi & s_\theta s_\psi & c_\theta 
+                \end{bmatrix}
+            \end{equation*}
+            }
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Pérdida de un GDL: Gimbal Lock}
+    \framesubtitle{Singularidades en la Representación Angular}
+    
+    \begin{columns}[T]
+        \begin{column}{0.4\textwidth}
+            \placeholderfig[3cm]{Esquema de alineación del 1er y 3er eje (Ej: $\theta = 0$)}
+        \end{column}
+        \begin{column}{0.6\textwidth}
+            \textbf{Análisis Matemático:}
+            Si el segundo giro es nulo ($\theta = 0$), evaluamos la matriz:
+            {\small
+            \begin{equation*}
+                R_{ZYZ} = \begin{bmatrix} 
+                \cos(\phi + \psi) & -\sin(\phi + \psi) & 0 \\ 
+                \sin(\phi + \psi) & \cos(\phi + \psi) & 0 \\ 
+                0 & 0 & 1 
+                \end{bmatrix}
+            \end{equation*}
+            }
+        \end{column}
+    \end{columns}
+
+    \vspace{0.3cm}
+    \begin{alertblock}{Consecuencia Crítica}
+        Las variables $\phi$ y $\psi$ quedan acopladas matemáticamente en una única suma $(\phi + \psi)$. Es imposible distinguir giros independientes del primer y tercer eje. Esto justifica el salto hacia \textbf{Cuaterniones Unitarios} en el software de control.
+    \end{alertblock}
+\end{frame}
+
+% ==========================================
+% SEMANA 3 - CLASE 1
+% ==========================================
+\section{Operadores Homogéneos en SE(3)}
+
+\begin{frame}{Matrices de Transformación Homogénea}
+    \framesubtitle{El Grupo Especial Euclidiano $SE(3)$}
+    
+    \begin{columns}[c]
+        \begin{column}{0.4\textwidth}
+            \textbf{Composición Encadenada:}\\
+            Para marcos múltiples, la transformación se acumula:
+            $$^{A}T_{C} = {}^{A}T_{B} \cdot {}^{B}T_{C}$$
+            
+            \vspace{0.3cm}
+            \textbf{Transformación de Puntos:}\\
+            Usando coordenadas homogéneas:
+            $$P_A = {}^{A}T_{B} \cdot P_B$$
+        \end{column}
+        \begin{column}{0.6\textwidth}
+            \textbf{Estructura Analítica de $SE(3)$:}
+            \renewcommand{\arraystretch}{1.2}
+            \begin{equation*}
+                ^{A}T_{B} = 
+                \begin{bmatrix} 
+                R_{3\times3} & p_{3\times1} \\ 
+                0_{1\times3} & 1 
+                \end{bmatrix} 
+                = 
+                \begin{bmatrix} 
+                r_{11} & r_{12} & r_{13} & x \\ 
+                r_{21} & r_{22} & r_{23} & y \\ 
+                r_{31} & r_{32} & r_{33} & z \\ 
+                0 & 0 & 0 & 1 
+                \end{bmatrix}
+            \end{equation*}
+            \vspace{0.1cm}
+            \placeholderfig[1.5cm]{Matriz articulada en bloques (R, p, Perspectiva, Escala)}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Inversión Eficiente sin Descomposición LU}
+    \framesubtitle{Propiedades Matriciales Homogéneas}
+    
+    \textbf{Derivación Analítica de la Inversa:}
+    Dada la matriz de transformación homogénea directa $^{A}T_{B}$, su inversa matemática exacta (sin usar algoritmos numéricos costosos) es:
+    
+    \begin{equation*}
+        ({}^{A}T_{B})^{-1} = {}^{B}T_{A} = 
+        \begin{bmatrix} 
+        R^T & -R^T p \\ 
+        0_{1\times3} & 1 
+        \end{bmatrix}
+    \end{equation*}
+    
+    \vspace{0.5cm}
+    \begin{notadocente}[Nota para el Profesor]
+        Demostrar en la pizarra que intentar calcular la inversa de una matriz de $4 \times 4$ mediante determinantes clásicos ($1/|A| \cdot \text{Adj}$) consume demasiada CPU. Usar la fórmula analítica con el bloque de traslación transpuesto $-R^T p$ reduce el cómputo en ROS a microsegundos.
+    \end{notadocente}
+\end{frame}
+
+% ==========================================
+% SEMANA 3 - CLASE 2
+% ==========================================
+\section{Cuaterniones e Interpolación SLERP}
+
+\begin{frame}{Cuaterniones de Hamilton}
+    \framesubtitle{Parametrización Global Sin Singularidades}
+    
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \placeholderfig[3.5cm]{Giro de ángulo $\theta$ sobre\\un eje vectorial $\hat{k}$}
+            \vspace{0.2cm}
+            
+            \textbf{Justificación ROS:}\\
+            Estructura nativa (\texttt{geometry\_msgs/Quaternion}) para evitar el bloqueo de cardán en tiempo real.
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Definición del Cuaternión:}
+            \begin{align*}
+                \mathbf{q} &= [\eta, \boldsymbol{\epsilon}] \\
+                &= \left[ \cos\left(\frac{\theta}{2}\right), \hat{k} \sin\left(\frac{\theta}{2}\right) \right] \\
+                &= q_w + q_x \mathbf{i} + q_y \mathbf{j} + q_z \mathbf{k}
+            \end{align*}
+            
+            \vspace{0.3cm}
+            \textbf{Restricción de Unidad (Norma 1):}
+            \begin{equation*}
+                \Vert \mathbf{q} \Vert = \sqrt{q_w^2 + q_x^2 + q_y^2 + q_z^2} = 1
+            \end{equation*}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Interpolación Esférica (SLERP)}
+    \framesubtitle{Suavizado de Orientación en Trayectorias}
+    
+    \begin{columns}[T]
+        \begin{column}{0.4\textwidth}
+            \placeholderfig[3cm]{Trayectoria curva sobre una\\hiper-esfera unitaria $\mathbb{S}^3$}
+        \end{column}
+        \begin{column}{0.6\textwidth}
+            \textbf{Algoritmo SLERP}\\
+            Para conectar $\mathbf{q}_0$ y $\mathbf{q}_1$ en un tiempo normalizado $t \in [0,1]$:
+            \vspace{0.1cm}
+            {\small
+            \begin{equation*}
+                \text{SLERP}(\mathbf{q}_0, \mathbf{q}_1; t) = \frac{\sin((1-t)\Omega)}{\sin\Omega} \mathbf{q}_0 + \frac{\sin(t\Omega)}{\sin\Omega} \mathbf{q}_1
+            \end{equation*}
+            }
+            \begin{equation*}
+                \text{donde: } \cos\Omega = \mathbf{q}_0 \cdot \mathbf{q}_1
+            \end{equation*}
+            \vspace{0.1cm}
+            \textbf{Concepto Clave:} Garantiza una \textit{velocidad angular constante} durante la reorientación de la pinza neumática.
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ==========================================
+% SEMANA 4 - CLASE 1
+% ==========================================
+\section{Cinemática: Convención de Denavit-Hartenberg}
+
+\begin{frame}{Protocolo Estándar de Denavit-Hartenberg (D-H)}
+    \framesubtitle{Las 4 Reglas Geométricas de Asignación de Ejes}
+    
+    \begin{columns}[T]
+        \begin{column}{0.45\textwidth}
+            \placeholderfig[4.5cm]{Dos articulaciones consecutivas ($i$, $i+1$) con ejes locales}
+        \end{column}
+        \begin{column}{0.55\textwidth}
+            \textbf{Reglas Absolutas de Construcción:}
+            \begin{enumerate}
+                \item \textbf{Eje $z_i$:} Se coloca a lo largo del eje de movimiento (revolución o prismático) de la junta $i+1$.
+                \item \textbf{Eje $x_i$:} Se define a lo largo de la perpendicular común entre el eje $z_{i-1}$ y el eje $z_i$.
+                \item \textbf{Eje $y_i$:} Se completa aplicando la regla de la mano derecha (producto cruz).
+                \item \textbf{Origen $O_i$:} Se ubica en la intersección de la perpendicular común $x_i$ con el eje $z_i$.
+            \end{enumerate}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Transformación Básica de Eslabón}
+    \framesubtitle{Los 4 Parámetros Cinemáticos de Eslabón y Junta}
+    
+    \textbf{Ecuación General D-H ($^{i-1}T_{i}$):}
+    \renewcommand{\arraystretch}{1.5}
+    \begin{equation*}
+        ^{i-1}T_{i} = 
+        \begin{bmatrix} 
+        \cos\theta_i & -\sin\theta_i \cos\alpha_i & \sin\theta_i \sin\alpha_i & a_i \cos\theta_i \\ 
+        \sin\theta_i & \cos\theta_i \cos\alpha_i & -\cos\theta_i \sin\alpha_i & a_i \sin\theta_i \\ 
+        0 & \sin\alpha_i & \cos\alpha_i & d_i \\ 
+        0 & 0 & 0 & 1 
+        \end{bmatrix}
+    \end{equation*}
+
+    \vspace{0.1cm}
+    \placeholderfig[1.2cm]{Desglose de los giros y traslaciones $\theta_i, d_i, a_i, \alpha_i$}
+    
+    \begin{notadocente}[Mnemotecnia para Clase]
+        Repetir con el grupo el orden exacto de los 4 movimientos base: Rotación $\theta_i$ en $z$, Traslación $d_i$ en $z$, Traslación $a_i$ en $x$, y Rotación $\alpha_i$ en $x$.
+    \end{notadocente}
+\end{frame}
+
+% ==========================================
+% SEMANA 4 - CLASE 2
+% ==========================================
+\section{Aplicación al Hardware: ABB IRB 120}
+
+\begin{frame}{Diagrama Cinemático del ABB IRB 120}
+    \framesubtitle{Plano Mecánico vs. Cero Matemático D-H}
+    
+    \begin{center}
+        \placeholderfig[5.5cm]{Plano técnico oficial de ABB con cotas de longitud acoplado a ejes $z_0 \dots z_5$\\ ($c_1=290\text{mm}, a_1=270\text{mm}, c_3=302\text{mm}, c_4=72\text{mm}$)}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Parametrización del Manipulador del Laboratorio}
+    \framesubtitle{Tabla de Parámetros D-H Definitiva}
+    
+    \begin{center}
+        \renewcommand{\arraystretch}{1.3}
+        \begin{tabular}{c c c c c}
+            \toprule
+            \textbf{Articulación $i$} & $\theta_i$ \textbf{(Variable)} & $d_i$ \textbf{(mm)} & $a_i$ \textbf{(mm)} & $\alpha_i$ \textbf{(rad)} \\
+            \midrule
+            1 & $q_1$ & 290 & 0 & $-\pi/2$ \\
+            2 & $q_2 - \pi/2$ & 0 & 270 & 0 \\
+            3 & $q_3$ & 0 & 70 & $-\pi/2$ \\
+            4 & $q_4$ & 302 & 0 & $\pi/2$ \\
+            5 & $q_5$ & 0 & 0 & $-\pi/2$ \\
+            6 & $q_6$ & 72 & 0 & 0 \\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+    
+    \vspace{0.4cm}
+    \begin{alertblock}{Concepto Crítico}
+        Prestar especial atención a la justificación analítica del offset de $-\pi/2$ introducido en $\theta_2$. Esto se debe a la postura vertical erguida en la que se encuentra el robot físico cuando todos los encoders leen cero.
+    \end{alertblock}
+\end{frame}
+
+% ==========================================
+% SEMANA 5 - CLASE 1
+% ==========================================
+\section{Cinemática Directa y Modelado URDF}
+
+\begin{frame}{El Modelo Cinemático Directo Completo}
+    \framesubtitle{Multiplicación Encadenada de Eslabones}
+    
+    \begin{columns}[T]
+        \begin{column}{0.4\textwidth}
+            \placeholderfig[3.5cm]{Cadena de matrices acumuladas\\(Base $\to$ Brida)}
+        \end{column}
+        \begin{column}{0.6\textwidth}
+            \textbf{Mapeo No Lineal ($^{0}T_{6}$):}
+            
+            \vspace{0.2cm}
+            \begin{equation*}
+                ^{0}T_{6}(\mathbf{q}) = {}^{0}T_{1}(q_1) \cdot {}^{1}T_{2}(q_2) \dots {}^{5}T_{6}(q_6)
+            \end{equation*}
+            donde $\mathbf{q} = [q_1, q_2, q_3, q_4, q_5, q_6]^T$.
+            
+            \vspace{0.4cm}
+            \textbf{Concepto Clave:}\\
+            Transformación determinista desde el \textit{espacio articular} $\mathbf{q} \in \mathbb{R}^6$ hacia el \textit{espacio cartesiano} de la tarea en $SE(3)$.
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Estructura de Marcado XML en Robótica}
+    \framesubtitle{Anatomía de un Archivo URDF para ROS/RViz}
+    
+    \begin{columns}[T]
+        \begin{column}{0.45\textwidth}
+            \textbf{Estructura Jerárquica:}
+            \begin{itemize}
+                \item \texttt{<link>}: Eslabones estáticos (Masa, Inercia, STL).
+                \item \texttt{<joint>}: Ejes de movimiento que conectan parent y child.
+            \end{itemize}
+            \vspace{0.2cm}
+            \placeholderfig[1.5cm]{Árbol URDF visual}
+        \end{column}
+        \begin{column}{0.55\textwidth}
+            \textbf{Fragmento Código URDF (.xml):}
+\begin{lstlisting}
+<joint name="joint_2" type="revolute">
+  <parent link="link_1"/>
+  <child link="link_2"/>
+  <origin xyz="0 0 0.290" rpy="0 0 0"/>
+  <axis xyz="0 1 0"/>
+  <limit lower="-1.919" upper="1.919" 
+         effort="100" velocity="3.14"/>
+</joint>
+\end{lstlisting}
+        \end{column}
+    \end{columns}
+
+    \vspace{0.2cm}
+    \begin{notadocente}[Precaución Laboratorio]
+        La etiqueta \texttt{<origin>} en el URDF utiliza la transformación de origen fijo del CAD, mientras que la tabla D-H expresa la cinemática propia de eslabón. Conectar ambas representaciones para evitar confusión al visualizar en RViz.
+    \end{notadocente}
+\end{frame}
+
+\end{document}

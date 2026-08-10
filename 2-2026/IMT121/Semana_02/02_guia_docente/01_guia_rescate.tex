@@ -1,0 +1,164 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- Paquetes Fundamentales ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[margin=2.5cm, headheight=15pt]{geometry}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage[colorlinks=true, linkcolor=ucbblue, urlcolor=ucbblue]{hyperref}
+
+% --- Matemáticas y Electrónica ---
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage[american, RPvoltages]{circuitikz}
+
+% --- Elementos de Diseño Pedagógico ---
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+
+% --- Configuración de Colores y siunitx ---
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\sisetup{
+    output-decimal-marker = {,},
+    per-mode = symbol,
+    inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+% --- Estilos de Cajas (Tcolorbox) ---
+\tcbset{
+    regla_oro/.style={
+        colback=orange!5, 
+        colframe=orange!80!black, 
+        fonttitle=\bfseries,
+        boxrule=1pt,
+        arc=4pt,
+        left=8pt, right=8pt, top=5pt, bottom=5pt
+    },
+    concepto_base/.style={
+        colback=blue!3, 
+        colframe=ucbblue, 
+        fonttitle=\bfseries,
+        boxrule=0.5pt,
+        arc=2pt
+    }
+}
+
+% --- Estilo de Página ---
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textcolor{ucbblue}{\textbf{Guía de Repaso Fundamental}}}
+\rhead{\textbf{IMT-121: Circuitos Electrónicos I}}
+\cfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{ucbblue}\leaders\hrule height \headrulewidth\hfill}}
+
+\begin{document}
+
+\begin{center}
+    \vspace*{0.2cm}
+    {\LARGE \textbf{Guía de Rescate: Fundamentos de Circuitos}} \\[0.3cm]
+    {\Large \textit{Ley de Ohm, Kirchhoff y Redes Pasivas}} \\[0.5cm]
+    \normalsize
+    \textbf{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija} \\
+    Asignatura: IMT-121 Circuitos Electrónicos I
+    \vspace{0.4cm}
+\end{center}
+
+\hrule
+\vspace{0.6cm}
+
+\section{La Ley de Ohm (La Relación Básica)}
+La Ley de Ohm establece que el voltaje ($V$) en los extremos de un resistor ideal es directamente proporcional a la corriente ($I$) que fluye a través de él, siendo la resistencia ($R$) la constante de proporcionalidad.
+
+\begin{equation}
+    V = I \cdot R \quad \implies \quad I = \frac{V}{R} \quad \implies \quad R = \frac{V}{I}
+\end{equation}
+
+\begin{itemize}[label=\textcolor{ucbblue}{\textbullet}]
+    \item \textbf{Unidades:} Voltios (\unit{\volt}), Amperios (\unit{\ampere}), Ohms (\unit{\ohm}).
+    \item \textbf{Significado físico:} La resistencia se opone al flujo de electrones. A mayor resistencia, menor corriente para un mismo voltaje aplicado.
+\end{itemize}
+
+\section{Asociación de Resistencias (Cómo sumarlas)}
+
+\subsection*{A. Resistencias en Serie}
+Dos o más resistores están en serie cuando \textbf{comparten un único nodo exclusivo} y por ellos fluye exactamente la misma corriente. La resistencia equivalente ($R_{\text{eq}}$) es simplemente la suma algebraica de sus valores.
+\begin{equation}
+    R_{\text{eq}} = R_1 + R_2 + R_3 + \dots + R_N
+\end{equation}
+
+\subsection*{B. Resistencias en Paralelo}
+Dos o más resistores están en paralelo cuando sus terminales están \textbf{conectados a los mismos dos nodos comunes}, compartiendo el mismo voltaje entre ellos. La resistencia equivalente se calcula sumando sus inversos (conductancias):
+\begin{equation}
+    \frac{1}{R_{\text{eq}}} = \frac{1}{R_1} + \frac{1}{R_2} + \dots + \frac{1}{R_N}
+\end{equation}
+
+\noindent \textbf{Caso particular para dos resistores (Fórmula rápida):}
+\begin{equation}
+    R_{\text{eq}} = \frac{R_1 \cdot R_2}{R_1 + R_2}
+\end{equation}
+
+\begin{tcolorbox}[regla_oro, title=Regla de Oro]
+Dos resistencias conectadas en paralelo \textbf{siempre} darán como resultado un valor equivalente estrictamente \textbf{menor que la menor} de las dos resistencias individuales. Utiliza este dato para verificar mentalmente tus cálculos.
+\end{tcolorbox}
+
+\section{3. Las Leyes de Kirchhoff (Los Pilares Topológicos)}
+
+\subsection*{A. Ley de Corrientes de Kirchhoff (LCK / KCL)}
+\textbf{Enunciado:} La suma algebraica de todas las corrientes que entran a un nodo (o frontera cerrada) es igual a cero. De forma práctica: \textit{La suma de corrientes que entran es igual a la suma de corrientes que salen.}
+\begin{equation}
+    \sum I_{\text{entrantes}} = \sum I_{\text{salientes}}
+\end{equation}
+
+\subsection*{B. Ley de Voltajes de Kirchhoff (LVK / KVL)}
+\textbf{Enunciado:} La suma algebraica de todas las caídas y subidas de potencial a lo largo de cualquier lazo cerrado es igual a cero. De forma práctica: \textit{Las fuentes de voltaje proveen la energía exacta que consumen las caídas de tensión en las resistencias.}
+\begin{equation}
+    \sum V_{\text{subidas}} = \sum V_{\text{caídas}} \quad \implies \quad \sum_{\text{lazo}} V = 0
+\end{equation}
+
+\vspace{0.2cm}
+\section{4. Ejemplo Rápido de Aplicación}
+
+Dada una fuente de \qty{12}{\volt} conectada a dos resistencias en serie: $R_1 = \qty{100}{\ohm}$ y $R_2 = \qty{200}{\ohm}$.
+
+\vspace{0.3cm}
+\begin{minipage}{0.55\textwidth}
+    \textbf{Paso 1: Resistencia Equivalente}
+    \begin{align*}
+        R_{\text{eq}} &= 100 + 200 = \qty{300}{\ohm}
+    \end{align*}
+    
+    \textbf{Paso 2: Corriente Total del Circuito}
+    \begin{align*}
+        I &= \frac{V_s}{R_{\text{eq}}} = \frac{\qty{12}{\volt}}{\qty{300}{\ohm}} = \qty{0.04}{\ampere} = \qty{40}{\milli\ampere}
+    \end{align*}
+    
+    \textbf{Paso 3: Caídas de Voltaje (Ley de Ohm)}
+    \begin{align*}
+        V_{R1} &= I \cdot R_1 = 0.04 \cdot 100 = \mathbf{\qty{4}{\volt}} \\
+        V_{R2} &= I \cdot R_2 = 0.04 \cdot 200 = \mathbf{\qty{8}{\volt}}
+    \end{align*}
+    
+    \textbf{Paso 4: Verificación por LVK}
+    \begin{align*}
+        \qty{12}{\volt} - \qty{4}{\volt} - \qty{8}{\volt} &= \mathbf{\qty{0}{\volt}} \quad \text{✅ \textit{(Cumple)}}
+    \end{align*}
+\end{minipage}%
+\begin{minipage}{0.45\textwidth}
+    \begin{center}
+        \begin{circuitikz}[scale=0.9, transform shape]
+            \draw (0,0) 
+            to[V, v=$V_s$, a=\qty{12}{\volt}] (0,4)
+            to[short, i=$I$] (3,4)
+            % Se unifica nombre y valor en "l" para dejar espacio libre a "v"
+            to[R, l=$R_1 {=} \qty{100}{\ohm}$, v=$V_{R1}$] (3,2)
+            to[R, l=$R_2 {=} \qty{200}{\ohm}$, v=$V_{R2}$] (3,0) -- (0,0);
+        \end{circuitikz}
+    \end{center}
+\end{minipage}
+
+\end{document}

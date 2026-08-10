@@ -1,0 +1,234 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- Paquetes Fundamentales ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[margin=2.5cm, headheight=15pt]{geometry} 
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue]{hyperref}
+
+% --- Matemáticas y Electrónica ---
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage[american]{circuitikz}
+
+% --- Elementos de Diseño y Código ---
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{listings}
+
+% --- Configuración de siunitx ---
+\sisetup{
+    output-decimal-marker = {,},
+    per-mode = symbol,
+    inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+% --- Configuración de Python (Listings) ---
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{teal},
+    commentstyle=\color{green!50!black}\itshape,
+    backgroundcolor=\color{gray!5},
+    frame=single,
+    rulecolor=\color{gray!40},
+    breaklines=true
+}
+
+% --- Cajas Personalizadas para Dinámica Docente ---
+\newtcolorbox{acciondocente}[1][]{
+    colback=red!5!white,
+    colframe=red!75!black,
+    fonttitle=\bfseries,
+    title=Acción Docente,
+    #1
+}
+
+\newtcolorbox{justificacion}[1][]{
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    fonttitle=\bfseries,
+    title=Justificación Pedagógica (CDIO),
+    #1
+}
+
+% --- Estilo de Página ---
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{Introducción a la Mecatrónica}}
+\rhead{Ingeniería Mecatrónica -- UCB Tarija}
+\cfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% --- Metadatos del Documento ---
+\title{\vspace{-1.5cm}\Large\textbf{Guía Docente Paso a Paso: Sesión 03}\\
+\large Redes de Impedancia Compleja y Modelado de Transductores Térmicos}
+\author{M.Sc. Ing. Bernardo Quiroga Turdera}
+\date{Lunes, 10 de agosto de 2026 \quad|\quad 09:00 - 11:00 (120 min)}
+
+\begin{document}
+
+\maketitle
+\vspace{-1cm}
+
+\begin{justificacion}
+Esta clase teórica es la piedra angular del Módulo 1. Prepara de forma directa a los estudiantes para el Laboratorio 1 derivando matemáticamente el álgebra de impedancias complejas y demostrando cómo los efectos parásitos alteran la lectura del sensor.
+\end{justificacion}
+
+\section*{I. Agenda y Distribución del Tiempo (120 Minutos)}
+\begin{itemize}[label=$\circ$, itemsep=2pt]
+    \item \textbf{09:00 - 09:15 (15 min):} Retroalimentación de la Sesión 2 y puente al dominio fasorial.
+    \item \textbf{09:15 - 09:55 (40 min):} Pizarra 1 - Álgebra de Impedancias y Leyes de Kirchhoff en CA.
+    \item \textbf{09:55 - 10:35 (40 min):} Pizarra 2 - Modelado del Sensor NTC y Parásitos.
+    \item \textbf{10:35 - 10:50 (15 min):} Taller de Pizarra Guiado - Cálculo analítico a \qty{30}{\celsius}.
+    \item \textbf{10:50 - 11:00 (10 min):} Cierre, entrega de Script base (Python) y roles de laboratorio.
+\end{itemize}
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.5cm}
+
+\section*{II. Desarrollo Teórico: Guía de Pizarra (09:15 - 10:35)}
+
+\subsection*{Pizarra 1: Álgebra de Impedancias y Leyes de Kirchhoff (09:15 - 09:55)}
+La relación entre la tensión $\hat{V}$ y corriente $\hat{I}$ fasoriales generaliza la resistencia hacia la Impedancia Compleja ($Z$):
+\begin{equation}
+    \hat{V} = Z \cdot \hat{I} \implies Z = \frac{\hat{V}}{\hat{I}} = \vert{}Z\vert{} \angle \theta = R + jX
+\end{equation}
+\begin{itemize}
+    \item \textbf{Resistencia ($R$):} Parte real (disipa energía en forma de calor).
+    \item \textbf{Reactancia ($X$):} Parte imaginaria (almacena energía electromagnética).
+    \begin{itemize}
+        \item Inductiva ($X > 0$): $X_L = \omega L$
+        \item Capacitiva ($X < 0$): $X_C = -\frac{1}{\omega C}$
+    \end{itemize}
+\end{itemize}
+
+Leyes de Kirchhoff y Divisores de Tensión se aplican idénticamente, sumando fasores:
+\begin{equation}
+    \sum \hat{V}_k = 0 \quad \text{y} \quad \hat{V}_{Z2} = \hat{V}_{in} \left( \frac{Z_2}{Z_1 + Z_2} \right)
+\end{equation}
+
+\subsection*{Pizarra 2: Modelado del Sensor NTC y Efectos Parásitos (09:55 - 10:35)}
+
+\begin{center}
+    \begin{circuitikz}[scale=1.0, transform shape]
+        \draw (0,4) to[sV, l=$V_{in}$ (CA)] (0,0);
+        \draw (0,4) -- (2,4) -- (5,4);
+        \draw (0,0) -- (2,0) -- (5,0);
+        \draw (2,0) node[ground]{};
+        
+        \draw (2,4) to[R, l=$R_1$] (2,2) to[R, l=$R_2$] (2,0);
+        \draw (5,4) to[R, l=$R_3$] (5,2) to[generic, l=$Z_{sensor}$] (5,0);
+        
+        \draw (2,2) to[short, *-o] (3,2) node[above]{$+$};
+        \draw (5,2) to[short, *-o] (4,2) node[above]{$-$};
+        \node at (3.5, 2) {$\hat{V}_{out}$};
+    \end{circuitikz}
+\end{center}
+
+Ecuación Steinhart-Hart reducida (Comportamiento del NTC):
+\begin{equation}
+    R_{NTC}(T) = R_0 \cdot e^{\beta \left( \frac{1}{T} - \frac{1}{T_0} \right)}
+\end{equation}
+
+Modelado de la línea de transmisión (15m trenzado, con $R_{cable}$, $L_{cable}$, $C_{para}$):
+\begin{equation}
+    Z_{sensor}(j\omega) = R_{cable} + j\omega L_{cable} + \left( R_{NTC}(T) \parallel \frac{1}{j\omega C_{para}} \right)
+\end{equation}
+
+Tensión de Desbalance Fasorial del Puente:
+\begin{equation}
+    \hat{V}_{out}(j\omega) = \hat{V}_{in} \left( \frac{Z_{sensor}(j\omega)}{R_3 + Z_{sensor}(j\omega)} - \frac{R_2}{R_1 + R_2} \right)
+\end{equation}
+
+\newpage
+\section*{III. Taller de Pizarra Guiado: Resolución Paso a Paso (10:35 - 10:50)}
+
+\begin{acciondocente}
+Divide la pizarra en secuencias numéricas. Pide a los estudiantes que configuren sus calculadoras en modo complejo (grados) y vayan dictándote los resultados de cada etapa.
+\end{acciondocente}
+
+\noindent \textbf{Datos iniciales del problema planteado:}
+\begin{itemize}[label=$\circ$, itemsep=1pt]
+    \item Excitación: $V_{in} = \qty{2}{\volt}_{pp} \implies \hat{V}_{in} = 1 \angle 0^\circ \text{ V}$ (pico). Frecuencia: $f_c = \qty{10}{\kilo\hertz}$ ($\omega_c \approx \qty{62831.85}{\radian\per\second}$).
+    \item Resistencias del puente: $R_1 = R_2 = R_3 = \qty{10}{\kilo\ohm}$.
+    \item Condición física: Cámara a $T = \qty{30}{\celsius}$ (\qty{303.15}{\kelvin}).
+    \item Parámetros de diseño: $R_0 = \qty{10}{\kilo\ohm}$ a \qty{298.15}{\kelvin}, $\beta = \qty{3950}{\kelvin}$.
+\end{itemize}
+
+\vspace{0.3cm}
+\noindent \textbf{Paso 1: Cálculo de la resistencia del NTC a \qty{30}{\celsius}}
+\begin{equation*}
+    R_{NTC}(303.15) = 10000 \cdot e^{3950 \left( \frac{1}{303.15} - \frac{1}{298.15} \right)} \approx \qty{8059.2}{\ohm}
+\end{equation*}
+
+\noindent \textbf{Paso 2: Cálculo de Reactancias a \qty{10}{\kilo\hertz}}
+\begin{align*}
+    X_L &= \omega_c L_{cable} = 62831.85 \cdot 15 \cdot 10^{-6} \approx \qty{0.94}{\ohm} \quad \text{\small(Despreciable frente a los k$\Omega$)} \\
+    Z_C &= \frac{1}{j\omega_c C_{para}} = \frac{1}{j(62831.85)(4.7 \cdot 10^{-9})} = -j 3386.2\ \Omega
+\end{align*}
+
+\noindent \textbf{Paso 3: Cálculo del Paralelo ($R_{NTC} \parallel Z_C$)}
+\begin{equation*}
+    Z_{paralelo} = \frac{8059.2 \cdot (-j 3386.2)}{8059.2 - j 3386.2} \approx 1208.6 - j 2876.5\ \Omega
+\end{equation*}
+
+\noindent \textbf{Paso 4: Impedancia Total del Sensor ($Z_{sensor}$)}
+Agregando la resistencia parásita del cable ($R_{cable} = \qty{10}{\ohm}$):
+\begin{equation*}
+    Z_{sensor} \approx 1218.6 - j 2875.56\ \Omega = 3123.8 \angle -67.02^\circ\ \Omega
+\end{equation*}
+
+\noindent \textbf{Paso 5: Tensión Fasorial de Salida ($\hat{V}_{out}$)}
+Sustituyendo en la ecuación del puente:
+\begin{equation*}
+    \hat{V}_{out} = 1 \angle 0^\circ \left( \frac{3123.8 \angle -67.02^\circ}{10000 + 1218.6 - j 2875.56} - 0.5 \right) \approx 0.252 \angle -162.4^\circ\text{ V}
+\end{equation*}
+
+\begin{justificacion}
+\textbf{Conclusión de la clase:} Destaca a los estudiantes que la salida no solo cambia en amplitud cuando varía la temperatura, sino que presenta un severo \textbf{desfase angular negativo ($\theta \approx -162.4^\circ$)} causado por la capacitancia parásita del cable. ¡Este es el fenómeno exacto que medirán en el osciloscopio el miércoles!
+\end{justificacion}
+
+\section*{IV. Cierre y Tarea para el Miércoles (10:50 - 11:00)}
+
+\noindent \textbf{Código Base de Python para el Laboratorio 1:}
+\begin{lstlisting}
+import numpy as np
+import pandas as pd
+
+# Carga de traza CSV exportada del osciloscopio
+df = pd.read_csv("lab1_medicion_30C.csv")
+
+t = df['Time'].values
+v_in = df['Channel1'].values
+v_out = df['Channel2'].values
+
+# Calculo de amplitud pico experimental
+v_out_pico = np.max(v_out)
+
+# Medicion automatica de diferencia de tiempo entre picos (Delta t)
+idx_pico_in = np.argmax(v_in)
+idx_pico_out = np.argmax(v_out)
+delta_t = t[idx_pico_out] - t[idx_pico_in]
+
+f_c = 10000.0  # Frecuencia portadora 10 kHz
+fase_grados = delta_t * f_c * 360.0
+
+print(f"Amplitud V_out experimental: {v_out_pico:.3f} V")
+print(f"Desfase experimental: {fase_grados:.2f} grados")
+\end{lstlisting}
+
+\vspace{0.3cm}
+\begin{tcolorbox}[colback=gray!5, colframe=black!50, title=\textbf{Lista de Verificación de Hardware para el Miércoles (Lab 1)}]
+\small
+Recordar a los grupos traer su kit completo: 1x Termistor NTC (\qty{10}{\kilo\ohm} a \qty{25}{\celsius}), 3x Resistores \qty{10}{\kilo\ohm} al 1\%, 1x Capacitor de poliéster de \qty{4.7}{\nano\farad}, Protoboard, cables, y memoria USB.
+\end{tcolorbox}
+
+\end{document}

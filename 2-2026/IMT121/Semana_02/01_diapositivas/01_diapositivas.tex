@@ -1,0 +1,246 @@
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+% --- Paquetes Fundamentales ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{microtype}
+
+% --- Matemáticas y Electrónica ---
+\usepackage{siunitx}
+\usepackage[american, RPvoltages]{circuitikz}
+
+% --- Código Fuente ---
+\usepackage{listings}
+\usepackage{xcolor}
+
+% --- Configuración de siunitx ---
+\sisetup{output-decimal-marker = {,}, per-mode = symbol}
+
+% --- Configuración de Colores e Identidad ---
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{ltspice}{RGB}{128, 0, 0} 
+
+\usetheme{Boadilla}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize items}[circle]
+\setbeamercolor{title}{bg=ucbblue, fg=white}
+\setbeamercolor{frametitle}{bg=ucbblue, fg=white}
+
+% --- Macros UI ---
+\newcommand{\tecla}[1]{\colorbox{gray!20}{\texttt{\footnotesize\textbf{#1}}}}
+
+% --- Configuración de Listings (Python) ---
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\scriptsize,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{codegreen}\itshape,
+    stringstyle=\color{codepurple},
+    numberstyle=\tiny\color{codegray},
+    numbers=left,
+    stepnumber=1,
+    showstringspaces=false,
+    frame=single,
+    backgroundcolor=\color{gray!5},
+    rulecolor=\color{gray!40},
+    breaklines=true
+}
+
+% --- Metadatos ---
+\title[Teoremas de Redes en CC]{Teoremas de Redes en CC}
+\subtitle{Superposición, Thévenin/Norton, MTP \\+ Onboarding LTspice}
+\author[M.Sc. Ing. B. Quiroga]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{IMT-121 Circuitos Electrónicos I | UCB Sede Tarija}
+\date{10 de Agosto de 2026}
+
+\begin{document}
+
+% SLIDES ANTERIORES CONSERVADOS Y REORGANIZADOS
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Objetivos de la Sesión (Criterios CDIO/ABET)}
+    \begin{block}{Resultados de Aprendizaje}
+        \begin{itemize}
+            \item \textbf{Comprender} la propiedad de linealidad para descomponer circuitos mediante Superposición.
+            \item \textbf{Reducir} cualquier red pasiva a sus equivalentes canónicos de Thévenin y Norton.
+            \item \textbf{Demostrar analíticamente} la condición de Máxima Transferencia de Potencia ($R_L = R_{th}$).
+            \item \textbf{Implementar} el primer modelo numérico computacional en LTspice (Operating Point \texttt{.op}).
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{Principio de Superposición en Redes Lineales}
+    \textbf{Concepto Teórico:} La respuesta en cualquier elemento debido a múltiples fuentes actuando simultáneamente es igual a la suma algebraica de las respuestas causadas por cada fuente actuando sola.
+    
+    \vspace{0.1cm}
+    \begin{equation*}
+        y_{\text{total}} = \sum_{k=1}^{M} y_k = y(V_{s1}) + y(V_{s2}) + \dots + y(I_{sM})
+    \end{equation*}
+    
+    \begin{columns}
+        \begin{column}{0.65\textwidth}
+            \textbf{Reglas de Desactivación:}
+            \begin{itemize}
+                \item \textbf{Fuentes Voltaje:} Cortocircuito ($V_s = \qty{0}{\volt}$).
+                \item \textbf{Fuentes Corriente:} Circuito Abierto ($I_s = \qty{0}{\ampere}$).
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.35\textwidth}
+            \begin{alertblock}{⚠️ Advertencia}
+                \textbf{NO} aplica directamente a la Potencia ($P = I^2 R$), por ser no lineal.
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Teorema de Thévenin}
+    \textbf{Definición:} Toda red resistiva lineal vista desde terminales $A-B$ puede reemplazarse por una fuente $V_{th}$ en serie con una resistencia $R_{th}$.
+    
+    \begin{center}
+        \begin{circuitikz}[scale=0.8, transform shape]
+            \draw[fill=blue!5, rounded corners] (0,0) rectangle (2.5,2) node[pos=0.5, align=center] {\textbf{Red}\\\textbf{Compleja}};
+            \draw (2.5, 1.5) to[short, -o] (3, 1.5) node[above] {$A$};
+            \draw (2.5, 0.5) to[short, -o] (3, 0.5) node[below] {$B$};
+            \draw[thick, ->] (3.8, 1) -- (5.2, 1) node[midway, above] {\small Equivalente};
+            \draw (6, 0.5) to[V, v=$V_{th}$] (6, 1.5) to[R, l=$R_{th}$, -o] (9, 1.5) node[above] {$A$};
+            \draw (6, 0.5) to[short, -o] (9, 0.5) node[below] {$B$};
+        \end{circuitikz}
+    \end{center}
+    
+    \begin{itemize}
+        \item \textbf{Voltaje ($V_{th}$):} Voltaje con terminales en circuito abierto.
+        \item \textbf{Resistencia ($R_{th}$):} Resistencia equivalente con fuentes independientes apagadas.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Teorema de Norton}
+    \textbf{Definición:} Dual de Thévenin. Reemplaza la red por una fuente de corriente $I_N$ en paralelo con $R_N$.
+    
+    \begin{center}
+        \begin{circuitikz}[scale=0.8, transform shape]
+            \draw[fill=blue!5, rounded corners] (0,0) rectangle (2.5,2) node[pos=0.5, align=center] {\textbf{Red}\\\textbf{Compleja}};
+            \draw (2.5, 1.5) to[short, -o] (3, 1.5) node[above] {$A$};
+            \draw (2.5, 0.5) to[short, -o] (3, 0.5) node[below] {$B$};
+            \draw[thick, ->] (3.8, 1) -- (5.2, 1) node[midway, above] {\small Equivalente};
+            \draw (6, 0.5) to[I, i=$I_N$] (6, 2) -- (8.5, 2) to[short, -o] (9, 2) node[above] {$A$};
+            \draw (7.5, 2) to[R, l=$R_N$, *-*] (7.5, 0.5);
+            \draw (6, 0.5) -- (8.5, 0.5) to[short, -o] (9, 0.5) node[below] {$B$};
+        \end{circuitikz}
+    \end{center}
+    
+    \begin{block}{Transformación de Fuentes}
+        $I_N = I_{ab}\vert_{\text{cortocircuito}} = \frac{V_{th}}{R_{th}} \quad \text{y} \quad R_N = R_{th}$
+    \end{block}
+\end{frame}
+
+\begin{frame}{Máxima Transferencia de Potencia Pasiva}
+    Para que una fuente ($V_{th}, R_{th}$) entregue la máxima potencia a una carga $R_L$, se debe cumplir que $\mathbf{R_L = R_{th}}$.
+    
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            \begin{center}
+                \begin{circuitikz}[scale=0.8, transform shape]
+                    \draw (0,0) to[V, v=$V_{th}$] (0,2) to[R, l=$R_{th}$, -o] (2.5,2);
+                    \draw (0,0) to[short, -o] (2.5,0);
+                    \draw (2.5,2) to[vR, l=$R_L$, i=$I_L$, color=red, thick] (2.5,0);
+                \end{circuitikz}
+            \end{center}
+        \end{column}
+        \begin{column}{0.6\textwidth}
+            La potencia máxima absoluta se calcula como:
+            $$P_{L, \text{máx}} = \frac{V_{th}^2}{4 \cdot R_{th}}$$
+            \begin{alertblock}{Eficiencia ($\eta$)}
+                En esta condición óptima, la mitad de la potencia se disipa internamente en $R_{th}$. La eficiencia es de \textbf{solo el 50\%}.
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% NUEVOS SLIDES SEGÚN EL REAJUSTE DE LA SESIÓN 3
+\begin{frame}{Trabajo Activo en Aula (Tríadas)}
+    \textbf{Ejercicio de Consolidación:} Para la red de polarización mostrada a continuación:
+    
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{center}
+                \begin{circuitikz}[scale=0.9, transform shape]
+                    \draw (0,0) to[V, v=\qty{18}{\volt}] (0,3) 
+                          to[R, l=$R_1$, a=\qty{150}{\ohm}] (3,3) 
+                          to[R, l=$R_2$, a=\qty{300}{\ohm}] (3,0);
+                    \draw (3,3) to[R, l=$R_3$, a=\qty{200}{\ohm}] (6,3) node[anchor=west]{A} to[short, -o] (6.5,3);
+                    \draw (0,0) -- (6,0) node[anchor=west]{B} to[short, -o] (6.5,0);
+                    \draw (6.5,3) to[R, l=$R_L$, a=\qty{100}{\ohm}, dashed, color=blue] (6.5,0);
+                \end{circuitikz}
+            \end{center}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{enumerate}
+                \item Encuentre el circuito equivalente de \textbf{Thévenin} ($V_{th}, R_{th}$) entre los terminales $A$ y $B$.
+                \item Conectando la carga $R_L = \qty{100}{\ohm}$, determine el voltaje $V_L$ y la potencia disipada $P_L$.
+            \end{enumerate}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Empalme Computacional: Onboarding LTspice}
+    \begin{columns}
+        \begin{column}{0.45\textwidth}
+            \begin{block}{Atajos de Teclado (Cheat Sheet)}
+                \begin{itemize}
+                    \item \tecla{R} : Resistencia
+                    \item \tecla{V} : Fuente de Voltaje
+                    \item \tecla{G} : Tierra (\textbf{Obligatorio})
+                    \item \tecla{F3}: Herramienta de Cableado
+                    \item \tecla{F4}: Etiqueta de Nodo
+                    \item \tecla{S} : Directiva SPICE
+                \end{itemize}
+            \end{block}
+        \end{column}
+        \begin{column}{0.55\textwidth}
+            \textbf{Primer Modelo \texttt{.op} (5 Minutos):}
+            \begin{enumerate}
+                \item \tecla{Ctrl + N} para crear esquemático.
+                \item Colocar Fuente (\tecla{V}) y Resistencias (\tecla{R}) del circuito anterior.
+                \item Poner Tierra (\tecla{G}) y conectar (\tecla{F3}).
+                \item Etiquetar salida (\tecla{F4}) como \texttt{Vth}.
+                \item Añadir texto \tecla{S} con directiva \texttt{.op}.
+                \item Clic en \textbf{Run} (Corredor).
+            \end{enumerate}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Demostración Práctica \& Live-Coding (PFI)}
+\begin{lstlisting}
+import numpy as np
+
+# 1. Calculo de V_th
+R1, R2, R3 = 120.0, 240.0, 100.0
+Vs = 24.0
+V_th = Vs * (R2 / (R1 + R2))
+
+# 2. Calculo de R_th (Apagando fuentes de voltaje -> cortocircuitos)
+R_th = (R1 * R2) / (R1 + R2) + R3
+
+# 3. Corriente de Norton
+I_N = V_th / R_th
+
+print("--- EQUIVALENTE DE THEVENIN / NORTON ---")
+print(f"Voltaje de Thevenin (Vth): {V_th:.4f} V")
+print(f"Resistencia de Thevenin (Rth): {R_th:.4f} Ohms")
+print(f"Corriente de Norton (IN): {I_N*1000:.4f} mA")
+
+# 4. TAREA: Barrido de RL para el Lab
+# Utilizar numpy.arange(10, 1010, 10) para evaluar P_L
+\end{lstlisting}
+\end{frame}
+
+\end{document}

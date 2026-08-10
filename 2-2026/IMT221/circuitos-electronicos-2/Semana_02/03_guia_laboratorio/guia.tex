@@ -1,0 +1,375 @@
+\documentclass[11pt,a4paper]{article}
+
+% ======================================================================
+% CONFIGURACIÓN DEL PROYECTO Y PAQUETES
+% ======================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[margin=2.5cm, headheight=30pt]{geometry} 
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue]{hyperref}
+\usepackage{bookmark}
+
+% --- Matemáticas y Electrónica ---
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage[american]{circuitikz}
+
+% --- Elementos de Diseño y Código ---
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{tabularx}
+
+% ======================================================================
+% MACROS Y ESTILOS PERSONALIZADOS
+% ======================================================================
+\sisetup{
+    output-decimal-marker = {,},
+    per-mode = symbol,
+    inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{teal},
+    commentstyle=\color{green!50!black}\itshape,
+    backgroundcolor=\color{gray!5},
+    frame=single,
+    rulecolor=\color{gray!40},
+    breaklines=true,
+    showstringspaces=false,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    numbersep=5pt
+}
+
+\newtcolorbox{info}[1][]{
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    fonttitle=\bfseries,
+    title=Información Importante,
+    #1
+}
+
+\newtcolorbox{warning}[1][]{
+    colback=red!5!white,
+    colframe=red!75!black,
+    fonttitle=\bfseries,
+    title=Advertencia de Instrumentación,
+    #1
+}
+
+\newcommand{\tecla}[1]{\colorbox{gray!20}{\texttt{\footnotesize\textbf{#1}}}}
+\newcommand{\menu}[1]{\textbf{\textsf{#1}}}
+
+% ======================================================================
+% ESTILO DE PÁGINA
+% ======================================================================
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{Circuitos Electrónicos II}\\ \small Guía de Laboratorio N.º 1}
+\rhead{Ingeniería Mecatrónica -- UCB Tarija\\ \small Semestre 1-2026}
+\cfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+% ======================================================================
+% CABECERA Y METADATOS DEL DOCUMENTO
+% ======================================================================
+\begin{center}
+    \rule{\textwidth}{1pt}\\[0.3cm]
+    {\LARGE \textbf{GUÍA DE LABORATORIO N.º 1}}\\[0.2cm]
+    {\Large \textbf{Caracterización Dinámica de Impedancia y Puente de Wheatstone en CA para un Sensor de Temperatura}}\\[0.2cm]
+    \rule{\textwidth}{1pt}
+\end{center}
+
+\vspace{0.2cm}
+\noindent\textbf{CARRERA:} Ingeniería Mecatrónica\\
+\textbf{ASIGNATURA:} Circuitos Electrónicos II\\
+\textbf{PROFESOR:} M.Sc. Ing. Bernardo Quiroga Turdera\\
+\textbf{MODALIDAD:} Trabajo Colaborativo en Equipos de 3 Integrantes
+
+\vspace{0.5cm}
+% ======================================================================
+% 1. RESULTADOS DE APRENDIZAJE
+% ======================================================================
+\section{RESULTADOS DE APRENDIZAJE (ABET / CDIO)}
+Al finalizar esta práctica de laboratorio, el estudiante será capaz de:
+\begin{itemize}[label=$\bullet$]
+    \item \textbf{ABET Student Outcome 1:} Modelar matemáticamente la respuesta frecuencial y la impedancia compleja de un sensor de temperatura resistivo con parásitos de línea en régimen sinusoidal.
+    \item \textbf{ABET Student Outcome 6:} Conducir experimentación en corriente alterna, adquirir datos con osciloscopio y procesarlos mediante scripts de Python para validar el comportamiento teórico.
+    \item \textbf{CDIO (Design \& Implement):} Diseñar y balancear un Puente de Wheatstone alimentado en CA para eliminar tensiones de offset de CC en la instrumentación de temperatura del Proyecto Final Integrador (PFI).
+\end{itemize}
+
+% ======================================================================
+% 2. CONTEXTO INDUSTRIAL
+% ======================================================================
+\section{CONTEXTO INDUSTRIAL Y ¿POR QUÉ USAMOS UN PUENTE DE WHEATSTONE?}
+En plantas industriales (químicas, alimentarias, manufactura 4.0), las variables físicas como la temperatura se miden mediante sensores resistivos (como termistores NTC o PT100). Sin embargo, la variación de resistencia ($\Delta R$) ante un cambio de temperatura de \qty{1}{\celsius} es pequeña en comparación con la resistencia nominal del sensor ($R_0$).
+
+\subsection*{El Problema del Divisor de Tensión Simple}
+Si conectáramos el termistor en un divisor de tensión común alimentado con \qty{5}{\volt}, obtendríamos un voltaje de salida con un offset de CC gigantesco (por ejemplo, \qty{2.5}{\volt}) y una variación de señal útil microscópica (por ejemplo, \qty{10}{\milli\volt}). Si intentamos amplificar esa pequeña señal por $100$ con un amplificador operacional, el circuito intentará entregar $2.5\text{ V} \times 100 = \qty{250}{\volt}$, saturando e inutilizando el amplificador.
+
+\subsection*{La Solución: El Puente de Wheatstone}
+El Puente de Wheatstone utiliza dos divisores de tensión en paralelo para realizar una resta analógica de voltaje en origen.
+
+\begin{center}
+    \begin{circuitikz}[scale=1.0, transform shape]
+        % Rediseñado para dar holgura a las etiquetas
+        \draw (-1.5,4) to[V, l=$V_{CC} (\qty{5}{\volt})$] (-1.5,0);
+        \draw (-1.5,4) -- (2.5,4) -- (6.5,4);
+        \draw (-1.5,0) -- (2.5,0) -- (6.5,0);
+        \draw (2.5,0) node[ground]{};
+        
+        \draw (2.5,4) to[R, l=$R_1$ (\qty{10}{\kilo\ohm})] (2.5,2) node[circle,fill,inner sep=1.5pt]{};
+        \draw (2.5,2) to[R, l=$R_2$ (\qty{10}{\kilo\ohm})] (2.5,0);
+        
+        \draw (6.5,4) to[R, l=$R_3$ (\qty{10}{\kilo\ohm})] (6.5,2) node[circle,fill,inner sep=1.5pt]{};
+        \draw (6.5,2) to[vR, l=$R_{NTC} (R_0 + \Delta R)$] (6.5,0);
+        
+        % Etiquetas de Nodos más claras
+        \node[left, align=center] at (2.5,2) {\textbf{Nodo A}\\(Fijo)};
+        \node[right, align=center] at (6.5,2) {\textbf{Nodo B}\\(Sensor)};
+        
+        \draw (2.5,2) to[short, -o] (4,2) node[above]{$+$};
+        \draw (6.5,2) to[short, -o] (5,2) node[above]{$-$};
+        \node at (4.5, 2) {$V_{diff}$};
+    \end{circuitikz}
+\end{center}
+
+\begin{itemize}
+    \item \textbf{Nodo A (Referencia fija):} Entrega \qty{2.50}{\volt}.
+    \item \textbf{Nodo B (Sensor NTC):} Entrega \qty{2.50}{\volt} $\pm \Delta V$.
+\end{itemize}
+La salida diferencial entre ambos nodos ($V_{diff} = V_A - V_B$) cancela la ``manta'' continua de \qty{2.5}{\volt}. A la temperatura de reposo, el puente está balanceado ($V_{diff} = \qty{0}{\volt}$). Al variar la temperatura, el puente genera una tensión de salida diferencial centrada en cero de pocos milivoltios, lista para ser amplificada por un Amplificador de Instrumentación sin saturarlo.
+
+\subsection*{¿Por qué lo alimentamos en Corriente Alterna (CA)?}
+Al alimentar el puente con una señal senoidal en CA de alta frecuencia (\qty{10}{\kilo\hertz}), nos inmunizamos contra las derivas térmicas de corriente continua y permitimos el uso de filtrado activo frecuencial. Sin embargo, los cables de extensión largos presentan capacitancias parásitas ($C_{para}$) que introducen un desfase angular ($\theta$) que debe ser modelado matemáticamente.
+
+% ======================================================================
+% 3. MATERIALES
+% ======================================================================
+\section{MATERIALES E INSTRUMENTACIÓN REQUERIDA}
+
+\noindent\textbf{Por Equipo de Trabajo (3 Integrantes):}
+\begin{itemize}[label=$\circ$, itemsep=0pt]
+    \item $1 \times$ Termistor NTC de \qty{10}{\kilo\ohm} a \qty{25}{\celsius} ($\beta = \qty{3950}{\kelvin}$).
+    \item $3 \times$ Resistores de película metálica de \qty{10}{\kilo\ohm} al 1\% de tolerancia.
+    \item $1 \times$ Resistor de película metálica de \qty{10}{\ohm} (simulación de resistencia de cable $R_{cable}$).
+    \item $1 \times$ Inductor de \qty{15}{\micro\henry} (o sustituto pasivo disponible $L_{cable}$).
+    \item $1 \times$ Capacitor de poliéster de \qty{4.7}{\nano\farad} (simulación de capacitancia parásita de línea $C_{para}$).
+    \item $1 \times$ Protoboard, cables jumpers, termómetro digital o multímetro con sonda de temperatura.
+\end{itemize}
+
+\noindent\textbf{Equipamiento de Banco de Laboratorio:}
+\begin{itemize}[label=$\circ$, itemsep=0pt]
+    \item $1 \times$ Generador de funciones senoidales.
+    \item $1 \times$ Osciloscopio digital con puerto USB para exportación de datos CSV.
+    \item $1 \times$ Laptop con Python 3.10+ (\texttt{pandas}, \texttt{numpy}, \texttt{matplotlib}) y LTSpice instalado.
+\end{itemize}
+
+% ======================================================================
+% 4. FUNDAMENTACIÓN MATEMÁTICA
+% ======================================================================
+\section{FUNDAMENTACIÓN MATEMÁTICA Y CÁLCULOS PREVIOS}
+\begin{info}
+Antes de armar el circuito, el equipo debe resolver las siguientes ecuaciones en su libreta de laboratorio. Estos cálculos son prerequisito para ingresar al laboratorio.
+\end{info}
+
+\noindent\textbf{Resistencia de la NTC (Steinhart-Hart reducida):}
+\begin{equation}
+    R_{NTC}(T) = R_0 \cdot e^{\beta \left( \frac{1}{T} - \frac{1}{T_0} \right)}
+\end{equation}
+\textit{Calcular $R_{NTC}$ para $T = 20\ ^\circ\text{C}, 30\ ^\circ\text{C}, 40\ ^\circ\text{C}, 50\ ^\circ\text{C}$ y $60\ ^\circ\text{C}$ ($T_0 = \qty{298.15}{\kelvin}$, $R_0 = \qty{10}{\kilo\ohm}$, $\beta = \qty{3950}{\kelvin}$).}
+
+\vspace{0.3cm}
+\noindent\textbf{Impedancia Compleja de la Rama del Sensor $Z_{sensor}(j\omega)$:}
+\begin{equation}
+    Z_{sensor}(j\omega) = R_{cable} + j\omega L_{cable} + \frac{R_{NTC}(T)}{1 + j\omega C_{para} R_{NTC}(T)}
+\end{equation}
+\textit{Para $f_c = \qty{10}{\kilo\hertz}$ ($\omega_c = 2\pi \cdot 10000$), expresar $Z_{sensor}$ en forma polar ($\vert{}Z\vert{} \angle \theta$) para $T = \qty{30}{\celsius}$.}
+
+\vspace{0.3cm}
+\noindent\textbf{Tensión de Desbalance Fasorial del Puente $\hat{V}_{out}$:}
+\begin{equation}
+    \hat{V}_{out}(j\omega) = \hat{V}_{in} \left( \frac{Z_{sensor}(j\omega)}{R_3 + Z_{sensor}(j\omega)} - \frac{R_2}{R_1 + R_2} \right)
+\end{equation}
+\textit{Para $\hat{V}_{in} = 1\text{ V}_{pico} \angle 0^\circ$ (\qty{2}{\volt}$_{pp}$), calcular la magnitud en voltios y la fase en grados de $\hat{V}_{out}$ a $T = \qty{30}{\celsius}$.}
+
+% ======================================================================
+% 5. PROCEDIMIENTO EXPERIMENTAL
+% ======================================================================
+\section{PROCEDIMIENTO EXPERIMENTAL (PASO A PASO)}
+
+\begin{center}
+    \begin{circuitikz}[scale=1.0, transform shape]
+        % Se separó la fuente hacia la izquierda para evitar solapamientos con Nodo A
+        \draw (-2,4) to[sV, l=$V_{in}$ (CA)] (-2,0);
+        \draw (-2,4) -- (2.5,4) -- (6.5,4);
+        \draw (-2,0) -- (2.5,0) -- (6.5,0);
+        \draw (2.5,0) node[ground]{};
+        
+        \draw (2.5,4) to[R, l=$R_1$] (2.5,2) node[circle,fill,inner sep=1.5pt]{};
+        \draw (2.5,2) to[R, l=$R_2$] (2.5,0);
+        \node[left, align=center] at (2.5,2) {Nodo A\\(Canal 1)};
+        
+        \draw (6.5,4) to[R, l=$R_3$] (6.5,2) node[circle,fill,inner sep=1.5pt]{};
+        \draw (6.5,2) to[generic, l=$Z_{sensor}$ (NTC + Parásitos)] (6.5,0);
+        \node[right, align=center] at (6.5,2) {Nodo B\\(Canal 2)};
+        
+        \draw (2.5,2) to[short, -o] (4,2) node[above]{$+$};
+        \draw (6.5,2) to[short, -o] (5,2) node[above]{$-$};
+        \node at (4.5, 2) {$\hat{V}_{out}$};
+    \end{circuitikz}
+\end{center}
+
+\subsection*{Paso 1: Verificación de Componentes (Modelo F.I.V.E.)}
+Mida con el multímetro de precisión los valores reales de $R_1, R_2, R_3$ y $R_0$ (NTC a temperatura ambiente de laboratorio). Anote las desviaciones respecto a los valores nominales.
+
+\subsection*{Paso 2: Ensamblaje en Protoboard}
+\begin{enumerate}
+    \item Monte el Puente de Wheatstone según el esquemático.
+    \item En la rama 4 ($Z_{sensor}$), conecte el termistor NTC en \textbf{paralelo} con el capacitor parásito $C_{para} = \qty{4.7}{\nano\farad}$, y todo esto en \textbf{serie} con $R_{cable} = \qty{10}{\ohm}$ y $L_{cable} = \qty{15}{\micro\henry}$.
+\end{enumerate}
+
+\subsection*{Paso 3: Instrumentación y Configuración}
+\begin{warning}
+Nunca conecte la pinza de tierra (caimán negro) de las sondas del osciloscopio en un punto que no sea GND. Hacerlo provocará un cortocircuito.
+\end{warning}
+\begin{enumerate}
+    \item Conecte el Generador de Funciones a la entrada del puente ($V_{in}$). Ajuste una onda senoidal de \qty{2}{\volt}$_{pp}$ (\qty{1}{\volt}$_{pico}$) a una frecuencia de \qty{10}{\kilo\hertz}.
+    \item Conecte el \textbf{Canal 1 ($CH1$)} del osciloscopio en el Nodo A (Referencia).
+    \item Conecte el \textbf{Canal 2 ($CH2$)} del osciloscopio en el Nodo B (Sensor).
+    \item Utilice la función matemática del osciloscopio (\menu{MATH}: \tecla{CH1 - CH2}) para visualizar la señal diferencial limpia $\hat{V}_{out}$.
+\end{enumerate}
+
+\subsection*{Paso 4: Adquisición de Datos}
+Para 5 puntos de temperatura diferentes (\qty{20}{\celsius}, \qty{30}{\celsius}, \qty{40}{\celsius}, \qty{50}{\celsius}, \qty{60}{\celsius}) calentando suavemente el termistor y monitoreando con el termómetro:
+\begin{enumerate}
+    \item Mida la \textbf{amplitud pico} de la señal de salida $V_{out}$ (traza MATH).
+    \item Active los \textbf{cursores de tiempo} en el osciloscopio y mida el retraso temporal ($\Delta t$) entre el pico de $V_{in}$ (CH1) y el pico de $V_{out}$ (MATH).
+    \item \textbf{Exportación:} Guarde la traza en la memoria USB en formato \texttt{.csv} para cada punto de temperatura.
+\end{enumerate}
+
+% ======================================================================
+% 6. VALIDACIÓN EN PYTHON
+% ======================================================================
+\newpage
+\section{VALIDACIÓN COMPUTACIONAL EN PYTHON}
+Cada equipo deberá ejecutar el siguiente script en Python (\texttt{lab1\_validation.py}) para procesar los archivos \texttt{.csv} exportados del osciloscopio y calcular los errores porcentuales respecto al modelo teórico:
+
+\begin{lstlisting}[language=Python]
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# ==============================================================================
+# 1. CARGA DE DATOS EXPERIMENTALES (CSV del Osciloscopio)
+# ==============================================================================
+# Archivo CSV esperado con columnas: 'Time', 'Channel1' (Vin), 'Channel2' (VB)
+data = pd.read_csv("lab1_medicion_30C.csv")
+
+t = data['Time'].values
+v_in = data['Channel1'].values
+v_b = data['Channel2'].values
+
+# Tension diferencial medida: Vout = VA - VB (VA es Vin / 2)
+v_a = v_in / 2.0
+v_out_exp = v_a - v_b
+
+# ==============================================================================
+# 2. PROCESAMIENTO DE SENAL
+# ==============================================================================
+v_out_pico_exp = np.max(v_out_exp)
+
+# Calculo del desfase temporal (Delta t) por deteccion de picos
+idx_pico_in = np.argmax(v_in)
+idx_pico_out = np.argmax(v_out_exp)
+delta_t_exp = t[idx_pico_out] - t[idx_pico_in]
+
+f_c = 10000.0  # Frecuencia de portadora 10 kHz
+fase_grados_exp = delta_t_exp * f_c * 360.0
+
+# ==============================================================================
+# 3. MODELO TEORICO ANALITICO
+# ==============================================================================
+T_celsius = 30.0
+T_kelvin = T_celsius + 273.15
+R_0 = 10000.0; Beta = 3950.0; T_0 = 298.15
+
+# Resistencia teorica NTC
+R_ntc = R_0 * np.exp(Beta * (1.0/T_kelvin - 1.0/T_0))
+
+# Impedancias
+omega = 2 * np.pi * f_c
+Z_c = 1.0 / (1j * omega * 4.7e-9)
+Z_l = 1j * omega * 15e-6
+R_cable = 10.0
+
+Z_paralelo = (R_ntc * Z_c) / (R_ntc + Z_c)
+Z_sensor = R_cable + Z_l + Z_paralelo
+
+# Salida Fasorial Teorica
+V_in_fasor = 1.0  # 1V pico
+V_out_teorico = V_in_fasor * (Z_sensor / (10000.0 + Z_sensor) - 0.5)
+
+v_out_pico_teorico = np.abs(V_out_teorico)
+fase_grados_teorica = np.angle(V_out_teorico, deg=True)
+
+# ==============================================================================
+# 4. CALCULO DE ERRORES Y GRAFICACION
+# ==============================================================================
+err_amp = np.abs(v_out_pico_exp - v_out_pico_teorico) / v_out_pico_teorico * 100.0
+err_fase = np.abs(fase_grados_exp - fase_grados_teorica) / np.abs(fase_grados_teorica) * 100.0
+
+print(f"--- RESULTADOS DE VALIDACION (T = {T_celsius} °C) ---")
+print(f"Amplitud Pico Teorica:  {v_out_pico_teorico:.4f} V | Experimental: {v_out_pico_exp:.4f} V | Error: {err_amp:.2f}%")
+print(f"Fase Angular Teorica:   {fase_grados_teorica:.2f}° | Experimental: {fase_grados_exp:.2f}° | Error: {err_fase:.2f}%")
+
+plt.figure(figsize=(10, 5))
+plt.plot(t * 1e6, v_in, 'b--', label="V_in (Portadora 10kHz)", alpha=0.6)
+plt.plot(t * 1e6, v_out_exp, 'r-', label="V_out Diferencial Experimental")
+plt.xlabel("Tiempo (us)")
+plt.ylabel("Tension (V)")
+plt.title(f"Validacion de Salida Diferencial del Puente a {T_celsius} °C")
+plt.grid(True)
+plt.legend()
+plt.savefig(f"validacion_puente_{int(T_celsius)}C.png")
+plt.show()
+\end{lstlisting}
+
+% ======================================================================
+% 7. RÚBRICA
+% ======================================================================
+\section{RÚBRICA ANALÍTICA DE EVALUACIÓN (100 PUNTOS)}
+El informe técnico en formato IEEE debe entregarse de forma digital incluyendo el código de Python en un repositorio Git.
+
+\begin{table}[h!]
+    \centering
+    \renewcommand{\arraystretch}{1.3} 
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|c|}
+        \hline
+        \textbf{Criterio Evaluativo} & \textbf{Sobresaliente (90-100 pts)} & \textbf{Aceptable (70-89 pts)} & \textbf{Insuficiente (0-69 pts)} & \textbf{Peso} \\
+        \hline
+        \textbf{Fundamentación Teórica} & Demostración matemática completa de $Z_{sensor}(j\omega)$ y $\hat{V}_{out}$. Explicación impecable de la cancelación de offset de CC por el puente. & Deducción analítica con errores menores de álgebra compleja o redondeo de constantes. & Copia de fórmulas sin desarrollo de nodos en CA; no comprende por qué se usa el puente. & \textbf{30\%} \\
+        \hline
+        \textbf{Simulación LTSpice} & Simulación con análisis \textit{AC Sweep} y \textit{Transient} incorporando componentes parásitos reales de línea. & Simulación correcta pero utilizando componentes pasivos ideales sin parásitos. & Simulación inoperativa o con errores de convergencia en SPICE. & \textbf{20\%} \\
+        \hline
+        \textbf{Implementación Física} & Armado pulcro; balance del puente verificado; uso correcto de la resta matemática ($CH1-CH2$) en el osciloscopio. & Armado funcional pero ruidoso; mediciones con escalas de osciloscopio de baja resolución. & Circuito inoperativo; incapacidad de medir el desfase o mala conexión de tierra ($GND$). & \textbf{20\%} \\
+        \hline
+        \textbf{Validación en Python} & Script automatizado que importa CSVs, calcula la fase por detección de picos y cuantifica los errores porcentuales. & Script de Python funcional pero que requiere ingresar los datos de pico manualmente en el código. & No presenta código de Python o grafica datos ingresados a mano en procesadores simples. & \textbf{20\%} \\
+        \hline
+        \textbf{Informe Técnico IEEE} & Formato IEEE impecable; análisis crítico de causas de error (tolerancias, EMI); código alojado en GitHub. & Formato IEEE con errores de diagramación o gráficas de osciloscopio sin rotulación de ejes. & Formato libre o descuidado; entrega tardía sin justificación. & \textbf{10\%} \\
+        \hline
+    \end{tabularx}
+\end{table}
+
+\end{document}

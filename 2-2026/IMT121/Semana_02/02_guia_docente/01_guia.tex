@@ -1,0 +1,201 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- Paquetes Fundamentales ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[margin=2.5cm, headheight=15pt]{geometry}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue]{hyperref}
+
+% --- Matemáticas y Electrónica ---
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage[american]{circuitikz}
+
+% --- Elementos de Diseño ---
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+% --- Configuración de siunitx ---
+\sisetup{
+    output-decimal-marker = {,},
+    per-mode = symbol,
+    inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+% --- Macros Personalizadas para UI y Teclado ---
+\newcommand{\tecla}[1]{\colorbox{gray!20}{\texttt{\footnotesize\textbf{#1}}}}
+\newcommand{\menu}[1]{\textbf{\textsf{#1}}}
+
+% --- Estilos de Cajas (Tcolorbox) ---
+\tcbset{
+    caja_aviso/.style={
+        colback=orange!5, 
+        colframe=orange!80!black, 
+        fonttitle=\bfseries,
+        title=#1
+    },
+    caja_software/.style={
+        colback=ucbblue!5, 
+        colframe=ucbblue, 
+        fonttitle=\bfseries,
+        title=#1
+    }
+}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+% --- Estilo de Página ---
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{Circuitos Electrónicos I}}
+\rhead{Ingeniería Mecatrónica -- UCB Tarija}
+\cfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% --- Metadatos del Documento ---
+\title{\vspace{-1.5cm}\Large\textbf{Plan de Clase y Guía Docente: Sesión 03}\\
+\large Teoremas de Redes en CC y Empalme LTspice}
+\author{M.Sc. Ing. Bernardo Quiroga Turdera}
+\date{Lunes 10 de Agosto de 2026}
+
+\begin{document}
+
+\maketitle
+\vspace{-0.5cm}
+
+% --- Encuadre de Gestión ---
+\begin{tcolorbox}[caja_aviso={Ajuste de Calendario (Semana 2)}]
+\textbf{Contexto:} Reorganización por feriado no programado del viernes 07/Ago + Onboarding de software en aula.
+Combinaremos la resolución analítica de los Teoremas de Redes (Superposición, Thévenin y Norton) con una maratón de instalación rápida y primer modelado en LTspice en los últimos 15-20 minutos de la clase, garantizando que el Laboratorio 1 no sufra retrasos.
+\end{tcolorbox}
+
+\section*{Estructura de la Sesión (90 Minutos)}
+\begin{itemize}[label=$\circ$, itemsep=0pt]
+    \item \textbf{00--10 min:} Encuadre: Recapitulación del feriado y plan de la semana.
+    \item \textbf{10--35 min:} Bloque 1: Desarrollo analítico de Teoremas (Pizarra).
+    \item \textbf{35--60 min:} Bloque 2: Ejemplos Numéricos Resueltos Paso a Paso.
+    \item \textbf{60--75 min:} Bloque 3: Empalme LTspice (Instalación guiada + primer \texttt{.op}).
+    \item \textbf{75--85 min:} Bloque 4: Ejercicio Práctico Activo en Tríadas (Aula).
+    \item \textbf{85--90 min:} Cierre, asignación de Tarea y preparación para el Lab 1.
+\end{itemize}
+
+\vspace{0.4cm}
+\hrule
+\vspace{0.4cm}
+
+\section{Ejemplos Resueltos en Pizarra (Paso a Paso)}
+
+\subsection*{Ejemplo 1: Principio de Superposición en Red Multifuente}
+\textbf{Problema:} Dada la red de acondicionamiento, determine el voltaje en el nodo central $V_A$ y la corriente $I_{R2}$ disipada en la resistencia central $R_2$.
+
+\begin{center}
+    \begin{circuitikz}[scale=1, transform shape]
+        \draw (0,0) to[V, v=$V_s$, a=\qty{12}{\volt}] (0,3)
+              to[R, l=$R_1$, a=\qty{100}{\ohm}] (4,3) node[above]{$V_A$};
+        \draw (4,3) to[R, l=$R_2$, a=\qty{220}{\ohm}, *-*] (4,0);
+        \draw (4,3) to[R, l=$R_3$, a=\qty{330}{\ohm}] (8,3)
+              to[I, i_=$I_s$, a=\qty{50}{\milli\ampere}] (8,0);
+        \draw (0,0) -- (8,0);
+        \node[ground] at (4,0) {};
+    \end{circuitikz}
+\end{center}
+
+\textbf{Paso 1: Caso A — Evaluación con solo la Fuente de Voltaje $V_s$ activa}\\
+Se desactiva $I_s$ reemplazándola por un circuito abierto ($I_s = \qty{0}{\ampere}$). La resistencia $R_3$ queda flotando, por lo que el circuito se reduce a un divisor de voltaje simple:
+\begin{equation}
+    V_{A1} = V_s \cdot \left( \frac{R_2}{R_1 + R_2} \right) = \qty{12}{\volt} \cdot \left( \frac{220}{100 + 220} \right) = \qty{8.25}{\volt}
+\end{equation}
+
+\textbf{Paso 2: Caso B — Evaluación con solo la Fuente de Corriente $I_s$ activa}\\
+Se desactiva $V_s$ reemplazándola por un cortocircuito ($V_s = \qty{0}{\volt}$). $R_1$ queda en paralelo con $R_2$:
+\begin{align}
+    R_{\text{eq}} &= R_1 \parallel R_2 = \frac{100 \cdot 220}{100 + 220} = \qty{68.75}{\ohm} \\
+    V_{A2} &= I_s \cdot R_{\text{eq}} = \qty{0.050}{\ampere} \cdot \qty{68.75}{\ohm} = \qty{3.4375}{\volt}
+\end{align}
+
+\textbf{Paso 3: Suma Algebraica de las Respuestas}
+\begin{align}
+    V_A &= V_{A1} + V_{A2} = 8.25 + 3.4375 = \mathbf{\qty{11.6875}{\volt}} \\
+    I_{R2} &= \frac{V_A}{R_2} = \frac{11.6875}{220} = \qty{0.053125}{\ampere} = \mathbf{\qty{53.125}{\milli\ampere}}
+\end{align}
+
+\vspace{0.3cm}
+\subsection*{Ejemplo 2: Thévenin, Norton y Máxima Transferencia}
+\textbf{Problema:} Calcule el equivalente de Thévenin/Norton entre $A-B$. Luego, determine $R_L$ para máxima transferencia de potencia y calcule $P_{L,\text{máx}}$.
+
+\begin{center}
+    \begin{circuitikz}[scale=1, transform shape]
+        \draw (0,0) to[V, v=$V_s$, a=\qty{24}{\volt}] (0,3)
+              to[R, l=$R_1$, a=\qty{120}{\ohm}] (3,3)
+              to[R, l=$R_3$, a=\qty{100}{\ohm}, *-o] (6,3) node[above]{Terminal $A$};
+        \draw (3,3) to[R, l=$R_2$, a=\qty{240}{\ohm}, *-*] (3,0);
+        \draw (6,3) to[vR, l=$R_L$, color=red, thick] (6,0);
+        \draw (0,0) -- (6,0) node[circ]{} node[below]{Terminal $B$};
+    \end{circuitikz}
+\end{center}
+
+\textbf{Paso 1: Cálculo del Voltaje de Thévenin ($V_{th}$)}\\
+Se remueve $R_L$ dejando los terminales $A-B$ en circuito abierto. Como no circula corriente por $R_3$, el voltaje en $A$ es exactamente el voltaje sobre $R_2$:
+\begin{equation}
+    V_{th} = V_{ab}\Big\vert{}_{\text{abierto}} = \qty{24}{\volt} \cdot \left( \frac{240}{120 + 240} \right) = \mathbf{\qty{16.0}{\volt}}
+\end{equation}
+
+\textbf{Paso 2: Cálculo de la Resistencia de Thévenin ($R_{th}$)}\\
+Se apaga $V_s$ (cortocircuito). Vista desde $A-B$, la red equivale a $R_1 \parallel R_2$ en serie con $R_3$:
+\begin{equation}
+    R_{th} = R_3 + (R_1 \parallel R_2) = 100 + \left( \frac{120 \cdot 240}{120 + 240} \right) = 100 + 80 = \mathbf{\qty{180.0}{\ohm}}
+\end{equation}
+
+\textbf{Paso 3 \& 4: Norton y Máxima Transferencia de Potencia}
+\begin{align}
+    I_N &= \frac{V_{th}}{R_{th}} = \frac{16.0}{180.0} = \mathbf{\qty{88.89}{\milli\ampere}} \quad ; \quad R_N = R_{th} = \mathbf{\qty{180.0}{\ohm}} \\
+    \mathbf{R_L} &\mathbf{= R_{th} = 180.0\,\Omega} \quad \implies \quad P_{L,\text{máx}} = \frac{V_{th}^2}{4 R_{th}} = \frac{16^2}{4 \cdot 180} = \mathbf{\qty{355.56}{\milli\watt}}
+\end{align}
+
+\vspace{0.3cm}
+\hrule
+\vspace{0.4cm}
+
+\section{Ejercicios Propuestos para Trabajo Activo}
+
+\textbf{Ejercicio 1 (Aula en Tríadas — 10 min):} 
+Dada una red con $V_s = \qty{18}{\volt}$, $R_1 = \qty{150}{\ohm}$, $R_2 = \qty{300}{\ohm}$ y $R_3 = \qty{200}{\ohm}$ (Topología similar al Ejemplo 2). Encuentre el equivalente de Thévenin. Si se conecta $R_L = \qty{100}{\ohm}$, determine $V_L$ y $P_L$. \\
+\textit{(Respuestas esperadas: $V_{th} = \qty{12}{\volt}$, $R_{th} = \qty{300}{\ohm}$, $V_L = \qty{3}{\volt}$, $P_L = \qty{90}{\milli\watt}$).}
+
+\vspace{0.2cm}
+\textbf{Ejercicio 2 (Tarea Individual / Previo Lab 1):} 
+Programe un script en Python que evalúe la potencia en la carga $P_L$ del Ejemplo 2 haciendo un barrido de $R_L$ desde $\qty{10}{\ohm}$ hasta $\qty{1000}{\ohm}$ (pasos de $\qty{10}{\ohm}$). Grafique $P_L$ vs. $R_L$ en Matplotlib y verifique el pico en $\qty{180}{\ohm}$.
+
+\newpage
+
+\section{Bloque de Empalme: Onboarding LTspice (15 min)}
+
+\begin{tcolorbox}[caja_software={Guía Rápida de Comandos -- LTspice XVII / 24}]
+\textbf{1. Atajos de Teclado Clave:}
+\begin{itemize}[label=\raisebox{0.25ex}{\tiny$\bullet$}, itemsep=2pt]
+    \item \tecla{R} : Resistencia (\textit{Resistor}) | \tecla{Ctrl + R} para rotar.
+    \item \tecla{V} : Fuente de Voltaje (\textit{Voltage Source}).
+    \item \tecla{G} : Tierra / Masa (\textit{Ground} - \textbf{OBLIGATORIO}).
+    \item \tecla{F3}: Herramienta de Cableado (\textit{Wire}).
+    \item \tecla{F4}: Etiqueta de Nodo (\textit{Net Name} $\rightarrow$ renombrar 'A', 'B', 'Vout').
+    \item \tecla{S} : Directiva de Simulación SPICE (\texttt{.op}, \texttt{.tran}).
+\end{itemize}
+\end{tcolorbox}
+
+\subsection*{Paso a Paso: Primera Simulación (\texttt{.op}) en 5 Minutos}
+\begin{enumerate}
+    \item Abrir LTspice y presionar \tecla{Ctrl + N} para crear un nuevo esquemático.
+    \item Presionar \tecla{V}, colocar una fuente de voltaje e ingresar el valor \texttt{24V}.
+    \item Presionar \tecla{R}, colocar tres resistencias ($R_1 = 120$, $R_2 = 240$, $R_3 = 100$) reproduciendo el esquema del Ejemplo 2.
+    \item Presionar \tecla{G} y colocar la Tierra en el riel inferior de retorno. Conectar todo el circuito utilizando \tecla{F3}.
+    \item Presionar \tecla{F4} y etiquetar el terminal de salida de la derecha como \texttt{Vth\_nodo}.
+    \item Presionar \tecla{S} e ingresar la directiva \texttt{.op} (\textit{Operating Point}).
+    \item Hacer clic en el botón \menu{Run} (Ícono del hombre corriendo). Aparecerá una ventana emergente con la lista de voltajes nodales, confirmando instantáneamente que \texttt{V(vth\_nodo) = 16.000 V}.
+\end{enumerate}
+
+\end{document}

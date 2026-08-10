@@ -1,0 +1,128 @@
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+% --- Paquetes Modernos ---
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage[american]{circuitikz}
+\usepackage{listings}
+
+% --- Configuración Visual UCB ---
+\usetheme{Boadilla}
+\usecolortheme{seahorse}
+
+\sisetup{
+    output-decimal-marker = {,},
+    per-mode = symbol
+}
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\scriptsize,
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{teal},
+    commentstyle=\color{gray}\itshape,
+    backgroundcolor=\color{gray!5},
+    frame=single,
+    breaklines=true
+}
+
+% --- Metadatos del Documento ---
+\title[Introducción a la Mecatrónica]{Modelado de Transductores Térmicos}
+\subtitle{Redes de Impedancia y Efectos Parásitos en CA}
+\author[M.Sc. Ing. B. Quiroga]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{
+    Universidad Católica Boliviana ``San Pablo''\\
+    Sede Tarija - Carrera de Ingeniería Mecatrónica
+}
+\date{10 de agosto de 2026}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Objetivos de la Sesión 03}
+    \begin{itemize}
+        \item \textbf{Matemática:} Generalizar las Leyes de Kirchhoff al dominio fasorial.
+        \item \textbf{Diseño (CDIO):} Modelar el puente de Wheatstone con parásitos de línea.
+        \item \textbf{Software:} Desarrollar un script en Python (estructuras de datos \texttt{pandas}) para extraer el desfase de señales medidas experimentalmente.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Álgebra de Impedancias Complejas}
+    La abstracción del dominio temporal al fasorial permite utilizar álgebra compleja para circuitos reactivos.
+    
+    \vspace{0.3cm}
+    \textbf{Ley de Ohm Generalizada:}
+    \begin{equation*}
+        \hat{V} = Z \cdot \hat{I} \implies Z = \frac{\hat{V}}{\hat{I}} = \vert{}Z\vert{} \angle \theta = R + jX
+    \end{equation*}
+
+    \vspace{0.3cm}
+    \textbf{Naturaleza de la Reactancia ($X$):}
+    \begin{itemize}
+        \item $X > 0 \implies$ Inductiva ($X_L = \omega L$)
+        \item $X < 0 \implies$ Capacitiva ($X_C = -\frac{1}{\omega C}$)
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Modelado del Sensor NTC con Efectos Parásitos}
+    \begin{columns}
+        \begin{column}{0.45\textwidth}
+            \begin{circuitikz}[scale=0.75, transform shape]
+                \draw (0,4) to[sV, l=$V_{in}$] (0,0);
+                \draw (0,4) -- (2,4) -- (4.5,4);
+                \draw (0,0) -- (2,0) -- (4.5,0);
+                \draw (2,0) node[ground]{};
+                
+                \draw (2,4) to[R, l=$R_1$] (2,2) to[R, l=$R_2$] (2,0);
+                \draw (4.5,4) to[R, l=$R_3$] (4.5,2) to[generic, l=$Z_{sensor}$] (4.5,0);
+                
+                \draw (2,2) to[short, *-o] (2.7,2) node[above]{$+$};
+                \draw (4.5,2) to[short, *-o] (3.8,2) node[above]{$-$};
+                \node at (3.25, 2) {$\hat{V}_{out}$};
+            \end{circuitikz}
+        \end{column}
+        
+        \begin{column}{0.5\textwidth}
+            \textbf{Resistencia NTC (Steinhart-Hart):}
+            \begin{equation*}
+                R_{NTC}(T) = R_0 \cdot e^{\beta \left( \frac{1}{T} - \frac{1}{T_0} \right)}
+            \end{equation*}
+            
+            \vspace{0.2cm}
+            \textbf{Impedancia del Cable (15m):}
+            \begin{equation*}
+                Z_{sensor} = R_{cab} + j\omega L_{cab} + \left( R_{NTC} \parallel X_{C_{para}} \right)
+            \end{equation*}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Script Base para Laboratorio 1 (Python)}
+    El procesamiento computacional calculará el desfase real de las trazas del osciloscopio:
+    
+\begin{lstlisting}
+import numpy as np
+import pandas as pd
+
+df = pd.read_csv("lab1_medicion_30C.csv")
+t, v_in, v_out = df['Time'].values, df['Channel1'].values, df['Channel2'].values
+
+# Busqueda de indices de los picos maximos
+idx_pico_in = np.argmax(v_in)
+idx_pico_out = np.argmax(v_out)
+delta_t = t[idx_pico_out] - t[idx_pico_in]
+
+# Conversion de retardo temporal a grados
+fase_grados = delta_t * 10000.0 * 360.0
+print(f"Desfase experimental: {fase_grados:.2f} grados")
+\end{lstlisting}
+\end{frame}
+
+\end{document}
