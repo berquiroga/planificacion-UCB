@@ -1,0 +1,181 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+
+% --- TEMA Y ESTILO ---
+\usetheme{Madrid}
+\usecolortheme{whale}
+
+% --- PAQUETES ---
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage{pgfpages}
+
+% Descomentar la siguiente línea para imprimir un PDF con las notas del orador:
+% \setbeameroption{show notes on second screen}
+
+\sisetup{output-decimal-marker = {,}}
+
+% --- INFORMACIÓN DEL CURSO ---
+\title[Semiconductores y Diodos]{Física de Semiconductores y la Unión P-N}
+\subtitle{De la Física del Silicio al Modelado de Diodos Reales}
+\author[M.Sc. Bernardo Quiroga]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Circuitos Electrónicos III (IMT-221) \\ UCB Tarija}
+\date{11 de agosto de 2026}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{El Porqué en Mecatrónica y Biomédica}
+  \begin{itemize}
+      \item Los componentes pasivos ($R, L, C$) son \textbf{lineales y bilaterales}.
+      \item Los semiconductores permiten controlar el flujo de corriente mediante campos eléctricos internos (\textbf{no-linealidad controlada}).
+  \end{itemize}
+  \vspace{0.3cm}
+  \begin{alertblock}{Aplicación PFI Hito 1}
+      ¿Cómo bloqueamos transitorios inductivos de motores o descargas estáticas en biosensores? Utilizando la \textbf{barrera de potencial de la unión P-N}.
+  \end{alertblock}
+  \note{Recuerden el Pitch de la sesión pasada: la electrónica analógica es la interfaz entre el mundo físico no lineal y el microcontrolador digital. Hoy entenderemos la física de la barrera que protegerá sus tarjetas.}
+\end{frame}
+
+\begin{frame}{Silicio Intrínsico y Dopaje (Extrínsico)}
+  \begin{block}{Silicio Intrínsico}
+      Red tetraédrica con enlaces covalentes. Concentración intrínseca $n_i \approx \SI{1.5e10}{\per\centi\meter\cubed}$ a \SI{300}{\kelvin} (27°C).
+  \end{block}
+  
+  \begin{block}{Dopaje Tipo N (Donadores)}
+      Inserción de átomos pentavalentes (Fósforo, Arsénico). Portadores mayoritarios: \textbf{Electrones libres} ($n \approx N_D$).
+  \end{block}
+
+  \begin{block}{Dopaje Tipo P (Aceptores)}
+      Inserción de átomos trivalentes (Boro). Portadores mayoritarios: \textbf{Huecos} ($p \approx N_A$).
+  \end{block}
+  % Aquí el docente puede insertar \includegraphics con el esquema cristalino
+\end{frame}
+
+\begin{frame}{Corriente de Deriva vs. Difusión}
+  \begin{columns}
+      \column{0.5\textwidth}
+      \begin{block}{1. Deriva (Drift)}
+          Movimiento impulsado por un \textbf{campo eléctrico externo} ($\mathbf{E}$).
+          \begin{equation*}
+          J_{drift} = q (n \mu_n + p \mu_p) E
+          \end{equation*}
+      \end{block}
+      
+      \column{0.5\textwidth}
+      \begin{block}{2. Difusión (Diffusion)}
+          Movimiento impulsado por un \textbf{gradiente de concentración} (mayor a menor).
+          \begin{equation*}
+          J_{diff} = q D_n \frac{dn}{dx} - q D_p \frac{dp}{dx}
+          \end{equation*}
+      \end{block}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Formación de la Unión P-N en Equilibrio}
+  \textbf{Fenómeno Físico:}
+  \begin{enumerate}
+      \item Al unirse P y N, los electrones libres de N \textbf{difunden} hacia P y se recombinan con huecos.
+      \item Esta recombinación deja \textbf{iones fijos} en la red cristalina: $N_D^+$ en N y $N_A^-$ en P.
+      \item Se crea la \textbf{Zona de Carga Espacial (Deplexión)}, desprovista de portadores libres.
+      \item \textbf{Resultado:} Aparece un Campo Eléctrico Interno ($\mathbf{E}_0$) que se opone a la difusión.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Potencial de Contacto Integrado ($V_0$)}
+  En equilibrio termodinámico, la corriente de difusión se iguala exactamente con la corriente de deriva ($J_{total} = 0$).
+  
+  \begin{block}{Ecuación del Potencial Integrado}
+  \begin{equation*}
+  V_0 = V_T \ln \left( \frac{N_A N_D}{n_i^2} \right)
+  \end{equation*}
+  \end{block}
+  \vspace{0.2cm}
+  Donde:
+  \begin{itemize}
+      \item $V_T = \frac{k_B T}{q} \approx \SI{25.85}{\milli\volt}$ a temperatura ambiente (\SI{300}{\kelvin}).
+      \item Para el Silicio típico, $V_0 \approx \SI{0.6}{\volt} - \SI{0.8}{\volt}$.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{La Unión P-N Bajo Polarización}
+  \begin{columns}
+      \column{0.5\textwidth}
+      \textbf{Polarización Inversa ($V_D < 0$):}
+      \begin{itemize}
+          \item El potencial externo \textbf{refuerza} el campo interno $\mathbf{E}_0$.
+          \item La zona de deplexión se ensancha.
+          \item Fluye pequeña corriente de saturación inversa ($I_S$) térmica.
+      \end{itemize}
+      
+      \column{0.5\textwidth}
+      \textbf{Polarización Directa ($V_D > 0$):}
+      \begin{itemize}
+          \item El potencial externo \textbf{reduce} la barrera ($V_0 - V_D$).
+          \item La zona de deplexión se estrecha.
+          \item Mayoritarios difunden masivamente: la corriente crece exponencialmente.
+      \end{itemize}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Ecuación Característica de Shockley}
+  \begin{block}{La Ecuación del Diodo Ideal}
+  \begin{equation*}
+  I_D = I_S \left( e^{\frac{V_D}{\eta V_T}} - 1 \right)
+  \end{equation*}
+  \end{block}
+  
+  \textbf{Parámetros Físicos:}
+  \begin{itemize}
+      \item $I_S$: Corriente de saturación inversa (sensible a la temperatura).
+      \item $\eta$: Factor de idealidad ($1 \le \eta \le 2$).
+      \item $V_T$: Voltaje térmico (\SI{25.85}{\milli\volt} a 27°C).
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Resistencia Dinámica / Pequeña Señal ($r_d$)}
+  La \textbf{Resistencia Dinámica ($r_d$)} es la pendiente inversa de la curva I-V evaluada en el punto de operación $Q(V_D, I_D)$:
+  
+  \begin{equation*}
+  r_d = \left. \frac{d V_D}{d I_D} \right\vert{}_{Q} = \frac{\eta V_T}{I_D + I_S} \approx \frac{\eta V_T}{I_D}
+  \end{equation*}
+  
+  \begin{exampleblock}{Ejemplo Rápido}
+  Si $I_D = \SI{1}{\milli\ampere}$ y $\eta = 1$:
+  \begin{equation*}
+  r_d = \frac{\SI{25.85}{\milli\volt}}{\SI{1}{\milli\ampere}} \approx \SI{25.85}{\ohm}
+  \end{equation*}
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Taller Computacional en Python (Asíncrono)}
+  \textbf{Objetivo:} Modelar el comportamiento térmico y dinámico del diodo 1N4148 de la BOM del curso (No asumir idealidad de 0.7V).
+  \vspace{0.3cm}
+  
+  \textbf{Reto en Jupyter Notebook:}
+  \begin{itemize}
+      \item Graficar $I_D$ vs. $V_D$ variando la temperatura de 0°C a 80°C.
+      \item Calcular y graficar la resistencia dinámica $r_d$ en función de la corriente de polarización en DC.
+      \item Analizar impacto térmico sobre $I_S$ y $V_T$.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Conclusiones y Próximos Pasos}
+  \textbf{Conclusiones:}
+  \begin{enumerate}
+      \item La unión P-N crea una barrera de potencial no lineal gobernada por la ecuación de Shockley.
+      \item La temperatura altera drásticamente a $I_S$ y $V_T$.
+      \item La resistencia dinámica $r_d$ disminuye a medida que aumenta la corriente de polarización en DC.
+  \end{enumerate}
+  \vspace{0.4cm}
+  \begin{alertblock}{Próxima Clase (Jueves 13 de agosto)}
+  Rectificación, filtros capacitivos, sujetadores y regulación Zener de precisión.
+  \end{alertblock}
+\end{frame}
+
+\end{document}

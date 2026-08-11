@@ -1,0 +1,126 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+
+% --- TEMA Y ESTILO ---
+\usetheme{Madrid}
+\usecolortheme{whale}
+
+% --- PAQUETES ---
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage{fontawesome5}
+\usepackage{booktabs}
+
+\sisetup{
+  output-decimal-marker = {,},
+  per-mode = symbol
+}
+
+% --- INFORMACIÓN DEL CURSO ---
+\title[Circuitos III - Dinámica Tribal]{Física de Semiconductores y Unión P-N}
+\subtitle{Sesión 2: Aprendizaje Cooperativo (Método Jigsaw)}
+\author{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' -- Sede Tarija}
+\date{11 de agosto de 2026}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Dinámica de Hoy: El Desafío Tribal}
+  \begin{block}{Reglas del Juego}
+    Hoy no habrá 90 minutos de cátedra magistral. El conocimiento lo construirán ustedes.
+  \end{block}
+  
+  \vspace{0.3cm}
+  \textbf{Fases de la Misión:}
+  \begin{enumerate}
+      \item \textbf{Enclave Tribal (25 min):} Su Tribu investiga y domina un concepto de la física de semiconductores.
+      \item \textbf{Cruzada de Embajadores (30 min):} El Líder se queda a enseñar. Los Embajadores rotan de mesa en mesa para aprender y enseñar al resto.
+      \item \textbf{Síntesis y Blindaje (15 min):} Ajuste matemático de ecuaciones y corrección de mitos (Docente).
+      \item \textbf{Exit Ticket (10 min):} Preguntas al azar. La tribu depende del miembro menos preparado para ganar puntos PFI.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Tribu 1: El Origen de la Carga}
+  \begin{block}{\faMicrochip \quad Misión 1: Dopaje y Transporte}
+    \textbf{Objetivo:} Explicar cómo transformamos la arena (Silicio) en conductor controlado.
+    \vspace{0.2cm}
+    \begin{itemize}
+        \item Diferencia física real entre Tipo N y Tipo P (Ley de acción de masas: $n \cdot p = n_i^2$).
+        \item Diferencia entre Corriente de \textbf{Deriva} (Drift) y de \textbf{Difusión}.
+        \item Explicar la ecuación: $J_{\text{drift}} = q(n\mu_n + p\mu_p)E$.
+    \end{itemize}
+  \end{block}
+  \vspace{0.3cm}
+  \textbf{\faChalkboard \quad Reto en Pizarra:} Dibujar la red cristalina con un átomo de Fósforo (Tipo N) y uno de Boro (Tipo P) con sus portadores.
+\end{frame}
+
+\begin{frame}{Tribu 2: La Frontera Invisible}
+  \begin{block}{\faProjectDiagram \quad Misión 2: Unión P-N y el Potencial $V_0$}
+    \textbf{Objetivo:} Explicar qué ocurre exactamente al unir Tipo P con Tipo N.
+    \vspace{0.2cm}
+    \begin{itemize}
+        \item Formación de la \textbf{Zona de Deplexión}. ¿Por qué está ``despoblada''?
+        \item Surgimiento del Campo Eléctrico Interno ($E_0$).
+        \item Explicar la ecuación del Potencial Integrado a temperatura ambiente:
+        \begin{equation*}
+            V_0 = V_T \ln \left( \frac{N_A N_D}{n_i^2} \right)
+        \end{equation*}
+    \end{itemize}
+  \end{block}
+  \vspace{0.1cm}
+  \textbf{\faChalkboard \quad Reto en Pizarra:} Dibujar la unión P-N indicando los iones fijos y el vector $E_0$.
+\end{frame}
+
+\begin{frame}{Tribu 3: La Barrera de Potencial}
+  \begin{block}{\faChartLine \quad Misión 3: La Ecuación de Shockley}
+    \textbf{Objetivo:} La matemática de la curva $I$-$V$.
+    \vspace{0.2cm}
+    \begin{itemize}
+        \item Zona de deplexión en \textbf{Polarización Inversa} (y qué es $I_S$).
+        \item Zona de deplexión en \textbf{Polarización Directa}.
+        \item Explicar término a término la Ecuación del Diodo:
+        \begin{equation*}
+            I_D = I_S \left( \exp\left(\frac{V_D}{\eta V_T}\right) - 1 \right)
+        \end{equation*}
+    \end{itemize}
+  \end{block}
+  \vspace{0.1cm}
+  \textbf{\faChalkboard \quad Reto en Pizarra:} Dibujar la curva no lineal $I$-$V$ del diodo marcando la rodilla (\qty{0.7}{\volt}) y $I_S$.
+\end{frame}
+
+\begin{frame}{Tribu 4: Resistencia Dinámica}
+  \begin{block}{\faWaveSquare \quad Misión 4: Modelo de Pequeña Señal ($r_d$)}
+    \textbf{Objetivo:} Un diodo no es un interruptor ideal; es una resistencia variable.
+    \vspace{0.2cm}
+    \begin{itemize}
+        \item ¿Qué es el Punto de Operación en DC ($Q$)?
+        \item Demostrar analíticamente cómo se obtiene $r_d$:
+        \begin{equation*}
+            r_d = \frac{d V_D}{d I_D} \approx \frac{\eta V_T}{I_D}
+        \end{equation*}
+        \item Ejercicio: Si $I_D = \qty{2}{\milli\ampere}$ ($V_T = \qty{25.85}{\milli\volt}$, $\eta=1$), ¿cuánto vale $r_d$? ¿Y si $I_D = \qty{20}{\milli\ampere}$?
+    \end{itemize}
+  \end{block}
+  \vspace{0.1cm}
+  \textbf{\faChalkboard \quad Reto en Pizarra:} Dibujar la recta tangente en el punto Q.
+\end{frame}
+
+\begin{frame}{Síntesis y Próximos Pasos}
+  \begin{block}{Conclusión del Docente}
+      El comportamiento no lineal del diodo está gobernado físicamente por la ecuación de Shockley. Su resistencia en AC ($r_d$) es inversamente proporcional a la corriente DC.
+  \end{block}
+  
+  \vspace{0.5cm}
+  \textbf{Conexión con el PFI (Hito 1):}
+  \begin{itemize}
+      \item Los diodos Zener/Flyback cambian su resistencia dinámica ($r_d$) según la intensidad del pico inductivo.
+      \item \textbf{Actividad asíncrona:} Correr el script en Python para comprobar cómo $r_d$ e $I_S$ varían con la temperatura en Tarija.
+  \end{itemize}
+\end{frame}
+
+\end{document}

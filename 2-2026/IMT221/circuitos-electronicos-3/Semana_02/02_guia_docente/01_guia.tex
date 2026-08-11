@@ -1,0 +1,226 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- PAQUETES PRINCIPALES ---
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb, mathtools}
+\usepackage{siunitx}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% --- CONFIGURACIÓN DE COLORES Y CÓDIGO (PYTHON) ---
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.96,0.96,0.96}
+
+\lstdefinestyle{pythonstyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=4,
+    language=Python
+}
+\lstset{style=pythonstyle}
+
+% --- CONFIGURACIÓN DE SIUNITX ---
+\sisetup{
+  output-decimal-marker = {,},
+  per-mode = symbol,
+  inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+% --- ESTILO DE CABECERA Y ENCABEZADOS ---
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{Circuitos Electrónicos III (IMT-221)}}
+\rhead{Sesión 2: Semiconductores y Unión P-N}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% --- ENTORNOS PERSONALIZADOS ---
+\newtcolorbox{bloqueclase}[1][]{
+  colback=blue!5!white,
+  colframe=blue!75!black,
+  fonttitle=\bfseries,
+  title=#1
+}
+
+\begin{document}
+
+% --- PORTADA / ENCABEZADO ---
+\begin{center}
+    {\LARGE \textbf{Guía Docente y Apuntes de Cátedra}}\\[0.5cm]
+    {\large \textbf{Unidad 1:} Semiconductores y Diodos}\\
+    {\large \textbf{Tema:} Física de Semiconductores, Unión P-N y Ecuación de Shockley}\\[0.3cm]
+    \textit{Fecha: 11 de agosto de 2026 \quad | \quad Docente: M.Sc. Ing. Bernardo Quiroga Turdera}\\
+    \textit{Universidad Católica Boliviana ``San Pablo'' -- Sede Tarija}
+    \vspace{0.5cm}
+    \hrule
+\end{center}
+
+\vspace{0.5cm}
+
+% ==========================================
+% DOCUMENTO 1: GUÍA DOCENTE
+% ==========================================
+\section{Guía Docente de la Sesión (Hoja de Ruta)}
+
+\textbf{Duración:} \qty{90}{\minute} (3 bloques de \qty{30}{\minute}) \\
+\textbf{Alineación CDIO/ABET:} Concebir (Análisis Físico de Portadores) / ABET Outcome 1 (Resolución de problemas de ingeniería basados en ciencias básicas).
+
+\subsection*{Distribución del Tiempo en Aula}
+\begin{center}
+\begin{tabularx}{\textwidth}{@{} c X @{}}
+\toprule
+\textbf{Tiempo} & \textbf{Actividad} \\
+\midrule
+\qtyrange{00}{15}{\minute} & \textbf{Bloque 1: Reconexión PFI \& Motivación.} Recordar el Hito 1 del PFI (Protección de ADC y supresión de transitorios inductivos). \\
+\qtyrange{15}{50}{\minute} & \textbf{Bloque 2: Teoría Física de la Unión P-N.} Estructura del silicio, dopaje, y mecanismos de transporte (Deriva vs. Difusión). Formación de la deplexión. \\
+\qtyrange{50}{75}{\minute} & \textbf{Bloque 3: Deducción de Shockley y $r_d$.} Ecuación de Shockley en polarización. Deducción del modelo de pequeña señal. \\
+\qtyrange{75}{90}{\minute} & \textbf{Bloque 4: Cierre \& Tarea Python.} Explicación del script interactivo. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{bloqueclase}[Pregunta Detonante de la Sesión]
+    ``¿Por qué una resistencia común no puede proteger un pin de microcontrolador contra un pico de \qty{+24}{\volt} sin atenuar la señal analógica, pero un semiconductor sí?''
+\end{bloqueclase}
+
+\newpage
+% ==========================================
+% DOCUMENTO 2: APUNTE TEÓRICO COMPLETO
+% ==========================================
+\section{Apunte Teórico Completo (Lecture Notes)}
+
+\subsection{Física Fundamental de los Semiconductores}
+El silicio monocristalino posee 4 electrones de valencia. En su estado intrínseco (puro), forma una estructura de red diamante. A temperatura ambiente (\qty{300}{\kelvin}), la energía térmica genera pares electrón-hueco. La concentración intrínseca viene dada por:
+\begin{equation}
+    n_i = B \cdot T^{3/2} \cdot e^{-\frac{E_g}{2 k_B T}}
+\end{equation}
+Donde $B \approx \qty{5.23e15}{\centi\meter^{-3}\kelvin^{-3/2}}$, $E_g = \qty{1.12}{\electronvolt}$ (bandgap), y $k_B = \qty{8.617e-5}{\electronvolt\per\kelvin}$. A \qty{300}{\kelvin}, $n_i \approx \qty{1.5e10}{\per\centi\meter\cubed}$.
+
+Para controlar la conductividad, el silicio se dopa:
+\begin{itemize}
+    \item \textbf{Tipo N:} Impurezas pentavalentes (Fósforo, $N_D$). Electrones libres $n_n \approx N_D$.
+    \item \textbf{Tipo P:} Impurezas trivalentes (Boro, $N_A$). Huecos $p_p \approx N_A$.
+\end{itemize}
+
+\subsection{Mecanismos de Transporte de Carga}
+\subsubsection{Corriente de Deriva (Drift)}
+Ocurre al aplicar un campo eléctrico $\mathbf{E}$. La densidad de corriente es:
+\begin{equation}
+    J_{\text{drift}} = q \cdot (n \mu_n + p \mu_p) \cdot E
+\end{equation}
+Donde $q = \qty{1.602e-19}{\coulomb}$, y $\mu_n, \mu_p$ son las movilidades ($\mu_n \approx \qty{1350}{\centi\meter\squared\per\volt\per\second}$ en silicio).
+
+\subsubsection{Corriente de Difusión}
+Flujo natural por gradiente de concentración:
+\begin{equation}
+    J_{\text{diff}} = q D_n \frac{dn}{dx} - q D_p \frac{dp}{dx}
+\end{equation}
+Vinculado a la movilidad mediante la Relación de Einstein: $\frac{D_n}{\mu_n} = \frac{D_p}{\mu_p} = V_T = \frac{k_B T}{q}$.
+
+\subsection{La Unión P-N y el Potencial de Contacto}
+En equilibrio, la difusión y la deriva se cancelan ($J_{\text{diff}} + J_{\text{drift}} = 0$). Los iones fijos ($N_D^+, N_A^-$) generan una Zona de Deplexión y un Potencial Integrado ($V_0$):
+\begin{equation}
+    V_0 = V_T \ln \left( \frac{N_A N_D}{n_i^2} \right)
+\end{equation}
+
+\subsection{Ecuación de Shockley y Resistencia Dinámica}
+En polarización externa $V_D$, la corriente del diodo responde a la ecuación de Shockley:
+\begin{equation}
+    I_D = I_S \left( e^{\frac{V_D}{\eta V_T}} - 1 \right)
+\end{equation}
+Para análisis de pequeña señal, linealizamos la ecuación alrededor de un punto de trabajo $Q(V_D, I_D)$. La resistencia dinámica $r_d$ es:
+\begin{equation}
+    r_d = \left. \frac{d V_D}{d I_D} \right\vert_{Q} = \frac{\eta V_T}{I_D + I_S} \approx \frac{\eta V_T}{I_D}
+\end{equation}
+
+\newpage
+% ==========================================
+% DOCUMENTO 3: TALLER COMPUTACIONAL PYTHON
+% ==========================================
+\section{Taller Práctico: Modelado Numérico en Python}
+El siguiente \textit{script} permite simular la no linealidad del diodo 1N4148 y su dependencia térmica.
+
+\begin{lstlisting}
+# ==============================================================================
+# UNIVERSIDAD CATOLICA BOLIVIANA "SAN PABLO" - SEDE TARIJA
+# Circuitos Electronicos III (IMT-221) - Semestre 2-2026
+# Taller Computacional 1: Modelado de la Union P-N y Ecuacion de Shockley
+# Docente: M.Sc. Ing. Bernardo Quiroga Turdera
+# ==============================================================================
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 1. PARAMETROS FISICOS (Diodo 1N4148)
+q = 1.602e-19         # Carga del electron (C)
+kB = 1.3806e-23       # Constante de Boltzmann (J/K)
+Is_ref = 2.52e-9      # Corriente de saturacion inversa a 27°C (A)
+eta = 1.75            # Factor de idealidad 
+
+Vd = np.linspace(0.0, 0.85, 500)
+temperaturas_C = [0, 27, 50, 80]
+
+# 2. MODELADO DE LA INFLUENCIA DE LA TEMPERATURA
+plt.figure(figsize=(10, 6))
+for T_C in temperaturas_C:
+    T_K = T_C + 273.15
+    Vt = (kB * T_K) / q
+    
+    # Sensibilidad termica de Is
+    Is = Is_ref * ((T_K / 300.15)**3) * np.exp((1.12 / (2 * 8.617e-5)) * (1/300.15 - 1/T_K))
+    
+    # Ecuacion de Shockley
+    Id = Is * (np.exp(Vd / (eta * Vt)) - 1)
+    
+    plt.plot(Vd, Id * 1e3, label=f'T = {T_C}C (Vt = {Vt*1e3:.2f} mV)')
+
+plt.title('Curva Caracteristica I-V del Diodo 1N4148', fontsize=12)
+plt.xlabel('Voltaje VD (V)', fontsize=11)
+plt.ylabel('Corriente ID (mA)', fontsize=11)
+plt.ylim(0, 50)
+plt.grid(True, linestyle='--', alpha=0.7)
+plt.legend()
+plt.show()
+
+# 3. RESISTENCIA DINAMICA
+T_amb_K = 27 + 273.15
+Vt_amb = (kB * T_amb_K) / q
+Id_mA = np.linspace(0.1, 20.0, 200)
+Id_A = Id_mA * 1e-3
+
+rd = (eta * Vt_amb) / Id_A
+
+plt.figure(figsize=(10, 5))
+plt.plot(Id_mA, rd, color='crimson', linewidth=2, label=f'r_d a T=27C')
+plt.title('Resistencia Dinamica (r_d) vs. Corriente de Polarizacion (I_D)')
+plt.xlabel('Corriente ID (mA)')
+plt.ylabel('Resistencia r_d (Ohms)')
+plt.grid(True, linestyle='--', alpha=0.7)
+plt.legend()
+plt.show()
+\end{lstlisting}
+
+\end{document}

@@ -1,0 +1,157 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- PAQUETES PRINCIPALES ---
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage[margin=2cm]{geometry}
+\usepackage{amsmath, amssymb, mathtools}
+\usepackage{siunitx}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage{fontawesome5} % Para iconos de las misiones
+
+% --- CONFIGURACIÓN DE SIUNITX ---
+\sisetup{
+  output-decimal-marker = {,},
+  per-mode = symbol,
+  inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+% --- ESTILO DE CABECERA Y ENCABEZADOS ---
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{Circuitos Electrónicos III (IMT-221)}}
+\rhead{Sesión 2: Dinámica Tribal (Jigsaw)}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% --- ENTORNOS PERSONALIZADOS ---
+\newtcolorbox{mision}[2][]{
+  enhanced,
+  colback=white,
+  colframe=black!70,
+  colbacktitle=black!85,
+  coltitle=white,
+  fonttitle=\bfseries\large,
+  title=\faShieldAlt \quad Ficha de Misión: #2,
+  attach boxed title to top left={yshift=-2mm, xshift=5mm},
+  boxed title style={sharp corners},
+  boxrule=1pt,
+  arc=0mm,
+  drop shadow,
+  #1
+}
+
+\newenvironment{reto}{%
+    \vspace{0.3cm}
+    \noindent\textbf{\faChalkboard \quad Reto Visual para la Pizarra: } \itshape
+}{%
+    \vspace{0.2cm}
+}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{Plan de Ejecución y Fichas Tribales}}\\[0.3cm]
+    {\large \textbf{Método Jigsaw: Física de Semiconductores}}\\
+    \textit{Circuitos Electrónicos III -- Prof. Bernardo Quiroga Turdera}
+    \vspace{0.5cm}
+    \hrule
+\end{center}
+
+\section*{1. Hoja de Ruta de la Clase (\qty{90}{\minute})}
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{@{} >{\bfseries}c X @{}}
+\toprule
+Tiempo & Fase y Descripción de la Actividad \\
+\midrule
+\qtyrange{00}{10}{\minute} & \textbf{Fase 0: Encuadre y Desafío.} Explicación de la dinámica. Las Tribus dominarán un territorio y enviarán embajadores a enseñar. La nota grupal depende del miembro evaluado al azar. \\
+\qtyrange{10}{35}{\minute} & \textbf{Fase 1: Enclave Tribal (Estudio).} Las Tribus reciben su Misión. Usan apuntes e internet para responder preguntas y preparar una explicación de \qty{3}{\minute}. \\
+\qtyrange{35}{65}{\minute} & \textbf{Fase 2: La Cruzada de Embajadores (Enseñanza Cruzada).} El Líder se queda como ``Anfitrión''; los demás rotan como ``Embajadores'' a enseñar y aprender. (\qty{6}{\minute} por mini-sesión). \\
+\qtyrange{65}{80}{\minute} & \textbf{Fase 3: Síntesis del Catedrático.} Corrección de mitos. Proyección de diapositivas clave (Shockley y $r_d$). \\
+\qtyrange{80}{90}{\minute} & \textbf{Fase 4: Exit Ticket.} 4 preguntas relámpago a estudiantes al azar. Puntos extra para el PFI. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\vspace{0.5cm}
+
+\section*{2. Fichas de Misión Tribal (Para repartir a los grupos)}
+
+\begin{mision}{El Origen de la Carga (Dopaje y Transporte)}
+\textbf{Objetivo:} Explicar cómo transformamos el Silicio puro en un conductor controlado y el movimiento de cargas.
+\begin{itemize}
+    \item ¿Cuál es la diferencia física real entre un Silicio Tipo N y Tipo P? (Mencionen átomos donadores/aceptores y qué pasa con la ley de acción de masas $n \cdot p = n_i^2$).
+    \item ¿Qué diferencia hay entre la Corriente de Deriva (\textit{Drift}) y la Corriente de Difusión (\textit{Diffusion})? ¿Qué fuerza impulsa a cada una?
+    \item Expliquen la ecuación de densidad de corriente de deriva: 
+    $J_{\text{drift}} = q(n\mu_n + p\mu_p)E$
+\end{itemize}
+\begin{reto}
+Dibujar la red cristalina con un átomo de Fósforo (Tipo N) y uno de Boro (Tipo P) mostrando el electrón libre y el hueco.
+\end{reto}
+\end{mision}
+
+\begin{mision}{La Frontera Invisible (Unión P-N y Potencial $V_0$)}
+\textbf{Objetivo:} Explicar qué ocurre exactamente al juntar Silicio P con Silicio N.
+\begin{itemize}
+    \item ¿Cómo se forma la Zona de Carga Espacial (Deplexión)? ¿Por qué se le llama ``despoblada''?
+    \item ¿Por qué surge un Campo Eléctrico Interno ($E_0$) y por qué se detiene la difusión en equilibrio?
+    \item Explicar la fórmula del Potencial Integrado ($V_0$):
+    \begin{equation*}
+        V_0 = V_T \ln \left( \frac{N_A N_D}{n_i^2} \right)
+    \end{equation*}
+    ¿Cuánto vale aproximadamente $V_0$ a temperatura ambiente?
+\end{itemize}
+\begin{reto}
+Dibujar la unión P-N indicando los iones fijos ($N_D^+$ y $N_A^-$) y el vector del Campo Eléctrico Interno $E_0$.
+\end{reto}
+\end{mision}
+
+\newpage
+
+\begin{mision}{La Barrera de Potencial y la Ecuación de Shockley}
+\textbf{Objetivo:} Explicar cómo rompemos la barrera del diodo y la matemática de su curva $I$-$V$.
+\begin{itemize}
+    \item ¿Qué le pasa a la deplexión bajo Polarización Inversa y qué es la Corriente de Saturación Inversa ($I_S$)?
+    \item ¿Qué le pasa a la deplexión bajo Polarización Directa y por qué la corriente crece exponencialmente?
+    \item Explicar término a término la Ecuación de Shockley:
+    \begin{equation*}
+        I_D = I_S \left( \exp\left(\frac{V_D}{\eta V_T}\right) - 1 \right)
+    \end{equation*}
+    \item ¿Qué representa $V_T$ (\qty{25.85}{\milli\volt}) y por qué la temperatura afecta tanto al diodo?
+\end{itemize}
+\begin{reto}
+Dibujar la curva $I$-$V$ del diodo marcando la zona directa, la rodilla de tensión (\qty{0.7}{\volt}) e $I_S$.
+\end{reto}
+\end{mision}
+
+\begin{mision}{Resistencia Dinámica ($r_d$) y el Modelo de Pequeña Señal}
+\textbf{Objetivo:} Explicar por qué un diodo no es un interruptor ideal de \qty{0.7}{\volt}, sino una resistencia variable.
+\begin{itemize}
+    \item ¿Qué es el Punto de Operación en DC ($Q = I_D, V_D$)?
+    \item Demostrar analíticamente cómo se obtiene $r_d$ derivando la Ecuación de Shockley:
+    \begin{equation*}
+        r_d = \frac{d V_D}{d I_D} \approx \frac{\eta V_T}{I_D}
+    \end{equation*}
+    \item Si un diodo en el PFI opera con $I_D = \qty{2}{\milli\ampere}$ ($\eta = 1, V_T = \qty{25.85}{\milli\volt}$), ¿cuántos ohmios vale $r_d$? ¿Y si $I_D$ sube a \qty{20}{\milli\ampere}?
+\end{itemize}
+\begin{reto}
+Dibujar la recta tangente a la curva $I$-$V$ en el punto Q, indicando cómo la pendiente representa la resistencia de pequeña señal $r_d$.
+\end{reto}
+\end{mision}
+
+\vspace{0.5cm}
+
+\section*{3. Cierre Docente y Conexión con el PFI}
+\textbf{Síntesis (15 min):}
+\begin{itemize}
+    \item Felicitar el esfuerzo: \textit{``Han demostrado que el conocimiento en ingeniería se construye en equipo''.}
+    \item Consolidación de $r_d = \frac{\eta V_T}{I_D}$.
+    \item \textbf{Conexión PFI:} \textit{``Para el Hito 1, los diodos de protección Zener y Flyback cambian su resistencia $r_d$ según la corriente del pico inductivo del motor. Hoy en el taller de Python graficarán cómo cambia con la temperatura de Tarija.''}
+\end{itemize}
+
+\end{document}
