@@ -1,0 +1,154 @@
+\documentclass[11pt, a4paper]{article}
+
+% Paquetes de idioma y tipografía
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo} % Tipografía Palatino
+\usepackage{microtype}
+
+% Geometría de la página
+\usepackage[margin=2.5cm, headheight=15pt]{geometry}
+
+% Paquetes matemáticos
+\usepackage{amsmath, amssymb, amsfonts, bm}
+
+% Gráficos, colores y tablas
+\usepackage{graphicx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+% Personalización de listas
+\usepackage{enumitem}
+
+% Encabezados y pies de página
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Robótica (IMT-342)}
+\rhead{Clase 1 - Sem 2 (V2)}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Definición de colores institucionales
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{ucbyellow}{RGB}{255, 184, 28}
+
+\begin{document}
+
+% =======================================================
+% INSUMO 1: GUÍA DE CLASE PARA EL DOCENTE
+% =======================================================
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{GUÍA DE CLASE PARA EL DOCENTE (LESSON PLAN)}}\\
+    \vspace{0.2cm}
+    \normalsize\textbf{Código:} IMT-342-GP-0201-V2
+\end{center}
+\vspace{0.3cm}
+
+\noindent\textbf{Unidad I:} Morfología, Geometría del Espacio y Cinemática Directa \\
+\textbf{Tema:} Grupo $SO(3)$, Dualidad Activa/Pasiva y Composición de Rotaciones \\
+\textbf{Duración:} 120 minutos reales \\
+\textbf{Alineamiento:} CDIO (Diseñar/Implementar) + ABET SO-1 (Análisis de Ciencias e Ingeniería)
+
+\vspace{0.5cm}
+\noindent\textbf{\large Estructura de la Sesión y Gestión del Tiempo (120 min)}
+\vspace{0.2cm}
+
+\noindent
+\begin{tabularx}{\textwidth}{@{} l >{\raggedright\arraybackslash}p{3cm} X X @{}}
+\toprule
+\textbf{Tiempo} & \textbf{Fase} & \textbf{Actividad Docente y Estudiantil} & \textbf{Justificación Pedagógica} \\ \midrule
+16:00 - 16:15 & Activación y \newline Problema Físico & Demostración con objeto físico: Rotar un vector (Activo) vs. Mover la cámara (Pasivo). & \textbf{Anclaje Físico:} Elimina ambigüedad entre mover un eslabón o cambiar de marco. \\ \addlinespace
+16:15 - 17:00 & Cátedra \newline Analítica & Deducción de $SO(3)$. Demostración de $p' = R \cdot p$ vs $p_A = {}^{A}R_B \cdot p_B$. Deducción $R^T R = I$. & \textbf{Rigor Matemático:} Fundamentación analítica, evitando el enfoque de prueba y error. \\ \addlinespace
+17:00 - 17:35 & Composición de \newline Rotaciones & Análisis de Ejes Fijos (Pre-multiplicación) vs. Ejes Móviles (Post-multiplicación). & \textbf{Alineamiento PFI:} Previene errores críticos al multiplicar matrices D-H. \\ \addlinespace
+17:35 - 17:55 & Taller en Python \newline (NumPy) & Código en Ubuntu: Verifican $R^T R = I$, conservación de norma y transformaciones. & \textbf{Implementación:} Principios 2 y 4 de la metodología CDIO en tiempo real. \\ \addlinespace
+17:55 - 18:00 & Cierre y \newline Asignación & Entrega de Guía Práctica 1 y asignación de lectura sobre Euler para el jueves. & \textbf{Progresión Lógica:} Prepara el terreno minimizando la sobrecarga cognitiva. \\ \bottomrule
+\end{tabularx}
+
+\vspace{0.5cm}
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=Ajuste de Diseño Didáctico]
+Se ha decidido \textbf{diferir} la parametrización de Euler y Roll-Pitch-Yaw a la Sesión 2. Esta clase se concentra de forma exclusiva en la dualidad de la matriz en $SO(3)$ (operador vs proyector) para asentar las bases algebraicas antes de abordar el \textit{Gimbal Lock}.
+\end{tcolorbox}
+
+\newpage
+% =======================================================
+% INSUMO 3: GUÍA DE TRABAJO PRÁCTICO
+% =======================================================
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{UNIVERSIDAD CAT\'OLICA BOLIVIANA ``SAN PABLO''}}\\
+    \large\textbf{SEDE TARIJA}\\
+    \vspace{0.2cm}
+    \normalsize Departamento de Ciencias Exactas e Ingenierías | Carrera de Ingeniería Mecatrónica\\
+    Asignatura: Robótica (IMT-342) | Gestión: II-2026
+\end{center}
+
+\vspace{0.4cm}
+\begin{center}
+    \Large\textbf{Hoja de Trabajo Práctico Nº 1}\\
+    \large\textit{Geometría de Rotación, Dualidad de $SO(3)$ y Composición}
+\end{center}
+\vspace{0.4cm}
+
+\section{Principios Obligatorios de la Práctica (CDIO)}
+\begin{itemize}[label=\textcolor{ucbblue}{$\blacktriangleright$}, leftmargin=*]
+    \item \textbf{Fundamentación Teórica:} Demostración matemática manuscrita paso a paso.
+    \item \textbf{Implementación:} Script modular en Python utilizando \texttt{NumPy}.
+    \item \textbf{Validación:} Verificación numérica de la isometría ($\left\|p'\right\| = \left\|p\right\|$) y ortogonalidad ($R^T R = I$).
+    \item \textbf{Evidencia:} Jupyter Notebook entregado en el repositorio Git del equipo.
+\end{itemize}
+
+\section{Ejercicios de Desarrollo Obligatorio}
+
+\subsection*{Ejercicio 1: Análisis de la Dualidad Activa vs. Pasiva (Teoría)}
+Dado el vector $p = [1, 2, 0]^T$ y la matriz de rotación canónica $R_z(90^\circ)$:
+\begin{itemize}
+    \item \textbf{Caso A (Transformación Activa):} Calcule $p' = R_z(90^\circ) \cdot p$. Grafique en papel milimetrado el vector original $p$ y el vector resultante $p'$ dentro del \textit{mismo} sistema de referencia $\{A\}$.
+    \item \textbf{Caso B (Transformación Pasiva):} Suponga que $p$ representa las coordenadas de un punto respecto a un marco móvil $\{B\}$ ($p_B = [1, 2, 0]^T$). Si el marco $\{B\}$ está rotado $90^\circ$ respecto al fijo $\{A\}$ alrededor de $Z_A$, calcule $p_A = {}^{A}R_B \cdot p_B$. Grafique los dos marcos de referencia $\{A\}$ y $\{B\}$ y demuestre geométricamente por qué $p_A$ describe el mismo punto físico.
+\end{itemize}
+
+\subsection*{Ejercicio 2: Composición de Rotaciones (Ejes Fijos vs. Móviles)}
+Un marco de referencia móvil $\{B\}$, inicialmente alineado con el marco fijo $\{A\}$, realiza la siguiente secuencia de movimientos:
+\begin{enumerate}
+    \item Gira $45^\circ$ alrededor del eje $X_A$ \textbf{fijo}.
+    \item Gira $90^\circ$ alrededor del eje $Z_B$ \textbf{móvil}.
+    \item Gira $-45^\circ$ alrededor del eje $Y_A$ \textbf{fijo}.
+\end{enumerate}
+\textbf{Tarea:} Obtenga analíticamente la matriz de rotación final $^{A}R_B$. Escriba la ecuación de multiplicación indicando explícitamente cuáles términos se pre-multiplican y cuáles se post-multiplican.
+
+\subsection*{Ejercicio 3: Implementación y Validación en Python (NumPy)}
+Escriba un Jupyter Notebook en Ubuntu que:
+\begin{enumerate}
+    \item Defina las funciones \texttt{rot\_x(deg)}, \texttt{rot\_y(deg)} y \texttt{rot\_z(deg)}.
+    \item Calcule numéricamente la matriz $^{A}R_B$ del Ejercicio 2.
+    \item Compruebe mediante la norma de Frobenius que $\left\| R^T R - I \right\|_F < 10^{-15}$.
+    \item Tome un vector $p_B = [2, -1, 4]^T$, compute $p_A = {}^{A}R_B \cdot p_B$ y demuestre por código que $\left\| p_A \right\| - \left\| p_B \right\| = 0$.
+\end{enumerate}
+
+\section{Criterios de Evaluación y Entrega}
+\begin{itemize}
+    \item \textbf{Entregable:} Jupyter Notebook en la rama \texttt{feature/tp1-rotation} del repositorio.
+    \item \textbf{Fecha Límite:} Jueves 13 de Agosto, 16:00 h.
+\end{itemize}
+
+\vspace{0.2cm}
+\noindent\textbf{Rúbrica de Evaluación (Alineamiento ABET/CDIO):}
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{@{} l c @{}}
+    \toprule
+    \textbf{Criterio de Evaluación} & \textbf{Ponderación} \\ \midrule
+    Demostración Teórica Manuscrita \textbf{(ABET SO-1)} & 40\% \\
+    Código en Python y Modularidad \textbf{(CDIO)} & 40\% \\
+    Validación del Error Numérico e Isometría \textbf{(ABET SO-6)} & 20\% \\ \bottomrule
+    \end{tabular}
+\end{table}
+
+\end{document}

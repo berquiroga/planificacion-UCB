@@ -1,0 +1,204 @@
+\documentclass[aspectratio=169]{beamer}
+
+% Configuración del tema y colores
+\usetheme{Madrid}
+\usecolortheme{default}
+
+% Definición del color institucional UCB
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+% Ajuste maestro de colores para Beamer (Soluciona el problema del título)
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue} % Texto blanco sobre fondo azul
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+
+% Paquetes estándar
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, backgrounds}
+\usepackage{listings}
+
+% Configuración de código para Beamer
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\scriptsize,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!50!black},
+    stringstyle=\color{red},
+    showstringspaces=false,
+    frame=single,
+    backgroundcolor=\color{gray!10},
+    rulecolor=\color{gray!40},
+}
+
+% Información del documento
+\title[Dualidad de SO(3)]{Definición Matemática de la Orientación en $\mathbb{R}^3$}
+\subtitle{Robótica Industrial (IMT-342) — Universidad Católica Boliviana Tarija}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\date{Martes 11 de Agosto de 2026}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% Diapositiva 1
+\begin{frame}{Orientación Espacial y el Grupo $SO(3)$}
+    \begin{columns}
+        \begin{column}{0.65\textwidth}
+            \textbf{Ecuación Central:}
+            \begin{equation*}
+                ^{A}R_B = \begin{bmatrix} ^{A}\hat{x}_B & ^{A}\hat{y}_B & ^{A}\hat{z}_B \end{bmatrix} = \begin{bmatrix} 
+                \hat{x}_B \cdot \hat{x}_A & \hat{y}_B \cdot \hat{x}_A & \hat{z}_B \cdot \hat{x}_A \\ 
+                \hat{x}_B \cdot \hat{y}_A & \hat{y}_B \cdot \hat{y}_A & \hat{z}_B \cdot \hat{y}_A \\ 
+                \hat{x}_B \cdot \hat{z}_A & \hat{y}_B \cdot \hat{z}_A & \hat{z}_B \cdot \hat{z}_A 
+                \end{bmatrix}
+            \end{equation*}
+            \vspace{0.2cm}
+            
+            \begin{block}{Concepto Clave}
+                $^{A}R_B \in SO(3)$ es una matriz de $3 \times 3$ cuya columna $i$ representa la \textbf{proyección del eje unitario} del marco móvil $\{B\}$ sobre los ejes del marco fijo $\{A\}$.
+            \end{block}
+        \end{column}
+        \begin{column}{0.35\textwidth}
+            \centering
+            \begin{tikzpicture}[scale=1.5,
+                axis/.style={thick, ->, >=stealth},
+                axis A/.style={axis, black},
+                axis B/.style={axis, ucbblue}
+            ]
+                \draw[axis A] (0,0,0) -- (1.5,0,0) node[anchor=north]{$\hat{x}_A$};
+                \draw[axis A] (0,0,0) -- (0,1.5,0) node[anchor=south]{$\hat{y}_A$};
+                \draw[axis A] (0,0,0) -- (0,0,1.5) node[anchor=south]{$\hat{z}_A$};
+                \node at (-0.75,-0.1) {$\{A\}$};
+                
+                \begin{scope}[rotate around z=30, rotate around y=20]
+                    \draw[axis B] (0,0,0) -- (1.5,0,0) node[anchor=north]{$\hat{x}_B$};
+                    \draw[axis B] (0,0,0) -- (0,1.5,0) node[anchor=south]{$\hat{y}_B$};
+                    \draw[axis B] (0,0,0) -- (0,0,1.5) node[anchor=west]{$\hat{z}_B$};
+                    \node[text=ucbblue] at (1.7,0.3,0.8) {$\{B\}$};
+                \end{scope}
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Diapositiva 2
+\begin{frame}{Las Dos Interpretaciones de $R \in SO(3)$}
+    \begin{columns}[t]
+        \begin{column}{0.48\textwidth}
+            \begin{exampleblock}{\centering 1. Transformación Activa\\ (Operador Vectorial)}
+                \begin{center}
+                    \Large $p' = R \cdot p$
+                \end{center}
+                \vspace{0.2cm}
+                \small Mueve un vector $p$ físico a una nueva posición $p'$ dentro del \textbf{mismo} sistema de referencia inercial $\{A\}$.
+            \end{exampleblock}
+        \end{column}
+        
+        \begin{column}{0.48\textwidth}
+            \begin{block}{\centering 2. Transformación Pasiva\\ (Cambio de Marco)}
+                \begin{center}
+                    \Large $p_A = {}^{A}R_B \cdot p_B$
+                \end{center}
+                \vspace{0.2cm}
+                \small Expresa un punto estático $p$ (con coordenadas locales $p_B$) en las coordenadas del sistema de referencia base $\{A\}$.
+            \end{block}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.5cm}
+    \begin{center}
+        \textit{\textbf{Pregunta de Reflexión:} "Si un motor del robot gira $30^\circ$, ¿estamos aplicando una rotación activa al eslabón o una transformación pasiva al sistema de coordenadas de la herramienta?"}
+    \end{center}
+\end{frame}
+
+% Diapositiva 3
+\begin{frame}{Rotaciones Elementales sobre los Ejes Principales}
+    \textbf{Ecuaciones Canónicas:}
+    \vspace{0.1cm}
+    \small
+    \begin{equation*}
+        R_x(\theta) = \begin{bmatrix} 1 & 0 & 0 \\ 0 & \cos\theta & -\sin\theta \\ 0 & \sin\theta & \cos\theta \end{bmatrix}, \quad
+        R_y(\theta) = \begin{bmatrix} \cos\theta & 0 & \sin\theta \\ 0 & 1 & 0 \\ -\sin\theta & 0 & \cos\theta \end{bmatrix}, \quad
+        R_z(\theta) = \begin{bmatrix} \cos\theta & -\sin\theta & 0 \\ \sin\theta & \cos\theta & 0 \\ 0 & 0 & 1 \end{bmatrix}
+    \end{equation*}
+    
+    \vspace{0.3cm}
+    \normalsize
+    \textbf{Demostración de Ortogonalidad:}
+    \begin{equation*}
+        R^T R = I \implies R^{-1} = R^T \quad \text{y} \quad \det(R) = +1
+    \end{equation*}
+    
+    \vspace{0.3cm}
+    \begin{alertblock}{Propiedad Isométrica}
+        La matriz conserva la longitud de los vectores (no deforma el espacio): \\ 
+        \centerline{$\left\| R \cdot p \right\| = \left\| p \right\|$}
+    \end{alertblock}
+\end{frame}
+
+% Diapositiva 4
+\begin{frame}{Reglas de Multiplicación: Ejes Fijos vs. Ejes Móviles}
+    \begin{center}
+    \begin{tikzpicture}[
+        node distance=1.5cm and 1cm,
+        box/.style={rectangle, draw=ucbblue, thick, fill=ucbblue!10, text width=4cm, align=center, rounded corners, minimum height=1cm},
+        root/.style={rectangle, draw=black, thick, fill=gray!20, text width=6cm, align=center, minimum height=0.8cm, font=\bfseries},
+        arrow/.style={-{Stealth}, thick}
+    ]
+        % Nodos
+        \node[root] (q) {¿Respecto a qué eje se realiza el giro?};
+        
+        \node[box, below left=1.2cm and -0.5cm of q] (fijo) {\textbf{Ejes Fijos} \\ de la Base $\{A\}$};
+        \node[box, below right=1.2cm and -0.5cm of q] (movil) {\textbf{Ejes Móviles} \\ del Cuerpo $\{B\}$};
+        
+        \node[align=center, below=0.6cm of fijo] (pre) {\textbf{Pre-multiplicación}\\(IZQUIERDA)\\$R_{\text{total}} = R_{\text{nueva}} \cdot R_{\text{anterior}}$};
+        \node[align=center, below=0.6cm of movil] (post) {\textbf{Post-multiplicación}\\(DERECHA)\\$R_{\text{total}} = R_{\text{anterior}} \cdot R_{\text{nueva}}$};
+        
+        % Conectores
+        \draw[arrow] (q.south) -- (fijo.north);
+        \draw[arrow] (q.south) -- (movil.north);
+        \draw[arrow] (fijo.south) -- (pre.north);
+        \draw[arrow] (movil.south) -- (post.north);
+    \end{tikzpicture}
+    \end{center}
+    
+    \vspace{0.2cm}
+    \small \textbf{Justificación:} Moverse respecto a ejes fijos opera sobre la base inercial; moverse respecto a ejes locales encadena la cinemática de los eslabones anteriores.
+\end{frame}
+
+% Diapositiva 5
+\begin{frame}[fragile]{Implementación Numérica y Verificación Isométrica}
+\begin{lstlisting}
+import numpy as np
+
+# Angulo de 45 grados en radianes
+theta = np.radians(45)
+R_z = np.array([
+    [np.cos(theta), -np.sin(theta), 0],
+    [np.sin(theta),  np.cos(theta), 0],
+    [0,              0,             1]
+])
+
+# Vector original p en el marco B
+p_B = np.array([1.0, 2.0, 3.0])
+
+# 1. Transformacion Pasiva: Cambio de base de B a A
+p_A = np.dot(R_z, p_B)
+
+# 2. Verificacion de Isometria (Preservacion de Norma)
+print("Norma (p_B):", np.linalg.norm(p_B))
+print("Norma transformada (p_A):", np.linalg.norm(p_A))
+print("Ortogonal? (R^T*R==I):", np.allclose(np.dot(R_z.T, R_z), np.eye(3)))
+\end{lstlisting}
+\end{frame}
+
+\end{document}
