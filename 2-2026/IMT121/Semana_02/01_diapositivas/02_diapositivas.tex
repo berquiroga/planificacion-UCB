@@ -1,0 +1,221 @@
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+% --- Paquetes Fundamentales ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{microtype}
+
+% --- Matemáticas y Electrónica ---
+\usepackage{siunitx}
+\usepackage[american, RPvoltages]{circuitikz}
+
+% --- Código Fuente ---
+\usepackage{listings}
+\usepackage{xcolor}
+
+% --- Configuración de siunitx ---
+\sisetup{output-decimal-marker = {,}, per-mode = symbol}
+
+% --- Diseño Beamer ---
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\usetheme{Boadilla}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize items}[circle]
+\setbeamercolor{title}{bg=ucbblue, fg=white}
+\setbeamercolor{frametitle}{bg=ucbblue, fg=white}
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\scriptsize,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!50!black}\itshape,
+    stringstyle=\color{purple},
+    frame=single, backgroundcolor=\color{gray!5},
+    breaklines=true, showstringspaces=false
+}
+
+% --- Metadatos ---
+\title[Transformación $\Delta \leftrightarrow Y$]{Transformación Delta-Estrella ($\Delta \leftrightarrow Y$)}
+\subtitle{Simplificación de Puentes de Medición (Wheatstone)}
+\author[M.Sc. Ing. B. Quiroga]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{IMT-121 Circuitos Electrónicos I | UCB Sede Tarija}
+\date{Sesión 04}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% ==========================================
+% SLIDE 2: Problematización
+% ==========================================
+\begin{frame}{El Colapso de las Reglas Serie/Paralelo}
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            \begin{center}
+                \begin{circuitikz}[scale=0.85, transform shape]
+                    \draw (2,4) node[above]{Nodo A}
+                          to[R, l_=$R_1$] (0,2) node[left]{Nodo C}
+                          to[R, l_=$R_3$] (2,0) node[below]{Nodo B}
+                          to[R, l=$R_4$] (4,2) node[right]{Nodo D}
+                          to[R, l=$R_2$] (2,4);
+                    \draw (0,2) to[R, l=$R_5$ (Puente)] (4,2);
+                \end{circuitikz}
+            \end{center}
+        \end{column}
+        \begin{column}{0.6\textwidth}
+            \textbf{El Puente de Medición (Wheatstone)}
+            \begin{itemize}
+                \item Utilizado en \textbf{Celdas de Carga} (Mecatrónica) y \textbf{Electrodos de Bioimpedancia} (Biomédica).
+                \item ¿Cómo hallamos la resistencia equivalente $R_{th}$ entre A y B?
+                \item $R_1$ y $R_2$ \textbf{no} están en serie (hay bifurcación en A).
+                \item \textbf{Tampoco} están en paralelo.
+            \end{itemize}
+            
+            \vspace{0.3cm}
+            \begin{alertblock}{La Herramienta de Destrabado}
+                Transformar la malla superior ($R_1, R_2, R_5$) de su configuración topológica Delta ($\Delta$) a una configuración Estrella ($Y$).
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ==========================================
+% SLIDE 3: Fórmulas
+% ==========================================
+\begin{frame}{Reglas Mnemotécnicas Canónicas ($\Delta \leftrightarrow Y$)}
+    \begin{center}
+        \begin{circuitikz}[scale=0.7, transform shape]
+            % Delta
+            \draw (0,0) node[below left]{$b$} to[R, l=$R_{bc}$] (4,0) node[below right]{$c$};
+            \draw (0,0) to[R, l=$R_{ab}$] (2,3.46) node[above]{$a$};
+            \draw (2,3.46) to[R, l=$R_{ca}$] (4,0);
+            % Arrow
+            \draw[thick, <->] (4.5,1.73) -- (6.5,1.73);
+            % Wye
+            \draw (9,1.15) node[below right]{$N$} to[R, l=$R_a$] (9,3.46) node[above]{$a$};
+            \draw (7,0) node[below left]{$b$} to[R, l=$R_b$] (9,1.15);
+            \draw (11,0) node[below right]{$c$} to[R, l=$R_c$] (9,1.15);
+        \end{circuitikz}
+    \end{center}
+    
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \textbf{Delta a Estrella ($\Delta \to Y$)}\\
+            \textit{Producto adyacentes / Suma total $\Delta$}
+            $$R_a = \frac{R_{ab} \cdot R_{ca}}{R_{ab} + R_{bc} + R_{ca}}$$
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Estrella a Delta ($Y \to \Delta$)}\\
+            \textit{Suma productos cruzados / R opuesta $Y$}
+            $$R_{ab} = \frac{R_a R_b + R_b R_c + R_c R_a}{R_c}$$
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ==========================================
+% SLIDE 4: NUEVO - Ejemplo Integrador
+% ==========================================
+\begin{frame}{Ejemplo Integrador: Puente Desequilibrado}
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            \begin{center}
+                \begin{circuitikz}[scale=0.75, transform shape]
+                    \draw (2,4) node[above]{A}
+                          to[R, l_=$R_1 {=} \qty{100}{\ohm}$] (0,2) node[left]{C}
+                          to[R, l_=$R_3 {=} \qty{300}{\ohm}$] (2,0) node[below]{B}
+                          to[R, l=$R_4 {=} \qty{400}{\ohm}$] (4,2) node[right]{D}
+                          to[R, l=$R_2 {=} \qty{200}{\ohm}$] (2,4);
+                    \draw (0,2) to[R, l=$R_5 {=} \qty{250}{\ohm}$] (4,2);
+                \end{circuitikz}
+            \end{center}
+        \end{column}
+        \begin{column}{0.6\textwidth}
+            \small
+            \textbf{Paso 1: Identificamos la Delta Superior ($A,C,D$)} \\
+            $R_\Sigma = R_1 + R_2 + R_5 = 100 + 200 + 250 = \mathbf{\qty{550}{\ohm}}$
+            
+            \vspace{0.2cm}
+            \textbf{Paso 2: Conversión a Estrella ($Y$)} \\
+            $R_a = \frac{100 \cdot 200}{550} = \mathbf{\qty{36.36}{\ohm}}$ \\
+            $R_c = \frac{100 \cdot 250}{550} = \mathbf{\qty{45.45}{\ohm}}$ \\
+            $R_d = \frac{200 \cdot 250}{550} = \mathbf{\qty{90.91}{\ohm}}$
+            
+            \vspace{0.2cm}
+            \textbf{Paso 3: Reducción Serie / Paralelo Final} \\
+            Rama Izquierda: $R_{\text{r1}} = R_c + R_3 = \qty{345.45}{\ohm}$ \\
+            Rama Derecha: $R_{\text{r2}} = R_d + R_4 = \qty{490.91}{\ohm}$ \\
+            
+            \vspace{0.1cm}
+            $R_{\text{eq}} = R_a + (R_{\text{r1}} \parallel R_{\text{r2}}) = 36.36 + 202.77 = \mathbf{\qty{239.13}{\ohm}}$
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ==========================================
+% SLIDE 5: Live Coding Python
+% ==========================================
+\begin{frame}[fragile]{Live-Coding: Automatizando $\Delta \to Y$ en Python}
+\begin{lstlisting}
+import numpy as np
+
+def delta_to_wye(R12, R23, R31):
+    """ Convierte una red Delta (R12, R23, R31) a Estrella (R1, R2, R3). """
+    R_sum = R12 + R23 + R31
+    R1 = (R12 * R31) / R_sum
+    R2 = (R12 * R23) / R_sum
+    R3 = (R23 * R31) / R_sum
+    return R1, R2, R3
+
+# Parametros del Puente Desequilibrado
+R1, R2, R3, R4, R5 = 100.0, 200.0, 300.0, 400.0, 250.0
+
+# 1. Conversion de la Delta superior (R1, R2, R5)
+Ra, Rc, Rd = delta_to_wye(R1, R5, R2)
+
+# 2. Reduccion de ramas a Resistencia Equivalente Total
+R_paralelo = ((Rc + R3) * (Rd + R4)) / ((Rc + R3) + (Rd + R4))
+Req = Ra + R_paralelo
+
+print(f"Resistencia Ra: {Ra:.2f} Ohms, Rc: {Rc:.2f} Ohms, Rd: {Rd:.2f} Ohms")
+print(f"Resistencia Equivalente Total (Req): {Req:.2f} Ohms")
+\end{lstlisting}
+\end{frame}
+
+% ==========================================
+% SLIDE 6: Trabajo en Aula (De Banco de Ejercicios)
+% ==========================================
+\begin{frame}{Trabajo Activo en Aula (Ejercicio A1)}
+    \begin{columns}
+        \begin{column}{0.45\textwidth}
+            \begin{center}
+                \begin{circuitikz}[scale=0.8, transform shape]
+                    \draw (0,0) to[V, v=$V_s$, a=\qty{12}{\volt}] (0,3) 
+                          to[R, l=$R_1$, a=\qty{150}{\ohm}] (3,3) 
+                          to[R, l=$R_2$, a=\qty{330}{\ohm}] (3,0);
+                    \draw (3,3) to[R, l=$R_3$, a=\qty{220}{\ohm}] (6,3)
+                          to[R, l=$R_L$, a=\qty{100}{\ohm}] (6,0);
+                    \draw (0,0) -- (6,0);
+                    \draw (3,0) node[ground]{};
+                \end{circuitikz}
+            \end{center}
+        \end{column}
+        \begin{column}{0.55\textwidth}
+            \textbf{Formulación Matricial por Inspección}
+            \begin{enumerate}
+                \item Plantee por \textbf{inspección directa} el sistema canónico $\mathbf{R}\mathbf{I} = \mathbf{V}$ de $2\times 2$.
+                \item Calcule las corrientes de lazo $I_1$ e $I_2$ usando la \textbf{Regla de Cramer}.
+                \item Determine el voltaje sobre la carga $V_{RL}$ y la potencia disipada $P_{RL}$.
+            \end{enumerate}
+            
+            \vspace{0.4cm}
+            \textit{Tip: Recuerden que las resistencias compartidas entre mallas van con signo negativo en la diagonal secundaria.}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\end{document}

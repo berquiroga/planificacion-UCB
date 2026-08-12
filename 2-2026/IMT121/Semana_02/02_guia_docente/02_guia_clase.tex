@@ -1,0 +1,245 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- Paquetes Fundamentales ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[margin=2.5cm, headheight=15pt]{geometry}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage[colorlinks=true, linkcolor=ucbblue, urlcolor=ucbblue]{hyperref}
+
+% --- Matemáticas y Electrónica ---
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage[american, RPvoltages]{circuitikz}
+
+% --- Elementos de Diseño Pedagógico y Código ---
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+\usepackage{listings}
+
+% --- Configuración de Colores y siunitx ---
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\sisetup{
+    output-decimal-marker = {,},
+    per-mode = symbol,
+    inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+% --- Macros y Estilos ---
+\tcbset{
+    caja_teoria/.style={colback=blue!3, colframe=ucbblue, fonttitle=\bfseries, boxrule=0.8pt, arc=3pt},
+    caja_solucion/.style={colback=green!5, colframe=green!50!black, fonttitle=\bfseries, boxrule=0.8pt, arc=3pt}
+}
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{codegreen}\itshape,
+    stringstyle=\color{codepurple},
+    numbers=left, numberstyle=\tiny\color{gray},
+    frame=single, backgroundcolor=\color{gray!5},
+    breaklines=true, showstringspaces=false
+}
+
+% --- Estilo de Página ---
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textcolor{ucbblue}{\textbf{IMT-121 | Guía y Banco de Ejercicios}}}
+\rhead{\textbf{Sesión 04 -- Semana 2}}
+\cfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{ucbblue}\leaders\hrule height \headrulewidth\hfill}}
+
+\begin{document}
+
+\begin{center}
+    \vspace*{0.2cm}
+    {\LARGE \textbf{Plan de Clase: Sesión 04}} \\[0.2cm]
+    {\Large \textit{Transformación $\Delta \leftrightarrow Y$, Puentes de Medición y Banco de Ejercicios}} \\[0.5cm]
+    \normalsize
+    \textbf{Docente:} M.Sc. Ing. Bernardo Quiroga Turdera \hspace{1cm} \textbf{Fecha:} 12 de Agosto de 2026
+    \vspace{0.4cm}
+\end{center}
+
+\hrule
+\vspace{0.4cm}
+
+\section*{I. Problematización: El Colapso de Serie/Paralelo}
+En puentes de medición (como el Puente de Wheatstone para celdas de carga o electrodos), las reglas básicas de agrupación fallan. 
+\begin{center}
+    \begin{circuitikz}[scale=0.8, transform shape]
+        \draw (2,4) node[above]{Nodo A}
+              to[R, l_=$R_1$] (0,2) node[left]{Nodo C}
+              to[R, l_=$R_3$] (2,0) node[below]{Nodo B}
+              to[R, l=$R_4$] (4,2) node[right]{Nodo D}
+              to[R, l=$R_2$] (2,4);
+        \draw (0,2) to[R, l=$R_5$ (Puente)] (4,2);
+    \end{circuitikz}
+\end{center}
+\textit{Pregunta de Ingeniería:} ¿Cómo hallamos la resistencia equivalente entre A y B? $R_1$ y $R_2$ no están ni en serie (hay bifurcación en A hacia $R_5$) ni en paralelo. \textbf{Solución:} Transformación Delta-Estrella ($\Delta \leftrightarrow Y$).
+
+\section*{II. Fundamentación Matemática ($\Delta \leftrightarrow Y$)}
+\begin{center}
+    \begin{circuitikz}[scale=0.7, transform shape]
+        % Delta
+        \draw (0,0) node[below left]{$b$} to[R, l=$R_{bc}$] (4,0) node[below right]{$c$};
+        \draw (0,0) to[R, l=$R_{ab}$] (2,3.46) node[above]{$a$};
+        \draw (2,3.46) to[R, l=$R_{ca}$] (4,0);
+        % Arrow
+        \draw[thick, ->] (5,1.73) -- (6,1.73) node[midway, above]{Equivalencia};
+        % Wye
+        \draw (9,1.15) node[below right]{$N$} to[R, l=$R_a$] (9,3.46) node[above]{$a$};
+        \draw (7,0) node[below left]{$b$} to[R, l=$R_b$] (9,1.15);
+        \draw (11,0) node[below right]{$c$} to[R, l=$R_c$] (9,1.15);
+    \end{circuitikz}
+\end{center}
+
+\begin{tcolorbox}[caja_teoria, title=Reglas Mnemotécnicas Canónicas]
+\textbf{Delta a Estrella ($\Delta \to Y$):} Producto de adyacentes sobre la suma total de la Delta.\\
+$R_a = \frac{R_{ab} \cdot R_{ca}}{R_{ab} + R_{bc} + R_{ca}} \quad \quad R_b = \frac{R_{ab} \cdot R_{bc}}{R_{ab} + R_{bc} + R_{ca}} \quad \quad R_c = \frac{R_{bc} \cdot R_{ca}}{R_{ab} + R_{bc} + R_{ca}}$
+
+\vspace{0.2cm}
+\textbf{Estrella a Delta ($Y \to \Delta$):} Suma de productos cruzados sobre la resistencia opuesta en Estrella.\\
+$R_{ab} = \frac{R_a R_b + R_b R_c + R_c R_a}{R_c} \quad R_{bc} = \frac{R_a R_b + R_b R_c + R_c R_a}{R_a} \quad R_{ca} = \frac{R_a R_b + R_b R_c + R_c R_a}{R_b}$
+\end{tcolorbox}
+
+\section*{III. Ejemplo Integrador: Puente Desequilibrado}
+Dado un puente con $R_1 = \qty{100}{\ohm}$, $R_2 = \qty{200}{\ohm}$, $R_3 = \qty{300}{\ohm}$, $R_4 = \qty{400}{\ohm}$ y $R_5 = \qty{250}{\ohm}$, alimentado por $V_s = \qty{12}{\volt}$. \\
+\textbf{1. Delta Superior ($R_1, R_2, R_5$):} $R_\Sigma = 100 + 200 + 250 = \qty{550}{\ohm}$. \\
+\textbf{2. Conversión a Estrella:}
+$R_a = \frac{100 \cdot 200}{550} = \qty{36.36}{\ohm}$, $R_c = \frac{100 \cdot 250}{550} = \qty{45.45}{\ohm}$, $R_d = \frac{200 \cdot 250}{550} = \qty{90.91}{\ohm}$. \\
+\textbf{3. Reducción Serie/Paralelo:}
+$R_{\text{rama1}} = 45.45 + 300 = \qty{345.45}{\ohm}$; \quad $R_{\text{rama2}} = 90.91 + 400 = \qty{490.91}{\ohm}$. \\
+$R_{\text{paralelo}} = 345.45 \parallel 490.91 = \qty{202.77}{\ohm}$. \quad \textbf{$R_{\text{eq}} = 36.36 + 202.77 = \mathbf{\qty{239.13}{\ohm}}$.} \\
+\textbf{4. Corriente Total:} $I_t = 12 / 239.13 = \mathbf{\qty{50.18}{\milli\ampere}}$.
+
+\newpage
+% =========================================================
+% BANCO DE EJERCICIOS COMPLETO CON DIAGRAMAS
+% =========================================================
+\begin{center}
+    {\LARGE \textbf{Banco de Ejercicios: Análisis de Mallas y $R_{th}$}}
+\end{center}
+\vspace{0.3cm}
+
+\subsection*{Bloque A: Ejercicios Guiados para Trabajo Activo en Aula (30 min)}
+
+\textbf{Ejercicio A1: Formulación $2\times 2$ por Inspección y Potencia Nodal} \\
+\textit{Contexto:} Red de atenuación pasiva para adaptar los niveles de voltaje de una señal analógica.
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape]
+        \draw (0,0) to[V, v=$V_s$, a=\qty{12}{\volt}] (0,3) 
+              to[R, l=$R_1$, a=\qty{150}{\ohm}] (3,3) 
+              to[R, l=$R_2$, a=\qty{330}{\ohm}] (3,0);
+        \draw (3,3) to[R, l=$R_3$, a=\qty{220}{\ohm}] (6,3)
+              to[R, l=$R_L$, a=\qty{100}{\ohm}] (6,0);
+        \draw (0,0) -- (6,0);
+        \draw (3,0) node[ground]{};
+    \end{circuitikz}
+\end{center}
+\textit{Consigna:} 1) Plantee la matriz $\mathbf{R}\mathbf{I}=\mathbf{V}$. 2) Calcule $I_1, I_2$ por Regla de Cramer. 3) Halle $V_{RL}$ y $P_{RL}$.
+\begin{tcolorbox}[caja_solucion, title=Solución Docente A1]
+$\begin{bmatrix} 480 & -330 \\ -330 & 650 \end{bmatrix} \begin{bmatrix} I_1 \\ I_2 \end{bmatrix} = \begin{bmatrix} 12 \\ 0 \end{bmatrix}$. $I_1 = \qty{38.40}{\milli\ampere}, I_2 = \qty{19.50}{\milli\ampere}$. $V_{RL} = \qty{1.95}{\volt}$, $P_{RL} = \qty{38.025}{\milli\watt}$.
+\end{tcolorbox}
+
+\vspace{0.4cm}
+
+\textbf{Ejercicio A2: Obtención de $R_{th}$ mediante el Método $V_{oc} / I_{sc}$} \\
+\textit{Contexto:} Caracterización de la "Caja Negra" de una etapa de polarización desde los terminales $A-B$.
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape]
+        \draw (0,0) to[V, v=$V_s$, a=\qty{24}{\volt}] (0,3) 
+              to[R, l=$R_1$, a=\qty{100}{\ohm}] (3,3) 
+              to[R, l=$R_2$, a=\qty{200}{\ohm}] (3,0) -- (0,0);
+        % CORRECCIÓN: Nodos colocados limpiamente al final de las líneas
+        \draw (3,3) to[R, l=$R_3$, a=\qty{150}{\ohm}] (6,3) to[short,-o] (6.5,3) node[right]{Term. A};
+        \draw (3,0) -- (6,0) to[short,-o] (6.5,0) node[right]{Term. B};
+    \end{circuitikz}
+\end{center}
+\textit{Consigna:} Halle el voltaje en circuito abierto $V_{oc}$ y la corriente en cortocircuito $I_{sc}$ usando mallas. Verifique que $R_{th} = V_{oc}/I_{sc}$ coincide con la reducción apagando fuentes.
+\begin{tcolorbox}[caja_solucion, title=Solución Docente A2]
+$V_{oc} = \qty{16.0}{\volt}$. Para $I_{sc}$ se cierra la malla 2: $\begin{bmatrix} 300 & -200 \\ -200 & 350 \end{bmatrix}$. Resultando en $I_{sc} = \qty{73.846}{\milli\ampere}$. \\ $R_{th} = 16 / 0.0738 = \qty{216.67}{\ohm}$. Verificación por reducción: $150 + (100 \parallel 200) = \qty{216.67}{\ohm}$.
+\end{tcolorbox}
+
+\newpage
+\subsection*{Bloque B: Banco de Ejercicios para Casa (Tarea Individual / Tríadas)}
+
+\textbf{Ejercicio B1 (Nivel Básico): Análisis de Mallas en Red Dual de Fuentes}
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape]
+        \draw (0,0) to[V, v=$V_{s1}$, a=\qty{18}{\volt}] (0,3) 
+              to[R, l=$R_1$, a=\qty{120}{\ohm}] (3,3) 
+              to[R, l=$R_2$, a=\qty{180}{\ohm}] (3,0);
+        \draw (3,3) to[R, l=$R_3$, a=\qty{270}{\ohm}] (6,3)
+              to[V, v_=$V_{s2}$, a^=\qty{6}{\volt}] (6,0);
+        \draw (0,0) -- (6,0);
+        \draw (3,0) node[ground]{};
+    \end{circuitikz}
+\end{center}
+\textit{Consigna:} 1) Plantee las ecuaciones de malla en forma matricial. 2) Determine $I_1$ e $I_2$. 3) Calcule la potencia disipada en $R_2$. \\
+\textit{Respuestas (Autocontrol):} Matriz $\begin{bmatrix} 300 & -180 \\ -180 & 450 \end{bmatrix}$. $I_1 = \qty{68.57}{\milli\ampere}$, $I_2 = \qty{14.29}{\milli\ampere}$, $P_{R2} = \qty{530.3}{\milli\watt}$.
+
+\vspace{0.5cm}
+
+\textbf{Ejercicio B2 (Nivel Intermedio): Red de 3 Mallas para Acondicionamiento}
+\begin{center}
+    \begin{circuitikz}[scale=0.85, transform shape]
+        \draw (0,0) to[V, v=$V_{s1}$, a=\qty{24}{\volt}] (0,3) 
+              to[R, l=$R_1$, a=\qty{100}{\ohm}] (3,3) 
+              to[R, l=$R_2$, a=\qty{150}{\ohm}] (3,0);
+        \draw (3,3) to[R, l=$R_3$, a=\qty{200}{\ohm}] (6,3)
+              to[R, l=$R_4$, a=\qty{300}{\ohm}] (6,0);
+        \draw (6,3) to[R, l=$R_5$, a=\qty{150}{\ohm}] (9,3)
+              to[V, v_=$V_{s2}$, a^=\qty{-12}{\volt}] (9,0);
+        \draw (0,0) -- (9,0);
+        \draw (4.5,0) node[ground]{};
+    \end{circuitikz}
+\end{center}
+\textit{Consigna:} 1) Escriba la matriz canónica $\mathbf{R}$ ($3\times 3$) por inspección directa. 2) Resuelva $I_1, I_2, I_3$. 3) Encuentre el voltaje nodal en el nodo superior entre $R_3$ y $R_5$. \\
+\textit{Respuestas (Autocontrol):} $I_1 = \qty{120.44}{\milli\ampere}$, $I_2 = \qty{40.73}{\milli\ampere}$, $I_3 = \qty{53.82}{\milli\ampere}$. Voltaje Nodal $= \qty{3.927}{\volt}$.
+
+\vspace{0.5cm}
+
+\textbf{Ejercicio B3 (Nivel Avanzado / Reto PFI): $R_{th}$ en Puente de Wheatstone}
+\begin{center}
+    \begin{circuitikz}[scale=0.85, transform shape]
+        \draw (2,4) node[above]{Nodo A}
+              % CORRECCIÓN: Fusión de variable y valor para evitar solapamientos en diagonales
+              to[R, l_=$R_1 {=} \qty{100}{\ohm}$] (0,2) node[left]{Nodo C}
+              to[R, l_=$R_3 {=} \qty{300}{\ohm}$] (2,0) node[below]{Nodo B}
+              to[R, l_=$R_4 {=} \qty{400}{\ohm}$] (4,2) node[right]{Nodo D}
+              to[R, l_=$R_2 {=} \qty{200}{\ohm}$] (2,4);
+        \draw (0,2) to[R, l_=$R_5 {=} \qty{250}{\ohm}$] (4,2);
+    \end{circuitikz}
+\end{center}
+\textit{Consigna:} Conecte una fuente de prueba de $\qty{1}{\volt}$ entre los nodos $A$ y $B$. Plantee un sistema de 3 mallas para hallar la corriente total de entrada y demuestre que $R_{th} = V_{\text{prueba}} / I_{\text{prueba}}$ coincide con la transformación $\Delta \to Y$. \\
+\textit{Respuestas (Autocontrol):} $R_{th} = \qty{239.13}{\ohm}$, $I_{\text{prueba}} = \qty{4.182}{\milli\ampere}$.
+
+\vspace{0.4cm}
+\begin{lstlisting}[caption={Script de Verificación Rápida para los Estudiantes}]
+import numpy as np
+
+def resolver_mallas(R_matrix, V_vector):
+    R = np.array(R_matrix, dtype=float)
+    V = np.array(V_vector, dtype=float)
+    det_R = np.linalg.det(R)
+    if np.abs(det_R) < 1e-9:
+        raise ValueError("Error: Matriz singular.")
+    I = np.linalg.solve(R, V)
+    for idx, corr in enumerate(I): print(f"  I_{idx+1}: {corr*1000:.3f} mA")
+    return I
+
+# Ejemplo Uso B2 (3 Mallas)
+R_B2 = [[250, -150, 0], [-150, 650, -300], [0, -300, 450]]
+V_B2 = [24, 0, 12]
+I_sol = resolver_mallas(R_B2, V_B2)
+\end{lstlisting}
+
+\end{document}
