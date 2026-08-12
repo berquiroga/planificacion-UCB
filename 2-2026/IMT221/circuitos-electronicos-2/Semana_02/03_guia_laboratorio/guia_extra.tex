@@ -1,0 +1,228 @@
+\documentclass[11pt,a4paper]{article}
+
+% ======================================================================
+% CONFIGURACIÓN DEL PROYECTO Y PAQUETES
+% ======================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[margin=2.5cm, headheight=15pt]{geometry} 
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue]{hyperref}
+
+% --- Matemáticas y Electrónica ---
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage[american]{circuitikz}
+
+% --- Elementos de Diseño y Código ---
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{titlesec}
+
+% ======================================================================
+% MACROS Y ESTILOS PERSONALIZADOS
+% ======================================================================
+\sisetup{
+    output-decimal-marker = {,},
+    per-mode = symbol,
+    inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+% Colores Institucionales
+\definecolor{ucbblue}{RGB}{0,51,102}
+\definecolor{codegray}{gray}{0.95}
+
+% Cajas de Diseño
+\newtcolorbox{tiptic}[1][]{
+    colback=yellow!10!white,
+    colframe=orange!80!black,
+    fonttitle=\bfseries,
+    title=Tip Técnico Crítico en LTSpice,
+    #1
+}
+
+\newtcolorbox{justificacion}[1][]{
+    colback=blue!5!white,
+    colframe=ucbblue,
+    fonttitle=\bfseries,
+    title=Justificación Pedagógica (CDIO y F.I.V.E.),
+    #1
+}
+
+% Macros de formato
+\newcommand{\tecla}[1]{\colorbox{gray!20}{\texttt{\footnotesize\textbf{#1}}}}
+\newcommand{\spice}[1]{\texttt{\color{purple}#1}}
+
+% Configuración de Listings para SPICE
+\lstdefinelanguage{SPICE}{
+  morekeywords={.param, .step, .tran, .ac, list, param},
+  sensitive=false,
+  morecomment=[l]{*},
+  morestring=[b]",
+}
+
+\lstset{
+    language=SPICE,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!50!black}\itshape,
+    backgroundcolor=\color{codegray},
+    frame=single,
+    rulecolor=\color{gray!40},
+    breaklines=true
+}
+
+% Estilo de Títulos
+\titleformat{\section}[block]{\Large\bfseries\color{ucbblue}}{\thesection.}{0.5em}{}
+
+% ======================================================================
+% ESTILO DE PÁGINA
+% ======================================================================
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{Circuitos Electrónicos II}}
+\chead{\textcolor{gray}{Suplemento Técnico - Lab 1}}
+\rhead{Ingeniería Mecatrónica -- UCB Tarija}
+\cfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    \rule{\textwidth}{1pt}\\[0.3cm]
+    {\Large \textbf{SUPLEMENTO TÉCNICO DE LABORATORIO}}\\[0.2cm]
+    {\large \textbf{Métodos Avanzados para Simular un Termistor NTC en LTSpice}}\\[0.2cm]
+    \rule{\textwidth}{1pt}
+\end{center}
+\vspace{0.3cm}
+
+% ======================================================================
+% INTRODUCCIÓN
+% ======================================================================
+LTSpice no incluye un símbolo nativo llamado ``NTC'', pero permite modelar componentes comportamentales mediante fórmulas matemáticas, fuentes dependientes o barridos paramétricos. A continuación, se detallan tres métodos de modelado en orden de rigurosidad.
+
+% ======================================================================
+% MÉTODOS DE SIMULACIÓN
+% ======================================================================
+\section{Método 1: Resistencia Comportamental por Ecuación}
+
+En este método, la resistencia del componente se define directamente mediante la ecuación no lineal de Steinhart-Hart reducida en función de una variable de temperatura personalizada.
+
+\subsection*{1. Configuración del Componente}
+Coloque un resistor estándar (\tecla{R}) en el esquema. En lugar de asignarle un valor numérico fijo (ej. \qty{10}{\kilo\ohm}), cambie su valor haciendo clic derecho e introduzca la siguiente expresión entre llaves:
+
+\begin{center}
+    \spice{\{R0 * exp(Beta * (1/(Tc + 273.15) - 1/T0))\}}
+\end{center}
+
+\begin{tiptic}
+Evite usar la palabra \texttt{TEMP} o \texttt{T} como nombre de su variable personalizada, ya que \texttt{TEMP} es una palabra reservada en LTSpice para la temperatura global del entorno de simulación. Utilice siempre \texttt{Tc} (Temperatura en \qty{}{\celsius}).
+\end{tiptic}
+
+\subsection*{2. Directivas SPICE a incluir en el esquema}
+Presione la tecla \tecla{S} y agregue las siguientes directivas de parámetros y barrido:
+
+\begin{lstlisting}
+.param R0=10k Beta=3950 T0=298.15 Tc=25
+.step param Tc 20 60 5
+\end{lstlisting}
+
+\begin{itemize}[label=$\circ$]
+    \item \textbf{\spice{.param}:} Define los valores nominales del sensor ($R_0 = \qty{10}{\kilo\ohm}$, $\beta = \qty{3950}{\kelvin}$, $T_0 = \qty{25}{\celsius} = \qty{298.15}{\kelvin}$).
+    \item \textbf{\spice{.step param Tc}:} Le indica a LTSpice que ejecute la simulación de forma iterativa variando la temperatura $T_c$ desde \qty{20}{\celsius} hasta \qty{60}{\celsius} en pasos de \qty{5}{\celsius}.
+\end{itemize}
+
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape]
+        % Nodo In y GND
+        \draw (0,4) to[short, o-] (2,4) node[left, xshift=-2cm]{$V_{in}$ (Nodo In)};
+        \draw (0,0) to[short, o-] (2,0) node[left, xshift=-2cm]{GND};
+        
+        \draw (2,4) -- (6,4);
+        \draw (2,0) -- (6,0);
+        
+        % Rama Izquierda
+        \draw (2,4) to[R, l=$R_1$ (\qty{10}{\kilo\ohm})] (2,2) node[circle,fill,inner sep=1.5pt]{};
+        \draw (2,2) to[R, l=$R_2$ (\qty{10}{\kilo\ohm})] (2,0);
+        \node[left] at (1.8,2) {Nodo A};
+        
+        % Rama Derecha (Sensor comportamental)
+        \draw (6,4) to[R, l=$R_3$ (\qty{10}{\kilo\ohm})] (6,2) node[circle,fill,inner sep=1.5pt]{};
+        \draw (6,2) to[vR, l=$R_{NTC}$] (6,0);
+        \node[right] at (6.8,1) {\footnotesize\spice{\{R0*exp(Beta*(1/(Tc+273.15)-1/T0))\}}};
+        \node[right] at (6.2,2) {Nodo B};
+        
+        % Salida Diferencial
+        \draw (2,2) to[short, -o] (3.5,2);
+        \draw (6,2) to[short, -o] (4.5,2);
+    \end{circuitikz}
+\end{center}
+
+\vspace{0.5cm}
+\section{Método 2: Modelado Térmico Dinámico por Tensión}
+Este método es sumamente útil cuando se simula el Proyecto Final Integrador (PFI) en lazo cerrado, donde la temperatura de la cámara térmica varía dinámicamente con el tiempo debido al calor del calefactor.
+
+\begin{enumerate}
+    \item \textbf{Configuración:} Se crea un nodo eléctrico auxiliar llamado \tecla{TEMP\_NODE} donde \qty{1}{\volt} equivale a \qty{1}{\celsius}. El valor del resistor del sensor se define en función de la tensión instantánea de ese nodo:
+    \begin{center}
+        \spice{\{R0 * exp(Beta * (1/(V(TEMP\_NODE) + 273.15) - 1/T0))\}}
+    \end{center}
+    \item \textbf{Aplicación:} Si se aplica una rampa de tensión en \tecla{TEMP\_NODE} de \qty{20}{\volt} a \qty{60}{\volt} mediante una fuente \texttt{PULSE} o \texttt{PWL}, LTSpice simulará la variación continua del sensor a medida que la cámara se calienta en el tiempo durante un análisis transitorio (\spice{.tran}).
+\end{enumerate}
+
+\section{Método 3: Barrido Directo de Lista de Resistencias}
+Si los estudiantes ya calcularon previamente en su cuaderno o en Python los valores de resistencia de la NTC a diferentes temperaturas ($R_{NTC} = \qty{12.5}{\kilo\ohm}$ a \qty{20}{\celsius}, \qty{10}{\kilo\ohm} a \qty{25}{\celsius}, \qty{8.05}{\kilo\ohm} a \qty{30}{\celsius}, etc.), se puede usar un barrido directo de lista.
+
+\begin{enumerate}
+    \item Cambiar el valor del resistor en el esquema a: \spice{\{RNTC\}}.
+    \item Agregar la directiva SPICE (\tecla{S}):
+    \begin{lstlisting}
+.step param RNTC list 12.5k 10k 8.05k 6.5k 5.3k
+    \end{lstlisting}
+\end{enumerate}
+
+% ======================================================================
+% GUÍA RÁPIDA (CHEAT SHEET)
+% ======================================================================
+\newpage
+\section{Guía Paso a Paso para Estudiantes (Cheat Sheet)}
+
+\begin{enumerate}
+    \item \textbf{Colocar el Resistor del Sensor:} Presione la tecla \tecla{R}, ubique el resistor en la rama 4 del puente de Wheatstone y renómbrelo como \tecla{R\_NTC}.
+    \item \textbf{Asignar la Ecuación Matemático-Comportamental:} Haga clic derecho sobre el valor del resistor (donde dice \tecla{R}) y escriba exactamente:
+    \begin{center}
+        \spice{\{R0 * exp(Beta * (1/(Tc + 273.15) - T0))\}}
+    \end{center}
+    \item \textbf{Agregar Parámetros del Transductor:} Presione la tecla \tecla{S} (para agregar una directiva SPICE) y escriba:
+    \begin{center}
+        \spice{.param R0=10k Beta=3950 T0=298.15}
+    \end{center}
+    \item \textbf{Configurar el Barrido de Temperatura:} Agregue una segunda directiva SPICE (\tecla{S}) para variar la temperatura física:
+    \begin{center}
+        \spice{.step param Tc 20 60 5}
+    \end{center}
+    \item \textbf{Configurar la Simulación en Corriente Alterna:}
+    \begin{itemize}[label=$\bullet$]
+        \item Para ver la señal diferencial en el dominio del tiempo: \spice{.tran 0.5m}
+        \item Para ver la respuesta en frecuencia de la señal desfasada: \spice{.ac dec 100 1k 100k}
+    \end{itemize}
+\end{enumerate}
+
+\vspace{0.5cm}
+\begin{justificacion}
+\textbf{Alineación con Criterio 1 (Fundamentación Matemático-Física):} Obligar al estudiante a ingresar la ecuación $R_{NTC}(T) = R_0 e^{\beta (1/T - 1/T_0)}$ dentro de LTSpice en lugar de usar un componente de ``caja negra'' refuerza la comprensión de la física de semiconductores no lineales.\\
+
+\textbf{Alineación con Criterio 3 (Validación Teórica vs. Simulación vs. Práctica):} El estudiante obtendrá la misma curva de salida por tres vías distintas:
+\begin{enumerate}
+    \item Cálculo analítico manual / script en Python.
+    \item Curva de barrido paramétrico (\spice{.step}) en LTSpice.
+    \item Medición en osciloscopio real del circuito en protoboard.
+\end{enumerate}
+\end{justificacion}
+
+\end{document}

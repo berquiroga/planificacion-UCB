@@ -1,0 +1,798 @@
+\documentclass[10pt,a4paper,twoside]{article}
+
+% ======================================================================
+% CONFIGURACIÓN DEL PROYECTO Y PAQUETES
+% ======================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[margin=2cm, headheight=35pt]{geometry} % Márgenes optimizados
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue, citecolor=black]{hyperref}
+
+% --- Matemáticas y Electrónica ---
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage[american]{circuitikz}
+
+% --- Elementos de Diseño y Código ---
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{tabularx}
+\usepackage{titlesec} 
+\usepackage{microtype} 
+
+% ======================================================================
+% MACROS Y ESTILOS PERSONALIZADOS
+% ======================================================================
+\sisetup{
+    output-decimal-marker = {,},
+    per-mode = symbol,
+    inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+% --- Estilos Visuales ---
+\definecolor{ucbblue}{RGB}{0,51,102}
+\definecolor{codegray}{gray}{0.95}
+
+\newtcolorbox{spicecmd}[1][]{
+    colback=gray!5!white,
+    colframe=gray!60!black,
+    fonttitle=\bfseries,
+    title=Instrucciones y Comandos SPICE,
+    #1
+}
+
+\newcommand{\tecla}[1]{\colorbox{gray!20}{\texttt{\footnotesize\textbf{#1}}}}
+\newcommand{\param}[1]{\texttt{\color{purple}#1}}
+
+\titleformat{\section}[block]{\Large\bfseries\color{ucbblue}}{\thesection.}{0.5em}{}
+\titleformat{\subsection}[block]{\large\bfseries\color{gray!80!black}}{\thesubsection}{0.5em}{}
+
+% --- Configuración de Listings para Python ---
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\scriptsize, % Reducido para encajar códigos largos
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{teal},
+    commentstyle=\color{green!50!black}\itshape,
+    backgroundcolor=\color{codegray},
+    frame=single,
+    rulecolor=\color{gray!40},
+    breaklines=true,
+    showstringspaces=false,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    numbersep=5pt
+}
+
+% ======================================================================
+% ESTILO DE PÁGINA
+% ======================================================================
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\small\textbf{Circuitos Electrónicos II}}
+\fancyhead[RE,LO]{\small Guía de Prácticas Computacionales}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+% ======================================================================
+% PORTADA DEL MANUAL
+% ======================================================================
+\begin{titlepage}
+    \centering
+    \vspace*{3cm}
+    {\huge\textbf{UNIVERSIDAD CATÓLICA BOLIVIANA}}\\[0.5cm]
+    {\LARGE\textbf{``SAN PABLO''}}\\[0.5cm]
+    {\Large\textbf{SEDE TARIJA}}\\[2cm]
+    
+    \rule{\textwidth}{1.5pt}\\[0.5cm]
+    {\Huge \textbf{MANUAL DE LABORATORIO}}\\[0.3cm]
+    {\LARGE \textbf{Circuitos Electrónicos II (IMT-221)}}\\[0.5cm]
+    \rule{\textwidth}{1.5pt}\\[2cm]
+    
+    {\Large \textbf{Análisis Analógico y Validación mediante Ecosistema Python-First}}\\[2cm]
+    
+    \begin{tabular}{ll}
+        \textbf{Docente:} & M.Sc. Ing. Bernardo Quiroga Turdera \\
+        \textbf{Carrera:} & Ingeniería Mecatrónica \\
+    \end{tabular}
+    
+    \vfill
+    {\large Tarija, Bolivia -- 2026}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% ======================================================================
+% LABORATORIO 1
+% ======================================================================
+\section{LAB 1: Caracterización Dinámica de Impedancia y Puente de Wheatstone en CA}
+
+\subsection{Configuración de Esquema e Instrucciones en LTSpice}
+\begin{spicecmd}
+\textbf{Componentes y Conexiones:}
+\begin{itemize}[itemsep=0pt]
+    \item \textbf{Fuente de alimentación ($V_1$):} Fuente de CA colocada entre el nodo de entrada y tierra. Propiedades: \param{SINE(0 1 10k)} (Amplitud pico \qty{1}{\volt}, \qty{10}{\kilo\hertz}). En \textit{AC Amplitude} colocar 1.
+    \item \textbf{Ramas fijas del puente:} $R_1 = \qty{10}{\kilo\ohm}$ ($V_{in}$ a Nodo A), $R_2 = \qty{10}{\kilo\ohm}$ (Nodo A a GND), $R_3 = \qty{10}{\kilo\ohm}$ ($V_{in}$ a Nodo B).
+    \item \textbf{Rama del sensor:} Resistor $R_{cable} = \qty{10}{\ohm}$ en serie con inductor $L_{cable} = \qty{15}{\micro\henry}$. A continuación, en serie, el paralelo de $R_{NTC}$ con el capacitor parásito $C_{para} = \qty{4.7}{\nano\farad}$.
+\end{itemize}
+\textbf{Comandos SPICE:}
+\begin{itemize}[itemsep=0pt]
+    \item Análisis temporal: \param{.tran 0.5m} (Simula \qty{500}{\micro\second}, equivalente a 5 ciclos de \qty{10}{\kilo\hertz}).
+    \item Barrido de temperatura: \param{.step param RNTC list 12.5k 10k 8.05k 6.5k 5.3k}
+    \item Medición: Graficar señal diferencial \param{V(nodeA)-V(nodeB)}.
+\end{itemize}
+\end{spicecmd}
+
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape]
+        % Fuente movida más a la izquierda para evitar solapamiento
+        \draw (-2,10) to[sV, l=$V_1$] (-2,0);
+        \draw (-2,10) -- (2.5,10) -- (7.5,10);
+        \draw (-2,0) -- (2.5,0) -- (7.5,0);
+        \draw (2.5,0) node[ground]{};
+        
+        \draw (2.5,10) to[R, l=$R_1$] (2.5,8) node[circle,fill,inner sep=1.5pt]{};
+        \draw (2.5,8) to[R, l=$R_2$] (2.5,0);
+        \node[left, align=center] at (2,6) {Nodo A};
+        
+        \draw (7.5,10) to[R, l=$R_3$] (7.5,8) node[circle,fill,inner sep=1.5pt]{};
+        \draw (7.5,8) to[L, l=$L_{cable}$, a=\qty{15}{\micro\henry}] (7.5,6) to[R, l=$R_{cable}$, a=\qty{10}{\ohm}] (7.5,4);
+        \draw (7.5,2) -- (6.5,2) to[vR, l=$R_{NTC}$] (6.5,0) -- (7.5,0);
+        \draw (7.5,2) -- (8.5,2) to[C, l=$C_{para}$, a=\qty{4.7}{\nano\farad}] (8.5,0) -- (7.5,0);
+        \node[right, align=center] at (8.5,0) {Nodo B};
+        
+        \draw (2.5,2) to[short, -o] (4.5,2) node[above]{$+$};
+        \draw (7.5,2) to[short, -o] (5.5,2) node[above]{$-$};
+        \node at (5, 2) {$V_{diff}$};
+    \end{circuitikz}
+\end{center}
+
+\subsection{Código Completo en Python (\texttt{lab1\_wheatstone\_ac.py})}
+\begin{lstlisting}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# 1. Carga de datos exportados desde el osciloscopio (CSV)
+try:
+    df = pd.read_csv("lab1_medicion_30C.csv")
+    t, v_in, v_b = df['Time'].values, df['Channel1'].values, df['Channel2'].values
+except FileNotFoundError:
+    t = np.linspace(0, 0.0005, 1000)
+    v_in = 1.0 * np.cos(2 * np.pi * 10000 * t)
+    v_b = 0.5 * np.cos(2 * np.pi * 10000 * t - np.radians(162.4))
+
+v_a = v_in / 2.0
+v_out_exp = v_a - v_b
+
+# 2. Extraccion de amplitud pico y desfase temporal
+v_out_pico_exp = np.max(v_out_exp)
+idx_pico_in = np.argmax(v_in[:200])
+idx_pico_out = np.argmax(v_out_exp[:200])
+delta_t_exp = t[idx_pico_out] - t[idx_pico_in]
+fase_grados_exp = delta_t_exp * 10000.0 * 360.0
+
+# 3. Modelo Teorico Analitico
+T_kelvin = 30.0 + 273.15
+R_0, Beta, T_0 = 10000.0, 3950.0, 298.15
+R_ntc = R_0 * np.exp(Beta * (1.0 / T_kelvin - 1.0 / T_0))
+
+omega = 2 * np.pi * 10000.0
+Z_c = 1.0 / (1j * omega * 4.7e-9)
+Z_l = 1j * omega * 15e-6
+Z_paralelo = (R_ntc * Z_c) / (R_ntc + Z_c)
+Z_sensor = 10.0 + Z_l + Z_paralelo
+
+V_out_teorico = 1.0 * (Z_sensor / (10000.0 + Z_sensor) - 0.5)
+v_out_pico_teorico = np.abs(V_out_teorico)
+fase_grados_teorica = np.angle(V_out_teorico, deg=True)
+
+# 4. Metricas de Error y Graficacion
+err_amp = np.abs(v_out_pico_exp - v_out_pico_teorico) / v_out_pico_teorico * 100.0
+err_fase = np.abs(fase_grados_exp - fase_grados_teorica) / np.abs(fase_grados_teorica) * 100.0
+
+print(f"Amplitud Teorica:  {v_out_pico_teorico:.4f} V | Exp: {v_out_pico_exp:.4f} V | Error: {err_amp:.2f}%")
+print(f"Fase Teorica:      {fase_grados_teorica:.2f} deg | Exp: {fase_grados_exp:.2f} deg | Error: {err_fase:.2f}%")
+
+plt.figure(figsize=(9, 4.5))
+plt.plot(t * 1e6, v_in, 'k--', label="$V_{in}$ Portadora (10 kHz)", alpha=0.5)
+plt.plot(t * 1e6, v_out_exp, 'r-', label="$V_{out}$ Diferencial Medida")
+plt.xlabel("Tiempo ($\mu s$)")
+plt.ylabel("Tension (V)")
+plt.title("Laboratorio 1: Respuesta Diferencial del Puente a 30 C")
+plt.grid(True)
+plt.legend()
+plt.tight_layout()
+plt.savefig("lab1_resultado.png")
+plt.show()
+\end{lstlisting}
+
+\newpage
+% ======================================================================
+% LABORATORIO 2
+% ======================================================================
+\section{LAB 2: Filtro de Muesca Pasivo (Twin-T Notch) a \qty{50}{\hertz}}
+
+\subsection{Configuración de Esquema e Instrucciones en LTSpice}
+\begin{spicecmd}
+\textbf{Componentes y Conexiones:}
+\begin{itemize}[itemsep=0pt]
+    \item \textbf{Fuente ($V_1$):} Conectada a la entrada. Propiedad: \param{AC 1}.
+    \item \textbf{Rama Superior (Paso-Bajo T):} Dos resistores $R_1 = R_2 = \qty{14.3}{\kilo\ohm}$ en serie. Entre su nodo central y GND, colocar un capacitor $C_3 = \qty{440}{\nano\farad}$ ($2C$, formado por dos de \qty{220}{\nano\farad} en paralelo).
+    \item \textbf{Rama Inferior (Paso-Alto T):} Dos capacitores $C_1 = C_2 = \qty{220}{\nano\farad}$ en serie. Entre su nodo central y GND, colocar un resistor $R_3 = \qty{7.15}{\kilo\ohm}$ ($R/2$, formado por dos de \qty{14.3}{\kilo\ohm} en paralelo).
+    \item \textbf{Carga ($R_L$):} Conectada entre la salida unificada y GND.
+\end{itemize}
+\textbf{Comandos SPICE:}
+\begin{itemize}[itemsep=0pt]
+    \item \param{.ac dec 1000 1 1k} (Barrido en frecuencia logarítmico).
+    \item \param{.step param RL list 100k 10k 1k} (Evaluación del efecto de carga).
+\end{itemize}
+\end{spicecmd}
+
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape]
+        \draw (0,2) to[sV, l=$V_1$] (0,0);
+        \draw (0,2) to[short, -*] (1,2);
+        \draw (0,0) -- (6,0) node[ground]{};
+        
+        \draw (1,2) -- (1,3) to[R, l=$R_1$] (3,3) node[circle,fill,inner sep=1.5pt]{} to[R, l=$R_2$] (5,3) -- (5,2);
+        \draw (3,3) to[C, l=$C_3$ (440n)] (3,2);
+        
+        \draw (1,2) -- (1,1) to[C, l=$C_1$] (3,1) node[circle,fill,inner sep=1.5pt]{} to[C, l=$C_2$] (5,1) -- (5,2);
+        \draw (3,1) to[R, l=$R_3$ (7.15k)] (3,0);
+        
+        \draw (5,2) to[short, -o] (6,2) node[right]{$V_{out}$};
+        \draw (5,2) to[R, l=$R_L$, *-] (5,0);
+    \end{circuitikz}
+\end{center}
+
+\subsection{Código Completo en Python (\texttt{lab2\_twin\_t\_notch.py})}
+\begin{lstlisting}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+try:
+    data = pd.read_csv("lab2_notch_experimental.csv")
+    freq, v_in, v_out = data['Freq'].values, data['Vin'].values, data['Vout'].values
+    gain_db_exp = 20 * np.log10(v_out / v_in)
+except FileNotFoundError:
+    freq = np.logspace(0.5, 2.5, 50)
+    w = 2 * np.pi * freq
+    w0 = 2 * np.pi * 50.0
+    H_s = ((1j*w)**2 + w0**2) / ((1j*w)**2 + 4*(1j*w)*w0*(1 + 14300/10000) + w0**2)
+    gain_db_exp = 20 * np.log10(np.abs(H_s)) + np.random.normal(0, 0.5, len(freq))
+
+R, C, R_L = 14300.0, 220e-9, 10000.0
+w0_teorico = 1.0 / (R * C)
+f0_teorico = w0_teorico / (2 * np.pi)
+
+f_vec = np.logspace(0, 3, 1000)
+s = 2j * np.pi * f_vec
+H_teorico_carga = (s**2 + w0_teorico**2) / (s**2 + 4 * s * w0_teorico * (1 + R / R_L) + w0_teorico**2)
+gain_db_teorico = 20 * np.log10(np.abs(H_teorico_carga))
+
+idx_min_exp = np.argmin(gain_db_exp)
+print(f"Frecuencia Notch Teorica: {f0_teorico:.2f} Hz")
+print(f"Frecuencia Notch Exp: {freq[idx_min_exp]:.2f} Hz")
+print(f"Atenuacion a f0 Exp: {gain_db_exp[idx_min_exp]:.2f} dB")
+
+plt.figure(figsize=(9, 4.5))
+plt.semilogx(f_vec, gain_db_teorico, 'b-', label="Modelo Analitico ($R_L = 10\ k\Omega$)")
+plt.semilogx(freq, gain_db_exp, 'ro', label="Medicion Experimental")
+plt.axvline(50.0, color='k', linestyle=':', label="Frecuencia Red (50 Hz)")
+plt.xlabel("Frecuencia (Hz)")
+plt.ylabel("Ganancia (dB)")
+plt.title("Laboratorio 2: Respuesta Frecuencial del Filtro Twin-T Notch")
+plt.grid(True, which="both")
+plt.legend()
+plt.tight_layout()
+plt.savefig("lab2_resultado.png")
+plt.show()
+\end{lstlisting}
+
+\newpage
+% ======================================================================
+% LABORATORIO 3
+% ======================================================================
+\section{LAB 3: Amplificador de Instrumentación Discreto de 3 Op-Amps}
+
+\subsection{Configuración de Esquema e Instrucciones en LTSpice}
+\begin{spicecmd}
+\textbf{Componentes y Conexiones:}
+\begin{itemize}[itemsep=0pt]
+    \item \textbf{Etapa Buffer de Entrada ($A_1, A_2$):} $A_1$: Entrada no inversora a $V_{in1}$. $R_1 = \qty{10}{\kilo\ohm}$ entre su entrada inversora y su salida. $A_2$: Entrada no inversora a $V_{in2}$. $R_2 = \qty{10}{\kilo\ohm}$ entre su entrada inversora y su salida. Resistor $R_g = \qty{408}{\ohm}$ entre los nodos inversores de $A_1$ y $A_2$.
+    \item \textbf{Etapa Diferencial de Salida ($A_3$):} Resistores $R_3 = R_4 = \qty{10}{\kilo\ohm}$ desde las salidas de $A_1$ y $A_2$ hacia las entradas inversora y no inversora de $A_3$. Resistor $R_f = \qty{10}{\kilo\ohm}$ entre la salida de $A_3$ y su entrada inversora. $R_{ref} = \qty{10}{\kilo\ohm}$ desde la entrada no inversora de $A_3$ hacia $V_{Ref}$.
+\end{itemize}
+\textbf{Comandos SPICE:}
+\begin{itemize}[itemsep=0pt]
+    \item Para curva CC: \param{.dc Vdiff -0.05 0.05 0.001} (Rampa diferencial).
+    \item Para CMRR: \param{.ac dec 100 1 100k} con tolerancia \param{.param tol=0.05}.
+\end{itemize}
+\end{spicecmd}
+
+\begin{center}
+    \begin{circuitikz}[scale=0.8, transform shape]
+        % A1 (Arriba)
+        \draw (0,2) node[op amp, yscale=-1] (A1) {$A_1$};
+        \draw (A1.+) to[short, -o] (-2,2.5) node[left] {$V_{in1}$};
+        \draw (A1.-) -- ++(0,-1) coordinate(in1);
+        \draw (in1) to[R, l=$R_1$] (A1.out |- in1) -- (A1.out);
+        
+        % A2 (Abajo)
+        \draw (0,-2) node[op amp] (A2) {$A_2$};
+        \draw (A2.+) to[short, -o] (-2,-2.5) node[left] {$V_{in2}$};
+        \draw (A2.-) -- ++(0,1) coordinate(in2);
+        \draw (in2) to[R, l_=$R_2$] (A2.out |- in2) -- (A2.out);
+        
+        % Rg
+        \draw (in1) to[R, l=$R_g$ (408)] (in2);
+        
+        % A3 (Diferencial)
+        \draw (6,0) node[op amp, yscale=-1] (A3) {$A_3$};
+        \draw (A1.out) to[R, l=$R_3$] (A3.-);
+        \draw (A2.out) to[R, l_=$R_4$] (A3.+);
+        
+        % Feedback A3
+        \draw (A3.-) -- ++(0,-1.5) coordinate(fb3);
+        \draw (fb3) to[R, l=$R_f$] (A3.out |- fb3) -- (A3.out);
+        
+        % Ref A3
+        \draw (A3.+) -- ++(0,1.5) to[R, l=$R_{ref}$] ++(2,0) node[right]{$V_{Ref}$};
+        \draw (A3.out) to[short, -o] (8,0) node[right]{$V_{out}$};
+    \end{circuitikz}
+\end{center}
+
+\subsection{Código Completo en Python (\texttt{lab3\_inamp\_calibration.py})}
+\begin{lstlisting}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from scipy.stats import linregress
+
+try:
+    data = pd.read_csv("lab3_inamp_calib.csv")
+    v_diff = data['V_diff_mv'].values / 1000.0  # Convertir a Volts
+    v_out = data['V_out_volts'].values
+except FileNotFoundError:
+    v_diff = np.linspace(-0.05, 0.05, 21)
+    v_out = 50.12 * v_diff + 0.015 + np.random.normal(0, 0.002, len(v_diff))
+
+reg = linregress(v_diff, v_out)
+slope, intercept, r_squared = reg.slope, reg.intercept, reg.rvalue**2
+
+v_out_lineal = slope * v_diff + intercept
+inl_absoluto = np.abs(v_out - v_out_lineal)
+inl_porcentaje = (np.max(inl_absoluto) / 5.0) * 100.0  # Respecto a escala 5V
+
+print(f"Ganancia Diferencial Medida (A_d): {slope:.3f}")
+print(f"Offset Residual en Salida:          {intercept * 1000.0:.2f} mV")
+print(f"Coeficiente Determinacion R2:       {r_squared:.6f}")
+print(f"Error de No-Linealidad (INL):       {inl_porcentaje:.4f} %")
+
+plt.figure(figsize=(8, 4.5))
+plt.plot(v_diff * 1000.0, v_out, 'ro', label="Mediciones Experimentales")
+plt.plot(v_diff * 1000.0, v_out_lineal, 'b-', label=f"Ajuste Lineal ($A_d={slope:.2f}$)")
+plt.xlabel("Tension Diferencial de Entrada $V_{diff}$ (mV)")
+plt.ylabel("Tension de Salida Acondicionada $V_{out}$ (V)")
+plt.title("Laboratorio 3: Curva de Calibracion Estatica del In-Amp")
+plt.grid(True)
+plt.legend()
+plt.tight_layout()
+plt.savefig("lab3_resultado.png")
+plt.show()
+\end{lstlisting}
+
+\newpage
+% ======================================================================
+% LABORATORIO 4
+% ======================================================================
+\section{LAB 4: Limitaciones Dinámicas en CA (Slew Rate y GBW)}
+
+\subsection{Configuración de Esquema e Instrucciones en LTSpice}
+\begin{spicecmd}
+\textbf{Componentes y Conexiones:}
+\begin{itemize}[itemsep=0pt]
+    \item Dos esquemas idénticos en paralelo para comparar el LM741 frente al TL082.
+    \item \textbf{Configuración Inversora ($A_v = -10$):} Resistor de entrada $R_{in} = \qty{10}{\kilo\ohm}$. Resistor de realimentación $R_f = \qty{100}{\kilo\ohm}$.
+\end{itemize}
+\textbf{Comandos SPICE:}
+\begin{itemize}[itemsep=0pt]
+    \item \textbf{Prueba SR (Gran Señal):} Fuente \param{PULSE(-0.4 0.4 0 10n 10n 50u 100u)} (\qty{800}{\milli\volt}$_{pp}$). Comando: \param{.tran 100u}.
+    \item \textbf{Prueba GBW (Pequeña Señal):} Fuente \param{AC 0.01}. Comando: \param{.ac dec 100 1k 10M}.
+\end{itemize}
+\end{spicecmd}
+
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape]
+        \draw (0,0) node[op amp] (op1) {LM741};
+        \draw (op1.+) -- ++(0,-0.5) node[ground]{};
+        \draw (op1.-) to[R, l_=$R_{in}$] ++(-2,0) node[left]{$V_{in}$};
+        \draw (op1.-) -- ++(0,1.5) coordinate(fb1) to[R, l=$R_f$] (op1.out |- fb1) -- (op1.out);
+        \draw (op1.out) to[short, -o] ++(1,0) node[right]{$V_{out\_741}$};
+        
+        \draw (0,-3.5) node[op amp] (op2) {TL082};
+        \draw (op2.+) -- ++(0,-0.5) node[ground]{};
+        \draw (op2.-) to[R, l_=$R_{in}$] ++(-2,0) node[left]{$V_{in}$};
+        \draw (op2.-) -- ++(0,1.5) coordinate(fb2) to[R, l=$R_f$] (op2.out |- fb2) -- (op2.out);
+        \draw (op2.out) to[short, -o] ++(1,0) node[right]{$V_{out\_082}$};
+    \end{circuitikz}
+\end{center}
+
+\subsection{Código Completo en Python (\texttt{lab4\_slew\_rate\_gbw.py})}
+\begin{lstlisting}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+try:
+    df = pd.read_csv("lab4_slew_rate_data.csv")
+    t, v_741, v_082 = df['Time'].values, df['V_741'].values, df['V_082'].values
+except FileNotFoundError:
+    t = np.linspace(0, 100e-6, 1000)
+    v_741 = np.clip(10 * (t - 10e-6) * 0.5e6 - 4, -4, 4)
+    v_082 = np.clip(10 * (t - 10e-6) * 13e6 - 4, -4, 4)
+
+# Derivada numerica discreta para Slew Rate (dv/dt)
+dt = np.diff(t)
+dv_741 = np.diff(v_741) / dt
+dv_082 = np.diff(v_082) / dt
+
+sr_741_v_us = np.max(np.abs(dv_741)) / 1e6
+sr_082_v_us = np.max(np.abs(dv_082)) / 1e6
+
+print(f"Slew Rate Medido LM741: {sr_741_v_us:.2f} V/us (Nominal ~ 0.5 V/us)")
+print(f"Slew Rate Medido TL082: {sr_082_v_us:.2f} V/us (Nominal ~ 13.0 V/us)")
+
+fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(9, 6), sharex=True)
+ax1.plot(t * 1e6, v_741, 'r-', label=f"LM741 (SR = {sr_741_v_us:.2f} V/$\mu s$)")
+ax1.plot(t * 1e6, v_082, 'b-', label=f"TL082 (SR = {sr_082_v_us:.2f} V/$\mu s$)")
+ax1.set_ylabel("Tension $V_{out}$ (V)")
+ax1.set_title("Laboratorio 4: Limitacion Dinamica por Slew Rate")
+ax1.grid(True)
+ax1.legend()
+
+ax2.plot(t[:-1] * 1e6, dv_741 / 1e6, 'r--')
+ax2.plot(t[:-1] * 1e6, dv_082 / 1e6, 'b--')
+ax2.set_xlabel("Tiempo ($\mu s$)")
+ax2.set_ylabel("Derivada $dv/dt$ (V/$\mu s$)")
+ax2.grid(True)
+plt.tight_layout()
+plt.savefig("lab4_resultado.png")
+plt.show()
+\end{lstlisting}
+
+\newpage
+% ======================================================================
+% LABORATORIO 5
+% ======================================================================
+\section{LAB 5: Rectificador Activo de Precisión (Superdiodo)}
+
+\subsection{Configuración de Esquema e Instrucciones en LTSpice}
+\begin{spicecmd}
+\textbf{Componentes y Conexiones:}
+\begin{itemize}[itemsep=0pt]
+    \item Op-Amp TL082. Resistor de entrada $R_{in} = \qty{10}{\kilo\ohm}$ conectado al nodo inversor.
+    \item Diodo de lazo $D_1$ (1N4148) con ánodo en el nodo inversor y cátodo en la salida del Op-Amp.
+    \item Diodo de salida $D_2$ (1N4148) con ánodo en la salida del Op-Amp y cátodo hacia el nodo $V_{out}$.
+    \item Resistor de realimentación $R_f = \qty{10}{\kilo\ohm}$ conectado entre $V_{out}$ y el nodo inversor.
+\end{itemize}
+\textbf{Comandos SPICE:}
+\begin{itemize}[itemsep=0pt]
+    \item \textbf{Baja frecuencia:} \param{SINE(0 0.1 100)} (\qty{100}{\milli\volt} pico, \qty{100}{\hertz}), \param{.tran 20m}.
+    \item \textbf{Alta frecuencia:} \param{SINE(0 0.1 10k)} (\qty{100}{\milli\volt} pico, \qty{10}{\kilo\hertz}), \param{.tran 0.2m}.
+\end{itemize}
+\end{spicecmd}
+
+\begin{center}
+    \begin{circuitikz}[scale=1.0, transform shape]
+        \draw (0,0) node[op amp, yscale=-1] (op) {TL082};
+        \draw (op.+) -- ++(0,-0.5) node[ground]{};
+        \draw (op.-) to[R, l_=$R_{in}$] ++(-2.5,0) node[left]{$V_{in}$};
+        
+        \draw (op.out) to[D, l=$D_2$] ++(2,0) coordinate(vout) node[right]{$V_{out}$};
+        
+        % Lazo D1
+        \draw (op.-) -- ++(0,1.5) coordinate(fb1) to[D, l_=$D_1$, a=1N4148] (op.out |- fb1) -- (op.out);
+        
+        % Lazo Rf
+        \draw (op.-) -- ++(0,3) coordinate(fb2) to[R, l=$R_f$] (vout |- fb2) -- (vout);
+    \end{circuitikz}
+\end{center}
+
+\subsection{Código Completo en Python (\texttt{lab5\_superdiode\_evaluator.py})}
+\begin{lstlisting}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from scipy.integrate import simpson
+
+try:
+    df = pd.read_csv("lab5_superdiode_data.csv")
+    t, v_in, v_out = df['Time'].values, df['Vin'].values, df['Vout'].values
+except FileNotFoundError:
+    t = np.linspace(0, 0.02, 1000)
+    v_in = 0.1 * np.sin(2 * np.pi * 100 * t)
+    v_out = np.where(v_in < 0, -v_in, 0)  # Rectificacion inversora ideal
+
+v_out_ideal = np.where(v_in < 0, -v_in, 0.0)
+
+# Calculo del Error Integral (Regla de Simpson)
+error_absoluto = np.abs(v_out - v_out_ideal)
+error_integral = simpson(error_absoluto, x=t)
+print(f"Error Integral de Rectificacion: {error_integral * 1e6:.4f} uV-s")
+
+plt.figure(figsize=(9, 4.5))
+plt.subplot(1, 2, 1)
+plt.plot(t * 1000, v_in, 'k--', label="$V_{in}$ (100 mVp)")
+plt.plot(t * 1000, v_out, 'g-', label="$V_{out}$ Rectificada")
+plt.xlabel("Tiempo (ms)")
+plt.ylabel("Tension (V)")
+plt.title("Ondas Temporales")
+plt.grid(True)
+plt.legend()
+
+plt.subplot(1, 2, 2)
+plt.plot(v_in * 1000, v_out * 1000, 'm.', label="Curva XY Medida")
+plt.plot(v_in * 1000, v_out_ideal * 1000, 'k--', label="Transferencia Ideal")
+plt.xlabel("Entrada $V_{in}$ (mV)")
+plt.ylabel("Salida $V_{out}$ (mV)")
+plt.title("Curva de Transferencia")
+plt.grid(True)
+plt.legend()
+plt.tight_layout()
+plt.savefig("lab5_resultado.png")
+plt.show()
+\end{lstlisting}
+
+\newpage
+% ======================================================================
+% LABORATORIO 6
+% ======================================================================
+\section{LAB 6: Filtro Activo Pasa-Bajos de 4.º Orden Butterworth}
+
+\subsection{Configuración de Esquema e Instrucciones en LTSpice}
+\begin{spicecmd}
+\textbf{Componentes y Conexiones (Cascada Sallen-Key):}
+\begin{itemize}[itemsep=0pt]
+    \item \textbf{Etapa 1 ($Q_1 = 1.3065$):} $R_1 = R_2 = \qty{15.8}{\kilo\ohm}$, $C_1 = C_2 = \qty{1}{\micro\farad}$. Op-Amp inversor auxiliar de ganancia $A_{v1} = 2.234$ ($R_{i1} = \qty{10}{\kilo\ohm}, R_{f1} = \qty{12.3}{\kilo\ohm}$).
+    \item \textbf{Etapa 2 ($Q_2 = 0.5412$):} $R_3 = R_4 = \qty{15.8}{\kilo\ohm}$, $C_3 = C_4 = \qty{1}{\micro\farad}$. Op-Amp inversor auxiliar de ganancia $A_{v2} = 1.152$ ($R_{i2} = \qty{10}{\kilo\ohm}, R_{f2} = \qty{1.5}{\kilo\ohm}$).
+\end{itemize}
+\textbf{Comandos SPICE:}
+\begin{itemize}[itemsep=0pt]
+    \item Análisis AC: \param{.ac dec 100 0.1 1k}
+    \item Sensibilidad Monte Carlo: \param{.step param run 1 50} con tolerancias \param{.param Rval=mc(15.8k, 0.01)}.
+\end{itemize}
+\end{spicecmd}
+
+\begin{center}
+    \begin{circuitikz}[scale=0.85, transform shape]
+        % Etapa 1
+        \draw (0,0) node[op amp] (op1) {Etapa 1};
+        \draw (op1.+) to[R, l_=$R_2$, *-] ++(-2,0) coordinate(na) to[R, l_=$R_1$, -o] ++(-2,0) node[left]{$V_{in}$};
+        \draw (op1.+) to[C, l=$C_2$] ++(0,-1.5) node[ground]{};
+        \draw (na) -- ++(0,1.5) coordinate(na_up) to[C, l=$C_1$] (op1.out |- na_up) -- (op1.out);
+        
+        \draw (op1.-) to[R, l_=$R_{i1}$] ++(0,-1.5) node[ground]{};
+        \draw (op1.-) -- ++(0,1) coordinate(fb1) to[R, l=$R_{f1}$] (op1.out |- fb1) -- (op1.out);
+        
+        % Etapa 2
+        \draw (op1.out) -- ++(1,0) coordinate(mid);
+        \draw (mid) ++(4,0) node[op amp] (op2) {Etapa 2};
+        \draw (op2.+) to[R, l_=$R_4$, *-] ++(-2,0) coordinate(nb) to[R, l_=$R_3$] (mid);
+        \draw (op2.+) to[C, l=$C_4$] ++(0,-1.5) node[ground]{};
+        \draw (nb) -- ++(0,1.5) coordinate(nb_up) to[C, l=$C_3$] (op2.out |- nb_up) -- (op2.out);
+        
+        \draw (op2.-) to[R, l_=$R_{i2}$] ++(0,-1.5) node[ground]{};
+        \draw (op2.-) -- ++(0,1) coordinate(fb2) to[R, l=$R_{f2}$] (op2.out |- fb2) -- (op2.out);
+        \draw (op2.out) to[short, -o] ++(1,0) node[right]{$V_{out}$};
+    \end{circuitikz}
+\end{center}
+
+\subsection{Código Completo en Python (\texttt{lab6\_butterworth\_4th.py})}
+\begin{lstlisting}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+try:
+    df = pd.read_csv("lab6_butterworth_bode.csv")
+    freq, v_in, v_out = df['Freq'].values, df['Vin'].values, df['Vout'].values
+    gain_db_exp = 20 * np.log10(v_out / v_in)
+except FileNotFoundError:
+    freq = np.logspace(-1, 2, 60)
+    fc = 10.0
+    gain_db_exp = 20 * np.log10(2.57 / np.sqrt(1 + (freq / fc)**8)) + np.random.normal(0, 0.3, len(freq))
+
+# Modelo Teorico
+f_vec = np.logspace(-1, 2, 500)
+fc_rad = 2 * np.pi * 10.0
+s = 2j * np.pi * f_vec
+H1 = (fc_rad**2) / (s**2 + 0.7654 * fc_rad * s + fc_rad**2)
+H2 = (fc_rad**2) / (s**2 + 1.8478 * fc_rad * s + fc_rad**2)
+gain_db_teorica = 20 * np.log10(np.abs(H1 * H2 * 2.234 * 1.152))
+
+# Estimacion de Pendiente
+idx_trans = np.where((freq >= 15.0) & (freq <= 40.0))[0]
+slope_fit = np.polyfit(np.log10(freq[idx_trans]), gain_db_exp[idx_trans], 1)
+idx_50hz = np.argmin(np.abs(freq - 50.0))
+
+print(f"Pendiente Medida: {slope_fit[0]:.2f} dB/decada (Teorico: -80)")
+print(f"Atenuacion a 50 Hz: {gain_db_exp[idx_50hz]:.2f} dB")
+
+plt.figure(figsize=(9, 4.5))
+plt.semilogx(f_vec, gain_db_teorica, 'b-', label="Modelo Teorico")
+plt.semilogx(freq, gain_db_exp, 'ro', label="Mediciones")
+plt.axvline(10.0, color='g', linestyle='--', label="$f_c = 10\ Hz$")
+plt.xlabel("Frecuencia (Hz)"); plt.ylabel("Ganancia (dB)")
+plt.grid(True, which="both")
+plt.legend()
+plt.tight_layout()
+plt.show()
+\end{lstlisting}
+
+\newpage
+% ======================================================================
+% LABORATORIO 7
+% ======================================================================
+\section{LAB 7: Estabilidad y Compensación de Fase In-Loop}
+
+\subsection{Configuración de Esquema e Instrucciones en LTSpice}
+\begin{spicecmd}
+\textbf{Componentes y Conexiones:}
+\begin{itemize}[itemsep=0pt]
+    \item \textbf{Circuito Inestable:} TL081 seguidor de tensión con $C_L = \qty{47}{\nano\farad}$ directo a la salida.
+    \item \textbf{Circuito Compensado In-Loop:} Resistor $R_x = \qty{100}{\ohm}$ entre salida Op-Amp y $C_L$. Resistor de lazo $R_f = \qty{10}{\kilo\ohm}$ desde $C_L$ hacia entrada inversora. Capacitor $C_f = \qty{4.7}{\nano\farad}$ directo entre salida Op-Amp e inversora.
+\end{itemize}
+\textbf{Comandos SPICE:}
+\begin{itemize}[itemsep=0pt]
+    \item \textbf{Respuesta al escalón:} Fuente \param{PULSE(0 0.5 0 10n 10n 2m 4m)}, \param{.tran 5m}.
+    \item \textbf{Margen de Fase (Middlebrook):} \param{.ac dec 100 1k 10M}.
+\end{itemize}
+\end{spicecmd}
+
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape]
+        \draw (0,0) node[op amp] (op) {TL081};
+        \draw (op.+) to[short, -o] ++(-1,0) node[left]{$V_{in}$};
+        
+        \draw (op.out) to[R, l=$R_x$ (100)] ++(2,0) coordinate(vout) node[right]{$V_{out}$};
+        \draw (vout) to[C, l=$C_L$, *-] ++(0,-1.5) node[ground]{};
+        
+        \draw (op.-) -- ++(0,1) coordinate(fb1) to[C, l=$C_f$ (4.7n)] (op.out |- fb1) -- (op.out);
+        \draw (op.-) -- ++(0,2.5) coordinate(fb2) to[R, l=$R_f$ (10k)] (vout |- fb2) -- (vout);
+    \end{circuitikz}
+\end{center}
+
+\subsection{Código Completo en Python (\texttt{lab7\_phase\_margin\_estimator.py})}
+\begin{lstlisting}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+try:
+    df = pd.read_csv("lab7_step_response.csv")
+    t, v_out = df['Time'].values, df['Vout'].values
+except FileNotFoundError:
+    t = np.linspace(0, 0.002, 1000)
+    v_out = 0.5 * (1 - np.exp(-0.59 * 31415 * t) * np.cos(31415 * np.sqrt(1 - 0.59**2) * t))
+
+v_final = np.mean(v_out[-100:])
+mp_porcentaje = ((np.max(v_out) - v_final) / v_final) * 100.0
+
+if mp_porcentaje > 0:
+    ln_mp = np.log(mp_porcentaje / 100.0)
+    zeta = np.sqrt(ln_mp**2 / (np.pi**2 + ln_mp**2))
+    pm = zeta * 100.0
+else:
+    zeta, pm = 1.0, 90.0
+
+print(f"Sobreimpulso: {mp_porcentaje:.2f} % | Zeta: {zeta:.4f} | PM: {pm:.2f} deg")
+
+plt.figure(figsize=(9, 4.5))
+plt.plot(t * 1e3, v_out, 'm-', label=f"Compensada ($M_p={mp_porcentaje:.1f}\%$)")
+plt.axhline(v_final, color='k', linestyle='--')
+plt.xlabel("Tiempo (ms)"); plt.ylabel("Tension (V)")
+plt.grid(True); plt.legend(); plt.tight_layout(); plt.show()
+\end{lstlisting}
+
+\newpage
+% ======================================================================
+% LABORATORIO 8
+% ======================================================================
+\section{LAB 8: Etapa de Potencia Clase AB y Disipación Térmica}
+
+\subsection{Configuración de Esquema e Instrucciones en LTSpice}
+\begin{spicecmd}
+\textbf{Componentes y Conexiones:}
+\begin{itemize}[itemsep=0pt]
+    \item Transistores TIP41C (NPN) y TIP42C (PNP). Colectores a rieles $+12\text{V}$ y $-12\text{V}$.
+    \item Emisores unidos a $V_{load}$ vía resistores de $0.47\ \Omega$ (1W).
+    \item Carga $R_L = \qty{10}{\ohm}$ (10W) entre $V_{load}$ y GND.
+    \item Bases polarizadas mediante dos diodos 1N4148 en serie, con corrientes de reposo fijadas por resistores de \qty{1}{\kilo\ohm} a los rieles.
+\end{itemize}
+\textbf{Comandos SPICE:}
+\begin{itemize}[itemsep=0pt]
+    \item \param{.tran 5m} con fuente \param{SINE(0 8 1k)} (\qty{8}{\volt} pico).
+    \item \textbf{Medición:} Presionar \textsf{Alt + Click} sobre el TIP41C para graficar \param{I(Vc)*V(c)}.
+\end{itemize}
+\end{spicecmd}
+
+\begin{center}
+    \begin{circuitikz}[scale=0.8, transform shape]
+        % Rieles
+        \draw (0,4) node[above]{$+12\text{V}$} -- (0,3) to[R, l=\qty{1}{\kilo\ohm}] (0,1);
+        \draw (0,-4) node[below]{$-12\text{V}$} -- (0,-3) to[R, l=\qty{1}{\kilo\ohm}] (0,-1);
+        
+        % Diodos polarización
+        \draw (0,1) to[D, l=1N4148, *-*] (0,0);
+        \draw (0,0) to[D, l=1N4148, *-*] (0,-1);
+        \draw (0,0) to[short, -o] (-2,0) node[left]{$V_{in}$};
+        
+        % Transistores
+        \draw (2,1.5) node[npn] (npn) {TIP41C};
+        \draw (2,-1.5) node[pnp] (pnp) {TIP42C};
+        
+        % Conexiones Bases
+        \draw (0,1) |- (npn.B);
+        \draw (0,-1) |- (pnp.B);
+        
+        % Colectores
+        \draw (npn.C) -- (npn.C |- 0,4) node[above]{$+12\text{V}$};
+        \draw (pnp.C) -- (pnp.C |- 0,-4) node[below]{$-12\text{V}$};
+        
+        % Emisores y Salida
+        \draw (npn.E) to[R, l=\qty{0.47}{\ohm}] (4,0.7) -- (4,0);
+        \draw (pnp.E) to[R, l_=\qty{0.47}{\ohm}] (4,-0.7) -- (4,0);
+        
+        \draw (4,0) to[short, *-o] (6,0) node[right]{$V_{load}$};
+        \draw (4,0) to[R, l=$R_L$] (4,-3) node[ground]{};
+    \end{circuitikz}
+\end{center}
+
+\subsection{Código Completo en Python (\texttt{lab8\_thermal\_regression.py})}
+\begin{lstlisting}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from scipy.stats import linregress
+
+try:
+    df = pd.read_csv("lab8_datos_termicos.csv")
+    i_rms_ma, t_carcasa = df['Corriente_mA'].values, df['Temp_Carcasa_C'].values
+except FileNotFoundError:
+    i_rms_ma = np.array([100, 200, 300, 400, 500, 600, 700])
+    t_carcasa = np.array([28.1, 32.4, 38.0, 44.2, 51.5, 59.0, 67.2])
+
+i_rms = i_rms_ma / 1000.0
+i_peak = i_rms * np.sqrt(2)
+p_disipada = (12.0 * i_peak / np.pi) - ((i_peak**2 * 10.0) / 4.0)
+
+reg = linregress(p_disipada, t_carcasa)
+theta_sa_exp = reg.slope - 0.5
+t_j_max = t_carcasa[-1] + p_disipada[-1] * 1.67
+
+print(f"Resistencia Termica (Theta_SA): {theta_sa_exp:.2f} C/W")
+print(f"Temperatura de Union Maxima:    {t_j_max:.2f} C")
+
+plt.figure(figsize=(8, 4.5))
+plt.plot(p_disipada, t_carcasa, 'ks', label="Medicion")
+plt.plot(p_disipada, reg.slope * p_disipada + reg.intercept, 'r-', label=f"Ajuste ($\Theta_{{SA}}={theta_sa_exp:.1f}$ C/W)")
+plt.xlabel("Potencia Disipada (W)")
+plt.ylabel("Temperatura Carcasa (C)")
+plt.grid(True)
+plt.legend()
+plt.tight_layout()
+plt.show()
+\end{lstlisting}
+
+\end{document}
