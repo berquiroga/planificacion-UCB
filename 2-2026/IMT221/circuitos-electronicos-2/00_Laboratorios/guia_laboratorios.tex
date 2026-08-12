@@ -142,17 +142,18 @@
         
         \draw (2.5,10) to[R, l=$R_1$] (2.5,8) node[circle,fill,inner sep=1.5pt]{};
         \draw (2.5,8) to[R, l=$R_2$] (2.5,0);
-        \node[left, align=center] at (2,6) {Nodo A};
+        \node[left, align=center] at (2,8) {Nodo A};
         
         \draw (7.5,10) to[R, l=$R_3$] (7.5,8) node[circle,fill,inner sep=1.5pt]{};
         \draw (7.5,8) to[L, l=$L_{cable}$, a=\qty{15}{\micro\henry}] (7.5,6) to[R, l=$R_{cable}$, a=\qty{10}{\ohm}] (7.5,4);
-        \draw (7.5,2) -- (6.5,2) to[vR, l=$R_{NTC}$] (6.5,0) -- (7.5,0);
-        \draw (7.5,2) -- (8.5,2) to[C, l=$C_{para}$, a=\qty{4.7}{\nano\farad}] (8.5,0) -- (7.5,0);
-        \node[right, align=center] at (8.5,0) {Nodo B};
+        \draw (7.5,4) -- (6.5,4) to[vR, l_=$R_{NTC}$] (6.5,2) -- (7.5,2);
+        \draw (7.5,4) -- (8.5,4) to[C, l=$C_{para}$, a=\qty{4.7}{\nano\farad}] (8.5,2) -- (7.5,2);
+        \draw (7.5,2) -- (7.5,0);
+        \node[right, align=center] at (8.5,8) {Nodo B};
         
-        \draw (2.5,2) to[short, -o] (4.5,2) node[above]{$+$};
-        \draw (7.5,2) to[short, -o] (5.5,2) node[above]{$-$};
-        \node at (5, 2) {$V_{diff}$};
+        \draw (2.5,8) to[short, -o] (4.5,8) node[above]{$+$};
+        \draw (7.5,8) to[short, -o] (5.5,8) node[above]{$-$};
+        \node at (5, 8) {$V_{diff}$};
     \end{circuitikz}
 \end{center}
 
