@@ -125,7 +125,7 @@ Evite usar la palabra \texttt{TEMP} o \texttt{T} como nombre de su variable pers
 \end{tiptic}
 
 \subsection*{2. Directivas SPICE a incluir en el esquema}
-Presione la tecla \tecla{S} y agregue las siguientes directivas de parámetros y barrido:
+Presione la tecla \tecla{.} y agregue las siguientes directivas de parámetros y barrido:
 
 \begin{lstlisting}
 .param R0=10k Beta=3950 T0=298.15 Tc=25
@@ -165,7 +165,7 @@ Presione la tecla \tecla{S} y agregue las siguientes directivas de parámetros y
 
 \vspace{0.5cm}
 \section{Método 2: Modelado Térmico Dinámico por Tensión}
-Este método es sumamente útil cuando se simula el Proyecto Final Integrador (PFI) en lazo cerrado, donde la temperatura de la cámara térmica varía dinámicamente con el tiempo debido al calor del calefactor.
+Este método es útil cuando se simula el Proyecto Final Integrador (PFI) en lazo cerrado, donde la temperatura de la cámara térmica varía dinámicamente con el tiempo debido al calor del calefactor.
 
 \begin{enumerate}
     \item \textbf{Configuración:} Se crea un nodo eléctrico auxiliar llamado \tecla{TEMP\_NODE} donde \qty{1}{\volt} equivale a \qty{1}{\celsius}. El valor del resistor del sensor se define en función de la tensión instantánea de ese nodo:
@@ -176,11 +176,11 @@ Este método es sumamente útil cuando se simula el Proyecto Final Integrador (P
 \end{enumerate}
 
 \section{Método 3: Barrido Directo de Lista de Resistencias}
-Si los estudiantes ya calcularon previamente en su cuaderno o en Python los valores de resistencia de la NTC a diferentes temperaturas ($R_{NTC} = \qty{12.5}{\kilo\ohm}$ a \qty{20}{\celsius}, \qty{10}{\kilo\ohm} a \qty{25}{\celsius}, \qty{8.05}{\kilo\ohm} a \qty{30}{\celsius}, etc.), se puede usar un barrido directo de lista.
+Si ya calcularon previamente en su cuaderno o en Python los valores de resistencia de la NTC a diferentes temperaturas ($R_{NTC} = \qty{12.5}{\kilo\ohm}$ a \qty{20}{\celsius}, \qty{10}{\kilo\ohm} a \qty{25}{\celsius}, \qty{8.05}{\kilo\ohm} a \qty{30}{\celsius}, etc.), se puede usar un barrido directo de lista.
 
 \begin{enumerate}
     \item Cambiar el valor del resistor en el esquema a: \spice{\{RNTC\}}.
-    \item Agregar la directiva SPICE (\tecla{S}):
+    \item Agregar la directiva SPICE (\tecla{.}):
     \begin{lstlisting}
 .step param RNTC list 12.5k 10k 8.05k 6.5k 5.3k
     \end{lstlisting}
@@ -198,7 +198,7 @@ Si los estudiantes ya calcularon previamente en su cuaderno o en Python los valo
     \begin{center}
         \spice{\{R0 * exp(Beta * (1/(Tc + 273.15) - T0))\}}
     \end{center}
-    \item \textbf{Agregar Parámetros del Transductor:} Presione la tecla \tecla{S} (para agregar una directiva SPICE) y escriba:
+    \item \textbf{Agregar Parámetros del Transductor:} Presione la tecla \tecla{.} (para agregar una directiva SPICE) y escriba:
     \begin{center}
         \spice{.param R0=10k Beta=3950 T0=298.15}
     \end{center}
