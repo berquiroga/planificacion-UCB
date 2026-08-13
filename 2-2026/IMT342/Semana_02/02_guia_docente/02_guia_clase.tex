@@ -1,0 +1,222 @@
+\documentclass[11pt, a4paper]{article}
+
+% Paquetes de idioma y tipografía
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo} % Tipografía Palatino
+\usepackage{microtype}
+
+% Geometría de la página
+\usepackage[margin=2.5cm, headheight=15pt]{geometry}
+
+% Paquetes matemáticos
+\usepackage{amsmath, amssymb, amsfonts, bm}
+
+% Gráficos, colores y tablas
+\usepackage{graphicx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+% Personalización de listas y código
+\usepackage{enumitem}
+\usepackage{listings}
+
+% Encabezados y pies de página
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Robótica (IMT-342)}
+\rhead{Clase 2 - Sem 2}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Definición de colores institucionales
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{ucbyellow}{RGB}{255, 184, 28}
+\definecolor{codegray}{rgb}{0.95,0.95,0.95}
+
+% Estilo para código Python
+\lstdefinestyle{pythonstyle}{
+    backgroundcolor=\color{codegray},
+    commentstyle=\color{green!60!black},
+    keywordstyle=\color{blue}\bfseries,
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{purple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=4,
+    language=Python,
+    frame=single,
+    rulecolor=\color{gray!40}
+}
+\lstset{style=pythonstyle}
+
+\begin{document}
+
+% =======================================================
+% INSUMO 1: GUÍA DE CLASE PARA EL DOCENTE
+% =======================================================
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{GUÍA DE CLASE PARA EL DOCENTE (LESSON PLAN)}}\\
+    \vspace{0.2cm}
+    \normalsize\textbf{Código:} IMT-342-GP-0202
+\end{center}
+\vspace{0.3cm}
+
+\noindent\textbf{Unidad I:} Morfología, Geometría del Espacio y Cinemática Directa \\
+\textbf{Tema:} Parametrización Mínima: Ángulos de Euler (ZYZ), RPY, Gimbal Lock e Intro a Cuaterniones \\
+\textbf{Duración:} 140 minutos reales (Jueves 13 de Agosto, 16:00 a 17:45) \\
+\textbf{Alineamiento:} CDIO (Diseñar/Implementar) + ABET SO-1 (Modelado Analítico) y SO-6 (Experimentación)
+
+\vspace{0.4cm}
+\noindent\textbf{\large Estructura de la Sesión y Gestión del Tiempo (140 min)}
+\vspace{0.2cm}
+
+\noindent
+\begin{tabularx}{\textwidth}{@{} l >{\raggedright\arraybackslash}p{3.2cm} X X @{}}
+\toprule
+\textbf{Tiempo} & \textbf{Fase} & \textbf{Actividad Docente y Estudiantil} & \textbf{Justificación Pedagógica} \\ \midrule
+16:00 - 16:15 & Activación y Anclaje \newline (15 min) & Demostración física: Giroscopio o 3 anillos 3D. Alinear dos ejes para mostrar pérdida de GDL. & \textbf{Visualización Concreta:} El Gimbal Lock es un fenómeno físico real, no solo una falla algebraica. \\ \addlinespace
+16:15 - 17:00 & Deducción ZYZ y RPY \newline (45 min) & Deducción en pizarra de $R_{ZYZ}(\phi, \theta, \psi)$ y $R_{RPY}(\gamma, \beta, \alpha)$. & \textbf{Rigor de Código:} Entender la traducción de ángulos a matrices en controladores CAD/CAM. \\ \addlinespace
+17:00 - 17:25 & Análisis Gimbal Lock \newline (25 min) & Evaluar $R_{ZYZ}$ con $\theta = 0$. Demostrar el acople $(\phi + \psi)$. & \textbf{Conexión PFI (ABB IRB 120):} La postura erguida de la muñeca ($q_5=0$) causa la singularidad. \\ \addlinespace
+17:25 - 17:40 & Cuaterniones \newline (15 min) & Explicar por qué ROS exige Cuaterniones unitarios ($\mathbf{q} \in \mathbb{S}^3$) para evitar singularidades. & \textbf{Perspectiva Software:} Justifica el tipo de mensaje \texttt{geometry\_msgs/Quaternion} en ROS. \\ \addlinespace
+17:40 - 17:45 & Cierre y Asignación \newline (5 min) & Taller SymPy/Python para Guía TP Nº 2. & \textbf{Alineamiento:} Evidencia bajo validación numérico-simbólica. \\ \bottomrule
+\end{tabularx}
+
+\vspace{0.4cm}
+% =======================================================
+% INSUMO 4: CÓDIGO MAESTRO DE REFERENCIA (DOCENTE)
+% =======================================================
+\begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{Código Maestro de Verificación (Referencia Docente)}]
+Este script utiliza \texttt{SymPy} para validar analíticamente la pérdida de un grado de libertad representacional.
+\vspace{-0.2cm}
+\begin{lstlisting}
+import sympy as sp
+import numpy as np
+
+def verify_gimbal_lock_symbolic():
+    print("=== VERIFICACION SIMBOLICA DE GIMBAL LOCK (ZYZ) ===")
+    phi, theta, psi = sp.symbols('phi theta psi', real=True)
+    
+    # Matrices de rotacion canonicas simbolicas
+    Rz1 = sp.Matrix([[sp.cos(phi), -sp.sin(phi), 0],
+                     [sp.sin(phi),  sp.cos(phi), 0],
+                     [0, 0, 1]])
+    Ry  = sp.Matrix([[sp.cos(theta), 0, sp.sin(theta)],
+                     [0, 1, 0],
+                     [-sp.sin(theta), 0, sp.cos(theta)]])
+    Rz2 = sp.Matrix([[sp.cos(psi), -sp.sin(psi), 0],
+                     [sp.sin(psi),  sp.cos(psi), 0],
+                     [0, 0, 1]])
+    
+    # Matriz Euler ZYZ y Evaluacion en theta = 0
+    R_zyz = Rz1 * Ry * Rz2
+    R_singular = sp.simplify(R_zyz.subs(theta, 0))
+    print("\nMatriz R_ZYZ en theta = 0:")
+    sp.pprint(R_singular)
+    
+    # Demostrar dependencia de (phi + psi)
+    alpha = sp.symbols('alpha')
+    R_expected = sp.Matrix([[sp.cos(alpha), -sp.sin(alpha), 0],
+                            [sp.sin(alpha),  sp.cos(alpha), 0],
+                            [0, 0, 1]])
+    print("\nEs equivalente a Rz(phi + psi)?:", 
+          R_singular == R_expected.subs(alpha, phi + psi))
+
+if __name__ == "__main__":
+    verify_gimbal_lock_symbolic()
+\end{lstlisting}
+\end{tcolorbox}
+
+\newpage
+% =======================================================
+% INSUMO 3: GUÍA DE TRABAJO PRÁCTICO
+% =======================================================
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{UNIVERSIDAD CATÓLICA BOLIVIANA ``SAN PABLO''}}\\
+    \large\textbf{SEDE TARIJA}\\
+    \vspace{0.2cm}
+    \normalsize Departamento de Ciencias Exactas e Ingenierías | Carrera de Ingeniería Mecatrónica\\
+    Asignatura: Robótica (IMT-342) | Gestión: II-2026
+\end{center}
+
+\vspace{0.4cm}
+\begin{center}
+    \Large\textbf{Hoja de Trabajo Práctico Nº 2}\\
+    \large\textit{Ángulos de Euler, Gimbal Lock y Validación Simbólica/Numérica}
+\end{center}
+\vspace{0.4cm}
+
+\section{Principios Obligatorios de la Práctica (CDIO)}
+\vspace{0.3cm}
+\begin{center}
+\begin{tikzpicture}[
+    node distance=1.2cm and 2cm,
+    box/.style={rectangle, draw=ucbblue, thick, fill=ucbblue!10, text width=4.5cm, align=center, minimum height=1cm, font=\small\bfseries},
+    desc/.style={rectangle, text width=7.5cm, align=left, font=\small},
+    arrow/.style={-{Stealth[scale=1.2]}, thick, ucbblue}
+]
+    % Nodos
+    \node[box] (c) {1. Fundamentación};
+    \node[desc, right=of c] (cd) {$\longrightarrow$ Demostración Matemática Manuscrita de ZYZ y RPY};
+    
+    \node[box, below=of c] (d) {2. Implementación};
+    \node[desc, right=of d] (dd) {$\longrightarrow$ Script Simbólico en Python (SymPy)};
+    
+    \node[box, below=of d] (i) {3. Validación};
+    \node[desc, right=of i] (id) {$\longrightarrow$ Verificación del Colapso de Rango (Gimbal Lock)};
+    
+    \node[box, below=of i] (o) {4. Evidencia};
+    \node[desc, right=of o] (od) {$\longrightarrow$ Jupyter Notebook en el Repositorio Git del Equipo};
+
+    % Flechas
+    \draw[arrow] (c) -- (d);
+    \draw[arrow] (d) -- (i);
+    \draw[arrow] (i) -- (o);
+\end{tikzpicture}
+\end{center}
+
+\section{Ejercicios de Desarrollo Obligatorio}
+
+\subsection*{Ejercicio 1: Deducción Simbólica y Extracción (Teoría)}
+\begin{enumerate}
+    \item Demuestre analíticamente en papel que la secuencia de ejes fijos Roll-Pitch-Yaw $R_z(\gamma) R_y(\beta) R_x(\alpha)$ produce exactamente la misma matriz de rotación que la secuencia de ejes móviles $X \to Y' \to Z''$ con ángulos $(\alpha, \beta, \gamma)$.
+    \item Desarrolle el sistema de ecuaciones para extraer analíticamente los ángulos $\alpha, \beta, \gamma$ a partir de los componentes $r_{ij}$ de una matriz $R \in SO(3)$ conocida, utilizando la función trigonométrica no ambigua \texttt{atan2(y, x)}.
+\end{enumerate}
+
+\subsection*{Ejercicio 2: Análisis del Gimbal Lock en SymPy (Implementación)}
+Escriba un script en Python utilizando la librería de matemática simbólica \texttt{SymPy} que:
+\begin{enumerate}
+    \item Declare las variables simbólicas \texttt{phi, theta, psi = sp.symbols('phi theta psi')}.
+    \item Defina las matrices de rotación simbólicas $R_z(\phi)$, $R_y(\theta)$ y $R_z(\psi)$ y multiplíquelas para obtener $R_{ZYZ}$.
+    \item Sustituya el valor \texttt{theta = 0} en la matriz resultante mediante \texttt{.subs(theta, 0)} y aplique \texttt{sp.simplify()}.
+    \item Demuestre por código simbólico que las derivadas parciales respecto a $\phi$ y $\psi$ se vuelven linealmente dependientes:
+    $$ \frac{\partial R_{ZYZ}}{\partial \phi}\Bigg\vert_{\theta=0} = \frac{\partial R_{ZYZ}}{\partial \psi}\Bigg\vert_{\theta=0} $$
+\end{enumerate}
+
+\subsection*{Ejercicio 3: Simulación Caso de Estudio ABB IRB 120 (Validación)}
+Un usuario comanda al robot ABB IRB 120 a adoptar una orientación en su muñeca dada por los ángulos de Euler ZYZ: $\phi = 45^\circ$, $\theta = 0.0001^\circ$ (casi cero) y $\psi = 30^\circ$.
+\begin{enumerate}
+    \item Utilizando \texttt{NumPy}, evalúe numéricamente la matriz $R_{ZYZ}$.
+    \item Utilice sus ecuaciones del Ejercicio 1 para intentar recuperar los ángulos $(\phi, \theta, \psi)$ a partir de la matriz calculada.
+    \item Repita el cálculo para $\theta = 0.00000000001^\circ$ y analice la inestabilidad de los ángulos recuperados debido al truncamiento de punto flotante.
+    \item Grafique en el Notebook el error de extracción angular $| \phi_{\text{real}} - \phi_{\text{calculado}} |$ en función de $\theta$ cuando $\theta \to 0$.
+\end{enumerate}
+
+\end{document}

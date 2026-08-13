@@ -1,0 +1,213 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[margin=2cm]{geometry}
+\usepackage{amsmath, amssymb}
+
+% Paquetes esenciales para los diagramas
+\usepackage{tikz}
+\usepackage{tikz-3dplot}
+\usetikzlibrary{arrows.meta, positioning, calc}
+
+% Paleta de colores institucionales y cinemáticos
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{eulphi}{RGB}{0, 114, 178}   % Azul (Z)
+\definecolor{eultheta}{RGB}{213, 94, 0}  % Naranja (Y)
+\definecolor{eulpsi}{RGB}{0, 158, 115}   % Verde (Z'')
+
+\begin{document}
+
+\section*{1. Secuencia de Ángulos de Euler (ZYZ Ejes Móviles)}
+
+El siguiente bloque muestra la secuencia paso a paso. Ideal para ser colocado en un entorno \texttt{columns} en Beamer o \texttt{minipage} en el documento maestro.
+
+\vspace{0.5cm}
+\begin{center}
+    % Configuración de la cámara (Elevación, Azimut)
+    \tdplotsetmaincoords{60}{110}
+    
+    % --- PASO 1: Rotación Phi sobre Z0 ---
+    \begin{tikzpicture}[tdplot_main_coords, scale=1.5, axis/.style={->, thick, >=stealth}]
+        \node[above] at (0,0,2.5) {\textbf{Paso 1: Rot. $\phi$ en $Z_0$}};
+        
+        % Marco fijo {0}
+        \draw[axis, gray] (0,0,0) -- (1.5,0,0) node[anchor=north east]{$X_0$};
+        \draw[axis, gray] (0,0,0) -- (0,1.5,0) node[anchor=north west]{$Y_0$};
+        \draw[axis, black] (0,0,0) -- (0,0,1.5) node[anchor=south]{$Z_0 = Z_1$};
+        
+        % Rotación Phi
+        \tdplotsetrotatedcoords{45}{0}{0}
+        \begin{scope}[tdplot_rotated_coords]
+            \draw[axis, eulphi] (0,0,0) -- (1.5,0,0) node[anchor=north]{$X_1$};
+            \draw[axis, eulphi] (0,0,0) -- (0,1.5,0) node[anchor=west]{$Y_1$};
+        \end{scope}
+        
+        % Arco Phi (En plano XY actual)
+        \tdplotdrawarc[->, thick, eulphi, dashed]{(0,0,0)}{1}{0}{45}{anchor=north}{$\phi$}
+    \end{tikzpicture}
+    \hspace{0.5cm}
+    % --- PASO 2: Rotación Theta sobre Y1 ---
+    \begin{tikzpicture}[tdplot_main_coords, scale=1.5, axis/.style={->, thick, >=stealth}]
+        \node[above] at (0,0,2.5) {\textbf{Paso 2: Rot. $\theta$ en $Y_1$}};
+        
+        % Marco {1} (Grisáceo de referencia)
+        \tdplotsetrotatedcoords{45}{0}{0}
+        \begin{scope}[tdplot_rotated_coords]
+            \draw[axis, gray] (0,0,0) -- (1.5,0,0) node[anchor=north]{$X_1$};
+            \draw[axis, black] (0,0,0) -- (0,1.5,0) node[anchor=west]{$Y_1 = Y_2$};
+            \draw[axis, gray] (0,0,0) -- (0,0,1.5) node[anchor=south]{$Z_1$};
+        \end{scope}
+        
+        % Rotación Theta (Acumulada: Z=45, Y=40)
+        \tdplotsetrotatedcoords{45}{40}{0}
+        \begin{scope}[tdplot_rotated_coords]
+            \draw[axis, eultheta] (0,0,0) -- (1.5,0,0) node[anchor=north]{$X_2$};
+            \draw[axis, eultheta] (0,0,0) -- (0,0,1.5) node[anchor=south west]{$Z_2$};
+        \end{scope}
+        
+        % Arco Theta (Plano XZ de Marco 1)
+        % Se orienta la cámara para que Z apunte a Y1 y trazar en su plano XY
+        \tdplotsetrotatedcoords{45-90}{-90}{0} 
+        \begin{scope}[tdplot_rotated_coords]
+            \tdplotdrawarc[->, thick, eultheta, dashed]{(0,0,0)}{1}{90}{50}{anchor=south west}{$\theta$}
+        \end{scope}
+    \end{tikzpicture}
+    \hspace{0.5cm}
+    % --- PASO 3: Rotación Psi sobre Z2 ---
+    \begin{tikzpicture}[tdplot_main_coords, scale=1.5, axis/.style={->, thick, >=stealth}]
+        \node[above] at (0,0,2.5) {\textbf{Paso 3: Rot. $\psi$ en $Z_2$}};
+        
+        % Marco {2} (Grisáceo de referencia)
+        \tdplotsetrotatedcoords{45}{40}{0}
+        \begin{scope}[tdplot_rotated_coords]
+            \draw[axis, gray] (0,0,0) -- (1.5,0,0) node[anchor=north]{$X_2$};
+            \draw[axis, gray] (0,0,0) -- (0,1.5,0) node[anchor=west]{$Y_2$};
+            \draw[axis, black] (0,0,0) -- (0,0,1.5) node[anchor=south west]{$Z_2 = Z_3$};
+        \end{scope}
+        
+        % Rotación Psi (Acumulada: Z=45, Y=40, Z=60)
+        \tdplotsetrotatedcoords{45}{40}{60}
+        \begin{scope}[tdplot_rotated_coords]
+            \draw[axis, eulpsi] (0,0,0) -- (1.5,0,0) node[anchor=north east]{$X_3$};
+            \draw[axis, eulpsi] (0,0,0) -- (0,1.5,0) node[anchor=north west]{$Y_3$};
+        \end{scope}
+        
+        % Arco Psi (Plano XY de Marco 2)
+        \tdplotsetrotatedcoords{45}{40}{0}
+        \begin{scope}[tdplot_rotated_coords]
+            \tdplotdrawarc[->, thick, eulpsi, dashed]{(0,0,0)}{0.8}{0}{60}{anchor=south}{$\psi$}
+        \end{scope}
+    \end{tikzpicture}
+\end{center}
+
+\vspace{1cm}
+\section*{2. Ángulos de Navegación: Roll-Pitch-Yaw (Ejes Fijos)}
+
+Esquema de un cuerpo rígido donde las rotaciones se aplican siempre respecto a los ejes estáticos del mundo.
+
+\vspace{0.5cm}
+\begin{center}
+    \tdplotsetmaincoords{70}{110}
+    \begin{tikzpicture}[tdplot_main_coords, scale=2, axis/.style={->, thick, >=stealth}]
+        
+        % Dibujo de cuerpo rígido abstracto (Dron/Vehículo)
+        \draw[fill=gray!20, opacity=0.7] (-0.8,-0.5,-0.1) -- (0.8,-0.5,-0.1) -- (0.8,0.5,-0.1) -- (-0.8,0.5,-0.1) -- cycle;
+        \draw[fill=gray!40, opacity=0.7] (0.8,-0.5,-0.1) -- (0.8,0.5,-0.1) -- (0.8,0.5,0.1) -- (0.8,-0.5,0.1) -- cycle;
+        \draw[fill=gray!30, opacity=0.7] (-0.8,-0.5,0.1) -- (0.8,-0.5,0.1) -- (0.8,0.5,0.1) -- (-0.8,0.5,0.1) -- cycle;
+        
+        % Ejes fijos universales
+        \draw[axis, black] (0,0,0) -- (2,0,0) node[anchor=north east]{$X_A \text{ (Frente)}$};
+        \draw[axis, black] (0,0,0) -- (0,2,0) node[anchor=north west]{$Y_A \text{ (Izquierda)}$};
+        \draw[axis, black] (0,0,0) -- (0,0,1.5) node[anchor=south]{$Z_A \text{ (Arriba)}$};
+        
+        % Arco YAW (Gamma sobre Z) - Plano XY
+        \tdplotdrawarc[->, thick, eulphi]{(0,0,0)}{1.2}{0}{45}{anchor=south}{\textbf{Yaw} ($\gamma$)}
+        
+        % Arco PITCH (Beta sobre Y) - Plano XZ
+        % Transformamos coordenadas para que Z apunte a Y
+        \tdplotsetrotatedcoords{0}{90}{90}
+        \begin{scope}[tdplot_rotated_coords]
+            \tdplotdrawarc[->, thick, eultheta]{(0,0,0)}{1.2}{0}{45}{anchor=south west}{\textbf{Pitch} ($\beta$)}
+        \end{scope}
+        
+        % Arco ROLL (Alpha sobre X) - Plano YZ
+        % Transformamos coordenadas para que Z apunte a X
+        \tdplotsetrotatedcoords{90}{90}{0}
+        \begin{scope}[tdplot_rotated_coords]
+            \tdplotdrawarc[->, thick, red!80!black]{(0,0,0)}{1.2}{0}{45}{anchor=south east}{\textbf{Roll} ($\alpha$)}
+        \end{scope}
+    \end{tikzpicture}
+\end{center}
+
+\vspace{1cm}
+\section*{3. Fenómeno Físico: Gimbal Lock (Bloqueo de Cardán)}
+
+Estos dos anillos concéntricos ilustran físicamente la pérdida del grado de libertad cuando $\theta = 0$.
+
+\vspace{0.5cm}
+\begin{center}
+    \tdplotsetmaincoords{70}{110}
+    
+    % --- ESTADO NORMAL (Sin singularidad) ---
+    \begin{tikzpicture}[tdplot_main_coords, scale=1.3]
+        \node[above] at (0,0,2.5) {\textbf{A. Gimbal Operativo ($\theta \neq 0$)}};
+        
+        % Eje central base
+        \draw[thick, gray, ->, >=stealth] (0,0,0) -- (0,0,2.2) node[anchor=south]{$Z_0$};
+        
+        % Anillo Exterior (Phi, Rot Z)
+        \tdplotsetrotatedcoords{30}{0}{0} % Phi = 30
+        \begin{scope}[tdplot_rotated_coords]
+            \draw[ultra thick, eulphi] (0,0,0) circle (2);
+            \draw[thick, eulphi, ->, >=stealth] (0,0,0) -- (2.5,0,0) node[anchor=north]{$X_1$};
+        \end{scope}
+        
+        % Anillo Medio (Theta, Rot Y_1)
+        \tdplotsetrotatedcoords{30}{45}{0} % Theta = 45
+        \begin{scope}[tdplot_rotated_coords]
+            \draw[ultra thick, eultheta] (0,0,0) circle (1.6);
+            \draw[thick, eultheta, ->, >=stealth] (0,0,0) -- (0,2,0) node[anchor=west]{$Y_2$};
+        \end{scope}
+        
+        % Anillo Interior (Psi, Rot Z_2)
+        \tdplotsetrotatedcoords{30}{45}{60} % Psi = 60
+        \begin{scope}[tdplot_rotated_coords]
+            \draw[ultra thick, eulpsi] (0,0,0) circle (1.2);
+            \draw[thick, eulpsi, ->, >=stealth] (0,0,0) -- (0,0,1.8) node[anchor=south west]{$Z_3$};
+        \end{scope}
+    \end{tikzpicture}
+    \hspace{1cm}
+    % --- ESTADO SINGULAR (Gimbal Lock) ---
+    \begin{tikzpicture}[tdplot_main_coords, scale=1.3]
+        \node[above] at (0,0,2.5) {\textbf{B. Gimbal Lock ($\theta = 0$)}};
+        
+        % Eje central base
+        \draw[thick, gray, ->, >=stealth] (0,0,0) -- (0,0,2.2) node[anchor=south]{$Z_0$};
+        
+        % Anillo Exterior (Phi, Rot Z)
+        \tdplotsetrotatedcoords{30}{0}{0} % Phi = 30
+        \begin{scope}[tdplot_rotated_coords]
+            \draw[ultra thick, eulphi] (0,0,0) circle (2);
+            \draw[thick, eulphi, ->, >=stealth] (0,0,0) -- (2.5,0,0) node[anchor=north]{$X_1$};
+        \end{scope}
+        
+        % Anillo Medio (Theta = 0 -> Colapsa con el anillo exterior)
+        \tdplotsetrotatedcoords{30}{0}{0} % Theta = 0
+        \begin{scope}[tdplot_rotated_coords]
+            \draw[ultra thick, eultheta] (0,0,0) circle (1.6);
+            \draw[thick, eultheta, ->, >=stealth] (0,0,0) -- (0,2,0) node[anchor=west]{$Y_2$};
+        \end{scope}
+        
+        % Anillo Interior (Psi, Rot Z_2)
+        \tdplotsetrotatedcoords{30}{0}{60} % Psi = 60
+        \begin{scope}[tdplot_rotated_coords]
+            \draw[ultra thick, eulpsi] (0,0,0) circle (1.2);
+            \draw[thick, eulpsi, ->, >=stealth] (0,0,0) -- (0,0,1.8) node[anchor=south west]{$Z_3$};
+        \end{scope}
+        
+        % Nota de error
+        \node[red, align=center] at (0,0,-2) {$\phi$ y $\psi$ giran sobre\\el \textbf{mismo eje} ($Z_0 = Z_3$)};
+    \end{tikzpicture}
+\end{center}
+
+\end{document}

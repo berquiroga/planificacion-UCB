@@ -1,0 +1,203 @@
+\documentclass[aspectratio=169]{beamer}
+
+% Configuración del tema y colores UCB
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+% Ajuste de contrastes
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+
+% Paquetes estándar
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage{booktabs}
+
+% Información del documento
+\title[Ángulos de Euler y Gimbal Lock]{Parametrización Mínima: Euler, RPY y Gimbal Lock}
+\subtitle{Robótica Industrial (IMT-342) — Universidad Católica Boliviana Tarija}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\date{Jueves 13 de Agosto de 2026}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% Diapositiva 1
+\begin{frame}{El Problema de Representar la Orientación en $3\text{D}$}
+    \textbf{Parametrizaciones Mínimas vs. Sobredeterminadas}
+    \vspace{0.3cm}
+    
+    \begin{table}[]
+        \centering
+        \renewcommand{\arraystretch}{1.5}
+        \resizebox{\textwidth}{!}{
+        \begin{tabular}{l c l}
+        \toprule
+        \textbf{Representación} & \textbf{Parámetros} & \textbf{Ventajas / Desventajas} \\ \midrule
+        \textbf{Matriz de Rotación} $R \in SO(3)$ & 9 elementos (6 restricciones) & Global, sin singularidades, pero redundante. \\
+        \textbf{Ángulos de Euler / RPY} & 3 ángulos $(\phi, \theta, \psi)$ & Mínima, intuitiva, pero sufre de Gimbal Lock. \\
+        \textbf{Cuaterniones Unitarios} $\mathbf{q} \in \mathbb{S}^3$ & 4 elementos (1 restricción) & Sin singularidades, computacionalmente eficiente. \\ \bottomrule
+        \end{tabular}
+        }
+    \end{table}
+    
+    \vspace{0.3cm}
+    \begin{alertblock}{Teorema de Topological Obstruction (Stuelpnagel, 1964)}
+        \textit{"No existe una parametrización global continua de $SO(3)$ que utilice únicamente 3 parámetros sin presentar singularidades."}
+    \end{alertblock}
+\end{frame}
+
+% Diapositiva 2
+\begin{frame}{La Geometría de la Muñeca Esférica del ABB IRB 120}
+    \textbf{Ángulos de Euler (Secuencia ZYZ Móvil):} Tres giros sucesivos $Z \to Y' \to Z''$.
+    
+    \vspace{0.2cm}
+    \textbf{Derivación Matricial:}
+    \begin{equation*}
+        R_{ZYZ}(\phi, \theta, \psi) = R_z(\phi) R_y(\theta) R_z(\psi)
+    \end{equation*}
+    
+    \vspace{0.1cm}
+    \begin{center}
+    \resizebox{0.85\textwidth}{!}{
+        $R_{ZYZ} = \begin{bmatrix}      
+        c_\phi c_\theta c_\psi - s_\phi s_\psi & -c_\phi c_\theta s_\psi - s_\phi c_\psi & c_\phi s_\theta \\      
+        s_\phi c_\theta c_\psi + c_\phi s_\psi & -s_\phi c_\theta s_\psi + c_\phi c_\psi & s_\phi s_\theta \\      
+        -s_\theta c_\psi & s_\theta s_\psi & c_\theta      
+        \end{bmatrix}$
+    }
+    \end{center}
+    
+    \vspace{0.3cm}
+    \begin{block}{Aplicación Mecatrónica (Laboratorio)}
+        En la muñeca esférica del robot industrial:
+        \begin{itemize}
+            \item La articulación $J4$ corresponde a $\phi$
+            \item La articulación $J5$ corresponde a $\theta$
+            \item La articulación $J6$ corresponde a $\psi$
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+% Diapositiva 3
+\begin{frame}{Parametrización Aeroespacial y Vehicular (RPY)}
+    \textbf{Ángulos de Navegación: Roll-Pitch-Yaw (XYZ Fijo)}
+    \begin{itemize}
+        \item \textbf{Roll} ($\alpha$ en $X$), \textbf{Pitch} ($\beta$ en $Y$), \textbf{Yaw} ($\gamma$ en $Z$).
+    \end{itemize}
+    
+    \vspace{0.2cm}
+    \textbf{Ecuación Central (Ejes Fijos de la Base):}
+    \begin{equation*}
+        R_{RPY}(\gamma, \beta, \alpha) = R_z(\gamma) R_y(\beta) R_x(\alpha)
+    \end{equation*}
+    
+    \vspace{0.1cm}
+    \begin{center}
+    \resizebox{0.85\textwidth}{!}{
+        $R_{RPY} = \begin{bmatrix}      
+        c_\gamma c_\beta & c_\gamma s_\beta s_\alpha - s_\gamma c_\alpha & c_\gamma s_\beta c_\alpha + s_\gamma s_\alpha \\      
+        s_\gamma c_\beta & s_\gamma s_\beta s_\alpha + c_\gamma c_\alpha & s_\gamma s_\beta c_\alpha - c_\gamma s_\alpha \\      
+        -s_\beta & c_\beta s_\alpha & c_\beta c_\alpha      
+        \end{bmatrix}$
+    }
+    \end{center}
+    
+    \vspace{0.3cm}
+    \begin{exampleblock}{Nota de Extracción Inversa}
+        Si conocemos la matriz $R$, podemos despejar el Pitch sin ambigüedades como: \\
+        \centering $\beta = \text{atan2}(-r_{31}, \sqrt{r_{11}^2 + r_{21}^2})$
+    \end{exampleblock}
+\end{frame}
+
+% Diapositiva 4
+\begin{frame}{El Fenómeno del Gimbal Lock (Bloqueo de Cardán)}
+    \textbf{Pérdida de un Grado de Libertad Representacional}\\
+    Ocurre cuando el eje de la primera y tercera rotación se alinean en el espacio.
+    
+    \vspace{0.2cm}
+    \textbf{Prueba Matemática en Euler ZYZ cuando $\theta = 0$:} \\
+    Sustituyendo $\cos(0) = 1$ y $\sin(0) = 0$ en $R_{ZYZ}$:
+    
+    \begin{equation*}
+        R_{ZYZ}(\phi, 0, \psi) = \begin{bmatrix}      
+        c_\phi c_\psi - s_\phi s_\psi & -c_\phi s_\psi - s_\phi c_\psi & 0 \\      
+        s_\phi c_\psi + c_\phi s_\psi & -s_\phi s_\psi + c_\phi c_\psi & 0 \\      
+        0 & 0 & 1      
+        \end{bmatrix} 
+        = \begin{bmatrix}      
+        \cos(\phi + \psi) & -\sin(\phi + \psi) & 0 \\      
+        \sin(\phi + \psi) &  \cos(\phi + \psi) & 0 \\      
+        0 & 0 & 1      
+        \end{bmatrix}
+    \end{equation*}
+    
+    \vspace{0.2cm}
+    \begin{alertblock}{Conclusión Crítica}
+        ¡La matriz solo depende de la suma $(\phi + \psi)$! Existen infinitas combinaciones de $\phi$ y $\psi$ que producen la misma matriz. Se ha perdido la capacidad de rotar en el espacio 3D de forma independiente.
+    \end{alertblock}
+\end{frame}
+
+% Diapositiva 5
+\begin{frame}{¿Por qué la Cinemática Inversa Falla en Singularidad?}
+    \begin{columns}
+        \begin{column}{0.45\textwidth}
+            \textbf{Extracción para ZYZ ($\theta \neq 0$):}
+            \begin{align*}
+                \theta &= \text{atan2}\left(\sqrt{r_{13}^2 + r_{23}^2}, r_{33}\right) \\
+                \phi &= \text{atan2}(r_{23}, r_{13}) \\
+                \psi &= \text{atan2}(r_{32}, -r_{31})
+            \end{align*}
+        \end{column}
+        \vrule{}
+        \begin{column}{0.45\textwidth}
+            \textbf{El Colapso cuando $\theta = 0$:} \\
+            Si $\theta=0$, entonces $r_{13} = 0$ y $r_{23} = 0$.
+            \vspace{0.2cm}
+            \begin{alertblock}{Indeterminación}
+                $\phi = \text{atan2}(0, 0) \implies \text{Error Numérico}$
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.6cm}
+    \begin{block}{Impacto en el Controlador (Hardware)}
+        Los controladores numéricos colapsan o generan velocidades angulares teóricamente infinitas en los motores intentando resolver la división por cero.
+    \end{block}
+\end{frame}
+
+% Diapositiva 6
+\begin{frame}{La Solución Industrial: Cuaterniones Unitarios ($\mathbb{S}^3$)}
+    \textbf{Transición a la Representación Libre de Singularidades}\\
+    Los cuaterniones basan su matemática en un vector de rotación de Euler-Rodrigues en 4D.
+    
+    \vspace{0.3cm}
+    \textbf{Definición de Cuaternión Unitario $\mathbf{q}$:}
+    \begin{equation*}
+        \mathbf{q} = [q_w, q_x, q_y, q_z] = \left[ \cos\left(\frac{\theta}{2}\right), u_x \sin\left(\frac{\theta}{2}\right), u_y \sin\left(\frac{\theta}{2}\right), u_z \sin\left(\frac{\theta}{2}\right) \right]
+    \end{equation*}
+    
+    \vspace{0.3cm}
+    \begin{exampleblock}{¿Por qué ROS usa Cuaterniones?}
+        \begin{enumerate}
+            \item \textbf{Robustez:} No sufren de Gimbal Lock por carecer de singularidades globales.
+            \item \textbf{Eficiencia:} Componer rotaciones es un producto algebraico de cuaterniones (más ligero computacionalmente que multiplicar matrices de $3\times3$).
+            \item \textbf{SLERP:} Permiten la interpolación esférica lineal suave para mover el robot entre dos poses sin derivas indeseadas.
+        \end{enumerate}
+    \end{exampleblock}
+\end{frame}
+
+\end{document}
