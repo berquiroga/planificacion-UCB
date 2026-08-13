@@ -1,0 +1,148 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+
+% --- TEMA Y ESTILO ---
+\usetheme{Madrid}
+\usecolortheme{whale}
+
+% --- PAQUETES ---
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\sisetup{
+  output-decimal-marker = {,},
+  per-mode = symbol
+}
+
+% --- INFORMACIÓN DEL CURSO ---
+\title[Shockley y Punto Q]{Ecuación de Shockley, Recta de Carga y Punto Q}
+\subtitle{Análisis Matemático No Lineal y Resistencia Dinámica}
+\author{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' -- Sede Tarija}
+\date{13 de agosto de 2026}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{El Conflicto No Lineal en Circuitos}
+  \begin{block}{El Problema Matemático}
+    Tenemos 2 variables desconocidas ($I_D, V_D$) y 2 ecuaciones de distinta naturaleza:
+  \end{block}
+  \vspace{0.3cm}
+  \begin{enumerate}
+      \item \textbf{Ecuación Lineal (LVK de la Malla):}
+      \begin{equation*}
+          I_D = \frac{V_{CC} - V_D}{R_S}
+      \end{equation*}
+      \item \textbf{Ecuación No Lineal (Física del Diodo):}
+      \begin{equation*}
+          I_D = I_S \left( \exp\left(\frac{V_D}{\eta V_T}\right) - 1 \right)
+      \end{equation*}
+  \end{enumerate}
+  \vspace{0.3cm}
+  \alert{\textbf{Conclusión:}} No existe solución algebraica cerrada explícita.
+\end{frame}
+
+\begin{frame}{Método Gráfico: La Recta de Carga y el Punto Q}
+    \begin{columns}
+        \begin{column}{0.45\textwidth}
+            \textbf{Recta de Carga en DC:}
+            \begin{itemize}
+                \item Representa restricciones de la fuente y resistencia.
+                \item Corte V: $V_{D} = V_{CC} = \qty{5}{\volt}$
+                \item Corte I: $I_{D} = \frac{V_{CC}}{R_S} = \qty{22.7}{\milli\ampere}$
+            \end{itemize}
+            \vspace{0.3cm}
+            \textbf{Punto de Reposo ($Q$):}\\
+            Es la intersección exacta entre la Recta y la Exponencial.
+        \end{column}
+        
+        \begin{column}{0.55\textwidth}
+            \begin{tikzpicture}
+                \begin{axis}[
+                    width=\textwidth, height=6.5cm,
+                    axis lines=middle,
+                    xlabel={$V_D$ (\unit{\volt})}, ylabel={$I_D$ (\unit{\milli\ampere})},
+                    xmin=0, xmax=5.5, ymin=0, ymax=26,
+                    grid=both, grid style={dashed, gray!30},
+                    legend style={font=\tiny, at={(0.5,0.95)}, anchor=north}
+                ]
+                % Recta de Carga
+                \addplot[thick, red, domain=0:5] {22.727 - 4.545*x};
+                \addlegendentry{Recta DC}
+                % Curva Shockley
+                \addplot[thick, blue, domain=0:0.74, samples=150] {2.52e-6 * (exp(x/0.0452375) - 1)};
+                \addlegendentry{Shockley}
+                % Punto Q
+                \addplot[only marks, mark=*, black] coordinates {(0.718, 19.46)};
+                \node[anchor=south west, font=\footnotesize\bfseries] at (0.718, 19.46) {$Q$};
+                \draw[dashed, black!60] (0.718, 0) -- (0.718, 19.46) -- (0, 19.46);
+                \end{axis}
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Modelo de Pequeña Señal y $r_d$}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{block}{Resistencia Dinámica ($r_d$)}
+              Es el inverso de la pendiente de la curva en el punto $Q$:
+              \begin{equation*}
+                  r_d = \left. \frac{d V_D}{d I_D} \right\vert_{Q} \approx \frac{\eta V_T}{I_{DQ}}
+              \end{equation*}
+            \end{block}
+            
+            \vspace{0.2cm}
+            \textbf{Conexión PFI:}\\
+            A $I_D = \qty{19.46}{\milli\ampere}$, la pendiente es pronunciada. El diodo opone solo \textbf{\qty{2.3}{\ohm}} de resistencia a transitorios de AC.
+        \end{column}
+        
+        \begin{column}{0.5\textwidth}
+            \begin{tikzpicture}
+                \begin{axis}[
+                    width=\textwidth, height=6.5cm,
+                    axis lines=middle,
+                    xlabel={$V_D$ (V)}, ylabel={$I_D$ (mA)},
+                    xmin=0.69, xmax=0.74, ymin=5, ymax=26,
+                    grid=both, grid style={dashed, gray!30},
+                    legend style={font=\tiny, at={(0.05,0.95)}, anchor=north west}
+                ]
+                % Curva Shockley (Zoom)
+                \addplot[thick, blue, domain=0.69:0.74, samples=100] {2.52e-6 * (exp(x/0.0452375) - 1)};
+                \addlegendentry{Diodo}
+                % Tangente r_d (Pendiente 430.3 mA/V)
+                \addplot[thick, magenta, dashed, domain=0.69:0.74] {430.3*(x - 0.718) + 19.46};
+                \addlegendentry{Tangente ($1/r_d$)}
+                % Punto Q
+                \addplot[only marks, mark=*, black] coordinates {(0.718, 19.46)};
+                \node[anchor=east, font=\bfseries] at (0.717, 19.46) {$Q$};
+                \end{axis}
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Resolución: Método Numérico y Taller}
+  En lugar de resolver analíticamente con la Función W de Lambert:
+  \begin{equation*}
+      V_{DQ} = V_{CC} - \eta V_T \cdot W \left( \frac{I_S R_S}{\eta V_T} \exp\left(\frac{V_{CC}}{\eta V_T}\right) \right)
+  \end{equation*}
+  
+  \vspace{0.3cm}
+  \textbf{Métodos Prácticos de Ingeniería:}
+  \begin{enumerate}
+      \item \textbf{Iteración Manual (Newton-Raphson):} Resolveremos el ejercicio paso a paso en la pizarra.
+      \item \textbf{Computacional (Python):} Utilizaremos la función \texttt{scipy.optimize.fsolve} para encontrar el punto Q y trazar exactamente los gráficos que acabamos de ver.
+  \end{enumerate}
+\end{frame}
+
+\end{document}

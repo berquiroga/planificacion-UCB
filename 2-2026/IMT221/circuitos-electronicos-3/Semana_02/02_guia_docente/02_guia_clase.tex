@@ -1,0 +1,287 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- PAQUETES PRINCIPALES ---
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb, mathtools}
+\usepackage{siunitx}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% --- PAQUETE PARA GRÁFICAS MATEMÁTICAS ---
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+% --- CONFIGURACIÓN DE COLORES Y CÓDIGO (PYTHON) ---
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.96,0.96,0.96}
+
+\lstdefinestyle{pythonstyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=4,
+    language=Python
+}
+\lstset{style=pythonstyle}
+
+% --- CONFIGURACIÓN DE SIUNITX ---
+\sisetup{
+  output-decimal-marker = {,},
+  per-mode = symbol,
+  inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+% --- ESTILO DE CABECERA Y ENCABEZADOS ---
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{Circuitos Electrónicos III (IMT-221)}}
+\rhead{Sesión 3: Ecuación Trascendente y Punto Q}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% --- ENTORNOS PERSONALIZADOS ---
+\newtcolorbox{aviso}[1][]{
+  colback=red!5!white,
+  colframe=red!75!black,
+  fonttitle=\bfseries,
+  title=#1
+}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{Apuntes de Cátedra: Sesión 3}}\\[0.3cm]
+    {\large \textbf{Ecuación de Shockley, Recta de Carga y Punto de Operación (Q)}}\\
+    \textit{Docente: M.Sc. Ing. Bernardo Quiroga Turdera \quad | \quad Fecha: 13 de agosto de 2026}
+    \vspace{0.3cm}
+    \hrule
+\end{center}
+
+\vspace{0.3cm}
+
+% ==========================================
+% SECCIÓN 1: BLINDAJE TEÓRICO
+% ==========================================
+\section{Blindaje Teórico: Mitos vs. Realidades (Feedback Sesión 2)}
+Tras el trabajo tribal, consolidamos los siguientes conceptos fundamentales de la física del silicio:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{@{} >{\bfseries}p{3.5cm} X X @{}}
+\toprule
+Misión Tribal & Concepto Clave Correcto & Mito Común a Corregir \\
+\midrule
+1. Dopaje y Transporte & 
+La \textbf{Deriva} requiere un campo $\mathbf{E}$ externo. La \textbf{Difusión} ocurre por un gradiente de concentración ($dn/dx$). & 
+\textcolor{red}{Mito:} El Silicio Tipo N tiene carga neta negativa. \textit{Realidad:} Es eléctricamente neutro; solo tiene portadores mayoritarios libres.\\
+
+2. Unión P-N y $V_0$ & 
+El Potencial de Contacto ($V_0$) nace por los iones fijos ($N_D^+, N_A^-$) en la zona de deplexión tras la recombinación. & 
+\textcolor{red}{Mito:} $V_0$ se puede medir con un multímetro. \textit{Realidad:} Los potenciales de contacto de las puntas de prueba lo cancelan en equilibrio.\\
+
+3. Shockley y Polarización & 
+En polarización directa, la barrera se reduce a ($V_0 - V_D$), permitiendo que la difusión crezca exponencialmente. & 
+\textcolor{red}{Mito:} $I_S$ es constante. \textit{Realidad:} Es críticamente sensible; se duplica aprox. cada \qty{10}{\celsius}.\\
+
+4. Resistencia Dinámica & 
+La resistencia de pequeña señal $r_d = \frac{\eta V_T}{I_D}$ depende inversamente de la corriente en DC. & 
+\textcolor{red}{Mito:} Confundir la resistencia estática ($R_{DC} = V_D/I_D$) con la dinámica ($r_d = dV_D/dI_D$).\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+% ==========================================
+% SECCIÓN 2: TEORÍA Y CONFLICTO NO LINEAL
+% ==========================================
+\section{El Conflicto No Lineal en un Circuito DC}
+Dado un circuito simple con una fuente $V_{CC}$, una resistencia limitadora $R_S$ y un diodo en serie, tenemos un sistema de dos ecuaciones y dos incógnitas ($I_D, V_D$):
+\begin{align}
+    \text{Ecuación de la red (LVK):} \quad & I_D = \frac{V_{CC} - V_D}{R_S} \label{eq:lvk} \\
+    \text{Ecuación del semiconductor:} \quad & I_D = I_S \left( \exp\left(\frac{V_D}{\eta V_T}\right) - 1 \right) \label{eq:shockley}
+\end{align}
+Al igualar \eqref{eq:lvk} y \eqref{eq:shockley}, obtenemos una \textbf{ecuación trascendente} que no posee una solución algebraica explícita mediante funciones elementales. 
+
+\subsection{Método Gráfico: La Recta de Carga}
+Representa todas las combinaciones posibles impuestas por la fuente y la resistencia.
+\begin{itemize}
+    \item \textbf{Corte en Eje $V_D$ ($I_D = 0$):} $V_{D(\max)} = V_{CC}$ (Circuito abierto).
+    \item \textbf{Corte en Eje $I_D$ ($V_D = 0$):} $I_{D(\max)} = \frac{V_{CC}}{R_S}$ (Cortocircuito).
+\end{itemize}
+
+% GRÁFICA 1: RECTA DE CARGA Y PUNTO Q
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=12cm, height=7cm,
+            axis lines=middle,
+            xlabel={$V_D$ (\unit{\volt})},
+            ylabel={$I_D$ (\unit{\milli\ampere})},
+            xmin=0, xmax=5.5,
+            ymin=0, ymax=26,
+            grid=both,
+            grid style={dashed, gray!30},
+            legend style={at={(0.5,0.95)}, anchor=north}
+        ]
+        
+        % Recta de Carga (I_D en mA = (5 - V_D)/0.22) = 22.727 - 4.545*V_D
+        \addplot[thick, red, domain=0:5] {22.727 - 4.545*x};
+        \addlegendentry{Recta de Carga DC}
+
+        % Curva Shockley (I_s = 2.52e-6 mA, eta*Vt = 0.0452375 V)
+        \addplot[thick, blue, domain=0:0.74, samples=150] {2.52e-6 * (exp(x/0.0452375) - 1)};
+        \addlegendentry{Ecuación de Shockley}
+
+        % Punto Q (0.718, 19.46)
+        \addplot[only marks, mark=*, black, mark size=2.5pt] coordinates {(0.718, 19.46)};
+        \node[anchor=south west, font=\bfseries] at (0.718, 19.46) {$Q \, (0.718\text{ V}, 19.46\text{ mA})$};
+        
+        % Líneas de proyección
+        \draw[dashed, black!60, thick] (0.718, 0) -- (0.718, 19.46) -- (0, 19.46);
+        
+        % Anotaciones de cortes
+        \node[anchor=south west] at (5, 0) {$V_{CC} = 5\text{ V}$};
+        \node[anchor=south west] at (0, 22.727) {$\frac{V_{CC}}{R_S}$};
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Intersección gráfica de la Ecuación Lineal (Recta de Carga) y la Ecuación No Lineal (Shockley).}
+\end{figure}
+
+% ==========================================
+% SECCIÓN 3: PROBLEMA DE INGENIERÍA (NEWTON-RAPHSON)
+% ==========================================
+\section{Resolución del Problema de Ingeniería: Método Iterativo}
+
+\textbf{Enunciado:} Para el circuito de protección del Hito 1 del PFI, se alimenta un diodo 1N4148 con $V_{CC} = \qty{5.0}{\volt}$ a través de $R_S = \qty{220}{\ohm}$. A temperatura ambiente (\qty{27}{\celsius} $\implies V_T = \qty{25.85}{\milli\volt}$), los parámetros son $I_S = \qty{2.52}{\nano\ampere}$ y $\eta = 1.75$. Calcule el punto $Q$ y $r_d$ iterativamente.
+
+\vspace{0.3cm}
+\noindent \textbf{Paso 1: Función Objetivo de Newton-Raphson}\\
+Definimos $f(V_D) = 0$ y su derivada evaluando $\eta V_T = 1.75 \times \qty{0.02585}{\volt} = \qty{0.0452375}{\volt}$:
+\begin{align*}
+    f(V_D) &= I_S \left( e^{\frac{V_D}{\eta V_T}} - 1 \right) - \frac{V_{CC} - V_D}{R_S} \\
+    f'(V_D) &= \frac{I_S}{\eta V_T} e^{\frac{V_D}{\eta V_T}} + \frac{1}{R_S}
+\end{align*}
+La actualización es: $V_D^{(k+1)} = V_D^{(k)} - \frac{f(V_D^{(k)})}{f'(V_D^{(k)})}$.
+
+\vspace{0.3cm}
+\noindent \textbf{Paso 2: Iteraciones Manuales (Semilla $V_D^{(0)} = \qty{0.7000}{\volt}$)}
+\begin{align*}
+    \text{\textbf{Iteración 0:} } \quad f(0.7) &= \qty{13.064}{\milli\ampere} - \qty{19.545}{\milli\ampere} = \qty{-6.481}{\milli\ampere} \\
+    f'(0.7) &= \qty{0.28877}{\siemens} + \qty{0.00454}{\siemens} = \qty{0.29331}{\siemens} \\
+    V_D^{(1)} &= 0.7000 - \frac{-0.006481}{0.29331} = \mathbf{\qty{0.7221}{\volt}} \\[10pt]
+    \text{\textbf{Iteración 1:} } \quad f(0.7221) &= \qty{21.312}{\milli\ampere} - \qty{19.445}{\milli\ampere} = \qty{+1.867}{\milli\ampere} \\
+    f'(0.7221) &= \qty{0.47111}{\siemens} + \qty{0.00454}{\siemens} = \qty{0.47565}{\siemens} \\
+    V_D^{(2)} &= 0.7221 - \frac{0.001867}{0.47565} = \mathbf{\qty{0.71818}{\volt}} \\[10pt]
+    \text{\textbf{Iteración 2:} } \quad f(0.71818) &= \qty{19.522}{\milli\ampere} - \qty{19.462}{\milli\ampere} = \mathbf{\qty{+0.060}{\milli\ampere}} \approx 0
+\end{align*}
+El valor converge a: $V_{DQ} \approx \mathbf{\qty{0.718}{\volt}}$ e $I_{DQ} = \frac{5.0 - 0.718}{220} = \mathbf{\qty{19.46}{\milli\ampere}}$.
+
+\vspace{0.3cm}
+\noindent \textbf{Paso 3: Cálculo de la Resistencia Dinámica ($r_d$)}
+\begin{equation}
+    r_d = \frac{\eta V_T}{I_{DQ}} = \frac{\qty{45.2375}{\milli\volt}}{\qty{19.46}{\milli\ampere}} = \mathbf{\qty{2.324}{\ohm}}
+\end{equation}
+
+% GRÁFICA 2: ZOOM A LA TANGENTE (r_d)
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=10cm, height=6cm,
+            axis lines=middle,
+            xlabel={$V_D$ (\unit{\volt})},
+            ylabel={$I_D$ (\unit{\milli\ampere})},
+            xmin=0.69, xmax=0.74,
+            ymin=5, ymax=26,
+            grid=both,
+            grid style={dashed, gray!30},
+            legend style={at={(0.05,0.95)}, anchor=north west}
+        ]
+        
+        % Curva Shockley (Zoom)
+        \addplot[thick, blue, domain=0.69:0.74, samples=100] {2.52e-6 * (exp(x/0.0452375) - 1)};
+        \addlegendentry{Curva del Diodo}
+
+        % Tangente r_d (Pendiente m = 1/r_d = 1/2.324 Ohms = 0.430 A/V = 430.3 mA/V)
+        % Ecuación: I_D - 19.46 = 430.3(V_D - 0.718) => I_D = 430.3*(x - 0.718) + 19.46
+        \addplot[thick, magenta, dashed, domain=0.69:0.74] {430.3*(x - 0.718) + 19.46};
+        \addlegendentry{Recta Tangente (AC)}
+
+        % Punto Q
+        \addplot[only marks, mark=*, black, mark size=2.5pt] coordinates {(0.718, 19.46)};
+        \node[anchor=east, font=\bfseries] at (0.717, 19.46) {$Q$};
+        
+        % Explicación pendiente
+        \node[anchor=west, text=magenta, font=\small, fill=white] at (0.722, 12) {Pendiente $g_d = \frac{d I_D}{d V_D} = \frac{1}{r_d}$};
+
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Ampliación del Punto $Q$. La resistencia dinámica $r_d$ es la inversa de la pendiente de la recta tangente.}
+\end{figure}
+
+\begin{aviso}[Conexión PFI (Hito 1)]
+    En la red de protección del ADC, el diodo debe derivar picos de corriente. Su resistencia dinámica ($r_d \approx \qty{2.3}{\ohm}$) determina cuánto voltaje transitorio residual ``se le escapa'' al microcontrolador.
+\end{aviso}
+
+\newpage
+% ==========================================
+% SECCIÓN 4: SCRIPT PYTHON
+% ==========================================
+\section{Taller Computacional: Solución Numérica con Scipy}
+Este \textit{script} resuelve numéricamente la ecuación trascendente mediante `fsolve`.
+
+\begin{lstlisting}
+# ==============================================================================
+# UNIVERSIDAD CATOLICA BOLIVIANA "SAN PABLO" - SEDE TARIJA
+# Sesion 3: Solucion Ecuacion Trascendente, Recta de Carga y Punto Q
+# ==============================================================================
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.optimize import fsolve
+
+# 1. PARAMETROS DEL CIRCUITO Y DEL DIODO (1N4148)
+Vcc = 5.0             # Voltaje fuente DC (V)
+Rs = 220.0            # Resistencia limitadora (Ohms)
+q = 1.602e-19         
+kB = 1.3806e-23       
+T_K = 27 + 273.15     
+Vt = (kB * T_K) / q   # Voltaje termico (approx 25.85 mV)
+Is = 2.52e-9          
+eta = 1.75            
+
+# 2. SOLUCION NUMERICA DEL PUNTO Q (fsolve)
+def ecuacion_circuito(Vd):
+    id_shockley = Is * (np.exp(Vd / (eta * Vt)) - 1)
+    id_lvk = (Vcc - Vd) / Rs
+    return id_shockley - id_lvk
+
+Vd_guess = 0.7
+Vdq = fsolve(ecuacion_circuito, Vd_guess)[0]
+Idq = (Vcc - Vdq) / Rs  
+rd = (eta * Vt) / Idq
+
+print(f"Punto Q: Vdq={Vdq:.4f}V, Idq={Idq*1e3:.3f}mA, rd={rd:.3f} Ohms")
+\end{lstlisting}
+
+\end{document}

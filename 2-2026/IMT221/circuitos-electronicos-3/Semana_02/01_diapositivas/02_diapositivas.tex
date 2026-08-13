@@ -1,0 +1,130 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+
+% --- TEMA Y ESTILO ---
+\usetheme{Madrid}
+\usecolortheme{whale}
+
+% --- PAQUETES ---
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+\sisetup{
+  output-decimal-marker = {,},
+  per-mode = symbol
+}
+
+% --- INFORMACIÓN DEL CURSO ---
+\title[Shockley y Punto Q]{Ecuación de Shockley, Recta de Carga y Punto Q}
+\subtitle{Análisis Matemático No Lineal y Resistencia Dinámica}
+\author{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' -- Sede Tarija}
+\date{13 de agosto de 2026}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Feedback Sesión 2: Mitos y Realidades (I)}
+  \begin{table}
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{@{} >{\bfseries}p{3cm} X X @{}}
+      \toprule
+      Tema & Concepto Correcto & Mito a Corregir \\
+      \midrule
+      1. Dopaje y Transporte & Deriva (Campo $\mathbf{E}$) vs. Difusión (Gradiente $dn/dx$). & \textcolor{red}{Mito:} El Silicio N es eléctricamente negativo. (¡Es neutro!). \\
+      2. Unión P-N y $V_0$ & El potencial $V_0$ nace por iones fijos ($N_D^+, N_A^-$) en la deplexión. & \textcolor{red}{Mito:} $V_0$ se mide con un multímetro de forma directa. \\
+      \bottomrule
+    \end{tabularx}
+  \end{table}
+\end{frame}
+
+\begin{frame}{Feedback Sesión 2: Mitos y Realidades (II)}
+  \begin{table}
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{@{} >{\bfseries}p{3cm} X X @{}}
+      \toprule
+      Tema & Concepto Correcto & Mito a Corregir \\
+      \midrule
+      3. Polarización y Shockley & Directa: Reduce barrera ($V_0 - V_D$) y la difusión crece exponencial. & \textcolor{red}{Mito:} La cte. $I_S$ no varía. (¡Se duplica cada \qty{10}{\celsius}!). \\
+      4. Resistencia Dinámica & $r_d = \frac{\eta V_T}{I_D}$ depende inversamente de la corriente en DC. & \textcolor{red}{Mito:} Confundir la estática $R = V/I$ con la dinámica $r_d = dV/dI$. \\
+      \bottomrule
+    \end{tabularx}
+  \end{table}
+\end{frame}
+
+\begin{frame}{El Conflicto No Lineal en Circuitos}
+  \begin{block}{El Problema Matemático}
+    Tenemos 2 variables desconocidas ($I_D, V_D$) y 2 ecuaciones de distinta naturaleza:
+  \end{block}
+  \vspace{0.3cm}
+  \begin{enumerate}
+      \item \textbf{Ecuación Lineal (LVK de la Malla):}
+      \begin{equation*}
+          I_D = \frac{V_{CC} - V_D}{R_S}
+      \end{equation*}
+      \item \textbf{Ecuación No Lineal (Física del Diodo):}
+      \begin{equation*}
+          I_D = I_S \left( \exp\left(\frac{V_D}{\eta V_T}\right) - 1 \right)
+      \end{equation*}
+  \end{enumerate}
+  \vspace{0.3cm}
+  \alert{\textbf{Conclusión:}} No existe solución algebraica cerrada explícita (requiere Función W de Lambert). Debemos usar métodos iterativos o gráficos.
+\end{frame}
+
+\begin{frame}{Método Gráfico: La Recta de Carga}
+  \begin{block}{Definición}
+      La \textbf{Recta de Carga en DC} representa las restricciones de corriente y voltaje impuestas por la fuente ($V_{CC}$) y la resistencia ($R_S$).
+  \end{block}
+  
+  \vspace{0.3cm}
+  \textbf{Puntos de Corte de la Recta:}
+  \begin{itemize}
+      \item \textbf{Eje $V_D$ (Circuito Abierto):} $V_D = V_{CC}$ (con $I_D = 0$).
+      \item \textbf{Eje $I_D$ (Cortocircuito):} $I_D = \frac{V_{CC}}{R_S}$ (con $V_D = 0$).
+  \end{itemize}
+  
+  \vspace{0.3cm}
+  \alert{\textbf{Punto de Operación en Reposo (Q - Quiescent):}} \\
+  Es la intersección gráfica exacta entre la Recta de Carga y la curva exponencial. $Q = (V_{DQ}, I_{DQ})$.
+\end{frame}
+
+\begin{frame}{Modelo de Pequeña Señal y $r_d$}
+  Al aplicar una pequeña variación de señal (AC) sobre el punto de polarización (DC), analizamos la pendiente.
+  
+  \begin{block}{Resistencia Dinámica ($r_d$)}
+      Es el inverso de la pendiente de la curva en el punto $Q$:
+      \begin{equation*}
+          r_d = \left. \frac{d V_D}{d I_D} \right\vert_{Q} = \frac{\eta V_T}{I_{DQ} + I_S} \approx \frac{\eta V_T}{I_{DQ}}
+      \end{equation*}
+  \end{block}
+  
+  \textbf{Análisis Físico y Conexión PFI:}
+  \begin{itemize}
+      \item Si $I_{DQ} \uparrow \implies r_d \downarrow$ (Comportamiento casi cortocircuito para AC).
+      \item En el \textbf{PFI Hito 1}, esta $r_d$ determinará cuánto voltaje de pico residual atraviesa las protecciones y golpea el ADC del microcontrolador.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Resolución: Método Numérico y Taller}
+  En lugar de resolver analíticamente con la Función W de Lambert:
+  \begin{equation*}
+      V_{DQ} = V_{CC} - \eta V_T \cdot W \left( \frac{I_S R_S}{\eta V_T} \exp\left(\frac{V_{CC}}{\eta V_T}\right) \right)
+  \end{equation*}
+  
+  \vspace{0.3cm}
+  \textbf{Métodos Prácticos de Ingeniería:}
+  \begin{enumerate}
+      \item \textbf{Iteración Manual (Newton-Raphson):} Resolveremos el ejercicio paso a paso en la pizarra.
+      \item \textbf{Computacional (Python):} Utilizaremos la función \texttt{scipy.optimize.fsolve} para encontrar el punto Q y programar gráficamente la recta de carga.
+  \end{enumerate}
+\end{frame}
+
+\end{document}
