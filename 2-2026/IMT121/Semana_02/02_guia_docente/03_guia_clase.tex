@@ -1,0 +1,386 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- Paquetes Fundamentales ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[margin=2.5cm, headheight=15pt]{geometry}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{pdflscape} % Añadido para rotar páginas
+\usepackage[colorlinks=true, linkcolor=ucbblue, urlcolor=ucbblue]{hyperref}
+
+% --- Matemáticas y Electrónica ---
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage[american, RPvoltages]{circuitikz}
+
+% --- Elementos de Diseño Pedagógico y Código ---
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+% --- Configuración de Colores y siunitx ---
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\sisetup{
+    output-decimal-marker = {,},
+    per-mode = symbol,
+    inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+% --- Macros y Estilos ---
+\newcommand{\tecla}[1]{\colorbox{gray!20}{\texttt{\textbf{#1}}}} % Macro para atajos de teclado
+
+\tcbset{
+    caja_justificacion/.style={colback=blue!3, colframe=ucbblue, fonttitle=\bfseries, boxrule=0.8pt, arc=3pt},
+    caja_alerta/.style={colback=orange!5, colframe=orange!80!black, fonttitle=\bfseries, boxrule=0.8pt, arc=3pt}
+}
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{codegreen}\itshape,
+    stringstyle=\color{codepurple},
+    numbers=left, numberstyle=\tiny\color{gray},
+    frame=single, backgroundcolor=\color{gray!5},
+    breaklines=true, showstringspaces=false
+}
+
+% --- Estilo de Página ---
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textcolor{ucbblue}{\textbf{IMT-121 | Documento Maestro de Preparación Técnica}}}
+\rhead{\textbf{Sesiones 05 y 06}}
+\cfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{ucbblue}\leaders\hrule height \headrulewidth\hfill}}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{DOCUMENTO MAESTRO DE PREPARACIÓN TÉCNICA}} \\[0.2cm]
+    {\Large \textbf{SESIÓN 05}} \\[0.4cm]
+    \normalsize
+    \textbf{Asignatura:} IMT-121 Circuitos Electrónicos I \\
+    \textbf{Carrera:} Ingeniería Mecatrónica e Ingeniería Biomédica \\
+    Universidad Católica Boliviana ``San Pablo'' — Sede Tarija \\[0.2cm]
+    \textbf{Docente:} M.Sc. Ing. Bernardo Quiroga Turdera \\
+    \textbf{Gestión:} Semestre II/2026 \hspace{0.5cm} \textbf{Sesión:} 05 (Viernes 14 de Agosto de 2026) \\[0.2cm]
+    \textit{Marco de Referencia: Criterios ABET (1 y 6) | Marco CDIO (Concebir–Diseñar–Implementar–Operar) | Publicación IEEE}
+    \vspace{0.3cm}
+\end{center}
+
+\hrule
+\vspace{0.4cm}
+
+\section{Justificación Pedagógica y Reajuste Operativo}
+\begin{tcolorbox}[caja_justificacion, title=1. Justificación del Reajuste]
+La reubicación de la Práctica de Laboratorio N$^\circ$ 1 para el Lunes 17 de Agosto (90 minutos) responde a un criterio metodológico de optimización del tiempo experimental:
+\begin{itemize}[label=\textcolor{ucbblue}{\textbullet}]
+    \item Una sesión de laboratorio de 90 minutos no permite que el estudiante dedique tiempo en la bancada a deducir ecuaciones o depurar código desde cero.
+    \item La Sesión 05 se estructura como un Taller Teórico-Computacional de Pre-Comisionamiento, donde cada tríada formula el $100\%$ de los modelos analíticos, escribe los scripts en Python, y valida las simulaciones en LTspice.
+    \item De este modo, el lunes las tríadas ingresarán a la bancada exclusivamente a realizar el montaje físico, calibración, toma de datos y Validación Tripartita ($\varepsilon_r \le 5\%$), asegurando el cumplimiento del Criterio ABET 6 (Experimentación).
+\end{itemize}
+\end{tcolorbox}
+
+\section{Guion de Clase Minuto a Minuto (Sesión 05 — 90 Minutos)}
+\begin{center}
+    \begin{tabular}{|p{0.95\textwidth}|}
+        \hline
+        \cellcolor{gray!10} \textbf{ESTRUCTURA DE LA SESIÓN 05 (90 MIN)} \\
+        \hline
+        $\bullet$ \textbf{00--10 min:} Encuadre: Arquitectura del Laboratorio 1 y Validación. \\
+        $\bullet$ \textbf{10--35 min:} Deducción Analítica Completa del Circuito de Prueba ($3\times 3$). \\
+        $\bullet$ \textbf{35--55 min:} Live-Coding: Script en Python con Propagación de Tolerancias. \\
+        $\bullet$ \textbf{55--75 min:} Taller Guiado de LTspice: Configuración \texttt{.op} y Extracción. \\
+        $\bullet$ \textbf{75--85 min:} Metrología y Efecto de Carga de los Instrumentos Reales. \\
+        $\bullet$ \textbf{85--90 min:} Asignación de Roles por Tríada y Checklist de Entrada. \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\section{Fundamentación Teórica y Modelo Analítico (Previo Obligatorio)}
+\subsection{Topología del Circuito de Acondicionamiento (Hito 1 del PFI)}
+El circuito bajo análisis corresponde a una red de distribución resistiva de tres lazos coplanares utilizada para polarizar y atenuar la señal de un transductor (celda de carga para Mecatrónica / electrodo de biopotenciales para Biomédica).
+
+\begin{center}
+    \begin{circuitikz}[scale=1, transform shape]
+        % Malla 1
+        \draw (0,0) to[V, l=$V_{s1} {=} \qty{15.0}{\volt}$] (0,3)
+              % Se usa i_ para que la flecha vaya por debajo, sin solapar el texto superior
+              to[R, l=$R_1 {=} \qty{120}{\ohm}$, i_=$I_1$] (3,3) node[above=0.75cm]{\textbf{Nodo 1}}
+              to[R, l=$R_2 {=} \qty{220}{\ohm}$] (3,0) -- (0,0);
+        % Malla 2
+        \draw (3,3) to[R, l=$R_3 {=} \qty{470}{\ohm}$, i_=$I_2$] (6,3) node[above=0.75cm]{\textbf{Nodo 2}}
+              to[R, l=$R_4 {=} \qty{330}{\ohm}$] (6,0) -- (3,0);
+        % Malla 3
+        % Se dibuja la fuente Vs2 desde (9,3) a (9,0) para asegurar el polo positivo (+) arriba
+        \draw (6,3) to[R, l=$R_L {=} \qty{100}{\ohm}$, i_=$I_3$] (9,3) node[above=0.75cm]{\textbf{Nodo 3 (Salida)}};
+        \draw (6,0) -- (9,0) to[V, l_=$V_{s2} {=} \qty{-5.0}{\volt}$] (9,3);
+        
+        % GND y Nodos
+        \draw (4.5,0) node[ground]{};
+        \filldraw (3,3) circle (1.5pt);
+        \filldraw (6,3) circle (1.5pt);
+        \filldraw (9,3) circle (1.5pt);
+    \end{circuitikz}
+\end{center}
+
+\textbf{Parámetros Nominales del Circuito:}
+\begin{itemize}[label=\raisebox{0.25ex}{\tiny$\bullet$}, itemsep=0pt]
+    \item Fuente de Polarización 1: $V_{s1} = \qty{15.0}{\volt}$
+    \item Fuente de Polarización 2 (Retorno): $V_{s2} = \qty{-5.0}{\volt}$
+    \item Resistencias Comerciales (Serie E12/E24, $1/4\text{ W}$, $5\%$ tolerancia):
+    \item $R_1 = \qty{120}{\ohm}$, $R_2 = \qty{220}{\ohm}$, $R_3 = \qty{470}{\ohm}$, $R_4 = \qty{330}{\ohm}$
+    \item $R_L = \qty{100}{\ohm}$ (Resistencia de Carga)
+\end{itemize}
+
+\subsection{Formulación Matricial Canónica por Mallas ($\mathbf{R}\mathbf{I} = \mathbf{V}$)}
+Asumiendo tres corrientes de lazo $I_1, I_2, I_3$ circulando en sentido horario:
+\begin{equation}
+    \begin{bmatrix} R_{11} & R_{12} & R_{13} \\ R_{21} & R_{22} & R_{23} \\ R_{31} & R_{32} & R_{33} \end{bmatrix} \begin{bmatrix} I_1 \\ I_2 \\ I_3 \end{bmatrix} = \begin{bmatrix} V_{M1} \\ V_{M2} \\ V_{M3} \end{bmatrix}
+\end{equation}
+
+\textbf{Cálculo de Elementos de la Matriz de Resistencia $\mathbf{R}$:}
+\begin{itemize}
+    \item \textit{Diagonal Principal (Resistencias Propias de Malla):}
+    \begin{align*}
+        R_{11} &= R_1 + R_2 = 120 + 220 = \qty{340}{\ohm} \\
+        R_{22} &= R_2 + R_3 + R_4 = 220 + 470 + 330 = \qty{1020}{\ohm} \\
+        R_{33} &= R_4 + R_L = 330 + 100 = \qty{430}{\ohm}
+    \end{align*}
+    \item \textit{Fuera de la Diagonal (Resistencias Mutuas / Compartidas):}
+    \begin{align*}
+        R_{12} &= R_{21} = -R_2 = \qty{-220}{\ohm} \\
+        R_{13} &= R_{31} = \qty{0}{\ohm} \text{ (No hay contacto directo entre Malla 1 y Malla 3)} \\
+        R_{23} &= R_{32} = -R_4 = \qty{-330}{\ohm}
+    \end{align*}
+    \item \textit{Vector de Fuentes de Malla $\mathbf{V}$:}
+    \begin{align*}
+        V_{M1} &= +V_{s1} = +\qty{15.0}{\volt} \\
+        V_{M2} &= \qty{0.0}{\volt} \\
+        V_{M3} &= -V_{s2} = -(\qty{-5.0}{\volt}) = +\qty{5.0}{\volt}
+    \end{align*}
+\end{itemize}
+
+\textbf{Estructura matricial resultante:}
+\begin{equation}
+    \begin{bmatrix} 340 & -220 & 0 \\ -220 & 1020 & -330 \\ 0 & -330 & 430 \end{bmatrix} \begin{bmatrix} I_1 \\ I_2 \\ I_3 \end{bmatrix} = \begin{bmatrix} 15.0 \\ 0.0 \\ 5.0 \end{bmatrix}
+\end{equation}
+
+\subsection{Resolución Analítica Paso a Paso (Regla de Cramer)}
+\textbf{A. Determinante Principal ($\Delta_R$):} \\
+Desarrollando por cofactores a lo largo de la primera fila:
+\begin{align*}
+    \Delta_R &= 340 \cdot \det \begin{bmatrix} 1020 & -330 \\ -330 & 430 \end{bmatrix} - (-220) \cdot \det \begin{bmatrix} -220 & -330 \\ 0 & 430 \end{bmatrix} + 0 \\
+    \det \begin{bmatrix} 1020 & -330 \\ -330 & 430 \end{bmatrix} &= (1020)(430) - (-330)^2 = 438600 - 108900 = \qty{329700}{\ohm^2} \\
+    \det \begin{bmatrix} -220 & -330 \\ 0 & 430 \end{bmatrix} &= (-220)(430) - 0 = \qty{-94600}{\ohm^2} \\
+    \Delta_R &= 340(329700) + 220(-94600) = 112098000 - 20812000 = \mathbf{\qty{91286000}{\ohm^3}}
+\end{align*}
+Como $\Delta_R \neq 0$, el sistema es no singular y posee solución única.
+
+\vspace{0.2cm}
+\textbf{B. Determinantes de las Variables ($\Delta_1, \Delta_2, \Delta_3$):}
+\begin{itemize}
+    \item \textbf{Para la Malla 1 ($\Delta_1$):}
+    \begin{align*}
+        \Delta_1 &= \det \begin{bmatrix} 15.0 & -220 & 0 \\ 0.0 & 1020 & -330 \\ 5.0 & -330 & 430 \end{bmatrix} = 15.0(329700) - (-220)(0 - (-1650)) + 0 \\
+        \Delta_1 &= 4945500 + 363000 = \mathbf{\qty{5308500}{\volt\cdot\ohm^2}} \\
+        I_1 &= \frac{\Delta_1}{\Delta_R} = \frac{5308500}{91286000} \approx \mathbf{\qty{0.058152}{\ampere} = \qty{58.152}{\milli\ampere}}
+    \end{align*}
+    \item \textbf{Para la Malla 2 ($\Delta_2$):}
+    \begin{align*}
+        \Delta_2 &= \det \begin{bmatrix} 340 & 15.0 & 0 \\ -220 & 0.0 & -330 \\ 0 & 5.0 & 430 \end{bmatrix} = 340(0 - (-1650)) - 15.0(-94600 - 0) \\
+        \Delta_2 &= 561000 + 1419000 = \mathbf{\qty{1980000}{\volt\cdot\ohm^2}} \\
+        I_2 &= \frac{\Delta_2}{\Delta_R} = \frac{1980000}{91286000} \approx \mathbf{\qty{0.021690}{\ampere} = \qty{21.690}{\milli\ampere}}
+    \end{align*}
+    \item \textbf{Para la Malla 3 ($\Delta_3$):}
+    \begin{align*}
+        \Delta_3 &= \det \begin{bmatrix} 340 & -220 & 15.0 \\ -220 & 1020 & 0.0 \\ 0 & -330 & 5.0 \end{bmatrix} = 340(5100 - 0) - (-220)(-1100 - 0) + 15.0(72600 - 0) \\
+        \Delta_3 &= 1734000 - 242000 + 1089000 = \mathbf{\qty{2581000}{\volt\cdot\ohm^2}} \\
+        I_3 &= \frac{\Delta_3}{\Delta_R} = \frac{2581000}{91286000} \approx \mathbf{\qty{0.028274}{\ampere} = \qty{28.274}{\milli\ampere}}
+    \end{align*}
+\end{itemize}
+
+\subsection{Deducción de Voltajes Nodales Teóricos}
+A partir de las corrientes de lazo, se evalúan los voltajes en cada nodo respecto a Tierra ($GND$):
+\begin{align*}
+    V_{\text{Nodo 1}} &= V_{s1} - I_1 R_1 = 15.0 - (0.058152)(120) = \mathbf{\qty{8.0218}{\volt}} \\
+    V_{\text{Nodo 2}} &= (I_2 - I_3)R_4 = (0.058152 - 0.021690)(220) = \mathbf{\qty{2.1726}{\volt}} \\
+    V_{\text{Nodo 3}} &= \mathbf{\qty{-5}{\volt}}
+\end{align*}
+
+\textbf{Voltaje y Potencia en la Carga ($R_L$):}
+\begin{align*}
+    V_{RL} &= I_3 \cdot R_L = (\qty{0.028274}{\ampere})(\qty{100}{\ohm}) = \mathbf{\qty{2.8274}{\volt}} \\
+    P_{RL} &= I_3^2 \cdot R_L = (0.028274)^2 \cdot 100 = \mathbf{\qty{7.994}{\milli\watt}}
+\end{align*}
+
+\section{Cómputo Científico en Python (NumPy)}
+\textit{Cada estudiante debe tener este script en su laptop/Jupyter Notebook antes de ingresar a la sesión del lunes:}
+
+\begin{lstlisting}[language=Python]
+import numpy as np
+
+def resolver_red_laboratorio(R1_val, R2_val, R3_val, R4_val, RL_val, Vs1_val, Vs2_val):
+    """
+    Calcula corrientes de malla y voltajes nodales para la topologia de Lab 1.
+    Permite ingresar los valores reales medidos en el multimetro.
+    """
+    # 1. Estructuracion matricial R (3x3)
+    R11 = R1_val + R2_val
+    R22 = R2_val + R3_val + R4_val
+    R33 = R4_val + RL_val
+    
+    R12 = -R2_val
+    R23 = -R4_val
+    
+    R_mat = np.array([
+        [R11,  R12,  0.0],
+        [R12,  R22,  R23],
+        [0.0,  R23,  R33]
+    ], dtype=float)
+    
+    # 2. Vector de voltajes de malla
+    V_vec = np.array([Vs1_val, 0.0, -Vs2_val], dtype=float)
+    
+    # 3. Determinante y Solucion Canonica
+    det_R = np.linalg.det(R_mat)
+    assert np.abs(det_R) > 1e-6, "Error: La matriz es singular (det = 0)."
+    
+    I_mallas = np.linalg.solve(R_mat, V_vec)
+    
+    # 4. Calculo de Voltajes y Potencias de Interes
+    V_nodo1 = Vs1_val - I_mallas[0] * R1_val
+    V_nodo2 = (I_mallas[0] - I_mallas[1]) * R2_val
+    V_nodo3 = (I_mallas[1] - I_mallas[2]) * R4_val
+    V_carga = I_mallas[2] * RL_val
+    P_carga = (I_mallas[2]**2) * RL_val
+    
+    return {
+        "R_mat": R_mat,
+        "det_R": det_R,
+        "I_mallas": I_mallas,
+        "V_nodales": [V_nodo1, V_nodo2, V_nodo3],
+        "V_carga": V_carga,
+        "P_carga": P_carga
+    }
+
+# Ejecucion con valores nominales:
+res = resolver_red_laboratorio(120.0, 220.0, 470.0, 330.0, 100.0, 15.0, -5.0)
+
+print("--- RESULTADOS MATRICIALES (PYTHON) ---")
+print(f"Determinante Principal: {res['det_R']:.2f}")
+print("Corrientes de Malla (mA):", np.round(res['I_mallas'] * 1000, 3))
+print("Voltajes Nodales (V):", np.round(res['V_nodales'], 4))
+print(f"Voltaje en la Carga (RL): {res['V_carga']:.4f} V")
+print(f"Potencia en la Carga (RL): {res['P_carga']*1000:.4f} mW")
+\end{lstlisting}
+
+\newpage
+\section{Protocolo de Simulación Esquemática en LTspice XVII}
+\textbf{1. Construcción del Esquemático:}
+\begin{itemize}[itemsep=1pt]
+    \item Iniciar LTspice XVII y crear un nuevo archivo esquemático (\tecla{Ctrl + N}).
+    \item Insertar Resistores (\tecla{R}): $R_1 = 120$, $R_2 = 220$, $R_3 = 470$, $R_4 = 330$, $R_L = 100$.
+    \item Insertar Fuentes de Voltaje (\tecla{V}): \texttt{V1} en 15V, \texttt{V2} en -5V.
+    \item Masa / Tierra (\tecla{G}): Conectar un nodo de tierra común $GND$ a la referencia del circuito.
+    \item Conectar terminales mediante la herramienta de cableado (\tecla{F3}).
+    \item \textbf{Etiquetar Nodos (\tecla{F4}):} \texttt{N001} (entre $R_1,R_2,R_3$), \texttt{N002} (entre $R_3,R_4,R_L$), y \texttt{OUT} (sobre $R_L$).
+\end{itemize}
+
+\textbf{2. Directiva de Simulación:}
+\begin{itemize}[itemsep=1pt]
+    \item Presionar \tecla{.} para insertar directiva SPICE. Escribir: \texttt{.op} (Operating Point).
+    \item Hacer clic en Run (ícono del hombre corriendo). La ventana de resultados debe coincidir con la predicción:
+\end{itemize}
+\begin{center}
+    \texttt{V(n001) = 8.0218 V} \quad \texttt{V(n002) = -2.1727 V} \quad \texttt{V(out) = 2.8274 V} \quad \texttt{I(R1) = 0.05815 A}
+\end{center}
+
+\section{Metrología Experimental y Efecto de Carga (ABET Criterio 6)}
+Durante el laboratorio, los estudiantes se enfrentarán a discrepancias entre la teoría y la medición real causadas por fenómenos de instrumentación:
+
+\textbf{1. Modelo de Carga del Voltímetro:}
+Un multímetro digital real no tiene resistencia infinita; posee $R_v \approx \qty{10}{\mega\ohm}$. Al medir en paralelo sobre $R_3$ ($\qty{470}{\ohm}$), la resistencia de la rama se modifica:
+\begin{align*}
+    R_{\text{medido}} &= R_3 \parallel R_v = \frac{R_3 \cdot R_v}{R_3 + R_v} \\
+    \Delta R &= 470 - \frac{470 \cdot 10^7}{10^7 + 470} \approx \qty{0.022}{\ohm} \quad (\text{Efecto despreciable } < 0.01\%)
+\end{align*}
+
+\textbf{2. Modelo de Tensión de Carga del Amperímetro (Burden Voltage):}
+Para medir corriente, el multímetro se inserta en serie, introduciendo $R_a$ (entre $\qty{0.5}{\ohm}$ y $\qty{5}{\ohm}$). Al medir $I_3$ insertando el amperímetro en serie con $R_L$:
+\begin{equation}
+    R_{33,\text{real}} = R_4 + R_L + R_a = 330 + 100 + 1.5 = \qty{431.5}{\ohm}
+\end{equation}
+Esto reduce la corriente medida real respecto a la teórica: $I_{3,\text{medida}} = \frac{\Delta_3}{\Delta_{R,\text{modificado}}} < I_{3,\text{teórico}}$. \\
+\textit{Requisito:} Medir con un segundo multímetro la $R_a$ del amperímetro para justificar la variación.
+
+\section{Plan Táctico de 90 Minutos para el Laboratorio del Lunes}
+\textbf{Asignación de Roles en la Tríada:}
+\begin{itemize}[itemsep=1pt]
+    \item \textbf{Ing. de Hardware:} Ensamble en protoboard, calibración de fuentes y conexionado.
+    \item \textbf{Ing. de Adquisición:} Medición previa de $R$ reales, toma de datos y control de polaridades.
+    \item \textbf{Ing. de Cómputo:} Ejecución de Python, simulación en LTspice y cálculo de $\varepsilon_r$.
+\end{itemize}
+
+\begin{center}
+    \begin{tabular}{|p{0.95\textwidth}|}
+        \hline
+        \cellcolor{gray!10} \textbf{CRONOGRAMA DE BANCADA — LUNES (90 MINUTOS NETOS)} \\
+        \hline
+        $\bullet$ \textbf{00--15 min:} Caracterización previa de componentes (Medición de R reales). \\
+        $\bullet$ \textbf{15--35 min:} Montaje en protoboard y calibración de fuentes (15V / -5V). \\
+        $\bullet$ \textbf{35--60 min:} Adquisición de voltajes nodales y corrientes de lazo. \\
+        $\bullet$ \textbf{60--80 min:} Validación Tripartita en vivo (Cálculo de error $\varepsilon_r$). \\
+        $\bullet$ \textbf{80--90 min:} Desmontaje de estación, firma de bitácora y conclusiones. \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\newpage
+% INICIO PÁGINA HORIZONTAL PARA LA TABLA MAESTRA
+\begin{landscape}
+\section{Tabla Maestra de Validación Tripartita}
+\textit{Métrica de Aceptación Oficial:} $\varepsilon_r = \left\vert \frac{\text{Valor Experimental} - \text{Valor Teórico}}{\text{Valor Teórico}} \right\vert \times 100\% \le 5.0\%$
+
+\vspace{0.6cm}
+\begin{table}[h!]
+    \centering
+    \renewcommand{\arraystretch}{1.8}
+    \begin{tabularx}{\linewidth}{@{}Xcccccc@{}}
+        \toprule
+        \textbf{Variable de Circuito} & \textbf{Teórico (Py)} & \textbf{Sim. (LTspice)} & \textbf{Experimental} & \textbf{$\varepsilon_{r1}$ (Teo/Exp)} & \textbf{$\varepsilon_{r2}$ (Sim/Exp)} & \textbf{Criterio $\le 5\%$} \\
+        \midrule
+        Voltaje Nodo 1 ($V_1$) & \qty{8.022}{\volt} & \qty{8.022}{\volt} & \rule{3cm}{0.4pt} & \rule{2cm}{0.4pt} & \rule{2cm}{0.4pt} & [ ] C \quad / \quad [ ] F \\
+        Voltaje Nodo 3 ($V_3$) & \qty{-2.173}{\volt} & \qty{-2.173}{\volt} & \rule{3cm}{0.4pt} & \rule{2cm}{0.4pt} & \rule{2cm}{0.4pt} & [ ] C \quad / \quad [ ] F \\
+        Voltaje Carga ($V_{RL}$) & \qty{2.827}{\volt} & \qty{2.827}{\volt} & \rule{3cm}{0.4pt} & \rule{2cm}{0.4pt} & \rule{2cm}{0.4pt} & [ ] C \quad / \quad [ ] F \\
+        Corriente Malla 1 ($I_1$) & \qty{58.15}{\milli\ampere} & \qty{58.15}{\milli\ampere} & \rule{3cm}{0.4pt} & \rule{2cm}{0.4pt} & \rule{2cm}{0.4pt} & [ ] C \quad / \quad [ ] F \\
+        Corriente Malla 2 ($I_2$) & \qty{21.69}{\milli\ampere} & \qty{21.69}{\milli\ampere} & \rule{3cm}{0.4pt} & \rule{2cm}{0.4pt} & \rule{2cm}{0.4pt} & [ ] C \quad / \quad [ ] F \\
+        Corriente Carga ($I_3$) & \qty{28.27}{\milli\ampere} & \qty{28.27}{\milli\ampere} & \rule{3cm}{0.4pt} & \rule{2cm}{0.4pt} & \rule{2cm}{0.4pt} & [ ] C \quad / \quad [ ] F \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\vspace{1cm}
+\section{Checklist de Entrada al Laboratorio (Lunes 17 de Agosto)}
+\textit{Cada tríada debe presentarse a la bancada con los siguientes requisitos cumplidos:}
+
+\begin{itemize}[label=\Large $\square$, itemsep=6pt]
+    \item Hoja de desarrollo manuscrito con la resolución por Regla de Cramer calculada a mano.
+    \item Laptop por equipo con el script de Python funcional (\texttt{resolver\_red\_laboratorio}).
+    \item Archivo esquemático de LTspice (\texttt{.asc}) pre-armado y simulado.
+    \item Protoboard, cables de conexión rígidos (jumper) y componentes identificados: \qty{120}{\ohm}, \qty{220}{\ohm}, \qty{470}{\ohm}, \qty{330}{\ohm}, \qty{100}{\ohm} ($1/4\text{ W}$).
+    \item Cuaderno de bitácora técnica para registro de datos.
+\end{itemize}
+\end{landscape}
+% FIN PÁGINA HORIZONTAL
+
+\end{document}
