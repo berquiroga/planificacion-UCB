@@ -1,0 +1,186 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- PAQUETES PRINCIPALES ---
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb, mathtools}
+\usepackage{siunitx}
+\usepackage{graphicx}
+\usepackage[american]{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage{xcolor}
+
+% --- CONFIGURACIÓN DE UNIDADES (SIUNITX) ---
+\sisetup{
+  output-decimal-marker = {,},
+  per-mode = symbol,
+  inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+% --- CABECERAS Y PIES DE PÁGINA ---
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{Circuitos Electrónicos III (IMT-221)}}
+\rhead{Apunte y Ejercicio en Clase}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% --- ENTORNOS PERSONALIZADOS ---
+\newtcolorbox{enunciado}[1][]{
+  colback=blue!5!white,
+  colframe=blue!75!black,
+  fonttitle=\bfseries,
+  title=#1
+}
+\newtcolorbox{interpretacion}[1][]{
+  colback=green!5!white,
+  colframe=green!60!black,
+  fonttitle=\bfseries,
+  title=#1
+}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{Apunte Teórico y Problema de Ingeniería Resuelto}}\\[0.3cm]
+    {\large \textbf{Sesión 4: Modelos del Diodo y Análisis de Pequeña Señal en CA}}\\
+    \textit{Docente: M.Sc. Ing. Bernardo Quiroga Turdera}
+    \vspace{0.3cm}
+    \hrule
+\end{center}
+\vspace{0.4cm}
+
+% ==========================================
+% SECCIÓN 1
+% ==========================================
+\section{El Modelo Lineal por Tramos (Piecewise Linear Model - PWL)}
+Cuando un diodo conduce corrientes considerables, la caída de tensión no permanece fija en \qty{0.7}{\volt}, sino que se incrementa debido a la resistencia de volumen del silicio (\textit{bulk resistance}) y los contactos metálicos ($r_D$). El modelo PWL aproxima la curva exponencial mediante dos segmentos de recta:
+\begin{equation}
+    i_D = 
+    \begin{cases} 
+        0 & \text{para } v_D < V_{D0} \\ 
+        \frac{v_D - V_{D0}}{r_D} & \text{para } v_D \ge V_{D0} 
+    \end{cases}
+\end{equation}
+Donde $V_{D0} \approx \qty{0.65}{\volt}$ es la tensión de inflexión y $r_D = \frac{\Delta V_D}{\Delta I_D}$ es la resistencia interna de conducción del componente (típicamente $\qtyrange{10}{30}{\ohm}$ para diodos de señal como el 1N4148, o menor a \qty{1}{\ohm} para diodos de potencia).
+
+% ==========================================
+% SECCIÓN 2
+% ==========================================
+\section{Formulación Matemática Rigurosa de Pequeña Señal}
+Consideremos un circuito alimentado por una fuente total mixta $v_S(t) = V_{DD} + v_s(t)$ a través de una resistencia $R$. El análisis se desacopla en dos dominios:
+
+\subsection{A. Análisis en DC}
+Haciendo $v_s(t) = 0$, determinamos el punto de operación $Q$ (\textit{Quiescent Point}):
+\begin{equation}
+    V_{DD} = I_{DQ} R + V_{DQ}
+\end{equation}
+Conocido $I_{DQ}$, el parámetro de pequeña señal queda unívocamente fijado:
+\begin{equation}
+    r_d = \frac{\eta V_T}{I_{DQ}}
+\end{equation}
+
+\subsection{B. Análisis en CA}
+Haciendo $V_{DD} = 0$, el circuito equivalente en pequeña señal es un divisor de tensión lineal formado por la resistencia externa $R$ y la resistencia dinámica $r_d$. La tensión en bornes del diodo y la corriente son:
+\begin{align}
+    v_d(t) &= v_s(t) \cdot \left( \frac{r_d}{R + r_d} \right) \\
+    i_d(t) &= \frac{v_s(t)}{R + r_d}
+\end{align}
+
+\subsection{C. Límite de Distorsión No Lineal (Serie de Taylor)}
+El cociente entre el término de segundo armónico (distorsión no lineal) y el término fundamental lineal derivado de la Serie de Taylor es:
+\begin{equation}
+    \text{Distorsión Relativa} = \frac{\frac{1}{2} I_{DQ} \left(\frac{v_d}{\eta V_T}\right)^2}{I_{DQ} \left(\frac{v_d}{\eta V_T}\right)} = \frac{1}{2} \frac{v_d}{\eta V_T}
+\end{equation}
+Para que la distorsión armónica sea inferior al 5\%, se requiere:
+\begin{equation}
+    \frac{1}{2} \frac{v_d}{\eta V_T} \le 0.05 \implies v_d \le 0.10 \cdot (\eta V_T)
+\end{equation}
+
+Para el diodo 1N4148 ($\eta = 1.75$, $V_T = \qty{25.85}{\milli\volt} \implies \eta V_T = \qty{45.24}{\milli\volt}$):
+\begin{equation}
+    v_{d(\max)} \le 0.10 \times \qty{45.24}{\milli\volt} \approx \mathbf{\qty{4.52}{\milli\volt}\text{ pico}}
+\end{equation}
+Si la señal de CA sobre el diodo excede este valor, el modelo de pequeña señal pierde precisión y el circuito genera armónicos no lineales.
+
+\newpage
+% ==========================================
+% SECCIÓN 3
+% ==========================================
+\section{Problema de Cátedra Desarrollado Paso a Paso}
+
+\begin{enunciado}[Enunciado del Problema: Atenuador de Rizado]
+Se diseña un circuito atenuador de rizado para acondicionar la alimentación de una etapa sensora del PFI. El circuito consta de una fuente de alimentación de $V_{CC} = \qty{10}{\volt}$ que tiene montado un ruido residual de rizado de $v_s(t) = 0.5 \sin(2\pi \cdot 100 \cdot t)\text{ V}$ (frecuencia $\qty{100}{\hertz}$), conectada a una resistencia $R_S = \qty{1}{\kilo\ohm}$ en serie con un diodo 1N4148 ($\eta = 1.75$, $V_T = \qty{25.85}{\milli\volt}$, $I_S = \qty{2.52}{\nano\ampere}$).
+
+\begin{center}
+\begin{circuitikz}[american, scale=0.9, transform shape]
+    \draw (0,0) to[V, l=$v_S(t) {=} V_{CC} \text{+} v_s(t)$] (0,3) 
+          to[R, l=$R_S$, a=\qty{1}{\kilo\ohm}] (4,3) 
+          to[D, l=1N4148, v=$v_O(t)$] (4,0) -- (0,0);
+    \node[ground] at (2,0) {};
+\end{circuitikz}
+\end{center}
+
+\textbf{Se pide:}
+\begin{enumerate}
+    \item Calcular el punto de operación en DC ($I_{DQ}$ y $V_{DQ}$) utilizando el modelo de caída constante ($V_\gamma = \qty{0.7}{\volt}$).
+    \item Determinar la resistencia dinámica $r_d$ del diodo en dicho punto $Q$.
+    \item Calcular la señal de salida de pequeña señal $v_o(t)$ en bornes del diodo y la tensión total instantánea $v_O(t)$.
+    \item Calcular el factor de atenuación de rizado de CA ($\text{Atenuación} = v_{o(\text{pico})} / v_{s(\text{pico})}$) en decibelios (dB).
+    \item Verificar si se cumple la condición de linealidad de pequeña señal ($v_{d} \le \qty{4.52}{\milli\volt}$).
+\end{enumerate}
+\end{enunciado}
+
+\subsection*{Solución Paso a Paso}
+
+\noindent\textbf{Paso 1: Análisis en DC (Punto Q)}\\
+Apagamos la fuente de CA ($v_s(t) = 0$). Asumiendo el modelo de caída constante ($V_\gamma = \qty{0.7}{\volt}$):
+\begin{align*}
+    I_{DQ} &= \frac{V_{CC} - V_\gamma}{R_S} = \frac{\qty{10}{\volt} - \qty{0.7}{\volt}}{\qty{1000}{\ohm}} = \frac{\qty{9.3}{\volt}}{\qty{1000}{\ohm}} = \mathbf{\qty{9.30}{\milli\ampere}} \\
+    V_{DQ} &\approx \mathbf{\qty{0.70}{\volt}}
+\end{align*}
+
+\noindent\textbf{Paso 2: Resistencia Dinámica ($r_d$)}\\
+Calculamos la resistencia de pequeña señal evaluada en el punto $Q$:
+\begin{align*}
+    r_d &= \frac{\eta V_T}{I_{DQ}} = \frac{1.75 \times \qty{25.85}{\milli\volt}}{\qty{9.30}{\milli\ampere}} = \frac{\qty{45.2375}{\milli\volt}}{\qty{9.30}{\milli\ampere}} = \mathbf{\qty{4.864}{\ohm}}
+\end{align*}
+
+\noindent\textbf{Paso 3: Análisis en CA (Pequeña Señal)}\\
+Apagamos la fuente de DC ($V_{CC} \to \text{GND}$). El circuito equivalente de pequeña señal es un divisor resistivo entre $R_S$ y $r_d$:
+\begin{align*}
+    v_o(t) = v_d(t) &= v_s(t) \cdot \left( \frac{r_d}{R_S + r_d} \right) \\
+    v_o(t) &= [0.5 \sin(200\pi t)] \cdot \left( \frac{4.864}{1000 + 4.864} \right) \\
+    v_o(t) &= [0.5 \sin(200\pi t)] \cdot (0.00484) \\
+    v_o(t) &= 0.00242 \sin(200\pi t)\text{ V} = \mathbf{2.42 \sin(200\pi t)\text{ mV}}
+\end{align*}
+La tensión total instantánea en los bornes del diodo es la superposición de DC y CA ($v_O(t) = V_{DQ} + v_o(t)$):
+\begin{equation*}
+    v_O(t) = \qty{700}{\milli\volt} + 2.42 \sin(200\pi t)\text{ mV}
+\end{equation*}
+
+\noindent\textbf{Paso 4: Factor de Atenuación de Rizado}\\
+\begin{equation*}
+    \text{Atenuación} = \frac{v_{o(\text{pico})}}{v_{s(\text{pico})}} = \frac{\qty{2.42}{\milli\volt}}{\qty{500}{\milli\volt}} = 0.00484
+\end{equation*}
+En escala logarítmica (dB):
+\begin{equation*}
+    \text{Atenuación (dB)} = 20 \log_{10}(0.00484) = \mathbf{\qty{-46.30}{\decibel}}
+\end{equation*}
+
+\begin{interpretacion}[Interpretación de Ingeniería]
+    El diodo polarizado a \qty{9.3}{\milli\ampere} presenta una resistencia dinámica minúscula de \qty{4.86}{\ohm}. En consecuencia, atenúa el ruido de la fuente en más de \qty{46}{\decibel}, reduciendo un rizado perjudicial de \qty{500}{\milli\volt} a una oscilación de CA casi imperceptible de \qty{2.42}{\milli\volt} sobre el nivel de continua de \qty{0.7}{\volt}.
+\end{interpretacion}
+
+\noindent\textbf{Paso 5: Verificación de Linealidad de Pequeña Señal}\\
+El valor pico de la tensión de CA en los bornes del diodo es $v_{d(\text{pico})} = \qty{2.42}{\milli\volt}$. Como se demostró teóricamente, el límite de pequeña señal para una distorsión máxima del $5\%$ es $\qty{4.52}{\milli\volt}$. 
+
+Dado que:
+\begin{equation*}
+    \qty{2.42}{\milli\volt} < \qty{4.52}{\milli\volt}
+\end{equation*}
+La aproximación de pequeña señal es \textbf{completamente válida} y la señal de salida no presentará distorsión armónica no lineal apreciable.
+
+\end{document}
