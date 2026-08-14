@@ -1,0 +1,211 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+
+% --- TEMA Y ESTILO ---
+\usetheme{Madrid}
+\usecolortheme{whale}
+
+% --- PAQUETES ---
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage[american]{circuitikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\sisetup{output-decimal-marker = {,}, per-mode = symbol}
+
+% --- INFORMACIÓN DEL CURSO ---
+\title[Modelos y Pequeña Señal]{Modelos Equivalentes y Análisis de Pequeña Señal en CA}
+\subtitle{Separación de Dominios DC/CA y Límite de Linealidad}
+\author{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Circuitos Electrónicos III (IMT-221)}
+\date{14 de agosto de 2026}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Señales Mixtas y Nomenclatura IEEE}
+  En sistemas de instrumentación mecatrónica, las señales varían sobre un nivel continuo.
+  \begin{block}{Notación Estándar}
+    \begin{itemize}
+        \item \textbf{Mayúsculas ($V_D, I_D$):} Valores totales en DC (Ej. $V_{DQ}, I_{DQ}$).
+        \item \textbf{Minúsculas ($v_d, i_d$):} Señales alternadas instantáneas (CA).
+        \item \textbf{Total ($v_D, i_D$):} Superposición instantánea ($DC + CA$).
+    \end{itemize}
+  \end{block}
+  \vspace{0.2cm}
+  Matemáticamente:
+  \begin{equation*}
+      v_D(t) = V_{DQ} + v_d(t) \quad \text{y} \quad i_D(t) = I_{DQ} + i_d(t)
+  \end{equation*}
+\end{frame}
+
+\begin{frame}{Jerarquía de Modelos en DC (I): Ideal y Caída Constante}
+  \begin{columns}
+      % MODELO IDEAL
+      \begin{column}{0.48\textwidth}
+          \textbf{1. Modelo Ideal}
+          \begin{center}
+              \begin{circuitikz}[scale=0.7, transform shape]
+                  \draw (0,0) to[Do, l=Ideal] (3,0);
+              \end{circuitikz}
+              
+              \begin{tikzpicture}[scale=0.5]
+                  \draw[->] (-1.5,0) -- (1.5,0) node[right] {$V_D$};
+                  \draw[->] (0,-0.5) -- (0,2.5) node[above] {$I_D$};
+                  \draw[ultra thick, blue] (-1.5,0) -- (0,0) -- (0,2);
+              \end{tikzpicture}
+          \end{center}
+          \begin{itemize}\small
+              \item \textbf{Directa:} Cortocircuito ($V_D=0$). \textbf{Inversa:} Abierto ($I_D=0$).
+              \item \textbf{Uso:} Análisis cualitativo y compuertas lógicas simples.
+          \end{itemize}
+      \end{column}
+      
+      % MODELO CAÍDA CONSTANTE
+      \begin{column}{0.48\textwidth}
+          \textbf{2. Caída Constante ($V_\gamma$)}
+          \begin{center}
+              \begin{circuitikz}[scale=0.7, transform shape]
+                  \draw (0,0) to[Do] (1.5,0) to[V, v=$0.7\text{V}$] (3,0);
+              \end{circuitikz}
+              
+              \begin{tikzpicture}[scale=0.5]
+                  \draw[->] (-0.5,0) -- (2,0) node[right] {$V_D$};
+                  \draw[->] (0,-0.5) -- (0,2.5) node[above] {$I_D$};
+                  \draw[ultra thick, blue] (-0.5,0) -- (1,0) -- (1,2);
+                  \node[below] at (1,0) {$0.7\text{V}$};
+              \end{tikzpicture}
+          \end{center}
+          \begin{itemize}\small
+              \item Batería fija de \qty{0.7}{\volt} en directa.
+              \item \textbf{Uso:} Diseño estándar de fuentes de alimentación y rectificadores.
+          \end{itemize}
+      \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Jerarquía de Modelos en DC (II): PWL}
+  \begin{columns}
+      \begin{column}{0.5\textwidth}
+          \textbf{3. Lineal por Tramos (PWL)}\\
+          \vspace{0.2cm}
+          Batería de umbral ($V_{D0} \approx \qty{0.65}{\volt}$) en serie con resistencia de silicio ($r_D$).
+          \begin{equation*}
+              V_D = V_{D0} + I_D \cdot r_D
+          \end{equation*}
+          \vspace{0.2cm}
+          \textbf{Uso en Ingeniería:}\\
+          Circuitos de potencia donde la corriente $I_D$ es elevada y la caída real supera fácilmente los \qty{0.8}{\volt} o \qty{1.0}{\volt}.
+      \end{column}
+      
+      \begin{column}{0.5\textwidth}
+          \begin{center}
+              \begin{circuitikz}[scale=0.8, transform shape]
+                  \draw (0,0) to[Do] (1,0) to[V, v=$V_{D0}$] (2.5,0) to[R, l=$r_D$] (4,0);
+              \end{circuitikz}\\
+              \vspace{0.3cm}
+              \begin{tikzpicture}[scale=0.7]
+                  \draw[->] (-0.5,0) -- (2.5,0) node[right] {$V_D$};
+                  \draw[->] (0,-0.5) -- (0,3) node[above] {$I_D$};
+                  \draw[ultra thick, blue] (-0.5,0) -- (1,0) -- (2.5,2.5);
+                  \node[below] at (1,0) {$0.65\text{V}$};
+                  \node[right] at (1.7,1.1) {Pendiente $1/r_D$};
+              \end{tikzpicture}
+          \end{center}
+      \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Deducción del Modelo de Pequeña Señal en CA}
+  Sustituimos la tensión mixta $v_D(t)$ en Shockley:
+  \begin{equation*}
+      i_D(t) = I_S \cdot \exp\left(\frac{V_{DQ} + v_d(t)}{\eta V_T}\right) = \underbrace{I_S \cdot \exp\left(\frac{V_{DQ}}{\eta V_T}\right)}_{I_{DQ}} \cdot \exp\left(\frac{v_d(t)}{\eta V_T}\right)
+  \end{equation*}
+  
+  \vspace{0.2cm}
+  Expandimos matemáticamente usando la \textbf{Serie de Taylor}:
+  \begin{equation*}
+      e^x = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \dots \quad \text{donde } x = \frac{v_d(t)}{\eta V_T}
+  \end{equation*}
+  \begin{equation*}
+      i_D(t) = I_{DQ} \left[ 1 + \frac{v_d(t)}{\eta V_T} + \frac{1}{2}\left(\frac{v_d(t)}{\eta V_T}\right)^2 + \dots \right]
+  \end{equation*}
+\end{frame}
+
+\begin{frame}{Condición de Linealidad (El Límite Físico)}
+  \begin{block}{Condición Matemática}
+      Para que la respuesta sea lineal, el término cuadrático debe ser despreciable. Si exigimos una distorsión armónica $\le 5\%$:
+      \begin{equation*}
+          \frac{v_d(t)}{\eta V_T} \ll 1 \implies v_d(t) \le 0.10 \cdot (\eta V_T)
+      \end{equation*}
+  \end{block}
+  
+  \vspace{0.2cm}
+  Para un diodo típico a \qty{27}{\celsius} ($\eta \approx 1.75, V_T = \qty{25.85}{\milli\volt}$):
+  \begin{equation*}
+      v_{d(\max)} \le \mathbf{\qty{4.52}{\milli\volt}}
+  \end{equation*}
+  \alert{\textbf{Conclusión:}} Si la señal alterna en los terminales del diodo es menor a \qty{5}{\milli\volt}, el diodo es una resistencia pura $r_d$. Si es mayor, se deforma la señal.
+\end{frame}
+
+\begin{frame}{Metodología de Análisis Desacoplado}
+  \begin{columns}
+      \begin{column}{0.45\textwidth}
+          \textbf{Paso 1: Análisis DC (Punto Q)}
+          \begin{itemize}
+              \item Apagar generadores CA.
+              \item Hallar $I_{DQ}$ (usando modelo $V_\gamma = \qty{0.7}{\volt}$).
+              \item Calcular $r_d = \eta V_T / I_{DQ}$.
+          \end{itemize}
+      \end{column}
+      
+      \begin{column}{0.45\textwidth}
+          \textbf{Paso 2: Análisis CA (Pequeña Señal)}
+          \begin{itemize}
+              \item Apagar fuentes de DC ($V_{CC} \to \text{GND}$, cortocircuitar condensadores grandes).
+              \item Sustituir el diodo por $r_d$.
+              \item Calcular el divisor resistivo.
+          \end{itemize}
+      \end{column}
+  \end{columns}
+  
+  \vspace{0.5cm}
+  \begin{block}{Paso 3: Superposición Total}
+      \centering $v_O(t) = V_{DQ} + v_o(t)$
+  \end{block}
+\end{frame}
+
+\begin{frame}{Problema en Pizarra: Atenuador de CA}
+  \begin{columns}
+      \begin{column}{0.4\textwidth}
+          \textbf{Atenuador Mixto}\\
+          \vspace{0.2cm}
+          \begin{circuitikz}[american, scale=0.7, transform shape]
+              \draw (0,0) to[V, l_=$v_S(t)$, a=$10\text{V} \text{+} v_s$] (0,3) 
+                    to[R, l=\qty{1}{\kilo\ohm}] (3,3) 
+                    to[D, v=$v_O(t)$] (3,0) -- (0,0);
+          \end{circuitikz}
+      \end{column}
+      
+      \begin{column}{0.6\textwidth}
+          \textbf{Cálculos Clave:}
+          \begin{itemize}
+              \item \textbf{En DC:} $I_{DQ} = \frac{10\text{V} - 0.7\text{V}}{\qty{1000}{\ohm}} = \qty{9.3}{\milli\ampere}$
+              \item \textbf{En CA:} $r_d = \frac{45.24\text{mV}}{\qty{9.3}{\milli\ampere}} = \mathbf{\qty{4.86}{\ohm}}$
+              \item La señal alterna sufre el divisor entre $\qty{1}{\kilo\ohm}$ y $\qty{4.86}{\ohm}$.
+              \item Un ruido de \qty{500}{\milli\volt} se aplasta a \textbf{\qty{2.42}{\milli\volt}} (\qty{-46.3}{\decibel}).
+          \end{itemize}
+      \end{column}
+  \end{columns}
+  
+  \vspace{0.3cm}
+  \alert{\textbf{Conexión PFI (Hito 1):}} En el taller en Python evaluaremos qué sucede si inyectamos una interferencia de \qty{8}{\volt}. ¡Veremos la distorsión matemática en vivo!
+\end{frame}
+
+\end{document}

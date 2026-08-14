@@ -1,0 +1,296 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- PAQUETES PRINCIPALES ---
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb, mathtools}
+\usepackage{siunitx}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% --- PAQUETES PARA GRÁFICAS Y CIRCUITOS ---
+\usepackage{pgfplots}
+\usepackage[american]{circuitikz}
+\pgfplotsset{compat=1.18}
+
+% --- CONFIGURACIÓN DE CÓDIGO (PYTHON) ---
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.96,0.96,0.96}
+\lstset{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    language=Python,
+    literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+             {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+             {ñ}{{\~n}}1 {Ñ}{{\~N}}1
+}
+
+% --- CONFIGURACIÓN DE SIUNITX ---
+\sisetup{output-decimal-marker = {,}, inter-unit-product = \ensuremath{{}\cdot{}}}
+
+% --- CABECERAS ---
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{Circuitos Electrónicos III (IMT-221)}}
+\rhead{Sesión 4: Modelos y Pequeña Señal}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% --- ENTORNOS PERSONALIZADOS ---
+\newtcolorbox{aviso}[1][]{colback=red!5!white, colframe=red!75!black, fonttitle=\bfseries, title=#1}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{Apuntes de Cátedra: Sesión 4}}\\[0.3cm]
+    {\large \textbf{Jerarquía de Modelos, Pequeña Señal en CA y Límite de Linealidad}}\\
+    \textit{Docente: M.Sc. Ing. Bernardo Quiroga Turdera \quad | \quad Fecha: 14 de agosto de 2026}
+    \vspace{0.3cm}
+    \hrule
+\end{center}
+
+\vspace{0.3cm}
+
+% ==========================================
+% SECCIÓN 1: JERARQUÍA DE MODELOS EN DC
+% ==========================================
+\section{Jerarquía de Modelos del Diodo en DC (Gran Señal)}
+Para resolver circuitos no lineales sin recurrir a iteraciones complejas, la ingeniería utiliza tres modelos equivalentes que aproximan la curva exponencial de Shockley, dependiendo de la precisión requerida.
+
+\vspace{0.3cm}
+
+\noindent
+\begin{minipage}{0.32\textwidth}
+    \centering \textbf{1. Modelo Ideal}
+    \vspace{0.2cm}\\
+    \begin{circuitikz}[scale=0.7, transform shape]
+        \draw (0,0) to[Do, l=Ideal] (3,0);
+        \draw[fill=white, draw=none] (0,-1) rectangle (3,1);
+    \end{circuitikz}\\
+    \vspace{0.2cm}
+    \begin{tikzpicture}[scale=0.6]
+        \draw[->] (-1.5,0) -- (1.5,0) node[right] {$V_D$};
+        \draw[->] (0,-0.5) -- (0,2.5) node[above] {$I_D$};
+        \draw[ultra thick, blue] (-1.5,0) -- (0,0) -- (0,2);
+    \end{tikzpicture}\\
+    \vspace{0.2cm}
+    \raggedright\footnotesize
+    \textbf{Directa:} Interruptor cerrado ($V_D=0$).\\
+    \textbf{Inversa:} Abierto ($I_D=0$).\\
+    \textbf{Uso:} Análisis cualitativo rápido y compuertas lógicas simples.
+\end{minipage}
+\hfill
+\begin{minipage}{0.32\textwidth}
+    \centering \textbf{2. Caída Constante ($V_\gamma$)}
+    \vspace{0.2cm}\\
+    \begin{circuitikz}[scale=0.7, transform shape]
+        \draw (0,0) to[Do] (1.5,0) to[V, v=$0.7\text{V}$] (3,0);
+    \end{circuitikz}\\
+    \vspace{0.2cm}
+    \begin{tikzpicture}[scale=0.6]
+        \draw[->] (-0.5,0) -- (2,0) node[right] {$V_D$};
+        \draw[->] (0,-0.5) -- (0,2.5) node[above] {$I_D$};
+        \draw[ultra thick, blue] (-0.5,0) -- (1,0) -- (1,2);
+        \node[below] at (1,0) {$0.7\text{V}$};
+    \end{tikzpicture}\\
+    \vspace{0.2cm}
+    \raggedright\footnotesize
+    \textbf{Directa:} Batería fija de \qty{0.7}{\volt}.\\
+    \textbf{Inversa:} Abierto.\\
+    \textbf{Uso:} Diseño estándar de fuentes de alimentación y rectificadores.
+\end{minipage}
+\hfill
+\begin{minipage}{0.32\textwidth}
+    \centering \textbf{3. Lineal por Tramos (PWL)}
+    \vspace{0.2cm}\\
+    \begin{circuitikz}[scale=0.7, transform shape]
+        \draw (0,0) to[Do] (1,0) to[V, v=$0.65\text{V}$] (2,0) to[R, l=$r_D$] (3.5,0);
+    \end{circuitikz}\\
+    \vspace{0.2cm}
+    \begin{tikzpicture}[scale=0.6]
+        \draw[->] (-0.5,0) -- (2.5,0) node[right] {$V_D$};
+        \draw[->] (0,-0.5) -- (0,2.5) node[above] {$I_D$};
+        \draw[ultra thick, blue] (-0.5,0) -- (0.8,0) -- (2,2);
+        \node[below] at (0.8,0) {$0.65\text{V}$};
+        \node[right] at (1.4,1) {$m=1/r_D$};
+    \end{tikzpicture}\\
+    \vspace{0.2cm}
+    \raggedright\footnotesize
+    \textbf{Directa:} $V_D = V_{D0} + I_D \cdot r_D$.\\
+    \textbf{Uso:} Circuitos de potencia donde la corriente es elevada y la caída supera \qty{0.8}{\volt}-\qty{1.0}{\volt}.
+\end{minipage}
+
+\vspace{0.5cm}
+
+% ==========================================
+% SECCIÓN 2: SEÑALES MIXTAS
+% ==========================================
+\section{Señales Mixtas y Modelo de Pequeña Señal}
+En instrumentación (mecatrónica y biomédica), los circuitos operan con una polarización continua sobre la cual viaja una señal variable. Usamos la \textbf{Notación Estándar IEEE}:
+\begin{itemize}
+    \item \textbf{DC (Mayúscula-Mayúscula):} $V_D, I_D$ (Valores totales en DC).
+    \item \textbf{CA (Minúscula-Minúscula):} $v_d(t), i_d(t)$ (Señales instantáneas alternadas).
+    \item \textbf{Total (Minúscula-Mayúscula):} $v_D(t) = V_{DQ} + v_d(t)$ (Superposición total instantánea).
+\end{itemize}
+
+Sustituimos la tensión total en la Ecuación de Shockley y aplicamos Serie de Taylor ($e^x = 1 + x + \frac{x^2}{2!} + \dots$):
+\begin{equation}
+    i_D(t) = I_{DQ} \left[ 1 + \frac{v_d(t)}{\eta V_T} + \frac{1}{2}\left(\frac{v_d(t)}{\eta V_T}\right)^2 + \dots \right] = I_{DQ} + \underbrace{\frac{I_{DQ}}{\eta V_T} v_d(t)}_{\text{Señal lineal } i_d(t)} + \text{Distorsión}
+\end{equation}
+
+\textbf{Condición de Linealidad:} El término cuadrático debe ser despreciable frente al lineal ($\frac{v_d(t)}{\eta V_T} \ll 1$). Para tener $<5\%$ de distorsión armónica, exigimos $v_d \le \mathbf{\qtyrange{5}{10}{\milli\volt}}$. Así, el diodo se modela como $r_d = \frac{\eta V_T}{I_{DQ}}$.
+
+% ==========================================
+% SECCIÓN 3: PROBLEMA Y METODOLOGÍA
+% ==========================================
+\section{Análisis Desacoplado: Problema de Ingeniería}
+\textbf{Enunciado:} Fuente $V_{CC} = \qty{10}{\volt}$ con ruido $v_s(t) = 0.5 \sin(2\pi \cdot 100 t)\,\text{V}$. $R_S = \qty{1}{\kilo\ohm}$ y Diodo 1N4148 ($\eta = 1.75, V_T = \qty{25.85}{\milli\volt}$). Calcule el punto Q, $r_d$ y la atenuación de rizado.
+
+\vspace{0.2cm}
+\noindent
+\begin{minipage}{0.45\textwidth}
+    \centering \textbf{1. DC (Apagar CA $\implies v_s = 0$)}\\
+    \begin{circuitikz}[american, scale=0.7]
+        \draw (0,0) to[V, l=$V_{CC}$] (0,2) to[R, l=$R_S$] (3,2) to[D, l=$V_\gamma$, v=$V_{DQ}$] (3,0) -- (0,0);
+    \end{circuitikz}\\
+    $I_{DQ} = \frac{10 - 0.7}{1000} = \qty{9.3}{\milli\ampere}$\\
+    $r_d = \frac{45.24\text{ mV}}{9.3\text{ mA}} = \qty{4.86}{\ohm}$
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\textwidth}
+    \centering \textbf{2. CA (Apagar DC $\implies V_{CC} = \text{GND}$)}\\
+    \begin{circuitikz}[american, scale=0.7]
+        \draw (0,0) to[sV, l=$v_s(t)$] (0,2) to[R, l=$R_S$] (3,2) to[R, l=$r_d$, v=$v_o(t)$] (3,0) -- (0,0);
+    \end{circuitikz}\\
+    $v_o(t) = 500\text{mV} \cdot \left(\frac{4.86}{1004.86}\right) = \mathbf{2.42\text{ mV}_\text{pk}}$\\
+    $\text{Atenuación} = 20\log_{10}\left(\frac{2.42}{500}\right) = \mathbf{\qty{-46.3}{\decibel}}$
+\end{minipage}
+
+\begin{aviso}[Conexión PFI (Hitos 1 y 2)]
+En las líneas de sensado de corriente (Shunt) y protección ADC, la señal útil viaja sobre un DC. Si polarizamos a alta $I_{DQ}$, $r_d$ cae a pocos ohmios, \textbf{derivando a tierra todo el ruido de conmutación} sin alterar la medición.
+\end{aviso}
+
+\newpage
+% ==========================================
+% SECCIÓN 4: PYTHON Y CONTROL DE IA
+% ==========================================
+\section{Taller Computacional: Distorsión vs. Linealidad}
+Este script evalúa numéricamente el error entre la aproximación lineal de pequeña señal y la resolución exacta no lineal de Shockley, visualizando la Distorsión Armónica Total (THD) si violamos la condición de linealidad.
+
+\begin{lstlisting}
+# ==============================================================================
+# UNIVERSIDAD CATÓLICA BOLIVIANA "SAN PABLO" - SEDE TARIJA
+# Circuitos Electrónicos III (IMT-221) - Semestre 2-2026
+# Sesión 4: Validación del Modelo de Pequeña Señal vs. Modelo No Lineal de Shockley
+# Docente: M.Sc. Ing. Bernardo Quiroga Turdera
+# ==============================================================================
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.optimize import fsolve
+
+# ------------------------------------------------------------------------------
+# 1. PARÁMETROS DEL CIRCUITO Y DEL SEMICONDUCTOR (1N4148)
+# ------------------------------------------------------------------------------
+Vcc = 10.0           # Nivel DC de alimentación (Volts)
+Rs = 1000.0          # Resistencia en serie (Ohms)
+Vs_ac_amp = 0.5      # Amplitud pico de la señal de CA (Volts)
+frecuencia = 100.0   # Frecuencia de la señal (Hz)
+
+q = 1.602e-19
+kB = 1.3806e-23
+T_K = 27 + 273.15
+Vt = (kB * T_K) / q  # 25.85 mV
+Is = 2.52e-9         # Corriente de saturación inversa
+eta = 1.75           # Factor de idealidad
+
+# ------------------------------------------------------------------------------
+# 2. ANÁLISIS EN DC Y CÁLCULO DE r_d (PEQUEÑA SEÑAL)
+# ------------------------------------------------------------------------------
+def eq_dc(vd):
+    return Is * (np.exp(vd / (eta * Vt)) - 1) - (Vcc - vd) / Rs
+
+Vdq = fsolve(eq_dc, 0.7)[0]
+Idq = (Vcc - Vdq) / Rs
+rd = (eta * Vt) / Idq
+
+print("==========================================================")
+print("             ANÁLISIS DE POLARIZACIÓN EN DC               ")
+print("==========================================================")
+print(f"Punto Q exacto        : Vdq = {Vdq:.4f} V, Idq = {Idq*1e3:.3f} mA")
+print(f"Resistencia dinámica  : rd = {rd:.3f} Ohms")
+print(f"Límite de pequeña señal (5% THD): vd_max = {0.10 * eta * Vt * 1e3:.2f} mV")
+print("==========================================================")
+
+# ------------------------------------------------------------------------------
+# 3. COMPARACIÓN TEMPORAL: EXACTA (NO LINEAL) vs. LINEALIZADA (PEQUEÑA SEÑAL)
+# ------------------------------------------------------------------------------
+# Vector temporal para 2 ciclos de la señal de 100 Hz
+t = np.linspace(0, 2 / frecuencia, 1000)
+vs_t = Vs_ac_amp * np.sin(2 * np.pi * frecuencia * t)
+vs_total = Vcc + vs_t
+
+# Solución A: Modelo Lineal de Pequeña Señal (Superposición)
+vo_pequena_senal = vs_t * (rd / (Rs + rd))
+vO_lineal = Vdq + vo_pequena_senal
+
+# Solución B: Solución Exacta Punto a Punto mediante Shockley
+vO_exacta = np.zeros_like(t)
+
+for i in range(len(t)):
+    def eq_inst(v):
+        return Is * (np.exp(v / (eta * Vt)) - 1) - (vs_total[i] - v) / Rs
+    vO_exacta[i] = fsolve(eq_inst, Vdq)[0]
+
+# ------------------------------------------------------------------------------
+# 4. GRAFICACIÓN Y ANÁLISIS DE ERROR
+# ------------------------------------------------------------------------------
+plt.figure(figsize=(11, 7))
+
+# Subplot 1: Formas de onda superpuestas
+plt.subplot(2, 1, 1)
+plt.plot(t * 1e3, (vO_exacta - Vdq) * 1e3, 'b-', linewidth=2, label='Respuesta Exacta No Lineal (Shockley)')
+plt.plot(t * 1e3, vo_pequena_senal * 1e3, 'r--', linewidth=2, label='Modelo Lineal de Pequeña Señal ($r_d$)')
+plt.title('Comparación de la Señal de CA en el Diodo ($v_d(t)$)', fontsize=12)
+plt.ylabel('Amplitud de CA (mV)', fontsize=11)
+plt.grid(True, linestyle='--', alpha=0.7)
+plt.legend(fontsize=10)
+
+# Subplot 2: Error absoluto de linealización
+error_mv = (vO_exacta - vO_lineal) * 1e3
+plt.subplot(2, 1, 2)
+plt.plot(t * 1e3, error_mv, 'k-', linewidth=1.5, label='Error de Linealización ($v_{exacta} - v_{lineal}$)')
+plt.title('Error Absoluto del Modelo Lineal', fontsize=12)
+plt.xlabel('Tiempo (ms)', fontsize=11)
+plt.ylabel('Error (mV)', fontsize=11)
+plt.grid(True, linestyle='--', alpha=0.7)
+plt.legend(fontsize=10)
+
+plt.tight_layout()
+plt.show()
+
+max_error = np.max(np.abs(error_mv))
+print(f"Error máximo absoluto de la aproximación de pequeña señal: {max_error:.4f} mV")
+\end{lstlisting}
+
+\begin{aviso}[Protocolo de Auditoría Dinámica (IA)]
+En la mesa de trabajo, el docente pedirá modificar la línea 17: \texttt{Vs\_ac\_amp} de \qty{0.5}{\volt} a \qty{8.0}{\volt}.\\
+\textbf{Pregunta de Control:} \textit{¿Por qué la forma de onda del error en el Subplot 2 deja de ser simétrica y se deforma?} \\
+\textbf{Respuesta Esperada:} Al superar el límite matemático de $\approx \qty{5}{\milli\volt}$ en los bornes del diodo, los términos de segundo y tercer orden de la Serie de Taylor (distorsión armónica) dominan el comportamiento y rompen la asunción de linealidad.
+\end{aviso}
+
+\end{document}
