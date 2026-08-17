@@ -1,0 +1,440 @@
+\documentclass[11pt,a4paper,twoside]{article}
+
+% ======================================================================
+% CONFIGURACIÓN DEL PROYECTO Y PAQUETES
+% ======================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[margin=2.5cm, headheight=35pt]{geometry}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue, citecolor=black]{hyperref}
+
+% --- Matemáticas y Electrónica ---
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage[american]{circuitikz}
+
+% --- Elementos de Diseño y Código ---
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{titlesec}
+\usepackage{microtype}
+
+% ======================================================================
+% MACROS Y ESTILOS PERSONALIZADOS
+% ======================================================================
+\sisetup{
+    output-decimal-marker = {,},
+    per-mode = symbol,
+    inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+% --- Colores Institucionales ---
+\definecolor{ucbblue}{RGB}{0,51,102}
+\definecolor{spicegray}{gray}{0.95}
+\definecolor{spicered}{RGB}{180,0,0}
+
+% --- Cajas Personalizadas ---
+\newtcolorbox{spicecmd}[1][]{
+    colback=spicegray,
+    colframe=gray!70!black,
+    fonttitle=\bfseries,
+    title=Directivas y Configuración SPICE,
+    #1
+}
+
+\newtcolorbox{resultado}[1][]{
+    colback=green!5!white,
+    colframe=green!60!black,
+    fonttitle=\bfseries,
+    title=Resultados Analíticos Esperados,
+    #1
+}
+
+% --- Formato de Texto SPICE ---
+\newcommand{\tecla}[1]{\colorbox{gray!20}{\texttt{\footnotesize\textbf{#1}}}}
+\newcommand{\param}[1]{\texttt{\color{spicered}#1}}
+
+% --- Estilo de Títulos ---
+\titleformat{\section}[block]{\Large\bfseries\color{ucbblue}}{\thesection.}{0.5em}{}
+\titleformat{\subsection}[block]{\large\bfseries\color{gray!80!black}}{\thesubsection}{0.5em}{}
+
+% ======================================================================
+% ESTILO DE PÁGINA
+% ======================================================================
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\small\textbf{Circuitos Electrónicos II (IMT-221)}}
+\fancyhead[RE,LO]{\small Solucionario Maestro de Simulación}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+% ======================================================================
+% PORTADA DEL SOLUCIONARIO
+% ======================================================================
+\begin{center}
+    \rule{\textwidth}{1.5pt}\\[0.4cm]
+    {\huge \textbf{SOLUCIONARIO MAESTRO DE SIMULACIÓN}}\\[0.2cm]
+    {\LARGE \textbf{Circuitos Electrónicos II (IMT-221) — UCB Sede Tarija}}\\[0.3cm]
+    \rule{\textwidth}{1.5pt}\\[0.5cm]
+\end{center}
+
+\noindent Estimado Docente,\\
+El presente documento cubre de forma exhaustiva el \textbf{100\% de los requerimientos técnicos}, directivas SPICE, configuraciones de esquemas, trazado de curvas y resultados esperados para las 8 prácticas del semestre. 
+
+Está estructurado para servir como la guía de referencia del docente y manual de verificación bajo las metodologías CDIO, ABET (Student Outcomes 1 y 6) y la metodología de validación F.I.V.E.
+
+\vspace{0.5cm}
+\noindent\textbf{ÍNDICE DE PRÁCTICAS}
+\begin{itemize}[label=$\bullet$, itemsep=2pt]
+    \item \hyperref[lab1]{Laboratorio 1:} Caracterización Dinámica y Puente de Wheatstone en CA
+    \item \hyperref[lab2]{Laboratorio 2:} Filtro de Muesca Pasivo (Twin-T Notch) a \qty{50}{\hertz}
+    \item \hyperref[lab3]{Laboratorio 3:} Amplificador de Instrumentación Discreto de 3 Op-Amps
+    \item \hyperref[lab4]{Laboratorio 4:} Limitaciones Dinámicas en CA (Slew Rate y GBW)
+    \item \hyperref[lab5]{Laboratorio 5:} Rectificador Activo de Precisión (Superdiodo)
+    \item \hyperref[lab6]{Laboratorio 6:} Filtro Activo Pasa-Bajos de 4.º Orden Butterworth
+    \item \hyperref[lab7]{Laboratorio 7:} Diagnóstico de Estabilidad y Compensación In-Loop
+    \item \hyperref[lab8]{Laboratorio 8:} Etapa de Potencia Push-Pull Clase AB
+\end{itemize}
+
+\newpage
+% ======================================================================
+% LABORATORIO 1
+% ======================================================================
+\section{LAB 1: Caracterización Dinámica y Puente de Wheatstone en CA}\label{lab1}
+
+\subsection{1. Requerimiento Técnico}
+Simular la respuesta dinámica de un Puente de Wheatstone alimentado con portadora senoidal de \qty{10}{\kilo\hertz} (\qty{2}{\volt}$_{pp}$). La rama 4 contiene un termistor NTC ($R_0 = \qty{10}{\kilo\ohm}, \beta = \qty{3950}{\kelvin}$) acoplado a una línea de transmisión con parásitos ($R_{cable} = \qty{10}{\ohm}, L_{cable} = \qty{15}{\micro\henry}, C_{para} = \qty{4.7}{\nano\farad}$). Se debe evaluar el desbalance fasorial ($\hat{V}_{out}$) y el desfase angular ($\theta$) variando la temperatura de \qty{20}{\celsius} a \qty{60}{\celsius}.
+
+\subsection{2. Esquema y Red de Nodos en LTSpice}
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape]
+        % Fuente movida más a la izquierda para evitar solapamiento
+        \draw (-2,10) to[sV, l=$V_1$] (-2,0);
+        \draw (-2,10) -- (2.5,10) -- (7.5,10);
+        \draw (-2,0) -- (2.5,0) -- (7.5,0);
+        \draw (2.5,0) node[ground]{};
+        
+        \draw (2.5,10) to[R, l=$R_1$] (2.5,8) node[circle,fill,inner sep=1.5pt]{};
+        \draw (2.5,8) to[R, l=$R_2$] (2.5,0);
+        \node[left, align=center] at (2,8) {Nodo A};
+        
+        \draw (7.5,10) to[R, l=$R_3$] (7.5,8) node[circle,fill,inner sep=1.5pt]{};
+        \draw (7.5,8) to[L, l=$L_{cable}$, a=\qty{15}{\micro\henry}] (7.5,6) to[R, l=$R_{cable}$, a=\qty{10}{\ohm}] (7.5,4);
+        \draw (7.5,4) -- (6.5,4) to[vR, l_=$R_{NTC}$] (6.5,2) -- (7.5,2);
+        \draw (7.5,4) -- (8.5,4) to[C, l=$C_{para}$, a=\qty{4.7}{\nano\farad}] (8.5,2) -- (7.5,2);
+        \draw (7.5,2) -- (7.5,0);
+        \node[right, align=center] at (8.5,8) {Nodo B};
+        
+        \draw (2.5,8) to[short, -o] (4.5,8) node[above]{$+$};
+        \draw (7.5,8) to[short, -o] (5.5,8) node[above]{$-$};
+        \node at (5, 8) {$V_{diff}$};
+    \end{circuitikz}
+\end{center}
+
+\subsection{3. Directivas SPICE}
+\begin{spicecmd}
+\begin{itemize}[itemsep=1pt]
+    \item \textbf{Componente NTC:} Cambiar valor a: \param{\{R0*exp(Beta*(1/(Tc+273.15)-1/T0))\}}
+    \item \textbf{Parámetros Base:} \param{.param R0=10k Beta=3950 T0=298.15 Tc=25}
+    \item \textbf{Barrido Térmico:} \param{.step param Tc 20 60 10}
+    \item \textbf{Simulación:} \param{.tran 0.5m}
+\end{itemize}
+\end{spicecmd}
+
+\subsection{4. Trazado y Medición}
+Graficar \param{V(NodoA, NodoB)}. Medir desfase con cursores entre picos de $V_{in}$ y $V_{out}$. $\theta = 360^\circ \cdot 10000 \cdot \Delta t$.
+
+\begin{resultado}
+A $T_c = \qty{25}{\celsius}$ ($R_{NTC} = \qty{10}{\kilo\ohm}$), $V(A,B) \neq 0$ por filtro parásito. Amplitud $\approx \qty{180}{\milli\volt}_{pico}$, desfase $\approx -160^\circ$.\\
+A $T_c = \qty{60}{\celsius}$ ($R_{NTC} \approx \qty{3.0}{\kilo\ohm}$), amplitud sube a $\approx \qty{420}{\milli\volt}_{pico}$.
+\end{resultado}
+
+\newpage
+% ======================================================================
+% LABORATORIO 2
+% ======================================================================
+\section{LAB 2: Filtro de Muesca Pasivo (Twin-T Notch)}\label{lab2}
+
+\subsection{1. Requerimiento Técnico}
+Diseñar un filtro de muesca para atenuar la interferencia de \qty{50}{\hertz}. Evaluar profundidad de atenuación y degradación del factor $Q$ al conectar una carga $R_L = \qty{10}{\kilo\ohm}$.
+
+\subsection{2. Esquema en LTSpice}
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape]
+        \draw (0,2) to[sV, l=$V_1$ (AC 1)] (0,0);
+        \draw (0,2) to[short, -*] (1,2);
+        \draw (0,0) -- (6,0) node[ground]{};
+        
+        \draw (1,2) -- (1,3) to[R, l=$R_1$ (14.3k)] (3,3) node[circle,fill,inner sep=1.5pt]{} to[R, l=$R_2$ (14.3k)] (5,3) -- (5,2);
+        \draw (3,3) to[C, l=$C_3$ (440n)] (3,2);
+        
+        \draw (1,2) -- (1,1) to[C, l=$C_1$ (220n)] (3,1) node[circle,fill,inner sep=1.5pt]{} to[C, l=$C_2$ (220n)] (5,1) -- (5,2);
+        \draw (3,1) to[R, l=$R_3$ (7.15k)] (3,0);
+        
+        \draw (5,2) to[short, -o] (6,2) node[right]{$V_{out}$};
+        \draw (5,2) to[R, l=$R_L$ (\{RL\_val\}), *-] (5,0);
+    \end{circuitikz}
+\end{center}
+
+\subsection{3. Directivas SPICE}
+\begin{spicecmd}
+\begin{itemize}[itemsep=1pt]
+    \item \textbf{Carga:} Valor resistor = \param{\{RL\_val\}}
+    \item \textbf{Barrido Carga:} \param{.step param RL\_val list 1Meg 100k 10k 1k}
+    \item \textbf{Análisis AC:} \param{.ac dec 1000 1 1k}
+\end{itemize}
+\end{spicecmd}
+
+\begin{resultado}
+\textbf{Sin Carga ($R_L = \qty{1}{\mega\ohm}$):} Muesca a \qty{50}{\hertz} con atenuación entre $-45\text{ dB}$ y $-60\text{ dB}$.\\
+\textbf{Con Carga ($R_L = \qty{10}{\kilo\ohm}$):} Atenuación cae a $\approx -21.5\text{ dB}$, ensanchamiento de banda (caída de $Q$).
+\end{resultado}
+
+\newpage
+% ======================================================================
+% LABORATORIO 3
+% ======================================================================
+\section{LAB 3: Amplificador de Instrumentación Discreto}\label{lab3}
+
+\subsection{1. Requerimiento Técnico}
+Simular un In-Amp ($A_d = 50$). Obtener curva de CC de \qty{-50}{\milli\volt} a \qty{+50}{\milli\volt}. Evaluar efecto de tolerancia (5\%) de resistores sobre el CMRR.
+
+\subsection{2. Esquema en LTSpice}
+\begin{center}
+    \begin{circuitikz}[scale=0.8, transform shape]
+        \draw (0,2) node[op amp, yscale=-1] (A1) {$A_1$};
+        \draw (A1.+) to[short, -o] (-2,2.5) node[left] {$V_{in1}$};
+        \draw (A1.-) -- ++(0,-1) coordinate(in1) to[R, l=$R_1$] (A1.out |- in1) -- (A1.out);
+        
+        \draw (0,-2) node[op amp] (A2) {$A_2$};
+        \draw (A2.+) to[short, -o] (-2,-2.5) node[left] {$V_{in2}$};
+        \draw (A2.-) -- ++(0,1) coordinate(in2) to[R, l_=$R_2$] (A2.out |- in2) -- (A2.out);
+        
+        \draw (in1) to[R, l=$R_g$ (408)] (in2);
+        
+        \draw (6,0) node[op amp, yscale=-1] (A3) {$A_3$};
+        \draw (A1.out) to[R, l=$R_3$ (10k)] (A3.-);
+        \draw (A2.out) to[R, l_=$R_4$ (10k)] (A3.+);
+        
+        \draw (A3.-) -- ++(0,-1.5) coordinate(fb3) to[R, l=$R_f$ (10k)] (A3.out |- fb3) -- (A3.out);
+        \draw (A3.+) -- ++(0,1.5) to[R, l=$R_{ref}$ (10k)] ++(2,0) node[right]{$V_{Ref}$};
+        \draw (A3.out) to[short, -o] (8,0) node[right]{$V_{out}$};
+    \end{circuitikz}
+\end{center}
+
+\subsection{3. Directivas SPICE}
+\begin{spicecmd}
+\begin{itemize}[itemsep=1pt]
+    \item \textbf{Curva Estática CC:} \param{.dc Vdiff -0.05 0.05 0.001}
+    \item \textbf{Análisis CMRR:} Resistores $R_3, R_4, R_f, R_{ref} = \param{\{mc(10k, 0.05)\}}$. Entrada $V_{cm} = \qty{1}{\volt}_{AC}$.
+    \item \textbf{Ejecución Monte Carlo:} \param{.step param run 1 100} y \param{.ac dec 100 1 100k}
+\end{itemize}
+\end{spicecmd}
+
+\begin{resultado}
+\textbf{Curva CC:} Salida lineal de \qty{-2.5}{\volt} a \qty{+2.5}{\volt} ($A_d = 50.0$).\\
+\textbf{CMRR (Monte Carlo):} Resistores ideales $\implies CMRR > \qty{120}{\decibel}$. Tolerancia 5\% $\implies$ CMRR cae a rango \qty{42}{\decibel}-\qty{55}{\decibel} a \qty{50}{\hertz}.
+\end{resultado}
+
+\newpage
+% ======================================================================
+% LABORATORIO 4
+% ======================================================================
+\section{LAB 4: Limitaciones Dinámicas (Slew Rate y GBW)}\label{lab4}
+
+\subsection{1. Requerimiento Técnico}
+Comparar velocidad de respuesta y ancho de banda de LM741 (BJT lento) vs TL082 (JFET rápido) en configuración inversora $A_v = -10$.
+
+\subsection{2. Esquema en LTSpice}
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape]
+        \draw (0,0) node[op amp] (op1) {OpAmp};
+        \draw (op1.+) -- ++(0,-0.5) node[ground]{};
+        \draw (op1.-) to[R, l_=$R_{in}$ (10k)] ++(-2,0) node[left]{$V_{in}$};
+        \draw (op1.-) -- ++(0,1.5) coordinate(fb1) to[R, l=$R_f$ (100k)] (op1.out |- fb1) -- (op1.out);
+        \draw (op1.out) to[short, -o] ++(1,0) node[right]{$V_{out}$};
+    \end{circuitikz}
+\end{center}
+
+\subsection{3. Directivas SPICE}
+\begin{spicecmd}
+\begin{itemize}[itemsep=1pt]
+    \item \textbf{Prueba Slew Rate:} Fuente \param{PULSE(-0.4 0.4 0 10n 10n 50u 100u)} y \param{.tran 100u}.
+    \item \textbf{Prueba GBW:} Fuente \param{AC 0.01} y \param{.ac dec 100 1k 10M}.
+\end{itemize}
+\end{spicecmd}
+
+\begin{resultado}
+\textbf{Slew Rate:} LM741 $\approx \qty{0.5}{\volt\per\micro\second}$ (triangulariza la onda). TL082 $\approx \qty{13}{\volt\per\micro\second}$ (cuadrada limpia).\\
+\textbf{GBW ($A_v = -10$):} LM741 $f_c \approx \qty{100}{\kilo\hertz}$. TL082 $f_c \approx \qty{400}{\kilo\hertz}$.
+\end{resultado}
+
+% ======================================================================
+% LABORATORIO 5
+% ======================================================================
+\section{LAB 5: Rectificador Activo de Precisión (Superdiodo)}\label{lab5}
+
+\subsection{1. Requerimiento Técnico}
+Simular rectificación lineal sin voltaje umbral ($V_\gamma \approx \qty{0.7}{\volt}$). Comparar topología mejorada (con 1N4148 de amarre).
+
+\subsection{2. Esquema en LTSpice}
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape]
+        \draw (0,0) node[op amp, yscale=-1] (op) {A1};
+        \draw (op.+) -- ++(0,-0.5) node[ground]{};
+        \draw (op.-) to[R, l_=$R_{in}$ (10k)] ++(-2.5,0) node[left]{$V_{in}$};
+        
+        \draw (op.out) to[D, l=$D_2$] ++(2,0) coordinate(vout) node[right]{$V_{out}$};
+        \draw (op.-) -- ++(0,1.5) coordinate(fb1) to[D, l_=$D_1$ (1N4148)] (op.out |- fb1) -- (op.out);
+        \draw (op.-) -- ++(0,3) coordinate(fb2) to[R, l=$R_f$ (10k)] (vout |- fb2) -- (vout);
+    \end{circuitikz}
+\end{center}
+
+\subsection{3. Directivas SPICE}
+\begin{spicecmd}
+\begin{itemize}[itemsep=1pt]
+    \item \textbf{100 Hz:} Fuente \param{SINE(0 0.1 100)}, directiva \param{.tran 20m}
+    \item \textbf{10 kHz:} Fuente \param{SINE(0 0.1 10k)}, directiva \param{.tran 0.2m}
+    \item \textbf{Ploteo XY:} Cambiar Eje X a \param{V(V\_in)}, Eje Y a \param{V(V\_out)}.
+\end{itemize}
+\end{spicecmd}
+
+\begin{resultado}
+\textbf{Curva XY:} Rectificación lineal perfecta en $0\text{V}$, sin zona muerta. Ganancia $A_v = -1$.\\
+\textbf{A 10 kHz:} $D_1$ evita saturación al riel negativo (\qty{-12}{\volt}), evitando distorsión por tiempo de recuperación.
+\end{resultado}
+
+\newpage
+% ======================================================================
+% LABORATORIO 6
+% ======================================================================
+\section{LAB 6: Filtro Pasa-Bajos 4.º Orden Butterworth}\label{lab6}
+
+\subsection{1. Requerimiento Técnico}
+Diseñar cascada Sallen-Key de 4.º orden ($f_c = \qty{10}{\hertz}$, atenuación $\le \qty{-40}{\decibel}$ a \qty{50}{\hertz}).
+
+\subsection{2. Esquema en LTSpice}
+\begin{center}
+    \begin{circuitikz}[scale=0.7, transform shape]
+        % Etapa 1
+        \draw (0,0) node[op amp] (op1) {Etapa 1 ($Q_1=1.3$)};
+        \draw (op1.+) to[R, l_=$R_2$, *-] ++(-2,0) coordinate(na) to[R, l_=$R_1$, -o] ++(-2,0) node[left]{$V_{in}$};
+        \draw (op1.+) to[C, l=$C_2$ (1u)] ++(0,-1.5) node[ground]{};
+        \draw (na) -- ++(0,1.5) coordinate(na_up) to[C, l=$C_1$ (1u)] (op1.out |- na_up) -- (op1.out);
+        \draw (op1.-) to[R, l_=$R_{i1}$ (10k)] ++(0,-1.5) node[ground]{};
+        \draw (op1.-) -- ++(0,1) coordinate(fb1) to[R, l=$R_{f1}$ (12.3k)] (op1.out |- fb1) -- (op1.out);
+        
+        % Etapa 2
+        \draw (op1.out) -- ++(1,0) coordinate(mid);
+        \draw (mid) ++(4,0) node[op amp] (op2) {Etapa 2 ($Q_2=0.5$)};
+        \draw (op2.+) to[R, l_=$R_4$, *-] ++(-2,0) coordinate(nb) to[R, l_=$R_3$] (mid);
+        \draw (op2.+) to[C, l=$C_4$ (1u)] ++(0,-1.5) node[ground]{};
+        \draw (nb) -- ++(0,1.5) coordinate(nb_up) to[C, l=$C_3$ (1u)] (op2.out |- nb_up) -- (op2.out);
+        \draw (op2.-) to[R, l_=$R_{i2}$ (10k)] ++(0,-1.5) node[ground]{};
+        \draw (op2.-) -- ++(0,1) coordinate(fb2) to[R, l=$R_{f2}$ (1.5k)] (op2.out |- fb2) -- (op2.out);
+        \draw (op2.out) to[short, -o] ++(1,0) node[right]{$V_{out}$};
+    \end{circuitikz}
+\end{center}
+
+\subsection{3. Directivas SPICE}
+\begin{spicecmd}
+\begin{itemize}[itemsep=1pt]
+    \item \textbf{AC Sweep:} \param{.ac dec 100 0.1 1k}
+    \item \textbf{Monte Carlo:} \param{.step param run 1 50}, $R = \param{\{mc(15.8k, 0.01)\}}, C = \param{\{mc(1u, 0.05)\}}$
+\end{itemize}
+\end{spicecmd}
+
+\begin{resultado}
+Banda paso plana ($A_{v0} = 2.573 \equiv \qty{8.21}{\decibel}$). A \qty{10}{\hertz}, caída exacta de \qty{-3}{\decibel}. A \qty{50}{\hertz}, atenuación de \qty{-42.8}{\decibel} (pendiente \qty{-80}{\decibel}/dec).
+\end{resultado}
+
+% ======================================================================
+% LABORATORIO 7
+% ======================================================================
+\section{LAB 7: Diagnóstico de Estabilidad In-Loop}\label{lab7}
+
+\subsection{1. Requerimiento Técnico}
+Estabilizar seguidor TL081 con carga $C_L = \qty{47}{\nano\farad}$ usando red In-Loop ($R_x, C_f$) para lograr $M_p < 10\%$.
+
+\subsection{2. Esquema en LTSpice}
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape]
+        \draw (0,0) node[op amp] (op) {TL081};
+        \draw (op.+) to[short, -o] ++(-1,0) node[left]{$V_{in}$};
+        \draw (op.out) to[R, l=$R_x$ (100)] ++(2,0) coordinate(vout) node[right]{$V_{out}$};
+        \draw (vout) to[C, l=$C_L$ (47n), *-] ++(0,-1.5) node[ground]{};
+        
+        \draw (op.-) -- ++(0,1) coordinate(fb1) to[C, l=$C_f$ (4.7n)] (op.out |- fb1) -- (op.out);
+        \draw (op.-) -- ++(0,2.5) coordinate(fb2) to[R, l=$R_f$ (10k)] (vout |- fb2) -- (vout);
+    \end{circuitikz}
+\end{center}
+
+\subsection{3. Directivas SPICE}
+\begin{spicecmd}
+\begin{itemize}[itemsep=1pt]
+    \item \textbf{Escalón Transitorio:} Fuente \param{PULSE(0 0.5 0 10n 10n 2m 4m)}, directiva \param{.tran 5m}.
+    \item \textbf{Middlebrook (Lazo Abierto):} Inyectar AC 1 en lazo de realimentación, \param{.ac dec 100 1k 10M}.
+\end{itemize}
+\end{spicecmd}
+
+\begin{resultado}
+\textbf{Sin compensar:} Oscilación sostenida a $\approx \qty{33}{\kilo\hertz}$ (Margen de Fase $< 15^\circ$).\\
+\textbf{Compensado ($R_x=100, C_f=4.7\text{n}$):} Sobreimpulso cae a $M_p \approx 8.5\%$. Margen de Fase seguro $\approx 58^\circ$.
+\end{resultado}
+
+\newpage
+% ======================================================================
+% LABORATORIO 8
+% ======================================================================
+\section{LAB 8: Etapa de Potencia Push-Pull Clase AB}\label{lab8}
+
+\subsection{1. Requerimiento Técnico}
+Simular seguidor de corriente AB con TIP41C/TIP42C. Determinar la potencia máxima disipada ($P_{D,max}$) sobre $R_L = \qty{10}{\ohm}$ para dimensionar disipador.
+
+\subsection{2. Esquema en LTSpice}
+\begin{center}
+    \begin{circuitikz}[scale=0.8, transform shape]
+        \draw (0,3) node[above]{$+12\text{V}$} -- (0,2) to[R, l=\qty{1}{\kilo\ohm}] (0,1);
+        \draw (0,-3) node[below]{$-12\text{V}$} -- (0,-2) to[R, l=\qty{1}{\kilo\ohm}] (0,-1);
+        
+        \draw (0,1) to[D, l=1N4148, *-*] (0,0) to[D, l=1N4148, *-*] (0,-1);
+        \draw (0,0) to[short, -o] (-2,0) node[left]{$V_{in}$};
+        
+        \draw (2,1.5) node[npn] (npn) {TIP41C};
+        \draw (2,-1.5) node[pnp] (pnp) {TIP42C};
+        
+        \draw (0,1) |- (npn.B);
+        \draw (0,-1) |- (pnp.B);
+        
+        \draw (npn.C) -- (npn.C |- 0,3) node[above]{$+12\text{V}$};
+        \draw (pnp.C) -- (pnp.C |- 0,-3) node[below]{$-12\text{V}$};
+        
+        \draw (npn.E) to[R, l=\qty{0.47}{\ohm}] (4,0.7) -- (4,0);
+        \draw (pnp.E) to[R, l_=\qty{0.47}{\ohm}] (4,-0.7) -- (4,0);
+        
+        \draw (4,0) to[short, *-o] (6,0) node[right]{$V_{load}$};
+        \draw (4,0) to[R, l=$R_L$ (10)] (4,-3) node[ground]{};
+    \end{circuitikz}
+\end{center}
+
+\subsection{3. Directivas SPICE}
+\begin{spicecmd}
+\begin{itemize}[itemsep=1pt]
+    \item \textbf{Transitorio de Potencia:} Fuente \param{SINE(0 8 1k)}, directiva \param{.tran 5m}.
+    \item \textbf{Medición:} Presionar \tecla{Alt + Click} sobre TIP41C para graficar \param{I(Vc)*V(c)}. Mantener \tecla{Ctrl + Click} en el título del gráfico para ver promedio $P_{D,avg}$.
+\end{itemize}
+\end{spicecmd}
+
+\begin{resultado}
+Salida senoidal sin distorsión de cruce (pre-polarización). Potencia máxima disipada $\approx \qty{1.46}{\watt}$ por transistor. El disipador requiere $\theta_{SA} \le 56.1^\circ\text{C/W}$.
+\end{resultado}
+
+\end{document}

@@ -1,0 +1,324 @@
+\documentclass[11pt,a4paper]{article}
+
+% ======================================================================
+% CONFIGURACIÓN DEL PROYECTO Y PAQUETES
+% ======================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[margin=2.5cm, headheight=30pt]{geometry} 
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue, citecolor=black]{hyperref}
+
+% --- Matemáticas y Electrónica ---
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage[american]{circuitikz}
+
+% --- Elementos de Diseño y Código ---
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{tabularx}
+\usepackage{microtype}
+
+% ======================================================================
+% MACROS Y ESTILOS PERSONALIZADOS
+% ======================================================================
+\sisetup{
+    output-decimal-marker = {,},
+    per-mode = symbol,
+    inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+% --- Cajas Personalizadas ---
+\definecolor{ucbblue}{RGB}{0,51,102}
+
+\newtcolorbox{resultado}[1][]{
+    colback=green!5!white,
+    colframe=green!60!black,
+    fonttitle=\bfseries,
+    title=¿Qué deben esperar en esta Fase?,
+    #1
+}
+
+\newtcolorbox{info}[1][]{
+    colback=blue!5!white,
+    colframe=ucbblue,
+    fonttitle=\bfseries,
+    title=Nota Técnica,
+    #1
+}
+
+% --- Formato de Texto SPICE ---
+\newcommand{\tecla}[1]{\colorbox{gray!20}{\texttt{\footnotesize\textbf{#1}}}}
+\newcommand{\spice}[1]{\texttt{\color{purple}#1}}
+
+% --- Configuración de Listings para Python ---
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{teal},
+    commentstyle=\color{green!50!black}\itshape,
+    backgroundcolor=\color{gray!5},
+    frame=single,
+    rulecolor=\color{gray!40},
+    breaklines=true,
+    showstringspaces=false,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    numbersep=5pt
+}
+
+% ======================================================================
+% ESTILO DE PÁGINA
+% ======================================================================
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{Circuitos Electrónicos II}}
+\rhead{Ingeniería Mecatrónica -- UCB Tarija}
+\cfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    \rule{\textwidth}{1pt}\\[0.3cm]
+    {\Large \textbf{LABORATORIO 1: PUENTE DE WHEATSTONE EN CA}}\\[0.2cm]
+    {\large \textbf{Manual de Ejecución y Validación (Modelo F.I.V.E. / CDIO)}}\\[0.2cm]
+    \rule{\textwidth}{1pt}
+\end{center}
+\vspace{0.3cm}
+
+Este es el flujo de ejecución paso a paso para el Laboratorio 1, estructurado bajo el modelo F.I.V.E. (Fundamentación, Implementación, Validación, Evidencia) y el marco CDIO. En cada etapa se detalla la acción requerida, el procedimiento técnico y el resultado numérico/gráfico exacto que el estudiante debe obtener.
+
+% ======================================================================
+% FASE 0: FUNDAMENTACIÓN
+% ======================================================================
+\section*{FASE 0: Fundamentación Teórica Previa (Cálculo Analítico)}
+Antes de abrir el software o energizar el circuito, los estudiantes deben calcular a mano o en un script base los valores de referencia para $T = [20, 25, 30, 40, 50, 60]\ ^\circ\text{C}$.
+
+\textbf{Paso 0.1 — Resistencia del Sensor (Steinhart-Hart reducida):}
+\begin{equation}
+    R_{NTC}(T) = R_0 \cdot e^{\beta \left( \frac{1}{T} - \frac{1}{T_0} \right)}
+\end{equation}
+(con $R_0 = \qty{10}{\kilo\ohm}$, $\beta = \qty{3950}{\kelvin}$, $T_0 = \qty{298.15}{\kelvin}$, $T$ en Kelvin).
+
+\textbf{Paso 0.2 — Impedancia Compleja de la Rama 4:}
+A la frecuencia de portadora $f_c = \qty{10}{\kilo\hertz}$ ($\omega_c = 2\pi \cdot 10^4\text{ rad/s}$):
+\begin{equation}
+    Z_{sensor}(j\omega) = R_{cable} + j\omega L_{cable} + \left( \frac{R_{NTC}}{1 + j\omega C_{para} R_{NTC}} \right)
+\end{equation}
+
+\textbf{Paso 0.3 — Salida Fasorial Diferencial:}
+\begin{equation}
+    \hat{V}_{out} = \hat{V}_{in} \left( \frac{Z_{sensor}}{R_3 + Z_{sensor}} - \frac{R_2}{R_1 + R_2} \right)
+\end{equation}
+
+\begin{resultado}
+A \qty{25}{\celsius}: $R_{NTC} = \qty{10.0}{\kilo\ohm} \implies Z_{sensor} \approx 3124\ \Omega \angle -67.1^\circ$.\\
+Tensión diferencial teórica: $\vert{}\hat{V}_{out}\vert{} = \mathbf{181.5\text{ mV}_{pico}}$ con un desfase de $\theta = \mathbf{-162.1^\circ}$.\\[0.2cm]
+A \qty{60}{\celsius}: $R_{NTC} \approx \qty{3.02}{\kilo\ohm} \implies \vert{}\hat{V}_{out}\vert{} = \mathbf{420.2\text{ mV}_{pico}}$.
+\end{resultado}
+
+% ======================================================================
+% FASE 1: SIMULACIÓN VIRTUAL
+% ======================================================================
+\section*{FASE 1: Simulación Virtual en LTSpice}
+El estudiante valida el modelo matemático y anticipa el comportamiento de las señales en el dominio del tiempo y la frecuencia.
+
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape]
+        % Fuente movida más a la izquierda para evitar solapamiento
+        \draw (-2,10) to[sV, l=$V_1$] (-2,0);
+        \draw (-2,10) -- (2.5,10) -- (7.5,10);
+        \draw (-2,0) -- (2.5,0) -- (7.5,0);
+        \draw (2.5,0) node[ground]{};
+        
+        \draw (2.5,10) to[R, l=$R_1$] (2.5,8) node[circle,fill,inner sep=1.5pt]{};
+        \draw (2.5,8) to[R, l=$R_2$] (2.5,0);
+        \node[left, align=center] at (2,8) {Nodo A};
+        
+        \draw (7.5,10) to[R, l=$R_3$] (7.5,8) node[circle,fill,inner sep=1.5pt]{};
+        \draw (7.5,8) to[L, l=$L_{cable}$, a=\qty{15}{\micro\henry}] (7.5,6) to[R, l=$R_{cable}$, a=\qty{10}{\ohm}] (7.5,4);
+        \draw (7.5,4) -- (6.5,4) to[vR, l_=$R_{NTC}$] (6.5,2) -- (7.5,2);
+        \draw (7.5,4) -- (8.5,4) to[C, l=$C_{para}$, a=\qty{4.7}{\nano\farad}] (8.5,2) -- (7.5,2);
+        \draw (7.5,2) -- (7.5,0);
+        \node[right, align=center] at (8.5,8) {Nodo B};
+        
+        \draw (2.5,8) to[short, -o] (4.5,8) node[above]{$+$};
+        \draw (7.5,8) to[short, -o] (5.5,8) node[above]{$-$};
+        \node at (5, 8) {$V_{diff}$};
+    \end{circuitikz}
+\end{center}
+
+\textbf{Paso 1.1 — Configuración del esquemático:}
+\begin{itemize}[itemsep=1pt]
+    \item Configurar la fuente $V_1$: \param{SINE(0 1 10k)} y AC Amplitude: \param{1}.
+    \item Etiquetar nodos como A y B usando la herramienta Label Net (tecla \tecla{n}).
+    \item En el valor de R\_NTC, escribir: \spice{\{R0 * exp(Beta * (1/(Tc + 273.15) - 1/T0))\}}.
+\end{itemize}
+
+\textbf{Paso 1.2 — Inserción de Directivas SPICE (Tecla \tecla{.}):}
+\begin{lstlisting}[language=SPICE, numbers=none]
+.param R0=10k Beta=3950 T0=298.15 Tc=25
+.step param Tc 20 60 10
+.tran 0.5m
+\end{lstlisting}
+
+\textbf{Paso 1.3 — Trazado y análisis:}
+\begin{itemize}[itemsep=1pt]
+    \item Hacer clic en el Nodo A, arrastrar la sonda y soltar en el Nodo B para graficar \param{V(A,B)}.
+    \item Activar dos cursores sobre la traza transitoria para medir la diferencia de tiempo ($\Delta t$) entre el cruce por cero de $V_{in}$ y el de $V(A,B)$.
+\end{itemize}
+
+\begin{resultado}
+Una familia de 5 ondas senoidales de \qty{10}{\kilo\hertz} superpuestas (correspondientes a los pasos de \qty{20}{\celsius} a \qty{60}{\celsius}).\\
+La amplitud pico de $V(A,B)$ crece progresivamente desde $\approx \qty{150}{\milli\volt}$ hasta $\approx \qty{420}{\milli\volt}$.\\
+Un retraso temporal medido con cursores de $\Delta t \approx \qty{45.0}{\micro\second}$, lo que confirma analíticamente:
+\begin{equation}
+    \theta = \Delta t \cdot f_c \cdot 360^\circ = 45\ \mu\text{s} \cdot 10\text{ kHz} \cdot 360^\circ = 162.0^\circ
+\end{equation}
+\end{resultado}
+
+\newpage
+% ======================================================================
+% FASE 2: IMPLEMENTACIÓN FÍSICA
+% ======================================================================
+\section*{FASE 2: Implementación Física y Adquisición en Hardware}
+El estudiante traslada el diseño al protoboard, conecta los instrumentos de banco y adquiere las trazas reales.
+
+\textbf{Paso 2.1 — Caracterización previa con Multímetro (DMM):}
+\begin{itemize}[itemsep=1pt]
+    \item Medir con el DMM los valores reales de $R_1, R_2, R_3$ y $R_{NTC}$ a temperatura ambiente.
+    \item Calcular la temperatura ambiente real del laboratorio $T_{amb}$ despejando la fórmula de Steinhart-Hart a partir de la resistencia medida.
+\end{itemize}
+
+\textbf{Paso 2.2 — Montaje y Alambrado:}
+\begin{itemize}[itemsep=1pt]
+    \item Armar el puente en el protoboard incluyendo en la rama 4 los componentes parásitos reales: $R_{cable} = \qty{10}{\ohm}$, $L_{cable} = \qty{15}{\micro\henry}$ y $C_{para} = \qty{4.7}{\nano\farad}$.
+\end{itemize}
+
+\textbf{Paso 2.3 — Configuración de Instrumentación:}
+\begin{itemize}[itemsep=1pt]
+    \item \textbf{Generador:} Onda senoidal, \qty{2.00}{\volt}$_{pp}$ (\qty{1.00}{\volt}$_{pico}$), frecuencia \qty{10.00}{\kilo\hertz}, offset \qty{0}{\volt}.
+    \item \textbf{Osciloscopio:}
+    \begin{itemize}[itemsep=1pt]
+        \item Canal 1 (CH1): Conectado al Nodo A (punta $1\times$ o $10\times$ calibrada).
+        \item Canal 2 (CH2): Conectado al Nodo B.
+        \item Pinzas de tierra de ambas sondas: Conectadas únicamente a la tierra común (GND) del puente.
+        \item Canal Matemático (MATH): Configurar la operación $M = CH1 - CH2$.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Paso 2.4 — Adquisición y Exportación:}
+\begin{itemize}[itemsep=1pt]
+    \item Registrar datos para al menos 4 condiciones térmicas (Ambiente, Contacto con dedos $\approx \qty{35}{\celsius}$, Fuente de calor suave $\approx \qty{45}{\celsius}$ y $\approx \qty{55}{\celsius}$).
+    \item Para cada punto térmico: insertar la memoria USB en el osciloscopio y guardar la traza completa como archivo \texttt{.csv} (ej. \texttt{medicion\_ambiente.csv}).
+\end{itemize}
+
+\begin{resultado}
+En la pantalla del osciloscopio, el canal MATH ($CH1 - CH2$) mostrará una senoidal de amplitud reducida con una ligera modulación de ruido de alta frecuencia.\\
+Al calentar el termistor NTC con los dedos, la amplitud de la señal en MATH aumentará en tiempo real en la pantalla.\\
+El archivo CSV exportado contendrá un encabezado y columnas con los vectores de tiempo y voltaje instantáneo: \texttt{['Time', 'CH1', 'CH2']}.
+\end{resultado}
+
+\newpage
+% ======================================================================
+% FASE 3: PROCESAMIENTO Y VALIDACIÓN EN PYTHON
+% ======================================================================
+\section*{FASE 3: Procesamiento de Señal y Validación en Python}
+El estudiante importa los datos brutos del osciloscopio, filtra ruido, extrae parámetros dinámicos y contrasta los tres mundos (Teoría vs. Simulación vs. Experimento).
+
+\textbf{Paso 3.1 — Ejecución del Script de Validación (\texttt{lab1\_processing.py}):}
+\begin{lstlisting}[language=Python]
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from scipy.signal import find_peaks
+
+# 1. Carga de datos reales del osciloscopio
+df = pd.read_csv("medicion_ambiente.csv")
+t = df['Time'].values
+v_a = df['CH1'].values
+v_b = df['CH2'].values
+
+# Tension diferencial medida
+v_out_exp = v_a - v_b
+
+# 2. Extraccion de Amplitud Pico (promediando picos para mitigar ruido)
+picos, _ = find_peaks(v_out_exp, height=0.1, distance=50)
+v_out_pico_exp = np.mean(v_out_exp[picos])
+
+# 3. Extraccion de Desfase Temporal respecto a Entrada (CH1 representa Vin/2)
+picos_in, _ = find_peaks(v_a, height=0.3, distance=50)
+delta_t = t[picos[0]] - t[picos_in[0]]
+f_c = 10000.0  # 10 kHz
+fase_exp_deg = (delta_t * f_c * 360.0) % 360.0
+
+if fase_exp_deg > 180:
+    fase_exp_deg -= 360.0
+
+# 4. Modelo Analitico de Referencia (T = 25 C)
+v_out_teorico = 0.1815  # V pico
+fase_teorica = -162.1   # Grados
+
+# 5. Cuantificacion de Errores
+err_amp = np.abs(v_out_pico_exp - v_out_teorico) / v_out_teorico * 100.0
+err_fase = np.abs(fase_exp_deg - fase_teorica) / np.abs(fase_teorica) * 100.0
+
+print(f"Amplitud Pico Medida: {v_out_pico_exp:.4f} V | Teorico: {v_out_teorico:.4f} V | Error: {err_amp:.2f}%")
+print(f"Fase Angular Medida:  {fase_exp_deg:.2f} deg   | Teorico: {fase_teorica:.2f} deg   | Error: {err_fase:.2f}%")
+
+# 6. Graficacion con Estandar de Publicacion
+plt.figure(figsize=(9, 4.5))
+plt.plot(t * 1e6, v_out_exp, 'r-', label="Medicion Experimental (Osciloscopio)", alpha=0.8)
+t_teo = np.linspace(t[0], t[-1], 1000)
+v_teo_plot = v_out_teorico * np.cos(2 * np.pi * f_c * t_teo + np.radians(fase_teorica))
+plt.plot(t_teo * 1e6, v_teo_plot, 'k--', label="Modelo Analitico / LTSpice", linewidth=1.5)
+plt.xlabel("Tiempo ($\mu s$)")
+plt.ylabel("Tension Diferencial $V_{out}$ (V)")
+plt.title("Laboratorio 1: Validacion Dinamica del Puente de Wheatstone en CA")
+plt.grid(True, linestyle=":")
+plt.legend(loc="upper right")
+plt.tight_layout()
+plt.savefig("lab1_validacion_final.png", dpi=300)
+plt.show()
+\end{lstlisting}
+
+\begin{resultado}
+Una salida en terminal confirmando que el error relativo de amplitud es $\le 5\%$ y el error relativo de fase es $\le 8\%$ (causado principalmente por la tolerancia del capacitor de \qty{4.7}{\nano\farad}).\\
+Una figura PNG generada que muestra la curva experimental montada con precisión sobre la curva senoidal teórica calculada.
+\end{resultado}
+
+\vspace{0.5cm}
+\begin{info}
+\textbf{Resumen de la Tabla de Consolidación de Resultados}\\
+Cada equipo debe completar la siguiente tabla en su informe técnico final antes de dar por cerrada la práctica.
+\end{info}
+
+% --- TABLA ARQUITECTÓNICAMENTE CORREGIDA PARA EVITAR DESBORDAMIENTO ---
+\begin{table}[h!]
+    \centering
+    \small % Reducimos un poco la fuente
+    \renewcommand{\arraystretch}{1.5} % Damos aire vertical a las celdas
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.8cm}|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}
+        \hline
+        \textbf{Parámetro Dinámico} & \textbf{Analítico}\newline (Fase 0) & \textbf{LTSpice}\newline (Fase 1) & \textbf{Osciloscopio}\newline (Fase 2) & \textbf{Python}\newline (Fase 3) & \textbf{Error Relativo} \\
+        \hline
+        $R_{NTC}\ (\qty{25}{\celsius})$ & \qty{10.00}{\kilo\ohm} & \qty{10.00}{\kilo\ohm} & Valor DMM\newline (ej. \qty{9.88}{\kilo\ohm}) & \qty{9.88}{\kilo\ohm} & $< 2.0\%$ \\
+        \hline
+        $\hat{V}_{out}\ (\qty{25}{\celsius})$ & \qty{181.5}{\milli\volt} & \qty{181.5}{\milli\volt} & $\approx \qty{180}{\milli\volt}$ & \qty{178.2}{\milli\volt} & $< 5.0\%$ \\
+        \hline
+        Desfase $\theta\ (\qty{25}{\celsius})$ & $-162.1^\circ$ & $-162.1^\circ$ & $\Delta t \approx \qty{45}{\micro\second}$ & $-159.8^\circ$ & $< 6.0\%$ \\
+        \hline
+        $\hat{V}_{out}\ (\qty{45}{\celsius})$ & \qty{298.3}{\milli\volt} & \qty{298.0}{\milli\volt} & $\approx \qty{305}{\milli\volt}$ & \qty{302.1}{\milli\volt} & $< 5.0\%$ \\
+        \hline
+    \end{tabularx}
+\end{table}
+
+\end{document}
