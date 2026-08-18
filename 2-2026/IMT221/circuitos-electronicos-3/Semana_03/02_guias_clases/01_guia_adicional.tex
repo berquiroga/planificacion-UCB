@@ -1,0 +1,294 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- PAQUETES PRINCIPALES ---
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb, mathtools}
+\usepackage{siunitx}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% --- PAQUETES PARA GRÁFICAS Y CIRCUITOS ---
+\usepackage{pgfplots}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{babel} % Soluciona conflictos de babel-spanish con circuitikz
+\pgfplotsset{compat=1.18}
+
+% --- CONFIGURACIÓN DE CÓDIGO (PYTHON) ---
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.96,0.96,0.96}
+\lstset{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    language=Python,
+    literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+             {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+             {ñ}{{\~n}}1 {Ñ}{{\~N}}1
+}
+
+% --- CONFIGURACIÓN DE SIUNITX ---
+\sisetup{output-decimal-marker = {,}, inter-unit-product = \ensuremath{{}\cdot{}}}
+
+% --- CABECERAS ---
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+% Ajuste necesario para evitar la advertencia de fancyhdr sobre headheight
+\setlength{\headheight}{14pt}
+\fancyhf{}
+\lhead{\textbf{Circuitos Electrónicos III (IMT-221)}}
+\rhead{Sesión 5: Material Complementario}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% --- ENTORNOS PERSONALIZADOS ---
+\newtcolorbox{aviso}[1][]{colback=red!5!white, colframe=red!75!black, fonttitle=\bfseries, title=#1}
+\newtcolorbox{definicion}[1][]{colback=blue!5!white, colframe=blue!75!black, fonttitle=\bfseries, title=#1}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{Apuntes de Cátedra: Material Complementario (Sesión 5)}}\\[0.3cm]
+    {\large \textbf{Análisis Riguroso de Topologías, Corriente de Rizado y Falla Térmica ESR}}\\
+    \textit{Docente: M.Sc. Ing. Bernardo Quiroga Turdera}
+    \vspace{0.3cm}
+    \hrule
+\end{center}
+
+\vspace{0.3cm}
+
+% ==========================================
+% SECCIÓN 1: EVOLUCIÓN HISTÓRICA Y TOPOLOGÍAS
+% ==========================================
+\section{Evolución Histórica y Comparativa de Topologías Clásicas}
+Antes de la masificación de los puentes integrados de silicio (Graetz), la rectificación dependía de válvulas termoiónicas o arreglos discretos de alto costo por unión semiconductora. Esto condicionó el desarrollo de dos topologías fundacionales:
+
+\vspace{0.3cm}
+\noindent
+\begin{minipage}{0.48\textwidth}
+    \centering \textbf{TOPOLOGÍA 1: Media Onda (1 Diodo)}
+    \vspace{0.3cm}\\
+    \begin{circuitikz}[american, scale=0.8, transform shape]
+        \draw (0,0) to[sV, l=$Sec$] (0,3) 
+              to[D, l=$D_1$, i=$i_D(t)$] (3,3) 
+              to[R, l=$R_L$, v=$v_o(t)$] (3,0) -- (0,0);
+        \node[ground] at (1.5,0) {};
+    \end{circuitikz}
+    \vspace{0.2cm}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+    \centering \textbf{TOPOLOGÍA 2: Tap Central (2 Diodos)}
+    \vspace{0.3cm}\\
+    \begin{circuitikz}[american, scale=0.8, transform shape]
+        % Transformador secundario partido
+        \draw (0,4) to[L, l=$Sec_1$, v=$v_s$] (0,2);
+        \draw (0,2) to[L, l=$Sec_2$, v=$v_s$] (0,0);
+        % Diodos
+        \draw (0,4) to[D, l=$D_1$] (3,4) -- (4,4);
+        \draw (0,0) to[D, l_=$D_2$] (3,0) -- (4,0) -- (4,4);
+        % Carga y tierra
+        \draw (0,2) -- (5,2) node[ground]{}; % Tap central
+        \draw (4,3) to[R, l=$R_L$, v=$v_o(t)$] (5,3) -- (5,2);
+        \draw (4,3) -- (4,4);
+    \end{circuitikz}
+    \vspace{0.2cm}
+\end{minipage}
+
+\subsection*{Análisis Analítico de Topologías}
+
+\textbf{1. Rectificador de Media Onda (1 Diodo)}
+\begin{itemize}
+    \item \textbf{Mecanismo:} Bloquea completamente el semiciclo negativo.
+    \item \textbf{Descomposición de Fourier:} 
+    \begin{equation}
+        v_o(t) = \frac{V_p}{\pi} + \frac{V_p}{2}\sin(\omega t) - \sum_{n=2,4,6\dots}^\infty \frac{2V_p}{\pi(n^2-1)}\cos(n\omega t)
+    \end{equation}
+    \item \textbf{Características:} $V_{DC} = \frac{V_p}{\pi} \approx 0.318 V_p$ (descontando $V_\gamma$) y $PIV = V_p$.
+    \item \textbf{Limitación Crítica:} Provoca saturación magnética en el núcleo del transformador debido a la componente de corriente directa unilateral no balanceada ($I_{DC} \neq 0$).
+\end{itemize}
+
+\textbf{2. Rectificador de Onda Completa con Tap Central}
+\begin{itemize}
+    \item \textbf{Mecanismo:} Usa un secundario dividido. $D_1$ y $D_2$ conducen en contrafase durante semiciclos alternos.
+    \item \textbf{Descomposición de Fourier:} 
+    \begin{equation}
+        v_o(t) = \frac{2V_p}{\pi} - \sum_{n=2,4,6\dots}^\infty \frac{4V_p}{\pi(n^2-1)}\cos(n\omega t)
+    \end{equation}
+    \item \textbf{Características:} $V_{DC} = \frac{2V_p}{\pi} \approx 0.637 V_p$.
+    \item \textbf{Tensión Inversa de Pico (PIV):} $PIV = 2V_p - V_\gamma$. (Cuando $D_1$ conduce, somete al diodo apagado $D_2$ al doble de la tensión pico del semiciclo).
+    \item \textbf{Limitación Crítica:} Exige un transformador el doble de voluminoso y costoso debido al bajo factor de utilización del devanado ($TUF \approx 0.672$).
+\end{itemize}
+
+\subsection*{Tabla Comparativa de Parámetros de Diseño}
+\begin{center}
+\renewcommand{\arraystretch}{1.8}
+\begin{tabularx}{\textwidth}{@{} >{\bfseries}l X X X @{}}
+\toprule
+Parámetro Técnico & Media Onda & Onda Completa (Tap) & Puente de Graetz \\
+\midrule
+Diodos requeridos & 1 & 2 & 4 \\
+Tensión Continua sin Filtro ($V_{DC}$) & $\displaystyle\frac{V_p - V_\gamma}{\pi}$ & $\displaystyle\frac{2(V_p - V_\gamma)}{\pi}$ & $\displaystyle\frac{2(V_p - 2V_\gamma)}{\pi}$ \\
+Frecuencia Fundamental de Rizado ($f_r$) & $f_{in}$ (\qty{50}{\hertz}) & $2f_{in}$ (\qty{100}{\hertz}) & $2f_{in}$ (\qty{100}{\hertz}) \\
+Esfuerzo Inverso Máximo (PIV) & $V_p$ & $2V_p$ & $V_p$ \\
+Factor de Forma ($FF = V_{\text{rms}}/V_{DC}$) & $1.57$ & $1.11$ & $1.11$ \\
+Factor de Rizado Teórico ($\gamma$) & $1.21$ ($121\%$) & $0.482$ ($48.2\%$) & $0.482$ ($48.2\%$) \\
+Factor de Utilización del Trafo (TUF) & $0.287$ & $0.672$ & $0.812$ \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\newpage
+% ==========================================
+% SECCIÓN 2: CORRIENTE DE RIZADO Y ESR
+% ==========================================
+\section{Fundamentación Rigurosa de la Corriente de Rizado y Pérdidas ESR}
+En sistemas de potencia e instrumentación, el capacitor de filtrado no solo debe seleccionarse por su capacitancia $C$ (para limitar la caída de tensión), sino obligatoriamente por su capacidad nominal de corriente de rizado eficaz ($I_{C(\text{rms})}$).
+
+\vspace{0.3cm}
+\begin{center}
+    \begin{circuitikz}[american, scale=1, transform shape]
+        \draw (0,2) to[short, i=$i_{in}(t)$ (Pulsos)] (2.5,2);
+        \draw (2.5,2) to[short, i={$i_L(t) = I_{DC}$}] (5.5,2);
+        \draw (2.5,2) to[C, l_=$C$, i=$i_C(t)$] (2.5,0.5) to[R, l_=\text{ESR}] (2.5,-1);
+        \draw (5.5,2) to[R, l=$R_L$] (5.5,-1);
+        \draw (0,-1) -- (5.5,-1) node[ground]{};
+    \end{circuitikz}
+\end{center}
+\vspace{0.3cm}
+
+\subsection{A. Mecánica de Corrientes en el Capacitor}
+\begin{itemize}
+    \item \textbf{Intervalo de descarga ($T_r - \Delta t$):} Los diodos están apagados. El capacitor suministra toda la corriente a la carga: $i_C(t) = -I_{DC}$.
+    \item \textbf{Intervalo de recarga ($\Delta t$):} Los diodos inyectan pulsos triangulares de corriente intensa $i_{in}(t)$ con un pico de $I_{\text{peak}} \approx I_{DC}\frac{T_r}{\Delta t}$. La corriente en el capacitor es: $i_C(t) = i_{in}(t) - I_{DC}$.
+\end{itemize}
+
+\subsection{B. Deducción Analítica del Valor Eficaz ($I_{C(\text{rms})}$)}
+Aplicando la definición RMS sobre el periodo de rizado $T_r = \frac{1}{f_r}$ y modelando el pulso como triangular, integramos junto al tramo de descarga constante:
+\begin{equation}
+    I_{C(\text{rms})} = \sqrt{\frac{1}{T_r} \int_0^{T_r} i_C^2(t) \, dt} \implies I_{C(\text{rms})} = I_{DC} \sqrt{\frac{T_r}{\Delta t} \frac{1}{3} - 1} 
+\end{equation}
+Sustituyendo el tiempo de conducción $\Delta t \approx \frac{1}{2\pi f} \sqrt{\frac{2V_r}{V_p}}$ para onda completa ($T_r = \frac{1}{2f}$):
+\begin{equation}
+    I_{C(\text{rms})} \approx I_{DC} \sqrt{\frac{\pi}{\sqrt{2}} \sqrt{\frac{V_p}{V_r}} \frac{1}{3} - 1}
+\end{equation}
+\textbf{Regla de Diseño:} En fuentes lineales típicas ($\text{Rizado} \le 5\%$), la corriente $I_{C(\text{rms})}$ es comúnmente entre \textbf{1.5 y 2.5 veces} la corriente continua entregada a la carga ($I_{DC}$).
+
+\subsection{C. Mecanismo de Falla Térmica por ESR}
+Todo capacitor electrolítico real presenta una Resistencia Serie Equivalente (ESR) debida a los terminales y al electrolito. La disipación térmica interna es $P_{\text{loss}} = I_{C(\text{rms})}^2 \cdot \text{ESR}$. El aumento de temperatura en el núcleo es:
+\begin{equation}
+    \Delta T_C = P_{\text{loss}} \cdot R_{\theta(\text{cap-amb})} = (I_{C(\text{rms})}^2 \cdot \text{ESR}) \cdot R_{\theta}
+\end{equation}
+Si $I_{C(\text{rms})}$ excede el límite del fabricante, la temperatura interna supera la nominal (85$^\circ$C o 105$^\circ$C), secando el electrolito, elevando más la ESR y provocando una falla explosiva.
+
+% ==========================================
+% SECCIÓN 3: PROBLEMA DE ANÁLISIS TÉRMICO
+% ==========================================
+\section{Problema de Cátedra: Análisis Térmico de Capacitores}
+\textbf{Enunciado:} Para el PFI, el rectificador trabaja a \qty{50}{\hertz} con $V_{p(\text{out})} = \qty{15.57}{\volt}$, consumiendo $I_{DC} = \qty{1.2}{\ampere}$ y tolerando un rizado $V_r = \qty{0.6}{\volt}_{pp}$. Se evalúan dos capacitores de $10\,000\,\mu\text{F} / 25\text{V}$ a $T_{\text{amb}} = \qty{30}{\celsius}$:
+\begin{itemize}
+    \item \textbf{Capacitor A (Estándar):} $\text{ESR} = \qty{0.08}{\ohm}$, $I_{\text{ripple(max)}} = 1.8\text{ A}_{\text{rms}}$, $R_\theta = \qty{35}{\celsius\per\watt}$.
+    \item \textbf{Capacitor B (Low-ESR):} $\text{ESR} = \qty{0.025}{\ohm}$, $I_{\text{ripple(max)}} = 3.2\text{ A}_{\text{rms}}$, $R_\theta = \qty{28}{\celsius\per\watt}$.
+\end{itemize}
+
+\vspace{0.3cm}
+\noindent \textbf{1. Tiempo de Conducción ($\Delta t$):}
+\begin{equation*}
+    \Delta t = \frac{1}{2\pi (50)} \sqrt{\frac{2(\qty{0.6}{\volt})}{\qty{15.57}{\volt}}} = \frac{1}{314.16} \sqrt{0.07707} = \mathbf{\qty{0.8836}{\milli\second}}
+\end{equation*}
+
+\noindent \textbf{2. Corriente de Rizado Eficaz ($I_{C(\text{rms})}$):}
+\begin{equation*}
+    I_{C(\text{rms})} = 1.2 \cdot \sqrt{\frac{\qty{10}{\milli\second}}{\qty{0.8836}{\milli\second}} \cdot \frac{1}{3} - 1} = 1.2 \cdot \sqrt{2.7725} = \mathbf{1.998\text{ A}_{\text{rms}}}
+\end{equation*}
+
+\noindent \textbf{3. Evaluación Térmica Comparativa:}
+\begin{align*}
+    \text{\textbf{Capacitor A:}} \quad P_{\text{loss(A)}} &= (1.998\text{ A})^2 \cdot \qty{0.08}{\ohm} = \mathbf{\qty{0.319}{\watt}} \\
+    \Delta T_C &= \qty{0.319}{\watt} \cdot \qty{35}{\celsius\per\watt} = \qty{11.18}{\celsius} \implies T_{\text{núcleo}} = \mathbf{\qty{41.18}{\celsius}}
+\end{align*}
+\textcolor{red}{\textbf{Falla:}} $I_{C(\text{rms})} = 1.998\text{ A} > 1.80\text{ A}$ (Sobrecargado en 11\%).
+\begin{align*}
+    \text{\textbf{Capacitor B:}} \quad P_{\text{loss(B)}} &= (1.998\text{ A})^2 \cdot \qty{0.025}{\ohm} = \mathbf{\qty{0.100}{\watt}} \\
+    \Delta T_C &= \qty{0.100}{\watt} \cdot \qty{28}{\celsius\per\watt} = \qty{2.80}{\celsius} \implies T_{\text{núcleo}} = \mathbf{\qty{32.80}{\celsius}}
+\end{align*}
+\textcolor{codegreen}{\textbf{Éxito:}} $I_{C(\text{rms})} = 1.998\text{ A} < 3.20\text{ A}$ (Margen seguro del 37\%). \textbf{Se selecciona el Capacitor B}.
+
+\newpage
+% ==========================================
+% SECCIÓN 4: PYTHON Y AUDITORÍA
+% ==========================================
+\section{Taller Computacional: Espectro y Pérdidas ESR}
+
+\begin{lstlisting}
+# ==============================================================================
+# UNIVERSIDAD CATOLICA BOLIVIANA "SAN PABLO" - SEDE TARIJA
+# Modulo: Calculo Numerico de Corriente de Rizado Eficaz y Perdidas ESR
+# ==============================================================================
+import numpy as np
+import matplotlib.pyplot as plt
+
+f_red = 50.0          # Frecuencia de entrada (Hz)
+Vp_out = 15.57        # Tension pico rectificada (V)
+I_dc = 1.2            # Corriente media de carga (A)
+Vr_target = 0.6       # Rizado pico a pico deseado (V)
+ESR_A = 0.08          # Capacitor Estandar (Ohms)
+ESR_B = 0.025         # Capacitor Low-ESR (Ohms)
+
+f_r = 2 * f_red
+C = I_dc / (f_r * Vr_target)
+R_L = (Vp_out - Vr_target / 2) / I_dc
+
+t = np.linspace(0, 2 / f_r, 4000)
+dt = t[1] - t[0]
+
+v_in_rect = Vp_out * np.abs(np.sin(2 * np.pi * f_red * t))
+v_cap = np.zeros_like(t)
+i_in = np.zeros_like(t)
+v_actual = Vp_out
+
+for i in range(len(t)):
+    if v_in_rect[i] >= v_actual:
+        v_actual = v_in_rect[i]
+        i_cap_charge = C * (v_in_rect[i] - v_in_rect[i-1]) / dt if i > 0 else 0.0
+        i_in[i] = np.maximum(i_cap_charge + (v_actual / R_L), 0.0)
+    else:
+        v_actual = v_actual * np.exp(-dt / (R_L * C))
+        i_in[i] = 0.0
+    v_cap[i] = v_actual
+
+# Corriente en capacitor e I_rms
+i_C = i_in - (v_cap / R_L)
+I_C_rms_exacto = np.sqrt(np.mean(i_C**2))
+P_loss_A = (I_C_rms_exacto**2) * ESR_A
+P_loss_B = (I_C_rms_exacto**2) * ESR_B
+
+print(f"Corriente RMS en Capacitor (Ic) : {I_C_rms_exacto:.3f} A_rms")
+print(f"Relacion I_rms / I_dc           : {I_C_rms_exacto / I_dc:.2f}")
+print(f"Perdidas Joule Capacitor A      : {P_loss_A*1e3:.1f} mW")
+print(f"Perdidas Joule Capacitor B      : {P_loss_B*1e3:.1f} mW")
+\end{lstlisting}
+
+\begin{aviso}[Protocolo de Auditoría Socrática para Estudiantes]
+\textbf{1. Topología:} ``Si cambiáramos al transformador con Tap Central manteniendo el secundario de $\qty{15.57}{\volt}$ pico, ¿qué parámetro de los diodos habría que duplicar para evitar su destrucción?''\\
+\textit{R: La Tensión Inversa de Pico (PIV), que pasa de $V_p$ a $2V_p$.}
+
+\vspace{0.2cm}
+\textbf{2. Estrés Térmico:} ``Si la carga consume $\qty{1}{\ampere}$ en continua, ¿por qué usar un capacitor de $I_{\text{ripple(max)}} = 1\text{ A}_{\text{rms}}$ destruirá el circuito?''\\
+\textit{R: Porque la corriente $i_C(t)$ consiste en pulsos de alta intensidad cuya componente eficaz es típicamente el doble ($1.8$ a $2.0\text{ A}_{\text{rms}}$), disipando 4 veces más calor en la ESR.}
+\end{aviso}
+
+\end{document}

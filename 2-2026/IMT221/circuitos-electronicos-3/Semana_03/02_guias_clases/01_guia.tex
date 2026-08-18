@@ -1,0 +1,318 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- PAQUETES PRINCIPALES ---
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb, mathtools}
+\usepackage{siunitx}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% --- PAQUETES PARA GRÁFICAS Y CIRCUITOS ---
+\usepackage{pgfplots}
+\usepackage[american]{circuitikz}
+\pgfplotsset{compat=1.18}
+
+% --- CONFIGURACIÓN DE CÓDIGO (PYTHON) ---
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.96,0.96,0.96}
+\lstset{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    language=Python,
+    literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+             {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+             {ñ}{{\~n}}1 {Ñ}{{\~N}}1
+}
+
+% --- CONFIGURACIÓN DE SIUNITX ---
+\sisetup{output-decimal-marker = {,}, inter-unit-product = \ensuremath{{}\cdot{}}}
+
+% --- CABECERAS ---
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{Circuitos Electrónicos III (IMT-221)}}
+\rhead{Sesión 5: Rectificación y Filtrado Capacitivo}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% --- ENTORNOS PERSONALIZADOS ---
+\newtcolorbox{aviso}[1][]{colback=red!5!white, colframe=red!75!black, fonttitle=\bfseries, title=#1}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{Apuntes de Cátedra: Sesión 5}}\\[0.3cm]
+    {\large \textbf{Rectificación Monofásica (Puente Completo) y Filtrado Capacitivo}}\\
+    \textit{Docente: M.Sc. Ing. Bernardo Quiroga Turdera}
+    \vspace{0.3cm}
+    \hrule
+\end{center}
+
+\vspace{0.3cm}
+
+% ==========================================
+% SECCIÓN 1: FUNDAMENTACIÓN FÍSICA Y TOPOLOGÍAS
+% ==========================================
+\section{Fundamentación Física y Topologías}
+Todo actuador mecatrónico o equipo electromédico requiere un bus de corriente continua estable a partir de la red de CA. La rectificación sin filtro entrega una tensión pulsante inutilizable para alimentar etapas de control o instrumentación (como en el Hito 2 del PFI). 
+
+\subsection{Comparativa de Topologías de Rectificación}
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{@{} >{\bfseries}l X X X @{}}
+\toprule
+Parámetro de Diseño & Media Onda & Onda Completa (Tap) & Puente de Graetz \\
+\midrule
+Diodos requeridos & 1 & 2 & 4 \\
+Tensión pico de salida ($V_{p(\text{out})}$) & $V_p - V_\gamma$ & $V_p - V_\gamma$ & $V_p - 2V_\gamma$ \\
+Frecuencia de rizado ($f_r$) & $f_{in}$ (\qty{50}{\hertz}) & $2f_{in}$ (\qty{100}{\hertz}) & $2f_{in}$ (\qty{100}{\hertz}) \\
+Tensión Inversa de Pico (PIV) & $2V_p$ & $2V_p$ & $V_p$ \\
+Eficiencia de conversión & $40.6\%$ & $81.2\%$ & $81.2\%$ \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{Mecánica del Filtrado Capacitivo}
+Durante el primer cuarto de ciclo, el diodo conduce y carga el capacitor hasta el valor pico de salida $V_{p(\text{out})}$. Cuando la tensión de la fuente senoidal cae por debajo de la tensión almacenada en el capacitor, los diodos se polarizan en inversa (se apagan). El capacitor entrega energía a la carga $R_L$ mediante una descarga exponencial:
+\begin{equation}
+    v_o(t) = V_{p(\text{out})} \cdot e^{-\frac{t}{R_L C}}
+\end{equation}
+Si la constante de tiempo $\tau = R_L C \gg T$, la descarga se aproxima a una recta.
+
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}[scale=0.9]
+        \begin{axis}[
+            width=12cm, height=6cm,
+            axis lines=middle,
+            xmin=0, xmax=10, ymin=0, ymax=1.2,
+            xtick={1.57, 4.71, 7.85}, xticklabels={$\frac{T}{4}$,$\frac{3T}{4}$,$\frac{5T}{4}$},
+            ytick={1, 0.7}, yticklabels={$V_{p(\mathrm{out})}$,$V_{p}-V_{r}$},
+            xlabel={$t$}, ylabel={$v_o(t)$},
+            grid=both, grid style={dashed, gray!30},
+            legend style={at={(0.5,1.1)}, anchor=south, legend columns=-1}
+        ]
+        % Onda rectificada completa (Valor absoluto del seno)
+        \addplot[domain=0:10, samples=200, gray, dashed, thick] {abs(sin(deg(x)))};
+        \addlegendentry{CA Rectificada (Sin filtro)}
+        
+        % Carga y Descarga Capacitiva
+        \addplot[domain=0:1.57, samples=50, blue, ultra thick] {sin(deg(x))};
+        \addplot[domain=1.57:3.7, samples=50, blue, ultra thick] {exp(-0.15*(x-1.57))};
+        \addplot[domain=3.7:4.71, samples=50, blue, ultra thick] {abs(sin(deg(x)))};
+        \addplot[domain=4.71:6.84, samples=50, blue, ultra thick] {exp(-0.15*(x-4.71))};
+        \addplot[domain=6.84:7.85, samples=50, blue, ultra thick] {abs(sin(deg(x)))};
+        \addlegendentry{Voltaje con Filtro $C$}
+        
+        % Indicador de Rizado
+        \draw[<->, red, thick] (axis cs: 6.84, 0.72) -- (axis cs: 6.84, 1) node[midway, right] {$V_r$};
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Respuesta de voltaje en un rectificador de onda completa con filtro capacitivo.}
+\end{figure}
+
+% ==========================================
+% SECCIÓN 2: DEDUCCIÓN ANALÍTICA
+% ==========================================
+\section{Deducción Analítica del Rizado y Corriente Pico}
+\textbf{1. Tensión de Rizado ($V_r$) y Tensión en Continua ($V_{DC}$):}
+Para un rectificador de onda completa, la tensión de rizado pico a pico se calcula como:
+\begin{equation}
+    V_r \approx \frac{I_L}{2 f_{in} C} = \frac{V_{p(\text{out})}}{2 f_{in} R_L C}
+\end{equation}
+La tensión media de continua efectiva en la carga es:
+\begin{equation}
+    V_{DC} = V_{p(\text{out})} - \frac{V_r}{2}
+\end{equation}
+
+\textbf{2. Ángulo de Conducción ($\theta_c$) y Corriente Pico ($I_{D(\max)}$):}\\
+El diodo empieza a conducir cuando la senoidal iguala la tensión del capacitor en el punto de valle ($V_p - V_r$):
+\begin{equation}
+    V_p \cos(\theta_c) = V_p - V_r \implies \cos(\theta_c) = 1 - \frac{V_r}{V_p}
+\end{equation}
+Aproximando $\cos(\theta_c) \approx 1 - \frac{\theta_c^2}{2}$ por serie de Maclaurin (para $\theta_c \ll 1$):
+\begin{equation}
+    1 - \frac{\theta_c^2}{2} = 1 - \frac{V_r}{V_p} \implies \theta_c = \sqrt{\frac{2 V_r}{V_p}}
+\end{equation}
+El tiempo de conducción es sumamente breve: $\Delta t = \frac{\theta_c}{\omega} = \frac{1}{2\pi f} \sqrt{\frac{2 V_r}{V_p}}$. 
+
+Por el principio de \textbf{Conservación de Carga}, la carga extraída en un semiciclo ($\Delta Q_{out} = I_L \cdot \frac{T}{2}$) debe reponerse íntegramente durante el breve pulso de conducción $\Delta t$. Esto genera una elevadísima corriente pico en el diodo:
+\begin{equation}
+    I_{D(\max)} \approx I_L \left( 1 + \pi \sqrt{\frac{2 V_{p(\text{out})}}{V_r}} \right)
+\end{equation}
+\textit{Costo oculto:} A mayor capacitancia $C$, menor es el rizado $V_r$, pero mayor es el impacto de la corriente $I_{D(\max)}$ que puede destruir la unión P-N del diodo.
+
+\newpage
+% ==========================================
+% SECCIÓN 3: PROBLEMA DE DISEÑO (PFI)
+% ==========================================
+\section{Problema de Diseño de Ingeniería (PFI)}
+\textbf{Enunciado:} Diseñar la etapa rectificadora para la fuente de instrumentación del PFI. Se dispone de un transformador de $12\text{ V}_{\text{rms}}$ a $\qty{50}{\hertz}$ y un puente rectificador integrado (Graetz) con diodos de silicio ($V_\gamma = \qty{0.7}{\volt}$). La carga consume $I_L = \qty{500}{\milli\ampere}$.
+
+\vspace{0.3cm}
+\begin{center}
+    \begin{circuitikz}[american, scale=0.9, transform shape]
+        % Transformador / Fuente AC
+        \draw (-2,0) to[sV, l=\qty{12}{\volt_{\text{rms}}}] (-2,-4);
+        \draw (-2,0) |- (0,0);
+        \draw (-2,-4) |- (4,-4) -- (4,0);
+        
+        % Puente de Graetz (Diodos)
+        \draw (0,0) to[D, l=$D_2$, *-*] (2,2);
+        \draw (4,0) to[D, l_=$D_1$, *-*] (2,2);
+        \draw (2,-2) to[D, l=$D_3$, *-*] (0,0);
+        \draw (2,-2) to[D, l_=$D_4$, *-*] (4,0);
+        
+        % Bus DC, Capacitor y Carga
+        \draw (2,2) -- (6,2) to[C, l=$C$] (6,-2) -- (2,-2);
+        \draw (6,2) -- (8,2) to[R, l=$R_L$ (\qty{500}{\milli\ampere})] (8,-2) -- (6,-2);
+        \node[ground] at (7,-2) {};
+    \end{circuitikz}
+\end{center}
+
+\textbf{Requerimientos:} Tensión de rizado máximo $V_r \le \qty{0.5}{\volt}$. Determinar el capacitor $C$, el voltaje continuo $V_{DC}$, la corriente pico repetitiva $I_{D(\max)}$ y seleccionar entre el 1N4148 ($I_{\max} = \qty{200}{\milli\ampere}$) o el 1N4007 ($I_{\max} = \qty{1}{\ampere}$).
+
+\vspace{0.3cm}
+\noindent \textbf{Paso 1: Tensión Pico del Secundario y Salida}\\
+$V_p = 12\text{ V}_{\text{rms}} \cdot \sqrt{2} = \mathbf{\qty{16.97}{\volt}}$. Como conducen dos diodos en serie por semiciclo:
+\begin{equation*}
+    V_{p(\text{out})} = V_p - 2V_\gamma = \qty{16.97}{\volt} - 2(\qty{0.7}{\volt}) = \mathbf{\qty{15.57}{\volt}}
+\end{equation*}
+
+\noindent \textbf{Paso 2: Dimensionamiento del Capacitor de Filtro}\\
+Para puente completo con $f_{in} = \qty{50}{\hertz} \implies f_r = \qty{100}{\hertz}$:
+\begin{equation*}
+    C = \frac{I_L}{f_r \cdot V_r} = \frac{\qty{0.5}{\ampere}}{\qty{100}{\hertz} \cdot \qty{0.5}{\volt}} = \qty{0.010}{\farad} = \mathbf{10\,000\,\mu\text{F}}
+\end{equation*}
+\textit{Selección Comercial:} Un capacitor electrolítico de $10\,000\,\mu\text{F} / 25\text{V}$.
+
+\noindent \textbf{Paso 3: Tensión Continua Promedio ($V_{DC}$)}\\
+\begin{equation*}
+    V_{DC} = V_{p(\text{out})} - \frac{V_r}{2} = 15.57\text{ V} - \frac{0.5\text{ V}}{2} = \mathbf{\qty{15.32}{\volt}}
+\end{equation*}
+
+\noindent \textbf{Paso 4: Corriente Pico Repetitiva en los Diodos ($I_{D(\max)}$)}\\
+Calculamos el ángulo de conducción:
+\begin{equation*}
+    \theta_c = \sqrt{\frac{2 \cdot 0.5\text{ V}}{15.57\text{ V}}} = \sqrt{0.0642} = \qty{0.2534}{\radian} \approx 14.52^\circ
+\end{equation*}
+Calculamos la corriente pico que atraviesa los semiconductores:
+\begin{equation*}
+    I_{D(\max)} = I_L \left( 1 + \pi \sqrt{\frac{2 \cdot 15.57}{0.5}} \right) = 0.5 \left( 1 + \pi \sqrt{62.28} \right) = \mathbf{\qty{12.89}{\ampere}}
+\end{equation*}
+\textit{Nota Técnica:} Aunque la carga consume solo $\qty{500}{\milli\ampere}$, los diodos sufren pulsos de casi $\qty{13}{\ampere}$ repetidamente cada $\qty{10}{\milli\second}$.
+
+\noindent \textbf{Paso 5: Selección de Componente y PIV}\\
+La Tensión Inversa de Pico soportada por los diodos apagados en el puente es:
+\begin{equation*}
+    PIV = V_p - V_\gamma = 16.97\text{ V} - 0.7\text{ V} = \mathbf{\qty{16.27}{\volt}}
+\end{equation*}
+El diodo 1N4148 ($I_{\max} = \qty{200}{\milli\ampere}$) se destruiría inmediatamente debido al pulso de $\qty{13}{\ampere}$. La \textbf{selección obligatoria es el 1N4007}, que soporta \qty{1}{\ampere} promedio, pero tiene una capacidad de pulso transitorio no repetitivo ($I_{FSM}$) de \qty{30}{\ampere} y un PIV de \qty{1000}{\volt}.
+
+\newpage
+% ==========================================
+% SECCIÓN 4: PYTHON Y AUDITORÍA
+% ==========================================
+\section{Taller Computacional: Descarga Exponencial y Diodos}
+Este script compara la aproximación lineal de rizado vs. la solución exacta con descarga exponencial.
+
+\begin{lstlisting}
+# ==============================================================================
+# UNIVERSIDAD CATOLICA BOLIVIANA "SAN PABLO" - SEDE TARIJA
+# Sesion 5: Modelado No Lineal de Rectificador Puente y Filtro Capacitivo
+# Docente: M.Sc. Ing. Bernardo Quiroga Turdera
+# ==============================================================================
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 1. PARAMETROS DEL SISTEMA
+f_in = 50.0           # Frecuencia de red (Hz)
+V_rms = 12.0          # Voltaje eficaz del secundario (V)
+V_gamma = 0.7         # Caida directa por diodo (V)
+I_load_nominal = 0.5  # Corriente DC de carga (A)
+V_ripple_spec = 0.5   # Rizado pico a pico deseado (V)
+
+V_peak = V_rms * np.sqrt(2)
+V_peak_out = V_peak - 2 * V_gamma
+R_load = V_peak_out / I_load_nominal
+
+# Dimensionamiento Analitico
+f_ripple = 2 * f_in
+C_filtro = I_load_nominal / (f_ripple * V_ripple_spec)
+
+print(f"Tension Pico Salida Rectificada : {V_peak_out:.2f} V")
+print(f"Capacitancia Requerida (C)      : {C_filtro*1e6:.1f} uF")
+
+# 2. SIMULACION TEMPORAL DINAMICA
+num_ciclos = 3
+t = np.linspace(0, num_ciclos / f_in, 5000)
+dt = t[1] - t[0]
+
+v_in = V_peak * np.sin(2 * np.pi * f_in * t)
+v_rect = np.maximum(np.abs(v_in) - 2 * V_gamma, 0.0)
+
+v_out = np.zeros_like(t)
+i_diode = np.zeros_like(t)
+v_cap = 0.0
+
+for i in range(len(t)):
+    if v_rect[i] > v_cap:
+        # Conduccion: Carga del capacitor
+        v_cap = v_rect[i]
+        if i > 0:
+            i_cap = C_filtro * (v_rect[i] - v_rect[i-1]) / dt
+        else:
+            i_cap = 0.0
+        i_diode[i] = np.maximum(i_cap + v_cap / R_load, 0.0)
+    else:
+        # Bloqueo: Descarga exponencial a traves de RL
+        v_cap = v_cap * np.exp(-dt / (R_load * C_filtro))
+        i_diode[i] = 0.0
+    v_out[i] = v_cap
+
+# 3. GRAFICACION
+plt.figure(figsize=(10, 7))
+
+plt.subplot(2, 1, 1)
+plt.plot(t * 1e3, v_rect, 'gray', linestyle='--', label='Sin Filtro')
+plt.plot(t * 1e3, v_out, 'b-', linewidth=2, label=f'Filtrada (C={C_filtro*1e6:.0f} uF)')
+plt.title('Respuesta Temporal: Rectificador con Filtro')
+plt.ylabel('Tension (V)')
+plt.grid(True, linestyle='--', alpha=0.7)
+plt.legend()
+
+plt.subplot(2, 1, 2)
+plt.plot(t * 1e3, i_diode, 'r-', linewidth=1.5, label='Pulsos de Corriente ID')
+plt.title('Pulsos de Corriente en Diodos')
+plt.xlabel('Tiempo (ms)')
+plt.ylabel('Corriente (A)')
+plt.grid(True, linestyle='--', alpha=0.7)
+plt.legend()
+
+plt.tight_layout()
+plt.show()
+\end{lstlisting}
+
+\begin{aviso}[Protocolo de Auditoría Dinámica (IA)]
+\textbf{Consigna para el Estudiante:} En el script, cambiar el capacitor de $10\,000\,\mu\text{F}$ a $1\,000\,\mu\text{F}$ y luego a $100\,\mu\text{F}$. \\
+\textbf{Pregunta:} ¿Por qué al reducir $C$ a $100\,\mu\text{F}$ la corriente pico $I_{D(\max)}$ cae de \qty{12.8}{\ampere} a menos de \qty{2}{\ampere}? \\
+\textbf{Respuesta Esperada:} Porque el rizado aumenta exponencialmente. Al haber un valle más profundo, el ángulo de conducción $\theta_c$ es mucho más ancho. Al tener el diodo más tiempo ($\Delta t$) para reponer la carga, no necesita concentrar toda la energía en un pulso destructivo estrecho.
+\end{aviso}
+
+\end{document}

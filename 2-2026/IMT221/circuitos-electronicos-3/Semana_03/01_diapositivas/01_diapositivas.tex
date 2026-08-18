@@ -1,0 +1,178 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+
+% --- TEMA Y ESTILO ---
+\usetheme{Madrid}
+\usecolortheme{whale}
+
+% --- PAQUETES ---
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[american]{circuitikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\sisetup{output-decimal-marker = {,}, per-mode = symbol}
+
+% --- INFORMACIÓN DEL CURSO ---
+\title[Rectificación y Filtros]{Rectificación y Filtrado Capacitivo}
+\subtitle{Conversión CA-CD, Dimensionamiento de Rizado y Esfuerzos}
+\author{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Circuitos Electrónicos III (IMT-221)}
+\date{Semana 3: Sesión 5}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Auditoría Socrática de Entrada}
+  \begin{block}{Conectando con la Sesión 4}
+    En la clase anterior, analizamos que para señales muy pequeñas (audio, ruido), el diodo se comporta como una resistencia matemática:
+    \begin{equation*}
+        r_d \approx \frac{\eta V_T}{I_{DQ}}
+    \end{equation*}
+  \end{block}
+  \vspace{0.3cm}
+  \textbf{La Paradoja de hoy:}\\
+  ¿Por qué en una etapa de rectificación de potencia para transformar $\qty{220}{\volt}$ de AC a DC, ese modelo lineal ($r_d$) es \textbf{completamente inútil} y debemos usar el modelo de caída constante ($V_\gamma = \qty{0.7}{\volt}$) o Lineal por Tramos (PWL)?
+\end{frame}
+
+\begin{frame}{El Reto en el PFI (Contexto de Ingeniería)}
+  \begin{itemize}
+      \item Todo actuador mecatrónico o biosensores requiere un bus de Corriente Continua (DC) muy estable a partir de la red.
+      \item \textbf{El Desafío:} La rectificación sin filtro entrega una tensión pulsante que hace colapsar a los microcontroladores y amplificadores (Hito 2).
+  \end{itemize}
+  
+  \vspace{0.3cm}
+  \begin{block}{Objetivo de Diseño}
+      Diseñar una red de rectificación y filtrado que \textbf{minimice el rizado residual ($V_r$)} garantizando que NO destruiremos los diodos por el infame \textit{surge current} (sobrecorriente repetitiva).
+  \end{block}
+\end{frame}
+
+\begin{frame}{Comparativa de Topologías de Rectificación}
+  \begin{table}
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{@{} >{\bfseries}l X X X @{}}
+      \toprule
+      Parámetro de Diseño & Media Onda & Onda Completa (Tap) & \textcolor{blue}{Puente de Graetz} \\
+      \midrule
+      Diodos requeridos & 1 & 2 & \textcolor{blue}{4} \\
+      Tensión pico salida & $V_p - V_\gamma$ & $V_p - V_\gamma$ & \textcolor{blue}{$V_p - 2V_\gamma$} \\
+      Frecuencia rizado ($f_r$) & $f_{in}$ (\qty{50}{\hertz}) & $2f_{in}$ (\qty{100}{\hertz}) & \textcolor{blue}{$2f_{in}$ (\qty{100}{\hertz})} \\
+      Tensión Inversa (PIV) & $2V_p$ & $2V_p$ & \textcolor{blue}{$V_p$} \\
+      Eficiencia máxima & $40.6\%$ & $81.2\%$ & \textcolor{blue}{$81.2\%$} \\
+      \bottomrule
+    \end{tabularx}
+  \end{table}
+\end{frame}
+
+\begin{frame}{Mecánica del Filtrado Capacitivo}
+  \begin{columns}
+      \begin{column}{0.4\textwidth}
+          \begin{itemize}
+              \item \textbf{Carga:} El diodo conduce y eleva $C$ hasta $V_{p(\text{out})}$.
+              \item \textbf{Corte:} La fuente cae. El diodo se polariza en inversa.
+              \item \textbf{Descarga:} El capacitor asume toda la carga del circuito mediante:
+              $$v_o(t) = V_{p} e^{-\frac{t}{R_L C}}$$
+          \end{itemize}
+      \end{column}
+      \begin{column}{0.6\textwidth}
+          \begin{tikzpicture}[scale=0.7]
+              \begin{axis}[
+                  axis lines=middle, xmin=0, xmax=10, ymin=0, ymax=1.2,
+                  xtick={1.57, 4.71}, xticklabels={$\frac{T}{4}$, $\frac{3T}{4}$},
+                  ytick={1, 0.7}, yticklabels={$V_{p}$, $V_p - V_r$},
+                  grid=both, grid style={dashed, gray!30}
+              ]
+              \addplot[domain=0:10, samples=150, gray, dashed, thick] {abs(sin(deg(x)))};
+              \addplot[domain=0:1.57, samples=30, blue, ultra thick] {sin(deg(x))};
+              \addplot[domain=1.57:3.7, samples=30, blue, ultra thick] {exp(-0.15*(x-1.57))};
+              \addplot[domain=3.7:4.71, samples=30, blue, ultra thick] {abs(sin(deg(x)))};
+              \addplot[domain=4.71:6.84, samples=30, blue, ultra thick] {exp(-0.15*(x-4.71))};
+              \addplot[domain=6.84:7.85, samples=30, blue, ultra thick] {abs(sin(deg(x)))};
+              \draw[<->, red, thick] (axis cs: 6.84, 0.72) -- (axis cs: 6.84, 1) node[midway, right] {$V_r$};
+              \end{axis}
+          \end{tikzpicture}
+      \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Formulación Analítica: Rizado y Tensión Continua}
+  \begin{block}{1. Tensión de Rizado Pico a Pico ($V_r$)}
+      Aproximando la descarga exponencial a una recta (si $\tau \gg T$):
+      \begin{equation*}
+          V_r \approx \frac{I_L}{2 f_{in} C} \quad (\text{Onda Completa})
+      \end{equation*}
+  \end{block}
+  
+  \vspace{0.3cm}
+  \begin{block}{2. Tensión Media en Continua ($V_{DC}$)}
+      Es el valor útil real que "ven" los reguladores posteriores:
+      \begin{equation*}
+          V_{DC} = V_{p(\text{out})} - \frac{V_r}{2}
+      \end{equation*}
+  \end{block}
+\end{frame}
+
+\begin{frame}{El Costo Oculto: Corriente Pico en el Diodo}
+  \alert{\textbf{Ley de Conservación de Energía:}}\\
+  A mayor capacitancia $C$, \textbf{menor} es el rizado $V_r$, pero \textbf{menor} es el tiempo de conducción ($\Delta t$). Toda la carga extraída se debe reponer en un instante.
+  
+  \vspace{0.2cm}
+  \textbf{Ángulo de conducción:} $\theta_c \approx \sqrt{\frac{2 V_r}{V_p}}$
+  
+  \vspace{0.2cm}
+  \begin{block}{Corriente Pico Repetitiva ($I_{D(\max)}$)}
+      \begin{equation*}
+          I_{D(\max)} \approx I_L \left( 1 + \pi \sqrt{\frac{2 V_{p(\text{out})}}{V_r}} \right)
+      \end{equation*}
+  \end{block}
+  \textit{Riesgo Técnico:} Un capacitor sobredimensionado puede destruir la unión P-N del diodo en los primeros ciclos por calor disipado en $r_D$.
+\end{frame}
+
+\begin{frame}{Resolución en Pizarra: Fuente PFI}
+  \begin{columns}
+      \begin{column}{0.4\textwidth}
+          \begin{circuitikz}[american, scale=0.6, transform shape]
+              \draw (-2,0) to[sV, l=\qty{12}{\volt_{\text{rms}}}] (-2,-4);
+              \draw (-2,0) |- (0,0); \draw (-2,-4) |- (4,-4) -- (4,0);
+              \draw (0,0) to[D, *-*] (2,2); \draw (4,0) to[D, *-*] (2,2);
+              \draw (2,-2) to[D, *-*] (0,0); \draw (2,-2) to[D, *-*] (4,0);
+              \draw (2,2) -- (5,2) to[C] (5,-2) -- (2,-2);
+              \draw (5,2) -- (7,2) to[R, l=\qty{500}{\milli\ampere}] (7,-2) -- (5,-2);
+          \end{circuitikz}
+      \end{column}
+      
+      \begin{column}{0.6\textwidth}
+          \textbf{Resultados Analíticos ($V_r \le \qty{0.5}{\volt}$):}
+          \begin{itemize}
+              \item $V_{p(\text{out})} = 12\sqrt{2} - 1.4 = \mathbf{\qty{15.57}{\volt}}$
+              \item $C_{\text{req}} = \frac{0.5}{100 \cdot 0.5} = \mathbf{10\,000\,\mu\text{F}}$
+              \item $I_{D(\max)} = 0.5 \left( 1 + \pi \sqrt{\frac{31.14}{0.5}} \right) = \mathbf{\qty{12.89}{\ampere}}$
+              \item PIV = $16.97 - 0.7 = \mathbf{\qty{16.27}{\volt}}$
+          \end{itemize}
+          \alert{\textbf{Decisión:}} Diodo 1N4148 se quema. Usaremos \textbf{1N4007}.
+      \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Taller Computacional (Python)}
+  \begin{center}
+      ¡Es hora de validar nuestro diseño matemático!
+  \end{center}
+  \vspace{0.2cm}
+  En sus laboratorios, ejecutarán el \textit{script} numérico que simula la carga/descarga exponencial ciclo a ciclo.
+  \vspace{0.4cm}
+  
+  \textbf{Reto de Auditoría IA:}\\
+  ¿Qué pasa físicamente con el pico de corriente $I_{D(\max)}$ si bajamos deliberadamente el capacitor a $100\,\mu\text{F}$ permitiendo mucho ruido en el bus DC? \\
+  \textit{Analicen la forma de onda del Subplot 2.}
+\end{frame}
+
+\end{document}
