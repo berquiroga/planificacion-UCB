@@ -1,0 +1,205 @@
+\documentclass[aspectratio=169]{beamer}
+
+% Configuración del tema y colores UCB
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+% Ajuste de contrastes
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+
+% Paquetes estándar
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+% Información del documento
+\title[Transformaciones Homogéneas SE(3)]{El Grupo Especial Euclidiano $SE(3)$ e Inversión Analítica}
+\subtitle{Robótica Industrial (IMT-342) — Universidad Católica Boliviana Tarija}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\date{Martes 18 de Agosto de 2026}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% Diapositiva 1
+\begin{frame}{Limitaciones de $SO(3)$ y la Necesidad de $SE(3)$}
+    \textbf{El Problema de las Transformaciones Afines:} \\
+    Una transformación rígida general en $\mathbb{R}^3$ combina una rotación $R \in SO(3)$ y una traslación $p \in \mathbb{R}^3$:
+    \begin{equation*}
+        p_A = {}^{A}R_B \cdot p_B + {}^{A}p_{B,\text{org}}
+    \end{equation*}
+    
+    \vspace{0.2cm}
+    \begin{alertblock}{Obstáculo Algebraico}
+        Esta ecuación \textbf{no es lineal} respecto a la posición. No puede encadenarse mediante simples multiplicaciones matriciales continuas cuando tenemos múltiples eslabones ($N$ articulaciones).
+    \end{alertblock}
+
+    \vspace{0.2cm}
+    \textbf{La Solución: Espacio Proyectivo $\mathbb{P}^3$} \\
+    Proyectar $\mathbb{R}^3$ a $\mathbb{P}^3$ añadiendo una coordenada escalar homogénea unitaria:
+    \begin{equation*}
+        \tilde{p} = \begin{bmatrix} x \\ y \\ z \\ 1 \end{bmatrix} \in \mathbb{P}^3
+    \end{equation*}
+\end{frame}
+
+% Diapositiva 2
+\begin{frame}{El Grupo Especial Euclidiano $SE(3)$}
+    \textbf{Estructura Matricial por Bloques ($4 \times 4$):}
+    \begin{equation*}
+        ^{A}T_B = \begin{bmatrix} 
+        \begin{array}{c|c} 
+        ^{A}R_{B(3\times3)} & ^{A}p_{B(3\times1)} \\ \hline 
+        \mathbf{0}_{(1\times3)} & 1 
+        \end{array} 
+        \end{bmatrix} = \begin{bmatrix} 
+        r_{11} & r_{12} & r_{13} & p_x \\ 
+        r_{21} & r_{22} & r_{23} & p_y \\ 
+        r_{31} & r_{32} & r_{33} & p_z \\ 
+        0 & 0 & 0 & 1 
+        \end{bmatrix}
+    \end{equation*}
+    
+    \vspace{0.4cm}
+    \textbf{Desglose de Bloques Funcionales:}
+    \begin{itemize}
+        \item \textbf{Rotación ($3 \times 3$):} Orientación de $\{B\}$ respecto a $\{A\}$ ($R \in SO(3)$).
+        \item \textbf{Traslación ($3 \times 1$):} Posición del origen de $\{B\}$ respecto al origen de $\{A\}$.
+        \item \textbf{Perspectiva ($1 \times 3$):} $\mathbf{0} = [0, 0, 0]$ en robótica de cuerpo rígido.
+        \item \textbf{Factor de Escala ($1 \times 1$):} Factor unitario $1$.
+    \end{itemize}
+\end{frame}
+
+% Diapositiva 3
+\begin{frame}{¿Qué Representa una Matriz Homogénea?}
+    \renewcommand{\arraystretch}{1.5}
+    \resizebox{\textwidth}{!}{
+    \begin{tabular}{l l c}
+    \toprule
+    \textbf{Interpretación} & \textbf{Significado Físico / Aplicación} & \textbf{Ecuación Operativa} \\ \midrule
+    \textbf{1. Descripción de Pose} & Almacena la ubicación y orientación completa de un eslabón. & $^{A}T_B = [^{A}\hat{x}_B, ^{A}\hat{y}_B, ^{A}\hat{z}_B, ^{A}p_B]$ \\ 
+    \textbf{2. Transformación Pasiva} & Cambia la base de un punto medido en $\{B\}$ hacia el marco $\{A\}$. & $\tilde{p}_A = {}^{A}T_B \cdot \tilde{p}_B$ \\ 
+    \textbf{3. Operador Activo} & Mueve y reorienta un objeto dentro del mismo marco coordenado. & $\tilde{p}' = T(\Delta p, \Delta\theta) \cdot \tilde{p}$ \\ \bottomrule
+    \end{tabular}
+    }
+\end{frame}
+
+% Diapositiva 4
+\begin{frame}{Multiplicación Secuencial de Eslabones}
+    \begin{center}
+    \begin{tikzpicture}[node distance=1.8cm, auto, thick, >=stealth, scale=0.9, transform shape]
+        \node[circle, draw=black, fill=gray!20] (N0) {$\{0\}$};
+        \node[circle, draw=ucbblue, fill=ucbblue!10, right=of N0] (N1) {$\{1\}$};
+        \node[right=of N1] (dots) {\dots};
+        \node[circle, draw=ucbblue, fill=ucbblue!10, right=of dots] (N6) {$\{6\}$};
+        \node[circle, draw=red!80!black, fill=red!10, right=of N6, xshift=0.5cm] (TCP) {TCP};
+        
+        \draw[->, ucbblue] (N0) -- node[above] {$^0T_1$} (N1);
+        \draw[->, ucbblue] (N1) -- node[above] {$^1T_2$} (dots);
+        \draw[->, ucbblue] (dots) -- node[above] {$^5T_6$} (N6);
+        \draw[->, red!80!black] (N6) -- node[above] {$^6T_{\text{TCP}}$} (TCP);
+        \draw[->, bend right=25, dashed, thick, black] (N0) to node[below] {\textbf{Pose Global:} $^0T_{\text{TCP}}$} (TCP);
+    \end{tikzpicture}
+    \end{center}
+    
+    \vspace{0.2cm}
+    \textbf{Ecuación de Encadenamiento:}
+    \begin{equation*}
+        ^{0}T_{\text{TCP}} = {}^{0}T_{1} \cdot {}^{1}T_{2} \cdot {}^{2}T_{3} \cdot {}^{3}T_{4} \cdot {}^{4}T_{5} \cdot {}^{5}T_{6} \cdot {}^{6}T_{\text{TCP}}
+    \end{equation*}
+    
+    \vspace{0.2cm}
+    \begin{block}{Reglas Fundamentales de Multiplicación}
+        \begin{itemize}
+            \item \textbf{Post-multiplicación (Derecha):} Transformación respecto al marco actual móvil.
+            \item \textbf{Pre-multiplicación (Izquierda):} Transformación respecto al marco inercial fijo.
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+% Diapositiva 5
+\begin{frame}{Inversión Rápida sin Eliminación Gaussiana}
+    \textbf{Desarrollo Analítico:}\\
+    Partiendo de la relación directa $p_A = R \cdot p_B + p \implies p_A - p = R \cdot p_B$. \\
+    Multiplicando por la izquierda por $R^T$ (dado que $R^{-1} = R^T$):
+    \begin{equation*}
+        R^T(p_A - p) = R^T R \cdot p_B \implies p_B = R^T p_A - R^T p
+    \end{equation*}
+    
+    En formato de bloque homogéneo $4 \times 4$:
+    \begin{equation*}
+        \begin{bmatrix} p_B \\ 1 \end{bmatrix} = \begin{bmatrix} R^T & -R^T p \\ \mathbf{0} & 1 \end{bmatrix} \begin{bmatrix} p_A \\ 1 \end{bmatrix}
+    \end{equation*}
+    
+    \vspace{0.2cm}
+    \begin{exampleblock}{Ecuación Fundamental de la Inversa en $SE(3)$}
+        \centering $\mathbf{(^{A}T_B)^{-1} = \begin{bmatrix} R^T & -R^T p \\ \mathbf{0}_{1\times3} & 1 \end{bmatrix}}$
+    \end{exampleblock}
+    
+    \vspace{0.1cm}
+    \small \textit{\textbf{Costo Computacional:} La inversión analítica requiere $\approx 10$ operaciones. La eliminación numérica genérica (Gauss/LU) supera las $60$ operaciones acumulando error de truncamiento.}
+\end{frame}
+
+% Diapositiva 6
+\begin{frame}{Caso Práctico PFI — Calibración de la Garra Neumática}
+    \textbf{Problema Real (ABB IRB 120):} El controlador conoce $^{0}T_6$ (brida). La pinza añade un desplazamiento de $L = 120\text{ mm}$ en $Z_6$ y sin desfase de rotación.
+    
+    \vspace{0.2cm}
+    \begin{columns}
+        \begin{column}{0.6\textwidth}
+            \textbf{Matriz de Herramienta ($^{6}T_{\text{TCP}}$):}
+            \begin{equation*}
+                ^{6}T_{\text{TCP}} = \begin{bmatrix} 
+                1 & 0 & 0 & 0 \\ 
+                0 & 1 & 0 & 0 \\ 
+                0 & 0 & 1 & 0.120 \\ 
+                0 & 0 & 0 & 1 
+                \end{bmatrix}
+            \end{equation*}
+            
+            \textbf{Cálculo de la Pose Real:}
+            \begin{equation*}
+                ^{0}T_{\text{TCP}} = {}^{0}T_6(q) \cdot {}^{6}T_{\text{TCP}}
+            \end{equation*}
+        \end{column}
+        \begin{column}{0.4\textwidth}
+            \centering
+            \begin{tikzpicture}[scale=1, axis/.style={->, thick, >=stealth}]
+                % Brida {6}
+                \draw[thick, fill=gray!30] (-0.5,-0.2) rectangle (0.5,0.2);
+                \draw[axis, blue] (0,0) -- (1,0) node[right]{$X_6$};
+                \draw[axis, black] (0,0) -- (0,1) node[left]{$Z_6$};
+                
+                % Pinza TCP
+                \draw[thick, fill=red!10] (-0.1, 0.2) -- (-0.1, 1.8) -- (0.1, 1.8) -- (0.1, 0.2) -- cycle;
+                \draw[thick, fill=red!30] (-0.3, 1.8) rectangle (-0.1, 2.2);
+                \draw[thick, fill=red!30] (0.1, 1.8) rectangle (0.3, 2.2);
+                
+                % TCP Frame
+                \draw[axis, blue] (0,2) -- (1,2) node[right]{$X_{\text{TCP}}$};
+                \draw[axis, black] (0,2) -- (0,3) node[left]{$Z_{\text{TCP}}$};
+                
+                % Cota
+                \draw[<->, dashed] (-0.6, 0) -- node[left]{$120\text{mm}$} (-0.6, 2);
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.3cm}
+    \small \textbf{Extracción Posicional:} Las 3 primeras filas de la cuarta columna de $^{0}T_{\text{TCP}}$ indican la posición métrica $(x,y,z)$ de cierre de las mordazas.
+\end{frame}
+
+\end{document}

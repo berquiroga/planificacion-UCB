@@ -1,0 +1,365 @@
+\documentclass[11pt, a4paper]{article}
+
+% Paquetes de idioma y tipografía
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo} % Tipografía Palatino
+\usepackage{microtype}
+
+% Geometría de la página
+\usepackage[margin=2.5cm, headheight=15pt]{geometry}
+
+% Paquetes matemáticos
+\usepackage{amsmath, amssymb, amsfonts, bm}
+
+% Gráficos, colores y tablas
+\usepackage{graphicx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, babel}
+
+% Personalización de listas y código
+\usepackage{enumitem}
+\usepackage{listings}
+
+% Encabezados y pies de página
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Robótica (IMT-342)}
+\rhead{Clase 1 - Sem 3}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Definición de colores institucionales
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{ucbyellow}{RGB}{255, 184, 28}
+\definecolor{codegray}{rgb}{0.95,0.95,0.95}
+
+% Estilo para código Python
+\lstdefinestyle{pythonstyle}{
+    backgroundcolor=\color{codegray},
+    commentstyle=\color{green!60!black},
+    keywordstyle=\color{blue}\bfseries,
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{purple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=4,
+    language=Python,
+    frame=single,
+    rulecolor=\color{gray!40}
+}
+\lstset{style=pythonstyle}
+
+\begin{document}
+
+% =======================================================
+% INSUMO 1: GUÍA DE CLASE PARA EL DOCENTE
+% =======================================================
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{GUÍA DE CLASE PARA EL DOCENTE (LESSON PLAN)}}\\
+    \vspace{0.2cm}
+    \normalsize\textbf{Código:} IMT-342-GP-0301
+\end{center}
+\vspace{0.3cm}
+
+\noindent\textbf{Unidad I:} Morfología, Geometría del Espacio y Cinemática Directa \\
+\textbf{Tema:} Coordenadas Homogéneas, Grupo Especial Euclidiano $SE(3)$, Operadores de $4 \times 4$ e Inversa Analítica Rápida \\
+\textbf{Duración:} 120 minutos reales (2.67 horas académicas - Martes 18 de Agosto de 2026) \\
+\textbf{Alineamiento Formativo:} CDIO (Diseñar/Implementar) | ABET SO-1 (Ciencias e Ingeniería) y SO-6 (Experimentación/Cómputo)
+
+\section*{1. Objetivos de Aprendizaje de la Sesión}
+Al finalizar la clase, el estudiante será capaz de:
+\begin{itemize}[label=\textcolor{ucbblue}{$\circ$}]
+    \item Modelar la posición y orientación acoplada de un cuerpo rígido en el espacio tridimensional mediante matrices homogéneas en $SE(3)$.
+    \item Deducir analíticamente la matriz homogénea inversa $^{A}T_B^{-1}$ demostrando por qué el bloque de traslación resultante es $-R^T p$.
+    \item Encadenar transformaciones espaciales compuestas para calcular la pose de herramientas terminales (pinza neumática) acopladas a la brida (flange) del robot.
+    \item Implementar algoritmos vectorizados en Python (NumPy) que optimicen el tiempo de cómputo cinemático evitando inversiones numéricas genéricas pesadas.
+\end{itemize}
+
+\section*{2. Cronograma de Gestión del Tiempo en Aula (120 min)}
+\noindent
+\begin{tabularx}{\textwidth}{@{} l >{\raggedright\arraybackslash}p{3cm} X X @{}}
+\toprule
+\textbf{Tiempo} & \textbf{Fase Didáctica} & \textbf{Actividad Docente y Dinámica de Aula} & \textbf{Justificación Pedagógica (Biggs/CDIO)} \\ \midrule
+16:00 - 16:15 \newline (15 min) & Activación y Planteamiento & Pregunta detonante: \textit{"¿Por qué no podemos simplemente sumar el vector de posición y multiplicar la matriz de rotación al encadenar eslabones?"}. Demostración de no linealidad afín vs $\mathbb{P}^3$. & \textbf{Conflicto Cognitivo:} Obliga a reconocer la limitación algebraica de operar traslación y rotación por separado. \\ \addlinespace
+16:15 - 17:00 \newline (45 min) & Cátedra Matemática & Deducción de la matriz homogénea $4 \times 4$. Las 3 interpretaciones de $T \in SE(3)$. Deducción analítica formal paso a paso de la inversa rápida $T^{-1}$. & \textbf{Principio 1 (Teoría):} Derivación matemática completa antes de pasar a la computadora. \\ \addlinespace
+17:00 - 17:30 \newline (30 min) & Caso de Estudio: TCP & Cálculo en pizarra de la pose de la punta de la pinza respecto a la base del ABB IRB 120 acoplando $^{0}T_6$ con $^{6}T_{\text{TCP}}$. & \textbf{Anclaje al PFI:} Conecta la teoría con el Hito 1 que deben entregar en la Semana 5. \\ \addlinespace
+17:30 - 17:55 \newline (25 min) & Taller Computacional & Codifican la clase \texttt{Transform3D}, verificando preservación de distancias y comparando velocidad $T^{-1}$ analítica vs \texttt{np.linalg.inv}. & \textbf{Principios 2 y 3:} Implementación y Validación. Contraste de precisión y eficiencia temporal. \\ \addlinespace
+17:55 - 18:00 \newline (5 min) & Cierre y Asignación & Resumen de ecuaciones, asignación de TP Nº 3 y recordatorio del tema del jueves (Cuaterniones). & \textbf{Progresión Estructurada:} Asegura la continuidad a la parametrización sin singularidades. \\ \bottomrule
+\end{tabularx}
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=red!5!white, colframe=red!75!black, title=\textbf{3. Puntos Críticos y Errores Conceptuales Frecuentes}]
+\textbf{Error Típico 1:} Asumir que la inversa de una matriz de $4 \times 4$ es su transpuesta ($T^{-1} \neq T^T$). \\
+\textbf{\textit{Acción docente:}} Enfatizar en la pizarra que $SE(3)$ no es un grupo ortogonal porque la traslación rompe la ortogonalidad global.
+
+\vspace{0.2cm}
+\textbf{Error Típico 2:} Invertir el vector de traslación como $-p$ en lugar de $-R^T p$. \\
+\textbf{\textit{Acción docente:}} Demostrar físicamente que para regresar al origen, primero hay que rotar el vector de desplazamiento hacia el marco de llegada.
+\end{tcolorbox}
+
+\newpage
+% =======================================================
+% INSUMO 3: GUÍA DE TRABAJO PRÁCTICO
+% =======================================================
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{UNIVERSIDAD CATÓLICA BOLIVIANA \textquotedblleft SAN PABLO\textquotedblright}}\\
+    \large\textbf{SEDE TARIJA}\\
+    \vspace{0.2cm}
+    \normalsize Departamento de Ciencias Exactas e Ingenierías | Carrera de Ingeniería Mecatrónica\\
+    Asignatura: Robótica (IMT-342) | Gestión: Semestre II-2026
+\end{center}
+
+\vspace{0.4cm}
+\begin{center}
+    \Large\textbf{Guía de Trabajo Práctico Nº 3}\\
+    \large\textit{Modelado en $SE(3)$, Encadenamiento Cinemático e Inversión Analítica}
+\end{center}
+\vspace{0.4cm}
+
+\section{Objetivos del Trabajo Práctico}
+\begin{itemize}[label=$\circ$]
+    \item Deducir y operar matrices de transformación homogénea compuestas en $SE(3)$.
+    \item Calcular analíticamente transformaciones inversas y cambios de coordenadas para celdas robotizadas.
+    \item Implementar una librería modular en Python para manipulación de poses rígidas y verificar cuantitativamente el error de truncamiento numérico y el costo temporal de cómputo.
+\end{itemize}
+
+\section{Protocolo de Ejecución bajo los 4 Principios Obligatorios}
+\vspace{0.2cm}
+\begin{center}
+\begin{tikzpicture}[
+    node distance=1.2cm and 2cm,
+    box/.style={rectangle, draw=ucbblue, thick, fill=ucbblue!10, text width=4.5cm, align=center, minimum height=1cm, font=\small\bfseries},
+    desc/.style={rectangle, text width=8cm, align=left, font=\small},
+    arrow/.style={-{Stealth[scale=1.2]}, thick, ucbblue}
+]
+    \node[box] (c) {1. Fundamentación};
+    \node[desc, right=of c] (cd) {$\longrightarrow$ Demostración Matemática Manuscrita de $T$ e Inversa};
+    
+    \node[box, below=of c] (d) {2. Implementación};
+    \node[desc, right=of d] (dd) {$\longrightarrow$ Clase Modular \texttt{Transform3D} en Python (NumPy)};
+    
+    \node[box, below=of d] (i) {3. Validación};
+    \node[desc, right=of i] (id) {$\longrightarrow$ Prueba Identidad ($\Vert T \cdot T^{-1} - I \Vert_F < 10^{-15}$) y Benchmark};
+    
+    \node[box, below=of i] (o) {4. Evidencia};
+    \node[desc, right=of o] (od) {$\longrightarrow$ Jupyter Notebook en el Repositorio Git del Equipo};
+
+    \draw[arrow] (c) -- (d); \draw[arrow] (d) -- (i); \draw[arrow] (i) -- (o);
+\end{tikzpicture}
+\end{center}
+
+\section{Ejercicios de Desarrollo Obligatorio}
+
+\subsection*{Ejercicio 1: Deducción Teórica e Inversión Compuesta (Manuscrito)}
+Un sistema de coordenadas móvil $\{B\}$ está rígidamente montado sobre una mesa de trabajo. Respecto al sistema inercial de la base del robot $\{A\}$, el marco $\{B\}$ se obtiene aplicando:
+\begin{enumerate}
+    \item Una traslación pura de vector $^{A}p_B = [0.4, -0.2, 0.1]^T \text{ m}$.
+    \item Una rotación de $\theta = 60^\circ$ alrededor del eje $Z_A$ fijo.
+    \item Una rotación de $\phi = 90^\circ$ alrededor del eje $X_B$ móvil actual.
+\end{enumerate}
+
+\noindent\textbf{Tarea A:} Deduzca analíticamente la matriz $^{A}T_B \in SE(3)$ completa indicando explícitamente el orden de las operaciones matriciales.\\
+\noindent\textbf{Tarea B:} Calcule analíticamente la matriz inversa $(^{A}T_B)^{-1} = {}^{B}T_A$ utilizando la fórmula analítica rápida $-R^T p$. Compruebe que la cuarta fila sea $[0, 0, 0, 1]$.\\
+\noindent\textbf{Tarea C:} Un sensor óptico colocado en la mesa reporta la detección de una pieza en $p_B = [0.05, 0.10, 0.00]^T \text{ m}$. Calcule analíticamente la posición de la pieza $p_A$ respecto a la base del robot.
+
+\subsection*{Ejercicio 2: Modelado de la Cadena de la Celda del PFI (Análisis)}
+En la celda mecatrónica del ABB IRB 120, se definen cuatro marcos coordenados críticos. El siguiente grafo representa el árbol de transformaciones espaciales (TF Tree):
+
+\begin{center}
+\begin{tikzpicture}[node distance=3cm, auto, thick]
+    % Nodos
+    \node[circle, draw=black, fill=gray!20, minimum size=1.2cm, align=center] (base) {$\{0\}$\\Base};
+    \node[circle, draw=ucbblue, fill=ucbblue!10, minimum size=1.2cm, right=of base, align=center] (wrist) {$\{6\}$\\Brida};
+    \node[circle, draw=red!80!black, fill=red!10, minimum size=1.2cm, right=of wrist, align=center] (tcp) {$\{T\}$\\TCP};
+    
+    \node[circle, draw=green!60!black, fill=green!10, minimum size=1.2cm, below=of base, align=center] (cam) {$\{C\}$\\Cámara};
+    \node[circle, draw=orange, fill=orange!10, minimum size=1.2cm, below=of tcp, align=center] (obj) {$\{O\}$\\Pieza};
+
+    % Conexiones (usando -Stealth moderno)
+    \draw[-Stealth] (base) -- node[above] {$^0T_6$} (wrist);
+    \draw[-Stealth] (wrist) -- node[above] {$^6T_T$} (tcp);
+    \draw[-Stealth] (base) -- node[left] {$^0T_C$} (cam);
+    \draw[-Stealth] (cam) -- node[above] {$^CT_O$} (obj);
+    
+    % Objetivo (Cierre Cinemático)
+    \draw[-Stealth, dashed, bend left=25, red!80!black] (tcp) to node[above, sloped] {\textbf{Cierre:} $\{T\} \equiv \{O\}$} (obj);
+\end{tikzpicture}
+\end{center}
+\begin{itemize}
+    \item \textbf{$\{0\}$:} Base del robot (origen inercial).
+    \item \textbf{$\{6\}$:} Brida mecánica del eslabón terminal ($^{0}T_6$).
+    \item \textbf{$\{T\}$:} Centro de la pinza neumática ($TCP$), ubicado a $120\text{ mm}$ en el eje $Z_6$ ($^{6}T_T$).
+    \item \textbf{$\{C\}$:} Cámara USB cenital, montada en la estructura a $^{0}T_C = \left[ \begin{smallmatrix} 0 & 1 & 0 & 0.35 \\ 1 & 0 & 0 & 0.00 \\ 0 & 0 & -1 & 0.80 \\ 0 & 0 & 0 & 1 \end{smallmatrix} \right]$.
+    \item \textbf{$\{O\}$:} Pieza detectada por la cámara en coordenadas ópticas $^{C}T_O$.
+\end{itemize}
+
+\noindent\textbf{Tarea:} Escriba la ecuación simbólica de transformaciones homogéneas encadenadas que debe resolver el controlador en ROS para posicionar la pinza $\{T\}$ exactamente sobre la pose de la pieza $\{O\}$ (es decir, aislar y hallar la pose deseada de la brida $^{0}T_6$ requerida para el agarre).
+
+\subsection*{Ejercicio 3: Implementación, Validación Numérica y Benchmark}
+Desarrolle un script en Python estructurado de la siguiente forma:
+\begin{enumerate}
+    \item \textbf{Clase Modular:} Programe la clase \texttt{Transform3D} que reciba una matriz de rotación $R \in \mathbb{R}^{3\times3}$ y un vector $p \in \mathbb{R}^3$, construyendo internamente el arreglo NumPy de $4 \times 4$.
+    \item \textbf{Método Inverso Optimizado:} Implemente \texttt{.inv\_analytic()} aplicando $[-R^T p]$ y \texttt{.inv\_generic()} aplicando \texttt{np.linalg.inv()}.
+    \item \textbf{Validación de Ortogonalidad:} Para la matriz del Ejercicio 1, calcule $E = T \cdot T^{-1} - I_{4\times4}$. Imprima la Norma de Frobenius $\Vert E \Vert_F$. Se exige que $\Vert E \Vert_F < 10^{-14}$.
+    \item \textbf{Benchmark Temporal:} Ejecute un bucle de $100\,000$ inversiones homogéneas comparando el tiempo de ejecución con \texttt{time.perf\_counter()}. Grafique o tabule la reducción porcentual de tiempo.
+\end{enumerate}
+
+\newpage
+\section{Rúbrica de Evaluación Analítica (Escala de 20 Puntos)}
+\begin{table}[h!]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{@{} >{\raggedright\arraybackslash}p{3cm} X X X @{}}
+    \toprule
+    \textbf{Criterio de Calidad} & \textbf{Nivel Excelente (5 pts)} & \textbf{Nivel Aceptable (3 pts)} & \textbf{Nivel Insuficiente (1 pt)} \\ \midrule
+    \textbf{Deducción Teórica en $SE(3)$ (SO-1)} & Deducción manual analítica perfecta de $^{A}T_B$ e inversa rápida con desarrollo matemático transparente. & Obtiene las matrices pero comete un error menor de signos en el cálculo del bloque traslacional $-R^T p$. & Errores conceptuales graves; asume que $T^{-1} = T^T$ o confunde el orden de multiplicación. \\ \addlinespace
+    \textbf{Cadena Cinemática del PFI} & Plantea la ecuación de cierre $^{0}T_6$ aislando la pose de herramienta de forma algebraicamente exacta. & Plantea la cadena pero invierte erróneamente un marco intermedio (ej. confunde $^{0}T_C$ con $^{C}T_0$). & No comprende el encadenamiento de marcos de referencia; plantea ecuaciones incompatibles. \\ \addlinespace
+    \textbf{Implementación en Python (CDIO)} & Código modular, limpio, completamente vectorizado, orientado a objetos y documentado con docstrings. & Código funcional pero monolítico o estructurado de forma lineal desorganizada. & Script con errores de sintaxis en Linux o que utiliza librerías de caja negra no autorizadas. \\ \addlinespace
+    \textbf{Validación Numérica y Git (SO-6)} & Demuestra $\Vert E \Vert_F < 10^{-14}$, presenta la comparativa temporal y mantiene historial limpio en Git. & Realiza la validación numérica pero omite el análisis cuantitativo del tiempo de cómputo. & No presenta evidencias cuantitativas de error o el repositorio Git no registra actividad. \\ \bottomrule
+    \end{tabularx}
+\end{table}
+
+% % =======================================================
+% % INSUMO 4: CÓDIGO MAESTRO DE REFERENCIA (DOCENTE)
+% % =======================================================
+% \section*{Insumo Docente: Código Maestro de Referencia en Python}
+% Este script modular representa el estándar de ingeniería exigido a los estudiantes.
+
+% \begin{lstlisting}[language=Python]
+% """
+% UNIVERSIDAD CATOLICA BOLIVIANA "SAN PABLO" - SEDE TARIJA
+% Carrera de Ingenieria Mecatronica | Robotica (IMT-342)
+% Script Maestro: Operaciones Homogeneas en SE(3) y Benchmark de Inversion Analitica
+% Docente: M.Sc. Ing. Bernardo Quiroga Turdera
+% """
+% import numpy as np
+% import time
+
+% class Transform3D:
+%     """Clase modular para representar y operar transformaciones rigidas en SE(3)."""
+%     def __init__(self, R=np.eye(3), p=np.zeros(3)):
+%         assert R.shape == (3, 3), "La matriz de rotacion debe ser de 3x3"
+%         assert p.shape == (3,) or p.shape == (3, 1), "El vector debe ser de dimension 3"
+        
+%         self.T = np.eye(4)
+%         self.T[0:3, 0:3] = R
+%         self.T[0:3, 3] = p.flatten()
+
+%     @property
+%     def R(self):
+%         return self.T[0:3, 0:3]
+
+%     @property
+%     def p(self):
+%         return self.T[0:3, 3]
+
+%     def inv_analytic(self):
+%         """Calcula la inversa homogenea analitica rapida."""
+%         R_inv = self.R.T
+%         p_inv = -np.dot(R_inv, self.p)
+%         return Transform3D(R=R_inv, p=p_inv)
+
+%     def inv_generic(self):
+%         """Calcula la inversa generica mediante eliminacion numerica."""
+%         T_inv = np.linalg.inv(self.T)
+%         return Transform3D(R=T_inv[0:3, 0:3], p=T_inv[0:3, 3])
+
+%     def transform_point(self, point_3d):
+%         """Aplica la transformacion sobre un punto 3D: p' = T * p"""
+%         p_homo = np.append(point_3d, 1.0)
+%         p_trans = np.dot(self.T, p_homo)
+%         return p_trans[0:3]
+
+%     def __mul__(self, other):
+%         """Sobrecarga para composicion encadenada: T_comp = T1 * T2"""
+%         T_new = np.dot(self.T, other.T)
+%         return Transform3D(R=T_new[0:3, 0:3], p=T_new[0:3, 3])
+
+%     def __repr__(self):
+%         return f"Transform3D Matrix:\n{np.round(self.T, 4)}"
+
+% def rot_z(deg):
+%     rad = np.radians(deg)
+%     return np.array([[np.cos(rad), -np.sin(rad), 0.0],
+%                      [np.sin(rad),  np.cos(rad), 0.0],
+%                      [0.0,          0.0,         1.0]])
+
+% def rot_x(deg):
+%     rad = np.radians(deg)
+%     return np.array([[1.0, 0.0,          0.0],
+%                      [0.0, np.cos(rad), -np.sin(rad)],
+%                      [0.0, np.sin(rad),  np.cos(rad)]])
+
+% def main():
+%     print("===================================================================")
+%     print("DEMOSTRACION DE OPERADORES EN SE(3) - ROBOTICA IMT-342")
+%     print("===================================================================\n")
+
+%     # 1. Definicion Ejercicio 1: Rz(60) * Rx(90) y p = [0.4, -0.2, 0.1]
+%     R_comp = np.dot(rot_z(60), rot_x(90))
+%     p_comp = np.array([0.4, -0.2, 0.1])
+%     T_A_B = Transform3D(R=R_comp, p=p_comp)
+
+%     print("Matriz ^A T_B calculada:\n", T_A_B, "\n")
+
+%     # 2. Inversa Analitica vs Generica
+%     T_B_A_analytic = T_A_B.inv_analytic()
+%     T_B_A_generic = T_A_B.inv_generic()
+%     print("Matriz Inversa ^B T_A (Analitica Rapida):\n", T_B_A_analytic, "\n")
+
+%     # 3. Validacion de Error (Norma de Frobenius)
+%     I_identidad = np.eye(4)
+%     T_identidad_check = np.dot(T_A_B.T, T_B_A_analytic.T)
+%     error_frob = np.linalg.norm(T_identidad_check - I_identidad, 'fro')
+
+%     print(f"Error Numerico || T * T^-1 - I ||_F = {error_frob:.2e}")
+%     assert error_frob < 1e-14, "Fallo en validacion de ortogonalidad inversa"
+%     print(">> VALIDACION MATEMATICA EXITOSA: Error dentro de limite.\n")
+
+%     # 4. Transformacion de Punto
+%     p_B = np.array([0.05, 0.10, 0.00])
+%     p_A = T_A_B.transform_point(p_B)
+%     print(f"Punto en marco B: {p_B}")
+%     print(f"Punto transformado a marco Base A: {np.round(p_A, 4)}\n")
+
+%     # 5. Benchmark de Computo
+%     N_ITERACIONES = 100_000
+%     print(f"Ejecutando Benchmark temporal ({N_ITERACIONES} iteraciones)...")
+
+%     t0 = time.perf_counter()
+%     for _ in range(N_ITERACIONES): _ = T_A_B.inv_analytic()
+%     t_analytic = time.perf_counter() - t0
+
+%     t0 = time.perf_counter()
+%     for _ in range(N_ITERACIONES): _ = T_A_B.inv_generic()
+%     t_generic = time.perf_counter() - t0
+
+%     print(f"Tiempo Total Inversion Analitica: {t_analytic:.4f} s")
+%     print(f"Tiempo Total Inversion Generica : {t_generic:.4f} s")
+%     speedup = (t_generic / t_analytic)
+%     print(f">> La inversion analitica es {speedup:.2f}x mas rapida en tiempo real.")
+%     print("===================================================================")
+
+% if __name__ == "__main__":
+%     main()
+% \end{lstlisting}
+
+\end{document}
