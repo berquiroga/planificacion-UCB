@@ -1,0 +1,202 @@
+\documentclass[11pt,a4paper,twoside]{article}
+
+% ======================================================================
+% PAQUETES Y CONFIGURACIÓN
+% ======================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[margin=2.5cm, headheight=35pt]{geometry}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue, citecolor=black]{hyperref}
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage[american]{circuitikz}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{titlesec}
+
+% ======================================================================
+% MACROS Y ESTILOS
+% ======================================================================
+\sisetup{output-decimal-marker = {,}, per-mode = symbol}
+
+\definecolor{ucbblue}{RGB}{0,51,102}
+\definecolor{codegray}{gray}{0.95}
+\definecolor{spicered}{RGB}{180,0,0}
+
+\newtcolorbox{info}[1][]{colback=blue!5!white, colframe=ucbblue, fonttitle=\bfseries, title=Justificación Pedagógica, #1}
+\newtcolorbox{spicecmd}[1][]{colback=gray!5, colframe=gray!60!black, fonttitle=\bfseries, title=Instrucciones LTSpice, #1}
+
+\newcommand{\tecla}[1]{\colorbox{gray!20}{\texttt{\footnotesize\textbf{#1}}}}
+\newcommand{\param}[1]{\texttt{\color{spicered}#1}}
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{teal},
+    commentstyle=\color{green!50!black}\itshape,
+    backgroundcolor=\color{codegray},
+    frame=single,
+    rulecolor=\color{gray!40},
+    breaklines=true,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    numbersep=5pt
+}
+
+\titleformat{\section}[block]{\Large\bfseries\color{ucbblue}}{\thesection.}{0.5em}{}
+\titleformat{\subsection}[block]{\large\bfseries\color{gray!80!black}}{\thesubsection}{0.5em}{}
+
+% ======================================================================
+% CABECERAS Y METADATOS
+% ======================================================================
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\small\textbf{Circuitos Electrónicos II (IMT-221)}}
+\fancyhead[RE,LO]{\small Semana 3 - Sesión 2: Filtro Notch Twin-T}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    \rule{\textwidth}{1.5pt}\\[0.4cm]
+    {\huge \textbf{GUÍA DE CLASE TEÓRICA}}\\[0.2cm]
+    {\LARGE \textbf{Análisis Fasorial Riguroso: Filtro Twin-T Notch}}\\[0.3cm]
+    \rule{\textwidth}{1.5pt}\\[0.5cm]
+\end{center}
+
+\begin{info}
+\textbf{¿Conviene introducir la variable $s$ (Laplace) en esta asignatura?}\\
+\textbf{Criterio Docente:} No. Evitaremos la sobrecarga cognitiva abstracta. Los estudiantes aún no han cursado Sistemas de Control. El análisis fasorial en régimen permanente sinusoidal ($j\omega$) es matemáticamente exacto, permite una conexión directa con la instrumentación real y cumple rigurosamente con los criterios ABET (Student Outcome 1) sin recurrir a simplificaciones.
+\end{info}
+
+\section{El Problema Industrial}
+En el Proyecto Final Integrador (PFI), la señal térmica modulada a \qty{10}{\kilo\hertz} sufre acoplamientos electromagnéticos de la red a \qty{50}{\hertz}. Un filtro pasa-bajos convencional atenuaría la portadora útil. Se requiere un \textbf{filtro supresor de banda (Notch)} sintonizado a $f_0 = \qty{50}{\hertz}$.
+
+\section{Deducción Fasorial Rigurosa (Leyes de Kirchhoff)}
+
+% DIAGRAMA TOPOLÓGICAMENTE CORREGIDO
+\begin{center}
+    \begin{circuitikz}[scale=0.85, transform shape]
+        % Entrada
+        \draw (0,2) to[sV, l=$V_{in}$] (0,0) node[ground]{};
+        \draw (0,2) to[short, -*] (1.5,2);
+
+        % Separación ramas
+        \draw (1.5,2) -- (1.5,4.5);
+        \draw (1.5,2) -- (1.5,-0.5);
+
+        % Rama Superior (R-R-C) Paso-Bajo
+        \draw (1.5,4.5) to[R, l=$R_1=R$] (4.5,4.5) coordinate (nA);
+        \draw (nA) to[R, l=$R_2=R$] (7.5,4.5);
+        \draw (nA) to[C, l=$C_3=2C$, *-] (4.5,2.5) node[ground]{};
+        \node[above=0.2cm] at (nA) {\textbf{Nodo A}};
+
+        % Rama Inferior (C-C-R) Paso-Alto
+        \draw (1.5,-0.5) to[C, l=$C_1=C$] (4.5,-0.5) coordinate (nB);
+        \draw (nB) to[C, l=$C_2=C$] (7.5,-0.5);
+        \draw (nB) to[R, l=$R_3=R/2$, *-] (4.5,-2.5) node[ground]{};
+        \node[above=0.2cm] at (nB) {\textbf{Nodo B}};
+
+        % Union Salida
+        \draw (7.5,4.5) -- (7.5,2);
+        \draw (7.5,-0.5) -- (7.5,2);
+        \draw (7.5,2) to[short, *-o] (8.5,2) node[right]{\large $V_{out}$};
+    \end{circuitikz}
+\end{center}
+
+Definimos las impedancias complejas: $Z_R = R$, $Z_C = \frac{1}{j\omega C}$, $Z_{C3} = \frac{1}{2j\omega C}$, $Z_{R3} = \frac{R}{2}$.
+
+\subsection*{Análisis en el Nodo A (Rama Paso-Bajo)}
+Aplicando la Ley de Corrientes de Kirchhoff (LKC):
+\begin{equation}
+    \frac{\hat{V}_A - \hat{V}_{in}}{R} + \frac{\hat{V}_A - \hat{V}_{out}}{R} + \frac{\hat{V}_A}{\frac{1}{2j\omega C}} = 0 \implies \hat{V}_A = \frac{\hat{V}_{in} + \hat{V}_{out}}{2(1 + j\omega RC)}
+\end{equation}
+
+\subsection*{Análisis en el Nodo B (Rama Paso-Alto)}
+Aplicando LKC:
+\begin{equation}
+    \frac{\hat{V}_B - \hat{V}_{in}}{\frac{1}{j\omega C}} + \frac{\hat{V}_B - \hat{V}_{out}}{\frac{1}{j\omega C}} + \frac{\hat{V}_B}{\frac{R}{2}} = 0 \implies \hat{V}_B = \frac{j\omega RC (\hat{V}_{in} + \hat{V}_{out})}{2(1 + j\omega RC)}
+\end{equation}
+
+\subsection*{Nodo de Salida en Circuito Abierto}
+\begin{equation}
+    \frac{\hat{V}_A - \hat{V}_{out}}{R} + \frac{\hat{V}_B - \hat{V}_{out}}{\frac{1}{j\omega C}} = 0 \implies \hat{V}_A + j\omega RC \hat{V}_B = \hat{V}_{out} (1 + j\omega RC)
+\end{equation}
+Sustituyendo $\hat{V}_A$ y $\hat{V}_B$ y definiendo $\omega_0 = \frac{1}{RC}$, obtenemos la Función de Transferencia:
+\begin{equation}
+    H(j\omega) = \frac{\hat{V}_{out}}{\hat{V}_{in}} = \frac{1 - \left(\frac{\omega}{\omega_0}\right)^2}{1 - \left(\frac{\omega}{\omega_0}\right)^2 + j 4 \left(\frac{\omega}{\omega_0}\right)}
+\end{equation}
+
+\section{Interpretación Física y Comportamiento Asintótico}
+\begin{itemize}[itemsep=2pt]
+    \item \textbf{En Resonancia ($\omega = \omega_0 \implies f = \qty{50}{\hertz}$):} $\vert{}H(j\omega_0)\vert{} = 0\text{ V}$ ($-\infty\text{ dB}$). \textit{Causa:} Interferencia destructiva total (desfases de $+90^\circ$ y $-90^\circ$ se anulan).
+    \item \textbf{A Frecuencias Muy Bajas ($\omega \to 0$):} $\vert{}H(j0)\vert{} = 1$ (\qty{0}{\decibel}).
+    \item \textbf{A la Portadora ($\omega \gg \omega_0$):} $\vert{}H(j\omega_{10\text{k}})\vert{} \approx 1$ (\qty{0}{\decibel}).
+\end{itemize}
+
+\textbf{Efecto de Carga ($R_L$):} El factor de amortiguamiento pasa de $4$ a $4\left(1 + \frac{R}{R_L}\right)$. Si $R_L$ es pequeña (ej. \qty{10}{\kilo\ohm}), la selectividad se degrada y la atenuación de la muesca cae de $\qty{-50}{\decibel}$ a $\qty{-21}{\decibel}$, demostrando la necesidad de acoplar un buffer Op-Amp de alta impedancia.
+
+\section{Ejercicio de Aplicación Numérica (Pizarra)}
+\textbf{Enunciado:} En el PFI, un cable capta ruido de \qty{1.2}{\volt}$_{pico}$ a \qty{50}{\hertz}, sobre portadora de \qty{150}{\milli\volt}$_{pico}$ a \qty{10}{\kilo\hertz}. Se implementa filtro Twin-T con $R = \qty{14.3}{\kilo\ohm}, C = \qty{220}{\nano\farad}$.
+\begin{enumerate}[itemsep=2pt]
+    \item \textbf{Sintonía:} $f_0 = \frac{1}{2\pi \cdot 14300 \cdot 220\times 10^{-9}} = \mathbf{50.59\text{ Hz}}$.
+    \item \textbf{Ruido Residual a \qty{50}{\hertz}} (asumiendo $\qty{-44}{\decibel}$ real): $\hat{V}_{ruido} = 1.2 \cdot 10^{-44/20} = \mathbf{7.57\text{ mV}_{pico}}$.
+    \item \textbf{Transmisión Portadora (\qty{10}{\kilo\hertz}):} $\vert{}H(j\omega_{10k})\vert{} \approx 0.9998 \implies \hat{V}_{port} = \mathbf{149.97\text{ mV}_{pico}}$.
+    \item \textbf{Con Carga $R_L = \qty{10}{\kilo\ohm}$:} $\vert{}H\vert{} = \frac{0.0232}{9.607} = 2.41 \times 10^{-3} \implies \mathbf{-21.3\text{ dB}}$.
+\end{enumerate}
+
+\newpage
+\section{Simulación LTSpice y Script Python (\texttt{lab2\_notch\_phasor.py})}
+\begin{spicecmd}
+\textbf{Directivas SPICE:} (Insertar presionando tecla \tecla{S})\\
+\param{.ac dec 1000 1 10k}\\
+\param{.step param RL\_val list 1Meg 100k 10k 1k}
+\end{spicecmd}
+
+\begin{lstlisting}
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 1. PARAMETROS DE DISENO NOMINALES
+f0_target, C_val = 50.0, 220e-9
+R_val = 1.0 / (2 * np.pi * f0_target * C_val)  # R ~ 14468.6 Ohm -> 14.3 kOhm
+
+R, C = 14300.0, 220e-9
+w0_calc, f0_calc = 1.0 / (R * C), (1.0 / (R * C)) / (2 * np.pi)
+
+# 2. MODELADO FASORIAL VECTORIZADO
+f = np.logspace(0, 4, 2000)
+w = 2 * np.pi * f
+cargas = {'Sin Carga (1 MΩ)': 1e6, 'Carga Critica (10 kΩ)': 10e3}
+
+plt.figure(figsize=(10, 6))
+for label, RL in cargas.items():
+    H = (1 - (w/w0_calc)**2) / ((1 - (w/w0_calc)**2) + 1j * 4.0 * (1 + R/RL) * (w/w0_calc))
+    mag_db = 20 * np.log10(np.abs(H) + 1e-12)
+    plt.semilogx(f, mag_db, label=f"{label}")
+
+# 3. FORMATO ESTANDAR IEEE
+plt.axvline(50.0, color='k', linestyle=':', label="Ruido (50 Hz)")
+plt.axvline(10000.0, color='g', linestyle='--', label="Portadora (10 kHz)")
+plt.title("Respuesta Fasorial: Filtro Twin-T Notch")
+plt.xlabel("Frecuencia (Hz)"); plt.ylabel("Magnitud (dB)")
+plt.grid(True, which="both", linestyle=":"); plt.legend(loc="lower right")
+plt.tight_layout(); plt.savefig("lab2_bode_fasorial.png"); plt.show()
+\end{lstlisting}
+
+\section{Tarea de Pre-Laboratorio}
+Para que el montaje del próximo lunes tome únicamente 15 minutos en protoboard:
+\begin{itemize}[itemsep=2pt]
+    \item \textbf{Selección de Componentes:} Medir y emparejar componentes en laboratorio: $R_1, R_2 \approx \qty{14.3}{\kilo\ohm}$ (idénticos $< 0.5\%$). $R_3 \approx \qty{7.15}{\kilo\ohm}$ (exactamente la mitad). $C_1, C_2 \approx \qty{220}{\nano\farad}$. $C_3$ combinación paralelo $\approx \qty{440}{\nano\farad}$.
+    \item \textbf{Entregables:} Archivo \texttt{.asc} de LTSpice listo. Script de Python comprobado.
+\end{itemize}
+
+\end{document}
