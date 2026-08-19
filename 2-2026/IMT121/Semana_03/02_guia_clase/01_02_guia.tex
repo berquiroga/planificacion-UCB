@@ -1,0 +1,281 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- Paquetes Fundamentales ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[margin=2.5cm, headheight=15pt]{geometry}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage[colorlinks=true, linkcolor=ucbblue, urlcolor=ucbblue]{hyperref}
+
+% --- Matemáticas y Electrónica ---
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage[american, RPvoltages]{circuitikz}
+
+% --- Elementos de Diseño Pedagógico y Tablas ---
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{colortbl}
+
+% --- Configuración de Colores y siunitx ---
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\sisetup{
+    output-decimal-marker = {,},
+    per-mode = symbol,
+    inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+% --- Macros y Estilos ---
+\tcbset{
+    caja_solucion/.style={colback=green!5, colframe=green!50!black, fonttitle=\bfseries, boxrule=0.8pt, arc=3pt},
+    caja_teoria/.style={colback=blue!3, colframe=ucbblue, fonttitle=\bfseries, boxrule=0.8pt, arc=3pt}
+}
+
+% --- Estilo de Página ---
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textcolor{ucbblue}{\textbf{IMT-121 | Guía de Estudio Complementaria}}}
+\rhead{\textbf{Análisis MNA y Fuentes Dependientes}}
+\cfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{ucbblue}\leaders\hrule height \headrulewidth\hfill}}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{Guía de Estudio: Selección de Variables de Control y Catálogo de Fuentes Dependientes (MNA)}} \\[0.4cm]
+    \normalsize
+    \textbf{Asignatura:} IMT-121 Circuitos Electrónicos I \\
+    \textbf{Carrera:} Ingeniería Mecatrónica e Ingeniería Biomédica (UCB Tarija) \\
+    \textbf{Docente:} M.Sc. Ing. Bernardo Quiroga Turdera
+    \vspace{0.4cm}
+\end{center}
+\hrule
+\vspace{0.5cm}
+
+\noindent Las variables de control no se eligen de forma arbitraria; vienen impuestas por la física del componente o sensor que se está modelando, mientras que en el método nodal (MNA) se traducen sistemáticamente a los potenciales de nodo del circuito.
+
+\section*{Criterio de Selección y Significado Físico de las Variables de Control}
+En el análisis nodal, las únicas incógnitas fundamentales del sistema son los potenciales de nodo respecto a tierra ($V_1, V_2, \dots, V_N$). Cualquier variable de control externa ($V_x$ o $I_x$) debe expresarse algebraicamente en función de dichos potenciales antes de armar la matriz $\mathbf{A}\mathbf{x} = \mathbf{b}$.
+
+\textbf{¿Por qué en el ejercicio anterior $V_x = V_2$?} \\
+La variable $V_x$ correspondía físicamente a la caída de tensión sobre el resistor $R_2$, conectado entre el Nodo 2 y Tierra (\qty{0}{\volt}). Por definición de diferencia de potencial:
+\begin{equation}
+    V_x = V_{\text{positivo}} - V_{\text{negativo}} = V_2 - 0\text{ V} = V_2
+\end{equation}
+
+\vspace{0.2cm}
+\textbf{Reglas Universales de Traducción a Nodos:}
+\begin{table}[h!]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{@{}lXl@{}}
+        \toprule
+        \rowcolor{ucbblue!10}
+        \textbf{Variable de Control} & \textbf{Ubicación en el Circuito} & \textbf{Ecuación de Sustitución en MNA} \\
+        \midrule
+        Voltaje de Control ($V_x$) & Entre Nodo $a$ $(+)$ y Nodo $b$ $(-)$ & $V_x = V_a - V_b$ \\
+        Voltaje de Control a Tierra ($V_x$) & Entre Nodo $a$ $(+)$ y Tierra $(-)$ & $V_x = V_a$ \\
+        Corriente de Control ($I_x$) & Rama con resistor $R_k$ que va de Nodo $a$ hacia Nodo $b$ & $I_x = \frac{V_a - V_b}{R_k}$ \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\section*{Catálogo y Ejemplos Resueltos: Los 4 Tipos de Fuentes Controladas}
+
+\subsection*{1. VCVS (Fuente de Tensión Controlada por Tensión): $V_{\text{dep}} = \mu V_x$}
+\textit{Contexto Real:} Modelo lineal de un amplificador operacional ideal o buffer de instrumentación con ganancia de voltaje $\mu$ (adimensional).
+
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape]
+        \draw (0,0) to[V, v=$V_s {=} \qty{12}{\volt}$] (0,3)
+              to[R, l=$R_1 {=} \qty{100}{\ohm}$] (3,3) node[above]{Nodo 1}
+              to[cV, v=$2V_x$] (6,3) node[above]{Nodo 2}
+              to[R, l=$R_3 {=} \qty{300}{\ohm}$] (6,0) -- (0,0);
+        \draw (3,3) to[R, l=$R_2 {=} \qty{200}{\ohm}$, v=$V_x$] (3,0);
+        \draw (0,0) node[ground]{}; \draw (3,0) node[ground]{}; \draw (6,0) node[ground]{};
+    \end{circuitikz}
+\end{center}
+
+\textbf{Traducción:} $V_x$ está sobre $R_2 \implies V_x = V_1$. \\
+\textbf{Ecuación de Enlace (Supernodo 1-2):}
+\begin{equation*}
+    V_1 - V_2 = 2 V_x = 2 V_1 \implies \mathbf{-V_1 - V_2 = 0} \implies V_2 = -V_1
+\end{equation*}
+\textbf{LCK en el Supernodo (1-2):}
+\begin{equation*}
+    \frac{V_1 - 12}{100} + \frac{V_1}{200} + \frac{V_2}{300} = 0 \implies 6(V_1 - 12) + 3V_1 + 2V_2 = 0 \implies \mathbf{9V_1 + 2V_2 = 72}
+\end{equation*}
+\textbf{Solución:}
+\begin{equation*}
+    9V_1 + 2(-V_1) = 72 \implies 7V_1 = 72 \implies \mathbf{V_1 = \qty{10.286}{\volt}}, \quad \mathbf{V_2 = \qty{-10.286}{\volt}}
+\end{equation*}
+
+\vspace{0.4cm}
+\subsection*{2. VCCS (Fuente de Corriente Controlada por Tensión): $I_{\text{dep}} = g_m V_x$}
+\textit{Contexto Real:} Transistor de efecto de campo (MOSFET/JFET) o amplificador de transconductancia (OTA), donde un voltaje de compuerta modula una corriente con transconductancia $g_m$ (en $\text{S}$ o $\Omega^{-1}$).
+
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape]
+        \draw (0,0) to[I, i=$I_s {=} \qty{4}{\ampere}$] (0,3) -- (2,3) node[above]{Nodo 1}
+              to[R, l=$R_1 {=} \qty{10}{\ohm}$] (5,3) node[above]{Nodo 2}
+              to[cI, i=$g_m V_x {=} 0.5V_x$] (5,0) -- (0,0);
+        \draw (2,3) to[R, l=$R_2 {=} \qty{20}{\ohm}$, v=$V_x$] (2,0);
+        \draw (0,0) node[ground]{}; \draw (2,0) node[ground]{}; \draw (5,0) node[ground]{};
+    \end{circuitikz}
+\end{center}
+
+\textbf{Traducción:} $V_x = V_1$. \\
+\textbf{LCK en Nodo 1:}
+\begin{equation*}
+    -4 + \frac{V_1}{20} + \frac{V_1 - V_2}{10} = 0 \implies \mathbf{3V_1 - 2V_2 = 80}
+\end{equation*}
+\textbf{LCK en Nodo 2:}
+\begin{equation*}
+    \frac{V_2 - V_1}{10} + 0.5 V_x = 0 \implies \frac{V_2 - V_1}{10} + 0.5 V_1 = 0 \implies \mathbf{4V_1 + V_2 = 0}
+\end{equation*}
+\textbf{Solución Matricial:}
+\begin{align*}
+    \begin{bmatrix} 3 & -2 \\ 4 & 1 \end{bmatrix} \begin{bmatrix} V_1 \\ V_2 \end{bmatrix} &= \begin{bmatrix} 80 \\ 0 \end{bmatrix} \implies \Delta = 3(1) - (-2)(4) = 11 \\
+    \mathbf{V_1 = \frac{80}{11} \approx \qty{7.273}{\volt}}&, \quad \mathbf{V_2 = \frac{-320}{11} \approx \qty{-29.091}{\volt}}
+\end{align*}
+
+\vspace{0.4cm}
+\subsection*{3. CCVS (Fuente de Tensión Controlada por Corriente): $V_{\text{dep}} = r_m I_x$}
+\textit{Contexto Real:} Preamplificador de transimpedancia (TIA) utilizado para convertir la fotocorriente de un fotodiodo o sensor óptico en un nivel de voltaje medible ($r_m$ en $\Omega$).
+
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape]
+        \draw (0,0) to[V, v=$V_s {=} \qty{15}{\volt}$] (0,3)
+              to[R, l=$R_1 {=} \qty{50}{\ohm}$, i=$I_x$] (3,3) node[above]{Nodo 1}
+              to[cV, v=$100I_x$] (6,3) node[above]{Nodo 2}
+              to[R, l=$R_3 {=} \qty{200}{\ohm}$] (6,0) -- (0,0);
+        \draw (3,3) to[R, l=$R_2 {=} \qty{100}{\ohm}$] (3,0);
+        \draw (0,0) node[ground]{}; \draw (3,0) node[ground]{}; \draw (6,0) node[ground]{};
+    \end{circuitikz}
+\end{center}
+
+\textbf{Traducción:} La corriente de control fluye a través de $R_1$: \quad $I_x = \frac{15 - V_1}{50}$ \\
+\textbf{Ecuación de Enlace (Supernodo 1-2):}
+\begin{equation*}
+    V_1 - V_2 = 100 I_x = 100 \left( \frac{15 - V_1}{50} \right) = 2(15 - V_1) = 30 - 2V_1 \implies \mathbf{3V_1 - V_2 = 30}
+\end{equation*}
+\textbf{LCK en el Supernodo (1-2):}
+\begin{equation*}
+    -I_x + \frac{V_1}{100} + \frac{V_2}{200} = 0 \implies -\left( \frac{15 - V_1}{50} \right) + \frac{V_1}{100} + \frac{V_2}{200} = 0
+\end{equation*}
+Multiplicando por $200$:
+\begin{equation*}
+    -4(15 - V_1) + 2V_1 + V_2 = 0 \implies -60 + 4V_1 + 2V_1 + V_2 = 0 \implies \mathbf{6V_1 + V_2 = 60}
+\end{equation*}
+\textbf{Solución:} Sumando ambas ecuaciones:
+\begin{equation*}
+    9V_1 = 90 \implies \mathbf{V_1 = \qty{10.00}{\volt}}, \quad \mathbf{V_2 = \qty{0.00}{\volt}}, \quad \mathbf{I_x = \frac{15-10}{50} = \qty{100}{\milli\ampere}}
+\end{equation*}
+
+\vspace{0.4cm}
+\subsection*{4. CCCS (Fuente de Corriente Controlada por Corriente): $I_{\text{dep}} = \beta I_x$}
+\textit{Contexto Real:} Modelo de pequeña señal de un transistor bipolar de unión (BJT), donde la corriente de colector es proporcional a la corriente de base ($I_c = \beta I_b$).
+
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape]
+        \draw (0,0) to[V, v=$V_s {=} \qty{10}{\volt}$] (0,3)
+              to[R, l=$R_1 {=} \qty{100}{\ohm}$, i=$I_x$] (3,3) node[above]{Nodo 1}
+              to[R, l=$R_2 {=} \qty{200}{\ohm}$] (6,3) node[above]{Nodo 2};
+        \draw (3,3) to[R, l=$R_3 {=} \qty{50}{\ohm}$] (3,0);
+        \draw (6,3) to[cI, i=$\beta I_x {=} 4I_x$] (6,0);
+        \draw (6,3) -- (8,3) to[R, l=$R_4 {=} \qty{100}{\ohm}$] (8,0);
+        \draw (0,0) -- (8,0);
+        \draw (4,0) node[ground]{};
+    \end{circuitikz}
+\end{center}
+
+\textbf{Traducción:} \quad $I_x = \frac{10 - V_1}{100}$ \\
+\textbf{LCK en Nodo 1:}
+\begin{equation*}
+    -\left( \frac{10 - V_1}{100} \right) + \frac{V_1}{50} + \frac{V_1 - V_2}{200} = 0
+\end{equation*}
+Multiplicando por $200$:
+\begin{equation*}
+    -2(10 - V_1) + 4V_1 + (V_1 - V_2) = 0 \implies \mathbf{7V_1 - V_2 = 20}
+\end{equation*}
+\textbf{LCK en Nodo 2:}
+\begin{equation*}
+    \frac{V_2 - V_1}{200} + 4 I_x + \frac{V_2}{100} = 0 \implies \frac{V_2 - V_1}{200} + 4 \left( \frac{10 - V_1}{100} \right) + \frac{V_2}{100} = 0
+\end{equation*}
+Multiplicando por $200$:
+\begin{equation*}
+    (V_2 - V_1) + 8(10 - V_1) + 2V_2 = 0 \implies \mathbf{-9V_1 + 3V_2 = -80}
+\end{equation*}
+\textbf{Solución:}
+\begin{align*}
+    \begin{bmatrix} 7 & -1 \\ -9 & 3 \end{bmatrix} \begin{bmatrix} V_1 \\ V_2 \end{bmatrix} &= \begin{bmatrix} 20 \\ -80 \end{bmatrix} \implies \Delta = 21 - 9 = 12 \\
+    \mathbf{V_1 = \frac{60 - 80}{12} = \qty{-1.667}{\volt}}&, \quad \mathbf{V_2 = \frac{-560 + 180}{12} = \qty{-31.667}{\volt}}
+\end{align*}
+
+\newpage
+% =========================================================
+% BANCO DE EJERCICIOS DE APLICACIÓN
+% =========================================================
+\begin{center}
+    {\LARGE \textbf{Banco de Ejercicios de Aplicación para Estudiantes}}
+\end{center}
+\vspace{0.3cm}
+
+\textbf{Ejercicio 1 (Aula): Amplificador Híbrido de Dos Etapas (VCVS + VCCS)} \\
+Dada la red de acondicionamiento activa de la figura:
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape]
+        \draw (0,0) to[V, v=$V_s {=} \qty{8}{\volt}$] (0,3)
+              to[R, l=$R_1 {=} \qty{40}{\ohm}$] (3,3) node[above]{Nodo 1}
+              to[cV, v=$2.5V_x$] (6,3) node[above]{Nodo 2}
+              to[R, l=$R_3 {=} \qty{100}{\ohm}$] (9,3) node[above]{Nodo 3}
+              to[R, l=$R_4 {=} \qty{50}{\ohm}$] (9,0) -- (0,0);
+        \draw (3,3) to[R, l=$R_2 {=} \qty{80}{\ohm}$, v=$V_x$] (3,0);
+        \draw (6,3) to[cI, i=$g_m V_x {=} 0.05V_x$] (6,0);
+        \draw (4.5,0) node[ground]{};
+    \end{circuitikz}
+\end{center}
+\textit{Consigna:} 
+1) Identifique el supernodo y escriba la ecuación de enlace en términos de $V_1$ y $V_2$. 
+2) Plantee el sistema matricial $\mathbf{A}\mathbf{V} = \mathbf{b}$ de $3\times 3$. 
+3) Resuelva los voltajes nodales $V_1, V_2, V_3$.
+
+\begin{tcolorbox}[caja_solucion, title=Respuestas de Autocontrol (Ejercicio 1)]
+\textbf{Enlace:} $V_1 - V_2 = 2.5 V_1 \implies \mathbf{-1.5 V_1 - V_2 = 0}$ \\
+\textbf{Voltajes:} $\mathbf{V_1 = \qty{4.494}{\volt}}, \quad \mathbf{V_2 = \qty{-6.742}{\volt}}, \quad \mathbf{V_3 = \qty{-7.416}{\volt}}$
+\end{tcolorbox}
+
+\vspace{0.6cm}
+
+\textbf{Ejercicio 2 (Tarea/Laboratorio de Software): Caracterización de Sensor Transimpedancia (CCVS + CCCS)} \\
+Para el circuito de interfaz con acoplamiento activo:
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape]
+        \draw (0,0) to[I, i=$I_s {=} \qty{20}{\milli\ampere}$] (0,3) -- (2,3) node[above]{Nodo 1}
+              to[R, l=$R_1 {=} \qty{50}{\ohm}$, i=$I_x$] (5,3) node[above]{Nodo 2}
+              to[cV, v=$200I_x$] (8,3) node[above]{Nodo 3}
+              to[R, l=$R_3 {=} \qty{200}{\ohm}$] (8,0) -- (0,0);
+        \draw (2,3) to[R, l=$R_2 {=} \qty{100}{\ohm}$] (2,0);
+        \draw (5,3) to[cI, i=$2I_x$] (5,0);
+        \draw (4,0) node[ground]{};
+    \end{circuitikz}
+\end{center}
+\textit{Consigna:} 
+1) Exprese la corriente de control $I_x$ en función de los potenciales nodales $V_1$ y $V_2$. 
+2) Formule las ecuaciones nodales para el Nodo 1 y el Supernodo (2-3). 
+3) Construya un script en Python (NumPy) para resolver el sistema y compare los voltajes obtenidos frente a una simulación esquemática en LTspice (\texttt{.tf}).
+
+\begin{tcolorbox}[caja_solucion, title=Respuestas de Autocontrol (Ejercicio 2)]
+\textbf{Ecuación de Control:} $I_x = \frac{V_1 - V_2}{50}$ \\
+\textbf{Voltajes:} $\mathbf{V_1 = \qty{1.333}{\volt}}, \quad \mathbf{V_2 = \qty{0.667}{\volt}}, \quad \mathbf{V_3 = \qty{-2.000}{\volt}}$ \\
+\textbf{Corriente de control:} $\mathbf{I_x = \qty{13.33}{\milli\ampere}}$
+\end{tcolorbox}
+
+\end{document}
