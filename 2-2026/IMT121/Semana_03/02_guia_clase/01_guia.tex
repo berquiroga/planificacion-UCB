@@ -1,0 +1,315 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- Paquetes Fundamentales ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[margin=2.5cm, headheight=15pt]{geometry}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage[colorlinks=true, linkcolor=ucbblue, urlcolor=ucbblue]{hyperref}
+
+% --- Matemáticas y Electrónica ---
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage[american, RPvoltages]{circuitikz}
+
+% --- Elementos de Diseño Pedagógico y Código ---
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{colortbl}
+
+% --- Configuración de Colores y siunitx ---
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{ltspice}{RGB}{128, 0, 0}
+\sisetup{
+    output-decimal-marker = {,},
+    per-mode = symbol,
+    inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+% --- Macros y Estilos ---
+\newcommand{\tecla}[1]{\colorbox{gray!20}{\texttt{\textbf{#1}}}} % Macro para atajos de teclado
+
+\tcbset{
+    caja_diagnostico/.style={colback=blue!3, colframe=ucbblue, fonttitle=\bfseries, boxrule=0.8pt, arc=3pt},
+    caja_alerta/.style={colback=orange!5, colframe=orange!80!black, fonttitle=\bfseries, boxrule=0.8pt, arc=3pt}
+}
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{codegreen}\itshape,
+    stringstyle=\color{codepurple},
+    numbers=left, numberstyle=\tiny\color{gray},
+    frame=single, backgroundcolor=\color{gray!5},
+    breaklines=true, showstringspaces=false
+}
+
+% --- Estilo de Página ---
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textcolor{ucbblue}{\textbf{IMT-121 | Guía Maestra y Kit de Ejecución}}}
+\rhead{\textbf{Sesión 07 -- Semana 3}}
+\cfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{ucbblue}\leaders\hrule height \headrulewidth\hfill}}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{GUÍA MAESTRA Y KIT DE EJECUCIÓN}} \\[0.2cm]
+    {\Large \textbf{SESIÓN 07}} \\[0.4cm]
+    \normalsize
+    \textbf{Asignatura:} IMT-121 Circuitos Electrónicos I \\
+    \textbf{Carrera:} Ingeniería Mecatrónica e Ingeniería Biomédica \\
+    Universidad Católica Boliviana ``San Pablo'' — Sede Tarija \\[0.2cm]
+    \textbf{Docente:} M.Sc. Ing. Bernardo Quiroga Turdera \\
+    \textbf{Gestión:} Semestre II/2026 \hspace{0.5cm} \textbf{Semana 3 — Sesión 2} (Miércoles 19 de Agosto de 2026) \\[0.2cm]
+    \textit{Marco Pedagógico: Criterios ABET (1 y 6) | Metodología CDIO (Concebir–Diseñar–Implementar) | Formulación MNA}
+    \vspace{0.3cm}
+\end{center}
+
+\hrule
+\vspace{0.4cm}
+
+\section*{📌 Diagnóstico y Justificación del Reajuste Curricular}
+\begin{tcolorbox}[caja_diagnostico, title=Transición Metodológica]
+La secuencia didáctica no está desalineada; se encuentra en el punto exacto de transición metodológica. En las sesiones previas se abordó la formulación matricial por inspección directa para redes pasivas estándar ($\mathbf{R}\mathbf{I}=\mathbf{V}$ y $\mathbf{G}\mathbf{V}=\mathbf{I}$) y el lunes se ejecutó el Laboratorio N$^\circ$ 1 (validación en protoboard con instrumentos reales).
+
+La inspección directa clásica colapsa ante dos elementos indispensables en mecatrónica y biomédica:
+\begin{enumerate}
+    \item Fuentes de tensión conectadas entre nodos no referenciados (Supernodos).
+    \item Fuentes dependientes / controladas (VCVS, VCCS, CCVS, CCCS), que representan los modelos lineales de transductores activos, amplificadores de instrumentación y transistores.
+\end{enumerate}
+El ajuste para la sesión de hoy consiste en transformar la clase en un \textbf{Taller Teórico-Computacional de Análisis Nodal Modificado (MNA)}, que constituye el núcleo matemático interno de simuladores como SPICE/LTspice, complementándolo con un taller práctico de simulación avanzada (directivas \texttt{.tf} y \texttt{.step}).
+\end{tcolorbox}
+
+\section{I. Guion de Clase Minuto a Minuto (90 Minutos)}
+\begin{center}
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|>{\columncolor{gray!10}\bfseries}c|X|}
+        \hline
+        \multicolumn{2}{|c|}{\cellcolor{ucbblue}\textcolor{white}{\textbf{ESTRUCTURA DE LA SESIÓN 07 (90 MIN)}}} \\
+        \hline
+        00--10 min & Debrief del Laboratorio 1 (Discusión de $\varepsilon_r$ y efecto carga) \\
+        \hline
+        10--35 min & Bloque Teórico: Supernodos y Fuentes Dependientes en MNA \\
+        \hline
+        35--55 min & Ejemplo Integrador en Pizarra (Cálculo Analítico Completo) \\
+        \hline
+        55--75 min & Taller de Simulación en LTspice: Directivas \texttt{.tf} y \texttt{.step} \\
+        \hline
+        75--85 min & Live-Coding en Python (Resolución de matrices aumentadas) \\
+        \hline
+        85--90 min & Ejercicio de Cierre en Tríadas y Asignación de Estudio \\
+        \hline
+    \end{tabularx}
+\end{center}
+
+\section{II. Fundamentación Teórica: El Método Nodal Modificado (MNA)}
+\subsection{1. Limitación de la Inspección Directa}
+Cuando una red contiene fuentes de voltaje (independientes o dependientes) conectadas entre dos nodos esenciales \textit{sin} resistencia en serie, no es posible definir directamente la corriente que fluye por ellas mediante la Ley de Ohm ($\Delta V / R$ con $R \to 0$).
+
+\subsection{2. Tratamiento de Supernodos}
+Un Supernodo se forma al englobar una fuente de voltaje conectada entre dos nodos no referenciados y cualquier elemento conectado en paralelo con ella.
+
+\begin{center}
+    \begin{circuitikz}[scale=1, transform shape]
+        \draw (0,0) node[left]{Nodo 2} to[short, o-] (1.5,0)
+              to[V, v=$V_d$] (3.5,0)
+              to[short, -o] (5,0) node[right]{Nodo 3};
+        % Caja del supernodo
+        \draw[dashed, red, thick, rounded corners] (0.5, -1) rectangle (4.5, 1);
+        \node[red, above] at (2.5, 1) {\textbf{SUPERNODO (2-3)}};
+    \end{circuitikz}
+\end{center}
+
+\textbf{Ecuación de Conservación (LCK):} Se aplica la Ley de Corrientes de Kirchhoff a la superficie cerrada del supernodo completo:
+\begin{equation}
+    \sum I_{\text{salientes de (Nodo 2)}} + \sum I_{\text{salientes de (Nodo 3)}} = 0
+\end{equation}
+
+\textbf{Ecuación de Enlace / Restricción:} Se define la diferencia de potencial entre los terminales de la fuente:
+\begin{equation}
+    V_2 - V_3 = V_{\text{fuente}}
+\end{equation}
+
+\subsection{3. Incorporación de Fuentes Dependientes en el Sistema Matricial}
+Las fuentes controladas introducen términos que rompen la simetría de la matriz de conductancias $\mathbf{G}$. Para resolver el sistema:
+\begin{itemize}
+    \item Se expresan las variables de control (ej. voltajes diferenciales $V_x$ o corrientes de rama $I_x$) en función exclusiva de los potenciales nodales incógnita ($V_1, V_2, \dots, V_N$).
+    \item Se reagrupan los coeficientes en el miembro izquierdo de la ecuación matricial $\mathbf{A}\mathbf{x} = \mathbf{b}$.
+\end{itemize}
+
+\section{III. Ejemplo Integrador Resuelto Paso a Paso (Guía de Estudio)}
+\textbf{Problema de Ingeniería:} \\
+El siguiente circuito modela la etapa de preamplificación de un sensor acoplado. Contiene una fuente de polarización $V_s = \qty{10}{\volt}$, resistencias de acoplamiento y una fuente de tensión controlada por voltaje (VCVS) que actúa como buffer con ganancia dependiente: $V_d = 3 V_x$, donde el voltaje de control es $V_x = V_2$.
+
+\begin{center}
+    \begin{circuitikz}[scale=1, transform shape]
+        % Nodos y ramas principales
+        \draw (0,0) to[V, v=$V_s {=} \qty{10}{\volt}$] (0,3) node[above]{Nodo 1}
+              to[R, l=$R_1 {=} \qty{50}{\ohm}$] (3,3) node[above]{Nodo 2}
+              to[cV, v=$3V_x$] (6,3) node[above]{Nodo 3}
+              to[R, l=$R_3 {=} \qty{200}{\ohm}$] (6,0) -- (0,0);
+        \draw (3,3) to[R, l=$R_2 {=} \qty{100}{\ohm}$] (3,0);
+        % Tierras
+        \draw (0,0) node[ground]{};
+        \draw (3,0) node[ground]{};
+        \draw (6,0) node[ground]{};
+    \end{circuitikz}
+\end{center}
+\textit{(Nota de topología: $V_s$ fija el Nodo 1 a $\qty{10}{\volt}$. Entre el Nodo 2 y el Nodo 3 se encuentra la fuente dependiente $3V_x$, formando un Supernodo).}
+
+\vspace{0.3cm}
+\textbf{Paso 1: Identificación de Nodos y Ecuación de Control} \\
+Nodo 1 está conectado directamente a la fuente independiente:
+\begin{equation}
+    V_1 = \qty{10.0}{\volt}
+\end{equation}
+Variable de Control:
+\begin{equation}
+    V_x = V_2
+\end{equation}
+
+\textbf{Paso 2: Ecuación de Enlace del Supernodo (2-3)} \\
+La fuente dependiente impone la diferencia de potencial entre el Nodo 2 y el Nodo 3:
+\begin{equation}
+    V_2 - V_3 = 3 V_x = 3 V_2
+\end{equation}
+Reagrupando términos obtenemos la restricción estructural:
+\begin{equation}
+    V_2 - 3 V_2 - V_3 = 0 \implies \mathbf{-2 V_2 - V_3 = 0} \implies V_3 = -2 V_2
+\end{equation}
+
+\textbf{Paso 3: LCK en el Supernodo (Caso Flotante y Ajuste de Topología Realista)}
+\begin{tcolorbox}[caja_alerta, title=Discusión de Ingeniería en Pizarra]
+Si asumiéramos topológicamente que \textit{no} existe $R_1$ (es decir, $R_1 \to 0$ y $V_s$ conecta directo a $R_2$ vía una red $\qty{100}{\ohm}$ como en un boceto inicial simplificado), la ecuación nodal sería $\frac{V_2 - 10}{100} + \frac{V_3}{200} = 0 \implies 2V_2 + V_3 = 20$. 
+Al cruzarla con $-2V_2 - V_3 = 0$, obtenemos $0 = 20$, una \textbf{inconsistencia física}. \\
+\textbf{¿Por qué ocurre?} Porque la VCVS intenta imponer una ganancia infinita sin rama de atenuación/realimentación de entrada. Al incluir $R_1 = \qty{50}{\ohm}$, el circuito se vuelve estable.
+\end{tcolorbox}
+
+Aplicamos LCK al contorno cerrado (2-3) con la red completa:
+\begin{itemize}
+    \item Corriente saliendo del Nodo 2 hacia el Nodo 1: $\frac{V_2 - V_1}{R_1} = \frac{V_2 - 10}{50}$
+    \item Corriente saliendo del Nodo 2 hacia GND: $\frac{V_2}{R_2} = \frac{V_2}{100}$
+    \item Corriente saliendo del Nodo 3 hacia GND: $\frac{V_3}{R_3} = \frac{V_3}{200}$
+\end{itemize}
+Ecuación nodal del Supernodo:
+\begin{equation}
+    \frac{V_2 - 10}{50} + \frac{V_2}{100} + \frac{V_3}{200} = 0
+\end{equation}
+Multiplicando por $200$ para eliminar denominadores:
+\begin{equation}
+    4(V_2 - 10) + 2 V_2 + V_3 = 0 \implies \mathbf{6 V_2 + V_3 = 40}
+\end{equation}
+
+\textbf{Paso 4: Resolución del Sistema $2\times 2$}
+Combinando la ecuación del supernodo con la restricción ($V_3 = -2 V_2$):
+\begin{align*}
+    6 V_2 + (-2 V_2) &= 40 \\
+    4 V_2 &= 40 \implies \mathbf{V_2 = \qty{10.0}{\volt}}
+\end{align*}
+Evaluando los demás potenciales:
+\begin{align*}
+    \mathbf{V_3} &= -2(10.0) = \mathbf{\qty{-20.0}{\volt}} \\
+    \mathbf{V_x} &= \mathbf{\qty{10.0}{\volt}}
+\end{align*}
+
+\section{IV. Cómputo Científico en Python (NumPy)}
+Script para resolver sistemas nodales con fuentes controladas mediante matrices aumentadas:
+
+\begin{lstlisting}[language=Python]
+import numpy as np
+
+# 1. Definicion del sistema A * V = b
+# Variables: [V2, V3]
+# Ecuacion 1 (Supernodo LCK):  6*V2 + 1*V3 = 40
+# Ecuacion 2 (Restriccion VCVS): -2*V2 - 1*V3 = 0
+
+A = np.array([
+    [ 6.0,  1.0],
+    [-2.0, -1.0]
+], dtype=float)
+
+b = np.array([40.0, 0.0], dtype=float)
+
+# 2. Calculo matricial
+det_A = np.linalg.det(A)
+assert np.abs(det_A) > 1e-6, "Matriz singular: Revise dependencias de fuentes."
+
+V_sol = np.linalg.solve(A, b)
+V2, V3 = V_sol[0], V_sol[1]
+
+print("--- RESULTADOS MATRICIALES (PYTHON) ---")
+print(f"Determinante del sistema: {det_A:.2f}")
+print(f"Voltaje V2 (Control Vx) : {V2:.4f} V")
+print(f"Voltaje V3 (Salida)     : {V3:.4f} V")
+\end{lstlisting}
+
+\newpage
+\section{V. Taller de Simulación Avanzada en LTspice (Análisis \texttt{.tf})}
+En lugar de limitarse al análisis de punto de operación (\texttt{.op}), los estudiantes aprenderán a utilizar la directiva de Función de Transferencia en CC (\texttt{.tf}), empleada en la industria para calcular automáticamente:
+\begin{itemize}[label=\textcolor{ucbblue}{\textbullet}, itemsep=0pt]
+    \item La ganancia de pequeña señal ($\frac{V_{\text{out}}}{V_{\text{in}}}$).
+    \item La impedancia de entrada de la red ($R_{\text{in}}$).
+    \item La resistencia de salida o Resistencia de Thévenin ($R_{\text{out}} = R_{th}$).
+\end{itemize}
+
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape]
+        \draw (0,0) to[V, v=\texttt{V1 10}] (0,3)
+              to[R, l=\texttt{R1 50}] (3,3) node[above]{\texttt{N002}}
+              to[cV, v=\texttt{E1 Gain=3}] (6,3) node[above]{\texttt{N003}}
+              to[R, l=\texttt{R3 200}] (6,0) -- (0,0);
+        \draw (3,3) to[R, l=\texttt{R2 100}] (3,0);
+        \draw (0,0) node[ground]{}; \draw (3,0) node[ground]{}; \draw (6,0) node[ground]{};
+    \end{circuitikz}
+\end{center}
+
+\textbf{Instrucciones para el Estudiante en Laboratorio de Software:}
+\begin{enumerate}
+    \item \textbf{Colocar la Fuente Controlada:} Presionar \tecla{F2} y seleccionar el componente \texttt{e} (Voltage Dependent Voltage Source - VCVS).
+    \item \textbf{Conexión de Pines de E:}
+    \begin{itemize}[label=$\circ$]
+        \item Pines de salida: conectarlos entre el Nodo 2 y el Nodo 3.
+        \item Pines de control (+,-): conectarlos al Nodo 2 y a Tierra (para medir $V_x = V_2$).
+    \end{itemize}
+    \item \textbf{Asignar el valor de ganancia:} Hacer clic derecho y asignar \texttt{Value = 3}.
+    \item \textbf{Directiva SPICE:} Presionar \tecla{.} e ingresar: \texttt{.tf V(N003) V1}
+    \item \textbf{Ejecutar Simulación:} LTspice entregará una ventana con:
+    \begin{itemize}
+        \item \texttt{Transfer\_function = -2.000} \quad $\left(\frac{V_3}{V_1} = \frac{\qty{-20}{\volt}}{\qty{10}{\volt}} = -2\right)$
+        \item \texttt{v1\#Input\_impedance = 83.333 ohms}
+        \item \texttt{output\_impedance\_at\_v(n003) = 0 ohms} (característico de una fuente de tensión ideal).
+    \end{itemize}
+\end{enumerate}
+
+\section{VI. Ejercicio Activo en Tríadas (Trabajo en Aula — 15 MIN)}
+\textbf{Enunciado:} \\
+Para el circuito analizado, modifique la ganancia de la fuente controlada $E_1$ a un valor de $k = 1.5$ ($V_d = 1.5 V_x$).
+\begin{enumerate}
+    \item Deduzca analíticamente el nuevo voltaje $V_2$ y $V_3$.
+    \item Modifique el parámetro en su script de Python y compruebe el resultado.
+    \item Modifique el valor en LTspice y confirme la nueva función de transferencia $\frac{V_3}{V1}$.
+\end{enumerate}
+
+\begin{tcolorbox}[caja_diagnostico, title=Solución de Autocontrol Docente]
+Con la nueva restricción $V_3 = (1 - 1.5)V_2 = -0.5 V_2$, al sustituir en la ecuación del supernodo: \\
+$6 V_2 + V_3 = 40 \implies 6 V_2 - 0.5 V_2 = 40 \implies 5.5 V_2 = 40$ \\
+$V_2 = \mathbf{\qty{7.273}{\volt}}$ \quad|\quad $V_3 = \mathbf{\qty{-3.636}{\volt}}$ \quad|\quad Ganancia = \textbf{-0.3636}
+\end{tcolorbox}
+
+\vspace{0.3cm}
+\textit{Al finalizar esta sesión, los estudiantes dominarán la formulación analítica de circuitos no triviales con fuentes activas y sabrán cómo validar modelos lineales complejos empleando Python y LTspice de manera concurrente.}
+
+\end{document}
