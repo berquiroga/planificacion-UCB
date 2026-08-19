@@ -1,0 +1,171 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- Paquetes Fundamentales ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[margin=2.5cm, headheight=15pt]{geometry}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue]{hyperref}
+
+% --- Matemáticas y Electrónica ---
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage[american, RPvoltages]{circuitikz}
+
+% --- Elementos de Diseño Pedagógico y Tablas ---
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{colortbl}
+
+% --- Configuración de Colores y siunitx ---
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\sisetup{
+    output-decimal-marker = {,},
+    per-mode = symbol,
+    inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+% --- Macros y Estilos ---
+\tcbset{
+    caja_conclusion/.style={colback=blue!3, colframe=ucbblue, fonttitle=\bfseries, boxrule=0.8pt, arc=3pt}
+}
+
+% --- Estilo de Página ---
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textcolor{ucbblue}{\textbf{IMT-121 | Resolución Analítica}}}
+\rhead{\textbf{Análisis de Transferencia (.tf)}}
+\cfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{ucbblue}\leaders\hrule height \headrulewidth\hfill}}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{Resolución Analítica: Parámetros de Transferencia en CC}} \\[0.3cm]
+    {\large \textit{Validación Matemática del Análisis \texttt{.tf} en LTspice}}
+    \vspace{0.4cm}
+\end{center}
+\hrule
+\vspace{0.6cm}
+
+Para determinar los valores exactos que arroja LTspice en el análisis \texttt{.tf} (Transfer Function) para este circuito, evaluamos analíticamente paso a paso cada parámetro:
+
+\begin{center}
+    \begin{circuitikz}[scale=1, transform shape]
+        % Fuente de entrada y R1
+        \draw (0,0) to[V, v=$V_1 {=} \qty{10}{\volt}$] (0,3)
+              to[R, l=$R_1 {=} \qty{50}{\ohm}$] (4,3) node[above=0.1cm]{\texttt{N002}};
+        % VCVS invertida para que el (+) esté en el N003
+        \draw (4,3) to[cV, l_=$E_1$, v=$3V_x$, invert] (8,3) node[above=0.1cm]{\texttt{N003}};
+        % Ramas a tierra
+        \draw (4,3) to[R, l=$R_2 {=} \qty{100}{\ohm}$, v=$V_x$] (4,0);
+        \draw (8,3) to[R, l=$R_3 {=} \qty{200}{\ohm}$] (8,0);
+        % GND
+        \draw (0,0) -- (8,0);
+        \draw (4,0) node[ground]{};
+    \end{circuitikz}
+\end{center}
+
+\section*{1. Cálculo de la Función de Transferencia (\texttt{Transfer\_function})}
+En LTspice, la fuente dependiente \texttt{e} colocada entre el Nodo 2 y el Nodo 3 con el terminal positivo hacia la salida define:
+\begin{equation*}
+    V(\text{N003}) - V(\text{N002}) = 3 \cdot V_x
+\end{equation*}
+Dado que la variable de control es la tensión del Nodo 2 ($V_x = V(\text{N002})$):
+\begin{equation*}
+    V(\text{N003}) - V(\text{N002}) = 3 \cdot V(\text{N002}) \implies V(\text{N003}) = 4 \cdot V(\text{N002})
+\end{equation*}
+
+Aplicando la Ley de Corrientes de Kirchhoff en el supernodo formado por los Nodos 2 y 3:
+\begin{equation*}
+    \frac{V(\text{N002}) - V_1}{R_1} + \frac{V(\text{N002})}{R_2} + \frac{V(\text{N003})}{R_3} = 0
+\end{equation*}
+
+Sustituyendo los valores ($R_1 = \qty{50}{\ohm}$, $R_2 = \qty{100}{\ohm}$, $R_3 = \qty{200}{\ohm}$ y $V(\text{N003}) = 4 V(\text{N002})$):
+\begin{align*}
+    \frac{V(\text{N002}) - V_1}{50} + \frac{V(\text{N002})}{100} + \frac{4 V(\text{N002})}{200} &= 0 \\
+    \frac{V(\text{N002}) - V_1}{50} + \frac{3 V(\text{N002})}{100} &= 0
+\end{align*}
+
+Multiplicando por $100$:
+\begin{align*}
+    2(V(\text{N002}) - V_1) + 3 V(\text{N002}) &= 0 \\
+    5 V(\text{N002}) &= 2 V_1 \implies V(\text{N002}) = 0.4 \cdot V_1
+\end{align*}
+
+Con $V_1 = \qty{10}{\volt}$:
+\begin{align*}
+    V(\text{N002}) &= \qty{4.0}{\volt} \\
+    V(\text{N003}) &= 4 \cdot (\qty{4.0}{\volt}) = \qty{16.0}{\volt}
+\end{align*}
+
+\begin{equation*}
+    \text{Transfer\_function} = \frac{V(\text{N003})}{V_1} = \frac{\qty{16.0}{\volt}}{\qty{10.0}{\volt}} = \mathbf{1.600}
+\end{equation*}
+
+\section*{2. Cálculo de la Impedancia de Entrada (\texttt{v1\#Input\_impedance})}
+La corriente entregada por la fuente independiente $V_1$ es:
+\begin{equation*}
+    I_{\text{in}} = \frac{V_1 - V(\text{N002})}{R_1} = \frac{\qty{10}{\volt} - \qty{4}{\volt}}{\qty{50}{\ohm}} = \frac{\qty{6}{\volt}}{\qty{50}{\ohm}} = \qty{0.12}{\ampere} = \qty{120}{\milli\ampere}
+\end{equation*}
+
+La impedancia de entrada vista por la fuente $V_1$ corresponde a:
+\begin{equation*}
+    R_{\text{in}} = \frac{V_1}{I_{\text{in}}} = \frac{\qty{10}{\volt}}{\qty{0.12}{\ampere}} = \frac{250}{3}\,\Omega = \mathbf{\qty{83.333}{\ohm}}
+\end{equation*}
+
+\section*{3. Cálculo de la Impedancia de Salida (\texttt{output\_impedance\_at\_v(n003)})}
+Para hallar la resistencia de salida (Thévenin en el Nodo 3), se apaga la fuente independiente ($V_1 = \qty{0}{\volt}$) y se inyecta una corriente de prueba $I_{\text{test}}$ en el Nodo 3:
+
+Al apagar $V_1$, la resistencia equivalente desde el Nodo 2 hacia tierra es:
+\begin{equation*}
+    R_p = R_1 \parallel R_2 = \frac{50 \cdot 100}{50 + 100} = \frac{100}{3}\,\Omega \approx \qty{33.333}{\ohm}
+\end{equation*}
+
+La corriente $I_{\text{test}}$ se divide entre la resistencia $R_3$ y la rama que regresa por la fuente controlada $E_1$:
+\begin{equation*}
+    I_{\text{test}} = \frac{V_{\text{test}}}{R_3} + I_{E1}
+\end{equation*}
+
+Como $V_{\text{test}} = 4 V(\text{N002}) \implies V(\text{N002}) = \frac{V_{\text{test}}}{4}$, la corriente que fluye por la rama de $E_1$ hacia el paralelo $R_p$ es:
+\begin{equation*}
+    I_{E1} = \frac{V(\text{N002})}{R_p} = \frac{V_{\text{test}} / 4}{100 / 3} = \frac{3}{400} V_{\text{test}} = 0.0075 \cdot V_{\text{test}}
+\end{equation*}
+
+La resistencia de dicha rama es $R_{\text{rama}} = \frac{V_{\text{test}}}{I_{E1}} = \frac{400}{3}\,\Omega \approx \qty{133.333}{\ohm}$.
+
+La resistencia total de salida es el paralelo entre $R_3$ ($\qty{200}{\ohm}$) y $R_{\text{rama}}$:
+\begin{equation*}
+    R_{\text{out}} = 200 \parallel \frac{400}{3} = \frac{200 \cdot \frac{400}{3}}{200 + \frac{400}{3}} = \frac{\frac{80000}{3}}{\frac{1000}{3}} = \mathbf{\qty{80.000}{\ohm}}
+\end{equation*}
+
+\vspace{0.4cm}
+\section*{Valores de Salida en la Ventana de LTspice}
+Al ejecutar la directiva \texttt{.tf V(N003) V1}, el cuadro de resultados de LTspice muestra exactamente:
+
+\vspace{0.2cm}
+\begin{table}[h!]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{@{}l c X@{}}
+        \toprule
+        \rowcolor{ucbblue!10}
+        \textbf{Parámetro en LTspice} & \textbf{Valor Reportado} & \textbf{Interpretación Física} \\
+        \midrule
+        \texttt{Transfer\_function} & \texttt{1.600000e+00} & Ganancia de tensión $\frac{V_3}{V_1} = \qty{1.6}{\volt\per\volt}$ \\
+        \texttt{output\_impedance\_at\_v(n003)} & \texttt{8.000000e+01} & Resistencia de Thévenin en la salida = $\qty{80}{\ohm}$ \\
+        \texttt{v1\#Input\_impedance} & \texttt{8.333333e+01} & Resistencia de entrada vista por la fuente = $\qty{83.33}{\ohm}$ \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\vspace{0.4cm}
+
+
+\end{document}
