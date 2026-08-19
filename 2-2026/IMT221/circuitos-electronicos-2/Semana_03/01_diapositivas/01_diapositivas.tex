@@ -45,7 +45,8 @@
 \begin{frame}{Enfoque Pedagógico: Análisis Fasorial Riguroso}
     \textbf{¿Por qué no usamos la variable $s$ de Laplace?}
     \vspace{0.3cm}
-    \begin{itemize}[itemsep=5pt]
+    \begin{itemize}
+        \setlength{\itemsep}{5pt}
         \item \textbf{Intuición Física:} Evitamos abstracciones algebraicas prematuras.
         \item \textbf{Conexión Real:} Trabajamos con $\omega = 2\pi f$. Cada término se traduce directamente a perillas del generador (Hz) y lecturas de osciloscopio (V, $\mu$s).
         \item \textbf{Rigor Matemático:} Cumplimos con ABET (Student Outcome 1) mediante impedancias complejas y Leyes de Kirchhoff exactas.
@@ -57,6 +58,7 @@
         \begin{column}{0.40\textwidth}
             \textbf{Situación:}
             \begin{itemize}
+                \setlength{\itemsep}{3pt}
                 \item Portadora útil: \qty{10}{\kilo\hertz}
                 \item Ruido acoplado de red: \qty{50}{\hertz}
             \end{itemize}
@@ -111,7 +113,8 @@
 \begin{frame}{Comportamiento Físico y Asintótico}
     $$H(j\omega) = \frac{1 - (\omega/\omega_0)^2}{1 - (\omega/\omega_0)^2 + j 4 (\omega/\omega_0)}$$
     \vspace{0.2cm}
-    \begin{itemize}[itemsep=8pt]
+    \begin{itemize}
+        \setlength{\itemsep}{8pt}
         \item \textbf{Resonancia ($\omega = \omega_0 \implies \qty{50}{\hertz}$):} Numerador cero $\implies \vert{}H\vert{} = 0\text{ V}$.
         \begin{itemize}
             \item \textit{Explicación Física:} Interferencia destructiva total (desfases de $+90^\circ$ y $-90^\circ$ de ambas ramas se anulan).
@@ -133,7 +136,8 @@
 \begin{frame}{Resolución Numérica (Diseño Real)}
     \textbf{Datos:} $R = \qty{14.3}{\kilo\ohm}, C = \qty{220}{\nano\farad}$. Interferencia \qty{1.2}{\volt} a \qty{50}{\hertz}. Portadora \qty{150}{\milli\volt} a \qty{10}{\kilo\hertz}. Atenuación lograda en protoboard: $\qty{-44}{\decibel}$.
     \vspace{0.3cm}
-    \begin{enumerate}[itemsep=6pt]
+    \begin{enumerate}
+        \setlength{\itemsep}{6pt}
         \item \textbf{Sintonía:} $f_0 = \frac{1}{2\pi \cdot 14300 \cdot 220\times 10^{-9}} = \mathbf{50.59\text{ Hz}}$
         \item \textbf{Ruido Residual a \qty{50}{\hertz}:} $\hat{V}_{ruido} = 1.2 \cdot 10^{-44/20} = \mathbf{7.57\text{ mV}_{pico}}$ (casi nulo)
         \item \textbf{Transmisión de Portadora:} $\hat{V}_{port} = 150 \times 0.9998 = \mathbf{149.97\text{ mV}_{pico}}$ (pérdida nula)
@@ -144,7 +148,8 @@
 \begin{frame}{Tarea Pre-Laboratorio: ¡Emparejamiento Físico!}
     \textbf{Para el montaje del próximo lunes (15 minutos máximo):}
     \vspace{0.3cm}
-    \begin{itemize}[itemsep=5pt]
+    \begin{itemize}
+        \setlength{\itemsep}{5pt}
         \item \textbf{Multímetro:} Medir y rotular $R_1, R_2 \approx \qty{14.3}{\kilo\ohm}$ (idénticos $< 0.5\%$).
         \item \textbf{Trimpot:} Ajustar $R_3 \approx \qty{7.15}{\kilo\ohm}$ (exactamente la mitad).
         \item \textbf{Capacímetro:} Emparejar $C_1, C_2 \approx \qty{220}{\nano\farad}$ y armar paralelo $C_3 \approx \qty{440}{\nano\farad}$.
