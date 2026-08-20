@@ -1,0 +1,329 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- PAQUETES PRINCIPALES ---
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb, mathtools}
+\usepackage{siunitx}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% --- PAQUETES PARA GRÁFICAS Y CIRCUITOS ---
+\usepackage{pgfplots}
+\usepackage[american]{circuitikz}
+\pgfplotsset{compat=1.18}
+
+% --- CONFIGURACIÓN DE CÓDIGO (PYTHON) ---
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.96,0.96,0.96}
+\definecolor{darkred}{rgb}{0.55,0.0,0.0} % Definición explícita para evitar errores de pgfkeys
+
+\lstset{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    language=Python,
+    literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+             {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+             {ñ}{{\~n}}1 {Ñ}{{\~N}}1
+}
+
+% --- CONFIGURACIÓN DE SIUNITX ---
+\sisetup{output-decimal-marker = {,}, per-mode = symbol, inter-unit-product = \ensuremath{{}\cdot{}}}
+
+% --- CABECERAS ---
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\setlength{\headheight}{14pt} % Ajuste para evitar advertencias de compilación
+\addtolength{\topmargin}{-2pt}
+\fancyhf{}
+\lhead{\textbf{Circuitos Electrónicos III (IMT-221)}}
+\rhead{Sesión 6: Recortadores y Sujetadores}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% --- ENTORNOS PERSONALIZADOS ---
+\newtcolorbox{aviso}[1][]{colback=red!5!white, colframe=red!75!black, fonttitle=\bfseries, title=#1}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{Apuntes de Cátedra: Sesión 6}}\\[0.3cm]
+    {\large \textbf{Limitadores (Clippers) y Sujetadores de Nivel (Clampers)}}\\
+    \textit{Docente: M.Sc. Ing. Bernardo Quiroga Turdera}
+    \vspace{0.3cm}
+    \hrule
+\end{center}
+
+\vspace{0.3cm}
+
+% ==========================================
+% SECCIÓN 1: INTRODUCCIÓN Y CONTEXTO PFI
+% ==========================================
+\section{Acondicionamiento de Señales (El Reto del PFI)}
+Un sensor piezoeléctrico o un transductor de corriente por efecto Hall entrega una señal senoidal de $\pm \qty{10}{\volt}$. Si conectamos esta señal directamente al ADC de un microcontrolador STM32 (rango $\qty{0}{\volt}$ a $\qty{+3.3}{\volt}$) o ESP32 ($\qty{0}{\volt}$ a $\qty{+5.0}{\volt}$), los semiciclos negativos \textbf{destruirán la compuerta del conversor} y las sobretensiones quemarán el chip. 
+
+¿Cómo podemos desplazar la señal completa hacia la zona positiva sin perder su forma de onda y cómo recortamos los picos que excedan el límite de seguridad? Utilizamos dos topologías de conformación no lineal:
+\begin{enumerate}
+    \item \textbf{Clampers (Sujetadores):} Restauran o desplazan el nivel DC de la señal.
+    \item \textbf{Clippers (Recortadores):} Eliminan fracciones de la onda limitando su amplitud.
+\end{enumerate}
+
+% ==========================================
+% SECCIÓN 2: RECORTADORES (CLIPPERS)
+% ==========================================
+\section{Circuitos Recortadores (Clippers)}
+Son redes diódicas que recortan una porción de la forma de onda por encima o por debajo de un nivel de referencia fijado.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{@{} p{3.5cm} X X @{}}
+\toprule
+\textbf{Topología} & \textbf{Diagrama Conceptual} & \textbf{Función de Transferencia ($v_o$)} \\
+\midrule
+\textbf{Paralelo Positivo} & 
+\begin{circuitikz}[scale=0.6, transform shape]
+    \draw (0,0) to[short, o-] (1,0) to[R, l=$R$] (3,0) to[short, -o] (4,0);
+    \draw (3,0) to[D] (3,-2);
+    \draw (0,-2) to[short, o-o] (4,-2);
+\end{circuitikz} & 
+Si $v_i > V_\gamma \implies v_o = V_\gamma$ \newline Si $v_i < V_\gamma \implies v_o = v_i$ \\
+
+\textbf{Paralelo Negativo} & 
+\begin{circuitikz}[scale=0.6, transform shape]
+    \draw (0,0) to[short, o-] (1,0) to[R, l=$R$] (3,0) to[short, -o] (4,0);
+    \draw (3,-2) to[D] (3,0);
+    \draw (0,-2) to[short, o-o] (4,-2);
+\end{circuitikz} & 
+Si $v_i < -V_\gamma \implies v_o = -V_\gamma$ \newline Si $v_i > -V_\gamma \implies v_o = v_i$ \\
+
+\textbf{Polarizado ($+V_{\text{REF}}$)} & 
+\begin{circuitikz}[scale=0.6, transform shape]
+    \draw (0,0) to[short, o-] (1,0) to[R, l=$R$] (3,0) to[short, -o] (4,0);
+    \draw (3,0) to[D] (3,-1.2) to[V, v=$V_{\text{REF}}$] (3,-2.5);
+    \draw (0,-2.5) to[short, o-o] (4,-2.5);
+\end{circuitikz} & 
+Si $v_i > V_{\text{REF}} + V_\gamma \implies v_o = V_{\text{REF}} + V_\gamma$ \newline Si $v_i < V_{\text{REF}} + V_\gamma \implies v_o = v_i$ \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{Curva de Transferencia ($v_o$ vs. $v_i$)}
+Permite analizar el circuito independientemente de la forma de onda de entrada (senoidal, triangular, pulsos).
+\begin{itemize}
+    \item \textbf{Región Lineal (Diodo en Corte):} Pendiente unitaria ($m = \frac{\Delta v_o}{\Delta v_i} = 1$). La señal pasa intacta: $v_o = v_i$.
+    \item \textbf{Región de Recorte (Diodo en Conducción):} Pendiente prácticamente nula ($m \approx \frac{r_D}{R + r_D} \approx 0$). La salida queda fija en el nivel de polarización: $v_o = V_{\text{REF}} + V_\gamma$.
+\end{itemize}
+
+% ==========================================
+% SECCIÓN 3: SUJETADORES (CLAMPERS)
+% ==========================================
+\section{Circuitos Sujetadores de Nivel (Clampers)}
+Un \textit{clamper} añade un offset de corriente continua a una señal de CA \textbf{sin alterar su amplitud pico a pico} ($V_{pp}$) ni su forma de onda.
+
+\vspace{0.2cm}
+\noindent
+\begin{minipage}{0.4\textwidth}
+    \centering
+    \textbf{Sujetador Positivo Polarizado}\\
+    \vspace{0.2cm}
+    \begin{circuitikz}[american, scale=0.8, transform shape]
+        \draw (0,0) to[sV, l=$v_i(t)$] (0,3) to[C, l=$C$] (3,3) to[short, -o] (5,3) node[right]{$v_o(t)$};
+        \draw (3,0) to[D, l_=$D$] (3,1.5) to[V, v=$V_{\text{REF}}$] (3,3);
+        \draw (5,3) to[R, l=$R_L$] (5,0);
+        \draw (0,0) to[short, -o] (5,0);
+    \end{circuitikz}
+\end{minipage}
+\begin{minipage}{0.55\textwidth}
+    \textbf{Mecánica de Operación:}\\
+    \textbf{1. Intervalo de Carga Transitoria:} En el primer semiciclo apropiado, el diodo entra en conducción directa ($r_D$ baja). El capacitor se carga rápidamente al voltaje pico menos las caídas: $V_C = V_p - V_{\text{REF}} - V_\gamma$.\\
+    \textbf{2. Régimen Permanente (Bloqueo):} Para el resto del tiempo, el diodo se polariza en inversa. El capacitor actúa como una batería continua en serie:
+    \begin{equation}
+        v_o(t) = v_i(t) + V_C = v_i(t) + (V_p - V_{\text{REF}} - V_\gamma)
+    \end{equation}
+\end{minipage}
+
+\vspace{0.3cm}
+\textbf{Criterio de Diseño de la Constante de Tiempo ($\tau$):}\\
+Para que el capacitor mantenga su carga constante durante el periodo en que el diodo está apagado, exigimos que:
+\begin{equation}
+    \tau = R_L C \ge 10 \cdot T \quad \text{(donde } T = \frac{1}{f}\text{)}
+\end{equation}
+\textit{Efecto de un $C$ muy pequeño ($\tau < T$):} El capacitor se descarga a través de $R_L$ provocando distorsión por decaimiento de carga (\textit{droop} o \textit{tilt}) en las crestas de la señal.
+
+\newpage
+% ==========================================
+% SECCIÓN 4: PROBLEMA INTEGRADOR PFI
+% ==========================================
+\section{Problema de Ingeniería Completo (Clamper + Clipper)}
+\textbf{Enunciado:} Se requiere acondicionar la señal de un sensor del PFI. El sensor entrega $v_i(t) = 6 \sin(2\pi \cdot 1000 \cdot t)\,\text{V}$ ($f = \qty{1}{\kilo\hertz}$, $V_p = \qty{6}{\volt}$). El ADC del microcontrolador permite entradas de $\qty{0}{\volt}$ a $\qty{+5.0}{\volt}$.
+
+\begin{center}
+\begin{circuitikz}[american, scale=0.85, transform shape]
+    % Etapa 1: Clamper
+    \draw (0,0) to[sV, l=$v_i(t)$] (0,3) to[C, l=$C$] (3,3);
+    \draw (3,0) to[D, l_=$D_1$] (3,3);
+    \draw (5,3) to[R, l=$R_L$ (\qty{47}{\kilo\ohm})] (5,0);
+    \node[above] at (4,3) {$v_{o1}(t)$};
+    % Etapa 2: Clipper
+    \draw (3,3) -- (5,3) -- (7,3) to[R, l=$R_1$ (\qty{1}{\kilo\ohm})] (9,3);
+    \draw (9,3) to[D, l=$D_2$] (9,1.5) to[V, v=$V_{\text{CLIP}}$] (9,0);
+    \draw (9,3) -- (11,3) to[short, -o] (11,3) node[right]{$v_{\text{ADC}}(t)$};
+    % Tierra comun
+    \draw (0,0) -- (11,0);
+    \node[ground] at (5,0) {};
+    \node[above] at (2.5, 4) {\textbf{ETAPA 1: CLAMPER}};
+    \node[above] at (8, 4) {\textbf{ETAPA 2: CLIPPER}};
+\end{circuitikz}
+\end{center}
+
+\textbf{Requerimientos:}
+\begin{itemize}
+    \item \textbf{Etapa 1:} Desplazar la señal hacia la zona positiva. Calcular $C$ para un \textit{droop} $\le 1\%$. ($V_\gamma = \qty{0.7}{\volt}$).
+    \item \textbf{Etapa 2:} Proteger el ADC limitando el techo máximo absoluto a $\qty{+5.1}{\volt}$. Determinar $V_{\text{CLIP}}$.
+\end{itemize}
+
+\subsection*{Resolución Analítica Paso a Paso}
+\textbf{Paso 1: Dimensionamiento del Capacitor $C$ (Etapa Sujetadora)}\\
+Periodo $T = \frac{1}{\qty{1000}{\hertz}} = \qty{1}{\milli\second}$. Durante el bloqueo ($t \approx T$), el capacitor se descarga. Para un \textit{droop} $\le 1\%$ ($\frac{\Delta V_C}{V_C} \le 0.01$):
+\begin{equation*}
+    \frac{T}{R_L C} \le 0.01 \implies C \ge \frac{T}{0.01 \cdot R_L} = \frac{\qty{1e-3}{\second}}{0.01 \cdot \qty{47000}{\ohm}} = \qty{2.127}{\micro\farad} \implies \mathbf{C = \qty{2.2}{\micro\farad} \text{ (Comercial)}}
+\end{equation*}
+Tensión retenida en $C$ y ecuación temporal de la salida del clamper:
+\begin{align*}
+    V_C &= V_p - V_\gamma = 6.0\text{ V} - 0.7\text{ V} = \mathbf{\qty{5.3}{\volt}} \\
+    v_{o1}(t) &= v_i(t) + V_C = \mathbf{6 \sin(2000\pi t) + 5.3\text{ V}}
+\end{align*}
+Valores extremos: $v_{o1(\min)} = -6 + 5.3 = \mathbf{\qty{-0.7}{\volt}}$ y $v_{o1(\max)} = +6 + 5.3 = \mathbf{\qty{+11.3}{\volt}}$.
+
+\vspace{0.3cm}
+\noindent \textbf{Paso 2: Cálculo de la Tensión de Polarización $V_{\text{CLIP}}$}\\
+La onda sube a $\qty{+11.3}{\volt}$ (destructivo para el ADC). Recortamos todo voltaje por encima de $\qty{+5.1}{\volt}$. El diodo $D_2$ conduce cuando el ánodo supera el cátodo en $V_\gamma$:
+\begin{equation*}
+    V_{\text{CLIP}} + V_\gamma = \qty{5.1}{\volt} \implies V_{\text{CLIP}} = 5.1\text{ V} - 0.7\text{ V} = \mathbf{\qty{4.40}{\volt}}
+\end{equation*}
+
+\noindent \textbf{Verificación de seguridad ($I_{D2}$):} $I_{D2(\max)} = \frac{11.3\text{ V} - 5.1\text{ V}}{\qty{1000}{\ohm}} = \mathbf{\qty{6.20}{\milli\ampere}}$. El 1N4148 soporta $\qty{200}{\milli\ampere}$ (Seguro).
+
+\vspace{0.3cm}
+\noindent \textbf{Paso 3: Análisis Gráfico (Transitorio y Transferencia)}\\
+La señal se modela finalmente como $v_{\text{ADC}}(t) = \min\Big(5.1\text{ V}, \; \max(-0.7\text{ V}, \; 6\sin(\omega t) + 5.3\text{ V})\Big)$.
+
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=14cm, height=5cm,
+            axis lines=middle,
+            xlabel={Tiempo ($t/T$)}, ylabel={Voltaje (\unit{\volt})},
+            xmin=0, xmax=2.5, ymin=-7, ymax=13,
+            grid=both, grid style={dashed, gray!30},
+            legend style={at={(0.98,0.05)}, anchor=south east}
+        ]
+        \addplot[domain=0:2.5, samples=200, gray, dashed, thick] {6*sin(360*x)};
+        \addplot[domain=0:2.5, samples=300, blue, thick] {
+            (x<0.5)*(6*sin(360*x)) + (x>=0.5)*(x<0.75)*(-0.7) + (x>=0.75)*(6*sin(360*x) + 5.3)
+        };
+        \addplot[domain=0:2.5, samples=300, red, ultra thick] {
+            min(5.1, (x<0.5)*(6*sin(360*x)) + (x>=0.5)*(x<0.75)*(-0.7) + (x>=0.75)*(6*sin(360*x) + 5.3))
+        };
+        \addplot[domain=0:2.5, darkred, dashed] {5.1};
+        \addlegendentry{$v_{i}$} \addlegendentry{$v_{o1}$ (Clamper)} \addlegendentry{$v_{ADC}$ (Protegida)}
+        \end{axis}
+    \end{tikzpicture}
+    
+    \vspace{0.3cm}
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=10cm, height=4.5cm,
+            axis lines=middle,
+            xlabel={$v_{in}$ (\unit{\volt})}, ylabel={$v_{ADC}$ (\unit{\volt})},
+            xmin=-7, xmax=7, ymin=-2, ymax=7,
+            grid=both, grid style={dashed, gray!30},
+            legend style={at={(0.05,0.95)}, anchor=north west}
+        ]
+        \addplot[domain=-6:6, samples=150, purple, ultra thick] {min(5.1, max(-0.7, x + 5.3))};
+        \addlegendentry{Curva de Transferencia Final}
+        \draw[dashed, gray] (axis cs:-6, -0.7) -- (axis cs: -6, 0);
+        \draw[dashed, gray] (axis cs:-0.2, 5.1) -- (axis cs: 6, 5.1);
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Arriba: Dinámica temporal mostrando la carga en el 1er ciclo. Abajo: Curva de Transferencia en estado estacionario.}
+\end{figure}
+
+\newpage
+% ==========================================
+% SECCIÓN 5: PYTHON Y AUDITORÍA
+% ==========================================
+\section{Taller Computacional: Simulación Dinámica}
+
+\begin{lstlisting}[language=Python]
+# ==============================================================================
+# UNIVERSIDAD CATOLICA BOLIVIANA "SAN PABLO" - SEDE TARIJA
+# Sesion 6: Simulacion de Clampers y Clippers
+# Docente: M.Sc. Ing. Bernardo Quiroga Turdera
+# ==============================================================================
+import numpy as np
+import matplotlib.pyplot as plt
+
+frecuencia = 1000.0; T = 1.0 / frecuencia
+Vp = 6.0; V_gamma = 0.7
+R_L = 47e3; C = 2.2e-6
+V_clip_ref = 4.4; V_max_adc = V_clip_ref + V_gamma
+
+t = np.linspace(0, 3 * T, 4000)
+dt = t[1] - t[0]
+v_in = Vp * np.sin(2 * np.pi * frecuencia * t)
+v_o1 = np.zeros_like(t); v_adc = np.zeros_like(t)
+
+v_cap = 0.0; r_d_on = 10.0
+
+for i in range(len(t)):
+    v_nodo_d1 = v_in[i] - v_cap
+    if v_nodo_d1 < -V_gamma: # Carga rapida a traves de D1
+        i_charge = (-V_gamma - v_nodo_d1) / r_d_on
+        v_cap -= (i_charge * dt) / C
+        v_o1[i] = -V_gamma
+    else:                    # Descarga lenta a traves de R_L
+        i_discharge = v_nodo_d1 / R_L
+        v_cap -= (i_discharge * dt) / C
+        v_o1[i] = v_nodo_d1
+    
+    # Recortador D2
+    v_adc[i] = V_max_adc if v_o1[i] > V_max_adc else v_o1[i]
+
+plt.figure(figsize=(10, 6))
+plt.plot(t*1e3, v_in, 'gray', linestyle='--', label='v_in (+-6V)')
+plt.plot(t*1e3, v_o1, 'b:', label='v_o1 (Clamper)')
+plt.plot(t*1e3, v_adc, 'r-', linewidth=2, label='v_adc (Protegida 5.1V)')
+plt.axhline(y=V_max_adc, color='darkred', linestyle='--')
+plt.title('Acondicionamiento de Senal PFI'); plt.xlabel('Tiempo (ms)'); plt.ylabel('Tension (V)')
+plt.grid(True); plt.legend(loc='upper right')
+plt.show()
+\end{lstlisting}
+
+\begin{aviso}[Protocolo de Auditoría Dinámica (IA en Banco)]
+\textbf{1. Dinámica de Clamping:} Cambien $C$ de $\qty{2.2}{\micro\farad}$ a $\qty{10}{\nano\farad}$.\\
+\textbf{Pregunta:} ¿Por qué la parte inferior de la señal se deforma cayendo por debajo de $\qty{-0.7}{\volt}$ tomando forma triangular? \\
+\textbf{Respuesta:} Al reducir $C$, la constante $\tau = R_L C$ se vuelve mucho menor que $10T$. El capacitor se descarga masivamente, perdiendo su función de ``batería continua de offset'', ocasionando un \textit{droop} severo.
+
+\vspace{0.2cm}
+\textbf{2. Dimensionamiento de Protección:} Si un fallo genera un transitorio de $\qty{+30}{\volt}$.\\
+\textbf{Pregunta:} ¿Por qué es obligatorio colocar $R_1$ en serie antes del diodo $D_2$? Calcule la potencia disipada. \\
+\textbf{Respuesta:} Sin $R_1$, la corriente pico vendría limitada solo por la bajísima impedancia interna, destruyendo la unión P-N. $R_1$ limita térmicamente la corriente a $I = \frac{30 - 5.1}{\qty{1000}{\ohm}} = \qty{24.9}{\milli\ampere}$. La potencia en $D_2$ es $P = I \cdot V_{\text{D}} \approx \qty{17.4}{\milli\watt}$.
+\end{aviso}
+
+\end{document}
