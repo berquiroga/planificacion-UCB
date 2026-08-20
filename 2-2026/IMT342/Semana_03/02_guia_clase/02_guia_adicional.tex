@@ -1,0 +1,424 @@
+\documentclass[11pt, a4paper]{article}
+
+% Paquetes de idioma y tipografía
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo} % Tipografía Palatino
+\usepackage{microtype}
+
+% Geometría de la página
+\usepackage[margin=2.5cm, headheight=15pt]{geometry}
+
+% Paquetes matemáticos
+\usepackage{amsmath, amssymb, amsfonts, bm}
+
+% Gráficos, colores y tablas
+\usepackage{graphicx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, babel}
+
+% Personalización de listas y código
+\usepackage{enumitem}
+\usepackage{listings}
+
+% Encabezados y pies de página
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Robótica (IMT-342)}
+\rhead{Clase 2 - Sem 3}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Definición de colores institucionales
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{ucbyellow}{RGB}{255, 184, 28}
+\definecolor{codegray}{rgb}{0.95,0.95,0.95}
+
+% Estilo para código Python
+\lstdefinestyle{pythonstyle}{
+    backgroundcolor=\color{codegray},
+    commentstyle=\color{green!60!black},
+    keywordstyle=\color{blue}\bfseries,
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{purple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=4,
+    language=Python,
+    frame=single,
+    rulecolor=\color{gray!40}
+}
+\lstset{style=pythonstyle}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{UNIVERSIDAD CATÓLICA BOLIVIANA "SAN PABLO" — SEDE TARIJA}}\\
+    \vspace{0.2cm}
+    \normalsize Departamento de Ciencias Exactas e Ingenierías | Carrera de Ingeniería Mecatrónica\\
+    Asignatura: Robótica Industrial (IMT-342) \\
+    Docente: M.Sc. Ing. Bernardo Quiroga Turdera
+\end{center}
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Documento de Cátedra: Semana 3 — Sesión 2}]
+    \centering \large \textbf{Módulo Puente: De LERP a SLERP y \\ Guía de Estudio de Cuaterniones Unitarios}
+\end{tcolorbox}
+\vspace{0.4cm}
+
+% =======================================================
+% PARTE I: MÓDULO PUENTE LERP -> SLERP
+% =======================================================
+\section*{PARTE I: Módulo Puente — De LERP a SLERP (Fundamentación Paso a Paso)}
+
+Si no se conoce LERP (\textit{Linear Interpolation}), intentar explicar SLERP directamente es una receta para la sobrecarga cognitiva. Pedagógicamente, SLERP no es más que la generalización geométrica de LERP sobre una superficie esférica ($\mathbb{S}^3$). 
+
+\vspace{0.3cm}
+\begin{center}
+\begin{tikzpicture}[
+    node distance=0.8cm and 0cm,
+    box/.style={rectangle, draw=ucbblue, thick, fill=white, text width=12cm, rounded corners, align=left, minimum height=1cm, inner sep=10pt},
+    arrow/.style={-Stealth, thick, ucbblue}
+]
+    \node[box, fill=gray!10, text centered, font=\bfseries] (title) {LA ESCALERA DIDÁCTICA DE LA INTERPOLACIÓN};
+    
+    \node[box, below=of title] (lerp) {\textbf{1. LERP Clásico (1D y $\mathbb{R}^3$):} $\quad p(t) = (1 - t)p_0 + t p_1$ \\ \small (Interpolación recta de posición: válida para traslación X, Y, Z)};
+    
+    \node[box, below=of lerp] (fail) {\textbf{2. El fallo de LERP en Rotación:} $\quad q_{\text{LERP}}$ corta la hiperesfera por dentro \\ \small ($\left\|q\right\| < 1$ deforma la orientación y el tamaño)};
+    
+    \node[box, below=of fail] (nlerp) {\textbf{3. NLERP (Normalized LERP):} $\quad q_{\text{NLERP}} = q_{\text{LERP}} / \left\|q_{\text{LERP}}\right\|$ \\ \small (Recupera la esfera, pero la velocidad angular NO es constante)};
+    
+    \node[box, below=of nlerp] (slerp) {\textbf{4. SLERP (Spherical LERP):} \\ \small (Recorre la geodésica con velocidad angular $\boldsymbol{\omega}$ constante)};
+
+    \draw[arrow] (lerp) -- (fail);
+    \draw[arrow] (fail) -- (nlerp);
+    \draw[arrow] (nlerp) -- (slerp);
+\end{tikzpicture}
+\end{center}
+
+\subsection*{1. ¿Qué es LERP? (Explicación Intuitiva para Pizarra)}
+
+\textbf{A. Intuición en 1D: La Palanca o Porcentaje de Avance}\\
+Estás en la posición $p_0 = 10\text{ cm}$ a las $t = 0$ y quieres llegar a $p_1 = 50\text{ cm}$ a las $t = 1$. ¿Dónde estás a la mitad del camino ($t = 0.5$)? Intuitivamente: $30\text{ cm}$.
+
+La ecuación de la recta que conecta dos valores con un parámetro de tiempo normalizado $t \in [0, 1]$ es:
+\begin{equation*}
+    p(t) = p_0 + t(p_1 - p_0)
+\end{equation*}
+Reordenando los términos para ver los pesos de ponderación:
+\begin{equation}
+    \mathbf{p(t) = (1 - t)p_0 + t p_1}
+\end{equation}
+\begin{itemize}[label=$\circ$]
+    \item Cuando $t = 0$: $p(0) = 1(p_0) + 0(p_1) = p_0$ (Punto inicial).
+    \item Cuando $t = 1$: $p(1) = 0(p_0) + 1(p_1) = p_1$ (Punto final).
+    \item Cuando $t = 0.5$: $p(0.5) = 0.5(p_0) + 0.5(p_1)$ (Promedio aritmético exacto).
+\end{itemize}
+
+\begin{tcolorbox}[colback=yellow!10!white, colframe=ucbyellow!80!black, title=Concepto Clave para el Alumno]
+LERP es una combinación convexa: los pesos $(1-t)$ y $t$ siempre suman $1$. Es como una perilla de volumen (fader) que desvanece suavemente el estado inicial y amplifica el estado final.
+\end{tcolorbox}
+
+\textbf{B. LERP en $\mathbb{R}^3$: Trayectoria Rectilínea del Extremo del Robot}\\
+En robótica cartesiana, para mover la pinza neumática del robot desde un punto $A = [x_0, y_0, z_0]^T$ hasta un punto $B = [x_1, y_1, z_1]^T$ en línea recta, aplicamos LERP vectorialmente:
+\begin{equation*}
+    \mathbf{p}(t) = (1 - t)\mathbf{p}_0 + t\mathbf{p}_1 \quad \text{con } t \in [0, 1]
+\end{equation*}
+Esto traza el segmento de recta euclidiano que une ambos puntos en el espacio tridimensional de trabajo.
+
+\subsection*{2. El Experimento Mental: ¿Qué pasa si aplicamos LERP a la Orientación?}
+Pídeles que imaginen dos orientaciones representadas por cuaterniones unitarios $\mathbf{q}_0$ y $\mathbf{q}_1$ (ambos de longitud $\left\|\mathbf{q}\right\| = 1$, viviendo en la superficie de la hiperesfera $\mathbb{S}^3$).
+Si intentamos hacer LERP directo sobre los cuaterniones: $\mathbf{q}_{\text{LERP}}(t) = (1 - t)\mathbf{q}_0 + t\mathbf{q}_1$
+
+\vspace{0.4cm}
+\begin{center}
+\begin{tikzpicture}[scale=1.5, thick]
+    % Esfera S^3
+    \draw[fill=blue!5] (0,0) circle (2cm);
+    \draw[dashed, gray] (0,0) circle (2cm);
+    \node at (-1.5, 1.5) {$\mathbb{S}^3$};
+    
+    % Vectores q0 y q1
+    \coordinate (O) at (0,0);
+    \coordinate (q0) at (0:2cm);
+    \coordinate (q1) at (90:2cm);
+    
+    \draw[-Stealth, ucbblue] (O) -- (q0) node[right] {$\mathbf{q}_0$ ($\left\|\mathbf{q}\right\|=1$)};
+    \draw[-Stealth, ucbblue] (O) -- (q1) node[above] {$\mathbf{q}_1$ ($\left\|\mathbf{q}\right\|=1$)};
+    
+    % Línea LERP (Cuerda)
+    \draw[red!80!black, thick] (q0) -- (q1);
+    \coordinate (lerp_mid) at (1,1);
+    \filldraw[red] (lerp_mid) circle (1.5pt) node[right, xshift=2pt] {$\mathbf{q}_{\text{LERP}}(0.5)$ (Corta por dentro, $\left\|\mathbf{q}\right\| = 0.707$)};
+    
+    % Proyección NLERP
+    \draw[-Stealth, dashed, green!60!black] (O) -- (lerp_mid);
+    \draw[-Stealth, green!60!black, thick] (lerp_mid) -- (45:2cm);
+    \filldraw[green!50!black] (45:2cm) circle (1.5pt) node[above right] {$\mathbf{q}_{\text{NLERP}}(0.5)$};
+    
+    % Arco SLERP
+    \draw[ucbblue, very thick, -Stealth] (q0) arc (0:90:2cm);
+    \node[ucbblue, fill=blue!5] at (-0.5, -0.5) {SLERP (Superficie)};
+\end{tikzpicture}
+\end{center}
+
+\textbf{¿Cuáles son las dos fallas físicas fatales de este enfoque?}\\
+\textbf{Falla 1: Colapso de la Norma Unitaria ($\left\|\mathbf{q}\right\| < 1$).} La línea recta que une $\mathbf{q}_0$ y $\mathbf{q}_1$ corta la esfera por dentro. En el punto medio ($t = 0.5$), la longitud del cuaternión cae. Si intentas convertir $\mathbf{q}_{\text{LERP}}$ a matriz de rotación, la matriz deja de ser ortogonal y deforma/achica el robot en la simulación.
+
+\textbf{Falla 2 (NLERP): Pérdida de la Velocidad Angular Constante.} Para corregir la norma, se divide entre su magnitud (NLERP):
+\begin{equation*}
+    \mathbf{q}_{\text{NLERP}}(t) = \frac{(1 - t)\mathbf{q}_0 + t\mathbf{q}_1}{\left\| (1 - t)\mathbf{q}_0 + t\mathbf{q}_1 \right\|}
+\end{equation*}
+El problema: Aunque ahora tiene norma $1$, la velocidad angular no es uniforme. El robot gira lento cerca de los extremos y se acelera bruscamente en el centro, generando \textit{jerk} y vibraciones mecánicas en la muñeca del ABB IRB 120.
+
+\subsection*{3. La Necesidad de SLERP: El Gran Círculo}
+"Para que la velocidad de rotación sea rigurosamente constante ($\left\|\boldsymbol{\omega}\right\| = \text{cte}$), no podemos viajar en línea recta y proyectar. Debemos viajar directamente a lo largo del arco esférico. SLERP es la fórmula trigonométrica que calcula ese viaje sobre el círculo máximo."
+\begin{equation}
+    \text{SLERP}(\mathbf{q}_0, \mathbf{q}_1; t) = \frac{\sin((1 - t)\Omega)}{\sin\Omega}\mathbf{q}_0 + \frac{\sin(t\Omega)}{\sin\Omega}\mathbf{q}_1
+\end{equation}
+
+La estructura es idéntica a LERP, pero los pesos $\frac{\sin((1-t)\Omega)}{\sin\Omega}$ y $\frac{\sin(t\Omega)}{\sin\Omega}$ compensan la curvatura esférica para que el avance angular sea perfectamente lineal en el tiempo.
+
+\subsection*{4. Cuadro Comparativo (Para Diapositiva)}
+\begin{table}[h!]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \resizebox{\textwidth}{!}{
+    \begin{tabular}{l p{4cm} p{2.5cm} p{3.5cm} p{4cm}}
+    \toprule
+    \textbf{Método} & \textbf{Fórmula Matemática} & \textbf{¿Permanece en $\mathbb{S}^3$?} & \textbf{¿Velocidad $\boldsymbol{\omega}$ Constante?} & \textbf{Uso Típico en Ingeniería} \\ \midrule
+    \textbf{LERP} & $\mathbf{p}(t) = (1-t)\mathbf{p}_0 + t\mathbf{p}_1$ & No (Corta por dentro) & N/A (No aplica a rotación) & Posición XYZ de la punta del robot. \\ 
+    \textbf{NLERP} & $\mathbf{q}(t) = \text{LERP} / \left\|\text{LERP}\right\|$ & Sí (Normalizado) & No (Acelera y frena) & Gráficos en videojuegos. \\ 
+    \textbf{SLERP} & $\frac{\sin((1-t)\Omega)}{\sin\Omega}\mathbf{q}_0 + \frac{\sin(t\Omega)}{\sin\Omega}\mathbf{q}_1$ & Sí (Geodésica pura) & Sí ($\left\|\boldsymbol{\omega}\right\| = \text{constante}$) & Robótica Industrial, ROS. \\ \bottomrule
+    \end{tabular}
+    }
+\end{table}
+
+\subsection*{5. Script Demostrativo Corto en Python (Para proyectar en 2 minutos)}
+\begin{lstlisting}[language=Python]
+import numpy as np
+
+# Dos orientaciones separadas 90 grados alrededor de Z
+q0 = np.array([1.0, 0.0, 0.0, 0.0])              # Rotacion 0 grados
+q1 = np.array([np.cos(np.pi/4), 0, 0, np.sin(np.pi/4)]) # Rotacion 90 grados
+t = 0.5  # Punto medio
+
+# 1. LERP
+q_lerp = (1 - t)*q0 + t*q1
+print(f"Norma LERP a t=0.5 : {np.linalg.norm(q_lerp):.4f} (!Pierde norma unitaria!)")
+
+# 2. NLERP
+q_nlerp = q_lerp / np.linalg.norm(q_lerp)
+print(f"Norma NLERP a t=0.5: {np.linalg.norm(q_nlerp):.4f} (Recupera norma, omega variable)")
+
+# 3. SLERP (Shoemake)
+omega = np.arccos(np.dot(q0, q1))
+q_slerp = (np.sin((1-t)*omega)/np.sin(omega))*q0 + (np.sin(t*omega)/np.sin(omega))*q1
+print(f"Norma SLERP a t=0.5: {np.linalg.norm(q_slerp):.4f} (Norma perfecta y omega constante)")
+\end{lstlisting}
+
+\newpage
+% =======================================================
+% PARTE II: GUÍA DE ESTUDIO Y FUNDAMENTACIÓN MATEMÁTICA
+% =======================================================
+\section*{PARTE II: Guía de Estudio y Fundamentación Matemática}
+\textit{Cuaterniones Unitarios, Operador Sándwich y SLERP}
+
+\subsection*{Introducción y Propósito Didáctico}
+El propósito de este documento es desmitificar y justificar geométricamente los tres conceptos más densos de la orientación espacial:
+\begin{enumerate}
+    \item \textbf{El Operador Sándwich ($\mathbf{q} \otimes \tilde{p} \otimes \mathbf{q}^*$):} Por qué una rotación requiere multiplicar dos veces en 4D y cómo esto reconstruye la fórmula física de Euler-Rodrigues.
+    \item \textbf{La Matriz $R(\mathbf{q}) \in SO(3)$ y la Doble Cobertura ($\mathbf{q} \equiv -\mathbf{q}$):} De dónde surgen sus 9 componentes y el riesgo industrial de ignorar el signo antipodal.
+    \item \textbf{Interpolación Esférica Lineal (SLERP):} La matemática de las trayectorias con velocidad angular uniforme.
+\end{enumerate}
+
+\subsection*{SECCIÓN 1: El Operador Sándwich de Rotación Activa}
+
+\begin{center}
+\begin{tikzpicture}[node distance=2.2cm, auto, thick, -Stealth]
+    \node[draw=ucbblue, rounded corners, fill=white, text width=6cm, align=center, inner sep=5pt] (v1) {\textbf{[Vector Físico 3D: $p$]}};
+    
+    \node[draw=ucbblue, rounded corners, fill=gray!10, text width=6cm, align=center, inner sep=5pt, below=0.7cm of v1] (v2) {\textbf{[Cuaternión Puro: $\tilde{p} = [0, p] \in \mathbb{H}$]}\\ \small (Promoción: se añade parte real $= 0$)};
+    
+    \node[draw=red!80!black, rounded corners, fill=red!10, text width=7.5cm, align=center, inner sep=5pt, below=0.7cm of v2] (v3) {\textbf{[Cuaternión Intermedio: $\mathbf{q} \otimes \tilde{p}$]} \\ \small ¡Parte Escalar $\neq 0$! (Escapa a 4D)};
+    
+    \node[draw=green!60!black, rounded corners, fill=green!10, text width=7.5cm, align=center, inner sep=5pt, below=0.7cm of v3] (v4) {\textbf{[Cuaternión Resultante: $\tilde{p}' = [0, p'] \in \mathbb{H}$]} \\ \small Multiplicación por $\mathbf{q}^*$. ¡Parte Escalar $= 0$!};
+    
+    \node[draw=ucbblue, rounded corners, fill=white, text width=6cm, align=center, inner sep=5pt, below=0.7cm of v4] (v5) {\textbf{[Vector Rotado Físico 3D: $p'$]}\\ \small (Extracción Vectorial)};
+
+    \draw (v1) -- (v2);
+    \draw (v2) -- (v3);
+    \draw (v3) -- (v4);
+    \draw (v4) -- (v5);
+\end{tikzpicture}
+\end{center}
+
+\subsubsection*{1.1 La Intuición Geométrica}
+Cualquier orientación de un cuerpo en $\mathbb{R}^3$ equivale a un giro $\theta$ sobre un eje unitario $\hat{u}$. Un vector $p$ se descompone en componente paralela $p_\parallel = (\hat{u} \cdot p)\hat{u}$ y perpendicular $p_\perp = p - (\hat{u} \cdot p)\hat{u}$.
+En 1840, Olinde Rodrigues demostró que el vector resultante rotado $p'$ es:
+\begin{equation}
+    \mathbf{p}' = \mathbf{p} \cos\theta + (\hat{\mathbf{u}} \times \mathbf{p})\sin\theta + \hat{\mathbf{u}}(\hat{\mathbf{u}} \cdot \mathbf{p})(1 - \cos \theta)
+\end{equation}
+
+
+\subsubsection*{1.2 El Dilema de la Cuarta Dimensión ($\mathbf{q} \otimes \tilde{p}$)}
+Un cuaternión unitario de rotación es $\mathbf{q} = \left[ \cos(\frac{\theta}{2}), \; \hat{u} \sin(\frac{\theta}{2}) \right] = [q_w, \; \mathbf{v}]$. Si rotamos multiplicando solo por la izquierda:
+\begin{equation*}
+    \mathbf{q} \otimes \tilde{p} = [q_w, \; \mathbf{v}] \otimes [0, \; p] = \begin{bmatrix} q_w (0) - \mathbf{v} \cdot p \\ q_w p + 0\mathbf{v} + \mathbf{v} \times p \end{bmatrix} = \begin{bmatrix} \mathbf{-\mathbf{v} \cdot p} \\ q_w p + \mathbf{v} \times p \end{bmatrix}
+\end{equation*}
+\textbf{El problema físico:} La parte escalar es $-\mathbf{v} \cdot p \neq 0$. El vector "escapó" de nuestro espacio físico 3D a 4D.
+
+\subsubsection*{1.3 La Acción del Conjugado ($\mathbf{q}^*$)}
+Para corregir la fuga, Hamilton post-multiplicó por el conjugado $\mathbf{q}^* = [q_w, \; -\mathbf{v}]$:
+\begin{equation*}
+    \tilde{p}' = (\mathbf{q} \otimes \tilde{p}) \otimes \mathbf{q}^* = \begin{bmatrix} -\mathbf{v} \cdot p \\ q_w p + \mathbf{v} \times p \end{bmatrix} \otimes \begin{bmatrix} q_w \\ -\mathbf{v} \end{bmatrix}
+\end{equation*}
+\textbf{Parte Escalar de $\tilde{p}'$:}
+\begin{align*}
+    \text{Escalar} &= (-\mathbf{v} \cdot p)(q_w) - \left( q_w p + \mathbf{v} \times p \right) \cdot (-\mathbf{v}) \\
+    &= -q_w(\mathbf{v} \cdot p) + q_w(p \cdot \mathbf{v}) + \underbrace{(\mathbf{v} \times p) \cdot \mathbf{v}}_{= 0 \text{ (ortogonales)}} = \mathbf{0}
+\end{align*}
+\textbf{Parte Vectorial ($p'$):}
+\begin{equation*}
+    p' = (-\mathbf{v} \cdot p)(-\mathbf{v}) + q_w(q_w p + \mathbf{v} \times p) + (q_w p + \mathbf{v} \times p) \times (-\mathbf{v})
+\end{equation*}
+Expandiendo y usando la identidad del triple producto vectorial $(A \times B) \times C = (A \cdot C)B - (B \cdot C)A$:
+\begin{equation}
+    \mathbf{p' = (q_w^2 - \left\|\mathbf{v}\right\|^2)p + 2(\mathbf{v} \cdot p)\mathbf{v} + 2q_w(\mathbf{v} \times p)}
+\end{equation}
+
+\subsubsection*{1.4 Equivalencia con Rodrigues}
+Sustituyendo $q_w = \cos(\theta/2)$ y $\mathbf{v} = \hat{u}\sin(\theta/2)$:
+\begin{itemize}
+    \item $q_w^2 - \left\|\mathbf{v}\right\|^2 = \cos^2(\theta/2) - \sin^2(\theta/2) = \cos\theta$
+    \item $2q_w(\mathbf{v} \times p) = (\hat{u} \times p)\sin\theta$
+    \item $2(\mathbf{v} \cdot p)\mathbf{v} = 2\sin^2(\theta/2)(\hat{u} \cdot p)\hat{u} = (1 - \cos\theta)(\hat{u} \cdot p)\hat{u}$
+\end{itemize}
+Uniendo los términos, recuperamos exactamente la Fórmula de Rotación de Rodrigues.
+
+\subsection*{SECCIÓN 2: Conversión a $SO(3)$ y Fenómeno de Doble Cobertura}
+
+\subsubsection*{2.1 Deducción de la Matriz $R(\mathbf{q}) \in SO(3)$}
+Evaluando el sándwich en $\hat{e}_1 = [1, 0, 0]^T$ obtenemos la primera columna de la matriz:
+\begin{equation*}
+    R_{\cdot 1} = \begin{bmatrix} q_w^2 + q_x^2 - q_y^2 - q_z^2 \\ 2(q_x q_y + q_w q_z) \\ 2(q_x q_z - q_w q_y) \end{bmatrix} = \begin{bmatrix} \mathbf{1 - 2(q_y^2 + q_z^2)} \\ 2(q_x q_y + q_w q_z) \\ 2(q_x q_z - q_w q_y) \end{bmatrix}
+\end{equation*}
+Repitiendo para $\hat{e}_2$ y $\hat{e}_3$, formamos los 9 términos de $R(\mathbf{q})$.
+
+\subsubsection*{2.2 Doble Cobertura ($\mathbf{q} \equiv -\mathbf{q}$)}
+Como todos los 9 términos de $R(\mathbf{q})$ son cuadráticos o productos cruzados, al evaluar $-\mathbf{q}$:
+\begin{equation}
+    \mathbf{R(-\mathbf{q}) \equiv R(\mathbf{q})}
+\end{equation}
+
+\begin{center}
+\begin{tikzpicture}[node distance=3cm, auto, thick]
+    \node[draw=ucbblue, rounded corners, fill=blue!5, text width=4cm, align=center, minimum height=1.5cm] (s3) {\textbf{Hiperesfera $\mathbb{S}^3$ (4D)}\\ Polo Norte: $+\mathbf{q}$ \\ Polo Sur: $-\mathbf{q}$};
+    \node[draw=black, rounded corners, fill=gray!10, text width=4cm, align=center, minimum height=1.5cm, right=of s3] (so3) {\textbf{Espacio $SO(3)$ (3D)}\\ Orientación Física Única};
+    
+    \draw[-Stealth, ucbblue] (s3.15) -- node[above] {Proyectan a} (so3.165);
+    \draw[-Stealth, ucbblue] (s3.345) -- node[below] {misma matriz} (so3.195);
+    
+    \node[below=0.2cm of s3] {(\textit{Doble Cobertura 2:1})};
+\end{tikzpicture}
+\end{center}
+
+\subsubsection*{2.3 El Peligro de Ingeniería en el ABB IRB 120}
+Si el robot está en $\mathbf{q}_0 = [1.0, 0, 0, 0]$ y la meta es $\mathbf{q}_1 = [-0.9999, 0, 0, -0.0100]$ (desviación de $\approx 1.15^\circ$). Físicamente es un giro mínimo. Pero si el software no verifica el producto punto $\mathbf{q}_0 \cdot \mathbf{q}_1 = -0.9999 < 0$, interpretará que debe rotar $360^\circ - 1.15^\circ = 358.85^\circ$, causando daños mecánicos y disparos de sobrecorriente.
+
+\subsection*{SECCIÓN 3: SLERP — Deducción Geométrica}
+\subsubsection*{3.1 Analogía Intuitiva}
+LERP vuela en un ``túnel'' subterráneo. SLERP vuela sobre la superficie terrestre siguiendo un Gran Círculo (Geodésica), manteniendo el radio constante ($\left\|\mathbf{q}\right\| = 1$).
+
+\vspace{0.3cm}
+\begin{center}
+\begin{tikzpicture}[scale=1.5, thick]
+    % Sector circular
+    \draw[fill=blue!5] (0,0) -- (0:3cm) arc (0:60:3cm) -- cycle;
+    
+    \coordinate (O) at (0,0);
+    \coordinate (q0) at (0:3cm);
+    \coordinate (q1) at (60:3cm);
+    \coordinate (qt) at (25:3cm);
+    
+    \draw[-Stealth, ucbblue, very thick] (O) -- (q0) node[right] {$\mathbf{q}_0$};
+    \draw[-Stealth, ucbblue, very thick] (O) -- (q1) node[above right] {$\mathbf{q}_1$};
+    \draw[-Stealth, red!80!black, very thick] (O) -- (qt) node[right, xshift=2pt] {$\mathbf{q}(t)$};
+    
+    % Ángulos
+    \draw[dashed, gray] (0:1cm) arc (0:60:1cm);
+    \node at (15:1.2cm) {$t\Omega$};
+    \node at (45:1.2cm) {$(1-t)\Omega$};
+\end{tikzpicture}
+\end{center}
+
+\subsubsection*{3.2 Deducción Geométrica de la Ecuación}
+Expresamos $\mathbf{q}(t)$ como combinación lineal en el plano: $\mathbf{q}(t) = a(t)\mathbf{q}_0 + b(t)\mathbf{q}_1$.
+Aplicando la Ley de los Senos en el triángulo del paralelogramo formado:
+\begin{equation}
+    \text{SLERP}(\mathbf{q}_0, \mathbf{q}_1; t) = \frac{\sin((1 - t)\Omega)}{\sin\Omega}\mathbf{q}_0 + \frac{\sin(t\Omega)}{\sin\Omega}\mathbf{q}_1
+\end{equation}
+
+
+\subsubsection*{3.3 Algoritmo Completo (Shortest Path)}
+\begin{center}
+\begin{tikzpicture}[
+    node distance=1cm and 1cm,
+    box/.style={rectangle, draw=black, thick, fill=white, text width=4cm, align=center, rounded corners, minimum height=0.8cm},
+    decision/.style={diamond, draw=ucbblue, thick, fill=blue!5, text width=2cm, align=center, inner sep=0pt},
+    arrow/.style={-Stealth, thick}
+]
+    \node[box] (input) {Entrada: $\mathbf{q}_0, \mathbf{q}_1$, $t$};
+    \node[box, below=0.6cm of input] (dot) {dot = $\mathbf{q}_0 \cdot \mathbf{q}_1$};
+    \node[decision, below=0.6cm of dot] (check1) {dot < 0 ?};
+    
+    \node[box, right=1.5cm of check1] (inv) {$\mathbf{q}_1 = -\mathbf{q}_1$ \\ dot = -dot};
+    \node[decision, below=0.8cm of check1] (check2) {dot > 0.999 ?};
+    
+    \node[box, left=1cm of check2, yshift=-1.5cm] (lerp) {LERP: \\ $(1-t)\mathbf{q}_0 + t\mathbf{q}_1$ \\ (Normalizar)};
+    \node[box, right=1cm of check2, yshift=-1.5cm] (slerp) {SLERP: \\ $\Omega = \arccos(\text{dot})$ \\ Eq. Trigonométrica};
+    
+    \node[box, fill=green!10, below=3.5cm of check2] (output) {Retornar $\mathbf{q}(t) \in \mathbb{S}^3$};
+
+    \draw[arrow] (input) -- (dot);
+    \draw[arrow] (dot) -- (check1);
+    \draw[arrow] (check1) -- node[above]{Sí} (inv);
+    \draw[arrow] (inv) |- (check2);
+    \draw[arrow] (check1) -- node[left]{No} (check2);
+    
+    \draw[arrow] (check2) -| node[above, near start]{Sí ($\Omega \approx 0$)} (lerp);
+    \draw[arrow] (check2) -| node[above, near start]{No} (slerp);
+    
+    \draw[arrow] (lerp) |- (output);
+    \draw[arrow] (slerp) |- (output);
+\end{tikzpicture}
+\end{center}
+
+\subsection*{SECCIÓN 4: Preguntas de Autoevaluación Conceptual}
+\begin{tcolorbox}[colback=white, colframe=ucbblue, title=Verificación de Conocimientos]
+\begin{enumerate}
+    \item ¿Por qué al rotar un vector $p \in \mathbb{R}^3$ con cuaterniones se debe multiplicar por la izquierda por $\mathbf{q}$ y por la derecha por $\mathbf{q}^*$, en lugar de multiplicar una sola vez?
+    \item Si un sensor de visión publica el cuaternión $\mathbf{q}_A = [0, 0, 1, 0]$ y otro algoritmo publica $\mathbf{q}_B = [0, 0, -1, 0]$, ¿el robot adoptará posturas físicas diferentes al alcanzar ambas metas? Justifique analíticamente su respuesta.
+    \item En el algoritmo SLERP, ¿qué problema físico ocurriría en el manipulador ABB IRB 120 si omitimos la condición \texttt{if dot < 0: dot = -dot; q1 = -q1}?
+    \item ¿Por qué no es recomendable interpolar linealmente los 3 ángulos de Euler $(\phi, \theta, \psi)$ entre dos puntos de paso de una trayectoria robótica? Mencione al menos dos consecuencias físicas sobre los actuadores.
+\end{enumerate}
+\end{tcolorbox}
+
+\end{document}
