@@ -1,0 +1,198 @@
+\documentclass[aspectratio=169]{beamer}
+
+% Tema y Colores
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, babel}
+\usepackage{listings}
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\scriptsize,
+    backgroundcolor=\color{gray!10},
+    frame=single,
+    rulecolor=\color{gray!40}
+}
+
+\title[Cuaterniones Unitarios y SLERP]{Cuaterniones ($\mathbb{H}$), SLERP y Mensajería ROS}
+\subtitle{Robótica Industrial (IMT-342) — Universidad Católica Boliviana Tarija}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\date{Jueves 20 de Agosto de 2026}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% Diapositiva 1
+\begin{frame}{El Espacio de Cuaterniones de Hamilton ($\mathbb{H}$)}
+    \begin{columns}
+        \begin{column}{0.65\textwidth}
+            \textbf{Definición Formal:}
+            \begin{equation*}
+                \mathbf{q} = q_w + q_x \mathbf{i} + q_y \mathbf{j} + q_z \mathbf{k} = [q_w, \mathbf{v}]
+            \end{equation*}
+            $q_w \in \mathbb{R}$ (Escalar), $\mathbf{v} \in \mathbb{R}^3$ (Vector imaginario).
+            
+            \vspace{0.3cm}
+            \textbf{Reglas Fundamentales (1843):}
+            \begin{equation*}
+                \mathbf{i}^2 = \mathbf{j}^2 = \mathbf{k}^2 = \mathbf{i}\mathbf{j}\mathbf{k} = -1
+            \end{equation*}
+            \begin{alertblock}{Anticonmutatividad}
+                $\mathbf{i}\mathbf{j} = \mathbf{k}, \quad \mathbf{j}\mathbf{i} = -\mathbf{k}$ (El orden altera el producto)
+            \end{alertblock}
+        \end{column}
+        \begin{column}{0.35\textwidth}
+            \centering
+            \begin{tikzpicture}[>=Stealth, thick, scale=1.5]
+                \node[circle, fill=ucbblue!10, draw=ucbblue] (i) at (90:1) {$\mathbf{i}$};
+                \node[circle, fill=ucbblue!10, draw=ucbblue] (j) at (330:1) {$\mathbf{j}$};
+                \node[circle, fill=ucbblue!10, draw=ucbblue] (k) at (210:1) {$\mathbf{k}$};
+                
+                \draw[->, ucbblue, bend left=20] (i) to node[right] {$+$} (j);
+                \draw[->, ucbblue, bend left=20] (j) to node[below] {$+$} (k);
+                \draw[->, ucbblue, bend left=20] (k) to node[left] {$+$} (i);
+                
+                \node[text=red!80!black] at (0,0) {Sentido Inverso: $-$};
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Diapositiva 2
+\begin{frame}{Producto de Hamilton, Conjugado y Norma}
+    \textbf{Producto de Hamilton ($\otimes$):}
+    \begin{equation*}
+        \mathbf{q}_1 \otimes \mathbf{q}_2 = \begin{bmatrix} w_1 w_2 - \mathbf{v}_1 \cdot \mathbf{v}_2 \\ w_1 \mathbf{v}_2 + w_2 \mathbf{v}_1 + \mathbf{v}_1 \times \mathbf{v}_2 \end{bmatrix}
+    \end{equation*}
+    \textit{Nota: El producto cruz es la fuente directa de la no conmutatividad.}
+    
+    \vspace{0.4cm}
+    \textbf{Propiedades Clave:}
+    \begin{itemize}
+        \item \textbf{Conjugado:} $\mathbf{q}^* = [q_w, -\mathbf{v}]$
+        \item \textbf{Norma Euclidiana:} $\left\|\mathbf{q}\right\| = \sqrt{\mathbf{q} \otimes \mathbf{q}^*} = \sqrt{q_w^2 + q_x^2 + q_y^2 + q_z^2}$
+        \item \textbf{Inversa Multiplicativa:} $\mathbf{q}^{-1} = \frac{\mathbf{q}^*}{\left\|\mathbf{q}\right\|^2}$
+    \end{itemize}
+    \vspace{0.1cm}
+    \begin{exampleblock}{Cuaternión Unitario ($\mathbb{S}^3$)}
+        Si $\left\|\mathbf{q}\right\| = 1$, entonces la inversa es simplemente el conjugado: $\mathbf{q}^{-1} = \mathbf{q}^*$
+    \end{exampleblock}
+\end{frame}
+
+% Diapositiva 3
+\begin{frame}{Teorema del Eje-Ángulo y el Operador Sándwich}
+    \textbf{1. Parametrización (Eje $\hat{u}$, Ángulo $\theta$):}
+    \begin{equation*}
+        \mathbf{q} = \left[ \cos\left(\frac{\theta}{2}\right), \; \hat{u} \sin\left(\frac{\theta}{2}\right) \right]
+    \end{equation*}
+    
+    \vspace{0.3cm}
+    \textbf{2. Operador Sándwich (Rotación de Vector $p \in \mathbb{R}^3$):}
+    \begin{equation*}
+        \tilde{p}' = \mathbf{q} \otimes [0, p] \otimes \mathbf{q}^*
+    \end{equation*}
+    La multiplicación por la derecha con el conjugado $\mathbf{q}^*$ anula la parte escalar (fuga 4D), resultando en la Fórmula de Rodrigues:
+    \begin{equation*}
+        p' = (q_w^2 - \left\|\mathbf{v}\right\|^2) p + 2(\mathbf{v} \cdot p)\mathbf{v} + 2 q_w (\mathbf{v} \times p)
+    \end{equation*}
+\end{frame}
+
+% Diapositiva 4
+\begin{frame}{Conversión a Matriz $SO(3)$ y Doble Cobertura}
+    \textbf{Matriz Equivalente $R(\mathbf{q})$:}
+    \begin{equation*}
+        R(\mathbf{q}) = \begin{bmatrix}      
+        1 - 2(q_y^2 + q_z^2) & 2(q_x q_y - q_w q_z) & 2(q_x q_z + q_w q_y) \\      
+        2(q_x q_y + q_w q_z) & 1 - 2(q_x^2 + q_z^2) & 2(q_y q_z - q_w q_x) \\      
+        2(q_x q_z - q_w q_y) & 2(q_y q_z + q_w q_x) & 1 - 2(q_x^2 + q_y^2)      
+        \end{bmatrix}
+    \end{equation*}
+    
+    \vspace{0.2cm}
+    \begin{alertblock}{Propiedad de Doble Cobertura}
+        Todos los términos son cuadráticos o productos cruzados. Por lo tanto: \\
+        \centering $\mathbf{R(\mathbf{q}) \equiv R(-\mathbf{q})}$
+    \end{alertblock}
+    Tanto el cuaternión $\mathbf{q}$ (Polo Norte) como $-\mathbf{q}$ (Polo Sur) producen la misma orientación física en el robot.
+\end{frame}
+
+% Diapositiva 5
+\begin{frame}{Interpolación Esférica Lineal (SLERP)}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \textbf{Definición de SLERP (Shoemake):}
+            \begin{equation*}
+                \mathbf{q}(t) = \frac{\sin((1-t)\Omega)}{\sin\Omega} \mathbf{q}_0 + \frac{\sin(t\Omega)}{\sin\Omega} \mathbf{q}_1
+            \end{equation*}
+            \small donde $\cos\Omega = \mathbf{q}_0 \cdot \mathbf{q}_1$.
+            
+            \vspace{0.3cm}
+            \textbf{Shortest Path (Camino más corto):} \\
+            Si $\mathbf{q}_0 \cdot \mathbf{q}_1 < 0$, el camino es $>180^\circ$. Se invierte el cuaternión meta:
+            \begin{equation*}
+                \mathbf{q}_1 \leftarrow -\mathbf{q}_1
+            \end{equation*}
+            \textit{Evita que el manipulador dé una vuelta innecesaria.}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \centering
+            \begin{tikzpicture}[scale=1.3, thick]
+                \draw[fill=blue!5] (0,0) circle (2cm);
+                \draw[dashed] (-2,0) arc (180:360:2cm and 0.5cm);
+                \draw (2,0) arc (0:180:2cm and 0.5cm);
+                
+                \coordinate (O) at (0,0);
+                \coordinate (q0) at (20:2cm);
+                \coordinate (q1) at (140:2cm);
+                \coordinate (mq1) at (-40:2cm);
+                
+                \draw[-Stealth, ucbblue] (O) -- (q0) node[right] {$\mathbf{q}_0$};
+                \draw[-Stealth, ucbblue] (O) -- (q1) node[above left] {$\mathbf{q}_1$};
+                \draw[-Stealth, red!80!black, dashed] (O) -- (mq1) node[below right] {$-\mathbf{q}_1$};
+                
+                \draw[-Stealth, ucbblue, dashed] (q0) arc (20:140:2cm) node[midway, above] {Largo};
+                \draw[-Stealth, red!80!black, very thick] (q0) arc (20:-40:2cm) node[midway, right] {Corto};
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Diapositiva 6 - FRAGILE por el listing
+\begin{frame}[fragile]{Cuaterniones en el Ecosistema ROS / ROS 2}
+    \textbf{Estructura de Mensajería en Middleware Robótico}
+    \vspace{0.2cm}
+    
+    En los textos teóricos la convención es escalar-vector: $[w, x, y, z]$.\\
+    Sin embargo, en ROS (y librerías como Eigen), el mensaje \texttt{geometry\_msgs/Quaternion} \textbf{coloca el escalar al final}:
+    
+\begin{lstlisting}[language=Python]
+# Definicion del mensaje en ROS 1 / ROS 2
+float64 x
+float64 y
+float64 z
+float64 w  # El escalar W va siempre al final
+\end{lstlisting}
+
+    \vspace{0.3cm}
+    \begin{exampleblock}{Uso en el TF Tree de ROS}
+        Toda relación espacial (cinemática de Denavit-Hartenberg) se almacena internamente en \texttt{tf2} como una traslación 3D y un cuaternión unitario, erradicando por completo el \textit{Gimbal Lock}.
+    \end{exampleblock}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,326 @@
+\documentclass[11pt, a4paper]{article}
+
+% Paquetes de idioma y tipografía
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo} % Tipografía Palatino
+\usepackage{microtype}
+
+% Geometría de la página
+\usepackage[margin=2.5cm, headheight=15pt]{geometry}
+
+% Paquetes matemáticos
+\usepackage{amsmath, amssymb, amsfonts, bm}
+
+% Gráficos, colores y tablas
+\usepackage{graphicx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, babel}
+
+% Personalización de listas y código
+\usepackage{enumitem}
+\usepackage{listings}
+
+% Encabezados y pies de página
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Robótica (IMT-342)}
+\rhead{Clase 2 - Sem 3}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Definición de colores institucionales
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{ucbyellow}{RGB}{255, 184, 28}
+\definecolor{codegray}{rgb}{0.95,0.95,0.95}
+
+% Estilo para código Python
+\lstdefinestyle{pythonstyle}{
+    backgroundcolor=\color{codegray},
+    commentstyle=\color{green!60!black},
+    keywordstyle=\color{blue}\bfseries,
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{purple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=4,
+    language=Python,
+    frame=single,
+    rulecolor=\color{gray!40}
+}
+\lstset{style=pythonstyle}
+
+\begin{document}
+
+% =======================================================
+% INSUMO 1: GUÍA DE CLASE PARA EL DOCENTE
+% =======================================================
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{GUÍA DE CLASE PARA EL DOCENTE (LESSON PLAN)}}\\
+    \vspace{0.2cm}
+    \normalsize\textbf{Código:} IMT-342-GP-0302
+\end{center}
+\vspace{0.3cm}
+
+\noindent\textbf{Unidad I:} Morfología, Geometría del Espacio y Cinemática Directa \\
+\textbf{Tema:} Cuaterniones Unitarios ($\mathbb{H}$ y $\mathbb{S}^3$), Álgebra de Hamilton, SLERP y Mensajería ROS \\
+\textbf{Duración:} 140 minutos reales (Jueves 20 de Agosto de 2026, 16:00 a 17:45) \\
+\textbf{Alineamiento Metodológico:} CDIO (Diseñar/Implementar) | ABET SO-1 y SO-6
+
+\section*{1. Objetivos de Aprendizaje de la Sesión}
+Al finalizar la sesión, el estudiante será capaz de:
+\begin{itemize}[label=\textcolor{ucbblue}{$\circ$}]
+    \item Comprender la estructura matemática de $\mathbb{H}$ y la restricción de norma unitaria en $\mathbb{S}^3$.
+    \item Deducir analíticamente la rotación de un vector mediante el sándwich de Hamilton ($p' = \mathbf{q} \otimes \tilde{p} \otimes \mathbf{q}^*$).
+    \item Convertir bidireccionalmente entre matrices $SO(3)$, Ángulos de Euler y Cuaterniones Unitarios.
+    \item Implementar el algoritmo SLERP para generar trayectorias con velocidad angular constante ($\left\|\boldsymbol{\omega}(t)\right\| = \text{cte}$).
+    \item Manipular estructuras de orientación nativas en ROS (\texttt{geometry\_msgs/Quaternion}).
+\end{itemize}
+
+\section*{2. Cronograma de Gestión del Tiempo en Aula (140 min)}
+\noindent
+\begin{tabularx}{\textwidth}{@{} l >{\raggedright\arraybackslash}p{3.2cm} X X @{}}
+\toprule
+\textbf{Tiempo} & \textbf{Fase Didáctica} & \textbf{Actividad Docente} & \textbf{Justificación (CDIO)} \\ \midrule
+16:00 - 16:15 & Activación y Motivación & El problema de interpolar matrices (da $\det \neq 1$) y el Gimbal Lock en Euler. & \textbf{Conflicto Cognitivo:} Demuestra la necesidad de una nueva estructura. \\ \addlinespace
+16:15 - 17:00 & Cátedra: Álgebra de Hamilton & Deducción de la base ($i^2=j^2=k^2=-1$), producto de Hamilton y operador sándwich. & \textbf{Principio 1 (Teoría):} Deducción rigurosa antes del software. \\ \addlinespace
+17:00 - 17:30 & Geometría $\mathbb{S}^3$ y SLERP & Demostración de interpolación esférica, doble cobertura ($q \equiv -q$) y Shortest Path. & \textbf{Rigor de Diseño:} Evita giros de $360^\circ$ innecesarios en el robot. \\ \addlinespace
+17:30 - 17:55 & Taller en Python & Programan la clase \texttt{Quaternion} y verifican SLERP sin librerías de caja negra. & \textbf{Principios 2 y 3:} Implementación y Validación matemática. \\ \addlinespace
+17:55 - 18:00 & Cierre y Asignación & Entrega de Guía Práctica Nº 4. Recordatorio: Semana 4 inicia Denavit-Hartenberg. & \textbf{Cierre Estructurado:} Conecta con el modelado sistemático general. \\ \bottomrule
+\end{tabularx}
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=red!5!white, colframe=red!75!black, title=\textbf{3. Obstáculos Conceptuales Típicos}]
+\textbf{Obstáculo 1: Doble Cobertura ($\mathbf{q} \equiv -\mathbf{q}$).} Explicar que una rotación de $360^\circ$ resulta en $\mathbf{q} = [-1, 0, 0, 0]^T$. En el espacio físico vuelve al mismo lugar, pero en $\mathbb{S}^3$ está en la antípoda.\\
+\textbf{Obstáculo 2: Orden de componentes.} En teoría (Craig/Siciliano): $\mathbf{q} = [w, x, y, z]$. En ROS: \texttt{x, y, z, w}. ¡Invertirlo genera errores silenciosos críticos!
+\end{tcolorbox}
+
+\newpage
+% =======================================================
+% APÉNDICE TEÓRICO PARA EL ESTUDIANTE
+% =======================================================
+\section*{Apéndice de Rigor Matemático: Fundamentos para el Estudio}
+
+\subsection*{A. El Operador Sándwich ($\mathbf{q} \otimes \tilde{p} \otimes \mathbf{q}^*$): Evitando la "Fuga 4D"}
+Queremos rotar un vector $p = [x, y, z]^T \in \mathbb{R}^3$. Lo promovemos a un cuaternión puro $\tilde{p} = [0, p]$. Si lo multiplicamos solo por la izquierda por $\mathbf{q} = [q_w, \mathbf{v}]$:
+\begin{equation*}
+    \mathbf{q} \otimes \tilde{p} = \begin{bmatrix} 0 - \mathbf{v} \cdot p \\ q_w p + \mathbf{v} \times p \end{bmatrix} = \begin{bmatrix} \mathbf{-\mathbf{v} \cdot p} \\ q_w p + \mathbf{v} \times p \end{bmatrix}
+\end{equation*}
+\textbf{Problema:} La parte escalar $-\mathbf{v} \cdot p \neq 0$. El vector ha "escapado" a la cuarta dimensión.\\
+\textbf{Solución:} Post-multiplicar por el conjugado $\mathbf{q}^* = [q_w, -\mathbf{v}]$ cancela matemáticamente el escalar:
+\begin{equation*}
+    \tilde{p}' = (\mathbf{q} \otimes \tilde{p}) \otimes \mathbf{q}^* = \begin{bmatrix} 0 \\ (q_w^2 - \left\|\mathbf{v}\right\|^2) p + 2(\mathbf{v} \cdot p)\mathbf{v} + 2 q_w (\mathbf{v} \times p) \end{bmatrix}
+\end{equation*}
+
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm, auto, thick, -Stealth]
+    \node[draw, rounded corners, fill=gray!10] (vec) {Vector 3D ($p$)};
+    \node[draw, rounded corners, fill=ucbblue!10, right=of vec] (quat1) {Cuaternión $[0, p]$};
+    \node[draw, rounded corners, fill=red!10, below=of quat1] (mult1) {$\mathbf{q} \otimes [0,p]$ (Escalar $\neq 0$)};
+    \node[draw, rounded corners, fill=green!10, left=of mult1] (mult2) {$(\mathbf{q} \otimes [0,p]) \otimes \mathbf{q}^*$};
+    \node[draw, rounded corners, fill=gray!10, left=of vec] (rot) {Vector Rotado ($p'$)};
+    
+    \draw (vec) -- (quat1);
+    \draw (quat1) -- node[right]{Mult. Izquierda} (mult1);
+    \draw (mult1) -- node[bottom]{Mult. Derecha} (mult2);
+    \draw (mult2) -- node[left]{Extracción} (rot);
+\end{tikzpicture}
+\end{center}
+
+\subsection*{B. Doble Cobertura ($\mathbb{S}^3 \to SO(3)$) y Algoritmo SLERP}
+La matriz $R(\mathbf{q})$ equivalente está formada por términos cuadráticos ($q_x^2, q_x q_y$, etc.). Por tanto, al cambiar el signo global: $R(-\mathbf{q}) \equiv R(\mathbf{q})$. En robótica, si un algoritmo ingenuo interpola entre $\mathbf{q}$ y $-\mathbf{q}$, el robot realizará un giro inútil de $360^\circ$ (recorrido largo).
+
+\begin{center}
+\begin{tikzpicture}[scale=1.5, thick]
+    % Esfera S3 (representación 2D)
+    \draw[fill=blue!5] (0,0) circle (2cm);
+    \draw[dashed] (-2,0) arc (180:360:2cm and 0.5cm);
+    \draw (2,0) arc (0:180:2cm and 0.5cm);
+    
+    \coordinate (O) at (0,0);
+    \coordinate (q0) at (20:2cm);
+    \coordinate (q1) at (140:2cm);
+    \coordinate (mq1) at (-40:2cm);
+    
+    \draw[-Stealth, ucbblue] (O) -- (q0) node[right] {$\mathbf{q}_0$ (Actual)};
+    \draw[-Stealth, ucbblue] (O) -- (q1) node[above left] {$\mathbf{q}_1$ (Meta - Camino Largo)};
+    \draw[-Stealth, red!80!black, dashed] (O) -- (mq1) node[below right] {$-\mathbf{q}_1$ (Meta - Camino Corto)};
+    
+    \draw[-Stealth, ucbblue, dashed] (q0) arc (20:140:2cm) node[midway, above, sloped] {$\mathbf{q}_0 \cdot \mathbf{q}_1 < 0$};
+    \draw[-Stealth, red!80!black, very thick] (q0) arc (20:-40:2cm) node[midway, right] {SLERP Geodésico};
+\end{tikzpicture}
+\end{center}
+
+\newpage
+% =======================================================
+% INSUMO 3: GUÍA DE TRABAJO PRÁCTICO
+% =======================================================
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{UNIVERSIDAD CATÓLICA BOLIVIANA "SAN PABLO"}}\\
+    \large\textbf{SEDE TARIJA}\\
+    \vspace{0.2cm}
+    \normalsize Departamento de Ciencias Exactas e Ingenierías | Carrera de Ingeniería Mecatrónica\\
+    Asignatura: Robótica (IMT-342) | Gestión: Semestre II-2026
+\end{center}
+
+\vspace{0.4cm}
+\begin{center}
+    \Large\textbf{Guía de Trabajo Práctico Nº 4}\\
+    \large\textit{Álgebra de Cuaterniones, Algoritmo SLERP y Velocidad Angular}
+\end{center}
+
+\section{Ejercicios de Desarrollo Obligatorio}
+
+\subsection*{Ejercicio 1: Deducción Teórica Manuscrita (Individual)}
+\begin{enumerate}
+    \item Dados $\mathbf{q}_1 = [w_1, \mathbf{v}_1]$ y $\mathbf{q}_2 = [w_2, \mathbf{v}_2]$, demuestre expandiendo en la base $\{\mathbf{i}, \mathbf{j}, \mathbf{k}\}$ que:
+    \begin{equation*}
+        \mathbf{q}_1 \otimes \mathbf{q}_2 = \begin{bmatrix} w_1 w_2 - \mathbf{v}_1 \cdot \mathbf{v}_2 \\ w_1 \mathbf{v}_2 + w_2 \mathbf{v}_1 + \mathbf{v}_1 \times \mathbf{v}_2 \end{bmatrix}
+    \end{equation*}
+    \item Dado $\tilde{p} = [0, p]$, demuestre formalmente que la parte escalar de $\tilde{p}' = \mathbf{q} \otimes \tilde{p} \otimes \mathbf{q}^*$ es idénticamente cero, y que su parte vectorial equivale a la fórmula de Rodrigues:
+    \begin{equation*}
+        p' = (q_w^2 - \left\|\mathbf{v}\right\|^2) p + 2(\mathbf{v} \cdot p)\mathbf{v} + 2 q_w (\mathbf{v} \times p)
+    \end{equation*}
+\end{enumerate}
+
+\subsection*{Ejercicio 2: Implementación de la Clase \texttt{Quaternion} (CDIO)}
+Desarrolle una clase en Python que implemente desde cero:
+\begin{itemize}[label=$\circ$]
+    \item Constructor con normalización automática.
+    \item Métodos \texttt{from\_axis\_angle} y \texttt{from\_euler\_zyz}.
+    \item Sobrecarga del operador \texttt{\_\_mul\_\_} para el producto de Hamilton.
+    \item Métodos \texttt{rotate\_vector} (sándwich), \texttt{to\_rotation\_matrix} y \texttt{to\_ros\_msg} (orden x,y,z,w).
+\end{itemize}
+
+\subsection*{Ejercicio 3: SLERP y Camino Más Corto}
+Implemente la función \texttt{slerp(q0, q1, t)} con corrección antipodal ($\mathbf{q}_0 \cdot \mathbf{q}_1 < 0$) y límite LERP. Para el ABB IRB 120, interpole $N=100$ pasos entre:
+\begin{itemize}[label=$\circ$]
+    \item Pose inicial (ZYZ): $\phi_0 = 0^\circ, \theta_0 = 30^\circ, \psi_0 = 0^\circ$
+    \item Pose final (ZYZ): $\phi_1 = 90^\circ, \theta_1 = 60^\circ, \psi_1 = 45^\circ$
+\end{itemize}
+
+\subsection*{Ejercicio 4: Validación Cinemática (ABET SO-6)}
+Calcule la matriz de rotación $R(t)$ en cada paso. Extraiga la velocidad angular mediante:
+\begin{equation*}
+    [\boldsymbol{\omega}(t_k)]_\times \approx \frac{R(t_{k+1}) - R(t_k)}{\Delta t} \cdot R(t_k)^T
+\end{equation*}
+Grafique $\left\|\boldsymbol{\omega}(t_k)\right\|$ vs $t$ y demuestre que la velocidad se mantiene constante (error $<0.5\%$).
+
+% \newpage
+% % =======================================================
+% % INSUMO 4: CÓDIGO MAESTRO DE REFERENCIA (DOCENTE)
+% % =======================================================
+% \section*{Insumo Docente: Código Maestro de Referencia}
+
+% \begin{lstlisting}
+% """
+% UNIVERSIDAD CATOLICA BOLIVIANA "SAN PABLO" - SEDE TARIJA
+% Carrera de Ingenieria Mecatronica | Robotica (IMT-342)
+% Script Maestro: Clase Quaternion, Operador Sandwich, SLERP y Validacion
+% Docente: M.Sc. Ing. Bernardo Quiroga Turdera
+% """
+% import numpy as np
+% import matplotlib.pyplot as plt
+
+% class Quaternion:
+%     """Convencion interna: q = [w, x, y, z]"""
+%     def __init__(self, w=1.0, x=0.0, y=0.0, z=0.0):
+%         norm = np.sqrt(w**2 + x**2 + y**2 + z**2)
+%         if norm < 1e-12: raise ValueError("Norma nula.")
+%         self.w, self.x, self.y, self.z = w/norm, x/norm, y/norm, z/norm
+
+%     @property
+%     def v(self): return np.array([self.x, self.y, self.z])
+
+%     @property
+%     def conjugate(self): return Quaternion(self.w, -self.x, -self.y, -self.z)
+
+%     @classmethod
+%     def from_axis_angle(cls, axis, angle_rad):
+%         axis = np.array(axis, dtype=float)
+%         norm_axis = np.linalg.norm(axis)
+%         if norm_axis < 1e-12: return cls(1.0, 0.0, 0.0, 0.0)
+%         u = axis / norm_axis
+%         xyz = u * np.sin(angle_rad / 2.0)
+%         return cls(np.cos(angle_rad / 2.0), xyz[0], xyz[1], xyz[2])
+
+%     @classmethod
+%     def from_euler_zyz(cls, phi, theta, psi):
+%         return cls.from_axis_angle([0,0,1], phi) * cls.from_axis_angle([0,1,0], theta) * cls.from_axis_angle([0,0,1], psi)
+
+%     def __mul__(self, other):
+%         w_res = self.w * other.w - np.dot(self.v, other.v)
+%         v_res = self.w * other.v + other.w * self.v + np.cross(self.v, other.v)
+%         return Quaternion(w_res, v_res[0], v_res[1], v_res[2])
+
+%     def rotate_vector(self, p):
+%         p_quat = Quaternion(0.0, p[0], p[1], p[2])
+%         p_rot = self * p_quat * self.conjugate
+%         return p_rot.v
+
+%     def to_rotation_matrix(self):
+%         w, x, y, z = self.w, self.x, self.y, self.z
+%         return np.array([
+%             [1 - 2*(y**2 + z**2),     2*(x*y - w*z),     2*(x*z + w*y)],
+%             [    2*(x*y + w*z), 1 - 2*(x**2 + z**2),     2*(y*z - w*x)],
+%             [    2*(x*z - w*y),     2*(y*z + w*x), 1 - 2*(x**2 + y**2)]
+%         ])
+
+%     def to_ros_msg(self):
+%         return {'x': self.x, 'y': self.y, 'z': self.z, 'w': self.w}
+
+% def slerp(q0: Quaternion, q1: Quaternion, t: float) -> Quaternion:
+%     t = np.clip(t, 0.0, 1.0)
+%     dot = q0.w*q1.w + q0.x*q1.x + q0.y*q1.y + q0.z*q1.z
+    
+%     q1_mod = q1
+%     if dot < 0.0:  # Shortest path
+%         dot, q1_mod = -dot, Quaternion(-q1.w, -q1.x, -q1.y, -q1.z)
+        
+%     if dot > 0.9995: # LERP (Singularidad)
+%         return Quaternion(q0.w + t*(q1_mod.w - q0.w), q0.x + t*(q1_mod.x - q0.x), 
+%                           q0.y + t*(q1_mod.y - q0.y), q0.z + t*(q1_mod.z - q0.z))
+        
+%     theta_0 = np.arccos(dot)
+%     s0, s1 = np.sin(theta_0 * (1 - t)) / np.sin(theta_0), np.sin(theta_0 * t) / np.sin(theta_0)
+%     return Quaternion(s0*q0.w + s1*q1_mod.w, s0*q0.x + s1*q1_mod.x, s0*q0.y + s1*q1_mod.y, s0*q0.z + s1*q1_mod.z)
+
+% def main():
+%     q_start = Quaternion.from_euler_zyz(0, np.radians(30), 0)
+%     q_end   = Quaternion.from_euler_zyz(np.radians(90), np.radians(60), np.radians(45))
+    
+%     t_arr, dt, R_traj = np.linspace(0, 1, 100), 0.01, []
+%     for t in t_arr: R_traj.append(slerp(q_start, q_end, t).to_rotation_matrix())
+        
+%     omega_norms = []
+%     for k in range(len(R_traj) - 1):
+%         dR_dt = (R_traj[k+1] - R_traj[k]) / dt
+%         w_skew = np.dot(dR_dt, R_traj[k].T)
+%         omega_norms.append(np.linalg.norm([w_skew[2,1], w_skew[0,2], w_skew[1,0]]))
+        
+%     var_rel = (np.max(omega_norms) - np.min(omega_norms)) / np.mean(omega_norms) * 100
+%     print(f"Magnitud Constante ||omega||: {np.mean(omega_norms):.4f} rad/s")
+%     print(f"Variacion Relativa: {var_rel:.4f} %")
+%     assert var_rel < 0.5, "La velocidad angular no es uniforme."
+
+% if __name__ == "__main__": main()
+% \end{lstlisting}
+
+\end{document}
