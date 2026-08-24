@@ -1,0 +1,555 @@
+\documentclass[11pt,a4paper,twoside]{article}
+
+% ======================================================================
+% CONFIGURACIÓN Y PAQUETES NATIVOS
+% ======================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-noquoting]{babel} 
+\usepackage[margin=2.5cm, headheight=35pt]{geometry}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage[table]{xcolor}
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue, citecolor=black]{hyperref}
+\usepackage{amsmath, amssymb}
+\usepackage{circuitikz}
+\usepackage{tikz}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{tabularx}
+\usepackage{titlesec}
+\usepackage{microtype}
+
+% ======================================================================
+% MACROS Y ESTILOS
+% ======================================================================
+\definecolor{ucbblue}{RGB}{0,51,102}
+\definecolor{codegray}{gray}{0.95}
+
+\newtcolorbox{info}[1][]{colback=blue!5!white, colframe=ucbblue, fonttitle=\bfseries, title=Justificación Pedagógica, #1}
+\newtcolorbox{spicecmd}[1][]{colback=gray!5, colframe=gray!60!black, fonttitle=\bfseries, title=Instrucciones LTSpice, #1}
+
+\newcommand{\tecla}[1]{\colorbox{gray!20}{\texttt{\footnotesize\textbf{#1}}}}
+\newcommand{\spice}[1]{\texttt{\color{purple}#1}}
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{teal},
+    commentstyle=\color{green!50!black}\itshape,
+    backgroundcolor=\color{codegray},
+    frame=single,
+    rulecolor=\color{gray!40},
+    breaklines=true,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    numbersep=5pt
+}
+
+\titleformat{\section}[block]{\Large\bfseries\color{ucbblue}}{\thesection.}{0.5em}{}
+\titleformat{\subsection}[block]{\large\bfseries\color{gray!80!black}}{\thesubsection}{0.5em}{}
+
+% ======================================================================
+% METADATOS Y CABECERAS
+% ======================================================================
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\small\textbf{Circuitos Electrónicos II (IMT-221)}}
+\fancyhead[RE,LO]{\small Semana 4 - Sesión 1: Bode y Filtro Notch}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    \rule{\textwidth}{1.5pt}\\[0.4cm]
+    {\huge \textbf{CARPETA DOCENTE Y GUÍA MAESTRA}}\\[0.2cm]
+    {\LARGE \textbf{Circuitos Electrónicos II (IMT-221) — UCB Sede Tarija}}\\[0.3cm]
+    \rule{\textwidth}{1.5pt}\\[0.5cm]
+\end{center}
+
+\noindent\textbf{Semana 4 — Sesión 1 (Lunes):} Diagramas de Bode Fasoriales ($j\omega$) y Filtro Twin-T Notch (Hito 1 PFI).
+
+% ======================================================================
+% PARTE I
+% ======================================================================
+\section{PARTE I: ESTRATEGIA DE REAJUSTE CURRICULAR}
+\subsection*{Diagnóstico del Desfase y Recomendación Pedagógica}
+El análisis fasorial de la función de transferencia $H(j\omega)$ deducido en la Semana 3 requiere una representación gráfica estandarizada: el Diagrama de Bode (Magnitud en dB y Fase en grados vs. Frecuencia en escala logarítmica). Intentar evaluar el Hito 1 del PFI este miércoles sin que los estudiantes dominen la construcción, lectura e interpretación de los diagramas de Bode comprometería el criterio de acreditación ABET Student Outcome 1 (resolución analítica de ingeniería) y ABET Student Outcome 6 (análisis de datos experimentales).
+
+\subsection*{Propuesta de Cronograma Reajustado (Semanas 4 y 5)}
+\begin{table}[ht!]
+    \centering
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+        \hline
+        \rowcolor{ucbblue} \textcolor{white}{\textbf{Sesión}} & \textcolor{white}{\textbf{Contenido y Metodología}} & \textcolor{white}{\textbf{Entregable / Hito}} \\
+        \hline
+        \textbf{Sem 4 - Sesión 1}\newline (Lunes - HOY) & 
+        \begin{itemize}[leftmargin=*, nosep]
+            \item Teoría Maestra: Diagramas de Bode en $j\omega$ (sin Laplace).
+            \item Lab 2: Montaje y barrido frecuencial del Twin-T Notch.
+        \end{itemize} & 
+        \begin{itemize}[leftmargin=*, nosep]
+            \item Script Python de Bode.
+            \item Mediciones crudas CSV de atenuación del Twin-T.
+        \end{itemize} \\
+        \hline
+        \textbf{Sem 4 - Sesión 2}\newline (Miércoles) & 
+        \begin{itemize}[leftmargin=*, nosep]
+            \item Integración en Cascada: Puente CA (Lab 1) + Twin-T.
+            \item Taller de resolución de dudas y preparación de evaluación.
+        \end{itemize} & 
+        \begin{itemize}[leftmargin=*, nosep]
+            \item Validación en banco: Front-End Pasivo operando.
+            \item Repositorio Git consolidado.
+        \end{itemize} \\
+        \hline
+        \textbf{Sem 5 - Sesión 1}\newline (Próximo Lunes) & 
+        \begin{itemize}[leftmargin=*, nosep]
+            \item \textbf{EVALUACIÓN SUMATIVA 1}
+            \item Examen Individual (45 min)
+            \item Defensa en Banco (45 min)
+        \end{itemize} & 
+        \begin{itemize}[leftmargin=*, nosep]
+            \item Calificación formal Hito 1: Front-End Pasivo del PFI (Puente CA + Filtro Twin-T).
+        \end{itemize} \\
+        \hline
+    \end{tabularx}
+\end{table}
+
+\begin{info}
+\textbf{Justificación Pedagógica (Constructive Alignment):} Este ajuste otorga a los estudiantes un ciclo completo de asimilación: aprenden la teoría de Bode hoy, la contrastan en el laboratorio hoy mismo, integran todo el subsistema en cascada el miércoles y defienden formalmente su primer gran bloque de ingeniería el próximo lunes con dominio conceptual y experimental pleno.
+\end{info}
+
+% ======================================================================
+% PARTE II
+% ======================================================================
+\section{PARTE II: ARTICULACIÓN CON EL PFI Y PRIMERA EVALUACIÓN}
+
+\subsection*{1. El Hito 1 del PFI: ``Front-End Pasivo de Adquisición Térmica''}
+El objetivo general del PFI es diseñar un sistema mecatrónico de acondicionamiento, filtrado, linealización y control de potencia para una cámara térmica industrial.
+
+\begin{center}
+    \begin{tikzpicture}[auto, thick, 
+        block/.style={draw, rectangle, minimum width=8cm, minimum height=1.2cm, align=center, fill=gray!10}]
+        
+        \node[block] (cam) at (0, 0) {\textbf{CÁMARA TÉRMICA}};
+        \node[block] (term) at (0, -2) {\textbf{Termistor NTC + Línea de Transmisión}\\ \footnotesize $\blacktriangleleft$ Rama 4 con parásitos ($C_{cable}, L_{cable}$)};
+        \node[block] (puente) at (0, -4.5) {\textbf{PUENTE DE WHEATSTONE (Lab 1)}\\ \footnotesize $\blacktriangleleft$ Alimentado con Portadora CA ($10\text{ kHz}$)\\ \footnotesize Elimina el pedestal gigante de CC (Offset)};
+        \node[block] (notch) at (0, -7.5) {\textbf{FILTRO TWIN-T NOTCH 50Hz (Lab 2)}\\ \footnotesize $\blacktriangleleft$ Elimina la interferencia electromagnética de $50\text{ Hz}$\\ \footnotesize Deja pasar intacta la portadora de $10\text{ kHz}$};
+        
+        \draw[->] (cam) -- (term);
+        \draw[->] (term) -- (puente);
+        \draw[->] (puente) -- node[right, align=left] {\footnotesize Señal diferencial modulada ($\approx\text{mV}$)\\ \footnotesize + Ruido de Red acoplado ($50\text{ Hz}, \approx\text{Volts}$)} (notch);
+        \draw[->] (notch) -- (0, -9.5) node[below, align=center] {\textbf{[ SALIDA DEL HITO 1 ]}\\ \small Señal limpia lista para el In-Amp};
+    \end{tikzpicture}
+\end{center}
+
+\subsection*{2. Estructura de la Primera Evaluación Sumativa (Hito 1)}
+La evaluación calificará 100 puntos distribuidos en dos componentes articulados:
+\begin{itemize}[itemsep=4pt]
+    \item \textbf{Componente A: Prueba Individual Escrita de Desempeño Analítico (50\%)}
+    \begin{itemize}[nosep]
+        \item \textit{Problema 1 (25 pts):} Modelo analítico de impedancia compleja $Z_{sensor}(j\omega)$ del puente de Wheatstone con parásitos de cable y cálculo fasorial de $\hat{V}_{out}$ ante un cambio térmico específico.
+        \item \textit{Problema 2 (25 pts):} Trazado analítico de Diagrama de Bode para el filtro Twin-T Notch (cálculo de $f_0$, atenuación en decibelios a $50\text{ Hz}$, transmisión a $10\text{ kHz}$ y cuantificación del efecto de carga $R_L$).
+    \end{itemize}
+    \item \textbf{Componente B: Defensa Práctica en Banco por Tríos y Repositorio Git (50\%)}
+    \begin{itemize}[nosep]
+        \item \textit{Operatividad en Hardware (20 pts):} Demostración en vivo en el osciloscopio del circuito en cascada (Puente + Twin-T) inyectando portadora y verificando la atenuación del zumbido de $50\text{ Hz}$.
+        \item \textit{Validación en Python (20 pts):} Ejecución del script que importa los CSVs del osciloscopio, traza el diagrama de Bode experimental sobre el teórico y calcula el error porcentual de atenuación y frecuencia de muesca.
+        \item \textit{Informe Técnico IEEE y Repositorio Git (10 pts):} Rigor en el informe, justificación de discrepancias de tolerancias comerciales y código limpio documentado.
+    \end{itemize}
+\end{itemize}
+
+\newpage
+% ======================================================================
+% PARTE III
+% ======================================================================
+\section{PARTE III: TEORÍA COMPLETA — DIAGRAMAS DE BODE FASORIALES EN \texorpdfstring{$j\omega$}{jw} (SIN LAPLACE)}
+
+\subsection*{1. ¿Por qué usamos la escala logarítmica y los Decibelios (dB)?}
+En circuitos electrónicos, las señales varían en rangos de frecuencia enormes (desde $1\text{ Hz}$ hasta $100\text{ kHz}$ o más) y las ganancias pueden ir desde factores muy pequeños ($0.001$) hasta factores muy grandes ($1000$). La escala lineal comprime los detalles críticos. Por ello se utilizan escalas logarítmicas.
+
+\textbf{Definición de Ganancia de Tensión en Decibelios (dB):}\\
+Para una función de transferencia fasorial $H(j\omega) = \frac{\hat{V}_{out}(j\omega)}{\hat{V}_{in}(j\omega)}$:
+\begin{equation}
+    \vert{}H(j\omega)\vert{}_{\text{dB}} = 20 \log_{10} \vert{}H(j\omega)\vert{}
+\end{equation}
+
+\textbf{Tabla de Equivalencias Críticas para el Ingeniero:}
+\begin{table}[ht!]
+    \centering
+    \begin{tabularx}{\textwidth}{|c|c|>{\raggedright\arraybackslash}X|}
+        \hline
+        \textbf{Relación Lineal $\vert{}V_{out}/V_{in}\vert{}$} & \textbf{Magnitud en dB} & \textbf{Significado Físico en Instrumentación} \\
+        \hline
+        $1.000$ & $0\text{ dB}$ & Paso directo sin atenuación ni ganancia (Transmisión total). \\
+        $\frac{1}{\sqrt{2}} \approx 0.707$ & $-3\text{ dB}$ & Frecuencia de corte ($f_c$): La potencia cae a la mitad ($50\%$). \\
+        $0.100$ & $-20\text{ dB}$ & La señal de salida es el $10\%$ de la entrada. \\
+        $0.010$ & $-40\text{ dB}$ & La señal de salida es el $1\%$ de la entrada. \\
+        $0.001$ & $-60\text{ dB}$ & La señal de salida es el $0.1\%$ de la entrada (Atenuación severa / Notch). \\
+        $0.000$ & $-\infty\text{ dB}$ & Cero de transmisión ideal (Atenuación infinita). \\
+        \hline
+    \end{tabularx}
+\end{table}
+
+\subsection*{2. La Escala de Frecuencia: Décadas y Octavas}
+El eje horizontal de un Diagrama de Bode siempre se grafica en escala logarítmica de frecuencia (en $\text{Hz}$ o en $\text{rad/s}$).
+\begin{itemize}
+    \item \textbf{Una Década:} Intervalo entre dos frecuencias cuya relación es de un factor de $10$ ($f_2 = 10 \cdot f_1$). Ejemplo: de $1\text{ Hz}$ a $10\text{ Hz}$, de $10\text{ Hz}$ a $100\text{ Hz}$, de $1\text{ kHz}$ a $10\text{ kHz}$.
+    \item \textbf{Pendiente Asintótica:} Se mide en $\text{dB/década}$. Representa la velocidad con la que un circuito atenúa o amplifica una señal conforme cambia la frecuencia.
+\end{itemize}
+
+\subsection*{3. Diagrama de Fase}
+La fase $\theta(\omega)$ indica el adelanto o retraso temporal en grados que sufre la onda senoidal de salida respecto a la entrada:
+\begin{equation}
+    \theta(\omega) = \angle H(j\omega) = \arctan\left(\frac{\text{Im}[H(j\omega)]}{\text{Re}[H(j\omega)]}\right)
+\end{equation}
+
+\subsection*{4. Modelo Fasorial del Filtro Twin-T Notch}
+El filtro Twin-T está compuesto por dos redes ``T'' en paralelo:
+\begin{itemize}
+    \item \textbf{Rama Paso-Bajo ($R-R-2C$):} Conduce frecuencias por debajo de $f_0$.
+    \item \textbf{Rama Paso-Alto ($C-C-R/2$):} Conduce frecuencias por encima de $f_0$.
+\end{itemize}
+
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape]
+        \draw (0,2) to[sV, l=$V_{in} \text{ (CA)}$] (0,0) node[ground]{};
+        \draw (0,2) to[short, -*] (1.5,2);
+        \draw (1.5,2) -- (1.5,4.5);
+        \draw (1.5,2) -- (1.5,-0.5);
+        \draw (1.5,4.5) to[R, l={$R_1=R$}] (4.5,4.5) coordinate (nA);
+        \draw (nA) to[R, l={$R_2=R$}] (7.5,4.5);
+        \draw (nA) to[C, l={$C_3=2C$}, *-] (4.5,2.5) node[ground]{};
+        \node[above=0.2cm] at (nA) {\textbf{Nodo A}};
+        \draw (1.5,-0.5) to[C, l={$C_1=C$}] (4.5,-0.5) coordinate (nB);
+        \draw (nB) to[C, l={$C_2=C$}] (7.5,-0.5);
+        \draw (nB) to[R, l={$R_3=R/2$}, *-] (4.5,-2.5) node[ground]{};
+        \node[above=0.2cm] at (nB) {\textbf{Nodo B}};
+        \draw (7.5,4.5) -- (7.5,2);
+        \draw (7.5,-0.5) -- (7.5,2);
+        \draw (7.5,2) to[short, *-o] (8.5,2) node[right]{\large $V_{out} \text{ (CA)}$};
+    \end{circuitikz}
+\end{center}
+
+Aplicando las Leyes de Corrientes de Kirchhoff en los nodos internos con impedancias complejas ($Z_R = R$, $Z_C = \frac{1}{j\omega C}$), la función de transferencia fasorial exacta sin carga es:
+\begin{equation}
+    H(j\omega) = \frac{\hat{V}_{out}}{\hat{V}_{in}} = \frac{1 - \left(\frac{\omega}{\omega_0}\right)^2}{1 - \left(\frac{\omega}{\omega_0}\right)^2 + j 4 \left(\frac{\omega}{\omega_0}\right)}
+\end{equation}
+Donde la frecuencia angular de resonancia o muesca es:
+\begin{equation}
+    \omega_0 = \frac{1}{RC} \implies f_0 = \frac{1}{2\pi RC}
+\end{equation}
+
+\newpage
+\subsection*{5. Análisis Asintótico del Diagrama de Bode del Twin-T}
+
+\begin{center}
+    \begin{tikzpicture}[scale=1.0]
+        \draw[->, thick] (0,0) -- (10,0) node[below] {Frecuencia (log)};
+        \draw[->, thick] (0,-5) -- (0,1) node[above] {Magnitud $|H|$ (dB)};
+        \draw[dashed] (0,0) node[left] {0 dB} -- (9.5,0);
+        \draw[dashed] (0,-0.5) node[left] {-3 dB} -- (9.5,-0.5);
+        \draw[dashed] (0,-2) node[left] {-20 dB} -- (4,-2);
+        \draw[dashed] (0,-4) node[left] {-50 dB} -- (5,-4) node[right] {\footnotesize (Filtro Real $\approx 1\%$)};
+        \draw[dashed] (0,-4.8) node[left] {$-\infty$ dB} -- (5,-4.8) node[right] {\footnotesize (Filtro Ideal)};
+        \draw[dashed] (5,-4.8) node[below] {$f_0 = 50\text{ Hz}$} -- (5,0);
+        \draw[dashed] (9,0) node[above] {$10\text{ kHz}$} -- (9,-0.5);
+        
+        \draw[thick, blue] (0,0) -- (3,0) to[out=0, in=95] (4.8,-4) to[out=80, in=180] (5,-4.8) to[out=0, in=100] (5.2,-4) to[out=85, in=180] (7,0) -- (9.5,0);
+    \end{tikzpicture}
+\end{center}
+
+\textbf{Región 1: Frecuencias muy bajas ($\omega \ll \omega_0$, ej. $f = 1\text{ Hz}$ a $5\text{ Hz}$)}\\
+El término $(\omega/\omega_0) \to 0$.
+\begin{equation*}
+    H(j\omega) \approx \frac{1 - 0}{1 - 0 + j0} = 1 \angle 0^\circ
+\end{equation*}
+Magnitud: $\vert{}H\vert{}_{\text{dB}} = 20 \log_{10}(1) = \mathbf{0\text{ dB}}$. Fase: $\theta \approx \mathbf{0^\circ}$.
+
+\vspace{0.3cm}
+\textbf{Región 2: Frecuencia de muesca exacta ($\omega = \omega_0 \implies f = 50.0\text{ Hz}$)}\\
+El numerador se anula: $1 - 1^2 = 0$.
+\begin{equation*}
+    H(j\omega_0) = \frac{0}{0 + j4(1)} = \frac{0}{j4} = 0
+\end{equation*}
+Magnitud: $\vert{}H\vert{}_{\text{dB}} = 20 \log_{10}(0) = \mathbf{-\infty\text{ dB}}$ (En la práctica, limitada por la tolerancia de componentes a entre $\mathbf{-45\text{ dB}}$ y $\mathbf{-60\text{ dB}}$).\\
+\textit{Explicación física:} La corriente de la rama paso-bajo ($R-R-2C$) llega desfasada en $-90^\circ$ y la corriente de la rama paso-alto ($C-C-R/2$) llega desfasada en $+90^\circ$. Al sumarse en el nodo de salida, ambas corrientes poseen idéntica amplitud y sentidos exactamente contrarios ($180^\circ$ de diferencia relativa), cancelándose por interferencia destructiva total.
+
+\vspace{0.3cm}
+\textbf{Región 3: Frecuencias altas / Portadora ($\omega \gg \omega_0$, ej. $f = 10\text{ kHz}$)}\\
+Los términos cuadráticos dominan el numerador y denominador:
+\begin{equation*}
+    H(j\omega) \approx \frac{-\left(\frac{\omega}{\omega_0}\right)^2}{-\left(\frac{\omega}{\omega_0}\right)^2} = 1 \angle 0^\circ
+\end{equation*}
+Magnitud: $\vert{}H\vert{}_{\text{dB}} = 20 \log_{10}(1) = \mathbf{0\text{ dB}}$ (Atenuación nula de la portadora de $10\text{ kHz}$). Fase: $\theta \approx \mathbf{0^\circ}$.
+
+\vspace{0.3cm}
+\textbf{Región 4: Efecto de la Impedancia de Carga ($R_L$)}\\
+Si la salida se conecta a una etapa con resistencia de entrada finita $R_L$, la función se transforma en:
+\begin{equation}
+    H_{cargado}(j\omega) = \frac{1 - \left(\frac{\omega}{\omega_0}\right)^2}{1 - \left(\frac{\omega}{\omega_0}\right)^2 + j 4 \left(1 + \frac{R}{R_L}\right) \left(\frac{\omega}{\omega_0}\right)}
+\end{equation}
+\textit{Consecuencia de ingeniería:} El factor de amortiguamiento aumenta por el término $\left(1 + \frac{R}{R_L}\right)$. Si $R_L = 10\text{ k}\Omega$, la muesca pierde profundidad (sube de $-50\text{ dB}$ a solo $-21\text{ dB}$) y el ancho de banda se ensancha, lo que justifica colocar un amplificador operacional en configuración seguidor (Buffer) a la salida.
+
+\newpage
+% ======================================================================
+% PARTE IV
+% ======================================================================
+\section{PARTE IV: EJERCICIO RESUELTO COMPLETO DE PIZARRA}
+\textbf{Enunciado:}\\
+En la planta de instrumentación del PFI, la señal modulada de temperatura a $10\text{ kHz}$ ($150\text{ mV}_{pico}$) se encuentra contaminada por un zumbido de red de $50\text{ Hz}$ cuya amplitud es de $1.8\text{ V}_{pico}$ ($1800\text{ mV}$). 
+
+Se diseña un filtro Twin-T utilizando componentes comerciales de precisión:
+\begin{itemize}
+    \item Capacitores: $C = 220\text{ nF}$ (por lo tanto, $2C = 440\text{ nF}$).
+    \item Resistores: $R = 14.3\text{ k}\Omega$ al 1\% (por lo tanto, $R/2 = 7.15\text{ k}\Omega$).
+\end{itemize}
+
+\begin{enumerate}
+    \item Calcule analíticamente la frecuencia central teórica $f_0$.
+    \item Si debido a las tolerancias reales de los componentes el filtro presenta una atenuación medida de $-46\text{ dB}$ en $50\text{ Hz}$, calcule la amplitud del voltaje de ruido residual a la salida.
+    \item Evalúe analíticamente la función de transferencia para la portadora de $10\text{ kHz}$ y determine la amplitud de la señal útil a la salida y su pérdida en decibelios.
+    \item Si se conecta a la salida una carga de $R_L = 10\text{ k}\Omega$, calcule el nuevo valor de atenuación en decibelios a $50.0\text{ Hz}$ asumiendo una desviación de sintonía del $1\%$.
+\end{enumerate}
+
+\textbf{Solución Paso a Paso:}
+\vspace{0.3cm}\\
+\textbf{1. Frecuencia de Sintonía Nominal $f_0$:}
+\begin{align*}
+    \omega_0 &= \frac{1}{R \cdot C} = \frac{1}{(14300\ \Omega)(220 \times 10^{-9}\text{ F})} = \frac{1}{3.146 \times 10^{-3}} = 317.86\text{ rad/s} \\
+    f_0 &= \frac{\omega_0}{2\pi} = \frac{317.86}{6.28318} = \mathbf{50.59\text{ Hz}}
+\end{align*}
+
+\textbf{2. Tensión de Ruido Residual a $50\text{ Hz}$:}
+La ganancia lineal en magnitud a partir del valor en decibelios es:
+\begin{equation*}
+    \vert{}H(j 2\pi \cdot 50)\vert{} = 10^{\frac{\vert{}H\vert{}_{\text{dB}}}{20}} = 10^{\frac{-46}{20}} = 10^{-2.3} = 5.0118 \times 10^{-3}
+\end{equation*}
+Calculamos la tensión pico de ruido a la salida:
+\begin{equation*}
+    \hat{V}_{ruido, out} = \hat{V}_{ruido, in} \cdot \vert{}H\vert{} = 1.8\text{ V}_{pico} \cdot 5.0118 \times 10^{-3} = 9.02 \times 10^{-3}\text{ V} = \mathbf{9.02\text{ mV}_{pico}}
+\end{equation*}
+\textit{Interpretación:} El zumbido de red se redujo de $1800\text{ mV}$ a solo $9.02\text{ mV}$ (una reducción de $200$ veces), quedando por debajo de la señal útil de $150\text{ mV}$.
+
+\vspace{0.3cm}
+\textbf{3. Transmisión de la Portadora de $10\text{ kHz}$:}
+A la frecuencia $f = 10000\text{ Hz}$:
+\begin{equation*}
+    \frac{\omega}{\omega_0} = \frac{f}{f_0} = \frac{10000\text{ Hz}}{50.59\text{ Hz}} = 197.67
+\end{equation*}
+Evaluamos la función de transferencia (se dividió la ecuación en dos pasos para evitar desbordamiento):
+\begin{align*}
+    H(j\omega_{10\text{k}}) &= \frac{1 - (197.67)^2}{1 - (197.67)^2 + j 4 (197.67)} \\
+    &= \frac{-39072.4}{-39072.4 + j 790.68} \approx \mathbf{0.999795} \angle -0.02^\circ
+\end{align*}
+Calculamos la atenuación en decibelios:
+\begin{equation*}
+    \vert{}H(j\omega_{10\text{k}})\vert{}_{\text{dB}} = 20 \log_{10}(0.999795) = \mathbf{-0.00178\text{ dB}}
+\end{equation*}
+Tensión de portadora a la salida:
+\begin{equation*}
+    \hat{V}_{portadora, out} = 150\text{ mV} \cdot 0.999795 = \mathbf{149.97\text{ mV}_{pico}}
+\end{equation*}
+\textit{Interpretación:} La portadora de $10\text{ kHz}$ pasa a través del filtro de muesca con una pérdida inferior al $0.02\%$ y una atenuación prácticamente nula.
+
+\vspace{0.3cm}
+\textbf{4. Degradación por Efecto de Carga ($R_L = 10\text{ k}\Omega$):}
+El factor de amortiguamiento cargado es:
+\begin{equation*}
+    4 \left(1 + \frac{R}{R_L}\right) = 4 \left(1 + \frac{14.3\text{ k}\Omega}{10\text{ k}\Omega}\right) = 4 (1 + 1.43) = 9.72
+\end{equation*}
+A la frecuencia de $50.0\text{ Hz}$ con $\frac{\omega}{\omega_0} = \frac{50.0}{50.59} = 0.9883$:
+\begin{align*}
+    \vert{}H_{cargado}\vert{} &= \frac{\vert{}1 - (0.9883)^2\vert{}}{\sqrt{(1 - (0.9883)^2)^2 + [9.72 \cdot 0.9883]^2}} \\
+    &= \frac{0.0232}{\sqrt{0.000538 + 92.275}} = \frac{0.0232}{9.606} = 2.415 \times 10^{-3}
+\end{align*}
+Expresado en decibelios:
+\begin{equation*}
+    \vert{}H_{cargado}\vert{}_{\text{dB}} = 20 \log_{10}(2.415 \times 10^{-3}) = \mathbf{-21.35\text{ dB}}
+\end{equation*}
+\textit{Conclusión de ingeniería:} Sin carga la atenuación era de $-46\text{ dB}$, pero al conectar la carga resistiva de $10\text{ k}\Omega$, la atenuación se deteriora a $-21.35\text{ dB}$. La tensión de ruido a la salida pasaría de $9\text{ mV}$ a $153\text{ mV}$, demostrando matemáticamente por qué el Hito 2 requerirá un búfer activo con amplificador operacional.
+
+\newpage
+% ======================================================================
+% PARTE V
+% ======================================================================
+\section{PARTE V: GUÍA DE EJECUCIÓN DEL LABORATORIO 2}
+\subsection*{1. Insumos y Componentes por Trío de Estudiantes}
+\begin{itemize}[itemsep=1pt]
+    \item $4 \times$ Resistores de película metálica de $14.3\text{ k}\Omega$ al 1\% (o combinación serie $10\text{ k}\Omega + 4.3\text{ k}\Omega / 4.7\text{ k}\Omega$).
+    \item $4 \times$ Capacitores de poliéster de $220\text{ nF}$ al 5\% (100V).
+    \item $1 \times$ Trimpot multivueltas de $10\text{ k}\Omega$ (para calibrar con multímetro la rama central $R/2 = 7.15\text{ k}\Omega$).
+    \item $1 \times$ Resistor de prueba de carga $R_L = 10\text{ k}\Omega$.
+    \item $1 \times$ Protoboard, cables jumpers y dos puntas de prueba BNC a caimán.
+\end{itemize}
+
+\subsection*{2. Procedimiento Experimental Paso a Paso}
+\begin{center}
+    \begin{circuitikz}[scale=0.85, transform shape]
+        \draw (0,2) to[sV, l=$V_{in}$ (CH1)] (0,0) node[ground]{};
+        \draw (0,2) to[short, -*] (1.5,2);
+        \draw (1.5,2) -- (1.5,4.5);
+        \draw (1.5,2) -- (1.5,-0.5);
+        \draw (1.5,4.5) to[R, l={$R_1=14.3\text{k}$}] (4.5,4.5) coordinate(nA) to[R, l={$R_2=14.3\text{k}$}] (7.5,4.5);
+        \draw (nA) to[C, l={$C_3=440\text{n}$}, *-] (4.5,2.5) node[ground]{};
+        \node[above=0.15cm] at (nA) {\textbf{Nodo A}};
+        \draw (1.5,-0.5) to[C, l={$C_1=220\text{n}$}] (4.5,-0.5) coordinate(nB) to[C, l={$C_2=220\text{n}$}] (7.5,-0.5);
+        \draw (nB) to[R, l={$R_3=7.15\text{k}$}, *-] (4.5,-2.5) node[ground]{};
+        \node[above=0.15cm] at (nB) {\textbf{Nodo B}};
+        \draw (7.5,4.5) -- (7.5,2);
+        \draw (7.5,-0.5) -- (7.5,2);
+        \draw (7.5,2) to[short, *-o] (8.5,2) node[right]{$V_{out}$ (CH2)};
+    \end{circuitikz}
+\end{center}
+
+\textbf{Paso 1: Emparejamiento F.I.V.E. de Componentes (10 min)}
+\begin{itemize}
+    \item Medir con el multímetro digital los dos capacitores $C_1$ y $C_2$. Escoger los dos valores más cercanos a $220\text{ nF}$.
+    \item Poner en paralelo dos capacitores de $220\text{ nF}$ para formar $C_3$ y verificar que su valor sea lo más cercano posible a $440\text{ nF}$.
+    \item Medir $R_1$ y $R_2$ ($14.3\text{ k}\Omega$). Ajustar el trimpot $R_3$ con el DMM a exactamente la mitad del valor promedio de $R_1$ y $R_2$ ($R_3 \approx 7.15\text{ k}\Omega$).
+\end{itemize}
+
+\textbf{Paso 2: Montaje e Instrumentación (15 min)}
+\begin{itemize}
+    \item Armar el circuito Twin-T en el protoboard de forma simétrica.
+    \item Conectar el Generador de Funciones a la entrada ($V_{in}$): Onda senoidal de $2\text{ V}_{pp}$ ($1\text{ V}_{pico}$) con offset de $0\text{ V}$.
+    \item Conectar el Canal 1 (CH1) a la entrada y Canal 2 (CH2) a la salida.
+\end{itemize}
+
+\textbf{Paso 3: Barrido Frecuencial Manual y Adquisición (25 min)}\\
+Completar la tabla variando la frecuencia. Guardar en USB las trazas a $50\text{ Hz}$ y $10\text{ kHz}$.
+
+% TABLA RECONSTRUIDA PARA EVITAR DESBORDAMIENTOS (OVERFULL HBOX)
+\begin{table}[ht!]
+    \centering
+    \small
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{2.5cm}|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}
+        \hline
+        \textbf{Frecuencia $f$} & \textbf{$V_{in}$ Pico (V)} & \textbf{$V_{out}$ Pico (V)} & \textbf{Ganancia Lineal\newline ($V_{out}/V_{in}$)} & \textbf{Magnitud Exp.\newline (dB)} \\
+        \hline
+        $5\text{ Hz}$ & $1.00\text{ V}$ & & & \\
+        $10\text{ Hz}$ & $1.00\text{ V}$ & & & \\
+        $20\text{ Hz}$ & $1.00\text{ V}$ & & & \\
+        $35\text{ Hz}$ & $1.00\text{ V}$ & & & \\
+        $45\text{ Hz}$ & $1.00\text{ V}$ & & & \\
+        $48\text{ Hz}$ & $1.00\text{ V}$ & & & \\
+        $50\text{ Hz}$ ($f_0$) & $1.00\text{ V}$ & & & \\
+        $52\text{ Hz}$ & $1.00\text{ V}$ & & & \\
+        $55\text{ Hz}$ & $1.00\text{ V}$ & & & \\
+        $70\text{ Hz}$ & $1.00\text{ V}$ & & & \\
+        $100\text{ Hz}$ & $1.00\text{ V}$ & & & \\
+        $500\text{ Hz}$ & $1.00\text{ V}$ & & & \\
+        $1\text{ kHz}$ & $1.00\text{ V}$ & & & \\
+        $10\text{ kHz}$ (Portadora) & $1.00\text{ V}$ & & & \\
+        \hline
+    \end{tabularx}
+\end{table}
+
+\vspace{0.3cm}
+\textbf{Paso 4: Comprobación del Efecto de Carga (10 min)}
+\begin{itemize}
+    \item Con la frecuencia fija en $50\text{ Hz}$, conectar en paralelo con la salida el resistor de carga $R_L = 10\text{ k}\Omega$.
+    \item Observar en el osciloscopio cómo la amplitud del canal 2 se incrementa notablemente. Calcular la nueva atenuación.
+\end{itemize}
+
+\newpage
+% ======================================================================
+% PARTE VI
+% ======================================================================
+\section{PARTE VI: SCRIPT MAESTRO DE PYTHON PARA VALIDACIÓN}
+El estudiante ejecutará el script \texttt{lab2\_bode\_processing.py} para comparar el modelo analítico fasorial con los datos adquiridos:
+
+\begin{lstlisting}[language=Python]
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# ==============================================================================
+# 1. PARAMETROS NOMINALES Y MODELO FASORIAL TEORICO
+# ==============================================================================
+R = 14300.0   # 14.3 kOhm
+C = 220e-9    # 220 nF
+w0 = 1.0 / (R * C)
+f0 = w0 / (2 * np.pi)
+
+f_teo = np.logspace(0, 4.3, 2000)
+w_teo = 2 * np.pi * f_teo
+
+# Modelo fasorial sin carga
+H_teo = (1.0 - (w_teo / w0)**2) / ((1.0 - (w_teo / w0)**2) + 1j * 4.0 * (w_teo / w0))
+mag_db_teo = 20 * np.log10(np.abs(H_teo) + 1e-12)
+fase_deg_teo = np.angle(H_teo, deg=True)
+
+# Modelo fasorial con carga RL = 10 kOhm
+RL = 10000.0
+term1 = 1.0 - (w_teo / w0)**2
+term2 = 1j * 4.0 * (1.0 + R / RL) * (w_teo / w0)
+H_cargado = term1 / (term1 + term2)
+mag_db_cargado = 20 * np.log10(np.abs(H_cargado) + 1e-12)
+
+# ==============================================================================
+# 2. DATOS EXPERIMENTALES DE LABORATORIO
+# ==============================================================================
+f_exp = np.array([5, 10, 20, 35, 45, 48, 50, 52, 55, 70, 100, 500, 1000, 10000])
+
+v_in_exp = np.array([1.0]*len(f_exp))
+v_out_exp = np.array([0.99, 0.97, 0.89, 0.62, 0.28, 0.11, 0.005, 
+                      0.12, 0.29, 0.65, 0.88, 0.98, 0.99, 1.00])
+
+mag_db_exp = 20 * np.log10(v_out_exp / v_in_exp)
+
+# ==============================================================================
+# 3. CUANTIFICACION DE METRICAS
+# ==============================================================================
+idx_min_exp = np.argmin(mag_db_exp)
+f0_exp = f_exp[idx_min_exp]
+notch_depth_exp = mag_db_exp[idx_min_exp]
+
+idx_10k_exp = np.where(f_exp == 10000)[0][0]
+trans_10k_exp = mag_db_exp[idx_10k_exp]
+
+err_f0 = np.abs(f0_exp - f0) / f0 * 100.0
+
+print(f"Frecuencia Notch Teorica: {f0:.2f} Hz | Medida: {f0_exp:.2f} Hz")
+print(f"Profundidad del Notch Medida: {notch_depth_exp:.2f} dB")
+print(f"Transmision Portadora 10kHz: {trans_10k_exp:.4f} dB")
+
+# ==============================================================================
+# 4. GRAFICACION DIAGRAMA DE BODE
+# ==============================================================================
+fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 7), sharex=True)
+
+# Magnitud
+ax1.semilogx(f_teo, mag_db_teo, 'b-', label="Modelo Analitico", linewidth=2)
+ax1.semilogx(f_teo, mag_db_cargado, 'k--', label="Carga 10kOhm", linewidth=1.5)
+ax1.semilogx(f_exp, mag_db_exp, 'ro', label="Mediciones", markersize=6)
+ax1.axvline(50.0, color='r', linestyle=':', label="50 Hz")
+ax1.axhline(-3.0, color='gray', linestyle='--')
+ax1.set_ylabel("Magnitud (dB)")
+ax1.set_title("Diagrama de Bode: Filtro Twin-T Notch (50 Hz)")
+ax1.set_ylim(-55, 5)
+ax1.grid(True, which="both", linestyle=":", alpha=0.6)
+ax1.legend(loc="lower right")
+
+# Fase
+ax2.semilogx(f_teo, fase_deg_teo, 'b-', linewidth=2, label="Fase Teorica")
+ax2.axvline(50.0, color='r', linestyle=':')
+ax2.set_xlabel("Frecuencia (Hz)")
+ax2.set_ylabel("Fase (Grados)")
+ax2.set_yticks([-90, -45, 0, 45, 90])
+ax2.grid(True, which="both", linestyle=":", alpha=0.6)
+
+plt.xlim(1, 20000)
+plt.tight_layout()
+plt.savefig("lab2_bode_completo.png", dpi=300)
+plt.show()
+\end{lstlisting}
+
+\end{document}

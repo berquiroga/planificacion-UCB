@@ -1,0 +1,184 @@
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+% ======================================================================
+% PAQUETES Y TEMA NATIVOS (MÁXIMA COMPATIBILIDAD)
+% ======================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{circuitikz}
+\usepackage{tikz}
+\usepackage{listings}
+
+\usetheme{Boadilla}
+\usecolortheme{seahorse}
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\tiny,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{gray}\itshape,
+    backgroundcolor=\color{gray!5},
+    frame=single,
+    breaklines=true
+}
+
+% ======================================================================
+% METADATOS
+% ======================================================================
+\title[Bode y Twin-T Notch]{Semana 4 - Sesión 1\\Diagramas de Bode y Filtro Twin-T Notch}
+\subtitle{Introducción a la Mecatrónica}
+\author[M.Sc. Ing. B. Quiroga]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo''}
+\date{Semestre 2-2026}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Estrategia de Reajuste y Evaluación (Hito 1 PFI)}
+    \begin{table}[]
+        \centering
+        \small
+        \begin{tabular}{lll}
+            \toprule
+            \textbf{Sesión} & \textbf{Contenido} & \textbf{Entregable / Hito} \\
+            \midrule
+            \textbf{Sem 4 - Lunes} & Teoría Bode en $j\omega$ y Lab Twin-T & Mediciones CSV y Script Bode \\
+            \textbf{Sem 4 - Miércoles} & Cascada: Puente + Notch & Validación en banco \\
+            \textbf{Sem 5 - Lunes} & \textbf{EVALUACIÓN SUMATIVA 1} & \textbf{Hito 1 Calificado} \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+    \vspace{0.3cm}
+    \textbf{Estructura de Evaluación (100 pts):}
+    \begin{itemize}
+        \setlength{\itemsep}{2pt}
+        \item \textbf{50\% Escrita:} Cálculo de $Z_{sensor}$ y trazado analítico de Bode.
+        \item \textbf{50\% Práctica (Banco + Git):} Filtro operando en vivo, validación en Python e informe IEEE.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Ubicación en el PFI: El Front-End Pasivo}
+    % REDISEÑO TIKZ CON COORDENADAS ESTRICTAS PARA EVITAR FALLOS
+    \begin{center}
+        \begin{tikzpicture}[auto, thick, 
+            block/.style={draw, rectangle, minimum width=6cm, minimum height=0.8cm, align=center, fill=gray!10, font=\scriptsize}]
+            
+            \node[block] (cam) at (0,0) {\textbf{Termistor NTC} (Cámara Térmica)};
+            \node[block] (puente) at (0,-1.6) {\textbf{PUENTE DE WHEATSTONE (Lab 1)}\\Portadora CA ($10\text{ kHz}$)};
+            \node[block] (notch) at (0,-3.4) {\textbf{FILTRO TWIN-T NOTCH (Lab 2)}\\Elimina ruido de red ($50\text{ Hz}$)};
+            
+            \draw[->] (cam) -- node[right, align=left] {\tiny Rama 4 con parásitos} (puente);
+            \draw[->] (puente) -- node[right, align=left] {\tiny Modulación ($10\text{ kHz}$)\\ \tiny + Ruido Acoplado ($50\text{ Hz}$)} (notch);
+            \draw[->] (notch) -- ++(0,-1.2) node[below, align=center] {\textbf{[ SALIDA HITO 1 ]}\\ \tiny Señal limpia al In-Amp};
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Fundamentación: Los Decibelios y las Décadas}
+    \begin{columns}
+        \begin{column}{0.45\textwidth}
+            La ganancia fasorial se comprime en escala logarítmica para ver detalles críticos:
+            $$|H(j\omega)|_{\text{dB}} = 20 \log_{10} |H(j\omega)|$$
+            \vspace{0.2cm}
+            \textbf{Escala de Frecuencia (Log):}
+            \begin{itemize}
+                \item \textbf{Década:} Factor de 10 (Ej. $1\text{ Hz}$ a $10\text{ Hz}$).
+                \item La pendiente se lee en \textbf{dB/década}.
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.55\textwidth}
+            \small
+            \begin{table}[]
+                \begin{tabular}{cc}
+                    \toprule
+                    \textbf{Relación Lineal} & \textbf{Magnitud dB} \\
+                    \midrule
+                    $1.000$ & \textbf{$0\text{ dB}$} (Paso directo) \\
+                    $\frac{1}{\sqrt{2}} \approx 0.707$ & \textbf{$-3\text{ dB}$} (Corte de potencia) \\
+                    $0.100$ & \textbf{$-20\text{ dB}$} (Queda 10\%) \\
+                    $0.010$ & \textbf{$-40\text{ dB}$} (Queda 1\%) \\
+                    $0.001$ & \textbf{$-60\text{ dB}$} (Notch severo) \\
+                    \bottomrule
+                \end{tabular}
+            \end{table}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Deducción Matemática (Twin-T sin Laplace)}
+    \begin{columns}
+        \begin{column}{0.45\textwidth}
+            % CIRCUITO COMPACTADO EN BEAMER PARA NO DESBORDAR LA COLUMNA
+            \begin{center}
+                \begin{circuitikz}[scale=0.65, transform shape]
+                    \draw (0,1.5) to[sV, l=$V_{in}$] (0,0) node[ground]{};
+                    \draw (0,1.5) to[short, -*] (1,1.5);
+                    
+                    \draw (1,1.5) -- (1,3.5);
+                    \draw (1,1.5) -- (1,-0.5);
+                    
+                    \draw (1,3.5) to[R, l={$R$}] (3.5,3.5) coordinate(nA) to[R, l={$R$}] (6,3.5);
+                    \draw (nA) to[C, l={$2C$}, *-] (3.5,1.5) node[ground]{};
+                    \node[above=0.15cm] at (nA) {\textbf{Nodo A}};
+                    
+                    \draw (1,-0.5) to[C, l={$C$}] (3.5,-0.5) coordinate(nB) to[C, l={$C$}] (6,-0.5);
+                    \draw (nB) to[R, l={$R/2$}, *-] (3.5,-2.5) node[ground]{};
+                    \node[above=0.15cm] at (nB) {\textbf{Nodo B}};
+                    
+                    \draw (6,3.5) -- (6,1.5) -- (6,-0.5);
+                    \draw (6,1.5) to[short, *-o] (7,1.5) node[right]{\large $V_{out}$};
+                \end{circuitikz}
+            \end{center}
+        \end{column}
+        \begin{column}{0.55\textwidth}
+            Aplicando la LKC ($\omega_0 = \frac{1}{RC}$):
+            \vspace{0.2cm}
+            $$H(j\omega) = \frac{1 - \left(\frac{\omega}{\omega_0}\right)^2}{1 - \left(\frac{\omega}{\omega_0}\right)^2 + j 4 \left(\frac{\omega}{\omega_0}\right)}$$
+            \vspace{0.2cm}
+            \textbf{Comportamiento Físico:}
+            \begin{itemize}
+                \item \textbf{A $\omega_0$:} Interferencia destructiva total entre ramas ($\pm 90^\circ$). $H \to 0\text{V} (-\infty\text{ dB})$.
+                \item \textbf{Efecto de Carga $R_L$:} El amortiguamiento sube a $4(1 + R/R_L)$. Atenuación cae drásticamente.
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Ejercicio Integrador Resuelto}
+    \textbf{Datos:} $R = 14.3\text{ k}\Omega, C = 220\text{ nF}$. Ruido $1.8\text{ V}_{pico}$ a $50\text{ Hz}$, Portadora $150\text{ mV}_{pico}$ a $10\text{ kHz}$. Atenuación real medida $-46\text{ dB}$.
+    \vspace{0.3cm}
+    \begin{enumerate}
+        \setlength{\itemsep}{8pt}
+        \item \textbf{Sintonía:} $f_0 = \frac{1}{2\pi (14.3\text{k})(220\text{n})} = \mathbf{50.59\text{ Hz}}$.
+        \item \textbf{Ruido Residual:} $\hat{V}_{ruido} = 1.8 \cdot 10^{-46/20} = \mathbf{9.02\text{ mV}_{pico}}$ (Menor que señal útil).
+        \item \textbf{Transmisión Portadora:} $H(10\text{kHz}) = \frac{1 - 197.67^2}{1 - 197.67^2 + j4(197.67)} = \mathbf{0.999795}$. Salida = $\mathbf{149.97\text{ mV}_{pico}}$.
+        \item \textbf{Carga $10\text{ k}\Omega$:} $\vert{}H_{cargado}\vert{} = \frac{0.0232}{9.606} = 2.415 \times 10^{-3} \implies \mathbf{-21.35\text{ dB}}$ (Falla sin buffer).
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]{Instrucciones LTSpice y Extracción de Bode}
+    \textbf{Configuración Clave en LTSpice:}
+    \vspace{0.2cm}
+    \begin{itemize}
+        \setlength{\itemsep}{4pt}
+        \item Clic en fuente de voltaje y poner en propiedades: \texttt{\color{purple}AC Amplitude = 1}
+        \item Nombrar nodos con tecla \colorbox{gray!20}{\texttt{\footnotesize\textbf{n}}}.
+        \item Agregar directiva de barrido con tecla \colorbox{gray!20}{\texttt{\footnotesize\textbf{.}}}: \texttt{\color{purple}.ac dec 1000 1 20k}
+        \item Agregar parámetro de carga con tecla \colorbox{gray!20}{\texttt{\footnotesize\textbf{.}}}: \texttt{\color{purple}.step param RL\_val list 1Meg 10k}
+    \end{itemize}
+    \vspace{0.3cm}
+    \textbf{Ejecución Práctica (Lab 2):}
+    \begin{itemize}
+        \item Armar en protoboard. Variar manualmente la frecuencia de $5\text{ Hz}$ a $10\text{ kHz}$.
+        \item Completar tabla de valores, calculando $20\log_{10}(V_{out}/V_{in})$.
+        \item Extraer CSV en osciloscopio y correr el Script de Python \texttt{lab2\_bode\_processing.py}.
+    \end{itemize}
+\end{frame}
+
+\end{document}
