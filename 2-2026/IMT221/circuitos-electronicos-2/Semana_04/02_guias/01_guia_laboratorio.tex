@@ -1,0 +1,398 @@
+\documentclass[11pt,a4paper,twoside]{article}
+
+% ======================================================================
+% CONFIGURACIÓN Y PAQUETES NATIVOS
+% ======================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-noquoting]{babel} 
+\usepackage[margin=2.5cm, headheight=35pt]{geometry}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage[table]{xcolor}
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue, citecolor=black]{hyperref}
+\usepackage{amsmath, amssymb}
+\usepackage{circuitikz}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{tabularx}
+\usepackage{titlesec}
+\usepackage{microtype}
+
+% ======================================================================
+% MACROS Y ESTILOS
+% ======================================================================
+\definecolor{ucbblue}{RGB}{0,51,102}
+\definecolor{codegray}{gray}{0.95}
+
+\newtcolorbox{info}[1][]{colback=blue!5!white, colframe=ucbblue, fonttitle=\bfseries, title=Nota Importante, #1}
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{teal},
+    commentstyle=\color{green!50!black}\itshape,
+    backgroundcolor=\color{codegray},
+    frame=single,
+    rulecolor=\color{gray!40},
+    breaklines=true,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    numbersep=5pt,
+    extendedchars=true,
+    literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ñ}{{\~n}}1 {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1 {°}{{$^\circ$}}1
+}
+
+\titleformat{\section}[block]{\Large\bfseries\color{ucbblue}}{\thesection.}{0.5em}{}
+\titleformat{\subsection}[block]{\large\bfseries\color{gray!80!black}}{\thesubsection}{0.5em}{}
+
+% ======================================================================
+% CABECERAS Y METADATOS
+% ======================================================================
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\small\textbf{Circuitos Electrónicos II (IMT-221)}}
+\fancyhead[RE,LO]{\small Guía Oficial de Laboratorio N.º 2}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\large \textbf{UNIVERSIDAD CATÓLICA BOLIVIANA ``SAN PABLO''}}\\
+    {\small DEPARTAMENTO DE INGENIERÍAS Y CIENCIAS EXACTAS — SEDE TARIJA}\\[0.1cm]
+    \textbf{Carrera:} Ingeniería Mecatrónica \quad|\quad \textbf{Asignatura:} Circuitos Electrónicos II (IMT-221)\\
+    \textbf{Profesor:} M.Sc. Ing. Bernardo Quiroga Turdera\\[0.3cm]
+    \rule{\textwidth}{1.5pt}\\[0.3cm]
+    {\LARGE \textbf{GUÍA OFICIAL DE LABORATORIO N.º 2}}\\[0.2cm]
+    {\large \textbf{Rechazo de Interferencia Electromagnética ($50\text{ Hz}$) mediante Filtro Twin-T Notch e Integración en Cascada con el Puente de Wheatstone (Hito 1 - PFI)}}\\[0.2cm]
+    \rule{\textwidth}{1.5pt}
+\end{center}
+
+\begin{table}[ht!]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+        \hline
+        \rowcolor{ucbblue} \multicolumn{3}{|c|}{\textcolor{white}{\textbf{DATOS DE LA PRÁCTICA}}} \\
+        \hline
+        \textbf{Modalidad:} Tríos (3) & \textbf{Duración:} 105 minutos & \textbf{Hito PFI:} Front-End Pasivo \\
+        \hline
+        \textbf{Estándares:} CDIO / ABET & \textbf{Dominio:} Fasorial (\texorpdfstring{$j\omega$}{jw} sin Laplace) & \textbf{Entregable:} Git + IEEE \\
+        \hline
+    \end{tabularx}
+\end{table}
+
+% ======================================================================
+% SECCIÓN 1 Y 2
+% ======================================================================
+\section{RESULTADOS DE APRENDIZAJE Y COMPETENCIAS (ABET / CDIO)}
+Al finalizar esta práctica de laboratorio, el equipo de estudiantes será capaz de:
+\begin{itemize}[itemsep=2pt]
+    \item \textbf{ABET Student Outcome 1:} Modelar matemáticamente la función de transferencia fasorial $H(j\omega)$, la impedancia de entrada $Z_{in}(j\omega)$ y el factor de degradación por efecto de carga $K_L(j\omega)$ en redes pasivas de acondicionamiento sin recurrir a simplificaciones empíricas.
+    \item \textbf{ABET Student Outcome 6:} Conducir experimentación formal en corriente alterna, realizar barridos frecuenciales con instrumentación de banco, exportar trazas temporales en \texttt{.csv} y procesar el Diagrama de Bode experimental mediante scripts en Python.
+    \item \textbf{CDIO (Implement \& Operate):} Integrar e interconectar físicamente dos subsistemas pasivos en cascada (Puente de CA + Filtro Notch), validando la supresión del zumbido de red de $50\text{ Hz}$ y demostrando la necesidad de desacoplo de impedancias para el Hito 2 (In-Amp).
+\end{itemize}
+
+\section{CONTEXTO INDUSTRIAL Y ARTICULACIÓN CON EL PFI}
+En plantas industriales, las líneas de potencia de $220\text{ V} / 50\text{ Hz}$ que alimentan actuadores térmicos, calderas y motores irradian campos electromagnéticos intensos. Los cables de instrumentación de los sensores térmicos actúan como antenas receptoras, acoplando un zumbido de red de $50\text{ Hz}$ con amplitudes que frecuentemente superan en órdenes de magnitud a la señal útil del transductor. Un filtro pasa-bajos convencional no es viable en esta arquitectura, ya que atenuaría severamente la portadora senoidal de $10\text{ kHz}$ utilizada para modular la temperatura en el Puente de Wheatstone (Laboratorio 1).
+
+\begin{center}
+    \begin{tikzpicture}[auto, thick, >=latex,
+        block/.style={draw, rectangle, minimum width=4cm, minimum height=1.2cm, align=center, fill=gray!10}]
+        
+        \node[block] (puente) at (0, 0) {\textbf{PUENTE DE WHEATSTONE}\\ ($10\text{ kHz}$ CA)};
+        \node[block] (notch) at (8.5, 0) {\textbf{FILTRO TWIN-T NOTCH}\\ (Muesca en $50\text{ Hz}$)};
+        
+        % Corrección del error de PGF de los bordes del nodo
+        \draw[->] (puente.east) -- node[above, align=center, font=\footnotesize] {$V_{diff}$ ($10\text{ kHz}$)\\ + Ruido EMI $50\text{ Hz}$} (notch.west);
+        \draw[->] (notch.east) -- ++(1.5,0) node[right, align=center] {$V_{out}$\\(Limpia)};
+        
+        \draw[<->, dashed, blue] (2.5, -1.2) -- (6.0, -1.2) node[midway, below, font=\footnotesize] {[ EFECTO DE CARGA ]};
+        \node[below, font=\footnotesize] at (puente.south) {$Z_{Th, puente}(j\omega)$};
+        \node[below, font=\footnotesize] at (notch.south) {$Z_{in, notch}(j\omega)$};
+    \end{tikzpicture}
+\end{center}
+
+Para resolver este desafío, se diseñará, calibrará e integrará un Filtro Twin-T Notch pasivo sintonizado a $f_0 = 50\text{ Hz}$. La práctica se divide en:
+\begin{itemize}[itemsep=1pt]
+    \item \textbf{Parte A (Caracterización Unitaria):} Calibración, Bode en banco y validación en Python.
+    \item \textbf{Parte B (Integración en Cascada):} Interconexión física, análisis del efecto de carga ($K_L$) y demostración de supervivencia de la portadora ante interferencia severa.
+\end{itemize}
+
+% ======================================================================
+% SECCIÓN 3 Y 4
+% ======================================================================
+\section{MATERIALES E INSTRUMENTACIÓN REQUERIDA}
+\textbf{Componentes Pasivos por Equipo:}
+\begin{itemize}[itemsep=1pt, nosep]
+    \item \textbf{Filtro Twin-T:} $4 \times$ Resistores $14.3\text{ k}\Omega$ (1\%). $4 \times$ Capacitores poliéster $220\text{ nF}$ (5\%). $1 \times$ Trimpot multivueltas $10\text{ k}\Omega$. $1 \times$ Resistor de carga $R_L = 10\text{ k}\Omega$.
+    \item \textbf{Puente (Módulo Lab 1):} Termistor NTC $10\text{ k}\Omega$, $3 \times$ Resistores $10\text{ k}\Omega$ (1\%). Parásitos: $R_{cab} = 10\ \Omega$, $L_{cab} = 15\ \mu\text{H}$, $C_{par} = 4.7\text{ nF}$.
+\end{itemize}
+\textbf{Equipamiento de Banco:} Generador de funciones (dos canales o inyección en serie), Osciloscopio con función MATH y USB, Multímetro de precisión (DMM) con capacímetro, Laptop con Python y LTSpice.
+
+\section{FUNDAMENTACIÓN TEÓRICA Y CÁLCULOS PREVIOS (FASE F)}
+\begin{info}
+\textbf{Requisito Obligatorio:} Cada equipo debe presentar los cálculos analíticos de esta sección resueltos en su libreta de laboratorio antes de iniciar el montaje físico.
+\end{info}
+
+\subsection*{4.1. Deducción Fasorial de la Función de Transferencia \texorpdfstring{$H(j\omega)$}{H(jw)}}
+Definiendo las impedancias en régimen permanente sinusoidal: $Z_R = R$, $Z_C = \frac{1}{j\omega C}$, $Z_{C3} = \frac{1}{j\omega (2C)}$ y $Z_{R3} = \frac{R}{2}$. Aplicando Leyes de Kirchhoff en nodos intermedios y salida:
+\begin{align*}
+    \text{LKC Nodo A:} \quad \hat{V}_A &= \frac{\hat{V}_{in} + \hat{V}_{out}}{2(1 + j\omega RC)} \\
+    \text{LKC Nodo B:} \quad \hat{V}_B &= \frac{j\omega RC (\hat{V}_{in} + \hat{V}_{out})}{2(1 + j\omega RC)} \\
+    \text{LKC Salida:} \quad \hat{V}_A &+ j\omega RC \hat{V}_B = \hat{V}_{out} (1 + j\omega RC)
+\end{align*}
+Sustituyendo y simplificando algebraicamente:
+\begin{equation}
+    \mathbf{H(j\omega) = \frac{\hat{V}_{out}}{\hat{V}_{in}} = \frac{1 - \omega^2 R^2 C^2}{1 - \omega^2 R^2 C^2 + j 4\omega RC} = \frac{1 - \left(\frac{\omega}{\omega_0}\right)^2}{1 - \left(\frac{\omega}{\omega_0}\right)^2 + j 4 \left(\frac{\omega}{\omega_0}\right)}}
+\end{equation}
+Frecuencia central: $\omega_0 = \frac{1}{RC}\text{ rad/s} \implies \mathbf{f_0 = \frac{1}{2\pi RC}\text{ Hz}}$.
+
+\subsection*{4.2. Modelo de Interacción y Efecto de Carga en Cascada}
+El sistema acoplado se modela como un divisor de tensión dependiente de la frecuencia:
+\begin{equation}
+    \hat{V}_{in, notch}(j\omega) = \hat{V}_{Th}(j\omega) \cdot \mathbf{K_L(j\omega)}, \quad \text{donde } \mathbf{K_L(j\omega) = \frac{Z_{in, notch}(j\omega)}{Z_{Th}(j\omega) + Z_{in, notch}(j\omega)}}
+\end{equation}
+A $10\text{ kHz}$ ($25^\circ\text{C}$):
+\begin{itemize}[itemsep=1pt]
+    \item $Z_{Th}(j\omega_{10\text{k}}) = (R_1 \parallel R_2) + (R_3 \parallel Z_{sensor}) \approx \mathbf{7279.3\ \Omega \angle -16.3^\circ}$
+    \item $Z_{in, notch}(j\omega_{10\text{k}}) \approx R \parallel \left(\frac{R}{2}\right) = \frac{R}{3} \approx \mathbf{4766.7\ \Omega \angle 0^\circ}$
+\end{itemize}
+Factor de Transferencia por Carga Teórico ($K_L$):
+% Ecuación dividida para evitar Overfull hbox
+\begin{align}
+    K_L(j\omega_{10\text{k}}) &= \frac{4766.7 \angle 0^\circ}{(6985.4 - j2048.2) + 4766.7} \notag \\ 
+    &= \mathbf{0.3996 \angle +9.88^\circ} \implies \mathbf{-7.97\text{ dB}}
+\end{align}
+
+\newpage
+% ======================================================================
+% SECCIÓN 5: PARTE A
+% ======================================================================
+\section{PARTE A: CARACTERIZACIÓN UNITARIA DEL FILTRO TWIN-T}
+
+\begin{center}
+    \begin{circuitikz}[scale=0.85, transform shape]
+        \draw (0,2) to[sV, l=$V_{in}$ (CH1)] (0,0) node[ground]{};
+        \draw (0,2) to[short, -*] (1.5,2);
+        \draw (1.5,2) -- (1.5,4.5);
+        \draw (1.5,2) -- (1.5,-0.5);
+        \draw (1.5,4.5) to[R, l={$R_1=14.3\text{k}$}] (4.5,4.5) coordinate(nA) to[R, l={$R_2=14.3\text{k}$}] (7.5,4.5);
+        \draw (nA) to[C, l={$C_3=440\text{n}$}, *-] (4.5,2.5) node[ground]{};
+        \node[above=0.15cm] at (nA) {\textbf{Nodo A}};
+        \draw (1.5,-0.5) to[C, l={$C_1=220\text{n}$}] (4.5,-0.5) coordinate(nB) to[C, l={$C_2=220\text{n}$}] (7.5,-0.5);
+        \draw (nB) to[R, l={$R_3=7.15\text{k}$}, *-] (4.5,-2.5) node[ground]{};
+        \node[above=0.15cm] at (nB) {\textbf{Nodo B}};
+        \draw (7.5,4.5) -- (7.5,2) -- (7.5,-0.5);
+        \draw (7.5,2) to[short, *-o] (8.5,2) node[right]{$V_{out}$ (CH2)};
+    \end{circuitikz}
+\end{center}
+
+\textbf{Paso A.1 — Emparejamiento F.I.V.E. de Componentes Pasivos (10 min)}
+\begin{itemize}[itemsep=1pt]
+    \item Con el multímetro, medir los 4 capacitores de $220\text{ nF}$. Seleccionar los dos más idénticos para $C_1$ y $C_2$.
+    \item Conectar en paralelo los otros dos para formar $C_3 \approx 440\text{ nF}$.
+    \item Medir $R_1, R_2$ ($14.3\text{ k}\Omega$). Ajustar trimpot $R_3$ fuera del circuito a la mitad del promedio: $R_3 \approx 7.15\text{ k}\Omega$.
+\end{itemize}
+
+\textbf{Paso A.2 — Simulación en LTSpice (10 min)}
+Construir el esquema, configurar \texttt{AC 1 0}, agregar \texttt{.ac dec 1000 1 20k} y graficar \texttt{dB(V(V\_out))}.
+
+\textbf{Paso A.3 — Barrido Frecuencial Experimental en Banco (25 min)}\\
+Inyectar senoidal de $2.0\text{ V}_{pp}$ ($1.0\text{ V}_{pico}$) sin offset. Conectar CH1 ($V_{in}$) y CH2 ($V_{out}$). Completar:
+
+\begin{table}[ht!]
+    \centering
+    \small
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabularx}{\textwidth}{|>{\centering\arraybackslash}p{2.5cm}|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}
+        \hline
+        \textbf{Frecuencia $f$} & \textbf{$V_{in}$ Pico (V)} & \textbf{$V_{out}$ Pico (V)} & \textbf{Ganancia Lineal} & \textbf{Magnitud (dB)} \\
+        \hline
+        $5\text{ Hz}$ & $1.00$ & & & \\
+        $10\text{ Hz}$ & $1.00$ & & & \\
+        $20\text{ Hz}$ & $1.00$ & & & \\
+        $35\text{ Hz}$ & $1.00$ & & & \\
+        $45\text{ Hz}$ & $1.00$ & & & \\
+        $48\text{ Hz}$ & $1.00$ & & & \\
+        $50\text{ Hz}$ ($f_0$) & $1.00$ & \multicolumn{3}{c|}{\textit{(Mínimo esperado)}} \\
+        $52\text{ Hz}$ & $1.00$ & & & \\
+        $55\text{ Hz}$ & $1.00$ & & & \\
+        $70\text{ Hz}$ & $1.00$ & & & \\
+        $100\text{ Hz}$ & $1.00$ & & & \\
+        $500\text{ Hz}$ & $1.00$ & & & \\
+        $1\text{ kHz}$ & $1.00$ & & & \\
+        $10\text{ kHz}$ ($f_c$) & $1.00$ & \multicolumn{3}{c|}{\textit{(Paso de portadora)}} \\
+        \hline
+    \end{tabularx}
+\end{table}
+\textbf{Exportación:} En $f=50\text{ Hz}$ y $f=10\text{ kHz}$, exportar \texttt{.csv} (\texttt{twin\_t\_50Hz.csv}, \texttt{twin\_t\_10kHz.csv}).
+
+% ======================================================================
+% SECCIÓN 6: PARTE B (CASCADA)
+% ======================================================================
+\newpage
+\section{PARTE B: INTEGRACIÓN EN CASCADA Y EFECTO DE CARGA (HITO 1)}
+
+% DIAGRAMA TOPOLÓGICO DE CASCADA 
+\begin{center}
+    \begin{circuitikz}[scale=0.68, transform shape]
+        % ETAPA 1: PUENTE
+        \draw (-1.5,4) to[sV, l=$V_{in}$ ($10\text{ kHz}$)] (-1.5,-2.5);
+        \draw (-1.5,4) -- (2.5,4) -- (6.5,4);
+        \draw (-1.5,-2.5) -- (2.5,-2.5) -- (6.5,-2.5);
+        \draw (2.5,-2.5) node[ground]{};
+        \draw (2.5,4) to[R, l=$R_1$] (2.5,2) to[R, l=$R_2$] (2.5,-2.5);
+        \node[left] at (2.5,2) {Nodo A};
+        \draw (6.5,4) to[R, l=$R_3$] (6.5,2) to[L, l=$L_{cab}$] (6.5,0.5) to[R, l=$R_{cab}$] (6.5,-1.0);
+        \draw (6.5,-1) -- (5.5,-1) to[vR, l=$R_{NTC}$] (5.5,-2.5) -- (6.5,-2.5);
+        \draw (6.5,-1) -- (7.5,-1) to[C, l=$C_{par}$] (7.5,-2.5) -- (6.5,-2.5);
+        \node[right] at (6.5,2) {Nodo B};
+        \draw (2.5,2) to[short, -*] (3.5,2);
+        \draw (6.5,2) to[short, -*] (8.5,2); 
+        \node[above] at (8.5,2) {Nodo D ($V_{in, notch}$)};
+        
+        % ETAPA 2: NOTCH
+        \draw (8.5,2) -- (8.5,4.5);
+        \draw (8.5,2) -- (8.5,-0.5);
+        \draw (8.5,4.5) to[R, l=$R_{f1}$] (11.5,4.5) coordinate(nC) to[R, l=$R_{f2}$] (14.5,4.5);
+        \draw (nC) to[C, l=$C_{f3}$, *-] (11.5,2.5) node[ground]{};
+        \draw (8.5,-0.5) to[C, l=$C_{f1}$] (11.5,-0.5) coordinate(nD) to[C, l=$C_{f2}$] (14.5,-0.5);
+        \draw (nD) to[R, l=$R_{f3}$, *-] (11.5,-2.5) node[ground]{};
+        \draw (14.5,4.5) -- (14.5,2) -- (14.5,-0.5);
+        \draw (14.5,2) to[short, *-o] (15.5,2) node[right]{$V_{out\_final}$};
+        
+        % Cajas
+        \draw[dashed, blue, thick] (-2.5, 5.5) rectangle (8.0, -3.5);
+        \node[blue] at (2.7, 6) {\textbf{ETAPA 1: PUENTE CA}};
+        
+        \draw[dashed, red, thick] (8.2, 5.5) rectangle (16.5, -3.5);
+        \node[red] at (12.3, 6) {\textbf{ETAPA 2: TWIN-T NOTCH}};
+    \end{circuitikz}
+\end{center}
+
+\textbf{Paso B.1 — Medición Thévenin Abierto (10 min):} Energizar puente a $10\text{ kHz}$ ($2.0\text{ V}_{pp}$). Desconectar el Notch. Medir tensión diferencial (MATH): $\hat{V}_{Th, exp} \approx \mathbf{180\text{ mV}_{pico}}$.
+
+\textbf{Paso B.2 — Conexión y Carga (15 min):} Interconectar Puente y Notch. Medir en Nodo D. Registrar $\hat{V}_{in, notch, exp} \approx \mathbf{72\text{ mV}_{pico}}$. Calcular carga: $K_{L, exp} = \frac{72}{180} \approx \mathbf{0.40} \ (\mathbf{-7.96\text{ dB}})$.
+
+\textbf{Paso B.3 — Inyección Ruido EMI (15 min):} Inyectar zumbido en serie de $1.5\text{ V}_{pico}$ a $50\text{ Hz}$. Observar CH1 (señal destrozada por ruido) y CH2 (portadora limpia, ruido suprimido a milivoltios). Exportar \texttt{cascada\_25C.csv}.
+
+\textbf{Paso B.4 — Respuesta Dinámica (10 min):} Calentar NTC con dedos ($\approx 35^\circ\text{C}$). Observar cómo crece la amplitud de la portadora limpia de $10\text{ kHz}$ mientras la interferencia de $50\text{ Hz}$ sigue suprimida.
+
+% ======================================================================
+% SECCIÓN 7: PYTHON
+% ======================================================================
+\newpage
+\section{SCRIPT MAESTRO DE VALIDACIÓN EN PYTHON}
+\begin{lstlisting}[language=Python]
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from scipy.signal import find_peaks
+
+# ==============================================================================
+# MODULO 1: DIAGRAMA DE BODE (PARTE A - FILTRO UNITARIO)
+# ==============================================================================
+R_nom, C_nom = 14300.0, 220e-9
+w0_teo = 1.0 / (R_nom * C_nom)
+f0_teo = w0_teo / (2 * np.pi)
+
+f_sweep = np.logspace(0, 4.3, 2000)
+w_sweep = 2 * np.pi * f_sweep
+
+# Calculo fasorial separado para no exceder margenes
+num_teo = 1.0 - (w_sweep / w0_teo)**2
+den_teo = (1.0 - (w_sweep / w0_teo)**2) + 1j * 4.0 * (w_sweep / w0_teo)
+H_teo = num_teo / den_teo
+mag_db_teo = 20 * np.log10(np.abs(H_teo) + 1e-12)
+
+# Datos Tabla 1
+f_exp = np.array([5, 10, 20, 35, 45, 48, 50, 52, 55, 70, 100, 500, 1000, 10000])
+v_in_exp = np.array([1.0] * len(f_exp))
+v_out_exp = np.array([0.99, 0.97, 0.89, 0.62, 0.28, 0.11, 0.005, 
+                      0.12, 0.29, 0.65, 0.88, 0.98, 0.99, 1.00])
+mag_db_exp = 20 * np.log10(v_out_exp / v_in_exp)
+
+idx_min = np.argmin(mag_db_exp)
+f0_medida = f_exp[idx_min]
+notch_depth = mag_db_exp[idx_min]
+err_f0 = np.abs(f0_medida - f0_teo) / f0_teo * 100.0
+
+# ==============================================================================
+# MODULO 2: SENALES EN CASCADA (PARTE B - HITO 1)
+# ==============================================================================
+try:
+    df_cascada = pd.read_csv("cascada_front_end_25C.csv")
+    t = df_cascada['Time'].values
+    v_in_cascada = df_cascada['CH1'].values
+    v_out_cascada = df_cascada['CH2'].values
+except FileNotFoundError:
+    t = np.linspace(0, 0.04, 4000)
+    v_in_cascada = 1.5*np.sin(2*np.pi*50*t) + 0.072*np.sin(2*np.pi*10000*t)
+    v_out_cascada = 0.0075*np.sin(2*np.pi*50*t) + 0.072*np.sin(2*np.pi*10000*t)
+
+picos_10k, _ = find_peaks(v_out_cascada, height=0.03, distance=5)
+v_10k_exp = np.mean(v_out_cascada[picos_10k])
+K_L_exp = v_10k_exp / 0.1815
+perdida_carga_db_exp = 20 * np.log10(K_L_exp)
+
+print("="*65)
+print("             REPORTE TECNICO CONSOLIDADO - HITO 1 PFI            ")
+print("="*65)
+print(f"Frecuencia Notch Teorica: {f0_teo:.2f} Hz | Medida: {f0_medida:.2f} Hz")
+print(f"Profundidad Muesca 50 Hz: {notch_depth:.2f} dB")
+print(f"Factor de Carga Experimental: K_L = {K_L_exp:.4f} ({perdida_carga_db_exp:.2f} dB)")
+print("="*65)
+
+# ==============================================================================
+# GRAFICACION ESTANDAR IEEE
+# ==============================================================================
+plt.figure(figsize=(10, 8))
+plt.subplot(2, 1, 1)
+plt.semilogx(f_sweep, mag_db_teo, 'b-', label="Modelo Analitico", linewidth=2)
+plt.semilogx(f_exp, mag_db_exp, 'ro', label="Laboratorio", markersize=6)
+plt.axvline(50.0, color='r', linestyle=':', label="Ruido 50 Hz")
+plt.axvline(10000.0, color='g', linestyle='-.', label="Portadora 10 kHz")
+plt.title("Parte A: Bode Fasorial del Filtro Twin-T Notch")
+plt.ylabel("Magnitud (dB)"); plt.ylim(-55, 5); plt.grid(True, which="both"); plt.legend()
+
+plt.subplot(2, 1, 2)
+plt.plot(t * 1000, v_in_cascada, 'r-', label="Entrada (Zumbido 1.5Vp)", alpha=0.7)
+plt.plot(t * 1000, v_out_cascada * 10, 'b-', label="Salida x10 (Portadora Limpia)")
+plt.title("Parte B: Integracion en Cascada")
+plt.xlabel("Tiempo (ms)"); plt.ylabel("Tension (V)"); plt.xlim(0, 40)
+plt.grid(True, linestyle=":"); plt.legend(loc="upper right")
+
+plt.tight_layout(); plt.savefig("lab2_resultado_consolidado.png", dpi=300); plt.show()
+\end{lstlisting}
+
+\newpage
+\section{RÚBRICA ANALÍTICA DE EVALUACIÓN (100 PUNTOS)}
+\begin{table}[h!]
+    \centering
+    \small
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|c|}
+        \hline
+        \textbf{Criterio} & \textbf{Sobresaliente (90-100 pts)} & \textbf{Aceptable (70-89 pts)} & \textbf{Insuficiente (0-69 pts)} & \textbf{Peso} \\
+        \hline
+        \textbf{Fasores en \texorpdfstring{$j\omega$}{jw} (ABET 1)} & Deducción completa de $H(j\omega)$, $Z_{Th}$, $Z_{in}$ y cálculo analítico exacto de $K_L$. & Deducción de $H(j\omega)$ correcta pero con errores menores en el divisor cargado. & Copia de fórmulas sin análisis nodal; no comprende el desacoplo. & \textbf{25\%} \\
+        \hline
+        \textbf{LTSpice (CDIO)} & Simulación unitaria y cascada con \texttt{.ac} y \texttt{.step param} documentadas. & Simulación funcional pero sin contraste paramétrico del efecto carga. & Archivo \texttt{.asc} inoperativo o directivas incorrectas. & \textbf{20\%} \\
+        \hline
+        \textbf{Implementación Banco (ABET 6)} & Emparejamiento riguroso; muesca en $50\text{ Hz} \pm 1.5\text{ Hz}$; supresión nítida EMI en cascada. & Montaje funcional pero muesca desviada ($>3\text{ Hz}$) por mala tolerancia. & Montaje ruidoso, cortos a tierra o incapacidad de medir notch. & \textbf{25\%} \\
+        \hline
+        \textbf{Validación Python (ABET 6)} & Script integral que procesa Tabla 1 y CSVs, graficando según estándar IEEE. & Script funcional que requiere ingreso manual de picos (sin \texttt{find\_peaks}). & Sin script o proceso manual en hoja de cálculo. & \textbf{20\%} \\
+        \hline
+        \textbf{Informe IEEE y Git (CDIO)} & IEEE impecable; análisis crítico de errores; repositorio con \textit{commits} grupales. & Formato con fallas de diagramación; Git incompleto. & Descuidado, fuera de plazo o sin repositorio. & \textbf{10\%} \\
+        \hline
+    \end{tabularx}
+\end{table}
+
+\end{document}
