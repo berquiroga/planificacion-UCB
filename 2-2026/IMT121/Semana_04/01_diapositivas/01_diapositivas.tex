@@ -1,0 +1,200 @@
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+% --- Paquetes Fundamentales ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{microtype}
+
+% --- Matemáticas y Electrónica ---
+\usepackage{siunitx}
+\usepackage[american, RPvoltages]{circuitikz}
+
+% --- Configuración de siunitx ---
+\sisetup{output-decimal-marker = {,}, per-mode = symbol}
+
+% --- Configuración de Colores e Identidad ---
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\usetheme{Boadilla}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize items}[circle]
+\setbeamercolor{title}{bg=ucbblue, fg=white}
+\setbeamercolor{frametitle}{bg=ucbblue, fg=white}
+
+% --- Metadatos ---
+\title[Estrategia Dual de Thévenin]{Estrategia Dual de Thévenin}
+\subtitle{Del Sensor Pasivo a la Preamplificación Activa}
+\author[M.Sc. Ing. B. Quiroga]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{IMT-121 Circuitos Electrónicos I | UCB Sede Tarija}
+\date{Sesión 08}
+
+\begin{document}
+
+% ==========================================
+% SLIDE 1: Objetivos y Mapa
+% ==========================================
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Resultados de Aprendizaje y Mapa de Navegación}
+    \begin{block}{Objetivos de la Sesión}
+        \begin{itemize}
+            \item \textbf{Reducir} puentes de medición a modelos canónicos pasivos ($V_{th}, R_{th}$).
+            \item \textbf{Demostrar cuantitativamente} la Máxima Transferencia de Potencia ($R_L = R_{th}$).
+            \item \textbf{Aplicar} el método $V_{\text{test}} / I_{\text{test}}$ para caracterizar etapas activas lineales.
+        \end{itemize}
+    \end{block}
+    
+    \vspace{0.4cm}
+    \begin{columns}
+        \begin{column}{0.8\textwidth}
+            \textbf{Estructura de la Clase:}
+            \begin{enumerate}
+                \item \textbf{Fase 1:} Dominio Pasivo (Sensor Desbalanceado).
+                \item \textbf{Fase 2:} Extensión Activa (Preamplificación y Caja Negra).
+            \end{enumerate}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ==========================================
+% SLIDE 2: El Puente de Medición
+% ==========================================
+\begin{frame}{El Puente de Medición (Wheatstone Pasivo)}
+    El desbalance $\Delta R$ en un sensor produce una tensión diferencial $V_{oc} = V_B - V_A$.
+
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{center}
+                \begin{circuitikz}[scale=0.75, transform shape]
+                    \draw (0,2) node[left]{A} to[R, l=$R_3 {=} 350$] (2,0) node[below]{GND};
+                    \draw (0,2) to[R, l=$R_1 {=} 350$] (2,4) node[above]{$V_s {=} \qty{10}{\volt}$};
+                    \draw (2,4) to[R, l=$R_2 {=} 350$] (4,2) node[right]{B};
+                    \draw (4,2) to[R, l=$R_4 {=} 360$] (2,0);
+                    \draw (2,0) node[ground]{};
+                \end{circuitikz}
+            \end{center}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Cálculo de $R_{th}$ (Apagando $V_s$ a GND):}
+            \begin{center}
+                \begin{circuitikz}[scale=0.6, transform shape]
+                    \draw (0,0) node[left]{A} to[short, o-] (1,0) -- (1,1) to[R, l=$R_1$] (3,1) -- (3,0);
+                    \draw (1,0) -- (1,-1) to[R, l=$R_3$] (3,-1) -- (3,0) node[ground]{};
+                    \draw (3,0) -- (4,1) to[R, l=$R_2$] (6,1) -- (6,0);
+                    \draw (3,0) -- (4,-1) to[R, l=$R_4$] (6,-1) -- (6,0);
+                    \draw (6,0) to[short, -o] (7,0) node[right]{B};
+                \end{circuitikz}
+            \end{center}
+            \begin{align*}
+                R_A &= R_1 \parallel R_3 = 175\,\Omega \\
+                R_B &= R_2 \parallel R_4 = 177.5\,\Omega \\
+                R_{th} &= R_A + R_B = \mathbf{352.5\,\Omega}
+            \end{align*}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ==========================================
+% SLIDE 3: Máxima Transferencia
+% ==========================================
+\begin{frame}{Máxima Transferencia de Potencia}
+    La potencia transferida es máxima cuando la carga iguala la resistencia interna: $\mathbf{R_L = R_{th}}$.
+    
+    \vspace{0.4cm}
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            \begin{center}
+                \begin{circuitikz}[scale=0.8, transform shape]
+                    \draw (0,0) to[V, v=$V_{th}$] (0,2) 
+                          to[R, l=$R_{th}$, -o] (3,2);
+                    \draw (0,0) to[short, -o] (3,0);
+                    \draw (3,2) to[vR, l=$R_L$, color=red, thick] (3,0);
+                \end{circuitikz}
+            \end{center}
+        \end{column}
+        \begin{column}{0.6\textwidth}
+            \begin{alertblock}{Eficiencia Energética}
+                A máxima transferencia, la eficiencia es de solo el \textbf{50\%} (la otra mitad se disipa térmicamente en $R_{th}$).
+            \end{alertblock}
+            \vspace{0.2cm}
+            \textit{Justificación de Ingeniería:} En instrumentación biomédica y mecatrónica, priorizamos la extracción de la \textbf{señal y potencia útil} del sensor sobre la eficiencia energética global.
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ==========================================
+% SLIDE 4: Colapso Activo
+% ==========================================
+\begin{frame}{El Colapso del Método Pasivo en Redes Activas}
+    \begin{columns}
+        \begin{column}{0.6\textwidth}
+            \textbf{¿Por qué NO podemos apagar una fuente dependiente?}
+            \begin{itemize}
+                \item Una fuente dependiente \textit{no} es un componente autónomo; es una función matemática lineal de una variable física interna ($E_1 = k V_x$).
+                \item Apagarla asumiendo $E_1 = 0$ viola las leyes constitutivas del circuito activo.
+                \item Inyecta energía dinámica, modificando la impedancia aparente.
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.4\textwidth}
+            \begin{center}
+                \begin{circuitikz}[scale=0.8, transform shape]
+                    \draw (0,2) to[cV, v=$E_1 {=} 50V_x$] (0,0);
+                    \draw[red, thick] (-0.5,-0.5) -- (1,2.5);
+                    \draw[red, thick] (-0.5,2.5) -- (1,-0.5);
+                    \node[red, below] at (0,-0.5) {\textbf{¡Error Físico!}};
+                \end{circuitikz}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ==========================================
+% SLIDE 5: Método Vtest
+% ==========================================
+\begin{frame}{El Método Universal de la Fuente de Prueba ($V_{\text{test}} / I_{\text{test}}$)}
+    \begin{enumerate}
+        \item \textbf{Apagar} todas las fuentes \textit{independientes} ($V_s = 0 \to \text{Corto}$, $I_s = 0 \to \text{Abierto}$).
+        \item \textbf{Dejar} las fuentes controladas/dependientes funcionando normalmente.
+        \item \textbf{Conectar} una fuente $V_{\text{test}} = \qty{1.0}{\volt}$ en la salida y calcular la corriente inyectada $I_{\text{test}}$.
+        \item $R_{\text{out}} = \frac{V_{\text{test}}}{I_{\text{test}}}$.
+    \end{enumerate}
+
+    \vspace{0.2cm}
+    \begin{center}
+        \begin{circuitikz}[scale=0.75, transform shape]
+            \draw (0,0) node[ground]{} to[R, l=$R_{th} {=} 352.5$] (0,2) -- (1,2) node[above]{Nodo 1};
+            \draw (1,2) to[R, l=$R_{in} {=} 1\text{k}$, v=$V_x$] (1,0) node[ground]{};
+            \draw (1,2) to[R, l=$R_f {=} 100$] (5,2) node[above]{Nodo C};
+            \draw (5,2) to[short, *-o] (6,2) node[right]{$V_{\text{test}} {=} \qty{1.0}{\volt}$};
+            \draw (5,2) to[cV, v=$E_1 {=} 50V_x$] (5,0) node[ground]{};
+            \draw[->, thick, red] (6,2.3) -- (5.2,2.3) node[midway, above]{$I_{\text{test}}$};
+        \end{circuitikz}
+    \end{center}
+\end{frame}
+
+% ==========================================
+% SLIDE 6: Protocolo y Checklist
+% ==========================================
+\begin{frame}{Protocolo de Validación y Autoevaluación}
+    \textbf{Protocolo de Validación en LTspice:}
+    \begin{itemize}
+        \item \textbf{Simulación Pasiva:} Directiva \texttt{.step param RL 10 1000 10} para graficar la campana de potencia en la carga.
+        \item \textbf{Simulación Activa:} Directiva \texttt{.tf V(OUT) V\_sensor} para verificar la impedancia de salida en pequeña señal ($R_{\text{out}}$).
+    \end{itemize}
+
+    \vspace{0.2cm}
+    \begin{block}{Checklist de Autoevaluación para Estudiantes}
+        \begin{itemize}
+            \item[$\square$] ¿Sé calcular $V_{th}$ en un puente desbalanceado usando divisores de tensión?
+            \item[$\square$] ¿Puedo explicar por qué $R_{th}$ pasivo son dos paralelos en serie al apagar la fuente?
+            \item[$\square$] ¿Entiendo por qué la eficiencia es del $50\%$ a máxima transferencia?
+            \item[$\square$] ¿Sé formular ecuaciones nodales con una fuente de prueba $V_{\text{test}} = \qty{1}{\volt}$ y fuentes controladas activas?
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,294 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- Paquetes Fundamentales ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[margin=2.5cm, headheight=25pt]{geometry} % Corregido headheight
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{colortbl} % Añadido para el comando \cellcolor
+\usepackage{microtype}
+\usepackage[colorlinks=true, linkcolor=ucbblue, urlcolor=ucbblue]{hyperref}
+
+% --- Matemáticas y Electrónica ---
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage[american, RPvoltages]{circuitikz}
+
+% --- Elementos de Diseño Pedagógico y Código ---
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{tabularx}
+
+% --- Configuración de Colores y siunitx ---
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\sisetup{
+    output-decimal-marker = {,},
+    per-mode = symbol,
+    inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+% --- Macros y Estilos ---
+\tcbset{
+    caja_fase/.style={colback=blue!3, colframe=ucbblue, fonttitle=\bfseries, boxrule=1pt, arc=3pt},
+    caja_alerta/.style={colback=orange!5, colframe=orange!80!black, fonttitle=\bfseries, boxrule=0.8pt, arc=3pt}
+}
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{codegreen}\itshape,
+    stringstyle=\color{codepurple},
+    numbers=left, numberstyle=\tiny\color{gray},
+    frame=single, backgroundcolor=\color{gray!5},
+    breaklines=true, showstringspaces=false
+}
+
+% --- Estilo de Página ---
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textcolor{ucbblue}{\textbf{IMT-121 | Guía de Clase y Material Maestro}}}
+\rhead{\textbf{Sesión 08 -- Semana 4}}
+\cfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{ucbblue}\leaders\hrule height \headrulewidth\hfill}}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{GUION DE CLASE Y MATERIAL MAESTRO}} \\[0.2cm]
+    {\Large \textbf{SESIÓN 08}} \\[0.4cm]
+    \normalsize
+    \textbf{Asignatura:} IMT-121 Circuitos Electrónicos I \\
+    \textbf{Tema:} Estrategia Dual de Thévenin: Del Sensor Pasivo al Acondicionamiento Activo ($V_{\text{test}} / I_{\text{test}}$) \\
+    \textbf{Gestión:} Semana 4 — Sesión 1 (90 Minutos) \\
+    Universidad Católica Boliviana ``San Pablo'' — Sede Tarija \\[0.2cm]
+    \textbf{Docente:} M.Sc. Ing. Bernardo Quiroga Turdera
+    \vspace{0.4cm}
+\end{center}
+\hrule
+\vspace{0.5cm}
+
+\section*{Estructura Pedagógica de la Sesión (90 Minutos)}
+\begin{center}
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|X|}
+        \hline
+        \cellcolor{ucbblue}\textcolor{white}{\textbf{ESTRUCTURA DE CLASE EN DOS FASES INTEGRADAS}} \\
+        \hline
+        \cellcolor{gray!10}\textbf{FASE 1: DOMINIO PASIVO (00–45 min) — El Sensor Desbalanceado} \\
+        $\bullet$ \textbf{00–10 min:} Problematización: Modelado Thévenin en sensores de deformación. \\
+        $\bullet$ \textbf{10–25 min:} Deducción analítica de $V_{oc}$ y $R_{th}$ pasivo por división y reducción. \\
+        $\bullet$ \textbf{25–40 min:} Condición de Máxima Transferencia de Potencia y Eficiencia del $50\%$. \\
+        $\bullet$ \textbf{40–45 min:} Verificación en Python del barrido de carga ($R_L$ vs $P_L$). \\
+        \hline
+        \cellcolor{gray!10}\textbf{FASE 2: EXTENSIÓN ACTIVA (45–90 min) — Preamplificación y Caja Negra} \\
+        $\bullet$ \textbf{45–55 min:} Inserción de etapa activa (VCVS): ¿Por qué colapsa apagar fuentes? \\
+        $\bullet$ \textbf{55–70 min:} Algoritmo de la Fuente de Prueba Externa ($V_{\text{test}} / I_{\text{test}}$) en pizarra. \\
+        $\bullet$ \textbf{70–80 min:} Comparación cuantitativa: $R_{th}$ pasiva vs. $R_{th}$ activa. \\
+        $\bullet$ \textbf{80–90 min:} Taller LTspice (\texttt{.tf} y \texttt{.op}) + Dinámica en Tríadas y Cierre. \\
+        \hline
+    \end{tabularx}
+\end{center}
+
+\vspace{0.3cm}
+\begin{tcolorbox}[caja_fase, title=FASE 1: DOMINIO PASIVO (00 A 45 MIN)]
+\textbf{Modelado Thévenin en Puentes de Medición y Máxima Transferencia}
+\end{tcolorbox}
+
+\textbf{Contexto Físico:} \\
+Una celda de carga industrial o un sensor de bioimpedancia dérmica se modela mediante un Puente de Wheatstone. Cuando el sensor detecta una variable física, su resistencia cambia en $\Delta R$, generando un voltaje diferencial que alimenta la siguiente etapa.
+
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape]
+        \draw (0,2) node[left]{Terminal A ($V_A$)} to[R, l=$R_3 {=} \qty{350}{\ohm}$] (2,0) node[below]{MASA / GND (\qty{0}{\volt})};
+        \draw (0,2) to[R, l=$R_1 {=} \qty{350}{\ohm}$] (2,4) node[above]{NODO DE ALIMENTACIÓN ($V_s {=} \qty{10}{\volt}$)};
+        \draw (2,4) to[R, l=$R_2 {=} \qty{350}{\ohm}$] (4,2) node[right]{Terminal B ($V_B$)};
+        \draw (4,2) to[R, l=$R_4 {=} \qty{360}{\ohm} \, (R{+}\Delta R)$] (2,0);
+        \draw (2,0) node[ground]{};
+        \draw (2,4) to[short, *-] (2,4.2);
+        \draw (0,2) to[short, *-o] (-0.5,2);
+        \draw (4,2) to[short, *-o] (4.5,2);
+    \end{circuitikz}
+\end{center}
+
+\subsection*{1. Deducción Analítica de $V_{th}$ (Voltaje de Circuito Abierto)}
+El voltaje de Thévenin entre los terminales $A$ y $B$ corresponde a la diferencia de potencial generada por los dos divisores de tensión independientes:
+\begin{align*}
+    V_A &= \qty{10}{\volt} \cdot \left( \frac{350\,\Omega}{350\,\Omega + 350\,\Omega} \right) = 10 \cdot \frac{350}{700} = \mathbf{\qty{5.000}{\volt}} \\
+    V_B &= \qty{10}{\volt} \cdot \left( \frac{360\,\Omega}{350\,\Omega + 360\,\Omega} \right) = 10 \cdot \frac{360}{710} = \mathbf{\qty{5.0704}{\volt}}
+\end{align*}
+El voltaje en circuito abierto visto desde los terminales $B-A$ es:
+\begin{equation}
+    V_{th} = V_{oc} = V_B - V_A = \qty{5.0704}{\volt} - \qty{5.0000}{\volt} = \mathbf{\qty{0.07042}{\volt} = \qty{70.42}{\milli\volt}}
+\end{equation}
+
+\subsection*{2. Deducción Analítica de $R_{th}$ Pasiva (Apagando Fuentes)}
+Para calcular la resistencia equivalente vista entre los terminales $A$ y $B$:
+\begin{itemize}
+    \item Apagamos la fuente independiente de tensión: $V_s = \qty{0}{\volt} \implies$ Cortocircuito a Tierra ($GND$).
+    \item La parte superior del puente queda unida al riel de Tierra.
+    \item Vista desde los terminales $A$ y $B$, la red se desacopla en dos ramas en paralelo conectadas en serie entre sí:
+\end{itemize}
+
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape]
+        \draw (0,0) node[left]{Terminal A} to[short, o-] (1,0) -- (1,1) to[R, l=$R_1$] (3,1) -- (3,0);
+        \draw (1,0) -- (1,-1) to[R, l=$R_3$] (3,-1) -- (3,0);
+        \draw (3,0) node[ground]{};
+        \draw (3,0) -- (4,1) to[R, l=$R_2$] (6,1) -- (6,0);
+        \draw (3,0) -- (4,-1) to[R, l=$R_4$] (6,-1) -- (6,0);
+        \draw (6,0) to[short, -o] (7,0) node[right]{Terminal B};
+    \end{circuitikz}
+\end{center}
+
+\begin{align*}
+    R_A &= R_1 \parallel R_3 = \frac{350 \cdot 350}{350 + 350} = \mathbf{175.0\,\Omega} \\
+    R_B &= R_2 \parallel R_4 = \frac{350 \cdot 360}{350 + 360} \approx \mathbf{177.465\,\Omega} \\
+    R_{th} &= R_A + R_B = 175.0\,\Omega + 177.465\,\Omega = \mathbf{352.465\,\Omega}
+\end{align*}
+
+\subsection*{3. Teorema de Máxima Transferencia de Potencia}
+Para transferir la máxima potencia pasiva del sensor a una carga $R_L$:
+\begin{equation}
+    \mathbf{R_L = R_{th} = 352.465\,\Omega}
+\end{equation}
+Voltaje en la carga acoplada:
+\begin{equation}
+    V_L = V_{th} \cdot \left( \frac{R_L}{R_{th} + R_L} \right) = \frac{V_{th}}{2} = \mathbf{35.21\text{ mV}}
+\end{equation}
+Potencia máxima disipada en la carga (ecuación ajustada):
+\begin{equation}
+    P_{L,\text{máx}} = \frac{V_{th}^2}{4 R_{th}} = \frac{(0.07042\text{ V})^2}{4 \cdot (352.465\,\Omega)} = \mathbf{3.517\,\mu\text{W}}
+\end{equation}
+
+\vspace{0.4cm}
+\begin{tcolorbox}[caja_fase, title=FASE 2: EXTENSIÓN ACTIVA (45 A 90 MIN)]
+\textbf{Preamplificación con Fuentes Dependientes y Método $V_{\text{test}} / I_{\text{test}}$}
+\end{tcolorbox}
+
+\textbf{Problema de Ingeniería:} \\
+La señal de $\qty{70.42}{\milli\volt}$ y potencia de $\qty{3.52}{\micro\watt}$ son insuficientes para excitar un ADC. Conectamos el equivalente de Thévenin a una etapa activa compuesta por una VCVS ($E_1 = 50 V_x$) y una resistencia de salida $R_f$.
+
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape]
+        % Etapa Sensor
+        \draw (0,0) node[ground]{} to[R, l=$R_{th} {=} \qty{352.5}{\ohm}$] (0,3)
+              to[V, v=$V_{th} {=} \qty{70.42}{\milli\volt}$] (0,5) -- (2,5);
+        \node[above] at (1,5.2) {\textbf{[ EQUIVALENTE SENSOR ]}};
+        
+        % Etapa Activa
+        \draw (2,5) to[short, *-] (3,5) node[above]{Nodo 1};
+        \draw (3,5) to[R, l=$R_{in} {=} \qty{1}{\kilo\ohm}$, v=$V_x$] (3,0) node[ground]{};
+        \draw (3,5) to[R, l=$R_f {=} \qty{100}{\ohm}$] (7,5) node[above]{Terminal OUT} to[short, *-o] (8,5);
+        \draw (7,5) to[cV, v=$E_1 {=} 50V_x$] (7,0) node[ground]{};
+        
+        \node[above] at (5.5,5.8) {\textbf{[ ETAPA ACTIVA ]}};
+    \end{circuitikz}
+\end{center}
+
+\subsection*{1. ¿Por qué colapsa el método pasivo tradicional?}
+Si un estudiante intenta apagar la fuente dependiente $E_1$ tratándola como un cortocircuito, comete un error físico grave: la magnitud de $E_1$ depende intrínsecamente del voltaje $V_x$. La fuente dependiente inyecta energía dinámica al circuito y modifica la impedancia de salida aparente.
+
+\subsection*{2. Aplicación Rigurosa de la Fuente de Prueba Externa ($V_{\text{test}} = \qty{1.0}{\volt}$)}
+Para determinar la verdadera resistencia de Thévenin de la salida ($R_{\text{out}}$):
+\begin{enumerate}
+    \item Apagamos la fuente \textit{independiente}: $V_{th} = \qty{0}{\volt} \to$ Cortocircuito a Tierra.
+    \item Mantenemos la fuente dependiente $E_1 = 50 V_x$ conectada.
+    \item Inyectamos $V_{\text{test}} = \qty{1.0}{\volt}$ entre los terminales de salida:
+\end{enumerate}
+
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape]
+        \draw (0,0) node[ground]{} to[R, l=$R_{th} {=} \qty{352.5}{\ohm}$] (0,3) -- (1,3);
+        \draw (1,3) to[short, *-] (2,3) node[above]{Nodo 1};
+        \draw (2,3) to[R, l=$R_{in} {=} \qty{1}{\kilo\ohm}$, v=$V_x$] (2,0) node[ground]{};
+        \draw (2,3) to[R, l=$R_f {=} \qty{100}{\ohm}$] (6,3) node[above]{Nodo C};
+        \draw (6,3) to[short, *-o] (7.5,3) node[above]{$V_{\text{test}} {=} \qty{1.0}{\volt}$};
+        \draw (6,3) to[cV, v=$E_1 {=} 50V_x$] (6,0) node[ground]{};
+    \end{circuitikz}
+\end{center}
+
+\textbf{Paso A: Relación de Voltajes en el Nodo 1 ($V_x$)}\\
+Las resistencias $R_{th}$ y $R_{\text{in}}$ quedan en paralelo respecto al Nodo 1:
+\begin{equation*}
+    R_{p1} = R_{th} \parallel R_{\text{in}} = \frac{352.465 \cdot 1000}{352.465 + 1000} = \mathbf{260.61\,\Omega}
+\end{equation*}
+El circuito queda formado por un divisor de tensión excitado por $V_{\text{test}}$:
+\begin{equation*}
+    V_x = \qty{1.0}{\volt} \cdot \left( \frac{260.61}{260.61 + 100} \right) = \mathbf{\qty{0.7227}{\volt}}
+\end{equation*}
+
+\textbf{Paso B: Tensión y Corrientes Generadas}\\
+Corriente $I_1$ que fluye desde $V_{\text{test}}$ hacia el Nodo 1:
+\begin{equation*}
+    I_1 = \frac{\qty{1.0}{\volt} - \qty{0.7227}{\volt}}{100\,\Omega} = \mathbf{\qty{2.773}{\milli\ampere}}
+\end{equation*}
+
+\begin{tcolorbox}[caja_alerta, title=Análisis de Impedancia de Salida]
+La fuente dependiente impone: $E_1 = 50(\qty{0.7227}{\volt}) = \qty{36.135}{\volt}$. \\
+La corriente total absorbida o entregada por la fuente de prueba demuestra que la impedancia de salida queda gobernada por la etapa activa:
+\begin{align}
+    I_{\text{test}} &= \frac{V_{\text{test}} - 50 V_x}{R_f} = \frac{1.0 - 36.135}{100} = \mathbf{\qty{-351.35}{\milli\ampere}} \\
+    R_{\text{out}} &= \frac{V_{\text{test}}}{I_{\text{test}}} = \frac{\qty{1.0}{\volt}}{\qty{-0.35135}{\ampere}} = \mathbf{-2.846\,\Omega} \nonumber \\ 
+    &\quad \rightarrow \text{\textbf{(Resistencia Activa Negativa / Ganancia)}}
+\end{align}
+\end{tcolorbox}
+
+\newpage
+\section*{CÓMPUTO CIENTÍFICO EN PYTHON (NumPy)}
+\begin{lstlisting}[language=Python]
+import numpy as np
+import matplotlib.pyplot as plt
+
+# ==========================================
+# FASE 1: SENSOR DE WHEATSTONE (PASIVO)
+# ==========================================
+Vs = 10.0
+R1, R2, R3, R4 = 350.0, 350.0, 350.0, 360.0
+
+# 1. Calculo Thevenin
+VA = Vs * (R3 / (R1 + R3))
+VB = Vs * (R4 / (R2 + R4))
+Vth = VB - VA
+Rth = (R1 * R3) / (R1 + R3) + (R2 * R4) / (R2 + R4)
+
+print(f"--- FASE 1: SENSOR PASIVO ---")
+print(f"Voltaje Thevenin (Vth) : {Vth*1000:.3f} mV")
+print(f"Resistencia Thevenin (Rth): {Rth:.3f} Ohms")
+
+# 2. Barrido de Carga y Curva de Potencia
+RL_array = np.linspace(10, 1000, 500)
+IL_array = Vth / (Rth + RL_array)
+PL_array = (IL_array**2) * RL_array * 1e6  # en microWatts
+
+P_max = (Vth**2) / (4 * Rth) * 1e6
+print(f"Potencia Maxima en Carga  : {P_max:.3f} uW en RL = {Rth:.1f} Ohms")
+
+# ==========================================
+# FASE 2: ETAPA ACTIVA (Vtest / Itest)
+# ==========================================
+Rin = 1000.0
+Rf = 100.0
+k_gain = 50.0
+Vtest = 1.0
+
+# Resistencia equivalente en nodo Vx
+Rp1 = (Rth * Rin) / (Rth + Rin)
+Vx = Vtest * (Rp1 / (Rp1 + Rf))
+Itest = (Vtest - k_gain * Vx) / Rf
+Rth_activa = Vtest / Itest
+
+print(f"\n--- FASE 2: ETAPA ACTIVA ---")
+print(f"Voltaje de control Vx : {Vx:.4f} V")
+print(f"Corriente de prueba   : {Itest*1000:.3f} mA")
+print(f"Resistencia Activa Rout: {Rth_activa:.3f} Ohms")
+\end{lstlisting}
+
+\end{document}
