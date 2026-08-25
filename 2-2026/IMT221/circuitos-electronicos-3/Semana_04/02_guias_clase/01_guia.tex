@@ -1,0 +1,294 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- PAQUETES PRINCIPALES ---
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb, mathtools}
+\usepackage{siunitx}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% --- PAQUETES PARA GRÁFICAS Y CIRCUITOS ---
+\usepackage{pgfplots}
+\usepackage[american]{circuitikz}
+\pgfplotsset{compat=1.18}
+
+% --- DEFINICIÓN DE COLORES ---
+\definecolor{darkred}{rgb}{0.55,0.0,0.0}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.96,0.96,0.96}
+
+% --- CONFIGURACIÓN DE CÓDIGO (PYTHON) ---
+\lstset{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    language=Python,
+    literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+             {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+             {ñ}{{\~n}}1 {Ñ}{{\~N}}1
+}
+
+% --- CONFIGURACIÓN DE SIUNITX ---
+\sisetup{output-decimal-marker = {,}, per-mode = symbol, inter-unit-product = \ensuremath{{}\cdot{}}}
+
+% --- CABECERAS ---
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{Circuitos Electrónicos III (IMT-221)}}
+\rhead{Sesión 4.1: Diodos Zener y Regulación}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% --- ENTORNOS PERSONALIZADOS ---
+\newtcolorbox{aviso}[1][]{colback=red!5!white, colframe=red!75!black, fonttitle=\bfseries, title=#1}
+\newtcolorbox{definicion}[1][]{colback=blue!5!white, colframe=blue!75!black, fonttitle=\bfseries, title=#1}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{Apuntes de Cátedra: Sesión 4.1}}\\[0.3cm]
+    {\large \textbf{El Diodo Zener: Física de Ruptura, Regulación y Protección Clamping}}\\
+    \textit{Docente: M.Sc. Ing. Bernardo Quiroga Turdera}
+    \vspace{0.3cm}
+    \hrule
+\end{center}
+
+\vspace{0.3cm}
+
+% ==========================================
+% SECCIÓN 1: FÍSICA Y MECANISMOS DE RUPTURA
+% ==========================================
+\section{Mecanismos de Ruptura Inversa y Coeficiente Térmico}
+¿Por qué la ruptura en un diodo común 1N4007 es destructiva, pero en un Zener BZX55C5V1 es el principio de operación para regular tensión? La clave reside en los niveles de dopaje y la disipación térmica. Existen dos fenómenos físicos responsables:
+
+\begin{enumerate}
+    \item \textbf{Ruptura Zener (Efecto Túnel Cuántico):}
+    \begin{itemize}
+        \item Ocurre en uniones P-N fuertemente dopadas (zona de deplexión muy estrecha, $W < \qty{10}{\nano\meter}$).
+        \item Campos eléctricos intensos ($\mathbf{E} > \qty{e6}{\volt\per\centi\meter}$) rompen enlaces covalentes directamente por tunelamiento.
+        \item Predomina en tensiones $V_Z < \qty{5.0}{\volt}$.
+        \item \textbf{Coeficiente de Temperatura Negativo ($TC < 0$):} Al subir la temperatura, el bandgap ($E_g$) se reduce y $V_Z$ disminuye.
+    \end{itemize}
+    \item \textbf{Ruptura por Avalancha (Ionización por Impacto):}
+    \begin{itemize}
+        \item Ocurre en uniones ligeramente dopadas. Los portadores minoritarios adquieren alta energía cinética y liberan nuevos portadores al chocar contra la red.
+        \item Predomina en tensiones $V_Z > \qty{5.6}{\volt}$.
+        \item \textbf{Coeficiente de Temperatura Positivo ($TC > 0$):} La agitación térmica aumenta los choques tempranos; se requiere más voltaje para lograr la avalancha.
+    \end{itemize}
+\end{enumerate}
+
+\begin{definicion}[Punto Dulce de Ingeniería (Sweet Spot)]
+En diodos Zener diseñados entre \qty{5.1}{\volt} y \qty{5.6}{\volt} (como el \textbf{BZX55C5V1} del PFI), ambos fenómenos coexisten y se cancelan mutuamente, logrando un coeficiente térmico casi nulo ($TC \approx 0$).
+\end{definicion}
+
+% ==========================================
+% SECCIÓN 2: MODELO PWL Y CIRCUITO REGULADOR
+% ==========================================
+\section{Modelo Lineal por Tramos (PWL) y Regulador Básico}
+En la región de ruptura ($I_Z \ge I_{ZK}$), el Zener se modela como una fuente $V_{Z0}$ y una resistencia $r_z$:
+\begin{equation}
+    V_Z = V_{Z0} + I_Z \cdot r_z
+\end{equation}
+
+\vspace{0.2cm}
+\begin{figure}[h!]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \textbf{Circuito Regulador Zener Físico}\\[0.2cm]
+        \begin{circuitikz}[american, scale=0.8, transform shape]
+            \draw (0,0) to[V, l=$V_{in}(t)$] (0,3) 
+                  to[R, l=$R_s$, i=$I_S$] (3,3) 
+                  to[zzD, l=$D_Z$, i=$I_Z$, *-*] (3,0) -- (0,0);
+            \draw (3,3) -- (6,3) to[R, l=$R_L$, i=$I_L$, v=$V_{out}$] (6,0) -- (3,0);
+            \node[ground] at (3,0) {};
+        \end{circuitikz}
+    \end{minipage}
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \textbf{Modelo Equivalente PWL}\\[0.2cm]
+        \begin{circuitikz}[american, scale=0.8, transform shape]
+            \draw (0,0) to[V, l=$V_{in}$] (0,3) to[R, l=$R_s$] (3,3);
+            \draw (3,3) to[R, l=$r_z$, *-] (3,1.5) to[V, l=$V_{Z0}$, -*] (3,0);
+            \draw (3,3) -- (6,3) to[R, l=$R_L$] (6,0) -- (0,0);
+            \node[ground] at (3,0) {};
+        \end{circuitikz}
+    \end{minipage}
+\end{figure}
+
+De la ecuación de nodos: $I_S = I_Z + I_L \implies \frac{V_{in} - V_Z}{R_s} = I_Z + \frac{V_Z}{R_L}$.\\
+Para garantizar la regulación segura, debe cumplirse estrictamente: $\mathbf{I_{ZK} \le I_Z \le I_{ZM}}$.
+
+\subsection{Métricas de Calidad del Regulador}
+\begin{enumerate}
+    \item \textbf{Regulación de Línea (Line Reg):} Rechazo a variaciones de entrada ($\Delta V_{in}$).
+    \begin{equation}
+        \text{Line Reg} = \frac{\Delta V_{out}}{\Delta V_{in}} = \frac{r_z \parallel R_L}{R_s + (r_z \parallel R_L)} \approx \frac{r_z}{R_s + r_z}
+    \end{equation}
+    \item \textbf{Regulación de Carga (Load Reg):} Rechazo a variaciones de carga ($\Delta I_L$).
+    \begin{equation}
+        \text{Load Reg} = \frac{\Delta V_{out}}{\Delta I_L} = -(R_s \parallel r_z) \approx -r_z
+    \end{equation}
+\end{enumerate}
+
+\newpage
+% ==========================================
+% SECCIÓN 3: PROBLEMA DE DISEÑO ABET
+% ==========================================
+\section{Problema de Ingeniería: Dimensionamiento Peor Escenario}
+\textbf{Enunciado:} Diseñe la red de protección ADC (Hito 1). La entrada no regulada varía entre $V_{in} = \qty{9.0}{\volt}$ y $V_{in} = \qty{15.0}{\volt}$. La carga demanda entre $I_L = \qty{0}{\milli\ampere}$ y $I_{L(\max)} = \qty{15.0}{\milli\ampere}$. Se usa un Zener BZX55C5V1 con: $V_{ZT} = \qty{5.10}{\volt}$ a $I_{ZT} = \qty{5.0}{\milli\ampere}$, $r_z = \qty{15.0}{\ohm}$, $I_{ZK} = \qty{0.50}{\milli\ampere}$, $P_{ZM} = \qty{500}{\milli\watt}$. Factor de seguridad térmica del 80\%.
+
+\vspace{0.2cm}
+\noindent\textbf{Paso 1: Cálculo de la Fuente Interna Equivalente $V_{Z0}$}\\
+Evaluando el modelo PWL en el punto de prueba de fábrica:
+\begin{equation}
+    V_{Z0} = V_{ZT} - I_{ZT} \cdot r_z = \qty{5.10}{\volt} - (\qty{5.0}{\milli\ampere} \cdot \qty{15.0}{\ohm}) = \qty{5.10}{\volt} - \qty{0.075}{\volt} = \mathbf{\qty{5.025}{\volt}}
+\end{equation}
+
+\noindent\textbf{Paso 2: Corriente Máxima Segura ($I_{ZM}$)}\\
+\begin{align}
+    P_{Z(\text{diseño})} &= 0.80 \times \qty{500}{\milli\watt} = \qty{400}{\milli\watt} = \qty{0.40}{\watt} \\
+    I_{ZM} &= \frac{P_{Z(\text{diseño})}}{V_{ZT}} = \frac{\qty{0.40}{\watt}}{\qty{5.10}{\volt}} \approx \mathbf{\qty{78.43}{\milli\ampere}}
+\end{align}
+
+\noindent\textbf{Paso 3: Dimensionamiento del Rango de $R_s$ (Worst-Case Design)}\\
+\textbf{Límite Superior ($R_{s(\max)}$ - Previene el apagado):} Menor $V_{in}$, máximo $I_L$.
+\begin{equation}
+    R_{s(\max)} = \frac{V_{in(\min)} - V_{ZT}}{I_{L(\max)} + I_{ZK}} = \frac{9.0 - 5.10}{\qty{15.0}{\milli\ampere} + \qty{0.50}{\milli\ampere}} = \frac{3.90}{\qty{15.50}{\milli\ampere}} = \mathbf{\qty{251.61}{\ohm}}
+\end{equation}
+\textbf{Límite Inferior ($R_{s(\min)}$ - Previene destrucción):} Mayor $V_{in}$, mínimo $I_L = 0$.
+\begin{equation}
+    R_{s(\min)} = \frac{V_{in(\max)} - V_{ZT}}{I_{ZM}} = \frac{15.0 - 5.10}{\qty{78.43}{\milli\ampere}} = \frac{9.90}{\qty{0.07843}{\ampere}} = \mathbf{\qty{126.23}{\ohm}}
+\end{equation}
+\textit{Selección Comercial:} Rango $[126.23, 251.61]\,\Omega$. Seleccionamos $R_s = \mathbf{\qty{180}{\ohm}}$ al 5\% (E24). Potencia requerida para $R_s$: $P_{Rs} = \frac{(15.0 - 5.1)^2}{180} = \qty{0.544}{\watt} \implies \text{Usar de } \qty{1}{\watt}$.
+
+\noindent\textbf{Paso 4: Tensión de Salida en Extremos Operativos}\\
+Aplicando superposición o Thévenin al modelo PWL:
+\begin{equation}
+    V_{out} = \frac{V_{in} \cdot r_z + V_{Z0} \cdot R_s - I_L \cdot (R_s \cdot r_z)}{R_s + r_z}
+\end{equation}
+\textbf{Condición A ($V_{in} = \qty{9.0}{\volt}, I_L = \qty{15.0}{\milli\ampere}$):}
+\begin{align}
+    V_{out(\min)} &= \frac{(9.0 \cdot 15) + (5.025 \cdot 180) - (0.015 \cdot 180 \cdot 15)}{180 + 15} = \frac{135 + 904.5 - 40.5}{195} = \mathbf{\qty{5.123}{\volt}} \\
+    I_{Z(\min)} &= \frac{5.123 - 5.025}{15} = \mathbf{\qty{6.53}{\milli\ampere}} > I_{ZK} \quad (\text{Regula perfectamente})
+\end{align}
+
+\textbf{Condición B ($V_{in} = \qty{15.0}{\volt}, I_L = \qty{0}{\milli\ampere}$):}
+\begin{align}
+    V_{out(\max)} &= \frac{(15.0 \cdot 15) + (5.025 \cdot 180) - 0}{195} = \frac{225 + 904.5}{195} = \mathbf{\qty{5.792}{\volt}} \\
+    I_{Z(\max)} &= \frac{5.792 - 5.025}{15} = \mathbf{\qty{51.13}{\milli\ampere}} < I_{ZM} \quad (\text{Térmicamente seguro})
+\end{align}
+Potencia real disipada: $P_Z = \qty{5.792}{\volt} \cdot \qty{51.13}{\milli\ampere} = \mathbf{\qty{296.1}{\milli\watt}}$.
+
+\noindent\textbf{Paso 5: Cálculo de Regulaciones}\\
+\begin{align}
+    \text{Line Reg} &= \frac{r_z}{R_s + r_z} = \frac{15}{180 + 15} = \mathbf{0.0769\text{ V/V}} \quad (\text{rechaza el } 92.3\% \text{ del ruido}) \\
+    \text{Load Reg} &= -(R_s \parallel r_z) = -\left(\frac{180 \cdot 15}{195}\right) = \mathbf{\qty{-13.85}{\milli\volt\per\milli\ampere}}
+\end{align}
+
+\newpage
+% ==========================================
+% SECCIÓN 4: PYTHON Y AUDITORÍA
+% ==========================================
+\section{Taller Computacional: Regulación y Térmica Zener}
+
+\begin{lstlisting}
+# ==============================================================================
+# UNIVERSIDAD CATOLICA BOLIVIANA "SAN PABLO" - SEDE TARIJA
+# Sesion 4.1: Modelado No Lineal, Curva de Regulacion y Analisis Termico Zener
+# Docente: M.Sc. Ing. Bernardo Quiroga Turdera
+# ==============================================================================
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 1. PARAMETROS DEL DIODO ZENER Y CIRCUITO
+Vzt = 5.10            
+Izt = 5.0e-3          
+rz = 15.0             
+Izk = 0.5e-3          
+Pz_max_nominal = 0.50 
+
+Vz0 = Vzt - (Izt * rz)
+Iz_max_segura = (0.80 * Pz_max_nominal) / Vzt
+
+Rs = 180.0            
+RL_nom = 5.1 / 10e-3  # Carga nominal de 10 mA
+
+print("==========================================================")
+print(f"Voltaje interno lineal (Vz0) : {Vz0:.4f} V")
+print(f"Resistencia dinamica (rz)    : {rz:.2f} Ohms")
+print(f"Corriente limite segura (Izm): {Iz_max_segura*1e3:.2f} mA")
+print("==========================================================")
+
+# 2. BARRIDO DE REGULACION DE LINEA
+Vin_sweep = np.linspace(0.0, 20.0, 500)
+Vout_line = np.zeros_like(Vin_sweep)
+Iz_line = np.zeros_like(Vin_sweep)
+Pz_line = np.zeros_like(Vin_sweep)
+
+for i, vin in enumerate(Vin_sweep):
+    Vth = vin * (RL_nom / (Rs + RL_nom))
+    Rth = (Rs * RL_nom) / (Rs + RL_nom)
+    
+    if Vth > Vz0:
+        iz = (Vth - Vz0) / (Rth + rz)
+        if iz >= 0:
+            Iz_line[i] = iz
+            Vout_line[i] = Vz0 + iz * rz
+        else:
+            Iz_line[i] = 0.0
+            Vout_line[i] = Vth
+    else:
+        Iz_line[i] = 0.0
+        Vout_line[i] = Vth
+        
+    Pz_line[i] = Vout_line[i] * Iz_line[i]
+
+# 3. GRAFICACION
+plt.figure(figsize=(11, 7))
+
+plt.subplot(2, 1, 1)
+plt.plot(Vin_sweep, Vout_line, 'b-', linewidth=2, label='Tension Regulada')
+plt.axvline(x=9.0, color='gray', linestyle=':')
+plt.axvline(x=15.0, color='gray', linestyle=':')
+plt.axhline(y=5.1, color='darkgreen', linestyle='--', label='Nominal 5.1V')
+plt.title('Curva de Regulacion de Linea Zener BZX55C5V1')
+plt.ylabel('Tension de Salida (V)')
+plt.grid(True, linestyle='--', alpha=0.7)
+plt.legend()
+
+plt.subplot(2, 1, 2)
+plt.plot(Vin_sweep, Pz_line * 1e3, 'crimson', linewidth=2, label='Potencia Pz')
+plt.axhline(y=400.0, color='black', linestyle='--', label='Limite Seguro 400mW')
+plt.axhline(y=500.0, color='red', linestyle=':', label='Limite Absoluto 500mW')
+plt.xlabel('Tension Entrada Vin (V)')
+plt.ylabel('Potencia Pz (mW)')
+plt.grid(True, linestyle='--', alpha=0.7)
+plt.legend()
+
+plt.tight_layout()
+plt.show()
+\end{lstlisting}
+
+\begin{aviso}[Protocolo de Auditoría Dinámica (IA en Banco)]
+\textbf{Consigna:} En la línea 12, cambien la resistencia dinámica $r_z = 15.0$ a $r_z = 80.0$ (diodo de mala calidad).\\
+\textbf{Pregunta:} ¿Por qué la curva de regulación se inclina hacia arriba y cómo afecta al ADC? \\
+\textbf{Respuesta Esperada:} La Regulación de Línea empeora proporcionalmente a $r_z$ ($\text{Line Reg} \approx \frac{r_z}{R_s + r_z}$). Una mayor $r_z$ hace que el voltaje de referencia fluctúe con el ruido, introduciendo error de offset en la lectura analógica.
+\end{aviso}
+
+\end{document}

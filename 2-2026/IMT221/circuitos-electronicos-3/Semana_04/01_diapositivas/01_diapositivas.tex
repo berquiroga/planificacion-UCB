@@ -1,0 +1,178 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+
+% --- TEMA Y ESTILO ---
+\usetheme{Madrid}
+\usecolortheme{whale}
+
+% --- PAQUETES ---
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[american]{circuitikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+% --- DEFINICIÓN DE COLORES ---
+\definecolor{darkred}{rgb}{0.55,0.0,0.0}
+
+\sisetup{output-decimal-marker = {,}, per-mode = symbol}
+
+% --- INFORMACIÓN DEL CURSO ---
+\title[Diodos Zener y Regulación]{El Diodo Zener: Modelado de Ruptura, Regulación y Protección}
+\subtitle{Física del Efecto Túnel, Resistencia Dinámica ($r_z$) y Dimensionamiento}
+\author{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Circuitos Electrónicos III (IMT-221)}
+\date{Sesión 4.1: 25 de Agosto de 2026}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Activación}
+  \begin{block}{Pregunta Detonante}
+      ¿Por qué la ruptura inversa en un diodo común 1N4007 es destructiva, pero en un diodo Zener BZX55C5V1 es el principio fundamental de operación para regular tensión y proteger el ADC de un microcontrolador?
+  \end{block}
+\end{frame}
+
+\begin{frame}{Los Dos Mecanismos de Ruptura Inversa}
+  \begin{columns}
+      \begin{column}{0.5\textwidth}
+          \textbf{1. Efecto Túnel Cuántico (Zener)}
+          \begin{itemize}
+              \item Uniones P-N fuertemente dopadas (Deplexión $W < \qty{10}{\nano\meter}$).
+              \item Campo eléctrico masivo rompe enlaces covalentes.
+              \item Tensión: $V_Z < \qty{5.0}{\volt}$.
+              \item \textcolor{blue}{Coeficiente de Temp. (TC) $< 0$}.
+          \end{itemize}
+      \end{column}
+      \begin{column}{0.5\textwidth}
+          \textbf{2. Ionización por Impacto (Avalancha)}
+          \begin{itemize}
+              \item Uniones ligeramente dopadas.
+              \item Aceleración y choque de portadores (multiplicación).
+              \item Tensión: $V_Z > \qty{5.6}{\volt}$.
+              \item \textcolor{red}{Coeficiente de Temp. (TC) $> 0$}.
+          \end{itemize}
+      \end{column}
+  \end{columns}
+  
+  \vspace{0.4cm}
+  \alert{\textbf{Punto Dulce (Sweet Spot):}} En diodos de $\approx \qty{5.1}{\volt}$ a \qty{5.6}{\volt} (como nuestro BZX55C5V1), ambos fenómenos operan simultáneamente y sus TC se cancelan ($TC \approx 0$).
+\end{frame}
+
+\begin{frame}{Modelo Lineal por Tramos del Zener (PWL Model)}
+  En la región de ruptura inversa ($I_Z \ge I_{ZK}$), la curva se linealiza:
+  \begin{equation*}
+      V_Z = V_{Z0} + I_Z \cdot r_z
+  \end{equation*}
+  
+  \vspace{0.2cm}
+  \textbf{Parámetros Clave del Datasheet:}
+  \begin{itemize}
+      \item $V_{ZT}$: Voltaje nominal a corriente de prueba $I_{ZT}$ (\qty{5.1}{\volt} @ \qty{5}{\milli\ampere}).
+      \item $I_{ZK}$ (Zener Knee): Corriente mínima para sostener la ruptura.
+      \item $r_z$: Impedancia dinámica en ruptura ($r_z = \Delta V_Z / \Delta I_Z$).
+      \item $P_{ZM}$: Potencia máxima (\qty{500}{\milli\watt} encapsulado DO-35).
+      \item $I_{ZM}$: Corriente máxima destructiva ($I_{ZM} = P_{ZM} / V_{ZT}$).
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Circuito Regulador / Limitador Básico}
+  \begin{columns}
+      \begin{column}{0.4\textwidth}
+          \begin{circuitikz}[american, scale=0.7, transform shape]
+              \draw (0,0) to[V, l=$V_{in}$] (0,3) 
+                    to[R, l=$R_s$, i=$I_S$] (3,3) 
+                    to[zzD, l=$D_Z$, i=$I_Z$, *-*] (3,0) -- (0,0);
+              \draw (3,3) -- (6,3) to[R, l=$R_L$, i=$I_L$, v=$V_{out}$] (6,0) -- (3,0);
+          \end{circuitikz}
+      \end{column}
+      
+      \begin{column}{0.6\textwidth}
+          \textbf{Ecuación de Nodos (LKC):}
+          \begin{equation*}
+              I_S = I_Z + I_L \implies \frac{V_{in} - V_Z}{R_s} = I_Z + \frac{V_Z}{R_L}
+          \end{equation*}
+          
+          \vspace{0.4cm}
+          \textbf{Condición de Operación Segura:}
+          Para que regule y no se destruya térmica ni eléctricamente:
+          \begin{equation*}
+              \mathbf{I_{ZK} \le I_Z \le I_{ZM}}
+          \end{equation*}
+      \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Métricas de Calidad de un Regulador Zener}
+  \begin{block}{1. Regulación de Línea (Line Reg)}
+      Capacidad de rechazar el ruido o fluctuación de la fuente ($V_{in}$).
+      \begin{equation*}
+          \text{Line Reg} = \frac{\Delta V_{out}}{\Delta V_{in}} \approx \frac{r_z}{R_s + r_z}
+      \end{equation*}
+      \textit{Objetivo:} Menor $r_z$, mejor rechazo de ruido.
+  \end{block}
+  
+  \vspace{0.3cm}
+  \begin{block}{2. Regulación de Carga (Load Reg)}
+      Capacidad de mantener voltaje fijo ante cambios en consumo ($I_L$).
+      \begin{equation*}
+          \text{Load Reg} = \frac{\Delta V_{out}}{\Delta I_L} = -(R_s \parallel r_z) \approx -r_z
+      \end{equation*}
+      \textit{Objetivo:} $r_z$ define directamente la impedancia de salida.
+  \end{block}
+\end{frame}
+
+\begin{frame}{Criterio de Selección $R_s$ (Worst-Case Design)}
+  Debemos garantizar supervivencia en los escenarios operativos más extremos.
+  
+  \vspace{0.3cm}
+  \textbf{1. Límite Superior ($R_{s(\max)}$ - Previene el Apagado):}
+  \begin{itemize}
+      \item Ocurre con menor voltaje $V_{in(\min)}$ y mayor demanda $I_{L(\max)}$.
+      \item $R_s \le \frac{V_{in(\min)} - V_Z}{I_{L(\max)} + I_{ZK}}$
+  \end{itemize}
+  
+  \vspace{0.3cm}
+  \textbf{2. Límite Inferior ($R_{s(\min)}$ - Previene la Destrucción):}
+  \begin{itemize}
+      \item Ocurre con mayor sobretensión $V_{in(\max)}$ y carga desconectada $I_{L} = 0$.
+      \item $R_s \ge \frac{V_{in(\max)} - V_Z}{I_{ZM}}$
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Resolución Analítica PFI (Pizarra)}
+  \textbf{Datos BZX55C5V1:} $V_{ZT}=\qty{5.1}{\volt}$@\qty{5}{\milli\ampere}, $r_z=\qty{15}{\ohm}$, $P_{ZM}=\qty{500}{\milli\watt}$.\\
+  \textbf{Escenario:} $V_{in} \in [\qty{9}{\volt}, \qty{15}{\volt}]$ e $I_L \in [\qty{0}{\milli\ampere}, \qty{15}{\milli\ampere}]$.
+  
+  \vspace{0.2cm}
+  \begin{itemize}
+      \item \textbf{Fuente Interna PWL:} $V_{Z0} = 5.10 - (0.005)(15) = \mathbf{\qty{5.025}{\volt}}$.
+      \item \textbf{Seguridad Térmica (80\%):} $I_{ZM} = \qty{400}{\milli\watt} / \qty{5.1}{\volt} = \mathbf{\qty{78.43}{\milli\ampere}}$.
+      \item \textbf{Límites $R_s$:}
+      \begin{align*}
+          R_{s(\max)} &= \frac{9.0 - 5.1}{15.5\text{m}} = \mathbf{\qty{251.6}{\ohm}} \\
+          R_{s(\min)} &= \frac{15.0 - 5.1}{78.43\text{m}} = \mathbf{\qty{126.2}{\ohm}} 
+      \end{align*}
+      \alert{\textbf{Decisión Comercial:}} Usaremos $R_s = \mathbf{\qty{180}{\ohm}}$ (\qty{1}{\watt}).
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Taller Computacional en Python}
+  \begin{center}
+      Aplicación Numérica del Modelo
+  \end{center}
+  \vspace{0.2cm}
+  Ejecutaremos el script de Python que modela matemáticamente el equivalente de Thevenin para trazar la curva de Regulación de Línea real.
+  
+  \vspace{0.4cm}
+  \textbf{Verificación ABET en Banco:}\\
+  Observaremos qué sucede térmicamente cuando $V_{in}$ cruza los \qty{15}{\volt}, y cómo una pésima calidad de diodo ($r_z \uparrow$) arruinará la precisión del ADC.
+\end{frame}
+
+\end{document}
