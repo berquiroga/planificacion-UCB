@@ -1,0 +1,279 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- PAQUETES PRINCIPALES ---
+% Se añade 'es-noquoting' para evitar que babel secuestre el símbolo '>' en tablas y flechas
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla, es-noquoting]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb, mathtools}
+\usepackage{siunitx}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage{fontawesome5}
+\usepackage{multirow}
+
+% --- PAQUETES PARA GRÁFICAS Y CIRCUITOS ---
+\usepackage{pgfplots}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning, babel}
+\pgfplotsset{compat=1.18}
+
+% --- CONFIGURACIÓN DE SIUNITX ---
+\sisetup{
+    output-decimal-marker = {,},
+    per-mode = symbol,
+    inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+% --- CABECERAS Y PIES DE PÁGINA ---
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{Circuitos Electrónicos III (IMT-221)}}
+\rhead{Guía Técnica del Estudiante: Hito 1 PFI}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% --- ENTORNOS PERSONALIZADOS ---
+\newtcolorbox{aviso}[1][]{
+  colback=blue!5!white,
+  colframe=blue!75!black,
+  fonttitle=\bfseries,
+  title=#1
+}
+\newtcolorbox{cita}[1][]{
+  colback=gray!10!white,
+  colframe=black!70,
+  fonttitle=\bfseries,
+  title=#1
+}
+
+\begin{document}
+
+% --- ENCABEZADO INSTITUCIONAL ---
+\begin{center}
+    % \includegraphics[width=2cm]{logo_ucb.png} % Descomentar e insertar logo si es necesario
+    \vspace{0.2cm}\\
+    {\Large \textbf{UNIVERSIDAD CATÓLICA BOLIVIANA ``SAN PABLO'' -- SEDE TARIJA}}\\[0.2cm]
+    {\large Departamento de Ciencias Exactas e Ingeniería}\\[0.1cm]
+    {\large Carrera: Ingeniería Mecatrónica / Ingeniería Biomédica}\\[0.1cm]
+    {\large Asignatura: Circuitos Electrónicos III (IMT-221) | Gestión: Semestre 2-2026}\\[0.1cm]
+    \textit{Docente: M.Sc. Ing. Bernardo Quiroga Turdera}
+    \vspace{0.3cm}
+    \hrule
+    \vspace{0.4cm}
+    {\huge \textbf{GUÍA TÉCNICA DEL ESTUDIANTE}}\\[0.2cm]
+    {\LARGE \textbf{Hito 1 --- Proyecto Final Integrador (PFI)}}
+\end{center}
+
+\vspace{0.5cm}
+
+% ==========================================
+% 1. DESCRIPCIÓN GENERAL
+% ==========================================
+\section{Descripción General del Hito 1}
+\textbf{``Diseño, Simulación e Implementación de la Etapa de Protección Analógica de Entradas ADC y Supresión de Transitorios Inductivos''}
+
+En este primer hito del semestre, tu equipo diseñará y construirá la primera barrera física de seguridad de tu hardware. Ningún sistema analógico o embebido (microcontrolador, PLC, sistema de adquisición de biopotenciales) puede sobrevivir en un entorno industrial o clínico sin una etapa de protección activa contra sobretensiones, transitorios inductivos por conmutación y voltajes inversos espurios.
+
+\vspace{0.3cm}
+\begin{center}
+\begin{tikzpicture}[node distance=3cm, auto, thick, scale=0.75, transform shape]
+    % Nodos
+    \node[draw, rectangle, rounded corners, fill=gray!20, text width=2.5cm, align=center, minimum height=1.5cm] (sensor) {\textbf{Entrada Crítica}\\(Motor/Sensor)};
+    \node[draw, rectangle, rounded corners, fill=red!15, text width=3.2cm, align=center, minimum height=1.5cm, right of=sensor, node distance=3.5cm] (flyback) {\textbf{Supresión Inductiva}\\(Flyback 1N4007)};
+    \node[draw, rectangle, rounded corners, fill=orange!15, text width=3.2cm, align=center, minimum height=1.5cm, right of=flyback, node distance=4.0cm] (zener) {\textbf{Red Limitadora}\\(Clamping Zener)};
+    \node[draw, rectangle, rounded corners, fill=green!15, text width=2.8cm, align=center, minimum height=1.5cm, right of=zener, node distance=3.8cm] (adc) {\textbf{ADC Micro}\\(\qty{0}{\volt} a \qty{5.1}{\volt})};
+
+    % Flechas
+    \draw[->, >=stealth, line width=1.5pt] (sensor) -- (flyback);
+    \draw[->, >=stealth, line width=1.5pt] (flyback) -- (zener);
+    \draw[->, >=stealth, line width=1.5pt] (zener) -- (adc);
+\end{tikzpicture}
+\end{center}
+\vspace{0.3cm}
+
+% ==========================================
+% 2. ESPECIFICACIONES TÉCNICAS
+% ==========================================
+\section{Especificaciones Técnicas y Contextualización Dual}
+
+\subsection*{Requerimientos de Ingeniería Comunes}
+\begin{itemize}
+    \item \textbf{Protección de Entrada Analógica (ADC):} La red de protección debe recibir voltajes provenientes de sensores o transductores en el rango extendido de $\qty{-12.0}{\volt}$ a $\qty{+24.0}{\volt}$, garantizando que el voltaje entregado al pin del conversor ADC se mantenga estrictamente entre $\qty{0.0}{\volt}$ y $\qty{+5.1}{\volt}$.
+    \item \textbf{Linealidad en Rango Útil:} Para el rango nominal de medición ($\qty{0.0}{\volt}$ a $\qty{+5.0}{\volt}$), la red de protección no debe introducir un error de atenuación superior al $\qty{1.0}{\percent}$.
+    \item \textbf{Supresión de Transitorios Inductivos:} La etapa debe absorber la energía magnética almacenada en la bobina de la carga inductiva durante el apagado ($V_L = L \frac{di}{dt}$), suprimiendo los picos destructivos de sobretensión por debajo del límite de ruptura de los semiconductores de potencia.
+\end{itemize}
+
+\subsection*{Contextualización según la Carrera}
+\begin{itemize}
+    \item \faCogs \quad \textbf{Para Ingeniería Mecatrónica:} \\
+    \textit{Foco:} Supresión de picos inductivos generados por la conmutación PWM de un motorreductor DC de alta corriente y protección de la línea de sensado de corriente (\textit{Shunt}) ante cortocircuitos accidentales en la planta motriz.
+    \item \faHeartbeat \quad \textbf{Para Ingeniería Biomédica:} \\
+    \textit{Foco:} Aislamiento de seguridad y limitación de voltaje en biosensores frente a descargas electrostáticas (ESD) o fallas de aislamiento en actuadores de bombeo peristáltico/infusión, asegurando el cumplimiento de límites de corriente de fuga seguros.
+\end{itemize}
+
+% ==========================================
+% 3. LISTA DE MATERIALES OFICIAL
+% ==========================================
+\section{Lista de Materiales Oficial (BOM Tarija)}
+Cada equipo debe contar con los siguientes componentes de stock comercial local:
+
+\begin{table}[h!]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\textwidth}{@{} >{\bfseries\raggedright\arraybackslash}p{3.8cm} >{\raggedright\arraybackslash}p{4cm} c X @{}}
+\toprule
+Componente & Código Sugerido & Cantidad & Función en el Circuito \\
+\midrule
+Diodo Zener de Precisión & BZX55C5V1 (\qty{5.1}{\volt}, \qty{500}{\milli\watt}) & 1 & Limitador de techo de voltaje seguro para ADC. \\
+Diodo Rápido de Señal & 1N4148 ($t_{rr} \le \qty{4}{\nano\second}, \qty{200}{\milli\ampere}$) & 2 & Diodo fijador de piso a \qty{0}{\volt} / Clamping negativo. \\
+Diodo de Potencia & 1N4007 (\qty{1}{\ampere}, \qty{1000}{\volt}) & 1 & Diodo Flyback en bornes de la carga inductiva. \\
+Resistencias Película Met. & Serie E24 ($180\,\Omega, 220\,\Omega, \qty{1}{\kilo\ohm}, \qty{10}{\kilo\ohm}$ / \qty{0.5}{\watt}) & Kits & Resistencia limitadora de serie $R_s$ y divisor de carga. \\
+Carga Inductiva de Prueba & Motorreductor DC amarillo ($3-\qty{12}{\volt}$) o Solenoide & 1 & Generador del transitorio inductivo de conmutación. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\newpage
+% ==========================================
+% 4. METODOLOGÍA DE EJECUCIÓN
+% ==========================================
+\section{Metodología de Ejecución (Los 4 Pilares Obligatorios)}
+Para aprobar el Hito 1, \textbf{no se admiten montajes por ``ensayo y error''}. El equipo debe evidenciar de forma secuencial los siguientes cuatro pilares:
+
+\vspace{0.4cm}
+\begin{center}
+\begin{tikzpicture}[node distance=3.6cm, auto, thick, scale=0.85, transform shape]
+    \node[draw, rectangle, fill=blue!10, text width=2.8cm, align=center, minimum height=1.2cm] (p1) {\textbf{Pilar 1: Python}\\Modelado Analítico};
+    \node[draw, rectangle, fill=red!10, text width=2.8cm, align=center, minimum height=1.2cm, right of=p1] (p2) {\textbf{Pilar 2: LTSpice}\\Simulación Dinámica};
+    \node[draw, rectangle, fill=orange!10, text width=2.8cm, align=center, minimum height=1.2cm, right of=p2] (p3) {\textbf{Pilar 3: Hardware}\\Montaje en Banco};
+    \node[draw, rectangle, fill=green!10, text width=2.8cm, align=center, minimum height=1.2cm, right of=p3] (p4) {\textbf{Pilar 4: Datos}\\Validación y RMSE};
+
+    \draw[->, >=stealth, line width=1.5pt] (p1) -- (p2);
+    \draw[->, >=stealth, line width=1.5pt] (p2) -- (p3);
+    \draw[->, >=stealth, line width=1.5pt] (p3) -- (p4);
+\end{tikzpicture}
+\end{center}
+\vspace{0.4cm}
+
+\subsection*{Pilar 1: Fundamentación Teórica y Modelado en Python}
+\textbf{Deducción Analítica:}
+\begin{itemize}
+    \item Deducir la ecuación de la resistencia limitadora de peor caso ($R_{s(\min)}$ y $R_{s(\max)}$) considerando el modelo lineal por tramos del Zener ($V_{Z0} = \qty{5.025}{\volt}, r_z = \qty{15}{\ohm}$).
+    \item Demostrar que la potencia máxima disipada por el Zener ($P_Z = V_Z \cdot I_Z$) no excede el límite de diseño de \qty{400}{\milli\watt} cuando $V_{in} = \qty{+24}{\volt}$ y la carga está en circuito abierto ($I_L = 0$).
+\end{itemize}
+\textbf{Script en Jupyter Notebook (.ipynb):}
+\begin{itemize}
+    \item Programar el barrido de regulación de línea ($V_{in} \in [\qty{-12}{\volt}, \qty{+24}{\volt}]$).
+    \item Calcular y graficar la curva analítica de transferencia $V_{out}$ vs. $V_{in}$ y el perfil de disipación térmica $P_Z(V_{in})$.
+\end{itemize}
+
+\subsection*{Pilar 2: Simulación No Lineal en LTSpice}
+Construir el esquema eléctrico en LTSpice utilizando los modelos SPICE exactos del fabricante para el 1N4148, el 1N4007 y el BZX55C5V1.
+\begin{itemize}
+    \item \textbf{Análisis DC Sweep (.dc):} Barrer la tensión de entrada de \qty{-12}{\volt} a \qty{+24}{\volt} y comprobar los puntos de recorte exactos.
+    \item \textbf{Análisis Transitorio (.tran):} Aplicar una onda senoidal de $\qty{15}{\volt_{pp}}$ a \qty{1}{\kilo\hertz} con offset de \qty{+2.5}{\volt} para verificar el recorte de CA y la ausencia de distorsión en la banda pasante.
+    \item \textbf{Simulación de Flyback:} Conmutar una carga inductiva ($L = \qty{10}{\milli\henry}, R = \qty{5}{\ohm}$) a \qty{1}{\kilo\hertz} y comparar la forma de onda del sobrepico de voltaje con y sin diodo Flyback.
+\end{itemize}
+
+\subsection*{Pilar 3: Implementación Física en Banco de Laboratorio}
+Montar el circuito en protoboard o placa perforada siguiendo buenas prácticas de ruteo:
+\begin{itemize}
+    \item Líneas de alimentación y tierra diferenciadas por código de color.
+    \item Cables cortos y compactos para evitar inductancias parásitas de acoplamiento.
+    \item Ubicación del diodo Flyback físicamente soldado o conectado en paralelo directo a los bornes del motor/bobina.
+    \item Conectar la fuente de alimentación del laboratorio, limitando la corriente por seguridad a \qty{100}{\milli\ampere} antes de encender.
+\end{itemize}
+
+\subsection*{Pilar 4: Validación Experimental con Osciloscopio y Análisis de Error}
+\textbf{Adquisición de Señales Reales:}
+\begin{itemize}
+    \item Inyectar con el generador de funciones una señal de prueba que exceda los límites ($\qty{15}{\volt_{pp}}$ a \qty{1}{\kilo\hertz}).
+    \item Visualizar en el osciloscopio: Canal 1 = Señal de Entrada $V_{in}(t)$, Canal 2 = Señal Protegida $V_{ADC}(t)$.
+    \item Cambiar a modo X-Y y capturar la curva de transferencia real. Exportar los datos temporales del osciloscopio en formato estructurado \texttt{.csv} a una memoria USB.
+\end{itemize}
+\textbf{Procesamiento de Datos en Python:}
+\begin{itemize}
+    \item Importar el archivo \texttt{.csv} en tu Jupyter Notebook.
+    \item Graficar en una sola figura la superposición de las tres curvas: \textbf{Teórica} (Ecuaciones) vs. \textbf{Simulada} (LTSpice) vs. \textbf{Real Experimental} (Osciloscopio).
+    \item Calcular cuantitativamente el Error Cuadrático Medio ($RMSE$) y el error porcentual de la tensión de recorte superior e inferior.
+\end{itemize}
+
+\newpage
+% ==========================================
+% 5. ENTREGABLES REQUERIDOS
+% ==========================================
+\section{Entregables Requeridos}
+La entrega se realizará a través de la plataforma institucional antes de la sesión de evaluación:
+
+\begin{itemize}
+    \item[\faFileCode] \textbf{Notebook de Jupyter (\texttt{Hito1\_GrupoX.ipynb}):}\\
+    Deducción matemática comentada paso a paso. Código de simulación y funciones de importación de los archivos \texttt{.csv}.\\
+    \textit{Apéndice Obligatorio de Auditoría de IA:} Registro de prompts utilizados en asistentes virtuales, identificando al menos una suposición simplificada o alucinación corregida manualmente por el grupo.
+    \item[\faBolt] \textbf{Archivo de Simulación LTSpice (\texttt{Hito1\_GrupoX.asc}):}\\
+    Esquemático completo y funcional listo para correr con los modelos de la BOM.
+    \item[\faFilePdf] \textbf{Artículo Técnico Corto (Formato IEEE, 2-3 páginas en PDF):}\\
+    \textit{Estructura:} Resumen, Metodología de Diseño, Resultados Experimentales (gráficas comparativas de Python), Discusión de Fuentes de Error (tolerancias, resistencia dinámica $r_z$) y Conclusiones de Ingeniería.
+\end{itemize}
+
+% ==========================================
+% 6. PROTOCOLO DE DEFENSA DINÁMICA
+% ==========================================
+\section{Protocolo de Defensa Dinámica Individual (Control de IA)}
+Durante la sesión presencial de evaluación del Hito 1, la calificación \textbf{no dependerá únicamente del informe escrito}. El docente se acercará a la mesa de trabajo de cada equipo y realizará una evaluación individual en vivo de 5 minutos:
+
+\begin{enumerate}
+    \item \textbf{Prueba de Modificación de Parámetros en Caliente (Live Parameter Tweaking):} El docente solicitará modificar una variable en tu script de Python (ej. cambiar $R_s$, variar la temperatura de simulación o alterar la frecuencia del generador).
+    \item \textbf{Pregunta de Predicción Física:} El estudiante evaluado deberá predecir verbalmente qué cambio ocurrirá en la forma de onda del osciloscopio \textit{antes} de ejecutar el script modificado.
+    \item \textbf{Defensa de Líneas de Código:} Explicación del significado físico y circuital de líneas de código seleccionadas al azar en el Notebook.
+\end{enumerate}
+
+% ==========================================
+% 7. RÚBRICA DE CALIFICACIÓN
+% ==========================================
+\section{Rúbrica de Calificación del Hito 1 (ABET / CDIO)}
+
+\begin{table}[h!]
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{@{} >{\bfseries\raggedright\arraybackslash}p{2.8cm} *{4}{>{\raggedright\arraybackslash}X} @{}}
+\toprule
+Criterio Evaluado & Insuficiente (0-39\%) & En Desarrollo (40-69\%) & Competente (70-89\%) & Sobresaliente (90-100\%) \\
+\midrule
+1. Modelado Mat. y Python (20\%) & 
+No presenta deducciones analíticas. El código no corre o presenta errores de física. & 
+Cálculos manuales incompletos. El script solo grafica funciones ideales sin análisis térmico. & 
+Deducidas ecuaciones de $R_s$ (peor caso). Script funcional que modela el Zener y la disipación. & 
+Deducción rigurosa modelo PWL. Script paramétrico optimizado (tolerancia E24 y temp. real). \\
+
+2. Simulación y Hardware (30\%) & 
+Simulación no converge o el montaje quema componentes o no recorta la señal. & 
+Simulación básica. El circuito físico funciona parcialmente pero presenta caídas de tensión. & 
+Simulación completa. Montaje en protoboard limpio, ordenado y funcional. & 
+Coherencia total LTSpice-Hardware. Montaje robusto, protegido, con Flyback y ruteo profesional. \\
+
+3. Validación y Análisis (20\%) & 
+No captura datos con osciloscopio ni realiza comparación cuantitativa con el modelo. & 
+Presenta capturas de pantalla como imagen, sin procesar los datos \texttt{.csv} con Python. & 
+Importa \texttt{.csv} en Jupyter, superpone curvas y calcula el error porcentual de recorte. & 
+Análisis exhaustivo. Superposición perfecta, cálculo del RMSE y justificación analítica por $r_z$. \\
+
+4. Defensa Dinámica (30\%) & 
+No justifica el código, no responde preguntas o evidencia copia ciega de IA. & 
+Responde con titubeos y no relaciona cambios en Python con la señal física. & 
+Supera la auditoría, explica su código y realiza modificaciones básicas en vivo. & 
+Dominio absoluto. Modifica variables en caliente, predice el comportamiento físico exacto. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\vspace{0.4cm}
+\begin{cita}[Mensaje Final para el Estudiante]
+\textit{``La excelencia en ingeniería no reside en que un circuito funcione por casualidad, sino en la capacidad matemática de predecir exactamente cómo, cuándo y por qué responderá bajo cualquier condición operativa.''}
+\end{cita}
+
+\end{document}
