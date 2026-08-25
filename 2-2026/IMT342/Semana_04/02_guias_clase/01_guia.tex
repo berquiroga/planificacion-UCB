@@ -222,72 +222,72 @@ Desarrolle el script \texttt{dh\_builder.py} con las funciones \texttt{dh\_matri
     \end{tabularx}
 \end{table}
 
-\section*{Insumo Docente: Código Maestro de Referencia}
-\begin{lstlisting}[language=Python]
-"""
-UNIVERSIDAD CATOLICA BOLIVIANA "SAN PABLO" - SEDE TARIJA
-Carrera de Ingenieria Mecatronica | Robotica (IMT-342)
-Script Maestro: Modulo de Cinematica Denavit-Hartenberg (SymPy y NumPy)
-Docente: M.Sc. Ing. Bernardo Quiroga Turdera
-"""
-import sympy as sp
-import numpy as np
+% \section*{Insumo Docente: Código Maestro de Referencia}
+% \begin{lstlisting}[language=Python]
+% """
+% UNIVERSIDAD CATOLICA BOLIVIANA "SAN PABLO" - SEDE TARIJA
+% Carrera de Ingenieria Mecatronica | Robotica (IMT-342)
+% Script Maestro: Modulo de Cinematica Denavit-Hartenberg (SymPy y NumPy)
+% Docente: M.Sc. Ing. Bernardo Quiroga Turdera
+% """
+% import sympy as sp
+% import numpy as np
 
-def dh_matrix_symbolic(theta, d, a, alpha):
-    """Matriz D-H estandar simbolica (4x4) utilizando SymPy."""
-    return sp.Matrix([
-        [sp.cos(theta), -sp.sin(theta)*sp.cos(alpha),  sp.sin(theta)*sp.sin(alpha), a*sp.cos(theta)],
-        [sp.sin(theta),  sp.cos(theta)*sp.cos(alpha), -sp.cos(theta)*sp.sin(alpha), a*sp.sin(theta)],
-        [0,              sp.sin(alpha),                sp.cos(alpha),               d],
-        [0,              0,                            0,                           1]
-    ])
+% def dh_matrix_symbolic(theta, d, a, alpha):
+%     """Matriz D-H estandar simbolica (4x4) utilizando SymPy."""
+%     return sp.Matrix([
+%         [sp.cos(theta), -sp.sin(theta)*sp.cos(alpha),  sp.sin(theta)*sp.sin(alpha), a*sp.cos(theta)],
+%         [sp.sin(theta),  sp.cos(theta)*sp.cos(alpha), -sp.cos(theta)*sp.sin(alpha), a*sp.sin(theta)],
+%         [0,              sp.sin(alpha),                sp.cos(alpha),               d],
+%         [0,              0,                            0,                           1]
+%     ])
 
-def dh_matrix_numeric(theta_rad, d_m, a_m, alpha_rad):
-    """Matriz D-H estandar numerica (4x4) en NumPy (float64)."""
-    ct, st = np.cos(theta_rad), np.sin(theta_rad)
-    ca, sa = np.cos(alpha_rad), np.sin(alpha_rad)
-    return np.array([
-        [ct, -st * ca,  st * sa, a_m * ct],
-        [st,  ct * ca, -ct * sa, a_m * st],
-        [0.0, sa,       ca,      d_m],
-        [0.0, 0.0,      0.0,     1.0]
-    ], dtype=np.float64)
+% def dh_matrix_numeric(theta_rad, d_m, a_m, alpha_rad):
+%     """Matriz D-H estandar numerica (4x4) en NumPy (float64)."""
+%     ct, st = np.cos(theta_rad), np.sin(theta_rad)
+%     ca, sa = np.cos(alpha_rad), np.sin(alpha_rad)
+%     return np.array([
+%         [ct, -st * ca,  st * sa, a_m * ct],
+%         [st,  ct * ca, -ct * sa, a_m * st],
+%         [0.0, sa,       ca,      d_m],
+%         [0.0, 0.0,      0.0,     1.0]
+%     ], dtype=np.float64)
 
-def fk_chain_numeric(dh_table):
-    """Cinematica directa encadenada a partir de tabla D-H."""
-    T_total = np.eye(4, dtype=np.float64)
-    for row in dh_table:
-        T_total = np.dot(T_total, dh_matrix_numeric(*row))
-    return T_total
+% def fk_chain_numeric(dh_table):
+%     """Cinematica directa encadenada a partir de tabla D-H."""
+%     T_total = np.eye(4, dtype=np.float64)
+%     for row in dh_table:
+%         T_total = np.dot(T_total, dh_matrix_numeric(*row))
+%     return T_total
 
-def main():
-    print("=== MODULO DE VALIDACION DENAVIT-HARTENBERG ESTANDAR ===")
-    # 1. Demostracion Simbolica (Ejercicio 1)
-    t, d, a, al = sp.symbols('theta d a alpha', real=True)
-    Rz = sp.Matrix([[sp.cos(t), -sp.sin(t), 0, 0], [sp.sin(t), sp.cos(t), 0, 0], [0,0,1,0], [0,0,0,1]])
-    Tz = sp.Matrix([[1,0,0,0], [0,1,0,0], [0,0,1,d], [0,0,0,1]])
-    Tx = sp.Matrix([[1,0,0,a], [0,1,0,0], [0,0,1,0], [0,0,0,1]])
-    Rx = sp.Matrix([[1,0,0,0], [0,sp.cos(al), -sp.sin(al), 0], [0,sp.sin(al), sp.cos(al), 0], [0,0,0,1]])
+% def main():
+%     print("=== MODULO DE VALIDACION DENAVIT-HARTENBERG ESTANDAR ===")
+%     # 1. Demostracion Simbolica (Ejercicio 1)
+%     t, d, a, al = sp.symbols('theta d a alpha', real=True)
+%     Rz = sp.Matrix([[sp.cos(t), -sp.sin(t), 0, 0], [sp.sin(t), sp.cos(t), 0, 0], [0,0,1,0], [0,0,0,1]])
+%     Tz = sp.Matrix([[1,0,0,0], [0,1,0,0], [0,0,1,d], [0,0,0,1]])
+%     Tx = sp.Matrix([[1,0,0,a], [0,1,0,0], [0,0,1,0], [0,0,0,1]])
+%     Rx = sp.Matrix([[1,0,0,0], [0,sp.cos(al), -sp.sin(al), 0], [0,sp.sin(al), sp.cos(al), 0], [0,0,0,1]])
 
-    T_compuesta = sp.simplify(Rz * Tz * Tx * Rx)
-    T_directa   = dh_matrix_symbolic(t, d, a, al)
-    assert T_compuesta == T_directa, "Error en la derivacion simbolica"
+%     T_compuesta = sp.simplify(Rz * Tz * Tx * Rx)
+%     T_directa   = dh_matrix_symbolic(t, d, a, al)
+%     assert T_compuesta == T_directa, "Error en la derivacion simbolica"
 
-    # 2. Validacion Numerica y Test de Isometria (Ejercicio 4)
-    T_num = dh_matrix_numeric(np.radians(45), 0.35, 0.15, np.radians(-90))
-    R_num, p_num = T_num[0:3, 0:3], T_num[0:3, 3]
+%     # 2. Validacion Numerica y Test de Isometria (Ejercicio 4)
+%     T_num = dh_matrix_numeric(np.radians(45), 0.35, 0.15, np.radians(-90))
+%     R_num, p_num = T_num[0:3, 0:3], T_num[0:3, 3]
 
-    err_ort = np.linalg.norm(np.dot(R_num.T, R_num) - np.eye(3), 'fro')
-    det_R = np.linalg.det(R_num)
+%     err_ort = np.linalg.norm(np.dot(R_num.T, R_num) - np.eye(3), 'fro')
+%     det_R = np.linalg.det(R_num)
     
-    print(f"Norma || R^T * R - I ||: {err_ort:.2e}")
-    print(f"Determinante det(R)    : {det_R:.6f}")
-    print(f"Posicion calculada p   : {np.round(p_num, 4)}")
+%     print(f"Norma || R^T * R - I ||: {err_ort:.2e}")
+%     print(f"Determinante det(R)    : {det_R:.6f}")
+%     print(f"Posicion calculada p   : {np.round(p_num, 4)}")
     
-    assert err_ort < 1e-15 and np.isclose(det_R, 1.0), "Fallo de isometria"
-    print(">> VALIDACION NUMERICA EXITOSA.")
+%     assert err_ort < 1e-15 and np.isclose(det_R, 1.0), "Fallo de isometria"
+%     print(">> VALIDACION NUMERICA EXITOSA.")
 
-if __name__ == "__main__": main()
-\end{lstlisting}
+% if __name__ == "__main__": main()
+% \end{lstlisting}
 
 \end{document}
