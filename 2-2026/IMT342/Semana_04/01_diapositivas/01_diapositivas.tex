@@ -1,0 +1,195 @@
+\documentclass[aspectratio=169]{beamer}
+
+% Tema y Colores Institucionales
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+% Ajuste de contrastes
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+
+% Paquetes estándar
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, babel}
+
+% Información del documento
+\title[Convención D-H Estándar]{Convención Sistemática Denavit-Hartenberg (D-H)}
+\subtitle{Robótica Industrial (IMT-342) — Universidad Católica Boliviana Tarija}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\date{Martes 25 de Agosto de 2026}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% Diapositiva 1
+\begin{frame}{Parametrización Sistemática de Cadenas Cinemáticas}
+    \textbf{El Problema de los 6 Parámetros:} \\
+    Un cuerpo rígido libre en el espacio tiene 6 GDL (3 de posición y 3 de orientación). En una cadena cinemática, redefinir el marco arbitrariamente acumularía 6 variables por eslabón.
+    
+    \vspace{0.4cm}
+    \begin{block}{El Principio de Denavit-Hartenberg (1955)}
+        Dos líneas en el espacio tridimensional ($z_{i-1}$ y $z_i$) poseen una \textbf{única perpendicular común} que las interconecta a lo largo de la distancia más corta. \\
+        Aprovechando esto, es posible fijar marcos locales de modo que se requieran \textbf{únicamente 4 parámetros} en lugar de 6 para describir la transformación:
+        \begin{equation*}
+            ^{i-1}T_i = f(\theta_i, d_i, a_i, \alpha_i)
+        \end{equation*}
+    \end{block}
+\end{frame}
+
+% Diapositiva 2
+\begin{frame}{Protocolo Geométrico: Las 4 Reglas D-H Estándar}
+    \textbf{Reglas Absolutas de Asignación:}
+    \begin{enumerate}
+        \item \textbf{Eje $\boldsymbol{z_{i-1}}$:} Se alinea a lo largo del eje de actuación (revolución o prismático) de la articulación $i$.
+        \item \textbf{Eje $\boldsymbol{x_i}$:} Se sitúa sobre la línea de la perpendicular común dirigida desde $z_{i-1}$ hacia $z_i$.
+        \begin{itemize}
+            \item \textit{Si se intersectan:} $x_i$ es ortogonal al plano que forman ($\hat{x}_i = \hat{z}_{i-1} \times \hat{z}_i$).
+            \item \textit{Si son paralelos:} Se escoge la perpendicular que pasa por el origen anterior.
+        \end{itemize}
+        \item \textbf{Origen $\boldsymbol{O_i}$:} Punto exacto de intersección entre el eje $x_i$ y el eje $z_i$.
+        \item \textbf{Eje $\boldsymbol{y_i}$:} Se asigna completando el sistema cartesiano dextrógiro:
+        \begin{equation*}
+            \hat{y}_i = \hat{z}_i \times \hat{x}_i
+        \end{equation*}
+    \end{enumerate}
+\end{frame}
+
+% Diapositiva 3
+\begin{frame}{Definición Formal de los 4 Parámetros D-H}
+    \begin{columns}[T]
+        \begin{column}{0.45\textwidth}
+            % Diagrama D-H explícito
+            \begin{tikzpicture}[scale=0.95, thick, >=Stealth]
+                % Eje Z_{i-1}
+                \draw[->, ucbblue, line width=1.2pt] (0, -0.5) -- (0, 3.5) node[above] {$z_{i-1}$};
+                
+                % Eje X_{i-1}
+                \draw[->, red, line width=1.2pt] (0, 0) -- (-1.2, -0.8) node[left] {$x_{i-1}$};
+                
+                % Origen i-1
+                \filldraw (0,0) circle (1.5pt) node[right] {$O_{i-1}$};
+                
+                % Eje X_i (Perpendicular común)
+                \draw[->, red, line width=1.2pt] (0, 2) -- (3, 2) node[below right] {$x_i$};
+                
+                % Línea de proyección para theta_i
+                \draw[dashed, gray] (0,0) -- (1.5, -0.2);
+                
+                % Ángulo Theta_i
+                \draw[->, green!60!black, line width=1pt] (-0.8, -0.53) to[bend right=30] node[below] {$\theta_i$} (1, -0.13);
+                
+                % Distancia d_i
+                \draw[|<->|, black] (-0.4, 0) -- node[left] {$d_i$} (-0.4, 2);
+                
+                % Origen i
+                \filldraw (2.5, 2) circle (1.5pt) node[below right] {$O_i$};
+                
+                % Distancia a_i
+                \draw[|<->|, black] (0, 2.3) -- node[above] {$a_i$} (2.5, 2.3);
+                
+                % Línea de proyección para alpha_i
+                \draw[dashed, gray] (2.5, 2) -- (2.5, 3.5);
+                
+                % Eje Z_i
+                \draw[->, ucbblue, line width=1.2pt] (2.5, 2) -- (3.3, 3.5) node[right] {$z_i$};
+                
+                % Ángulo Alpha_i
+                \draw[->, green!60!black, line width=1pt] (2.5, 3) to[bend left=20] node[above] {$\alpha_i$} (2.95, 3.0);
+            \end{tikzpicture}
+        \end{column}
+        
+        \begin{column}{0.55\textwidth}
+            \vspace{0.2cm}
+            \renewcommand{\arraystretch}{1.5}
+            \resizebox{\textwidth}{!}{
+            \begin{tabular}{l p{4.5cm} l}
+            \toprule
+            \textbf{P.} & \textbf{Definición Geométrica} & \textbf{Medido en...} \\ \midrule
+            \textcolor{green!60!black}{$\theta_i$} & Ángulo de $x_{i-1}$ hasta $x_i$ & Eje $z_{i-1}$ \\ 
+            $d_i$ & Dist. de $O_{i-1}$ a inters. $x_i$ con $z_{i-1}$ & Eje $z_{i-1}$ \\ 
+            $a_i$ & Dist. perpendicular entre $z_{i-1}$ y $z_i$ & Eje $x_i$ \\ 
+            \textcolor{green!60!black}{$\alpha_i$} & Ángulo de $z_{i-1}$ hasta $z_i$ & Eje $x_i$ \\ \bottomrule
+            \end{tabular}
+            }
+            
+            \vspace{0.4cm}
+            \begin{exampleblock}{Regla de Variables}
+                \small
+                \textbf{Revolución (R):} $\theta_i$ es variable ($q_i$).\\
+                \textbf{Prismática (P):} $d_i$ es variable ($q_i$).
+            \end{exampleblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Diapositiva 4
+\begin{frame}{Derivación Analítica de la Matriz Elemental $^{i-1}T_i$}
+    \textbf{Secuencia de Transformación Cinemática:}\\
+    El marco $\{i-1\}$ se traslada y rota hasta coincidir con $\{i\}$ secuencialmente:
+    \begin{equation*}
+        ^{i-1}T_i = \text{Rot}(z, \theta_i) \cdot \text{Trans}(z, d_i) \cdot \text{Trans}(x, a_i) \cdot \text{Rot}(x, \alpha_i)
+    \end{equation*}
+    
+    \vspace{0.1cm}
+    \textbf{Multiplicación Matricial Paso a Paso:}
+    \resizebox{\textwidth}{!}{
+    $\begin{aligned}
+        ^{i-1}T_i &= \begin{bmatrix} \cos\theta_i & -\sin\theta_i & 0 & 0 \\ \sin\theta_i & \cos\theta_i & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}     
+        \begin{bmatrix} 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 1 & d_i \\ 0 & 0 & 0 & 1 \end{bmatrix}     
+        \begin{bmatrix} 1 & 0 & 0 & a_i \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}     
+        \begin{bmatrix} 1 & 0 & 0 & 0 \\ 0 & \cos\alpha_i & -\sin\alpha_i & 0 \\ 0 & \sin\alpha_i & \cos\alpha_i & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}
+    \end{aligned}$
+    }
+    
+    \vspace{0.1cm}
+    \begin{alertblock}{Matriz General de Denavit-Hartenberg Estándar}
+    \centering
+        $\mathbf{^{i-1}T_i = \begin{bmatrix}      
+        \cos\theta_i & -\sin\theta_i \cos\alpha_i & \sin\theta_i \sin\alpha_i & a_i \cos\theta_i \\      
+        \sin\theta_i & \cos\theta_i \cos\alpha_i & -\cos\theta_i \sin\alpha_i & a_i \sin\theta_i \\      
+        0 & \sin\alpha_i & \cos\alpha_i & d_i \\      
+        0 & 0 & 0 & 1      
+        \end{bmatrix}}$
+    \end{alertblock}
+\end{frame}
+
+% Diapositiva 5 (CORREGIDA: Eliminado entorno table, escalado y compactado)
+\begin{frame}{Reglas de Tratamiento para Geometrías Comunes}
+    \vspace{-0.2cm}
+    \begin{center}
+        \renewcommand{\arraystretch}{1.2}
+        \resizebox{0.95\textwidth}{!}{
+        \begin{tabular}{c c c}
+        \toprule
+        \textbf{Configuración Geométrica} & \textbf{Condición Algebraica} & \textbf{Matriz Resultante Simplificada } $^{i-1}T_i$ \\ \midrule
+        
+        \textbf{Ejes Paralelos} ($z_{i-1} \parallel z_i$) & $\alpha_i = 0, \quad d_i = 0$ & 
+        $\begin{bmatrix} \cos\theta_i & -\sin\theta_i & 0 & a_i \cos\theta_i \\ \sin\theta_i & \cos\theta_i & 0 & a_i \sin\theta_i \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}$ \\ \addlinespace
+        
+        \textbf{Ejes Concurrentes} ($z_{i-1} \cap z_i$) & $a_i = 0, \quad \alpha_i = \pm 90^\circ$ & 
+        $\begin{bmatrix} \cos\theta_i & 0 & \pm\sin\theta_i & 0 \\ \sin\theta_i & 0 & \mp\cos\theta_i & 0 \\ 0 & \pm 1 & 0 & d_i \\ 0 & 0 & 0 & 1 \end{bmatrix}$ \\ \bottomrule
+        \end{tabular}
+        }
+    \end{center}
+    
+    \vspace{-0.2cm}
+    \begin{exampleblock}{Nota para el Hito 1 del PFI (ABB IRB 120)}
+        \footnotesize La muñeca esférica del robot industrial (Juntas 4, 5 y 6) intersecta en un único punto central. En esa sección, $a_4 = a_5 = 0$, lo que anula las traslaciones en $x$ y permite el desacoplamiento analítico de Pieper.
+    \end{exampleblock}
+\end{frame}
+
+\end{document}

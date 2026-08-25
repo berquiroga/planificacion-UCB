@@ -1,0 +1,293 @@
+\documentclass[11pt, a4paper]{article}
+
+% Paquetes de idioma y tipografía
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo} % Tipografía Palatino
+\usepackage{microtype}
+
+% Geometría de la página
+\usepackage[margin=2.5cm, headheight=15pt]{geometry}
+
+% Paquetes matemáticos
+\usepackage{amsmath, amssymb, amsfonts, bm}
+
+% Gráficos, colores y tablas
+\usepackage{graphicx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, babel}
+
+% Personalización de listas y código
+\usepackage{enumitem}
+\usepackage{listings}
+
+% Encabezados y pies de página
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Robótica (IMT-342)}
+\rhead{Clase 1 - Sem 4}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Definición de colores institucionales
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{ucbyellow}{RGB}{255, 184, 28}
+\definecolor{codegray}{rgb}{0.95,0.95,0.95}
+
+% Estilo para código Python
+\lstdefinestyle{pythonstyle}{
+    backgroundcolor=\color{codegray},
+    commentstyle=\color{green!60!black},
+    keywordstyle=\color{blue}\bfseries,
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{purple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=4,
+    language=Python,
+    frame=single,
+    rulecolor=\color{gray!40}
+}
+\lstset{style=pythonstyle}
+
+\begin{document}
+
+% =======================================================
+% INSUMO 1: GUÍA DE CLASE PARA EL DOCENTE
+% =======================================================
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{GUÍA DE CLASE PARA EL DOCENTE (LESSON PLAN)}}\\
+    \vspace{0.2cm}
+    \normalsize\textbf{Código:} IMT-342-GP-0401
+\end{center}
+\vspace{0.3cm}
+
+\noindent\textbf{Unidad I:} Morfología, Geometría del Espacio y Cinemática Directa \\
+\textbf{Tema:} Convención Sistemática Denavit-Hartenberg (D-H) Estándar, Asignación de Ejes y Matriz $^{i-1}T_i$ \\
+\textbf{Duración:} 120 minutos reales (Martes 25 de Agosto de 2026) \\
+\textbf{Alineamiento Metodológico:} CDIO (Concebir/Diseñar) | ABET SO-1 y SO-6
+
+\section*{1. Objetivos de Aprendizaje de la Sesión}
+Al finalizar la sesión, el estudiante será capaz de:
+\begin{itemize}[label=\textcolor{ucbblue}{$\circ$}]
+    \item Comprender la justificación cinemática de parametrizar una transformación espacial de 6 variables con únicamente 4 parámetros geométricos mediante la perpendicular común.
+    \item Aplicar rigurosamente las 4 reglas geométricas de asignación de marcos de referencia locales según la convención D-H estándar ($z_{i-1}$ axial a la junta $i$, $x_i$ perpendicular común).
+    \item Deducir analíticamente la matriz de transformación homogénea elemental $^{i-1}T_i(\theta_i, d_i, a_i, \alpha_i)$.
+    \item Tratar casos singulares: ejes concurrentes ($a_i = 0$) y ejes paralelos ($\alpha_i = 0$).
+    \item Implementar en Python (SymPy/NumPy) la matriz D-H simbólica y numérica.
+\end{itemize}
+
+\section*{2. Cronograma de Gestión del Tiempo en Aula (120 min)}
+\noindent
+\begin{tabularx}{\textwidth}{@{} l >{\raggedright\arraybackslash}p{3cm} X X @{}}
+\toprule
+\textbf{Tiempo} & \textbf{Fase Didáctica} & \textbf{Actividad Docente y Dinámica de Aula} & \textbf{Justificación Pedagógica} \\ \midrule
+16:00 - 16:15 \newline (15 min) & Activación y Desafío & Mostrar que definir un marco libre acumula $6N$ parámetros propensos a error. Presentar la solución D-H (1955) de reducir a 4 parámetros. & \textbf{Conflicto Cognitivo:} Demuestra la necesidad de estandarizar para no redefinir arbitrariamente. \\ \addlinespace
+16:15 - 17:00 \newline (45 min) & Cátedra Teórica: Las 4 Reglas & Deducción de la regla de perpendicular común. Definición de $\theta_i, d_i, a_i, \alpha_i$. Protocolo para colocar $z_{i-1}, z_i, x_i, y_i$ y orígenes. & \textbf{Principio 1 (Teoría):} Deducción geométrica pura antes de usar software. \\ \addlinespace
+17:00 - 17:30 \newline (30 min) & Deducción de la Matriz $^{i-1}T_i$ & Multiplicación simbólica de 4 operadores canónicos: $\text{Rot}_z \cdot \text{Trans}_z \cdot \text{Trans}_x \cdot \text{Rot}_x$. Análisis de signos. & \textbf{Rigor Analítico:} Entender el origen algebraico exacto de la matriz. \\ \addlinespace
+17:30 - 17:55 \newline (25 min) & Taller Simbólico en Python & Codifican \texttt{dh\_matrix()} y verifican numéricamente ortogonalidad y homogeneidad. & \textbf{Principios 2 y 3:} Implementación libre de cajas negras. \\ \addlinespace
+17:55 - 18:00 \newline (5 min) & Cierre y Conexión IRB 120 & Asignación de TP Nº 5. Recordatorio: el jueves se resolverá el robot físico en pizarra. & \textbf{Enlace con el PFI:} Progresión lógica al activo industrial. \\ \bottomrule
+\end{tabularx}
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=red!5!white, colframe=red!75!black, title=\textbf{3. Obstáculos Conceptuales Típicos y Tratamiento}]
+\begin{itemize}[leftmargin=*]
+    \item \textbf{D-H Estándar vs. Modificado (Craig):} Dejar claro que usamos \textit{D-H Estándar} (Siciliano/Spong). El eje $z_{i-1}$ actúa la junta $i$, y el marco $\{i\}$ se fija en el extremo distal del eslabón $i$.
+    \item \textbf{Ejes Paralelos ($z_{i-1} \parallel z_i$):} Existen infinitas perpendiculares. \textit{Solución:} Se escoge la que pasa por el origen anterior para hacer $d_i = 0$.
+    \item \textbf{Ejes Concurrentes ($z_{i-1} \cap z_i$):} La distancia es nula ($a_i = 0$). El origen $O_i$ es la intersección. \textit{Solución:} El eje $x_i$ se define como $\hat{x}_i = \pm (\hat{z}_{i-1} \times \hat{z}_i)$.
+\end{itemize}
+\end{tcolorbox}
+
+\newpage
+% =======================================================
+% INSUMO 3: GUÍA DE TRABAJO PRÁCTICO
+% =======================================================
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{UNIVERSIDAD CATÓLICA BOLIVIANA "SAN PABLO"}}\\
+    \large\textbf{SEDE TARIJA}\\
+    \vspace{0.2cm}
+    \normalsize Departamento de Ciencias Exactas e Ingenierías | Carrera de Ingeniería Mecatrónica\\
+    Asignatura: Robótica (IMT-342) | Gestión: Semestre II-2026
+\end{center}
+
+\vspace{0.4cm}
+\begin{center}
+    \Large\textbf{Guía de Trabajo Práctico Nº 5}\\
+    \large\textit{Asignación Sistemática D-H Estándar y Modelado Simbólico/Numérico}
+\end{center}
+
+\section{Protocolo de Ejecución bajo los 4 Principios Obligatorios}
+\begin{center}
+\begin{tikzpicture}[
+    node distance=1.2cm and 2cm,
+    box/.style={rectangle, draw=ucbblue, thick, fill=ucbblue!10, text width=4.5cm, align=center, minimum height=1cm, font=\small\bfseries},
+    desc/.style={rectangle, text width=8cm, align=left, font=\small},
+    arrow/.style={-Stealth, thick, ucbblue}
+]
+    \node[box] (c) {1. Fundamentación};
+    \node[desc, right=of c] (cd) {$\longrightarrow$ Deducción Manuscrita de Ejes y Tabla D-H en Papel};
+    \node[box, below=of c] (d) {2. Implementación};
+    \node[desc, right=of d] (dd) {$\longrightarrow$ Módulo Python \texttt{dh\_builder.py} (SymPy + NumPy)};
+    \node[box, below=of d] (i) {3. Validación};
+    \node[desc, right=of i] (id) {$\longrightarrow$ Test de Ortogonalidad ($\det(R)=1, R^T R=I$) y Error};
+    \node[box, below=of i] (o) {4. Evidencia};
+    \node[desc, right=of o] (od) {$\longrightarrow$ Jupyter Notebook + Commits Atómicos en Git};
+
+    \draw[arrow] (c) -- (d); \draw[arrow] (d) -- (i); \draw[arrow] (i) -- (o);
+\end{tikzpicture}
+\end{center}
+
+\section{Ejercicios de Desarrollo Obligatorio}
+
+\subsection*{Ejercicio 1: Deducción Matricial Formal (Manuscrito)}
+Desarrolle el producto matricial explícito de los cuatro operadores básicos:
+\begin{equation*}
+    ^{i-1}T_i = \text{Rot}(z, \theta_i) \cdot \text{Trans}(z, d_i) \cdot \text{Trans}(x, a_i) \cdot \text{Rot}(x, \alpha_i)
+\end{equation*}
+Demuestre paso a paso que el elemento de la \textbf{fila 1, columna 2} es $-\sin\theta_i \cos\alpha_i$, y que el elemento de la \textbf{fila 3, columna 4} es $d_i$.
+
+\subsection*{Ejercicio 2: Asignación D-H de Manipulador Planar 3R (Fundamentación)}
+Considere un brazo manipulador planar de 3 GDL con longitudes $l_1, l_2, l_3$ moviéndose en el plano $XY$.
+\begin{center}
+\begin{tikzpicture}[scale=1.2, thick, >=Stealth]
+    % Robot base
+    \filldraw[fill=gray!30, draw=black] (-0.5,0) rectangle (0.5,0.3);
+    \draw (0,0.3) -- (0,0.6);
+    
+    % Joints and Links
+    \coordinate (J1) at (0,0.6);
+    \coordinate (J2) at (2,1.5);
+    \coordinate (J3) at (4,1.5);
+    \coordinate (EE) at (5.5,0.8);
+    
+    % Links
+    \draw[line width=4pt, ucbblue] (J1) -- node[above left] {$l_1$} (J2);
+    \draw[line width=4pt, ucbblue] (J2) -- node[above] {$l_2$} (J3);
+    \draw[line width=4pt, ucbblue] (J3) -- node[above right] {$l_3$} (EE);
+    
+    % Joints (Circles)
+    \filldraw[fill=white, draw=black] (J1) circle (0.2) node[below right=0.1cm] {$q_1$};
+    \filldraw[fill=white, draw=black] (J2) circle (0.2) node[above left=0.1cm] {$q_2$};
+    \filldraw[fill=white, draw=black] (J3) circle (0.2) node[above right=0.1cm] {$q_3$};
+    \filldraw[fill=red!80, draw=black] (EE) circle (0.1) node[right=0.1cm] {TCP};
+    
+    % Hint frames (partial)
+    \draw[->, red] (J1) -- (1,0.6) node[right] {$X_0$};
+    \draw[->, green!60!black] (J1) -- (0,1.6) node[above] {$Y_0$};
+    \filldraw[blue] (J1) circle (0.05) node[left=0.2cm] {$Z_0$ (Sale)};
+\end{tikzpicture}
+\end{center}
+
+\begin{enumerate}
+    \item Dibuje el diagrama cinemático asignando los sistemas $\{0\}, \{1\}, \{2\}, \{3\}$ aplicando rigurosamente las 4 reglas D-H estándar.
+    \item Complete la tabla de parámetros D-H indicando qué parámetros son constantes y cuáles variables.
+    \item Obtenga analíticamente $^{0}T_1, {}^{1}T_2, {}^{2}T_3$ y la cinemática directa $^{0}T_3(q_1, q_2, q_3)$.
+\end{enumerate}
+
+\subsection*{Ejercicio 3 y 4: Implementación Simbólica, Numérica y Validación (CDIO)}
+Desarrolle el script \texttt{dh\_builder.py} con las funciones \texttt{dh\_matrix\_symbolic}, \texttt{dh\_matrix\_numeric}, y \texttt{fk\_chain}. Para una junta con $\theta_1 = 45^\circ$, $d_1 = 0.35\text{m}$, $a_1 = 0.15\text{m}$, $\alpha_1 = -90^\circ$: extraiga $R$ y demuestre por código que $\Vert R^T R - I \Vert_F < 10^{-15}$, $\vert \det(R) - 1.0 \vert < 10^{-15}$, y $p = [a_1 c\theta_1, a_1 s\theta_1, d_1]^T$.
+
+\newpage
+% =======================================================
+% RÚBRICA Y CÓDIGO MAESTRO
+% =======================================================
+\section{Rúbrica Analítica de Evaluación (Escala de 20 Puntos)}
+\begin{table}[h!]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{@{} >{\raggedright\arraybackslash}p{2.8cm} X X X @{}}
+    \toprule
+    \textbf{Criterio} & \textbf{Excelente (5 pts)} & \textbf{Aceptable (3 pts)} & \textbf{Insuficiente (1 pt)} \\ \midrule
+    \textbf{Deducción Matriz D-H (SO-1)} & Manuscrita impecable del producto de los 4 movimientos sin omitir pasos algebraicos. & Comete un error menor de signos en las funciones trigonométricas intermedias. & Copia la matriz final directamente sin desarrollo analítico. \\ 
+    \textbf{Asignación 3R} & Diagrama y tabla D-H perfectamente asignados con justificación geométrica formal. & Tabla correcta, pero diagrama no indica explícitamente los orígenes $\{i\}$. & Asignación arbitraria que viola D-H ($x_i$ no perpendicular a $z_{i-1}$). \\ 
+    \textbf{Python (CDIO)} & Limpio, con soporte SymPy y NumPy, modularizado en funciones reutilizables. & Funcional pero no utiliza SymPy para simplificación o código redundante. & Errores de sintaxis o no realiza la multiplicación encadenada. \\ 
+    \textbf{Validación y Git} & Validación completa de ortogonalidad; repositorio con commits atómicos por ejercicio. & Omite comprobación de la norma de Frobenius o comete un commit masivo único. & Sin evidencias numéricas o el Git está desorganizado. \\ \bottomrule
+    \end{tabularx}
+\end{table}
+
+\section*{Insumo Docente: Código Maestro de Referencia}
+\begin{lstlisting}[language=Python]
+"""
+UNIVERSIDAD CATOLICA BOLIVIANA "SAN PABLO" - SEDE TARIJA
+Carrera de Ingenieria Mecatronica | Robotica (IMT-342)
+Script Maestro: Modulo de Cinematica Denavit-Hartenberg (SymPy y NumPy)
+Docente: M.Sc. Ing. Bernardo Quiroga Turdera
+"""
+import sympy as sp
+import numpy as np
+
+def dh_matrix_symbolic(theta, d, a, alpha):
+    """Matriz D-H estandar simbolica (4x4) utilizando SymPy."""
+    return sp.Matrix([
+        [sp.cos(theta), -sp.sin(theta)*sp.cos(alpha),  sp.sin(theta)*sp.sin(alpha), a*sp.cos(theta)],
+        [sp.sin(theta),  sp.cos(theta)*sp.cos(alpha), -sp.cos(theta)*sp.sin(alpha), a*sp.sin(theta)],
+        [0,              sp.sin(alpha),                sp.cos(alpha),               d],
+        [0,              0,                            0,                           1]
+    ])
+
+def dh_matrix_numeric(theta_rad, d_m, a_m, alpha_rad):
+    """Matriz D-H estandar numerica (4x4) en NumPy (float64)."""
+    ct, st = np.cos(theta_rad), np.sin(theta_rad)
+    ca, sa = np.cos(alpha_rad), np.sin(alpha_rad)
+    return np.array([
+        [ct, -st * ca,  st * sa, a_m * ct],
+        [st,  ct * ca, -ct * sa, a_m * st],
+        [0.0, sa,       ca,      d_m],
+        [0.0, 0.0,      0.0,     1.0]
+    ], dtype=np.float64)
+
+def fk_chain_numeric(dh_table):
+    """Cinematica directa encadenada a partir de tabla D-H."""
+    T_total = np.eye(4, dtype=np.float64)
+    for row in dh_table:
+        T_total = np.dot(T_total, dh_matrix_numeric(*row))
+    return T_total
+
+def main():
+    print("=== MODULO DE VALIDACION DENAVIT-HARTENBERG ESTANDAR ===")
+    # 1. Demostracion Simbolica (Ejercicio 1)
+    t, d, a, al = sp.symbols('theta d a alpha', real=True)
+    Rz = sp.Matrix([[sp.cos(t), -sp.sin(t), 0, 0], [sp.sin(t), sp.cos(t), 0, 0], [0,0,1,0], [0,0,0,1]])
+    Tz = sp.Matrix([[1,0,0,0], [0,1,0,0], [0,0,1,d], [0,0,0,1]])
+    Tx = sp.Matrix([[1,0,0,a], [0,1,0,0], [0,0,1,0], [0,0,0,1]])
+    Rx = sp.Matrix([[1,0,0,0], [0,sp.cos(al), -sp.sin(al), 0], [0,sp.sin(al), sp.cos(al), 0], [0,0,0,1]])
+
+    T_compuesta = sp.simplify(Rz * Tz * Tx * Rx)
+    T_directa   = dh_matrix_symbolic(t, d, a, al)
+    assert T_compuesta == T_directa, "Error en la derivacion simbolica"
+
+    # 2. Validacion Numerica y Test de Isometria (Ejercicio 4)
+    T_num = dh_matrix_numeric(np.radians(45), 0.35, 0.15, np.radians(-90))
+    R_num, p_num = T_num[0:3, 0:3], T_num[0:3, 3]
+
+    err_ort = np.linalg.norm(np.dot(R_num.T, R_num) - np.eye(3), 'fro')
+    det_R = np.linalg.det(R_num)
+    
+    print(f"Norma || R^T * R - I ||: {err_ort:.2e}")
+    print(f"Determinante det(R)    : {det_R:.6f}")
+    print(f"Posicion calculada p   : {np.round(p_num, 4)}")
+    
+    assert err_ort < 1e-15 and np.isclose(det_R, 1.0), "Fallo de isometria"
+    print(">> VALIDACION NUMERICA EXITOSA.")
+
+if __name__ == "__main__": main()
+\end{lstlisting}
+
+\end{document}
