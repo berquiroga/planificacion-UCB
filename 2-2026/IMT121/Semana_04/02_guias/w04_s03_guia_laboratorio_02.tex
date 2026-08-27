@@ -1,0 +1,293 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- Paquetes Fundamentales ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[margin=2.5cm, headheight=40pt]{geometry}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{float} % Para forzar posicionamiento de tablas con [H]
+\usepackage[colorlinks=true, linkcolor=ucbblue, urlcolor=ucbblue]{hyperref}
+
+% --- Matemáticas y Electrónica ---
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage[american, RPvoltages]{circuitikz}
+
+% --- Elementos de Diseño Pedagógico y Tablas ---
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{colortbl}
+
+% --- Configuración de Colores y siunitx ---
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\sisetup{
+    output-decimal-marker = {,},
+    per-mode = symbol,
+    inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+% --- Macros y Estilos ---
+\tcbset{
+    caja_justificacion/.style={colback=blue!3, colframe=ucbblue, fonttitle=\bfseries, boxrule=0.8pt, arc=3pt},
+    caja_alerta/.style={colback=red!5, colframe=red!80!black, fonttitle=\bfseries, boxrule=1pt, arc=3pt}
+}
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{codegreen}\itshape,
+    stringstyle=\color{codepurple},
+    numbers=left, numberstyle=\tiny\color{gray},
+    frame=single, backgroundcolor=\color{gray!5},
+    breaklines=true, showstringspaces=false,
+    extendedchars=true,
+    literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ñ}{{\~n}}1
+}
+
+% --- Estilo de Página ---
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textcolor{ucbblue}{\textbf{GUÍA DE LABORATORIO N$^\circ$ 2}} \\ IMT-121 Circuitos Electrónicos I}
+\rhead{\textbf{Ingeniería Mecatrónica e Ingeniería Biomédica} \\ Universidad Católica Boliviana ``San Pablo'' --- Sede Tarija}
+\cfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{ucbblue}\leaders\hrule height \headrulewidth\hfill}}
+
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{Análisis Nodal Canónico ($\mathbf{G}\mathbf{V} = \mathbf{I}$), Caracterización Experimental de Supernodos Flotantes y Validación Tripartita en Redes de CC}} \\[0.4cm]
+    \normalsize
+    \textbf{Docente:} M.Sc. Ing. Bernardo Quiroga Turdera \hspace{1cm} \textbf{Gestión Académica:} Semestre II/2026 \\
+    \textbf{Duración:} 90 minutos (Sesión de bancada presencial). \hspace{0.5cm} \textbf{Modalidad:} Tríadas oficiales (Equipos PFI). \\[0.2cm]
+    \textit{Alineamiento Curricular: Criterio ABET 1 y 6 | Marco CDIO (Implementar--Operar)}
+    \vspace{0.3cm}
+\end{center}
+
+\hrule
+\vspace{0.4cm}
+
+\section{1. Objetivos de Aprendizaje}
+\begin{itemize}[label=\textcolor{ucbblue}{\textbullet}, itemsep=2pt]
+    \item \textbf{Formular} por inspección directa y Análisis Nodal Modificado (MNA) la matriz canónica de conductancias $\mathbf{G}$ y las ecuaciones de enlace para redes con fuentes de tensión flotantes (Supernodos).
+    \item \textbf{Implementar} el solver computacional en Python (NumPy) parametrizado con tolerancias reales y la simulación del punto de operación (\texttt{.op}) con nombres de red jerárquicos en LTspice XVII.
+    \item \textbf{Construir} la red física en protoboard gestionando el aislamiento de masas entre canales de alimentación para fuentes flotantes.
+    \item \textbf{Validar} experimentalmente los potenciales nodales y corrientes de rama mediante la Tabla de Validación Tripartita, asegurando $\varepsilon_r \le 5.0\%$ y analizando el efecto de carga de los instrumentos.
+\end{itemize}
+
+\section{2. Recursos y Equipamiento Requerido (BOM)}
+\textbf{a. Hardware e Instrumentación de Bancada:}
+\begin{itemize}[label=\raisebox{0.25ex}{\tiny$\bullet$}, itemsep=0pt]
+    \item 1 Fuente de alimentación doble/triple de CC con canales aislados galvánicamente ($\qty{0}{\volt}$--\qty{30}{\volt}).
+    \item 2 Multímetros digitales de banco o portátiles ($\ge 3\frac{1}{2}$ dígitos para medición simultánea de V e I).
+    \item 1 Protoboard de 830 puntos limpio y cables jumper rígidos sólidos (calibre 22--24 AWG).
+    \item Resistores de película metálica / carbón ($1/4\text{ W}$, $5\%$ de tolerancia nominal): \\
+    $R_1 = \qty{220}{\ohm}$, $R_2 = \qty{470}{\ohm}$, $R_3 = \qty{330}{\ohm}$, $R_4 = \qty{100}{\ohm}$, $R_5 = \qty{150}{\ohm}$.
+\end{itemize}
+
+\textbf{b. Software Científico:}
+\begin{itemize}[label=\raisebox{0.25ex}{\tiny$\bullet$}, itemsep=0pt]
+    \item Python 3.10+ (Jupyter Notebook / Google Colab) con librerías \texttt{numpy} y \texttt{pandas}.
+    \item LTspice XVII (versión 17 o 24).
+\end{itemize}
+
+\section{3. Esquemático del Circuito Experimental}
+El circuito corresponde a la red de acoplamiento nodal del Hito 1 del PFI, donde una fuente principal $V_{s1} = \qty{12.0}{\volt}$ alimenta la red y una fuente independiente flotante $V_{s2} = \qty{5.0}{\volt}$ introduce un offset diferencial entre los Nodos 2 y 3 (Supernodo).
+
+\begin{center}
+    \begin{circuitikz}[scale=1, transform shape]
+        % Rama de alimentacion izquierda
+        \draw (0,0) node[ground]{} to[V, v=$V_{s1} {=} \qty{12}{\volt}$] (0,3) 
+              to[R, l=$R_1 {=} \qty{220}{\ohm}$] (3,3) node[above]{NODO 1};
+        % Resistencia a tierra Nodo 1
+        \draw (3,3) to[R, l=$R_2 {=} \qty{470}{\ohm}$] (3,0) node[ground]{};
+        % Rama entre Nodo 1 y 2
+        \draw (3,3) to[R, l=$R_3 {=} \qty{330}{\ohm}$] (7,3) node[above]{NODO 2};
+        % Fuente flotante (Supernodo)
+        \draw (7,3) to[V, v=$V_{s2} {=} \qty{5}{\volt}$] (7,0) node[right]{NODO 3};
+        % Ramas de retorno a tierra desde Nodo 3
+        \draw (7,0) to[R, l=$R_4 {=} \qty{100}{\ohm}$] (7,-2);
+        \draw (7,-2) to[R, l=$R_5 {=} \qty{150}{\ohm}$] (3,-2) node[ground]{};
+        % Puntos de nodos
+        \filldraw (3,3) circle (1.5pt);
+        \filldraw (7,3) circle (1.5pt);
+        \filldraw (7,0) circle (1.5pt);
+    \end{circuitikz}
+\end{center}
+
+\section{4. Desarrollo de la Práctica (4 Principios Obligatorios)}
+
+\subsection*{PRINCIPIO 1: Fundamentación Teórica (Previo Manuscrito)}
+\textit{Condición de Ingreso: Presentar este bloque resuelto a mano al iniciar la sesión.}
+
+\textbf{A. Medición Previa de Componentes}\\
+Medir con el multímetro ($\Omega$) cada resistor antes de ensamblar y registrar su conductancia real:
+\begin{equation}
+    G_k = \frac{1}{R_{k,\text{medido}}} \quad [\unit{\siemens}]
+\end{equation}
+
+\textbf{B. Formulación del Sistema Nodal Modificado ($\mathbf{A}\mathbf{V} = \mathbf{b}$)}\\
+\textit{Nodo 1 (Estándar):}
+\begin{align*}
+    \frac{V_1 - V_{s1}}{R_1} + \frac{V_1}{R_2} + \frac{V_1 - V_2}{R_3} &= 0 \\
+    (G_1 + G_2 + G_3) V_1 - G_3 V_2 &= G_1 V_{s1}
+\end{align*}
+
+\textit{Supernodo Formado por Nodos 2 y 3 (LCK):}
+\begin{align*}
+    \frac{V_2 - V_1}{R_3} + \frac{V_3}{R_4 + R_5} &= 0 \\
+    -G_3 V_1 + G_3 V_2 + \left( \frac{1}{R_4 + R_5} \right) V_3 &= 0
+\end{align*}
+
+\textit{Ecuación de Enlace del Supernodo (LVK):}
+\begin{equation}
+    V_2 - V_3 = V_{s2} \implies \mathbf{1.0 V_2 - 1.0 V_3 = \qty{5.0}{\volt}}
+\end{equation}
+
+\textbf{C. Matriz Aumentada Teórica Nominal:}
+\begin{equation*}
+    \begin{bmatrix} 
+    (G_1 + G_2 + G_3) & -G_3 & 0 \\ 
+    -G_3 & G_3 & \frac{1}{R_4+R_5} \\ 
+    0 & 1.0 & -1.0 
+    \end{bmatrix} 
+    \begin{bmatrix} V_1 \\ V_2 \\ V_3 \end{bmatrix} = 
+    \begin{bmatrix} G_1 V_{s1} \\ 0 \\ V_{s2} \end{bmatrix}
+\end{equation*}
+
+\subsection*{PRINCIPIO 2: Implementación (Simulación + Código + Hardware)}
+\textbf{A. Cómputo Científico en Python (NumPy)}\\
+Ejecutar el script en Jupyter Notebook ingresando los valores reales medidos en bancada:
+\begin{lstlisting}[language=Python]
+import numpy as np
+
+# 1. Parametros reales medidos en laboratorio (ejemplo nominal)
+R1, R2, R3, R4, R5 = 220.0, 470.0, 330.0, 100.0, 150.0
+Vs1, Vs2 = 12.00, 5.00
+
+# 2. Conversion a conductancias
+G1 = 1.0 / R1
+G2 = 1.0 / R2
+G3 = 1.0 / R3
+G_rama3 = 1.0 / (R4 + R5)
+
+# 3. Ensamblado de Matriz A (3x3) y Vector b
+A = np.array([
+    [(G1 + G2 + G3), -G3,      0.0    ],
+    [-G3,             G3,      G_rama3],
+    [ 0.0,            1.0,    -1.0    ]
+], dtype=float)
+
+b = np.array([G1 * Vs1, 0.0, Vs2], dtype=float)
+
+# 4. Solucion Canonica
+det_A = np.linalg.det(A)
+assert np.abs(det_A) > 1e-6, "Error: Sistema singular."
+V_nodal = np.linalg.solve(A, b)
+
+print("--- RESULTADOS ANALITICOS (PYTHON) ---")
+print(f"Determinante del sistema : {det_A:.6f}")
+print(f"Voltaje Nodal V1 (Teorico): {V_nodal[0]:.4f} V")
+print(f"Voltaje Nodal V2 (Teorico): {V_nodal[1]:.4f} V")
+print(f"Voltaje Nodal V3 (Teorico): {V_nodal[2]:.4f} V")
+\end{lstlisting}
+
+\vspace{0.4cm}
+\textbf{B. Simulación Esquemática en LTspice XVII}\\
+Construir el esquemático y ejecutar la directiva \texttt{.op} para registrar los voltajes nodales simulados.
+\begin{center}
+    \begin{circuitikz}[scale=0.85, transform shape]
+        \draw (0,0) node[ground]{} to[V, v=\texttt{V1 12}] (0,3) 
+              to[R, l=\texttt{R1 220}] (3,3) node[above]{\texttt{N001}};
+        \draw (3,3) to[R, l=\texttt{R2 470}] (3,0) node[ground]{};
+        \draw (3,3) to[R, l=\texttt{R3 330}] (7,3) node[above]{\texttt{N002}};
+        \draw (7,3) to[V, v=\texttt{V2 5}] (7,0) node[right]{\texttt{N003}};
+        \draw (7,0) to[R, l=\texttt{R4 100}] (7,-2);
+        \draw (7,-2) to[R, l=\texttt{R5 150}] (3,-2) node[ground]{};
+    \end{circuitikz}
+\end{center}
+
+\textbf{C. Montaje Físico en Protoboard y Gestión de Tierras}\\
+\textbf{Calibración:} Canal 1 a \qty{12.00}{\volt} y Canal 2 a \qty{5.00}{\volt}.
+\begin{tcolorbox}[caja_alerta, title={¡ATENCIÓN! Aislamiento Crítico}]
+Asegurar que el Canal 2 de la fuente opere en modo independiente/flotante. \textbf{No puentear el terminal negativo del Canal 2 a la Tierra general del circuito}; este debe conectarse directamente al Nodo 3.
+\end{tcolorbox}
+\textbf{Adquisición:} Punta negra en GND, medir con la roja los Nodos 1, 2 y 3.
+
+\subsection*{PRINCIPIO 3: Validación Tripartita y Análisis de Error (ABET 6)}
+Complete en la bitácora la siguiente tabla con los datos obtenidos ($\varepsilon_r = \left\vert \frac{X_{\text{exp}} - X_{\text{teo}}}{X_{\text{teo}}} \right\vert \times 100\%$):
+
+% Usamos \resizebox para garantizar que la tabla jamás desborde los márgenes horizontales
+\begin{table}[H]
+    \centering
+    \resizebox{\textwidth}{!}{
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{@{}lcccccc@{}}
+        \toprule
+        \rowcolor{ucbblue!10}
+        \textbf{Variable Nodal} & \textbf{Teórico (Py)} & \textbf{Sim. (LTspice)} & \textbf{Experimental} & \textbf{$\varepsilon_{r1}$ (Teo/Exp)} & \textbf{$\varepsilon_{r2}$ (Sim/Exp)} & \textbf{Estado ($\le 5\%$)} \\
+        \midrule
+        Voltaje Nodo 1 ($V_1$) & & & & & & [ ] CUMPLE \\
+        Voltaje Nodo 2 ($V_2$) & & & & & & [ ] CUMPLE \\
+        Voltaje Nodo 3 ($V_3$) & & & & & & [ ] CUMPLE \\
+        Dif. Supernodo ($V_2 - V_3$)& & & & & & [ ] CUMPLE \\
+        Corriente Rama 3 ($I_{R3}$) & & & & & & [ ] CUMPLE \\
+        \bottomrule
+    \end{tabular}
+    }
+\end{table}
+
+\textbf{Discusión Técnica Obligatoria:}
+\begin{enumerate}[itemsep=1pt]
+    \item ¿Se mantuvo la relación $V_2 - V_3 = \qty{5.00}{\volt}$ dentro del margen del $\pm 1\%$?
+    \item Explicar el impacto de la resistencia interna de las fuentes de alimentación de banco en la degradación de la simetría de la matriz $\mathbf{G}$.
+    \item Evaluar el efecto de carga del voltímetro ($R_v \approx \qty{10}{\mega\ohm}$) al medir ramas de alto valor óhmico.
+\end{enumerate}
+
+\subsection*{PRINCIPIO 4: Evidencias y Estructura del Entregable}
+Actualizar el repositorio GitHub (\texttt{IMT121\_2026\_EquipoXX}) en \texttt{/Laboratorio\_2} con:
+\begin{itemize}[itemsep=1pt]
+    \item \texttt{modelo\_nodal.ipynb}: Jupyter Notebook documentado.
+    \item \texttt{simulacion\_supernodo.asc} y \texttt{.log}: Archivos fuente LTspice.
+    \item \texttt{foto\_montaje\_bancada.jpg}: Fotografía mostrando el conexionado de la fuente flotante.
+    \item \texttt{Informe\_Laboratorio\_2.pdf}: Reporte (formato IEEE, max. 2 páginas) con la tabla tripartita.
+\end{itemize}
+
+\section{5. Rúbrica de Evaluación Oficial (100 Puntos)}
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{@{}p{3.5cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X c@{}}
+        \toprule
+        \rowcolor{ucbblue!10}
+        \textbf{Criterio de Desempeño} & \textbf{Insuficiente (0--50 pts)} & \textbf{Competente (51--85 pts)} & \textbf{Sobresaliente (86--100 pts)} & \textbf{Pond.} \\
+        \midrule
+        \textbf{1. Modelado Matemático MNA} (ABET 1) & Inhabilidad para formular $\mathbf{G}$ o errores de signo en supernodo. & Formula $\mathbf{G}$ con errores menores en conductancias. & Impecable. Modela el supernodo con rigor matricial. & 25\% \\
+        \textbf{2. Montaje y Metrología} (ABET 6) & Cortocircuita la fuente flotante o montaje inestable. & Funcional pero con calibración imprecisa de fuentes. & Manejo riguroso del aislamiento de fuentes flotantes. & 30\% \\
+        \textbf{3. Validación Tripartita} y Error & Omite tabla o $\varepsilon_r > 5\%$ sin justificar causas físicas. & Completa con $\varepsilon_r \le 5\%$, análisis superficial. & Validación completa ($\varepsilon_r \le 5\%$) analizando incertidumbres. & 30\% \\
+        \textbf{4. Repositorio Git y Reporte IEEE} (CDIO) & Incompleto o entrega fuera de plazo sin formato. & Sube los archivos con reporte estructurado IEEE. & Reporte IEEE sintético, sin errores y de nivel publicación. & 15\% \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\section{6. Protocolo de Desconexión y Seguridad en Bancada}
+Al finalizar los 90 minutos de sesión:
+\begin{enumerate}
+    \item Apagar primero las salidas (\textit{Output OFF}) de las fuentes de CC antes de desconectar cables.
+    \item Desconectar el multímetro de la red para evitar descargas accidentales en modo amperímetro.
+    \item Desarmar el circuito y clasificar las resistencias en sus gavetas correspondientes.
+    \item Solicitar la firma de la bitácora física por parte del docente antes de abandonar el laboratorio.
+\end{enumerate}
+
+\end{document}

@@ -1,0 +1,346 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- Paquetes Fundamentales ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[margin=2.5cm, headheight=25pt]{geometry} % Ajuste de headheight
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{colortbl} % Requerido para \cellcolor
+\usepackage{microtype}
+\usepackage[colorlinks=true, linkcolor=ucbblue, urlcolor=ucbblue]{hyperref}
+
+% --- Matemáticas y Electrónica ---
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage[american, RPvoltages]{circuitikz}
+
+% --- Elementos de Diseño Pedagógico y Tablas ---
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+% --- Configuración de Colores y siunitx ---
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\sisetup{
+    output-decimal-marker = {,},
+    per-mode = symbol,
+    inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+% --- Macros y Estilos ---
+\tcbset{
+    caja_marco/.style={colback=blue!3, colframe=ucbblue, fonttitle=\bfseries, boxrule=1pt, arc=3pt},
+    caja_alerta/.style={colback=orange!5, colframe=orange!80!black, fonttitle=\bfseries, boxrule=0.8pt, arc=3pt}
+}
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{codegreen}\itshape,
+    stringstyle=\color{codepurple},
+    numbers=left, numberstyle=\tiny\color{gray},
+    frame=single, backgroundcolor=\color{gray!5},
+    breaklines=true, showstringspaces=false
+}
+
+% --- Estilo de Página ---
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textcolor{ucbblue}{\textbf{IMT-121 | Guía de Estudio}}}
+\rhead{\textbf{Sesión 09 -- Semana 4}}
+\cfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{ucbblue}\leaders\hrule height \headrulewidth\hfill}}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{DOCUMENTO TÉCNICO Y GUÍA DE ESTUDIO}} \\[0.2cm]
+    {\Large \textbf{SEMANA 4 — SESIÓN 2}} \\[0.4cm]
+    \normalsize
+    \textbf{Asignatura:} IMT-121 Circuitos Electrónicos I \\
+    \textbf{Carreras:} Ingeniería Mecatrónica e Ingeniería Biomédica — UCB Sede Tarija \\[0.2cm]
+    \textbf{Docente:} M.Sc. Ing. Bernardo Quiroga Turdera \\
+    \textbf{Fecha:} Miércoles 26 de Agosto de 2026 \hspace{0.5cm} \textbf{Sesión:} 09 \\[0.2cm]
+    \textit{Marco de Referencia: Criterios ABET (1 y 6) | Marco CDIO (Concebir–Diseñar–Implementar) | Pub. IEEE}
+    \vspace{0.4cm}
+\end{center}
+\hrule
+\vspace{0.5cm}
+
+\section{I. Justificación Pedagógica, Puente de Dualidad y Conexión con el PFI}
+
+\subsection{1. El "Puente de Dualidad": De Resistencias a Conductancias}
+Hasta este momento, los estudiantes dominan exclusivamente la Formulación Matricial de Mallas ($\mathbf{R}\mathbf{I} = \mathbf{V}$) basada en la Ley de Voltajes de Kirchhoff (LVK). Para evitar una ruptura cognitiva, el Análisis Nodal se introduce como el \textbf{Dual Físico y Matemático} de Mallas:
+
+\begin{center}
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{0.85\textwidth}{|X|}
+        \hline
+        \cellcolor{ucbblue}\textcolor{white}{\textbf{PRINCIPIO DE DUALIDAD}} \\
+        \hline
+        $\bullet$ \textbf{Mallas (LVK en Lazos):} $\mathbf{R} \cdot \mathbf{I} = \mathbf{V}$ \quad (Ohmios, Amperios, Voltios) \\
+        $\bullet$ \textbf{Nodos (LCK en Cortes):} $\mathbf{G} \cdot \mathbf{V} = \mathbf{I}$ \quad (Siemens, Voltios, Amperios) \\[0.2cm]
+        \hspace{1cm} Resistencia ($R$) [\unit{\ohm}] \hfill $\iff$ \hfill Conductancia ($G = 1/R$) [\unit{\siemens}] \hspace{1cm} \\
+        \hspace{1cm} Corrientes de Malla ($I$) \hfill $\iff$ \hfill Voltajes Nodales ($V$) \hspace{1cm} \\
+        \hspace{1cm} Fuentes de Voltaje ($V_s$) \hfill $\iff$ \hfill Fuentes de Corriente ($I_s$) \hspace{1cm} \\
+        \hline
+    \end{tabularx}
+\end{center}
+
+\textbf{¿Por qué el Método Nodal es indispensable en Ingeniería?}
+\begin{itemize}[label=\textcolor{ucbblue}{\textbullet}, itemsep=2pt]
+    \item \textbf{Física de Medición:} En instrumentación real, los multímetros miden potenciales nodales respecto a Tierra ($GND$). El método nodal calcula directamente las variables de la punta de prueba.
+    \item \textbf{Topologías No Planares y PCBs:} El método de mallas colapsa en placas tridimensionales o multicapa. El método nodal funciona invariablemente para cualquier red de $N$ nodos.
+    \item \textbf{Arquitectura Interna de SPICE:} Los motores de simulación (LTspice, PSpice) resuelven exclusivamente el Análisis Nodal Modificado (MNA).
+\end{itemize}
+
+\subsection{2. Articulación Curricular: Del Taller a la Defensa del Hito 1}
+El Proyecto Final Integrador (PFI) avanza de forma acumulativa y medible:
+\begin{center}
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|X|}
+        \hline
+        \cellcolor{gray!20}\textbf{CADENA DE VALOR HACIA LA EVALUACIÓN DEL HITO 1} \\
+        \hline
+        \textbf{SESIÓN DE HOY (Sesión 09):} \\
+        $\bullet$ Dominio de $\mathbf{G}\cdot\mathbf{V} = \mathbf{I}$ por inspección + Supernodos + Bloques LTspice. \\
+        \hline
+        \textbf{PRÁCTICA DE LABORATORIO N$^\circ$ 3 / LAB 2 (Sesión 10):} \\
+        $\bullet$ Montaje de Red Multifuente en Protoboard con fuentes flotantes. \\
+        $\bullet$ Validación Tripartita Nodal: Medición vs. Python $\mathbf{G}\cdot\mathbf{V}=\mathbf{I}$ vs. LTspice. \\
+        \hline
+        \textbf{DEFENSA DEL HITO 1 DEL PFI (Primera Eval. Sumativa Oficial):} \\
+        $\bullet$ Entrega del Módulo de Polarización y Acondicionamiento Pasivo/Activo. \\
+        $\bullet$ Sustentación oral individual + Auditoría del Repositorio Git. \\
+        $\bullet$ Cumplimiento estricto del Criterio ABET 6: Error $\varepsilon_r \le 5.0\%$. \\
+        \hline
+    \end{tabularx}
+\end{center}
+
+\section{II. Guion de Clase Minuto a Minuto (90 Minutos)}
+\begin{center}
+    \begin{tabular}{|>{\columncolor{gray!10}}c l|}
+        \hline
+        \multicolumn{2}{|c|}{\cellcolor{ucbblue}\textcolor{white}{\textbf{ESTRUCTURA DE LA SESIÓN 09 (90 MIN)}}} \\
+        \hline
+        \textbf{00–10 min} & Encuadre: El puente de dualidad (De $\mathbf{R}\cdot\mathbf{I}=\mathbf{V}$ a $\mathbf{G}\cdot\mathbf{V}=\mathbf{I}$). \\
+        \textbf{10–30 min} & Reglas de Inspección Directa de la Matriz de Conductancia $\mathbf{G}$. \\
+        \textbf{30–50 min} & Supernodos: Tratamiento de fuentes de tensión flotantes. \\
+        \textbf{50–70 min} & Ejemplo Integrador $3\times 3$ Resuelto Paso a Paso (Pizarra). \\
+        \textbf{70–82 min} & Live-Coding (Python) + Modularización de Bloques en LTspice. \\
+        \textbf{82–90 min} & Presentación de la Guía de Práctica 3 y Rúbrica del Hito 1. \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\section{III. Fundamentación Teórica y Formulación Matricial}
+\subsection{1. La Matriz Canónica de Conductancia por Inspección Directa}
+Para una red con $N$ nodos esenciales (seleccionando uno como Referencia $GND$ a \qty{0}{\volt}), el sistema de $N-1$ ecuaciones se expresa:
+\begin{equation}
+    \begin{bmatrix} G_{11} & G_{12} & \dots & G_{1k} \\ G_{21} & G_{22} & \dots & G_{2k} \\ \vdots & \vdots & \ddots & \vdots \\ G_{k1} & G_{k2} & \dots & G_{kk} \end{bmatrix} \begin{bmatrix} V_1 \\ V_2 \\ \vdots \\ V_k \end{bmatrix} = \begin{bmatrix} I_{s1} \\ I_{s2} \\ \vdots \\ I_{sk} \end{bmatrix}
+\end{equation}
+
+\textbf{Reglas de Inspección Directa:}
+\begin{itemize}[itemsep=1pt]
+    \item \textbf{Conductancia de Rama ($G_i$):} Inverso de la resistencia: $G_i = 1 / R_i$ [\unit{\siemens}].
+    \item \textbf{Diagonal Principal ($G_{kk}$):} Suma positiva de conductancias conectadas directamente al Nodo $k$. ($G_{kk} > 0$)
+    \item \textbf{Fuera de la Diagonal ($G_{kj}$):} Valor negativo de la conductancia entre el Nodo $k$ y $j$. ($G_{kj} \le 0$)
+    \item \textbf{Vector de Fuentes ($I_{sk}$):} Suma algebraica de corrientes de fuentes independientes \textit{entrantes} al Nodo $k$ menos las \textit{salientes}.
+\end{itemize}
+
+\subsection{2. El Problema del Supernodo}
+Si entre dos nodos no referenciados se conecta una fuente de voltaje ideal $V_s$ sin resistencia en serie, la conductancia tiende a infinito ($R \to 0 \implies G \to \infty$).
+
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape]
+        \draw (0,0) node[left]{Nodo $a$} to[short, o-] (1.5,0)
+              to[V, v=$V_s$] (4.5,0)
+              to[short, -o] (6,0) node[right]{Nodo $b$};
+        \draw[dashed, red, thick, rounded corners] (0.5, -1) rectangle (5.5, 1);
+        \node[red, above] at (3, 1) {\textbf{SUPERNODO (a-b)}};
+    \end{circuitikz}
+\end{center}
+
+\textbf{Protocolo Sistemático de Resolución:}
+\begin{enumerate}
+    \item \textbf{Ecuación 1 (Conservación por LCK):} Plantear una única ecuación de corrientes salientes para todo el supernodo: $\sum I_{\text{salientes de } a} + \sum I_{\text{salientes de } b} = 0$.
+    \item \textbf{Ecuación 2 (Restricción por LVK):} Establecer la relación constitutiva de la fuente: $V_a - V_b = V_s$.
+\end{enumerate}
+
+\section{IV. Ejemplo Integrador Resuelto Paso a Paso}
+\textbf{Problema:} Red de distribución para la etapa de sensado multicanal alimentada por dos fuentes de excitación y una fuente de offset flotante.
+
+\begin{center}
+    \begin{circuitikz}[scale=0.85, transform shape]
+        % Nodos y Fuentes
+        \draw (-1,3) to[I, i=$I_{s1} {=} \qty{3}{\ampere}$] (1,3) node[above]{Nodo 1};
+        \draw (1,3) to[R, l=$R_1 {=} \qty{2}{\ohm}$] (1,0) node[ground]{};
+        \draw (1,3) to[R, l=$R_2 {=} \qty{4}{\ohm}$] (5,3) node[above]{Nodo 2};
+        \draw (5,3) to[R, l=$R_3 {=} \qty{4}{\ohm}$] (5,0) node[ground]{};
+        
+        \draw (5,3) to[V, v=$V_s {=} \qty{6}{\volt}$] (9,3) node[above]{Nodo 3};
+        \draw (9,3) to[R, l=$R_4 {=} \qty{2}{\ohm}$] (9,0) node[ground]{};
+        \draw (11,3) to[I, i_=$I_{s2} {=} \qty{1}{\ampere}$] (9,3);
+    \end{circuitikz}
+\end{center}
+
+\textbf{Paso 1: Conversión a Conductancias}\\
+$G_1 = \qty{0.50}{\siemens}$, $G_2 = \qty{0.25}{\siemens}$, $G_3 = \qty{0.25}{\siemens}$, $G_4 = \qty{0.50}{\siemens}$.
+
+\vspace{0.2cm}
+\textbf{Paso 2: Formulación de Ecuaciones de Nodo}\\
+\textit{A. Ecuación Estándar en el Nodo 1:}
+\begin{align*}
+    G_1 V_1 + G_2 (V_1 - V_2) &= I_{s1} \\
+    (0.50 + 0.25) V_1 - 0.25 V_2 &= 3.0 \implies \mathbf{0.75 V_1 - 0.25 V_2 = 3.0} \quad \text{\textbf{--- [Ec. 1]}}
+\end{align*}
+Multiplicando por 4: $\mathbf{3 V_1 - V_2 = 12.0}$.
+
+\textit{B. Supernodo Formado por Nodos (2-3):}\\
+LCK (Corrientes Salientes):
+\begin{align*}
+    -G_2 V_1 + (G_2 + G_3) V_2 + G_4 V_3 &= I_{s2} \\
+    -0.25 V_1 + (0.25 + 0.25) V_2 + 0.50 V_3 &= 1.0 \implies \mathbf{-0.25 V_1 + 0.50 V_2 + 0.50 V_3 = 1.0} \quad \text{\textbf{--- [Ec. 2]}}
+\end{align*}
+Multiplicando por 4: $\mathbf{-V_1 + 2 V_2 + 2 V_3 = 4.0}$.
+
+LVK (Restricción de fuente):
+\begin{equation}
+    \mathbf{V_2 - V_3 = 6.0} \quad \text{\textbf{--- [Ec. 3]}}
+\end{equation}
+
+\textbf{Paso 3 y 4: Matriz Aumentada y Solución Analítica}
+\begin{equation*}
+    \begin{bmatrix} 0.75 & -0.25 & 0.0 \\ -0.25 & 0.50 & 0.50 \\ 0.0 & 1.0 & -1.0 \end{bmatrix} \begin{bmatrix} V_1 \\ V_2 \\ V_3 \end{bmatrix} = \begin{bmatrix} 3.0 \\ 1.0 \\ 6.0 \end{bmatrix}
+\end{equation*}
+Sustituyendo $V_3 = V_2 - 6.0$ y despejando:
+\begin{align*}
+    -V_1 + 2 V_2 + 2(V_2 - 6.0) &= 4.0 \implies -V_1 + 4 V_2 = 16.0 \\
+    -V_1 + 4(3 V_1 - 12.0) &= 16.0 \implies 11 V_1 = 64.0
+\end{align*}
+\begin{equation*}
+    \mathbf{V_1 = \frac{64}{11} \approx \qty{5.8182}{\volt}}, \quad \mathbf{V_2 = \frac{60}{11} \approx \qty{5.4545}{\volt}}, \quad \mathbf{V_3 = -\frac{6}{11} \approx \qty{-0.5455}{\volt}}
+\end{equation*}
+
+\section{V. Cómputo Científico en Python (NumPy)}
+\begin{lstlisting}[language=Python]
+import numpy as np
+
+# 1. Matriz aumentada de conductancias A y vector b
+# Variables: [V1, V2, V3]
+# LCK Nodo 1:       0.75*V1 - 0.25*V2 + 0.00*V3 = 3.0
+# LCK Supernodo:   -0.25*V1 + 0.50*V2 + 0.50*V3 = 1.0
+# Restriccion Vs:   0.00*V1 + 1.00*V2 - 1.00*V3 = 6.0
+
+A = np.array([
+    [ 0.75, -0.25,  0.00],
+    [-0.25,  0.50,  0.50],
+    [ 0.00,  1.00, -1.00]
+], dtype=float)
+
+b = np.array([3.0, 1.0, 6.0], dtype=float)
+
+# 2. Solucion del sistema A * V = b
+det_A = np.linalg.det(A)
+assert np.abs(det_A) > 1e-6, "Error: Sistema singular."
+V = np.linalg.solve(A, b)
+
+# 3. Calculo de metricas
+I_R2 = (V[0] - V[1]) / 4.0
+P_R1 = (V[0]**2) * 0.50
+
+print("--- REPORTE DE ANÁLISIS NODAL MODIFICADO ---")
+print(f"Voltaje Nodal V1 : {V[0]:.4f} V (Teórico: 64/11 = 5.8182 V)")
+print(f"Voltaje Nodal V2 : {V[1]:.4f} V (Teórico: 60/11 = 5.4545 V)")
+print(f"Voltaje Nodal V3 : {V[2]:.4f} V (Teórico: -6/11 = -0.5455 V)")
+print(f"Corriente por R2 : {I_R2*1000:.3f} mA")
+\end{lstlisting}
+
+\section{VI. Taller LTspice: Modularización y Bloques Funcionales}
+Para que los estudiantes adopten prácticas de diseño profesional, se introduce el concepto de Bloques Funcionales e Inyección Independiente de Estímulos.
+
+\begin{center}
+    \begin{circuitikz}[scale=0.8, transform shape]
+        % Nodos Centrales
+        \node[above] at (2,2) {\texttt{N001}};
+        \node[above] at (6,2) {\texttt{N002}};
+        \node[above] at (9,2) {\texttt{N003}};
+        
+        % Bloque 1
+        \draw (-1,2) to[I, i=$I_1 {=} \qty{3}{\ampere}$] (2,2);
+        \draw (2,2) to[R, l=$R_1 {=} \qty{2}{\ohm}$] (2,0) node[ground]{};
+        
+        % Bloque 2
+        \draw (2,2) to[R, l=$R_2 {=} \qty{4}{\ohm}$] (6,2);
+        \draw (6,2) to[R, l=$R_3 {=} \qty{4}{\ohm}$] (6,0) node[ground]{};
+        \draw (6,2) to[V, v=$V_1 {=} \qty{6}{\volt}$] (9,2);
+        
+        % Bloque 3
+        \draw (9,2) to[R, l=$R_4 {=} \qty{2}{\ohm}$] (9,0) node[ground]{};
+        \draw (12,2) to[I, i_=$I_2 {=} \qty{1}{\ampere}$] (9,2);
+        
+        % Cajas Modulares
+        \draw[dashed, blue, thick, rounded corners] (-2.5, -1) rectangle (3, 3.5);
+        \node[blue, above] at (0.25, 3.5) {\textbf{B1: INYECCIÓN}};
+        
+        \draw[dashed, red, thick, rounded corners] (3.5, -1) rectangle (8, 3.5);
+        \node[red, above] at (5.75, 3.5) {\textbf{B2: ACOPLAMIENTO}};
+        
+        \draw[dashed, green!60!black, thick, rounded corners] (8.5, -1) rectangle (13.5, 3.5);
+        \node[green!60!black, above] at (11, 3.5) {\textbf{B3: RETORNO}};
+    \end{circuitikz}
+\end{center}
+
+\textbf{Directivas Avanzadas de Simulación en LTspice:}
+\begin{itemize}[itemsep=1pt]
+    \item \textbf{Definición Global de Parámetros (\texttt{.param}):} Permite desacoplar los valores numéricos del dibujo esquemático. Insertar texto SPICE: \texttt{.param R\_val1=2 Is1\_val=3 Vs\_val=6} y en los componentes asignar el valor entre llaves \texttt{\{R\_val1\}}.
+    \item \textbf{Medición Nodal Directa (\texttt{.op}):} La ventana de salida reportará: \\
+    \texttt{V(n001) = 5.81818 V} \quad \texttt{V(n002) = 5.45455 V} \quad \texttt{V(n003) = -0.545455 V}
+\end{itemize}
+
+\newpage
+\section{VII. Conexión de Evaluación: Práctica 3 y Hito 1}
+
+\subsection*{1. Avance: Práctica de Laboratorio N$^\circ$ 3 (Próxima Sesión)}
+\textbf{Objetivo Experimental:} Montar en protoboard un circuito con dos fuentes de alimentación independientes aisladas para recrear una fuente flotante (Supernodo) y medir los potenciales $V_1, V_2, V_3$ respecto al riel común de $GND$. \\
+\textbf{Criterio de Aceptación:} Llenado de la tabla tripartita en vivo con $\varepsilon_r \le 5.0\%$.
+
+\subsection*{2. Estructura y Rúbrica Oficial del HITO 1 DEL PFI}
+El Hito 1 representa el primer gran filtro de acreditación técnica del semestre.
+
+\vspace{0.2cm}
+\textbf{Entregables Oficiales por Tríada:}
+\begin{itemize}[itemsep=1pt]
+    \item \textbf{Hardware:} Placa (PCB) o protoboard de alta densidad con la red de polarización.
+    \item \textbf{Repositorio Git:} \texttt{/modelado} (Python), \texttt{/simulacion} (LTspice \texttt{.tf}, \texttt{.step}), \texttt{/docs} (Informe IEEE).
+    \item \textbf{Defensa Oral:} Preguntas en pizarra con variación de parámetros en tiempo real.
+\end{itemize}
+
+\vspace{0.3cm}
+\begin{table}[h!]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{@{}p{3.5cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X c@{}}
+        \toprule
+        \rowcolor{ucbblue!10}
+        \textbf{Criterio de Desempeño} & \textbf{Insuficiente (0–50 pts)} & \textbf{Competente (51–85 pts)} & \textbf{Sobresaliente (86–100 pts)} & \textbf{Pond.} \\
+        \midrule
+        \textbf{Modelado Canónico} (ABET 1) & No formula matrices o comete errores graves en Supernodos. & Formula correctamente pero presenta dudas en dualidad. & Deducción impecable. Justifica la topología matemáticamente. & 30\% \\
+        \textbf{Validación Exp.} (ABET 6) & $\varepsilon_r > 5.0\%$ sin justificar efecto de carga. & $\varepsilon_r \le 5.0\%$ pero el análisis de incertidumbre es superficial. & Tripartita perfecta ($\varepsilon_r \le 5.0\%$) justificando instrumentación. & 30\% \\
+        \textbf{Calidad Sim/Código} (CDIO - I) & Código desorganizado o esquemáticos básicos. & Scripts funcionales y esquemas LTspice con \texttt{.op}. & Arquitectura limpia en Python y esquemas parametrizados (\texttt{.param}). & 20\% \\
+        \textbf{Defensa Oral Individual} & Inhabilidad para responder a preguntas de su proyecto. & Responde satisfactoriamente con dudas en cálculo. & Dominio absoluto. Resuelve variaciones en vivo con solvencia. & 20\% \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\end{document}

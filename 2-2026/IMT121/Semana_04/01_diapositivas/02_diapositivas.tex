@@ -1,0 +1,110 @@
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{colortbl}
+\usepackage{siunitx}
+\usepackage[american, RPvoltages]{circuitikz}
+
+\sisetup{output-decimal-marker = {,}, per-mode = symbol}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\usetheme{Boadilla}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize items}[circle]
+\setbeamercolor{title}{bg=ucbblue, fg=white}
+\setbeamercolor{frametitle}{bg=ucbblue, fg=white}
+
+\title[Análisis Nodal Canónico]{Análisis Nodal Canónico ($\mathbf{G}\mathbf{V}=\mathbf{I}$)}
+\subtitle{Supernodos y Modelado Modular en LTspice}
+\author[M.Sc. Ing. B. Quiroga]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{IMT-121 Circuitos Electrónicos I | Semestre II/2026}
+\date{Sesión 09}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Resultados de Aprendizaje (Criterios ABET 1 y 6)}
+    \begin{block}{Objetivos de la Sesión}
+        \begin{itemize}
+            \item \textbf{Construir} por inspección directa la matriz de conductancias $\mathbf{G}$.
+            \item \textbf{Formular y resolver} supernodos con fuentes de tensión flotantes.
+            \item \textbf{Estructurar} esquemáticos modulares jerárquicos y parametrizados en LTspice.
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{El Principio de Dualidad (De Mallas a Nodos)}
+    \textbf{¿Por qué cambiar de enfoque?}
+    \begin{itemize}
+        \item \textbf{Mallas:} Analiza corrientes de lazo usando resistencias ($\mathbf{R}\mathbf{I}=\mathbf{V}$).
+        \item \textbf{Nodos:} Analiza potenciales respecto a Tierra usando conductancias ($\mathbf{G}\mathbf{V}=\mathbf{I}$).
+    \end{itemize}
+    \textit{Conductancia ($G$):} $G = \frac{1}{R}$ expresada en Siemens (\unit{\siemens}).
+
+    \vspace{0.4cm}
+    \begin{alertblock}{Reglas Mnemotécnicas de Inspección Directa ($\mathbf{G}\mathbf{V}=\mathbf{I}$)}
+        \begin{itemize}
+            \item \textbf{$G_{kk}$ (Diagonal):} Suma de conductancias adheridas al nodo $k$ ($>0$).
+            \item \textbf{$G_{kj}$ (Fuera Diagonal):} Negativo de la conductancia compartida entre $k$ y $j$ ($\le 0$).
+            \item \textbf{$I_{sk}$ (Vector de Fuentes):} Suma algebraica de corrientes independientes que \textit{entran} al nodo $k$.
+        \end{itemize}
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{El Tratamiento de Supernodos}
+    Ocurre cuando una fuente de tensión ideal une dos nodos \textbf{no referenciados a Tierra} (flotantes). La inspección directa colapsa porque $R \to 0 \implies G \to \infty$.
+
+    \begin{columns}
+        \begin{column}{0.45\textwidth}
+            \begin{center}
+                \begin{circuitikz}[scale=0.8, transform shape]
+                    \draw (0,0) node[left]{Nodo $a$} to[short, o-] (1.5,0)
+                          to[V, v=$V_s$] (4.5,0)
+                          to[short, -o] (6,0) node[right]{Nodo $b$};
+                    \draw[dashed, red, thick, rounded corners] (0.5, -1) rectangle (5.5, 1);
+                    \node[red, above] at (3, 1) {\textbf{SUPERNODO}};
+                \end{circuitikz}
+            \end{center}
+        \end{column}
+        \begin{column}{0.55\textwidth}
+            \textbf{Protocolo Obligatorio (Dos Ecuaciones):}
+            \begin{enumerate}
+                \item \textbf{Ecuación LCK (Conservación):} Sumar todas las corrientes que escapan de la frontera del supernodo ($= 0$).
+                \item \textbf{Ecuación LVK (Restricción):} Relación de la fuente de tensión:
+                $$V_{\text{positivo}} - V_{\text{negativo}} = V_{\text{fuente}}$$
+            \end{enumerate}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Resumen de Resultados del Ejemplo Integrador}
+    \textbf{Circuito Base:} $I_{s1} = \qty{3}{\ampere}$, $I_{s2} = \qty{1}{\ampere}$, $V_s = \qty{6}{\volt}$, $R_1=R_4=\qty{2}{\ohm}$, $R_2=R_3=\qty{4}{\ohm}$.
+    
+    \vspace{0.4cm}
+    \textbf{Convergencia Tripartita de Calidad (ABET 6):}
+    \begin{table}[]
+        \centering
+        \renewcommand{\arraystretch}{1.4}
+        \begin{tabular}{@{}l c c c c@{}}
+            \toprule
+            \rowcolor{ucbblue!10}
+            \textbf{Variable Nodal} & \textbf{Teoría Analítica} & \textbf{Script Python} & \textbf{LTspice \texttt{.op}} & \textbf{Error Relativo ($\varepsilon_r$)} \\
+            \midrule
+            $V_1$ & \qty{5.8182}{\volt} & \qty{5.8182}{\volt} & \qty{5.8182}{\volt} & $0.00\%$ \\
+            $V_2$ & \qty{5.4545}{\volt} & \qty{5.4545}{\volt} & \qty{5.4545}{\volt} & $0.00\%$ \\
+            $V_3$ & \qty{-0.5455}{\volt} & \qty{-0.5455}{\volt} & \qty{-0.5455}{\volt} & $0.00\%$ \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+\end{frame}
+
+\end{document}
