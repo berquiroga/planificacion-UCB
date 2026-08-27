@@ -1,0 +1,171 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+
+% --- TEMA Y ESTILO ---
+\usetheme{Madrid}
+\usecolortheme{whale}
+
+% --- PAQUETES ---
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-noquoting]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning, babel}
+
+\sisetup{output-decimal-marker = {,}, per-mode = symbol}
+
+% --- INFORMACIÓN DEL CURSO ---
+\title[Transitorios y Flyback]{Supresión de Transitorios Inductivos}
+\subtitle{Física, Modelado y Protección de Etapas Críticas de Entrada ADC}
+\author{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Circuitos Electrónicos III (IMT-221) - Sesión 4.2}
+\date{Semestre 2-2026}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Objetivos de la Sesión}
+  \begin{itemize}
+      \item \textbf{Comprender} la física matemática de los transitorios inductivos (conmutación en cargas reactivas).
+      \item \textbf{Modelar y resolver analíticamente} las respuestas temporales del circuito con y sin diodo Flyback.
+      \item \textbf{Conectar} la supresión de picos inductivos con la seguridad del módulo analógico del Hito 1.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{La Física de la Interrupción Inductiva}
+  \begin{block}{El Conflicto Matemático}
+      Ecuación Gobernadora de la Bobina:
+      \begin{equation*}
+          v_L(t) = L \frac{di(t)}{dt}
+      \end{equation*}
+  \end{block}
+  \vspace{0.2cm}
+  \textbf{Análisis Conceptual:}
+  \begin{itemize}
+      \item Un inductor se opone a los cambios bruscos de corriente.
+      \item Al pasar un transistor de ON a OFF, la corriente inicial $I_{init}$ es obligada a extinguirse casi instantáneamente ($\Delta t \to 0$).
+      \item $\frac{di}{dt}$ tiende a un valor negativo gigantesco $\implies$ Genera un voltaje inducido inverso masivo (\textit{inductive kickback}).
+  \end{itemize}
+  \alert{\textbf{Consecuencia:}} La tensión se eleva a miles de voltios, destruyendo el semiconductor de potencia por avalancha.
+\end{frame}
+
+\begin{frame}{Escenario Crítico SIN Diodo (Circuito Equivalente)}
+  \begin{columns}
+      \begin{column}{0.4\textwidth}
+          \begin{center}
+              \begin{circuitikz}[american, scale=0.65, transform shape]
+                  \draw (0,0) node[vcc]{$V_{CC}$ (\qty{12}{\volt})} to[L, l=$L$] (0,-2) to[R, l=$R$] (0,-4);
+                  \draw (0,-4) to[short, -*] (2,-4) node[right]{$v_{node}$};
+                  \draw (0,-4) to[cute open switch, l=Switch] (0,-7) node[ground]{};
+                  \draw (2,-4) to[C, l=$C_p$] (2,-7) node[ground]{};
+              \end{circuitikz}
+          \end{center}
+      \end{column}
+      \begin{column}{0.6\textwidth}
+          El sistema es un \textbf{RLC Altamente Subamortiguado} debido a la pequeñísima capacitancia parásita del transistor ($C_p \approx \qty{100}{\pico\farad}$).
+          \begin{equation*}
+              L \frac{d^2q(t)}{dt^2} + R_L \frac{dq(t)}{dt} + \frac{q(t)}{C_p} = V_{CC}
+          \end{equation*}
+          Pico Teórico Máximo (Worst-Case):
+          \begin{equation*}
+              V_{peak} \approx V_{CC} + I_{init} \sqrt{\frac{L}{C_p}}
+          \end{equation*}
+      \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Demostración Matemática SIN Diodo}
+  \textbf{Ejemplo Práctico:}
+  \begin{itemize}
+      \item $V_{CC} = \qty{12}{\volt}$, $L = \qty{10}{\milli\henry}$, $R_L = \qty{5}{\ohm}$, $C_p = \qty{100}{\pico\farad}$
+      \item Corriente inicial: $I_{init} = \frac{\qty{12}{\volt}}{\qty{5}{\ohm}} = \qty{2.4}{\ampere}$
+  \end{itemize}
+  \vspace{0.4cm}
+  Calculando el pico teórico:
+  \begin{equation*}
+      V_{peak} \approx \qty{12}{\volt} + \qty{2.4}{\ampere} \times \sqrt{\frac{10^{-2}\text{ H}}{10^{-10}\text{ F}}} = 12 + 2.4 \times 10,000 = \mathbf{24,012\text{ V}}
+  \end{equation*}
+  \vspace{0.4cm}
+  \alert{\textbf{¡24 Kilovoltios en microsegundos!}} Esto destruye inmediatamente el transistor.
+\end{frame}
+
+\begin{frame}{Solución de Ingeniería: Diodo Flyback}
+  \begin{columns}
+      \begin{column}{0.4\textwidth}
+          \begin{center}
+              \begin{circuitikz}[american, scale=0.6, transform shape]
+                  \draw (0,0) node[vcc]{$V_{CC}$ (\qty{12}{\volt})} -- (2,0);
+                  \draw (0,0) to[L, l=$L$] (0,-2) to[R, l=$R$] (0,-4);
+                  \draw (2,0) to[D, l=$D_1$ Flyback, invert] (2,-4);
+                  \draw (0,-4) to[short, -*] (3,-4) node[right]{$v_{node}$};
+                  \draw (0,-4) -- (2,-4);
+                  \draw (1.5,-4) to[cute open switch, l=Switch] (1.5,-7) node[ground]{};
+              \end{circuitikz}
+          \end{center}
+      \end{column}
+      \begin{column}{0.6\textwidth}
+          \textbf{Intervalo ON (Transistor Cerrado):}\\
+          $v_{node} \approx \qty{0}{\volt}$. Diodo en inversa ($\qty{12}{\volt}$ en cátodo). OFF.
+          
+          \vspace{0.3cm}
+          \textbf{Intervalo Transitorio (Transistor Abre):}\\
+          La bobina fuerza la corriente. El voltaje sube hasta polarizar el diodo en directa.
+          \begin{equation*}
+              v_{node}(t) = V_{CC} + V_{on} \approx \mathbf{\qty{12.7}{\volt}}
+          \end{equation*}
+          \textit{¡Recorta instantáneamente el pico y salva al transistor!}
+      \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Modelo Matemático del Desgaste Exponencial}
+  Con el diodo ON, la malla de descarga es un lazo RL cerrado:
+  \begin{equation*}
+      L \frac{di(t)}{dt} + R_L i(t) + V_{on} = 0
+  \end{equation*}
+  Solución analítica de la corriente ($\tau = L/R_L$):
+  \begin{equation*}
+      i(t) = \left( I_{init} + \frac{V_{on}}{R_L} \right) \exp\left( -\frac{t}{\tau} \right) - \frac{V_{on}}{R_L}
+  \end{equation*}
+  Tiempo exacto de extinción ($i(t_{off})=0$):
+  \begin{equation*}
+      t_{off} = \tau \ln\left( \frac{V_{CC} + V_{on}}{V_{on}} \right) \implies 2\text{ms} \times 2.899 = \mathbf{\qty{5.798}{\milli\second}}
+  \end{equation*}
+\end{frame}
+
+\begin{frame}{Conexión Práctica con el Hito 1 del PFI}
+  \begin{center}
+      \begin{tikzpicture}[node distance=2.8cm, auto, thick, scale=0.7, transform shape]
+          \node[draw, rectangle, fill=gray!20, text width=3cm, align=center, minimum height=1.5cm] (motor) {\textbf{Carga Inductiva}\\(Protegida por 1N4007)};
+          \node[draw, rectangle, fill=blue!15, text width=3cm, align=center, minimum height=1.5cm, right of=motor, node distance=3.5cm] (shunt) {\textbf{Resistencia Shunt}\\(Sujeción Negativa 1N4148)};
+          \node[draw, rectangle, fill=orange!15, text width=3cm, align=center, minimum height=1.5cm, right of=shunt, node distance=3.5cm] (zener) {\textbf{Zener Limitador}\\(Sujeción Positiva 5.1V)};
+          \node[draw, rectangle, fill=green!15, text width=2.5cm, align=center, minimum height=1.5cm, right of=zener, node distance=3.2cm] (adc) {\textbf{Entrada ADC}\\(Rango Seguro)};
+          \draw[->, >=stealth, line width=1.5pt] (motor) -- (shunt);
+          \draw[->, >=stealth, line width=1.5pt] (shunt) -- (zener);
+          \draw[->, >=stealth, line width=1.5pt] (zener) -- (adc);
+      \end{tikzpicture}
+  \end{center}
+  
+  \textbf{Protección Complementaria del ADC:}\\
+  Incluso con el Flyback apagando el pico masivo de \qty{24}{\kilo\volt} en el motor, las inductancias de los cables inyectan ruido rápido a la placa lógica.
+  \begin{itemize}
+      \item \textbf{Zener 5.1V:} Sujeta sobrepicos por arriba de \qty{5.1}{\volt}.
+      \item \textbf{1N4148 ($t_{rr} \le \qty{4}{\nano\second}$):} Limitador ultra rápido. Drena picos negativos al instante protegiendo el silicio del ADC.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Taller Computacional y Dinámica ABET}
+  \begin{center}
+      Ejecutaremos el script de Python para visualizar el análisis transitorio y validar el modelo matemático (Pilar 1).
+  \end{center}
+  
+  \vspace{0.4cm}
+  \textbf{Auditoría y Pensamiento Crítico:}\\
+  Al cambiar la inductancia $L$ de $\qty{10}{\milli\henry}$ a $\qty{50}{\milli\henry}$ en vivo, el script debe predecir un tiempo de descarga (Rueda Libre) sustancialmente más largo. Esto lo \textbf{deberán comprobar visualmente con el osciloscopio} en el laboratorio del viernes.
+\end{frame}
+
+\end{document}

@@ -1,0 +1,323 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- PAQUETES PRINCIPALES ---
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla, es-noquoting]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb, mathtools}
+\usepackage{siunitx}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% --- PAQUETES PARA GRÁFICAS Y CIRCUITOS ---
+\usepackage{pgfplots}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning, babel}
+\pgfplotsset{compat=1.18}
+
+% --- DEFINICIÓN DE COLORES ---
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.96,0.96,0.96}
+
+% --- CONFIGURACIÓN DE CÓDIGO (PYTHON) ---
+\lstset{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    language=Python,
+    literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+             {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+             {ñ}{{\~n}}1 {Ñ}{{\~N}}1
+}
+
+% --- CONFIGURACIÓN DE SIUNITX ---
+\sisetup{output-decimal-marker = {,}, per-mode = symbol, inter-unit-product = \ensuremath{{}\cdot{}}}
+
+% --- CABECERAS ---
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{Circuitos Electrónicos III (IMT-221)}}
+\rhead{Sesión 4.2: Transitorios Inductivos y Flyback}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% --- ENTORNOS PERSONALIZADOS ---
+\newtcolorbox{aviso}[1][]{colback=red!5!white, colframe=red!75!black, fonttitle=\bfseries, title=#1}
+\newtcolorbox{definicion}[1][]{colback=blue!5!white, colframe=blue!75!black, fonttitle=\bfseries, title=#1}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{Apuntes de Cátedra: Sesión 4.2}}\\[0.3cm]
+    {\large \textbf{Supresión de Transitorios Inductivos: Física, Modelado y Protección ADC}}\\
+    \textit{Docente: M.Sc. Ing. Bernardo Quiroga Turdera}
+    \vspace{0.3cm}
+    \hrule
+\end{center}
+
+\vspace{0.3cm}
+
+\section*{Objetivos de Aprendizaje}
+\begin{itemize}
+    \item Comprender la física matemática de los transitorios inductivos (conmutación en cargas reactivas).
+    \item Modelar y resolver analíticamente las respuestas temporales del circuito con y sin diodo Flyback.
+    \item Conectar la supresión de picos inductivos con la seguridad del módulo analógico del Hito 1.
+\end{itemize}
+
+% ==========================================
+% SECCIÓN 1: FÍSICA DE LA INTERRUPCIÓN
+% ==========================================
+\section{La Física de la Interrupción Inductiva (El Conflicto Matemático)}
+Explicación de la contradicción física al apagar un motor o bobina. Ecuación Gobernadora:
+\begin{equation}
+    v_L(t) = L \frac{di(t)}{dt}
+\end{equation}
+
+\textbf{Análisis Conceptual:}
+\begin{itemize}
+    \item Un inductor almacena energía en su campo magnético y se opone a los cambios bruscos de corriente (principio de inercia electromagnética).
+    \item Cuando un transistor de control (conmutador) pasa del estado de conducción (ON) al estado de corte (OFF), la corriente que circulaba de forma estable por la bobina ($I_{init}$) es obligada a extinguirse en un tiempo extremadamente corto ($\Delta t \to 0$).
+    \item Dado que $\frac{di}{dt}$ tiende a un valor negativo gigantesco, el inductor genera un voltaje inducido inverso masivo (\textit{inductive kickback}), cuya polaridad es opuesta a la de su alimentación ordinaria.
+    \item \textbf{Consecuencia física:} La tensión en la terminal de conmutación del transistor se eleva a miles de voltios, provocando la avalancha por sobretensión y la inmediata destrucción destructiva del semiconductor de potencia.
+\end{itemize}
+
+% ==========================================
+% SECCIÓN 2: ESCENARIO CRÍTICO SIN DIODO
+% ==========================================
+\section{Análisis del Escenario Crítico SIN Diodo Flyback}
+\textbf{El Circuito Equivalente Real (RLC Underdamped):} Ningún interruptor es perfecto; al abrirse, el colector o drenador del transistor posee una pequeña capacitancia parásita hacia tierra ($C_p \approx \qty{100}{\pico\farad}$).
+
+\begin{figure}[h!]
+    \centering
+    \begin{circuitikz}[american, scale=0.9, transform shape]
+        \draw (0,0) node[vcc]{$V_{CC}$ (\qty{12}{\volt})} to[L, l=$L$ (Motor)] (0,-2) to[R, l=$R$ (Devanado)] (0,-4);
+        \draw (0,-4) to[short, -*] (2,-4) node[right]{Nodo de Conmutación ($v_{node}$)};
+        \draw (0,-4) to[cute open switch, l=Transistor] (0,-7) node[ground]{};
+        \draw (2,-4) to[C, l=$C_p$ ($\qty{100}{\pico\farad}$)] (2,-7) node[ground]{};
+    \end{circuitikz}
+    \caption{Esquema Eléctrico Equivalente en el Apagado SIN Diodo Flyback.}
+\end{figure}
+
+\textbf{Ecuación Diferencial del Sistema:}\\
+Al abrirse el interruptor, la corriente del inductor se desvía a la malla formada por la resistencia del devanado, la bobina y la capacitancia parásita:
+\begin{equation}
+    L \frac{d^2q(t)}{dt^2} + R_L \frac{dq(t)}{dt} + \frac{q(t)}{C_p} = V_{CC}
+\end{equation}
+
+\textbf{Solución para Tensión de Nodo ($v_{node}(t) = q(t)/C_p$):}\\
+Dado que $C_p$ es extremadamente pequeño, el factor de amortiguamiento $\alpha = \frac{R}{2L}$ es despreciable frente a la frecuencia de resonancia natural $\omega_0 = \frac{1}{\sqrt{L C_p}}$. El sistema es altamente subamortiguado:
+\begin{equation}
+    v_{node}(t) \approx V_{CC} - V_{CC} e^{-\alpha t} \cos(\omega_d t) + I_{init} \sqrt{\frac{L}{C_p}} e^{-\alpha t} \sin(\omega_d t)
+\end{equation}
+
+\textbf{El Pico de Tensión Teórico (Worst-Case):}\\
+El término del seno domina por completo la amplitud máxima:
+\begin{equation}
+    V_{peak} \approx V_{CC} + I_{init} \sqrt{\frac{L}{C_p}}
+\end{equation}
+\textbf{Ejemplo Práctico:} Para $V_{CC} = \qty{12}{\volt}$, $L = \qty{10}{\milli\henry}$, $R_L = \qty{5}{\ohm}$ y $C_p = \qty{100}{\pico\farad}$, la corriente inicial es $I_{init} = \qty{2.4}{\ampere}$. El pico teórico es:
+\begin{equation}
+    V_{peak} \approx 12\text{ V} + 2.4\text{ A} \times \sqrt{\frac{10^{-2}\text{ H}}{10^{-10}\text{ F}}} = 12\text{ V} + 2.4 \times 10,000 = \mathbf{24,012\text{ V}}
+\end{equation}
+\textit{(Este es el fenómeno que se muestra en el panel izquierdo de la gráfica interactiva flyback\_transient\_analysis.png en Studio, donde el voltaje se eleva a la escala de kilovoltios en menos de un microsegundo).}
+
+\newpage
+% ==========================================
+% SECCIÓN 3: SOLUCIÓN DE INGENIERÍA
+% ==========================================
+\section{Solución de Ingeniería: El Diodo Flyback (Rueda Libre)}
+
+\begin{figure}[h!]
+    \centering
+    \begin{circuitikz}[american, scale=0.9, transform shape]
+        \draw (0,0) node[vcc]{$V_{CC}$ (\qty{12}{\volt})} -- (2,0);
+        \draw (0,0) to[L, l=$L$] (0,-2) to[R, l=$R$] (0,-4);
+        \draw (2,0) to[D, l=$D_1$ (Flyback 1N4007), invert] (2,-4);
+        \draw (0,-4) to[short, -*] (3,-4) node[right]{Nodo de Conmutación ($v_{node}$)};
+        \draw (0,-4) -- (2,-4);
+        \draw (1.5,-4) to[cute open switch, l=Transistor (Abriéndose $t=0$)] (1.5,-7) node[ground]{};
+    \end{circuitikz}
+    \caption{Esquema Eléctrico con Protección Flyback.}
+\end{figure}
+
+\textbf{Ecuaciones de Control del Clamping:}
+\begin{itemize}
+    \item \textbf{Intervalo 1 (Transistor Cerrado - ON):} El nodo de conmutación está a $\approx \qty{0}{\volt}$. El cátodo del diodo está a $\qty{12}{\volt}$ y el ánodo a $\qty{0}{\volt}$. El diodo está bloqueado (OFF).
+    \item \textbf{Intervalo 2 (Transistor Abriéndose - Transitorio):} El transistor se corta. La tensión del colector se eleva rápidamente por encima de $V_{CC}$. En cuanto alcanza la tensión de sujeción:
+    \begin{equation}
+        v_{node}(t) = V_{CC} + V_{on} \approx \qty{12.7}{\volt}
+    \end{equation}
+    El diodo se polariza en directa (ON), recortando instantáneamente cualquier pico superior y salvaguardando al transistor.
+\end{itemize}
+
+\subsection*{Modelo Matemático del Desgaste Exponencial (ON de Rueda Libre)}
+\textbf{La Malla de Descarga:} Con el diodo encendido, la corriente de la bobina circula en un lazo cerrado recirculando por el devanado resistivo y el diodo:
+\begin{equation}
+    L \frac{di(t)}{dt} + R_L i(t) + V_{on} = 0 \implies \frac{di(t)}{dt} + \frac{R_L}{L}i(t) = -\frac{V_{on}}{L}
+\end{equation}
+\textbf{Solución Analítica de la Corriente:}
+\begin{equation}
+    i(t) = \left( I_{init} + \frac{V_{on}}{R_L} \right) \exp\left( -\frac{t}{\tau} \right) - \frac{V_{on}}{R_L}
+\end{equation}
+Donde la constante de tiempo térmica de descarga es $\tau = \frac{L}{R_L}$.
+
+\textbf{Tiempo de Extinción de Corriente ($t_{off}$):}\\
+Dado que el diodo solo permite conducción unidireccional, la corriente se extingue exponencialmente hasta llegar exactamente a cero. Evaluando $i(t_{off}) = 0$:
+\begin{equation}
+    t_{off} = \tau \ln\left( \frac{V_{CC} + V_{on}}{V_{on}} \right)
+\end{equation}
+\textbf{Cálculo de Diseño:} Para $\tau = \frac{\qty{10}{\milli\henry}}{\qty{5}{\ohm}} = \qty{2}{\milli\second}$, y $V_{CC} = \qty{12}{\volt}$:
+\begin{equation}
+    t_{off} = 2\text{ ms} \times \ln\left( \frac{12\text{ V} + 0.7\text{ V}}{0.7\text{ V}} \right) \approx 2\text{ ms} \times 2.899 = \mathbf{5.798\text{ ms}}
+\end{equation}
+\textit{(Esta dinámica se representa detalladamente en el panel derecho de flyback\_transient\_analysis.png, donde la corriente de descarga disminuye suavemente de 2.4A a 0A en 5.8 ms, mientras que el voltaje del nodo de conmutación se mantiene seguro a 12.7V).}
+
+\newpage
+% ==========================================
+% SECCIÓN 4: CONEXIÓN PFI
+% ==========================================
+\section{Conexión Práctica con el Hito 1 del PFI}
+Para asegurar que los estudiantes comprendan la relevancia de este circuito, debes guiar la clase hacia la arquitectura del módulo de sujeción analógica de su proyecto.
+
+\vspace{0.4cm}
+\begin{center}
+\begin{tikzpicture}[node distance=3.2cm, auto, thick, scale=0.8, transform shape]
+    \node[draw, rectangle, fill=gray!20, text width=3cm, align=center, minimum height=1.5cm] (motor) {\textbf{Carga Inductiva (Motor)}\\(Protegida por 1N4007)};
+    \node[draw, rectangle, fill=blue!15, text width=3cm, align=center, minimum height=1.5cm, right of=motor, node distance=3.8cm] (shunt) {\textbf{Resistencia Shunt / Entrada}\\(Sujeción Negativa 1N4148)};
+    \node[draw, rectangle, fill=orange!15, text width=3cm, align=center, minimum height=1.5cm, right of=shunt, node distance=4cm] (zener) {\textbf{Divisor $R_s$ y Zener}\\(Sujeción Positiva 5.1V)};
+    \node[draw, rectangle, fill=green!15, text width=3cm, align=center, minimum height=1.5cm, right of=zener, node distance=3.8cm] (adc) {\textbf{Entrada ADC (Micro)}\\(Rango Seguro 0-5V)};
+
+    \draw[->, >=stealth, line width=1.5pt] (motor) -- (shunt);
+    \draw[->, >=stealth, line width=1.5pt] (shunt) -- (zener);
+    \draw[->, >=stealth, line width=1.5pt] (zener) -- (adc);
+\end{tikzpicture}
+\end{center}
+\vspace{0.4cm}
+
+\textbf{La Planta de Conmutación (Protección Primaria):}\\
+En su circuito, el motorreductor amarillo de prueba (3-12V) genera transitorios inductivos masivos al apagarse o al modular su velocidad mediante PWM de alta frecuencia. La colocación del diodo 1N4007 en paralelo directo a las bornas del motor extingue los picos de conmutación en la fuente.
+
+\textbf{Protección Complementaria del ADC (Fijación de Piso y Techo):}\\
+Incluso con el Flyback activo, el "ruido de tierra" y las inductancias parásitas de los cables largos de protoboard pueden transferir picos transitorios rápidos a la línea de adquisición analógica del microcontrolador.
+\begin{itemize}
+    \item El \textbf{Diodo Zener BZX55C5V1} (5.1V) sujeta cualquier sobrepico positivo por encima de $\qty{5.1}{\volt}$ (Protección de Techo).
+    \item El \textbf{Diodo rápido de señal 1N4148} (con un tiempo de recuperación extremadamente veloz de $t_{rr} \le \qty{4}{\nano\second}$) actúa como un limitador ultra rápido que drena voltajes negativos espurios inferiores a $\qty{-0.3}{\volt}$ directamente a GND, protegiendo las compuertas lógicas de silicio de la entrada analógica del microcontrolador.
+\end{itemize}
+
+% ==========================================
+% SECCIÓN 5: PYTHON CODE
+% ==========================================
+\section{Código Python para el Taller Computacional}
+Este es el script completo para generar la simulación (Pilar 1 - Modelado Analítico de la rúbrica).
+
+\begin{lstlisting}
+# ==============================================================================
+# UNIVERSIDAD CATÓLICA BOLIVIANA "SAN PABLO" - SEDE TARIJA
+# Sesión 4.2: Modelado del Transitorio Inductivo y Clamping por Diodo Flyback
+# Docente: M.Sc. Ing. Bernardo Quiroga Turdera
+# ==============================================================================
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# 1. PARÁMETROS DEL SISTEMA (Motor y Diodo Flyback)
+Vcc = 12.0        # V (Tensión de alimentación)
+L = 10.0e-3       # H (Inductancia nominal del devanado de motor: 10 mH)
+R = 5.0           # Ohm (Resistencia interna de devanado: 5 Ohm)
+I_init = Vcc / R  # A (Corriente en estado estacionario antes del corte: 2.4 A)
+V_on = 0.7        # V (Caída de tensión directa del diodo 1N4007)
+Cp = 100e-12      # F (Capacitancia parásita enbornes del switch: 100 pF)
+
+# 2. ESCENARIO SIN DIODO (Oscilación RLC Subamortiguada - Escala Microsegundos)
+omega_0 = 1.0 / np.sqrt(L * Cp)
+alpha = R / (2.0 * L)
+omega_d = np.sqrt(omega_0**2 - alpha**2)
+
+t_us = np.linspace(0, 15, 1000)   # Vector de tiempo en us
+t_s_us = t_us * 1e-6              # Conversión a segundos
+
+# Ecuaciones analíticas para carga parásita del switch sin protección
+A = -Cp * Vcc
+B = (I_init - alpha * A) / omega_d
+q = Cp * Vcc + np.exp(-alpha * t_s_us) * (A * np.cos(omega_d * t_s_us) + B * np.sin(omega_d * t_s_us))
+v_node_no_diode = q / Cp
+i_inductor_no_diode = np.exp(-alpha * t_s_us) * (
+    (I_init * np.cos(omega_d * t_s_us)) +
+    (((Vcc - alpha * I_init * L) / (L * omega_d)) * np.sin(omega_d * t_s_us))
+)
+
+# 3. ESCENARIO CON DIODO FLYBACK (Fijación de Voltaje y Descarga RL - Milisegundos)
+t_ms = np.linspace(0, 10, 1000)   # Vector de tiempo en ms
+t_s_ms = t_ms * 1e-3              # Conversión a segundos
+
+tau = L / R
+t_off = tau * np.log((Vcc + V_on) / V_on)  # Momento exacto donde la corriente se extingue
+
+i_inductor_with_diode = np.zeros_like(t_s_ms)
+v_node_with_diode = np.zeros_like(t_s_ms)
+
+for idx, t in enumerate(t_s_ms):
+    if t < t_off:
+        i_inductor_with_diode[idx] = (I_init + V_on/R) * np.exp(-t/tau) - V_on/R
+        v_node_with_diode[idx] = Vcc + V_on
+    else:
+        i_inductor_with_diode[idx] = 0.0
+        v_node_with_diode[idx] = Vcc
+
+# 4. CONFIGURACIÓN DEL ENTORNO GRÁFICO (Seaborn para Calidad de Publicación)
+sns.set_theme(style='whitegrid', palette='colorblind', font='DejaVu Sans')
+fig, axes = plt.subplots(2, 2, figsize=(16, 10))
+
+# Título de Insight
+fig.suptitle('Análisis Comparativo del Transitorio Inductivo: Con vs. Sin Diodo Flyback\n'
+             'Demostración de sujeción de sobretensión destructiva para Rango de Operación Seguro',
+             fontsize=16, fontweight='bold', y=0.98)
+
+# Panel Voltaje SIN diodo
+axes[0, 0].plot(t_us, v_node_no_diode / 1e3, color='crimson', linewidth=2)
+axes[0, 0].set_title('Tensión en el Switch SIN Diodo Flyback\n(Pico Destructivo en us)', fontsize=12, fontweight='bold')
+axes[0, 0].set_ylabel('Voltaje del Nodo ($kV$)')
+axes[0, 0].set_xlabel('Tiempo ($\mu s$)')
+
+# Panel Corriente SIN diodo
+axes[0, 1].plot(t_us, i_inductor_no_diode, color='orange', linewidth=2)
+axes[0, 1].set_title('Corriente de Bobina SIN Diodo Flyback (Interrupción Rápida)', fontsize=12, fontweight='bold')
+axes[0, 1].set_ylabel('Corriente ($A$)')
+axes[0, 1].set_xlabel('Tiempo ($\mu s$)')
+
+# Panel Voltaje CON diodo
+axes[1, 0].plot(t_ms, v_node_with_diode, color='teal', linewidth=2)
+axes[1, 0].set_title('Tensión en el Switch CON Diodo Flyback\n(Clamping Seguro a 12.7V en ms)', fontsize=12, fontweight='bold')
+axes[1, 0].set_ylabel('Voltaje del Nodo ($V$)')
+axes[1, 0].set_xlabel('Tiempo ($ms$)')
+axes[1, 0].axhline(y=Vcc+V_on, color='purple', linestyle='--', label='Clamping: Vcc + Von (12.7V)')
+axes[1, 0].legend()
+
+# Panel Corriente CON diodo
+axes[1, 1].plot(t_ms, i_inductor_with_diode, color='royalblue', linewidth=2)
+axes[1, 1].set_title('Corriente de Bobina CON Diodo Flyback (Descarga Exponencial)', fontsize=12, fontweight='bold')
+axes[1, 1].set_ylabel('Corriente ($A$)')
+axes[1, 1].set_xlabel('Tiempo ($ms$)')
+
+plt.tight_layout(pad=2.0)
+plt.show()
+\end{lstlisting}
+
+\begin{aviso}[Consejo para la Clase Práctica (Dinámica ABET)]
+Cuando los estudiantes presenten la defensa de este Hito, pídeles que realicen en vivo una modificación en el script cambiando la inductancia $L$ de $\qty{10}{\milli\henry}$ a $\qty{50}{\milli\henry}$. La teoría y el script predecirán de inmediato que la corriente tardará más en extinguirse (más tiempo de descarga de rueda libre) y ellos deberán comprobar visualmente en su osciloscopio físico si este incremento en la constante de tiempo $\tau$ coincide con el modelo y el cálculo de RMSE.
+\end{aviso}
+
+\end{document}

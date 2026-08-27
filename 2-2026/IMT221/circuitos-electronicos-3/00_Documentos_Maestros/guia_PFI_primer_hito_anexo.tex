@@ -1,0 +1,359 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- PAQUETES PRINCIPALES ---
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla, es-noquoting]{babel} % es-noquoting evita conflicto con TikZ
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb, mathtools}
+\usepackage{siunitx}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage{xcolor}
+
+% --- PAQUETES PARA CIRCUITOS Y GRÁFICOS ---
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning, babel}
+
+% --- CONFIGURACIÓN DE SIUNITX ---
+\sisetup{
+    output-decimal-marker = {,},
+    per-mode = symbol,
+    inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+% --- CABECERAS Y PIES DE PÁGINA ---
+\usepackage{fancyhdr}
+\setlength{\headheight}{14.5pt} % Soluciona el warning de fancyhdr
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{Circuitos Electrónicos III (IMT-221)}}
+\rhead{Hito 1: Alternativas de Conexión y Fórmulas}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% --- ENTORNOS PERSONALIZADOS ---
+\newtcolorbox{cajaformula}[1][]{
+  colback=blue!5!white,
+  colframe=blue!75!black,
+  fonttitle=\bfseries,
+  title=#1
+}
+
+\newtcolorbox{aviso}[1][]{
+  colback=red!5!white,
+  colframe=red!75!black,
+  fonttitle=\bfseries,
+  title=#1
+}
+\newtcolorbox{recomendacion}[1][]{
+  colback=green!5!white,
+  colframe=green!60!black,
+  fonttitle=\bfseries,
+  title=#1
+}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{Material Complementario del Hito 1: PFI}}\\[0.3cm]
+    {\large \textbf{Topologías de Implementación y Cálculos de Diseño}}\\
+    \textit{Docente: M.Sc. Ing. Bernardo Quiroga Turdera}
+    \vspace{0.3cm}
+    \hrule
+\end{center}
+
+\vspace{0.5cm}
+
+% ==============================================================================
+% ALTERNATIVA A: INGENIERÍA MECATRÓNICA
+% ==============================================================================
+\section{Alternativa A: Ingeniería Mecatrónica (Esquemático de Conexión)}
+
+En este circuito, la señal analógica a proteger se origina directamente desde la resistencia de sensado de corriente ($R_{shunt}$) de la planta motriz. Para validarlo de forma segura en el laboratorio antes de conectarlo al microcontrolador, se utiliza el generador de señales para simular una sobretensión extrema directamente en el nodo de entrada de la red de sujeción.
+
+\vspace{0.5cm}
+\begin{figure}[h!]
+    \centering
+    \begin{circuitikz}[american, scale=0.85, transform shape]
+        % Línea de fuerza y motor
+        \draw (0,4) node[vcc]{+12V (Fuerza)} -- (0,3);
+        \draw (-1.5,3) -- (1.5,3);
+        \draw (-1.5,3) to[generic, l_=Motor Amarillo] (-1.5,1);
+        \draw (1.5,3) to[D, l=$D_{POWER}$ (1N4007), invert] (1.5,1);
+        \draw (-1.5,1) -- (1.5,1);
+        \draw (0,1) -- (0,0) node[right]{\footnotesize Al Transistor (Señal PWM)};
+        \draw (0,0) to[R, l=$R_{shunt}$ (Sensado)] (0,-2);
+        
+        % Inyección de señal
+        \draw (-2.5,-2) to[sV] (-2.5,-6);
+        \draw (-2.5,-2) to[short, -*] (0,-2);
+        \node[above, text width=3cm, align=center] at (-2.5,-2) {\footnotesize \textbf{Inyección Crítica}\\ $15\text{ V}_{pp}$, $\qty{1}{\kilo\hertz}$, $+2.5\text{V offset}$};
+        
+        % Red de protección
+        \draw (0,-2) to[R, l=$R_{SERIE}$ ($R_s$)] (3.5,-2);
+        \node[below] at (1.75,-2.2) {\footnotesize [A calcular]};
+        
+        \draw (3.5,-2) to[short, *-*] (5.5,-2) to[short, *-*] (7.5,-2) to[short, *-*] (9.5,-2) -- (10.5,-2) node[right]{\textbf{Entrada ADC} ($0 - 5.1\text{V}$)};
+        
+        % Componentes de Clamping
+        \draw (3.5,-2) to[zzD, l_=$D_{ZENER}$ BZX55C5V1] (3.5,-6);
+        \draw (5.5,-2) to[D, l=$D_{FAST1}$ 1N4148, invert] (5.5,-6);
+        \draw (7.5,-2) to[D, l_=$D_{FAST2}$ 1N4148] (7.5,0) node[vcc]{+5V (Micro)};
+        \draw (9.5,-2) to[R, l=$R_{LOAD}$] (9.5,-6);
+        
+        % Etiquetas de función
+        \node[right] at (-0.25,-4.5) {\footnotesize (Techo 5.1V)};
+        \node[right] at (6.25,-4.5) {\footnotesize (Piso -0.7V)};
+        \node[right] at (7.75,-1.5) {\footnotesize (Redundancia)};
+        \node[right] at (9.5,-4.5) {\footnotesize (Carga prueba)};
+        
+        % GND Común
+        \draw (-2.5,-6) -- (10.5,-6) node[right]{\textbf{GND Común} (Micro)};
+        \draw (4.5,-6) node[ground]{};
+    \end{circuitikz}
+    \caption{Circuito Completo - Alternativa Mecatrónica.}
+\end{figure}
+
+\newpage
+% ==============================================================================
+% ALTERNATIVA B: INGENIERÍA BIOMÉDICA
+% ==============================================================================
+\section{Alternativa B: Ingeniería Biomédica (Esquemático de Conexión)}
+
+Para simular un entorno clínico real, el motorreductor amarillo y su diodo Flyback \textbf{1N4007} de protección se montan de forma completamente aislada de la línea analógica de sensado. Funcionan exclusivamente como un \textbf{generador de ruido y perturbaciones de alta tensión por inducción magnética}. La señal analógica se genera con un divisor de tensión que recibe la inyección de prueba del generador de funciones.
+
+\vspace{0.5cm}
+
+% Etapa 1
+\begin{figure}[h!]
+    \centering
+    \begin{circuitikz}[american, scale=0.9, transform shape]
+        \node[above, font=\bfseries] at (0, 4) {ETAPA 1: INYECTOR DE RUIDO INDUCTIVO AISLADO};
+        \draw (0,3) node[vcc]{+12V (Fuerza)} -- (0,2);
+        \draw (-1.5,2) -- (1.5,2);
+        \draw (-1.5,2) to[generic, l_=Motor Amarillo] (-1.5,0);
+        \draw (1.5,2) to[D, l=$D_{POWER}$ (1N4007), invert] (1.5,0);
+        \draw (-1.5,0) -- (1.5,0);
+        \draw (0,0) to[cute open switch, l_=Switch Manual] (0,-2) node[ground]{};
+        \node[right, text width=5cm] at (1,-1) {\footnotesize (Generador físico de ruido inducido por conmutación)};
+    \end{circuitikz}
+\end{figure}
+
+\vspace{0.5cm}
+
+% Etapa 2
+\begin{figure}[h!]
+    \centering
+    \begin{circuitikz}[american, scale=0.85, transform shape]
+        \node[above, font=\bfseries] at (6, 3) {ETAPA 2: LÍNEA DE ENTRADA ANALÓGICA CON FILTRO Y PROTECCIÓN};
+        
+        % Generador y divisor
+        \draw (0,1) to[sV] (0,-2) node[ground]{};
+        \node[above, text width=3.5cm, align=center] at (0,1.5) {\footnotesize \textbf{Inyección Crítica}\\ $15\text{ V}_{pp}$, $\qty{1}{\kilo\hertz}$, $+2.5\text{V offset}$};
+        
+        \draw (0,1) -- (2,1) to[R, l_=$R_{DIV}$] (2,-1);
+        \draw (2,-1) to[R, l=$R_{shunt}$] (2,-3) node[ground]{};
+        
+        % Red de Protección
+        \draw (2,-1) to[short, *-*] (4.5,-1) to[R, l=$R_{SERIE}$ ($R_s$)] (7.5,-1);
+        \node[above, align=center] at (3.25,-0.8) {\footnotesize Nodo Entrada\\ \footnotesize(Ruido EM)};
+        \node[below] at (6,-1.2) {\footnotesize [A calcular]};
+        
+        \draw (7.5,-1) to[short, *-*] (9.5,-1) to[short, *-*] (11.5,-1) to[short, *-*] (13.5,-1) -- (14.5,-1) node[right]{\textbf{Entrada ADC} ($0 - 5.1\text{V}$)};
+        
+        % Componentes de protección
+        \draw (7.5,-1) to[zzD, l_=$D_{ZENER}$] (7.5,-4) node[ground]{};
+        \draw (9.5,-1) to[D, l=$D_{FAST1}$, invert] (9.5,-4) node[ground]{};
+        \draw (11.5,-1) to[D, l_=$D_{FAST2}$] (11.5,1.5) node[vcc]{+5V (Micro)};
+        \draw (13.5,-1) to[R, l=$R_{LOAD}$] (13.5,-4) node[ground]{};
+        
+        % Textos explicativos
+        \node[right] at (5,-3.0) {\footnotesize (Techo 5.1V)};
+        \node[right] at (9.5,-3.0) {\footnotesize (Piso -0.7V)};
+        \node[right] at (12,-0.25) {\footnotesize (Redundancia)};
+        \node[right] at (13.5,-3.0) {\footnotesize (Carga prueba)};
+    \end{circuitikz}
+    \caption{Circuito Completo - Alternativa Biomédica.}
+\end{figure}
+
+\newpage
+% ==============================================================================
+% GUÍA DE FÓRMULAS Y CÁLCULOS
+% ==============================================================================
+\section{Guía de Fórmulas y Cálculos para los Estudiantes}
+
+Para completar el \textbf{Pilar 1 (Modelado Analítico)} de su informe, no deben adivinar el valor de $R_{SERIE}$ ($R_S$), sino deducirlo utilizando los siguientes parámetros del modelo \textbf{PWL} de su diodo Zener \textbf{BZX55C5V1} extraídos de las hojas de datos:
+
+\vspace{0.3cm}
+
+\begin{cajaformula}[1. Deducción de $V_{Z0}$ (Voltaje de umbral interno Zener)]
+Utilizando la tensión nominal $V_{ZT} = \qty{5.1}{\volt}$ medida a la corriente de prueba $I_{ZT} = \qty{5}{\milli\ampere}$ y su resistencia dinámica $r_z = \qty{15}{\ohm}$:
+\begin{equation*}
+    V_{Z0} = V_{ZT} - (I_{ZT} \cdot r_z) = \mathbf{5.025\text{ V}}
+\end{equation*}
+\end{cajaformula}
+
+\begin{cajaformula}[2. Cálculo de la corriente máxima de diseño ($I_{ZM}$)]
+Considerando un factor de seguridad del 80\% sobre la potencia máxima del Zener (\qty{500}{\milli\watt} $\to$ \qty{400}{\milli\watt}):
+\begin{equation*}
+    I_{ZM} = \frac{P_{Z(\text{diseño})}}{V_{ZT}} = \frac{400\text{ mW}}{5.1\text{ V}} \approx \mathbf{78.43\text{ mA}}
+\end{equation*}
+\end{cajaformula}
+
+\begin{cajaformula}[3. Límite Inferior de $R_S$ (Protección Térmica)]
+Para evitar la destrucción del Zener ante el peor escenario de sobretensión continua de entrada ($V_{in\max} = \qty{15}{\volt}$ o \qty{24}{\volt} según la prueba definida por el docente) en circuito abierto ($I_L = 0$):
+\begin{equation*}
+    R_{S\min} = \frac{V_{in\max} - (V_{Z0} + I_{ZM} \cdot r_z)}{I_{ZM}}
+\end{equation*}
+\end{cajaformula}
+
+\begin{cajaformula}[4. Límite Superior de $R_S$ (Garantía de Regulación)]
+Para asegurar que el diodo Zener no caiga fuera de regulación ($I_Z \ge I_{ZK} = \qty{0.5}{\milli\ampere}$) ante el voltaje mínimo esperado en la entrada ($V_{in\min}$) suministrando la corriente máxima que requiera su carga ($I_{L\max}$):
+\begin{equation*}
+    R_{S\max} = \frac{V_{in\min} - (V_{Z0} + I_{ZK} \cdot r_z)}{I_{L\max} + I_{ZK}}
+\end{equation*}
+\end{cajaformula}
+
+\vspace{0.4cm}
+\textbf{Decisión de Ingeniería:}\\
+Una vez obtenidos ambos límites teóricos, se debe seleccionar un \textbf{valor estándar comercial} (por ejemplo, de la serie de resistencias E12 o E24) que se encuentre estrictamente dentro del rango de operación segura calculado:
+\begin{equation}
+    R_{S\min} \le R_S \le R_{S\max}
+\end{equation}
+
+% ==============================================================================
+% EL PROBLEMA DE LOS ZENER DE BAJA TENSIÓN
+% ==============================================================================
+\begin{aviso}[El problema de los diodos Zener de baja tensión ($< \qty{5}{\volt}$)]
+Como se estudia en la materia, la física de la ruptura cambia según el dopaje: por encima de \qty{5.6}{\volt} domina el \textbf{efecto Avalancha}, y por debajo domina el \textbf{efecto Zener}.
+
+Si intentamos usar un Zener comercial de \qty{3.3}{\volt} (como el BZX55C3V3):
+\begin{itemize}
+    \item Su curva de ruptura es extremadamente redondeada (tiene un codo o \textit{knee} muy suave, con una corriente $I_{ZK}$ alta).
+    \item Su resistencia dinámica ($r_z$) es bastante elevada (típicamente $r_z > \qty{80}{\ohm}$, comparada con los $\qty{15}{\ohm}$ del Zener de \qty{5.1}{\volt}).
+\end{itemize}
+\textbf{Consecuencia práctica:} El Zener comenzará a conducir de forma parásita mucho antes de llegar a los \qty{3.3}{\volt} (desde los \qty{2.2}{\volt} ya presentará fugas significativas), distorsionando de manera no lineal la lectura del ADC en su rango de operación normal.
+\end{aviso}
+
+Por lo tanto, no se recomienda usar Zeners de \qty{3.3}{\volt} para protección de precisión. En su lugar, utilicen estas tres alternativas:
+
+\vspace{0.4cm}
+
+% ==============================================================================
+% ALTERNATIVA 1: CLAMPING ACTIVO
+% ==============================================================================
+\section{Alternativa 1: Clamping Activo a los Rieles de Alimentación (Rail-to-Rail Clamping) — LA RECOMENDADA}
+
+En lugar de derivar el exceso de voltaje a tierra mediante ruptura inversa, se redirige el sobrepico directamente al riel positivo de alimentación de \qty{3.3}{\volt} (VCC) del microcontrolador.
+
+\vspace{0.3cm}
+\begin{figure}[h!]
+    \centering
+    \begin{circuitikz}[american, scale=0.9, transform shape]
+        \draw (0,0) to[short, o-] (1,0) to[R, l=$R_s$] (4,0);
+        \node[left] at (0,0) {\textbf{Entrada Analógica}};
+        \draw (4,0) to[short, *-o] (8,0) node[right] {\textbf{Entrada ADC} ($0-\qty{3.3}{\volt}$)};
+        
+        % Diodo hacia VCC (Schottky)
+        \draw (4,0) to[sD, l=$D_{FAST\_2}$ (BAT43)] (4,2.5) node[vcc] {+\qty{3.3}{\volt} (Riel del ESP32)};
+        
+        % Diodo hacia GND (Silicio)
+        \draw (6,0) to[D, l=$D_{FAST\_1}$ (1N4148), invert] (6,-2.5) node[ground] {};
+        
+        \node[right] at (6.5, -1.75) {\footnotesize Fijación de piso a GND};
+    \end{circuitikz}
+    \caption{Esquema de Clamping Activo (Rail-to-Rail).}
+\end{figure}
+
+\textbf{¿Cómo funciona?}
+\begin{itemize}
+    \item \textbf{$D_{FAST\_2}$} (Diodo Schottky, ej. BAT42 / BAT43 / SD101): Se conecta el ánodo al nodo de entrada del ADC y el cátodo al riel de \qty{3.3}{\volt}. En condiciones normales ($0$ a \qty{3.3}{\volt}), el diodo está apagado.
+    \item Si la entrada sube por encima de los \qty{3.3}{\volt}, el diodo se polariza en directa. Al ser un diodo Schottky, tiene una caída de tensión de tan solo $V_{on} \approx \qty{0.3}{\volt}$.
+    \item \textbf{La sujeción:} El voltaje de entrada al ADC queda fijado a un máximo seguro de $\qty{3.3}{\volt} + \qty{0.3}{\volt} = \mathbf{\qty{3.6}{\volt}}$, desviando de forma segura toda la corriente de sobretensión al riel de alimentación. Las entradas de un ESP32 toleran perfectamente hasta $V_{DD} + \qty{0.3}{\volt}$.
+    \item \textbf{$D_{FAST\_1}$} (1N4148): Se mantiene conectado en antiparalelo a GND (ánodo a tierra) para fijar el piso seguro a $\qty{-0.7}{\volt}$ ante transitorios negativos.
+\end{itemize}
+
+\newpage
+% ==============================================================================
+% ALTERNATIVA 2: DIODO LED
+% ==============================================================================
+\section{Alternativa 2: Diodo LED en Directa como Referencia de Tensión}
+
+En lugar de usar la zona de ruptura de un Zener, se aprovecha la caída de tensión en directa ($V_{on}$) de un Diodo Emisor de Luz (LED).
+
+\vspace{0.3cm}
+\begin{figure}[h!]
+    \centering
+    \begin{circuitikz}[american, scale=0.9, transform shape]
+        \draw (0,0) to[short, o-] (1,0) to[R, l=$R_s$] (4,0);
+        \node[left] at (0,0) {\textbf{Entrada Analógica}};
+        \draw (4,0) to[short, *-o] (8,0) node[right] {\textbf{Entrada ADC} ($0-\qty{3.3}{\volt}$)};
+        
+        % LED hacia GND
+        \draw (4,0) to[leD, l_=LED Azul o Verde] (4,-3) node[ground] {};
+        \node[left, text width=2.5cm, align=right] at (3.5, -2.25) {\footnotesize Polarizado en directa a GND};
+        
+        % Diodo hacia GND (Silicio)
+        \draw (6,0) to[D, l=$D_{FAST\_1}$ (1N4148), invert] (6,-3) node[ground] {};
+        \node[right] at (6.5, -2.25) {\footnotesize Piso a \qty{-0.7}{\volt}};
+    \end{circuitikz}
+    \caption{Esquema de Limitador usando LED como Referencia.}
+\end{figure}
+
+\textbf{¿Cómo funciona?}
+Los LEDs de diferentes colores tienen distintas caídas de tensión en directa debido a los materiales semiconductores con los que se fabrican:
+\begin{itemize}
+    \item \textbf{LED Rojo:} $V_{on} \approx \qtyrange{1.8}{2.0}{\volt}$
+    \item \textbf{LED Amarillo:} $V_{on} \approx \qtyrange{2.0}{2.1}{\volt}$
+    \item \textbf{LED Verde o Azul estándar:} $V_{on} \approx \qtyrange{3.0}{3.2}{\volt}$
+    \item \textbf{LED Blanco de alta luminosidad:} $V_{on} \approx \qtyrange{3.2}{3.4}{\volt}$
+\end{itemize}
+
+\textbf{La sujeción:} Si se coloca un LED Azul o Verde polarizado en directa de la línea analógica a GND, actuará exactamente como un limitador de tensión de precisión a $\qty{3.0}{\volt} - \qty{3.2}{\volt}$.
+
+\textbf{Ventaja visual adicional:} El LED se encenderá físicamente cuando el circuito entre en estado de recorte o falla.
+\vspace{0.4cm}
+
+% ==============================================================================
+% ALTERNATIVA 3: DIODE STRING
+% ==============================================================================
+\section{Alternativa 3: Cadena de Diodos de Silicio en Serie (Diode String)}
+
+Si solo se dispone de los diodos rápidos comunes 1N4148 de la BOM estándar, pueden colocarse varios en serie hacia tierra aprovechando que en directa cada uno aporta una caída muy constante de $\approx \qty{0.7}{\volt}$.
+
+\vspace{0.3cm}
+\begin{figure}[h!]
+    \centering
+    \begin{circuitikz}[american, scale=0.85, transform shape]
+        \draw (0,0) to[short, o-] (1,0) to[R, l=$R_s$] (4,0);
+        \node[left] at (0,0) {\textbf{Entrada Analógica}};
+        \draw (4,0) to[short, *-o] (8,0) node[right] {\textbf{Entrada ADC} ($0-\qty{3.3}{\volt}$)};
+        
+        % Cadena de 5 diodos
+        \draw (4,0) to[D, l_=$D_1$ (1N4148)] (4,-1.5)
+                    to[D, l_=$D_2$ (1N4148)] (4,-3)
+                    to[D, l_=$D_3$ (1N4148)] (4,-4.5)
+                    to[D, l_=$D_4$ (1N4148)] (4,-6)
+                    to[D, l_=$D_5$ (1N4148)] (4,-7.5) node[ground] {};
+                    
+        % Diodo hacia GND (Silicio)
+        \draw (6,0) to[D, l=$D_{FAST\_1}$ (1N4148), invert] (6,-7.5) node[ground] {};
+        \node[right] at (6.5, -4.5) {\footnotesize Piso a \qty{-0.7}{\volt}};
+    \end{circuitikz}
+    \caption{Esquema de Cadena de Diodos (Diode String).}
+\end{figure}
+
+\textbf{¿Cómo funciona?}\\
+Al conectar 5 diodos 1N4148 en serie orientados en directa hacia tierra, la tensión máxima en el nodo del ADC quedará sujeta a la suma de sus caídas en directa:
+\begin{equation}
+    V_{clamping} = 5 \times \qty{0.7}{\volt} = \mathbf{\qty{3.5}{\volt}}
+\end{equation}
+(Si se usaran solo 4 diodos, la sujeción sería de $4 \times \qty{0.7}{\volt} = \qty{2.8}{\volt}$, lo cual también es perfectamente seguro, aunque reduciría ligeramente el rango útil del ADC).
+
+La curva de encendido en directa de un diodo de señal como el 1N4148 es mucho más abrupta y nítida (\textit{knee} más duro) que la de un Zener de baja tensión (\qty{3.3}{\volt}), por lo que esta alternativa ofrece una mejor linealidad dentro del rango de medición de $\qty{0}{\volt}$ a \qty{2.5}{\volt}.
+
+\vspace{0.5cm}
+
+\end{document}
