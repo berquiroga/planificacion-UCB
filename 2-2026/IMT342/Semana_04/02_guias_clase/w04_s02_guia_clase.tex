@@ -1,0 +1,328 @@
+\documentclass[11pt, a4paper]{article}
+
+% 1. Fuentes y Tipografía (Arquitectura robusta)
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella} % Fuente Palatino
+\usepackage{tgcursor}  % Fuente monospaciada con soporte para negritas (elimina warning cmtt)
+\usepackage{microtype}
+
+% 2. Configuración Manual de Idioma
+\usepackage[spanish, es-noshorthands]{babel}
+\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
+
+% 3. Matemáticas
+\usepackage{amsmath, amssymb, amsfonts, bm}
+
+% 4. Colores, Gráficos y Tablas
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+
+% 5. Geometría y Encabezados
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt} % Soluciona la advertencia de fancyhdr
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Robótica (IMT-342)}
+\rhead{Semana 4 - Sesión 2}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% 6. TikZ
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+% 7. Código Fuente (XML/URDF)
+\usepackage{listings}
+\lstdefinestyle{xmlstyle}{
+    language=XML,
+    basicstyle=\ttfamily\small,
+    backgroundcolor=\color{gray!5},
+    frame=single,
+    rulecolor=\color{gray!40},
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{red!70!black},
+    commentstyle=\color{green!60!black},
+    showstringspaces=false,
+    morekeywords={robot, link, joint, origin, axis, parent, child, limit}
+}
+\lstset{style=xmlstyle}
+
+% Colores institucionales
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{ucbyellow}{RGB}{255, 184, 28}
+
+\begin{document}
+
+% =======================================================
+% CABECERA INSTITUCIONAL
+% =======================================================
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{UNIVERSIDAD CATÓLICA BOLIVIANA "SAN PABLO" — SEDE TARIJA}}\\
+    \vspace{0.2cm}
+    \normalsize Departamento de Ciencias Exactas e Ingenierías | Carrera de Ingeniería Mecatrónica\\
+    Asignatura: Robótica Industrial (IMT-342) \\
+    Docente: M.Sc. Ing. Bernardo Quiroga Turdera
+\end{center}
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Documento Maestro: Guía de Clase y Laboratorio (URDF)}]
+    \centering \large \textbf{Modelado Cinemático del ABB IRB 120:} \\ De la Convención D-H a la Descripción en ROS
+\end{tcolorbox}
+\vspace{0.4cm}
+
+% =======================================================
+% SECCIÓN I: PLANIFICACIÓN DOCENTE (LESSON PLAN)
+% =======================================================
+\section*{PARTE I: Guía de Clase para el Docente (Lesson Plan)}
+
+\noindent\textbf{Unidad I:} Morfología, Geometría del Espacio y Cinemática Directa \\
+\textbf{Duración:} 140 minutos reales (Jueves 27 de Agosto de 2026) \\
+\textbf{Alineamiento Metodológico:} CDIO (Diseñar/Implementar) | ABET SO-1 y SO-6
+
+\subsection*{1. Objetivos de Aprendizaje de la Sesión}
+Al finalizar la sesión, el estudiante será capaz de:
+\begin{enumerate}
+    \item Identificar la estructura cinemática y los ejes articulares del ABB IRB 120.
+    \item Asignar sistemáticamente los marcos de coordenadas D-H y construir su tabla geométrica.
+    \item Explicar rigurosamente la diferencia matemática y estructural entre una representación D-H y un archivo URDF en ROS.
+    \item Construir el árbol cinemático URDF básico de 6 juntas para el manipulador.
+    \item Verificar computacionalmente que la descripción del robot coincide con la cinemática directa esperada (Hito 1 - Evaluación EC1).
+\end{enumerate}
+
+\subsection*{2. Cronograma de Gestión del Tiempo (140 min)}
+\begin{center}
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{@{} l >{\raggedright\arraybackslash}p{4cm} X @{}}
+    \toprule
+    \textbf{Fase} & \textbf{Actividad Docente} & \textbf{Concepto Clave} \\ \midrule
+    \textbf{Apertura} (15m) & Desafío con el robot físico: Identificar eslabones, 6 juntas de revolución y ejes. & Físico $\rightarrow$ Matemático $\rightarrow$ Computacional. \\ 
+    \textbf{Asignación D-H} (30m) & Repaso de las 4 reglas D-H aplicadas directamente sobre el diagrama del IRB 120. & $z_i$ sobre juntas, $x_i$ en perpendicular común. \\ 
+    \textbf{Tabla/Matrices} (20m) & Llenado de la Tabla D-H. Formulación de $^{i-1}T_i$ y la cadena total $^{0}T_6$. & El encadenamiento $SE(3)$ justifica el movimiento. \\ 
+    \textbf{D-H $\neq$ URDF} (15m) & Contraste conceptual exhaustivo. Riesgos de copiar $a_i, d_i$ directo al tag \texttt{<origin>}. & URDF permite 6 GDL libres; D-H restringe a 4 parámetros. \\ 
+    \textbf{Taller ROS} (45m) & Estudiantes codifican el archivo \texttt{irb120.urdf} y verifican en RViz. & Implementación (CDIO) y validación cinemática. \\ 
+    \textbf{Cierre EC1} (15m) & Exit Check y preparación para la defensa del Hito 1 de la próxima semana. & Justificación matemática de la simulación. \\ \bottomrule
+    \end{tabularx}
+\end{center}
+
+\newpage
+% =======================================================
+% SECCIÓN II: MATERIAL DE ESTUDIO Y LABORATORIO
+% =======================================================
+\section*{PARTE II: Guía de Laboratorio y Material de Estudio}
+
+\subsection*{1. El Desafío: Físico $\to$ Matemático $\to$ Computacional}
+¿Cómo transformamos un mecanismo de metal en un modelo controlable por ROS?
+\begin{center}
+\begin{tikzpicture}[
+    node distance=1cm and 1.5cm,
+    box/.style={rectangle, draw=ucbblue, thick, fill=ucbblue!5, text width=4cm, align=center, rounded corners, minimum height=1.2cm},
+    arrow/.style={-Stealth, thick, ucbblue, line width=1.5pt}
+]
+    \node[box] (robot) {\textbf{1. Robot Físico}\\(ABB IRB 120)\\ \footnotesize 6 Juntas de Revolución};
+    \node[box, right=of robot] (math) {\textbf{2. Modelo Matemático}\\(Convención D-H)\\ \footnotesize Perpendiculares Comunes};
+    \node[box, right=of math] (ros) {\textbf{3. Modelo ROS}\\(URDF / XML)\\ \footnotesize Árbol de Transformaciones};
+    
+    \draw[arrow] (robot) -- (math);
+    \draw[arrow] (math) -- (ros);
+\end{tikzpicture}
+\end{center}
+
+\subsection*{2. Asignación D-H en el Manipulador Antropomórfico (IRB 120)}
+El manipulador ABB IRB 120 es un brazo articulado de 6 grados de libertad. Su muñeca esférica (Juntas 4, 5 y 6) posee ejes que se intersectan en un único punto (Desacoplamiento de Pieper).
+
+\begin{center}
+\begin{tikzpicture}[scale=1.2, thick]
+    % Base
+    \draw[fill=gray!20] (-1,0) rectangle (1,0.5);
+    \node at (0, 0.25) {Base};
+    
+    % J1 (Vertical)
+    \draw[ucbblue, line width=3pt] (0,0.5) -- (0,1.5);
+    \draw[fill=white] (0,1.5) ellipse (0.4 and 0.2);
+    \draw[-Stealth, dashed, red] (0,1.5) -- (0,3) node[right]{$Z_0$ (J1)};
+    
+    % J2 (Hombro - Horizontal)
+    \draw[ucbblue, line width=3pt] (0,1.5) -- (0,2.5);
+    \draw[fill=white] (0,2.5) circle (0.3) node{$J_2$};
+    \filldraw[black] (0,2.5) circle (0.05); 
+    
+    % Brazo y J3 (Codo)
+    \draw[ucbblue, line width=3pt] (0,2.5) -- (0,5);
+    \draw[fill=white] (0,5) circle (0.3) node{$J_3$};
+    \filldraw[black] (0,5) circle (0.05); 
+    
+    % Antebrazo y Muñeca Esférica (J4, J5, J6)
+    \draw[ucbblue, line width=3pt] (0,5) -- (3,5);
+    
+    % J4 (Eje a lo largo del antebrazo)
+    \draw[fill=white] (1.5,4.7) rectangle (1.8,5.3);
+    \node at (1.65, 4.4) {$J_4$};
+    
+    % J5 (Pitch de muñeca)
+    \draw[fill=white] (3,5) circle (0.25) node{$J_5$};
+    
+    % J6 (Roll de muñeca / Flange)
+    \draw[ucbblue, line width=3pt] (3,5) -- (4,5);
+    \draw[fill=gray!40] (4,4.6) rectangle (4.2,5.4);
+    \node at (4.1, 4.3) {Brida ($J_6$)};
+    
+    % Cotas
+    \draw[Stealth-Stealth, gray] (-0.8, 2.5) -- node[left]{$a_2$} (-0.8, 5);
+    \draw[Stealth-Stealth, gray] (0, 5.6) -- node[above]{$a_3 / d_4$} (3, 5.6);
+\end{tikzpicture}
+\end{center}
+
+\subsection*{3. Construcción de la Tabla Denavit-Hartenberg}
+Extrayendo las cotas del manual técnico oficial del ABB IRB 120, complete la siguiente tabla.
+\begin{center}
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{@{} c c X X X @{}}
+    \toprule
+    \textbf{Eslabón ($i$)} & \textbf{$\theta_i$ (Rot $Z$)} & \textbf{$d_i$ (Tras $Z$)} & \textbf{$a_i$ (Tras $X$)} & \textbf{$\alpha_i$ (Rot $X$)} \\ \midrule
+    1 & $q_1$ & [VALOR ABB] & [VALOR ABB] & [VALOR ABB] \\
+    2 & $q_2 - 90^\circ$ & [VALOR ABB] & [VALOR ABB] & [VALOR ABB] \\
+    3 & $q_3$ & [VALOR ABB] & [VALOR ABB] & [VALOR ABB] \\
+    4 & $q_4$ & [VALOR ABB] & [VALOR ABB] & [VALOR ABB] \\
+    5 & $q_5$ & [VALOR ABB] & [VALOR ABB] & [VALOR ABB] \\
+    6 & $q_6$ & [VALOR ABB] & [VALOR ABB] & [VALOR ABB] \\ \bottomrule
+    \end{tabularx}
+\end{center}
+
+\noindent Ecuación Homogénea Elemental y Cadena Directa:
+\begin{equation}
+    ^{i-1}T_i = R_z(\theta_i) T_z(d_i) T_x(a_i) R_x(\alpha_i) \quad \implies \quad ^0T_6(q) = \prod_{i=1}^{6} {}^{i-1}T_i
+\end{equation}
+
+\newpage
+\subsection*{4. Conflicto Conceptual: D-H vs. URDF}
+\begin{tcolorbox}[colback=red!5!white, colframe=red!75!black, title=\textbf{¡Precaución Arquitectónica!}]
+Una fila de la tabla D-H \textbf{NO} se puede copiar y pegar mecánicamente dentro del tag \texttt{<origin xyz="..." rpy="...">} de un archivo URDF. Cumplen propósitos distintos. D-H restringe la descripción a 4 parámetros para simplificar el álgebra manual, mientras que URDF permite una descripción libre de 6 GDL por cada eslabón.
+\end{tcolorbox}
+
+\begin{center}
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{@{} l X X @{}}
+    \toprule
+    \textbf{Atributo} & \textbf{Denavit-Hartenberg (D-H)} & \textbf{URDF (Unified Robot Desc. Format)} \\ \midrule
+    \textbf{Parámetros} & Restringida a 4 parámetros ($z, x$) & Libre en $SE(3)$ (Transformación de 6 GDL) \\
+    \textbf{Árbol} & Implícito en la tabla (secuencial) & Explícito con tags \texttt{<parent>} / \texttt{<child>} \\
+    \textbf{Mallas 3D} & No aplicable (puramente matemático) & Sí (Carga archivos estéticos \texttt{.stl} / \texttt{.dae}) \\
+    \textbf{Límites} & No definidos en la matriz & Incorpora inercia, torque y colisiones \\
+    \textbf{Ecosistema} & Álgebra matricial analítica & RViz, Gazebo, MoveIt! (ROS) \\ \bottomrule
+    \end{tabularx}
+\end{center}
+
+\subsection*{5. Mapeo Conceptual y URDF Mínimo}
+\begin{center}
+\begin{tikzpicture}[
+    node distance=0.5cm and 2.5cm,
+    box/.style={rectangle, draw=black, thick, fill=gray!5, text width=5cm, align=center, rounded corners, minimum height=0.8cm},
+    arrow/.style={-Stealth, thick, dashed, ucbblue}
+]
+    % Física / D-H
+    \node[box] (dh1) {\textbf{Física:} Eje de rotación del motor};
+    \node[box, below=of dh1] (dh2) {\textbf{Geometría:} Desplazamiento fijo};
+    \node[box, below=of dh2] (dh3) {\textbf{Variable:} Ángulo de junta $q_i$};
+    \node[box, below=of dh3] (dh4) {\textbf{Física:} Restricción mecánica};
+    
+    % URDF
+    \node[box, fill=ucbblue!10, right=of dh1] (u1) {\texttt{<axis xyz="[X Y Z]"/>}};
+    \node[box, fill=ucbblue!10, right=of dh2] (u2) {\texttt{<origin xyz="..." rpy="..."/>}};
+    \node[box, fill=ucbblue!10, right=of dh3] (u3) {\texttt{<joint type="revolute">}};
+    \node[box, fill=ucbblue!10, right=of dh4] (u4) {\texttt{<limit lower="..." upper="..."/>}};
+
+    \draw[arrow] (dh1) -- (u1);
+    \draw[arrow] (dh2) -- (u2);
+    \draw[arrow] (dh3) -- (u3);
+    \draw[arrow] (dh4) -- (u4);
+\end{tikzpicture}
+\end{center}
+
+\textbf{Estructura Mínima URDF (Fragmento a implementar en Laboratorio):}
+\begin{lstlisting}
+<robot name="irb120">
+  <link name="base_link"/>
+  <link name="link_1"/>
+
+  <joint name="joint_1" type="revolute">
+    <parent link="base_link"/>
+    <child link="link_1"/>
+
+    <!-- Transformacion del origen de J1 respecto a base_link -->
+    <origin xyz="[VAL_X] [VAL_Y] [VAL_Z]" rpy="0 0 0"/>
+    
+    <!-- Eje de rotacion de la articulacion en su marco local -->
+    <axis xyz="0 0 1"/>
+
+    <!-- Limites extrados del datasheet (Estrictamente en radianes) -->
+    <limit lower="[MIN_RAD]" upper="[MAX_RAD]" effort="[TAU]" velocity="[VEL]"/>
+  </joint>
+</robot>
+\end{lstlisting}
+
+\newpage
+\subsection*{6. Actividad Práctica (Laboratorio en ROS)}
+\textbf{Estructura del Paquete:} Deberá crear un paquete ROS estandarizado:
+\begin{lstlisting}[basicstyle=\ttfamily\footnotesize, backgroundcolor=\color{white}]
+irb120_description/
+|-- package.xml
+|-- CMakeLists.txt
+|-- urdf/
+|   `-- irb120.urdf
+|-- meshes/
+|   |-- visual/
+|   `-- collision/
+`-- launch/
+    `-- display.launch
+\end{lstlisting}
+
+\textbf{Puertas de Verificación (Checkpoints para la evaluación EC1):}
+\begin{itemize}
+    \item[$\square$] El XML se parsea correctamente sin errores sintácticos (\texttt{check\_urdf irb120.urdf}).
+    \item[$\square$] El árbol Parent-Child es secuencial (\texttt{base\_link} $\to$ \texttt{link\_1} $\dots \to$ \texttt{link\_6}).
+    \item[$\square$] El robot carga en RViz y las 6 juntas giran sobre el eje correcto.
+    \item[$\square$] La cinemática matemática ($^0T_6$) coincide numéricamente con el \texttt{tf} en ROS.
+    \item[$\square$] \textit{Aviso:} La integración de las mallas STL visuales es secundaria; priorice la exactitud cinemática.
+\end{itemize}
+
+\vspace{0.5cm}
+\begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{Comprobación de Salida (Exit Check Formativo)}]
+    \begin{enumerate}
+        \item ¿Qué información geométrica y física exacta codifica una fila individual de una tabla D-H?
+        \item ¿Por qué la representación D-H y la representación URDF no son sintácticamente equivalentes aunque modelen al mismo robot?
+        \item Si el robot luce correcto en RViz cuando $\mathbf{q} = \mathbf{0}$, pero al mover la junta $J_2$ un eslabón se mueve de forma antinatural, ¿qué atributos del URDF deben inspeccionarse primero?
+    \end{enumerate}
+\end{tcolorbox}
+
+\newpage
+% =======================================================
+% SECCIÓN III: NOTAS CONFIDENCIALES DEL INSTRUCTOR
+% =======================================================
+\section*{PARTE III: Notas del Instructor y Troubleshooting}
+\textit{Este bloque contiene orientaciones exclusivas para el docente, destinadas a la conducción del laboratorio y mitigación de errores estudiantiles.}
+
+\subsection*{A. Conceptos Erróneos Anticipados (Student Misconceptions)}
+\begin{itemize}
+    \item \textbf{D-H Origin vs. URDF Origin:} El error más recurrente es que los estudiantes intenten forzar los parámetros $a_i$ y $d_i$ de la tabla D-H copiándolos ciegamente en las coordenadas \texttt{xyz} del tag \texttt{<origin>}. \\
+    \textit{Estrategia:} Aclare en la pizarra que D-H exige secuencias rígidas a lo largo de ejes $X$ y $Z$ locales, mientras que el \texttt{<origin>} de URDF es la traducción/rotación directa global o local entre el origen del padre y el origen del hijo.
+    \item \textbf{Estética vs. Cinemática:} Los alumnos suelen frustrarse intentando cargar los archivos \texttt{.stl} antes de definir correctamente las distancias \texttt{xyz} de las juntas, lo que produce un robot visualmente ``explotado''. \\
+    \textit{Estrategia:} Obligue a que el primer hito del laboratorio se realice utilizando primitivas geométricas (Cilindros \texttt{<cylinder>}). Solo cuando las rotaciones sean correctas, autorice la importación de las mallas 3D.
+\end{itemize}
+
+\subsection*{B. Solución de Problemas Frecuentes en el Taller (Troubleshooting)}
+\begin{itemize}
+    \item \textbf{Límites en Grados vs. Radianes:} El manual oficial de ABB proporciona los límites de las articulaciones en grados (ej. $\pm 165^\circ$ para J1). Si el estudiante transcribe \texttt{lower="-165" upper="165"} en URDF, ROS interpretará 165 radianes (más de 26 vueltas completas), corrompiendo los simuladores o planificadores. Obligue a verificar las conversiones a radianes.
+    \item \textbf{Error de Parseo XML:} Si RViz no lanza el robot, el 90\% de las veces es un error de cierre de etiquetas. Instruya el uso estricto de \texttt{check\_urdf} en terminal; esta herramienta arroja la línea exacta del error sintáctico.
+    \item \textbf{Explosiones Físicas en Gazebo:} Si el robot sale volando por el aire al cargarlo en un simulador dinámico, se debe a que se declaró el tag \texttt{<joint>} pero se omitió declarar la inercia \texttt{<inertial>} (división por masa cero en el motor de físicas) o hay un cruce de colisiones.
+    \item \textbf{Giro en el Eje Equivocado:} Si al accionar el \textit{Joint State Publisher} para J3 (Codo), el robot gira hacia los lados en lugar de inclinarse (Pitch), el problema reside casi siempre en el tag \texttt{<axis xyz="0 1 0"/>}. Exija al alumno que dibuje la regla de la mano derecha en el plano y redefina el vector unitario del eje de rotación.
+\end{itemize}
+
+\end{document}
