@@ -1,0 +1,263 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- PAQUETES PRINCIPALES ---
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla, es-noquoting]{babel} % Vital para evitar conflictos TikZ/Babel
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb, mathtools}
+\usepackage{siunitx}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage{xcolor}
+
+% --- PAQUETES PARA CIRCUITOS Y GRÁFICOS ---
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning, babel}
+
+% --- CONFIGURACIÓN DE SIUNITX ---
+\sisetup{
+    output-decimal-marker = {,},
+    per-mode = symbol,
+    inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+% --- CABECERAS Y PIES DE PÁGINA ---
+\usepackage{fancyhdr}
+\setlength{\headheight}{14.5pt} % Evita warning de overfull header
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{Circuitos Electrónicos III (IMT-221)}}
+\rhead{Anexo Técnico: BOM y Protocolo Shunt}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% --- ENTORNOS PERSONALIZADOS ---
+\newtcolorbox{aviso}[1][]{
+  colback=red!5!white,
+  colframe=red!75!black,
+  fonttitle=\bfseries,
+  title=#1
+}
+\newtcolorbox{cajaopciones}[1][]{
+  colback=blue!3!white,
+  colframe=blue!80!black,
+  fonttitle=\bfseries,
+  title=#1
+}
+\newtcolorbox{cajaevaluacion}[1][]{
+  colback=gray!10!white,
+  colframe=black!75,
+  fonttitle=\bfseries,
+  title=#1
+}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{ANEXO TÉCNICO AL HITO 1}}\\[0.2cm]
+    {\Large \textbf{LISTA DE MATERIALES (BOM) ACTUALIZADA Y PROTOCOLO DE CONTINGENCIA PARA RESISTENCIAS DE SENSADO ($R_{\text{shunt}}$)}}\\[0.4cm]
+    
+    UNIVERSIDAD CATÓLICA BOLIVIANA ``SAN PABLO'' -- SEDE TARIJA\\[0.1cm]
+    Departamento de Ciencias Exactas e Ingeniería\\[0.1cm]
+    Carrera: Ingeniería Mecatrónica / Ingeniería Biomédica\\[0.1cm]
+    Asignatura: Circuitos Electrónicos III (IMT-221) | Gestión: Semestre 2-2026\\[0.1cm]
+    \textit{Docente: M.Sc. Ing. Bernardo Quiroga Turdera}
+    \vspace{0.3cm}
+    \hrule
+\end{center}
+
+\vspace{0.4cm}
+
+% ==============================================================================
+% 1. LISTA DE MATERIALES
+% ==============================================================================
+\section{Lista de Materiales Oficial y Consolidada (BOM Hito 1)}
+
+La siguiente tabla detalla los componentes requeridos para la implementación, simulación y validación experimental de la etapa de protección y supresión de transitorios inductivos del Hito 1:
+
+\begin{table}[h!]
+\centering
+\caption{Especificaciones de Componentes para el Hito 1 del PFI}
+\label{tab:bom_hito1}
+\footnotesize
+\renewcommand{\arraystretch}{1.4}
+% Ajuste de anchos para evitar Overfull \hbox
+\begin{tabularx}{\textwidth}{@{} c >{\bfseries\raggedright\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{4.5cm} c X @{}}
+\toprule
+\textbf{Ítem} & \textbf{Componente / Denominación} & \textbf{Parámetros Críticos y Tolerancia} & \textbf{Cant.} & \textbf{Función Técnica en el Circuito} \\
+\midrule
+1 & Diodo Zener de Precisión & BZX55C5V1 ($V_Z = 5.1\text{ V} \pm 5\%$, $P_{ZM} = 500\text{ mW}$, $r_z \le 15\,\Omega$) & 1 & Limitador de techo de tensión segura para ADC ($0 - 5.1\text{ V}$). \\
+2 & Diodo Schottky de Señal & BAT42, BAT43 o SD101 ($V_F \le 0.33\text{ V}$, $t_{rr} < 1\text{ ns}$) & 1 & Alternativa Clamping Activo (Rail-to-Rail) al riel de $+3.3\text{ V}$. \\
+3 & Diodos Rápidos de Conmutación & 1N4148 ($t_{rr} \le 4\text{ ns}$, $I_{F(\max)} = 200\text{ mA}$, $V_{R} = 100\text{ V}$) & 3 a 5 & Fijación de piso a $-0.7\text{ V}$, redundancia o cadena de diodos (string). \\
+4 & Diodo Rectificador de Potencia & 1N4007 ($I_{F(\text{avg})} = 1\text{ A}$, $I_{FSM} = 30\text{ A}$, $PIV = 1000\text{ V}$) & 1 & Diodo Flyback de supresión de energía inductiva en la carga motriz. \\
+5 & Resistor Limitador de Serie ($R_s$) & $180\,\Omega$ o $220\,\Omega$ / $0.5\text{ W}$ a $1\text{ W}$ (Película metálica $\pm 5\%$) & 1 & Absorción de sobretensión y limitación de corriente hacia el Zener. \\
+6 & Resistor de Sensado Shunt ($R_{\text{shunt}}$) & $0.1\,\Omega$ / $2\text{ W}$ a $5\text{ W}$ (Cerámica/cemento, tolerancia $\le 5\%$) & 1 & Elemento transductor corriente-voltaje ($100\text{ mV/A}$). \\
+7 & Resistores Auxiliares / Cargas & $10\,\Omega, 100\,\Omega, 1\text{ k}\Omega, 10\text{ k}\Omega, 47\text{ k}\Omega$ ($1/4\text{ W}$) & Kit & Resistencia de carga de prueba ($R_{LOAD}$) y divisores de inyección. \\
+8 & Actuador Inductivo de Prueba & Motorreductor DC "Amarillo" ($3\text{ V} - 12\text{ V}$) o Solenoide inductivo & 1 & Generador físico de transitorio inductivo por conmutación. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ==============================================================================
+% 2. EL RESISTOR SHUNT
+% ==============================================================================
+\section{El Resistor Shunt ($R_{\text{shunt}}$): Rol en el PFI y Requisito Nominal}
+
+En la arquitectura del Proyecto Final Integrador, el resistor Shunt ($R_{\text{shunt}}$) es el elemento primario encargado de traducir la corriente consumida por la carga en una diferencia de potencial analógica:
+\begin{equation}
+    V_{\text{shunt}}(t) = I_{\text{carga}}(t) \cdot R_{\text{shunt}}
+\end{equation}
+
+\textbf{Especificación de Diseño para el Sistema Integrado:}
+\begin{itemize}
+    \item \textbf{Valor Nominal Óptimo:} $R_{\text{shunt}} = 0.10\,\Omega$ ($100\text{ m}\Omega$).
+    \item \textbf{Caída de Tensión:} A corriente nominal de $1.0\text{ A}$, genera una señal de $100\text{ mV}$, preservando el $99.2\%$ de la tensión de la fuente de $+12\text{ V}$ para el actuador.
+    \item \textbf{Disipación Térmica:} $P = I^2 R = (1.5\text{ A})^2 \cdot 0.1\,\Omega = \mathbf{0.225\text{ W}}$ (un resistor de $5\text{ W}$ opera con un factor de seguridad térmico superior al $95\%$).
+\end{itemize}
+
+\newpage
+% ==============================================================================
+% 3. PROTOCOLO DE CONTINGENCIA
+% ==============================================================================
+\section{Protocolo de Contingencia: Alternativas ante la ausencia de $R_{\text{shunt}} = 0.1\,\Omega$}
+
+Si el equipo de trabajo no dispone de la resistencia de cemento de $0.1\,\Omega$ / $5\text{ W}$ durante la sesión del Hito 1, deberá aplicar obligatoriamente una de las siguientes cuatro alternativas de ingeniería para validar la red de protección sin alterar los objetivos de aprendizaje:
+
+\vspace{0.3cm}
+\begin{cajaopciones}[Alternativas de Contingencia para Banco de Trabajo]
+    \begin{itemize}
+        \item[\textbf{A.}] \textbf{Síntesis en Paralelo} $\longrightarrow$ Conectar 5 a 10 resistores estándar de 1/4W en paralelo.
+        \item[\textbf{B.}] \textbf{Inyección Pura de Señal} $\longrightarrow$ Reemplazar $R_{\text{shunt}}$ por $10\,\Omega$, $100\,\Omega$ o $1\text{ k}\Omega$ (Sin motor).
+        \item[\textbf{C.}] \textbf{Supresión Flyback Directa} $\longrightarrow$ Probar Flyback con motor a 12V sin resistor en serie.
+        \item[\textbf{D.}] \textbf{Shunt Calibrado de Cobre} $\longrightarrow$ Construir shunt resistivo con alambre de cobre esmaltado.
+    \end{itemize}
+\end{cajaopciones}
+\vspace{0.3cm}
+
+\subsection*{Alternativa A: Síntesis de Shunt por Arreglo en Paralelo (Recomendada para Potencia)}
+Si se dispone de resistencias comunes de película de carbón o metálica de $1/4\text{ W}$ o $1/2\text{ W}$, se puede construir una resistencia equivalente de bajo valor óhmico y mayor capacidad de disipación de potencia conectando $N$ resistores idénticos en paralelo:
+\begin{equation}
+    R_{eq} = \frac{R}{N} \qquad P_{total} = N \cdot P_{individual}
+\end{equation}
+
+\begin{itemize}
+    \item \textbf{Opción A.1:} $10$ resistencias de $1.0\,\Omega$ / $1/4\text{ W}$ en paralelo:
+    $$R_{eq} = \frac{1.0\,\Omega}{10} = \mathbf{0.10\,\Omega} \qquad P_{total} = 10 \times 0.25\text{ W} = \mathbf{2.50\text{ W}}$$
+    
+    \item \textbf{Opción A.2:} $5$ resistencias de $0.47\,\Omega$ / $0.5\text{ W}$ en paralelo:
+    $$R_{eq} = \frac{0.47\,\Omega}{5} = \mathbf{0.094\,\Omega} \qquad P_{total} = 5 \times 0.50\text{ W} = \mathbf{2.50\text{ W}}$$
+    
+    \item \textbf{Opción A.3:} $5$ resistencias de $1.0\,\Omega$ / $1/4\text{ W}$ en paralelo:
+    $$R_{eq} = \frac{1.0\,\Omega}{5} = \mathbf{0.20\,\Omega} \qquad P_{total} = 5 \times 0.25\text{ W} = \mathbf{1.25\text{ W}}$$
+\end{itemize}
+
+\subsection*{Alternativa B: Emulación por Divisor Resistivo (Validación de Protección de Entrada)}
+El objetivo del Hito 1 es evaluar la red de sujeción (clamping) y limitación (clipping) ante sobretensiones críticas. Si no se opera la planta motriz en esta etapa, el esquema de prueba será:
+
+\vspace{0.3cm}
+\begin{figure}[h!]
+    \centering
+    \begin{circuitikz}[american, scale=0.9, transform shape]
+        % Generador
+        \draw (0,0) to[sV, l={Generador de Señales}] (0,-3) node[ground]{};
+        \node[above, text width=4cm, align=center] at (0, 0.5) {\footnotesize $15\text{ V}_{pp}$, $\qty{1}{\kilo\hertz}$, $+2.5\text{V offset}$};
+        
+        % Divisor (Uso llaves {} para proteger los textos)
+        \draw (0,0) -- (1.5,0) to[R, l_={$R_{DIV}$ ($1\text{k}\Omega$ o $10\text{k}\Omega$)}] (4.5,0);
+        
+        % Nodo Central
+        \draw (4.5,0) to[short, -*] (5.5,0);
+        \node[above] at (5.5, 0.1) {\textbf{Nodo de Sensado ($v_{in}$)}};
+        
+        % Resistencia simulada a GND (¡LLAVES PROTECTORAS AQUÍ PARA LA COMA!)
+        \draw (5.5,0) to[R, l={$R_{\text{shunt\_sim}}$ ($10\,\Omega$, $100\,\Omega$ o $1\text{k}\Omega$)}] (5.5,-3) node[ground]{};
+        
+        % A la red
+        \draw (5.5,0) -- (7.5,0) to[R, l=$R_s$] (10,0) to[short, -o] (11,0) node[right]{\textbf{[ Red Diodos ]}};
+    \end{circuitikz}
+    \caption{Emulación de señal mediante divisor resistivo.}
+\end{figure}
+\vspace{0.2cm}
+
+\textbf{Procedimiento:} Se sustituye $R_{\text{shunt}}$ por una resistencia cualquiera del kit ($10\,\Omega, 100\,\Omega \text{ o } 1\text{ k}\Omega$).\\
+\textbf{Validación:} El generador de funciones inyecta directamente la sobretensión de prueba ($15\text{ V}_{pp}$). Se verifica en el osciloscopio que la tensión entregada al nodo del ADC se mantiene dentro de la cota segura ($0.0\text{ V} \le V_{ADC} \le 5.1\text{ V}$ o $3.3\text{ V}$).
+
+\newpage
+\subsection*{Alternativa C: Ensayo Desacoplado del Diodo Flyback}
+Si se desea verificar la supresión de la fuerza contraelectromotriz ($V_L = L \frac{di}{dt}$) del motor DC real:
+
+\begin{aviso}[Advertencia de Seguridad en Banco]
+NO conectar resistencias de $1/4\text{ W}$ de $100\,\Omega$ o $1\text{ k}\Omega$ en serie con el motor conectado a $+12\text{ V}$. Riesgo inminente de destrucción por disipación térmica y quemadura de protoboard.
+\end{aviso}
+
+\begin{figure}[h!]
+    \centering
+    \begin{circuitikz}[american, scale=0.85, transform shape]
+        \draw (0,3) node[vcc]{+12V} -- (0,2);
+        \draw (-1.5,2) -- (1.5,2);
+        \draw (-1.5,2) to[generic, l={Motor DC}] (-1.5,0);
+        \draw (1.5,2) to[D, l={1N4007 (Flyback)}, invert] (1.5,0);
+        \draw (-1.5,0) -- (1.5,0);
+        \draw (0,0) to[cute open switch, l={Switch / Transistor}] (0,-2) node[ground]{};
+    \end{circuitikz}
+    \caption{Configuración segura para ensayo de Diodo Flyback directo.}
+\end{figure}
+
+\textbf{Procedimiento Seguro:}
+\begin{enumerate}
+    \item Conectar el motor directamente entre la fuente de $+12\text{ V}$ y el switch mecánico hacia GND.
+    \item Conectar el diodo 1N4007 en antiparalelo directo a los bornes del motor (cátodo a $+12\text{ V}$, ánodo al nodo de conmutación).
+    \item Medir con el Canal 1 del osciloscopio el pico de apertura con y sin el diodo 1N4007 para evidenciar la absorción del transitorio inductivo.
+\end{enumerate}
+
+\subsection*{Alternativa D: Calibración de Shunt por Longitud de Alambre de Cobre}
+En aplicaciones de instrumentación donde no se cuenta con componentes comerciales, es técnicamente válido confeccionar un resistor shunt calibrado utilizando un segmento de alambre de cobre esmaltado (bobinado) aprovechando su resistividad:
+\begin{equation}
+    R = \rho \cdot \frac{L}{A}
+\end{equation}
+Para alambre de cobre magneto calibre AWG 24 (sección $A \approx 0.205\text{ mm}^2$, resistividad $\rho \approx 1.72 \times 10^{-8}\,\Omega\cdot\text{m}$):
+\begin{equation*}
+    \text{Resistencia específica} \approx 0.084\,\Omega/\text{metro}
+\end{equation*}
+\textbf{Construcción:} Un segmento de $1.19\text{ metros}$ de alambre AWG 24 enrollado en forma no inductiva (bifilar) proporciona exactamente $0.10\,\Omega$ con alta capacidad de corriente.
+
+% ==============================================================================
+% 4. MATRIZ DE PRECAUCIONES
+% ==============================================================================
+\section{Matriz de Precauciones en Banco de Trabajo}
+
+\begin{table}[h!]
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{@{} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X @{}}
+\toprule
+\textbf{Práctica Incorrecta / Riesgo en Banco} & \textbf{Consecuencia Física} & \textbf{Acción Correctiva de Ingeniería} \\
+\midrule
+Conectar un resistor de $1/4\text{ W}$ ($10\,\Omega$ a $100\,\Omega$) en serie con el motor a $+12\text{ V}$. & 
+Destrucción térmica instantánea del resistor por sobrecarga de potencia ($P > 1.4\text{ W}$). & 
+Usar arreglo en paralelo (Alternativa A) o conectar el motor sin shunt para prueba de Flyback (Alternativa C). \\
+
+Omitir la unión de tierras entre la fuente de $+12\text{ V}$, el generador y el osciloscopio. & 
+Niveles de referencia flotantes, mediciones de offset erróneas y lazos de masa (\textit{ground loops}). & 
+Conectar todos los terminales de masa al nodo central de GND Común de la tarjeta de prototipos. \\
+
+Colocar el diodo Zener en polarización directa en lugar de inversa. & 
+La salida quedará recortada a $+0.7\text{ V}$ en lugar de regular a $+5.1\text{ V}$. & 
+Verificar cátodo (banda negra) conectado al nodo positivo de la señal. \\
+
+Conectar el diodo Schottky BAT43 al revés en el riel de $+3.3\text{ V}$. & 
+Cortocircuito permanente del riel de alimentación del microcontrolador a través del diodo en directa. & 
+El ánodo del Schottky debe ir al nodo analógico del ADC y el cátodo al riel de $+3.3\text{ V}$. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\vspace{0.4cm}
+\begin{cajaevaluacion}[Nota de Evaluación para el Hito 1]
+Los equipos que utilicen cualquiera de las alternativas de contingencia en la sesión práctica deberán documentar explícitamente en el \textbf{Pilar 1} de su memoria técnica (Jupyter Notebook) la justificación analítica del valor equivalente empleado y la deducción de potencia disipada. Para el Hito 2 (Sensado por Par Diferencial BJT), la incorporación del resistor nominal de $0.1\,\Omega$ / $5\text{ W}$ será obligatoria.
+\end{cajaevaluacion}
+
+\end{document}

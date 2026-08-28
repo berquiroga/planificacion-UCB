@@ -1,0 +1,491 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- PAQUETES PRINCIPALES ---
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla, es-noquoting]{babel} % es-noquoting vital para TikZ
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb, mathtools}
+\usepackage{siunitx}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage{xcolor}
+
+% --- PAQUETES PARA CIRCUITOS Y GRÁFICOS ---
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning, babel}
+
+% --- CONFIGURACIÓN DE CÓDIGO (PYTHON Y SPICE) ---
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.96,0.96,0.96}
+
+\lstdefinestyle{pythonstyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    language=Python,
+    literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+             {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+             {ñ}{{\~n}}1 {Ñ}{{\~N}}1
+}
+
+\lstdefinestyle{spicestyle}{
+    backgroundcolor=\color{gray!10},   
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,                 
+    numbers=none
+}
+
+% --- CONFIGURACIÓN DE SIUNITX ---
+\sisetup{output-decimal-marker = {,}, per-mode = symbol, inter-unit-product = \ensuremath{{}\cdot{}}}
+
+% --- CABECERAS Y PIES DE PÁGINA ---
+\usepackage{fancyhdr}
+\setlength{\headheight}{14.5pt}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{Circuitos Electrónicos III (IMT-221)}}
+\rhead{Guía Técnica: Simulación en LTspice}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% --- ENTORNOS PERSONALIZADOS ---
+\newtcolorbox{regla}[1][]{colback=red!5!white, colframe=red!75!black, fonttitle=\bfseries, title=#1}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{GUÍA TÉCNICA Y MANUAL DE REFERENCIA DE SIMULACIÓN ANALÓGICA EN LTSPICE (VERSIONES 24 Y 26)}}\\[0.3cm]
+    {\large \textbf{DOCUMENTO DE CÁTEDRA PARA LABORATORIO Y PROYECTO FINAL INTEGRADOR (PFI)}}\\
+    \vspace{0.4cm}
+    \hrule
+    \vspace{0.4cm}
+    {\large UNIVERSIDAD CATÓLICA BOLIVIANA ``SAN PABLO'' -- SEDE TARIJA}\\[0.1cm]
+    Departamento de Ciencias Exactas e Ingeniería\\[0.1cm]
+    Carrera: Ingeniería Mecatrónica / Ingeniería Biomédica\\[0.1cm]
+    Asignatura: Circuitos Electrónicos III (IMT-221) | Gestión: Semestre 2-2026\\[0.1cm]
+    \textit{Docente: M.Sc. Ing. Bernardo Quiroga Turdera}
+\end{center}
+
+\vspace{0.5cm}
+
+% ==============================================================================
+% SECCIÓN 1: ENFOQUE METODOLÓGICO
+% ==============================================================================
+\section{Enfoque Metodológico y Criterios de Acreditación (CDIO - Pilar 2)}
+
+Bajo el marco internacional CDIO (Concebir-Diseñar-Implementar-Operar) y los criterios de acreditación ABET (Outcomes 1, 2 y 6), la simulación computacional de circuitos electrónicos no sustituye la experimentación física ni la memoria de cálculo analítica. En esta asignatura, la simulación mediante LTspice constituye el Pilar 2 obligatorio dentro del flujo de diseño en ingeniería:
+
+\vspace{0.4cm}
+\begin{center}
+\begin{tikzpicture}[node distance=3.6cm, auto, thick, scale=0.85, transform shape]
+    \node[draw, rectangle, fill=blue!10, text width=2.8cm, align=center, minimum height=1.2cm] (p1) {Pilar 1\\(Modelado en Python)};
+    \node[draw, rectangle, fill=red!15, text width=3.2cm, align=center, minimum height=1.2cm, right of=p1, node distance=3.8cm] (p2) {\textbf{Pilar 2}\\\textbf{(Simulación LTspice)}};
+    \node[draw, rectangle, fill=orange!10, text width=2.8cm, align=center, minimum height=1.2cm, right of=p2, node distance=3.8cm] (p3) {Pilar 3\\(Hardware en Banco)};
+    \node[draw, rectangle, fill=green!10, text width=2.8cm, align=center, minimum height=1.2cm, right of=p3, node distance=3.8cm] (p4) {Pilar 4\\(Validación CSV/RMSE)};
+
+    \draw[->, >=stealth, line width=1.5pt] (p1) -- (p2);
+    \draw[->, >=stealth, line width=1.5pt] (p2) -- (p3);
+    \draw[->, >=stealth, line width=1.5pt] (p3) -- (p4);
+\end{tikzpicture}
+\end{center}
+\vspace{0.4cm}
+
+\begin{regla}[Regla Fundamental de Cátedra]
+Ningún circuito será implementado en el banco de pruebas de laboratorio ni evaluado en las entregas de los Hitos del PFI sin haber superado previamente su modelado numérico y su correspondiente simulación no lineal en LTspice. Las discrepancias entre los modelos SPICE y las mediciones de hardware real deberán ser analizadas y justificadas cuantitativamente mediante el cálculo del Error Cuadrático Medio ($RMSE$) en sus cuadernos de Jupyter.
+\end{regla}
+
+% ==============================================================================
+% SECCIÓN 2: ATAJOS DE TECLADO
+% ==============================================================================
+\section{Referencia Oficial de Atajos de Teclado y Entorno de Trabajo}
+
+Las versiones modernas de LTspice (v24.x y v26.x) utilizan un sistema de comandos directos para la edición esquemática y el análisis de señales. La siguiente tabla consolida la asignación oficial de teclas según la documentación de referencia de Analog Devices:
+
+\begin{table}[h!]
+\centering
+\caption{Atajos de Teclado del Editor Esquemático y Visor de Ondas}
+\label{tab:atajos}
+\footnotesize
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{@{} l l X @{}}
+\toprule
+\textbf{Comando / Función} & \textbf{Tecla de Acceso Directo (v24 / v26)} & \textbf{Descripción Operativa} \\
+\midrule
+Insertar Cable (Wire) & \texttt{W} o \texttt{F3} & Traza interconexiones eléctricas entre terminales de componentes. \\
+Etiqueta de Nodo (Net Label) & \texttt{N} o \texttt{F4} & Asigna nombres alfanuméricos a los nodos (ej. IN, OUT, V\_ADC). \\
+Directiva SPICE. (Punto) & \texttt{S} & Abre el cuadro para ingresar directivas SPICE (\texttt{.tran}, \texttt{.dc}, \texttt{.model}, etc.). \\
+Texto de Comentario & \texttt{T} & Inserta anotaciones de texto explicativas en el esquemático. \\
+Nodo de Tierra (Ground / 0V) & \texttt{G} & Coloca el nodo de referencia global obligatorio (GND = Nodo 0). \\
+Resistor & \texttt{R} & Inserta un resistor básico. \\
+Capacitor & \texttt{C} & Inserta un capacitor básico. \\
+Inductor & \texttt{L} & Inserta un inductor básico. \\
+Diodo & \texttt{D} & Inserta un diodo semiconductor genérico. \\
+Fuente de Voltaje & \texttt{V} o \texttt{F2 -> voltage} & Inserta una fuente independiente de tensión continua o alterna. \\
+Selector de Componentes & \texttt{P} o \texttt{F2} & Abre la librería general de modelos y bloques funcionales. \\
+Mover (Move) & \texttt{M} o \texttt{F7} & Mueve un elemento desconectándolo de las pistas existentes. \\
+Arrastrar (Drag) & \texttt{Drag} o \texttt{F8} & Mueve un elemento preservando la continuidad de las pistas unidas. \\
+Eliminar (Delete / Cut) & \texttt{X}, \texttt{Supr} o \texttt{Backspace} o \texttt{F5} & Activa la herramienta de corte para eliminar componentes o líneas. \\
+Duplicar (Copy) & \texttt{Ctrl + C} o \texttt{F6} & Clona el componente o bloque seleccionado. \\
+Rotar Elemento & \texttt{Ctrl + R} & Rota el componente activo en pasos ortogonales de 90°. \\
+Reflejar / Invertir (Mirror) & \texttt{Ctrl + E} & Genera una copia especular horizontal del componente. \\
+Ajustar Vista (Zoom to Fit) & \texttt{Espacio} & Encuadra todos los elementos del circuito en la ventana activa. \\
+Deshacer / Rehacer & \texttt{Ctrl + Z} / \texttt{Ctrl + Y} o \texttt{Ctrl+Shift+Z} & Revierte o restaura la última acción de edición. \\
+Configurar Análisis & \texttt{Alt + A} o Menú Simulate & Abre la ventana de configuración de parámetros de simulación. \\
+Ejecutar Simulación (Run) & \texttt{Alt + R}, \texttt{F9} o Ícono & Inicia el procesamiento numérico del circuito activo. \\
+Detener Simulación & \texttt{Alt + S} o Ícono Halt & Interrumpe la simulación en curso. \\
+Ver Registro SPICE (Log) & \texttt{Ctrl + L} & Despliega el archivo \texttt{.log} con datos de convergencia y sentencias \texttt{.meas}. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\newpage
+% ==============================================================================
+% SECCIÓN 3: FUENTES DE EXCITACIÓN
+% ==============================================================================
+\section{Configuración y Modelado de Fuentes de Excitación}
+Para parametrizar una fuente independiente de tensión, inserte el símbolo con la tecla \texttt{V} (o presione \texttt{P $\to$ voltage}). Haga clic derecho sobre el símbolo para acceder a sus propiedades:
+
+\vspace{0.4cm}
+\noindent
+\begin{minipage}{0.32\textwidth}
+    \centering
+    \textbf{[ Nivel DC Constante ]}
+    \vspace{0.2cm}\\
+    \begin{circuitikz}[scale=0.8, transform shape]
+        \draw (0,0) to[V, l={DC value: \qty{12}{\volt}}] (0,2);
+    \end{circuitikz}
+\end{minipage}
+\hfill
+\begin{minipage}{0.32\textwidth}
+    \centering
+    \textbf{[ Señal Senoidal (CA / Rizado) ]}
+    \vspace{0.2cm}\\
+    \begin{circuitikz}[scale=0.8, transform shape]
+        \draw (0,0) to[sV, l={SINE(Voff Vamp Freq)}] (0,2);
+    \end{circuitikz}
+\end{minipage}
+\hfill
+\begin{minipage}{0.32\textwidth}
+    \centering
+    \textbf{[ Pulso Cuadrado / PWM ]}
+    \vspace{0.2cm}\\
+    \begin{circuitikz}[scale=0.8, transform shape]
+        \draw (0,0) to[sqV, l={PULSE(V1 V2 Tdel...)}] (0,2);
+    \end{circuitikz}
+\end{minipage}
+\vspace{0.4cm}
+
+\subsection{3.1. Fuente de Tensión Continua (DC)}
+\textbf{Parámetro:} En el campo \texttt{DC value [V]}, especifique la magnitud en voltios (ej. 12 para fuerza motriz, 5 o 3.3 para rieles lógicos).
+
+\subsection{3.2. Fuente Senoidal (SINE)}
+Se utiliza para pruebas de rectificación, filtrado capacitivo y verificación de circuitos limitadores:
+\begin{equation*}
+    \text{Sintaxis: } \mathbf{SINE(V_{offset} \quad V_{amplitud} \quad Frecuencia \quad [T_{delay}] \quad [\theta] \quad [\phi])}
+\end{equation*}
+Ejemplo (Inyección crítica para prueba de Hito 1: $15\text{ V}_{pp}$, $\qty{1}{\kilo\hertz}$, offset $+2.5\text{ V}$):
+\begin{lstlisting}[style=spicestyle]
+SINE(2.5 7.5 1k)
+\end{lstlisting}
+
+\subsection{3.3. Fuente de Pulsos / PWM (PULSE)}
+Se utiliza en la excitación de Gate Drivers, conmutación de Puentes H y análisis de respuesta al escalón:
+\begin{equation*}
+    \text{Sintaxis: } \mathbf{PULSE(V_1 \quad V_2 \quad T_{delay} \quad T_{rise} \quad T_{fall} \quad T_{on} \quad T_{period})}
+\end{equation*}
+Ejemplo (Modulación PWM a $\qty{20}{\kilo\hertz}$ con ciclo de trabajo del 50\% y tiempos de conmutación de $\qty{10}{\nano\second}$):
+\begin{lstlisting}[style=spicestyle]
+PULSE(0 5 0 10n 10n 25u 50u)
+\end{lstlisting}
+
+% ==============================================================================
+% SECCIÓN 4: DIRECTIVAS SPICE
+% ==============================================================================
+\section{Directivas de Análisis SPICE (SPICE Directives)}
+Las directivas se insertan en el esquemático mediante la tecla \texttt{.} (Punto). Cada simulación debe contener \textbf{exactamente una directiva de análisis activa} (las restantes deben comentarse o desactivarse mediante la ventana \textit{Configure Analysis}):
+
+\subsection{4.1. Análisis Transitorio en el Dominio del Tiempo (\texttt{.tran})}
+Resuelve numéricamente las ecuaciones diferenciales del circuito en función del tiempo.
+\begin{lstlisting}[style=spicestyle]
+.tran <Tstep> <Tstop> [Tstart [dTmax]]
+\end{lstlisting}
+\begin{itemize}
+    \item \texttt{Tstop}: Tiempo total de observación.
+    \item \texttt{Tstep}: Paso de muestreo temporal para el trazado de curvas.
+    \item \texttt{dTmax}: Paso de integración máximo del solver (indispensable para evitar artefactos numéricos en conmutaciones rápidas).
+\end{itemize}
+Ejemplo (Simular 5 ciclos de una señal de $\qty{1}{\kilo\hertz}$ limitando el paso de cálculo a $\qty{1}{\micro\second}$):
+\begin{lstlisting}[style=spicestyle]
+.tran 0 5m 0 1u
+\end{lstlisting}
+
+\subsection{4.2. Barrido en Corriente Continua (\texttt{.dc})}
+Calcula la respuesta estática del circuito al variar incrementalmente una o más fuentes independientes. Permite obtener directamente Curvas de Transferencia ($v_o$ vs. $v_i$) y caracterizar la regulación de voltaje.
+\begin{lstlisting}[style=spicestyle]
+.dc <Fuente> <V_inicial> <V_final> <Paso>
+\end{lstlisting}
+Ejemplo (Barrer la fuente \texttt{Vin} de \qty{-12}{\volt} a \qty{+24}{\volt} en incrementos de $\qty{10}{\milli\volt}$):
+\begin{lstlisting}[style=spicestyle]
+.dc Vin -12 24 10m
+\end{lstlisting}
+
+\subsection{4.3. Análisis Espectral en Frecuencia de Pequeña Señal (\texttt{.ac})}
+Linealiza los modelos no lineales en torno al punto de operación en continua ($Q$) y evalúa la respuesta en frecuencia de magnitud y fase (Diagramas de Bode).
+\begin{lstlisting}[style=spicestyle]
+.ac <Escala> <Puntos> <Frec_Inicial> <Frec_Final>
+\end{lstlisting}
+\texttt{Escala}: \texttt{dec} (décadas), \texttt{oct} (octavas) o \texttt{lin} (lineal).
+
+Ejemplo (Barrer de $\qty{10}{\hertz}$ a $\qty{10}{\mega\hertz}$ con 100 puntos por década para cálculo de CMRR o estabilidad):
+\begin{lstlisting}[style=spicestyle]
+.ac dec 100 10 10Meg
+\end{lstlisting}
+\textit{(Nota: La fuente de señal debe tener el parámetro \texttt{AC Amplitude = 1} en sus propiedades).}
+
+\subsection{4.4. Barrido Paramétrico de Tolerancias y Temperatura (\texttt{.step})}
+Ejecuta simulaciones iterativas evaluando el impacto de tolerancias de componentes de la serie E24 o variaciones térmicas:
+\begin{lstlisting}[style=spicestyle]
+.step param <Variable> <Inicio> <Fin> <Paso>
+.step param <Variable> list <Val1> <Val2> ...
+.step temp <Temp_Inicial> <Temp_Final> <Paso_Temp>
+\end{lstlisting}
+Ejemplo (Evaluar el desbalance de una resistencia $R_C = \qty{2.2}{\kilo\ohm} \pm 5\%$ en el par diferencial BJT):\\
+En el campo del valor de la resistencia escribir: \texttt{\{Rc\_val\}}\\
+Insertar la directiva:
+\begin{lstlisting}[style=spicestyle]
+.step param Rc_val 2090 2310 55
+\end{lstlisting}
+
+\newpage
+% ==============================================================================
+% SECCIÓN 5: MODELADO DE DIODOS FUERA DE CATÁLOGO
+% ==============================================================================
+\section{Modelado de Diodos Fuera de Catálogo mediante la directiva \texttt{.model}}
+En la práctica de laboratorio de Tarija, es frecuente utilizar semiconductores comerciales que no se encuentran preinstalados en la librería estándar de LTspice. En estos casos, está estrictamente prohibido utilizar el diodo ideal por defecto (\texttt{D}). El estudiante debe declarar el modelo matemático del componente mediante la directiva \texttt{.model} a partir de los parámetros de su hoja de datos (datasheet).
+
+\subsection{5.1. Ecuación General SPICE del Diodo y Parámetros Fundamentales}
+El comportamiento estático y dinámico del diodo semiconductor en SPICE está gobernado por:
+\begin{equation*}
+    I_D = \mathbf{IS} \cdot \left( e^{\frac{V_D - I_D \cdot \mathbf{RS}}{\mathbf{N} \cdot V_T}} - 1 \right)
+\end{equation*}
+
+\begin{table}[h!]
+\centering
+\caption{Parámetros Críticos del Modelo SPICE (type = D)}
+\label{tab:spice_params}
+\footnotesize
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{@{} l l X l l @{}}
+\toprule
+\textbf{Parámetro SPICE} & \textbf{Parámetro Físico} & \textbf{Significado de Ingeniería} & \textbf{Unidad} & \textbf{Valor por Defecto} \\
+\midrule
+\texttt{IS} & $I_S$ & Corriente de saturación inversa en polarización directa & $\text{A}$ & $1\times 10^{-14}$ \\
+\texttt{N} & $\eta$ & Factor de idealidad de la unión P-N ($1 \le \eta \le 2$) & - & $1.0$ \\
+\texttt{RS} & $r_D$ & Resistencia óhmica de volumen y contactos metálicos & $\Omega$ & $0.0$ \\
+\texttt{BV} & $V_{BR}$ o $V_Z$ & Tensión de ruptura inversa (Breakdown Voltage) & $\text{V}$ & $\infty$ \\
+\texttt{IBV} & $I_{ZK}$ o $I_{ZT}$ & Corriente en el punto de inicio de ruptura inversa & $\text{A}$ & $1\times 10^{-3}$ \\
+\texttt{CJO} & $C_{j0}$ & Capacitancia de juntura con polarización cero & $\text{F}$ & $0.0$ \\
+\texttt{VJ} & $V_0$ & Potencial de contacto interno integrado & $\text{V}$ & $1.0$ \\
+\texttt{TT} & $t_t$ & Tiempo de tránsito ($t_{rr} \approx 2 \cdot \text{TT}$) & $\text{s}$ & $0.0$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{5.2. Procedimiento de Asignación en el Esquemático}
+\begin{enumerate}
+    \item Presionar '\texttt{D}' y colocar el diodo.
+    \item Presionar '\texttt{.}' (Punto) e ingresar la directiva \texttt{.model} con los parámetros calculados.
+    \item Hacer \texttt{Ctrl + Clic derecho} sobre el cuerpo del símbolo del diodo.
+    \item En el campo '\texttt{Value}', sustituir '\texttt{D}' por el nombre exacto asignado en la directiva \texttt{.model}.
+\end{enumerate}
+
+\subsection{5.3. Modelos Específicos para Componentes de la Asignatura}
+Copie y pegue directamente las siguientes sentencias \texttt{.model} en su esquemático según el componente requerido:
+
+\textbf{A. Diodo de Señal Ultra-Rápido (1N4148 de la BOM)}\\
+$V_F = \qty{0.72}{\volt}$ a $\qty{5}{\milli\ampere}$, $t_{rr} = \qty{4}{\nano\second}$, $C_{j0} = \qty{4}{\pico\farad}$, $V_{BR} = \qty{100}{\volt}$:
+\begin{lstlisting}[style=spicestyle]
+.model 1N4148_CUSTOM D(IS=2.52n N=1.75 RS=0.56 CJO=4p VJ=0.7 TT=5.7n BV=100 IBV=10u)
+\end{lstlisting}
+
+\textbf{B. Diodo Zener de Precisión \qty{5.1}{\volt} (BZX55C5V1 de la BOM)}\\
+$V_Z = \qty{5.1}{\volt}$ a $I_{ZT} = \qty{5}{\milli\ampere}$, $r_z = \qty{15}{\ohm}$, $I_{ZK} = \qty{0.5}{\milli\ampere}$:
+\begin{lstlisting}[style=spicestyle]
+.model BZX55C5V1_CUSTOM D(IS=1e-11 N=1.05 RS=15 BV=5.1 IBV=5m)
+\end{lstlisting}
+
+\textbf{C. Diodo Schottky de Baja Tensión (BAT43 / BAT42)}\\
+$V_F \approx \qty{0.33}{\volt}$ a $\qty{2}{\milli\ampere}$, $t_{rr} < \qty{1}{\nano\second}$ (ideal para clamping activo a riel de $\qty{3.3}{\volt}$):
+\begin{lstlisting}[style=spicestyle]
+.model BAT43_CUSTOM D(IS=1.3u N=1.02 RS=2.4 CJO=7p VJ=0.4 TT=0.1n BV=30 IBV=10u)
+\end{lstlisting}
+
+\textbf{D. Diodos Emisores de Luz (LEDs como Referencias de Tensión en Directa)}\\
+LED Rojo estándar ($V_F \approx \qty{1.85}{\volt}$ a $\qty{10}{\milli\ampere}$):
+\begin{lstlisting}[style=spicestyle]
+.model LED_ROJO D(IS=1e-19 N=1.8 RS=4.5 CJO=15p BV=5 IBV=10u)
+\end{lstlisting}
+LED Azul / Verde ($V_F \approx \qty{3.10}{\volt}$ a $\qty{10}{\milli\ampere}$ - Límite seguro ADC $\qty{3.3}{\volt}$):
+\begin{lstlisting}[style=spicestyle]
+.model LED_AZUL D(IS=1e-24 N=2.6 RS=8.0 CJO=20p BV=5 IBV=10u)
+\end{lstlisting}
+
+% ==============================================================================
+% SECCIÓN 6: MEDICIÓN AVANZADA
+% ==============================================================================
+\section{Medición Avanzada en el Visor de Formas de Onda}
+Una vez ejecutada la simulación (\texttt{Alt + R} o \texttt{F9}), el cursor del ratón permite realizar las siguientes inspecciones directas:
+\begin{itemize}
+    \item \textbf{Tensión de Nodo:} Clic izquierdo sobre un cable o nodo (cursor de punta de prueba roja: \texttt{V(node)}).
+    \item \textbf{Tensión Diferencial:} Clic izquierdo sostenido en el primer nodo (punta roja) y arrastre hacia el nodo de referencia (punta negra: \texttt{V(node1, node2)}).
+    \item \textbf{Corriente de Rama:} Sitúe el cursor sobre el cuerpo de un componente (cursor de pinza amperimétrica: \texttt{I(R1)}, \texttt{Id(D1)}).
+    \item \textbf{Potencia Instantánea Disipada:} Mantenga presionada la tecla \texttt{Alt} y haga clic sobre el componente (cursor de termómetro). Grafica $p(t) = v(t) \cdot i(t)$.
+    \item \textbf{Cálculo de Potencia Media e Integración:} Mantenga presionada la tecla \texttt{Ctrl} y haga clic sobre el texto de la traza en la parte superior del gráfico (ej. sobre \texttt{P(Dzener)}). Se abrirá una ventana con el Valor Promedio (DC) y la Energía Total Disipada (Joules).
+    \item \textbf{Activación de Cursores:} Haga clic izquierdo sobre la etiqueta de la traza para activar el Cursor 1; haga clic derecho para activar el Cursor 2. Permite medir diferencias temporales ($\Delta t$), amplitudes ($\Delta V$) y frecuencias equivalentes ($1/\Delta t$).
+\end{itemize}
+
+\newpage
+% ==============================================================================
+% SECCIÓN 7: EXPORTACIÓN A PYTHON
+% ==============================================================================
+\section{Exportación de Datos Numéricos y Validación Cruzada en Python (Pilar 4)}
+Para realizar la comparación cuantitativa entre simulación y mediciones experimentales capturadas con el osciloscopio en su cuaderno de Jupyter:
+
+\subsection{7.1. Desactivación de la Compresión Numérica}
+Por defecto, LTspice aplica un algoritmo de compresión polinomial que reduce el tamaño de archivo pero degrada el cálculo del $RMSE$ y las transformadas FFT. Inserte de forma obligatoria la siguiente directiva en su esquemático:
+\begin{lstlisting}[style=spicestyle]
+.options plotwinsize=0 numdgt=7
+\end{lstlisting}
+
+\subsection{7.2. Protocolo de Exportación}
+\begin{enumerate}
+    \item Haga clic sobre la ventana del gráfico de ondas para activarla.
+    \item Diríjase a: \texttt{File $\longrightarrow$ Export data as text}.
+    \item Seleccione las variables requeridas (ejemplo: \texttt{time}, \texttt{V(in)}, \texttt{V(v\_adc)}).
+    \item Guarde el archivo como \texttt{data\_sim.txt} o \texttt{data\_sim.csv} en el directorio de su libreta de Python.
+\end{enumerate}
+
+\subsection{7.3. Script Estándar de Integración y Cálculo de $RMSE$ en Python}
+\begin{lstlisting}[style=pythonstyle]
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 1. Carga de datos de simulacion LTspice
+df_sim = pd.read_csv('data_sim.txt', sep='\t')
+df_sim.columns = [c.strip() for c in df_sim.columns]
+
+# 2. Carga de datos experimentales del osciloscopio (CSV real)
+df_exp = pd.read_csv('osciloscopio_medicion.csv')
+
+# 3. Interpolacion temporal para alineacion de vectores
+t_comun = np.linspace(df_exp['Time'].min(), df_exp['Time'].max(), 1000)
+v_sim_interp = np.interp(t_comun, df_sim['time'], df_sim['V(v_adc)'])
+v_exp_interp = np.interp(t_comun, df_exp['Time'], df_exp['CH2_Vout'])
+
+# 4. Calculo del Error Cuadratico Medio (RMSE)
+rmse = np.sqrt(np.mean((v_exp_interp - v_sim_interp)**2))
+error_relativo = (rmse / np.max(v_exp_interp)) * 100
+
+print(f"Error Cuadratico Medio (RMSE) : {rmse*1e3:.3f} mV")
+print(f"Error Relativo Global         : {error_relativo:.2f} %")
+
+# 5. Graficacion de Validacion Cruzada (Pilar 4)
+plt.figure(figsize=(10, 5))
+plt.plot(t_comun * 1e3, v_sim_interp, 'r--', linewidth=2, label='LTspice (Pilar 2)')
+plt.plot(t_comun * 1e3, v_exp_interp, 'b-', linewidth=1.5, label='Osciloscopio Real (Pilar 3)')
+plt.title(f'Validacion Experimental vs. Simulacion (RMSE = {rmse*1e3:.2f} mV)')
+plt.xlabel('Tiempo [ms]')
+plt.ylabel('Tension en Entrada ADC [V]')
+plt.grid(True, linestyle='--', alpha=0.7)
+plt.legend()
+plt.show()
+\end{lstlisting}
+
+\newpage
+% ==============================================================================
+% SECCIÓN 8: MATRIZ DE CONFIGURACIÓN SPICE
+% ==============================================================================
+\section{Matriz de Configuración SPICE para los 4 Hitos del PFI}
+
+\begin{table}[h!]
+\centering
+\caption{Configuración de Simulación por Hito del PFI}
+\label{tab:spice_matrix}
+\footnotesize
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{@{} c >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X @{}}
+\toprule
+\textbf{Hito} & \textbf{Módulo de Circuito a Simular} & \textbf{Directivas SPICE Obligatorias} & \textbf{Variables Críticas a Medir} \\
+\midrule
+\textbf{Hito 1} & 
+Red de Protección Clamping / Zener \newline Supresión de Transitorios Flyback & 
+\texttt{.tran 0 5m 0 1u} \newline \texttt{.dc Vin -12 24 10m} & 
+\texttt{V(V\_ADC)}, \texttt{I(D\_Zener)} \newline \texttt{P(D\_Zener)}, \texttt{V\_Lmax} (pico) \\
+
+\textbf{Hito 2} & 
+Par Diferencial Discreto BJT \newline Sensado Shunt ($0.1\,\Omega$) & 
+\texttt{.op} \newline \texttt{.ac dec 100 1 1Meg} \newline \texttt{.step param Rc\_mismatch ...} & 
+CMRR = Ad / Ac (dB) \newline \texttt{V(Vout\_diff)}, \texttt{Ic(Q1,Q2)} \newline Distorsión Armónica (THD) \\
+
+\textbf{Hito 3} & 
+Puente H MOSFET Complementario \newline Gate Drivers Discretos con BJT & 
+\texttt{.tran 0 2m 0 10n} \newline \texttt{PULSE(...)} en compuertas \newline \texttt{.step param R\_gate 10 100 20} & 
+Corriente Pico Shoot-thru \newline Potencia Media Conducción \newline Tiempos trise, tfall (ns) \\
+
+\textbf{Hito 4} & 
+Lazo Cerrado y Compensador Lead-Lag \newline Respuesta al Escalón Dinámico & 
+\texttt{.ac dec 100 0.1 100k} \newline \texttt{.tran 0 50m 0 10u} \newline \texttt{PULSE(...)} en consig. de cte. & 
+Margen de Fase (PM $\ge 60^\circ$) \newline Margen de Ganancia (GM) \newline Sobreimpulso Mp ($\le 10\%$) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ==============================================================================
+% SECCIÓN 9: DIAGNÓSTICO DE ERRORES
+% ==============================================================================
+\section{Diagnóstico y Resolución de Errores de Convergencia}
+
+\textbf{Error: Singular Matrix o Node Floating:}
+\begin{itemize}
+    \item \textbf{Causa:} Existe un nodo sin referencia de corriente continua hacia tierra.
+    \item \textbf{Solución:} Verifique que la tierra global (G) esté conectada. En nodos aislados por capacitores en serie o transformadores, conecte una resistencia de alto valor hacia tierra (ej. \texttt{10Meg}).
+\end{itemize}
+
+\textbf{Error: Time step too small (Falla de Convergencia en \texttt{.tran}):}
+\begin{itemize}
+    \item \textbf{Causa:} Transiciones inductivas o diodos conmutando abruptamente donde el algoritmo de Newton-Raphson no converge.
+    \item \textbf{Solución:} Incluya la resistencia serie parásita de los inductores (\texttt{Series Resistance = 0.1}) o cambie el método de integración añadiendo la directiva:
+\begin{lstlisting}[style=spicestyle]
+.options method=gear
+\end{lstlisting}
+\end{itemize}
+
+\textbf{Picos de Ruido Numérico Artificial en Conmutación:}
+\begin{itemize}
+    \item \textbf{Solución:} Restrinja el paso de cálculo fijando el parámetro \texttt{dTmax} en la directiva transitoria (ejemplo: \texttt{.tran 0 5m 0 100n} en lugar de \texttt{.tran 5m}).
+\end{itemize}
+
+% ==============================================================================
+% SECCIÓN 10: ESTÁNDAR IEEE
+% ==============================================================================
+\section{Estándar de Presentación en Informes Técnicos}
+Todo esquema de LTspice incluido en los reportes de laboratorio y artículos técnicos IEEE debe cumplir con los siguientes criterios de calidad:
+\begin{itemize}
+    \item \textbf{Nomenclatura Explícita:} Todos los nodos de entrada, salida y sensado deben contener etiquetas legibles (\texttt{N}).
+    \item \textbf{Designación Comercial Exacta:} Los componentes deben estar identificados con el código de la BOM institucional (ej. 1N4148, BZX55C5V1, 2N2222A, IRF540N).
+    \item \textbf{Visibilidad de Directivas:} La directiva de simulación utilizada (\texttt{.tran}, \texttt{.dc}, etc.) y las sentencias \texttt{.model} deben ser legibles dentro de la captura del esquemático.
+    \item \textbf{Orden Topológico:} El flujo de señal debe estructurarse convencionalmente de izquierda a derecha (entradas a la izquierda, etapas de potencia/acondicionamiento al centro, salidas a la derecha). No se admiten esquemáticos con cables cruzados de forma innecesaria ni componentes superpuestos.
+\end{itemize}
+
+\end{document}
