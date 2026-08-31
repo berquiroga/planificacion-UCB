@@ -1,0 +1,93 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage[margin=1.5cm, headheight=25pt]{geometry}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{tcolorbox}
+\usepackage{microtype}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textcolor{ucbblue}{\textbf{IMT-121 | Rúbrica Docente}}}
+\rhead{\textbf{Hito 1 -- PFI}}
+\cfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{Hito 1 PFI — Rúbrica Docente}} \\[0.2cm]
+    {\large \textbf{Modelado Matricial en Corriente Continua (EC1)}}
+\end{center}
+
+\begin{tcolorbox}[colback=orange!5, colframe=orange!80!black, fonttitle=\bfseries, boxrule=1pt, title=Criterio de Equidad]
+No penalizar fuertemente aquello que no haya sido comunicado con claridad antes de la evaluación. Hardware, estructura de Git y umbral experimental se valoran \textbf{únicamente} si formaron parte de las instrucciones efectivas. De lo contrario, son herramientas de diagnóstico.
+\end{tcolorbox}
+
+\textbf{Equipo:} \rule{4cm}{0.4pt} \quad \textbf{Fecha:} \rule{3cm}{0.4pt} \quad \textbf{Integrantes:} \rule{5cm}{0.4pt}
+
+\section*{1. Rúbrica de Desempeño (Escala 0 - 4)}
+\textit{4: Logrado con solidez | 3: Logrado | 2: Parcial | 1: Insuficiente | 0: Sin evidencia}
+
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{@{}|c|X|c|@{}}
+    \hline
+    \rowcolor{ucbblue!10}
+    \textbf{Cr.} & \textbf{Descripción de la Evidencia Esperada} & \textbf{Ptos} \\
+    \hline
+    \textbf{C1} & \textbf{Planteamiento (10 pts):} Esquema claro, incógnitas definidas con significado, unidades y convención coherente. & /10 \\
+    \hline
+    \textbf{C2} & \textbf{Ecuaciones (20 pts):} Aplicación correcta de LCK/LVK, nodos o mallas. Ecuaciones independientes vinculadas al circuito. & /20 \\
+    \hline
+    \textbf{C3} & \textbf{Modelo Matricial (25 pts):} Sistema $\mathbf{A}\mathbf{x}=\mathbf{b}$ representa correctamente las ecuaciones. El equipo explica origen de filas/columnas. & /25 \\
+    \hline
+    \textbf{C4} & \textbf{Python/NumPy (15 pts):} Script funcional que implementa exactamente el modelo derivado. Resultados etiquetados. & /15 \\
+    \hline
+    \textbf{C5} & \textbf{LTspice (10 pts):} Simulación \texttt{.op} configurada correctamente y comparada con referencias del modelo analítico. & /10 \\
+    \hline
+    \textbf{C6} & \textbf{Validación (10 pts):} Comparación cuantitativa razonada. Propone explicaciones técnicas ante discrepancias. & /10 \\
+    \hline
+    \rowcolor{gray!10}
+    \multicolumn{2}{|r|}{\textbf{SUBTOTAL GRUPAL (Máximo 90 puntos):}} & \textbf{/90} \\
+    \hline
+\end{tabularx}
+
+\section*{2. Registro de Defensa Individual (C7 - 10 puntos)}
+\textit{Evalúa la capacidad autónoma de justificar filas de la matriz, interpretar Python/SPICE y razonar modificaciones.}
+
+\begin{tabularx}{\textwidth}{@{}|X|X|X|X|@{}}
+    \hline
+    \rowcolor{ucbblue!10}
+    \textbf{Estudiante} & \textbf{Pregunta / Tarea Asignada} & \textbf{Nivel (0-4)} & \textbf{Puntaje /10} \\
+    \hline
+    1. & & & \\
+    \hline
+    2. & & & \\
+    \hline
+    3. & & & \\
+    \hline
+\end{tabularx}
+
+\vspace{0.2cm}
+\textbf{Banco de Preguntas sugerido:} 
+1) Trazabilidad de una fila de la matriz a LCK/LVK. 
+2) Significado físico de un coeficiente $A_{ij}$ negativo. 
+3) Variables correspondientes entre Python y LTspice. 
+4) Predicción: Si $R_k$ aumenta, ¿qué fila cambia y qué ocurre con la potencia?
+
+\section*{3. Decisión Pedagógica y Nota Final}
+\textbf{Nota Final (Subtotal Grupal + Defensa Individual):} \rule{3cm}{0.4pt} \textbf{/ 100}
+
+\vspace{0.2cm}
+\textbf{Estado:} [ ] Satisfactorio \quad [ ] Con correcciones menores \quad [ ] Requiere remediación de EC1. \\
+\textbf{Dificultad predominante (Diagnóstico):} [ ] Físico \quad [ ] Matricial \quad [ ] Computacional \quad [ ] Defensa
+
+\end{document}

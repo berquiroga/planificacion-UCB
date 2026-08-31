@@ -1,0 +1,98 @@
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern} % Resuelve las advertencias de fuentes T1/cmss/b/n
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{microtype}
+\usepackage{siunitx}
+\usepackage[american, RPvoltages]{circuitikz}
+
+\sisetup{output-decimal-marker = {,}, per-mode = symbol}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\usetheme{Boadilla}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+\setbeamercolor{title}{bg=ucbblue, fg=white}
+\setbeamercolor{frametitle}{bg=ucbblue, fg=white}
+
+\title[Calibración Hito 1 y Linealidad]{Cierre del Hito 1 y Transición a la Unidad 2}
+\subtitle{De la Física al Modelo Matricial, y del Modelo a la Superposición}
+\author[M.Sc. Ing. B. Quiroga]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{IMT-121 Circuitos Electrónicos I}
+\date{Semana 5 — Sesión 1}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Contrato de Evaluación: Alcance del Hito 1}
+    \textbf{¿Qué evaluaremos exactamente hoy?}
+    El Hito 1 evalúa la competencia de modelado (EC1) mediante evidencia de desempeño.
+    \begin{block}{Criterios Sumativos (Con impacto en la nota de hoy)}
+        \begin{itemize}
+            \item Formulación física (LCK/LVK) consistente.
+            \item Construcción rigurosa de la matriz $\mathbf{A}\mathbf{x}=\mathbf{b}$.
+            \item Solución en Python (NumPy) y simulación \texttt{.op} en LTspice.
+            \item Defensa oral individual: Justificación de cada decisión.
+        \end{itemize}
+    \end{block}
+    
+    \begin{alertblock}{Criterios Diagnósticos (Sin penalización retroactiva hoy)}
+        La validación por hardware (protoboard) y la estructura rigurosa en Git servirán como diagnóstico hoy, y serán de cumplimiento \textbf{estricto} para el Hito 2.
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Calibración: Del Circuito a la Matriz ($\mathbf{R}\mathbf{I} = \mathbf{V}$)}
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            \begin{center}
+                \begin{circuitikz}[scale=0.8, transform shape]
+                    \draw (0,0) to[V, v=$V_s$] (0,3)
+                          to[R, l=$R_1$, i=$i_1$] (3,3)
+                          to[R, l=$R_2$] (3,0) -- (0,0);
+                    \draw (3,3) to[R, l=$R_3$, i=$i_2$] (6,3)
+                          to[V, v_=$V_b$] (6,0) -- (3,0);
+                    \draw (3,0) node[ground]{};
+                \end{circuitikz}
+            \end{center}
+        \end{column}
+        \begin{column}{0.6\textwidth}
+            \textbf{Paso 1: Ecuaciones de Malla (LVK)}
+            \begin{align*}
+                \text{Malla 1:} \quad -V_s + R_1 i_1 + R_2(i_1 - i_2) &= 0 \\
+                \text{Malla 2:} \quad R_3 i_2 + V_b + R_2(i_2 - i_1) &= 0
+            \end{align*}
+            
+            \textbf{Paso 2: Ordenamiento ($\mathbf{A}\mathbf{x} = \mathbf{b}$)}
+            \begin{equation*}
+                \begin{bmatrix} (R_1 + R_2) & -R_2 \\ -R_2 & (R_2 + R_3) \end{bmatrix} \begin{bmatrix} i_1 \\ i_2 \end{bmatrix} = \begin{bmatrix} V_s \\ -V_b \end{bmatrix}
+            \end{equation*}
+            
+            \textcolor{red}{\textbf{Errores comunes:}} Inventar coeficientes mirando el dibujo, ignorar el signo negativo en elementos compartidos ($-R_2$), o equivocar el signo de la fuente $(-V_b)$.
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Puente a la Unidad 2: Sistemas Lineales y Superposición}
+    La ventaja suprema de tener un modelo matricial $\mathbf{A} \cdot \mathbf{x} = \mathbf{b}$ es la \textbf{linealidad}.
+    
+    \vspace{0.2cm}
+    \begin{itemize}
+        \item El vector $\mathbf{b}$ representa las \textbf{fuentes independientes} ($V_s$, $V_b$).
+        \item Si el vector de excitación se puede separar matemáticamente ($\mathbf{b} = \mathbf{b}_1 + \mathbf{b}_2$):
+        $$ \begin{bmatrix} V_s \\ -V_b \end{bmatrix} = \begin{bmatrix} V_s \\ 0 \end{bmatrix} + \begin{bmatrix} 0 \\ -V_b \end{bmatrix} $$
+        \item Como la topología del circuito (matriz $\mathbf{A}$) es constante, la respuesta total $\mathbf{x}$ (corrientes/voltajes) \textbf{también se separa de forma exacta}:
+        $$ \mathbf{x}_{\text{total}} = \mathbf{x}_1 (\text{solo por } V_s) + \mathbf{x}_2 (\text{solo por } V_b) $$
+    \end{itemize}
+    \vspace{0.2cm}
+    \begin{block}{Principio de Superposición (Próxima Clase)}
+        En una red lineal, podemos ``apagar'' fuentes para analizar el circuito una fuente a la vez, y luego sumar los resultados.
+    \end{block}
+\end{frame}
+
+\end{document}

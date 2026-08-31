@@ -1,0 +1,64 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage[margin=2cm]{geometry}
+\usepackage{amssymb}
+\usepackage{xcolor}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{Checkpoint Post-Sesión del Docente}} \\[0.2cm]
+    {\large \textbf{Cierre EC1 (Hito 1) y Actualización de Estado}}
+\end{center}
+\hrule
+\vspace{0.5cm}
+
+\section*{1. Estado Operativo del Hito 1}
+\textbf{¿Se logró cerrar formalmente el Hito 1 para todos los equipos?} \\
+$\square$ Sí, evaluación completa. \quad $\square$ No, pendientes: \rule{6cm}{0.4pt}
+
+\vspace{0.2cm}
+\textbf{Criterios empleados SUMATIVAMENTE (impacto en nota de hoy):} \\
+$\square$ Modelo Analítico / Físico \quad $\square$ Matriz $\mathbf{A}\cdot\mathbf{x}=\mathbf{b}$ \quad $\square$ Python (NumPy) \\
+$\square$ Simulación SPICE (\texttt{.op}) \quad $\square$ Defensa / Dominio oral individual
+
+\vspace{0.2cm}
+\textbf{Criterios desplazados como DIAGNÓSTICOS (Para exigencia estricta en Hito 2):} \\
+$\square$ Hardware (Protoboard) \quad $\square$ Validación Tripartita (Error $\le 5\%$) \quad $\square$ Estructura Git
+
+\section*{2. Diagnóstico Técnico de EC1}
+\textbf{Debilidad principal detectada durante las defensas:} \\
+$\square$ Leyes base (LCK/LVK) \quad $\square$ Construcción y signos de la matriz \quad $\square$ Implementación Python \\
+$\square$ Correlación SPICE/Modelo analítico \quad $\square$ Explicación física de discrepancias
+
+\vspace{0.3cm}
+\textbf{Nivel de autonomía verificado:}
+\begin{itemize}
+    \item Formulación de Mallas ($\mathbf{R}\mathbf{I}=\mathbf{V}$): \quad $\square$ Robusto \quad $\square$ Requiere refuerzo embebido
+    \item Formulación Nodal ($\mathbf{G}\mathbf{V}=\mathbf{I}$): \quad $\square$ Robusto \quad $\square$ Requiere refuerzo embebido
+    \item ¿Supernodos fueron comprendidos?: \quad $\square$ Sí \quad $\square$ Evidencia insuficiente
+    \item ¿Fuentes dependientes fueron enseñadas/evaluadas previamente?: \quad $\square$ Sí \quad $\square$ No
+\end{itemize}
+
+\section*{3. Transición a Unidad 2}
+\textbf{¿Se logró introducir linealidad y superposición (Ticket de Salida)?} \\
+$\square$ Sí, concepto base asimilado \quad $\square$ Concepto difuso \quad $\square$ No alcanzó el tiempo
+
+\vspace{0.2cm}
+\textbf{Decisión para la próxima sesión:} \\
+$\square$ Progresión normal a reglas formales de desactivación de fuentes y SPICE. \\
+$\square$ Dedicar 10-15 min de refuerzo matricial explícito antes de avanzar. \\
+$\square$ Sesión dedicada a reparar "Fuentes Dependientes" antes de continuar con redes equivalentes.
+
+\vspace{0.4cm}
+\hrule
+\vspace{0.2cm}
+\textbf{ACCIÓN CRÍTICA DE COMUNICACIÓN (Hito 2):} \\
+Fecha límite para publicar especificación consolidada y única del Hito 2: \rule{4cm}{0.4pt}
+
+\end{document}

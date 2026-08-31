@@ -1,0 +1,96 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage[margin=2cm, headheight=15pt]{geometry} % Se ajustó headheight para fancyhdr
+\usepackage{fancyhdr}
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage[american, RPvoltages]{circuitikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{IMT-121 | Diagnóstico EC1 y Ticket de Salida}}
+\rhead{\textbf{Sesión Semana 5}}
+
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{Checkpoint Formativo y Ticket de Salida}} \\[0.2cm]
+    \textit{Identificación de Modelos Matriciales y Principio de Linealidad}
+\end{center}
+
+\textbf{Estudiante:} \rule{8cm}{0.4pt} \hfill \textbf{Fecha:} \rule{3cm}{0.4pt}
+\vspace{0.4cm}
+
+\section*{Parte 1: Diagnóstico de Formulación Matricial (EC1)}
+Analiza el siguiente circuito en CC y responde seleccionando el modelo matricial $\mathbf{R}\mathbf{I} = \mathbf{V}$ correcto. 
+
+\vspace{0.2cm}
+\begin{minipage}{0.45\textwidth}
+    \begin{center}
+        \begin{circuitikz}[scale=0.8, transform shape]
+            \draw (0,0) to[V, v=$V_1$] (0,3)
+                  to[R, l=$R_A$, i=$i_1$] (3,3)
+                  to[R, l=$R_B$] (3,0) -- (0,0);
+            \draw (3,3) to[R, l=$R_C$, i=$i_2$] (6,3)
+                  to[V, v_=$V_2$] (6,0) -- (3,0);
+            \draw (3,0) node[ground]{};
+        \end{circuitikz}
+    \end{center}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+    \textbf{Selecciona la matriz correcta:}
+    
+    \vspace{0.2cm}
+    $\square$ \textbf{A:} $\begin{bmatrix} (R_A+R_B) & R_B \\ R_B & (R_B+R_C) \end{bmatrix} \begin{bmatrix} i_1 \\ i_2 \end{bmatrix} = \begin{bmatrix} V_1 \\ V_2 \end{bmatrix}$
+    
+    \vspace{0.2cm}
+    $\square$ \textbf{B:} $\begin{bmatrix} (R_A+R_B) & -R_B \\ -R_B & (R_B+R_C) \end{bmatrix} \begin{bmatrix} i_1 \\ i_2 \end{bmatrix} = \begin{bmatrix} V_1 \\ -V_2 \end{bmatrix}$
+    
+    \vspace{0.2cm}
+    $\square$ \textbf{C:} $\begin{bmatrix} R_A & -R_B \\ -R_B & R_C \end{bmatrix} \begin{bmatrix} i_1 \\ i_2 \end{bmatrix} = \begin{bmatrix} V_1 \\ -V_2 \end{bmatrix}$
+    
+    \vspace{0.2cm}
+    $\square$ \textbf{D:} $\begin{bmatrix} (R_A+R_B) & -R_B \\ -R_B & (R_B+R_C) \end{bmatrix} \begin{bmatrix} i_1 \\ i_2 \end{bmatrix} = \begin{bmatrix} -V_1 \\ V_2 \end{bmatrix}$
+\end{minipage}
+
+\vspace{0.5cm}
+\textbf{Justificación breve:} ¿Por qué el elemento $(2,2)$ de la matriz es $(R_B + R_C)$ y por qué el término independiente de la malla 2 tiene el signo que elegiste? \\
+\rule{\textwidth}{0.4pt} \\
+\rule{\textwidth}{0.4pt}
+
+\vspace{0.4cm}
+\hrule
+\vspace{0.4cm}
+
+\section*{Parte 2: Ticket de Salida (Transición a Superposición)}
+El siguiente circuito lineal posee dos fuentes independientes ($V_s$ y $I_s$). Observa cómo están conectadas.
+
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape]
+        \draw (0,0) to[V, v=$V_s$] (0,3)
+              to[R, l=$R_1$] (3,3)
+              to[R, l=$R_2$, i=$I_x$, color=blue] (3,0) -- (0,0);
+        \draw (3,3) to[R, l=$R_3$] (6,3)
+              to[I, i_=$I_s$] (6,0) -- (3,0);
+        \draw (3,0) node[ground]{};
+    \end{circuitikz}
+\end{center}
+
+\textbf{1. Variable de Respuesta:} ¿Cuál es la variable eléctrica que estamos evaluando en el componente central? \\
+\rule{8cm}{0.4pt}
+
+\vspace{0.3cm}
+\textbf{2. Contribuciones:} Por linealidad, la respuesta total es la suma de las contribuciones aisladas. Escribe la ecuación cualitativa que describe esto: \\
+$I_{x(\text{total})} =$ \rule{5cm}{0.4pt} $+$ \rule{5cm}{0.4pt}
+
+\vspace{0.3cm}
+\textbf{3. Predicción Cualitativa:}
+\begin{itemize}
+    \item Si ``apagamos'' $I_s$ y solo actúa $V_s$, ¿la corriente aportada fluirá hacia \textbf{abajo} o hacia \textbf{arriba} por $R_2$? \rule{2cm}{0.4pt}
+    \item Si ``apagamos'' $V_s$ y solo actúa $I_s$, ¿la corriente aportada fluirá hacia \textbf{abajo} o hacia \textbf{arriba} por $R_2$? \rule{2cm}{0.4pt}
+\end{itemize}
+
+\end{document}

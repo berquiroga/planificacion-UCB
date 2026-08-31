@@ -1,0 +1,154 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[margin=2cm, headheight=25pt]{geometry}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{tcolorbox}
+\usepackage{amssymb}
+\usepackage{microtype}
+\usepackage{enumitem} % Requerido para personalizar viñetas con [label=...]
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\tcbset{
+    caja_nota/.style={colback=blue!5, colframe=ucbblue, fonttitle=\bfseries, boxrule=1pt, arc=3pt}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textcolor{ucbblue}{\textbf{IMT-121 | Informe Esqueleto}}}
+\rhead{\textbf{Hito 1 -- PFI}}
+\cfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Previene el desbordamiento (Overfull \hbox) de 17.0pt en tablas y líneas
+\setlength{\parindent}{0pt} 
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{Hito 1 PFI — Informe Esqueleto}} \\[0.2cm]
+    {\large \textbf{Modelado Matricial en Corriente Continua}}
+\end{center}
+
+\begin{tcolorbox}[caja_nota, title=Propósito y Equidad]
+Este documento establece una estructura común para presentar el Hito 1 bajo los mismos criterios de evaluación. El informe no sustituye la defensa oral; organiza la evidencia técnica. \\
+\textbf{Nota Docente:} Aquellos elementos cuya exigencia previa no haya sido comunicada claramente (ej. hardware completo o estructura específica de Git) no se utilizarán como penalizaciones fuertes, sino como diagnóstico.
+\end{tcolorbox}
+
+\section*{1. Identificación del Equipo}
+\begin{itemize}[itemsep=4pt]
+    \item \textbf{Carrera / Track:} \hrulefill
+    \item \textbf{Integrantes:} \hrulefill
+    \item \textbf{Fecha:} \hrulefill
+    \item \textbf{Descripción del Circuito:} \hrulefill
+    \item \textbf{Enlace al Repositorio Git (si corresponde):} \hrulefill
+\end{itemize}
+
+\section*{2. Problema y Función de la Red}
+\subsection*{2.1 Descripción del problema}
+\textit{Explique brevemente qué representa la red dentro del PFI y qué variables eléctricas se desean determinar (1-2 párrafos).} 
+
+\vspace{0.4cm}
+\rule{\linewidth}{0.4pt} 
+
+\vspace{0.4cm} 
+\rule{\linewidth}{0.4pt}
+
+\subsection*{2.2 Esquema del circuito}
+\textit{Insertar un diagrama legible con valores nominales, polaridades, nodos/mallas y fuentes. \textbf{No colocar resultados todavía.}}
+\vspace{4cm} % Espacio reservado para la imagen
+
+\section*{3. Definición del Modelo Analítico}
+\subsection*{3.1 Variables e incógnitas}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\linewidth}{@{}|l|X|l|X|@{}}
+    \hline
+    \textbf{Variable} & \textbf{Significado físico} & \textbf{Unidad} & \textbf{Convención de signo/sentido} \\
+    \hline
+    & & & \\
+    \hline
+    & & & \\
+    \hline
+\end{tabularx}
+
+\subsection*{3.2 Ecuaciones físicas}
+\textit{Escribir las ecuaciones obtenidas mediante LCK, LVK, nodos o mallas. Cada ecuación debe vincularse al circuito.}
+\begin{itemize}[itemsep=6pt]
+    \item \textbf{Ecuación 1:} \hrulefill
+    \item \textbf{Ecuación 2:} \hrulefill
+    \item \textbf{Ecuación 3:} \hrulefill
+\end{itemize}
+
+\subsection*{3.3 Paso a la formulación matricial ($\mathbf{A} \cdot \mathbf{x} = \mathbf{b}$)}
+\textit{Identificar explícitamente la matriz $\mathbf{A}$, el vector de incógnitas $\mathbf{x}$ y el vector independiente $\mathbf{b}$.}
+\vspace{2cm} % Espacio para la matriz
+
+\subsection*{3.4 Interpretación de la matriz}
+\begin{enumerate}[itemsep=6pt]
+    \item ¿Qué representa físicamente cada fila del sistema? \hrulefill
+    \item ¿Qué representan los términos diagonales y no diagonales? \hrulefill
+\end{enumerate}
+
+\section*{4. Resolución Computacional en Python / NumPy}
+\subsection*{4.1 Código utilizado}
+\textit{Incluir/enlazar el script. Debe identificarse la construcción de $\mathbf{A}$, $\mathbf{b}$ y la resolución con \texttt{numpy.linalg.solve}.}
+\vspace{2cm}
+
+\subsection*{4.2 Resultados computacionales}
+\begin{tabularx}{\linewidth}{@{}|l|X|l|@{}}
+    \hline
+    \textbf{Variable} & \textbf{Resultado Python} & \textbf{Unidad} \\
+    \hline
+    & & \\
+    \hline
+    & & \\
+    \hline
+\end{tabularx}
+
+\section*{5. Verificación mediante LTspice}
+\subsection*{5.1 Configuración}
+\textit{Describir el análisis utilizado (ej. punto de operación \texttt{.op}).} 
+
+\vspace{0.4cm}
+\rule{\linewidth}{0.4pt}
+
+\subsection*{5.2 Comparación y Discusión de Discrepancias}
+\begin{tabularx}{\linewidth}{@{}|l|X|X|X|@{}}
+    \hline
+    \textbf{Variable} & \textbf{Resultado Analítico / Py} & \textbf{Resultado LTspice} & \textbf{Diferencia Relativa} \\
+    \hline
+    & & & \\
+    \hline
+\end{tabularx}
+
+\vspace{0.4cm}
+\textit{Discusión de discrepancias:} \hrulefill
+
+\section*{6. Validación Experimental (Si aplica según instrucciones)}
+\begin{tabularx}{\linewidth}{@{}|l|X|X|X|X|@{}}
+    \hline
+    \textbf{Variable} & \textbf{Teórico/Py} & \textbf{LTspice} & \textbf{Medido} & \textbf{Error Relativo ($\varepsilon_r$)} \\
+    \hline
+    & & & & \\
+    \hline
+\end{tabularx}
+
+\vspace{0.4cm}
+\textit{Análisis de discrepancias (tolerancias, carga, etc.):} \hrulefill
+
+\section*{7. Evidencias Entregadas y Preparación para la Defensa}
+\begin{itemize}[label=$\square$]
+    \item Diagrama del circuito identificado y variables definidas.
+    \item Ecuaciones físicas justificadas y matriz $\mathbf{A}\cdot\mathbf{x}=\mathbf{b}$ construida.
+    \item Script Python funcional y simulación LTspice \texttt{.op}.
+    \item Tabla comparativa y conclusiones técnicas.
+\end{itemize}
+\textit{Cada integrante debe poder explicar la selección de incógnitas, la formulación de filas de la matriz, la correlación con Python/LTspice y responder ante modificaciones topológicas planteadas por el docente.}
+
+\end{document}
