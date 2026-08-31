@@ -1,0 +1,138 @@
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+% ======================================================================
+% PAQUETES Y TEMA NATIVOS
+% ======================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{circuitikz}
+\usepackage{tikz}
+
+\usetheme{Boadilla}
+\usecolortheme{seahorse}
+
+% ======================================================================
+% METADATOS
+% ======================================================================
+\title[Evaluación EC1 e Hito 1]{Semana 5 - Sesión 1\\Cierre de Competencia 1: EC1 y Defensa Hito 1}
+\subtitle{Circuitos Electrónicos II (IMT-221)}
+\author[M.Sc. Ing. B. Quiroga]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo''}
+\date{Semestre 2-2026}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Estructura de la Sesión: Cierre de la Competencia 1}
+    \textbf{Objetivo del Día:} Validar el dominio individual y grupal del acondicionamiento pasivo en CA antes de entrar a la Unidad 2 (Amplificación Operacional).
+    
+    \vspace{0.3cm}
+    \textbf{Cronograma (120 min):}
+    \begin{itemize}
+        \setlength{\itemsep}{6pt}
+        \item \textbf{0 - 5 min:} Aclaración de reglas y recepción de repositorios Git.
+        \item \textbf{5 - 60 min:} Evaluación de Competencia 1 (EC1 - Individual).
+        \item \textbf{60 - 65 min:} Transición y setup de hardware en mesa.
+        \item \textbf{65 - 115 min:} Defensa Técnica del Hito 1 PFI (Por Grupos).
+        \item \textbf{115 - 120 min:} Cierre y diagnóstico del problema de Carga ($K_L$).
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Evaluación de Competencia 1 (EC1)}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \textbf{Reglas de la Evaluación:}
+            \begin{itemize}
+                \setlength{\itemsep}{4pt}
+                \item \textbf{Modalidad:} Individual y estrictamente analítica.
+                \item \textbf{Tiempo:} 55 minutos.
+                \item \textbf{Materiales:} Calculadora científica y formulario manuscrito (1 hoja).
+            \end{itemize}
+            \vspace{0.3cm}
+            \textbf{¿Qué se evalúa?}
+            \begin{itemize}
+                \item Análisis de circuitos en el dominio fasorial.
+                \item Modelado de impedancias complejas.
+                \item Deducción de funciones de transferencia.
+                \item Lectura e interpretación del Diagrama de Bode.
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            % CIRCUITO AMPLIADO PARA DIAPOSITIVAS
+            \begin{center}
+                \begin{circuitikz}[scale=0.6, transform shape]
+                    \draw (0,4) to[sV, l={$V_{in}$}] (0,0) node[ground]{};
+                    \draw (0,4) -- (2,4) -- (6,4);
+                    \draw (0,0) -- (2,0) -- (6,0);
+                    
+                    \draw (2,4) to[R, l={$R_1$}] (2,2) to[R, l={$R_2$}] (2,0);
+                    
+                    \draw (6,4) to[R, l={$R_3$}] (6,2);
+                    \draw (6,2) -- (4.5,2) to[vR, l={$R_{NTC}$}] (4.5,0) -- (6,0);
+                    \draw (6,2) -- (7.5,2) to[C, l_={$C_{par}$}] (7.5,0) -- (6,0);
+                    
+                    \draw (2,2) to[short, -o] (3,2) node[above]{$+$};
+                    \draw (4.5,2) node[circle,fill,inner sep=1pt]{} to[short, -o] (3.8,2) node[above]{$-$};
+                    \node at (3.4,2) {$\hat{V}_{out}$};
+                \end{circuitikz}
+                \vspace{0.2cm}\\
+                \textit{\footnotesize ``Muestre todo el desarrollo algebraico.\\ Un resultado sin procedimiento no tiene validez.''}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Defensa Técnica: El Hito 1 del PFI}
+    \begin{center}
+        \begin{tikzpicture}[auto, thick, >=latex,
+            block/.style={draw, rectangle, minimum width=4cm, minimum height=1cm, align=center, fill=gray!10, font=\scriptsize}]
+            \node[block] (puente) at (0, 0) {\textbf{PUENTE DE WHEATSTONE}\\ ($10\text{ kHz}$ CA)};
+            \node[block] (notch) at (6.5, 0) {\textbf{FILTRO TWIN-T NOTCH}\\ (Muesca en $50\text{ Hz}$)};
+            \draw[->] (puente.east) -- node[above, align=center, font=\tiny] {$V_{diff}$ ($10\text{ kHz}$) + Ruido ($50\text{ Hz}$)} (notch.west);
+            \draw[->] (notch.east) -- (9.5,0) node[right, align=center, font=\tiny] {$V_{out}$\\(Limpia)};
+            \draw[<->, dashed, blue] (1.5, -0.8) -- (5.0, -0.8) node[midway, below, font=\tiny] {[ EFECTO DE CARGA ]};
+        \end{tikzpicture}
+    \end{center}
+    
+    \vspace{0.2cm}
+    \textbf{La defensa es una auditoría de ingeniería. Se les pedirá demostrar:}
+    \begin{enumerate}
+        \item \textbf{Cálculos:} ¿De dónde salieron los valores teóricos?
+        \item \textbf{Simulación:} Evidencia en LTSpice de la muesca y transitorios.
+        \item \textbf{Hardware:} Modulación NTC en vivo y rechazo de ruido EMI $50\text{ Hz}$ en cascada.
+        \item \textbf{Computación:} Script de Python comparando CSV vs. Modelo Analítico.
+        \item \textbf{Sistemas:} Explicación física y cuantitativa del Efecto de Carga ($K_L$).
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{Estructura del Informe Técnico IEEE Final}
+    El consolidado del Lab 1 y Lab 2 se entrega en \textbf{un único informe IEEE}. Deberá reflejar la narrativa completa de la cadena de instrumentación.
+    
+    \vspace{0.3cm}
+    \begin{itemize}
+        \setlength{\itemsep}{4pt}
+        \item \textbf{Abstract:} Resumen numérico (Atenuaciones logradas y $K_L$).
+        \item \textbf{Modelo Analítico:} Derivación de $Z_{sensor}$, $H(j\omega)$ y el Divisor de Carga.
+        \item \textbf{Simulación (LTSpice):} Trazas \texttt{.tran} y Bode teórico.
+        \item \textbf{Hardware e Instrumentación:} Evidencia fotográfica de emparejamiento de componentes y conexión de sondas referenciadas a tierra.
+        \item \textbf{Procesamiento de Señal:} Gráficas de Python (CSV sobre modelo ideal).
+        \item \textbf{Discusión y Conclusiones:} Contrastación de errores. Conclusión de por qué la atenuación del subsistema requiere una etapa activa posterior (Unidad 2).
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Para la Siguiente Clase...}
+    \textbf{La Lección del Día (Efecto de Carga):}\\
+    \textit{Dos circuitos pasivos que funcionan perfectamente por separado, pueden fallar drásticamente al conectarse juntos si no se gestionan las impedancias.}
+    
+    \vspace{0.8cm}
+    \textbf{Próxima Sesión - Inicio Unidad 2}\\
+    Introduciremos el \textbf{Amplificador Operacional (Op-Amp)} como la solución de ingeniería para aislar subsistemas (Buffering) y recuperar la señal atenuada por el puente (Amplificación de Precisión).
+\end{frame}
+
+\end{document}

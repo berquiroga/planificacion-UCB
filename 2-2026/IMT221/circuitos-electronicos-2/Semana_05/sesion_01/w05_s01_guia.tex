@@ -1,0 +1,254 @@
+\documentclass[11pt,a4paper,twoside]{article}
+
+% ======================================================================
+% CONFIGURACIÓN Y PAQUETES A PRUEBA DE FALLOS
+% ======================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-noquoting]{babel} 
+\usepackage[margin=2.5cm, headheight=35pt]{geometry}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage[table]{xcolor}
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue]{hyperref}
+\usepackage{amsmath, amssymb}
+\usepackage{circuitikz}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{titlesec}
+\usepackage{microtype}
+
+% ======================================================================
+% MACROS Y ESTILOS
+% ======================================================================
+\definecolor{ucbblue}{RGB}{0,51,102}
+\definecolor{ucbred}{RGB}{153,0,0}
+\definecolor{codegray}{gray}{0.95}
+
+\newtcolorbox{docente}[1][]{colback=red!5!white, colframe=ucbred, fonttitle=\bfseries, title=Uso Exclusivo Docente, #1}
+\newtcolorbox{info}[1][]{colback=blue!5!white, colframe=ucbblue, fonttitle=\bfseries, title=Instrucciones, #1}
+
+\titleformat{\section}[block]{\Large\bfseries\color{ucbblue}}{\thesection.}{0.5em}{}
+\titleformat{\subsection}[block]{\large\bfseries\color{gray!80!black}}{\thesubsection}{0.5em}{}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\small\textbf{Circuitos Electrónicos II (IMT-221)}}
+\fancyhead[RE,LO]{\small Semana 5 - Sesión 1: Evaluación EC1 y Hito 1}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    \rule{\textwidth}{1.5pt}\\[0.4cm]
+    {\huge \textbf{DOSSIER DE EVALUACIÓN Y CIERRE}}\\[0.2cm]
+    {\LARGE \textbf{Competencia 1: Acondicionamiento Pasivo y Fasores}}\\[0.3cm]
+    \rule{\textwidth}{1.5pt}\\[0.5cm]
+\end{center}
+
+\begin{docente}
+Este documento contiene todos los artefactos requeridos para ejecutar la \textbf{Semana 5 - Sesión 1}. Incluye la prueba analítica individual (EC1), su respectivo solucionario, la guía de estructura para el Informe IEEE combinado (Labs 1 y 2), el banco de preguntas para la defensa oral y la rúbrica de registro de calificaciones.
+\end{docente}
+
+% ======================================================================
+% ARTEFACTO 1: EXAMEN EC1 (ESTUDIANTE)
+% ======================================================================
+\newpage
+\section{EVALUACIÓN DE COMPETENCIA 1 (EC1) - VERSIÓN ESTUDIANTE}
+\begin{table}[h!]
+    \centering
+    \begin{tabularx}{\textwidth}{|X|}
+        \hline
+        \textbf{Nombre:} \rule{8cm}{0.4pt} \quad \textbf{Fecha:} \rule{3cm}{0.4pt} \quad \textbf{Nota:} \rule{1.5cm}{0.4pt}/50 \\
+        \hline
+    \end{tabularx}
+\end{table}
+
+\begin{info}
+\textbf{Tiempo asignado:} 55 minutos. \textbf{Material permitido:} Calculadora científica y formulario de 1 hoja. Muestre todo el desarrollo algebraico. Un resultado sin procedimiento no tiene validez.
+\end{info}
+
+\subsection*{Problema 1: Análisis Fasorial del Puente Sensor (25 puntos)}
+Un puente de Wheatstone se excita con $\hat{V}_{in} = 2.0\angle 0^\circ\text{ V}_{pico}$ a una frecuencia de $10\text{ kHz}$. Las tres ramas de referencia tienen resistores idénticos $R_1=R_2=R_3=10\text{ k}\Omega$. La rama del sensor se modela como un termistor NTC ($R_{NTC} = 4\text{ k}\Omega$ a la temperatura actual) en paralelo con un capacitor parásito $C_{para} = 5\text{ nF}$. La resistencia e inductancia del cable se desprecian para este cálculo ($R_{cab}=0, L_{cab}=0$).
+
+% CIRCUITO REDISEÑADO CON ESPACIADO AMPLIO Y SIN COLAPSO
+\begin{center}
+    \begin{circuitikz}[scale=0.85, transform shape]
+        % Fuente de Entrada
+        \draw (0,4) to[sV, l_={$V_{in} (10\text{ kHz})$}] (0,0) node[ground]{};
+        \draw (0,4) -- (2,4) -- (7,4);
+        \draw (0,0) -- (2,0) -- (7,0);
+        
+        % Rama Izquierda (R1 y R2)
+        \draw (2,4) to[R, l={$R_1=10\text{ k}\Omega$}] (2,2) node[circle,fill,inner sep=1.5pt]{};
+        \draw (2,2) to[R, l={$R_2=10\text{ k}\Omega$}] (2,0);
+        \node[left, xshift=-0.1cm] at (2,2) {Nodo A};
+        
+        % Rama Derecha (R3 y Sensor)
+        \draw (7,4) to[R, l={$R_3=10\text{ k}\Omega$}] (7,2) node[circle,fill,inner sep=1.5pt]{};
+        \node[below, xshift=1.5cm] at (5.5,2) {Nodo B};
+        
+        % Division de la Rama Sensora (NTC y Parasito muy separados)
+        \draw (7,2) -- (5.5,2) to[vR, l={$R_{NTC}=4\text{ k}\Omega$}] (5.5,0) -- (7,0);
+        \draw (7,2) -- (9,2) to[C, l={$C_{par}=5\text{ nF}$}] (9,0) -- (7,0);
+        
+        % Terminales de Salida Diferencial apuntando al centro
+        \draw (2,2) to[short, -o] (3.2,2) node[above]{$+$};
+        \draw (5.5,2) node[circle,fill,inner sep=1pt]{} to[short, -o] (4.3,2) node[above]{$-$};
+        \node at (3.75,2) {$\hat{V}_{out}$};
+    \end{circuitikz}
+\end{center}
+
+\begin{enumerate}[label=\alph*)]
+    \item Formule la impedancia compleja de la rama del sensor $Z_{sensor}(j\omega)$ en forma rectangular y polar. (10 pts)
+    \item Calcule la tensión diferencial de salida $\hat{V}_{out}$ en forma polar (Magnitud y Fase). (15 pts)
+\end{enumerate}
+\vspace{4cm}
+
+\subsection*{Problema 2: Efecto de Carga en Filtro Twin-T (25 puntos)}
+Un filtro Twin-T Notch sintonizado teóricamente a $50\text{ Hz}$ se implementa con $R = 14.3\text{ k}\Omega$ y $C = 220\text{ nF}$. La función de transferencia en vacío es $H(j\omega) = \frac{1 - (\omega/\omega_0)^2}{1 - (\omega/\omega_0)^2 + j4(\omega/\omega_0)}$. Se conecta a la salida del filtro un In-Amp cuya impedancia de entrada real es resistiva y de valor $R_L = 50\text{ k}\Omega$.
+
+\begin{enumerate}[label=\alph*)]
+    \item Demuestre analíticamente cómo cambia el denominador de la función de transferencia debido al efecto de la carga $R_L$. Escriba la nueva ecuación de $H_{cargado}(j\omega)$. (10 pts)
+    \item Calcule la atenuación exacta (en dB) que experimentará un ruido de red de $50\text{ Hz}$ en este circuito \textit{cargado}, asumiendo que debido a tolerancias la frecuencia real de la red es $49.5\text{ Hz}$ (evalúe la función en $f = 49.5\text{ Hz}$). (15 pts)
+\end{enumerate}
+
+\newpage
+% ======================================================================
+% ARTEFACTO 2: SOLUCIONARIO EC1 (DOCENTE)
+% ======================================================================
+\section{SOLUCIONARIO Y CLAVES DE CORRECCIÓN (EC1)}
+
+\begin{docente}
+\textbf{Objetivo Diagnóstico:} Identifique sistemáticamente dónde falla el estudiante utilizando las siguientes etiquetas de error: [Aritmética Compleja], [Modelado de Impedancia], [Leyes de Circuito], [Interpretación dB/Fase].
+\end{docente}
+
+\subsection*{Solución Problema 1: Análisis Fasorial del Puente}
+\textbf{a) Impedancia de la rama sensora:}
+\begin{align*}
+    \omega &= 2\pi(10000) = 62831.85\text{ rad/s} \\
+    Z_C &= \frac{1}{j\omega C_{par}} = \frac{1}{j(62831.85)(5 \times 10^{-9})} = -j3183.1\ \Omega \\
+    Z_{sensor} &= R_{NTC} \parallel Z_C = \frac{(4000)(-j3183.1)}{4000 - j3183.1} = \frac{-j12732400}{4000 - j3183.1} \\
+    Z_{sensor} &= 1551.4 - j1950.2\ \Omega = \mathbf{2492.3\ \Omega \angle -51.5^\circ} \quad \text{\color{ucbred}[10 pts]}
+\end{align*}
+
+\textbf{b) Tensión diferencial de salida:}
+\begin{align*}
+    \hat{V}_A &= \hat{V}_{in} \left(\frac{10\text{k}}{10\text{k} + 10\text{k}}\right) = 1.0\angle 0^\circ\text{ V} \\
+    \hat{V}_B &= \hat{V}_{in} \left(\frac{Z_{sensor}}{10000 + Z_{sensor}}\right) = 2\angle 0^\circ \left(\frac{1551.4 - j1950.2}{11551.4 - j1950.2}\right) \\
+    \hat{V}_B &= 2\angle 0^\circ \left(\frac{2492.3 \angle -51.5^\circ}{11714.8 \angle -9.58^\circ}\right) = 0.425\angle -41.92^\circ\text{ V} = 0.316 - j0.284\text{ V} \\
+    \hat{V}_{out} &= \hat{V}_A - \hat{V}_B = 1.0 - (0.316 - j0.284) = 0.684 + j0.284\text{ V} \\
+    \mathbf{\hat{V}_{out}} &\mathbf{= 0.741\angle 22.5^\circ\text{ V}_{pico}} \quad \text{\color{ucbred}[15 pts]}
+\end{align*}
+
+\subsection*{Solución Problema 2: Efecto de Carga en Twin-T}
+\textbf{a) Demostración del efecto de carga:}
+El estudiante debe evidenciar el uso de LKC en el nodo de salida o el divisor de tensión. El resultado final del denominador modificado debe mostrar el aumento del factor de amortiguamiento:
+\begin{equation}
+    H_{cargado}(j\omega) = \frac{1 - (\omega/\omega_0)^2}{1 - (\omega/\omega_0)^2 + j4\left(1 + \frac{R}{R_L}\right)(\omega/\omega_0)} \quad \text{\color{ucbred}[10 pts]}
+\end{equation}
+
+\textbf{b) Cálculo de atenuación a $49.5\text{ Hz}$:}
+\begin{align*}
+    f_0 &= \frac{1}{2\pi(14300)(220 \times 10^{-9})} = 50.59\text{ Hz} \\
+    \frac{\omega}{\omega_0} &= \frac{f}{f_0} = \frac{49.5}{50.59} = 0.9784 \\
+    \text{Término Real} &= 1 - (0.9784)^2 = 0.0427 \\
+    \text{Amortiguamiento} &= 4\left(1 + \frac{14.3\text{k}}{50\text{k}}\right) = 4(1 + 0.286) = 5.144 \\
+    \text{Término Imag} &= 5.144 \cdot 0.9784 = 5.033 \\
+    \vert{}H_{cargado}\vert{} &= \frac{0.0427}{\sqrt{0.0427^2 + 5.033^2}} = \frac{0.0427}{5.033} = 8.48 \times 10^{-3} \\
+    \vert{}H\vert{}_{\text{dB}} &= 20 \log_{10}(8.48 \times 10^{-3}) = \mathbf{-41.4\text{ dB}} \quad \text{\color{ucbred}[15 pts]}
+\end{align*}
+
+\newpage
+% ======================================================================
+% ARTEFACTO 3: PLANTILLA REPORTE IEEE Y CONSOLIDACIÓN (ESTUDIANTE)
+% ======================================================================
+\section{GUÍA PARA EL REPORTE TÉCNICO IEEE (HITO 1) Y GITHUB}
+El Hito 1 requiere la consolidación del Laboratorio 1 (Puente CA) y Laboratorio 2 (Twin-T Notch) en un \textbf{único informe técnico} redactado en formato IEEE. Este informe narra la historia completa de adquisición pasiva y rechazo de ruido.
+
+\subsection*{Estructura Obligatoria del Documento}
+\begin{itemize}
+    \item \textbf{Título y Autores:} Título descriptivo (ej. \textit{``Diseño y Validación de un Front-End Pasivo con Rechazo a 50 Hz para Acondicionamiento NTC''}). Enlace al repositorio Git del grupo.
+    \item \textbf{Abstract:} Resumen cuantitativo. (Debe mencionar $K_L$, atenuación en dB lograda y fase).
+    \item \textbf{1. Introducción:} Describir el problema industrial del Hito 1 (acoplamiento EMI en cables largos y necesidad de la portadora modulada).
+    \item \textbf{2. Modelo Analítico Fasorial:} Presentar las ecuaciones clave deducidas en su libreta ($Z_{sensor}$, $\hat{V}_{out}$ del puente, $H(j\omega)$ del Twin-T, y el cálculo del factor de carga teórica $K_L$).
+    \item \textbf{3. Simulación Computacional (LTSpice):} Diagramas esquemáticos claros y trazas gráficas de la simulación \texttt{.tran} (Lab 1) y \texttt{.ac} (Bode del Lab 2).
+    \item \textbf{4. Implementación y Adquisición de Datos:} Describir el montaje, emparejamiento de componentes e instrumentación (conexión diferencial del osciloscopio).
+    \item \textbf{5. Procesamiento de Señales (Python):} Mostrar las gráficas generadas por sus scripts. Explicar brevemente cómo se extrajo el desfase temporal y la magnitud de los CSV.
+    \item \textbf{6. Discusión de Resultados y Efecto de Carga:} Esta es la sección más importante. Contrastar Teoría vs Simulación vs Práctica. Explicar el fenómeno físico de por qué cayó la amplitud al conectar el puente al filtro (Efecto de Carga $K_L$).
+    \item \textbf{7. Conclusión:} Evaluar si el Front-End Pasivo cumple los requerimientos y justificar por qué el Hito 2 requerirá obligatoriamente etapas activas (Op-Amps).
+\end{itemize}
+
+\subsection*{Reglas del Repositorio Git}
+El enlace al repositorio GitHub proporcionado en el informe debe ser público y contener:
+\begin{enumerate}
+    \item Los esquemas de simulación \texttt{.asc} de LTSpice.
+    \item Los scripts de validación en Python (\texttt{.py} o Jupyter Notebooks \texttt{.ipynb}).
+    \item La carpeta con los archivos \texttt{.csv} crudos exportados del osciloscopio.
+    \item Un archivo \texttt{README.md} explicando brevemente cómo ejecutar el código.
+\end{enumerate}
+
+\newpage
+% ======================================================================
+% ARTEFACTO 4: HOJA DE DEFENSA DOCENTE
+% ======================================================================
+\section{RÚBRICA DE DEFENSA ORAL Y REGISTRO (HITO 1 PFI)}
+
+\begin{docente}
+Esta matriz permite registrar ágilmente el desempeño del trío durante la defensa técnica en banco (45 minutos/grupo). Explore las discrepancias y el entendimiento del fenómeno de \textbf{carga}.
+\end{docente}
+
+\subsection*{Banco de Preguntas Estratégicas para la Defensa}
+\textbf{Sobre el Laboratorio 1 (Sensing):}
+\begin{itemize}[itemsep=1pt]
+    \item \textit{``Muestren la señal en el osciloscopio. ¿Por qué usamos el canal MATH y no medimos directamente contra la tierra del circuito?''}
+    \item \textit{``Si tocan el NTC, ¿por qué la señal no cambia de frecuencia sino de amplitud?''}
+    \item \textit{``¿Cómo extrae su script de Python el desfase a partir de las trazas temporales?''}
+\end{itemize}
+
+\textbf{Sobre el Laboratorio 2 (Notch):}
+\begin{itemize}[itemsep=1pt]
+    \item \textit{``Físicamente, ¿qué ocurre con las corrientes en el nodo de salida a exactamente $50\text{ Hz}$?''}
+    \item \textit{``¿Cuál fue la diferencia entre la atenuación teórica de su Bode y la medida en el banco? ¿A qué tolerancias lo atribuyen?''}
+\end{itemize}
+
+\textbf{Sobre la Cascada e Integración (El problema sistémico):}
+\begin{itemize}[itemsep=1pt]
+    \item \textit{``¿Qué es $K_L$? Explíquenme físicamente por qué la señal del puente se achicó cuando le conectaron el filtro de muesca.''}
+    \item \textit{``Muestren la gráfica de Python que valida la supresión de la interferencia inyectada. ¿Quedó intacta la portadora de $10\text{ kHz}$?''}
+\end{itemize}
+
+\subsection*{Matriz de Registro de Desempeño}
+\textbf{Grupo / Nombres:} \rule{10cm}{0.4pt}
+\begin{table}[h!]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}X|c|c|c|}
+        \hline
+        \rowcolor{codegray} \textbf{Criterio de Ingeniería (Hito 1)} & \textbf{Logrado} & \textbf{Parcial} & \textbf{Fallido} \\
+        \hline
+        \textbf{Operatividad Lab 1:} Mide $V_{diff}$ con CH1-CH2, modula amplitud con calor. & $\square$ & $\square$ & $\square$ \\
+        \hline
+        \textbf{Operatividad Lab 2:} Muesca de $50\text{ Hz}$ verificable, componentes emparejados. & $\square$ & $\square$ & $\square$ \\
+        \hline
+        \textbf{Integración (Cascada):} Ruido de $50\text{ Hz}$ inyectado es suprimido visiblemente. & $\square$ & $\square$ & $\square$ \\
+        \hline
+        \textbf{Cálculo de Carga ($K_L$):} Entienden por qué cae el voltaje entre etapas. & $\square$ & $\square$ & $\square$ \\
+        \hline
+        \textbf{Validación Python:} Trazas de Bode y tiempo concuerdan con CSVs. & $\square$ & $\square$ & $\square$ \\
+        \hline
+        \textbf{Defensa Individual:} Los tres miembros argumentan y no dependen del reporte. & $\square$ & $\square$ & $\square$ \\
+        \hline
+        \multicolumn{4}{|p{\dimexpr\textwidth-2\tabcolsep}|}{\textbf{Diagnóstico de Fallas (Tachar lo que aplique):} [Leyes Circuito] [Simulación LTSpice] [Manejo Osciloscopio/Tierras] [Procesamiento Python] [Entendimiento de Sistemas/Carga].}\\
+        \hline
+        \multicolumn{4}{|p{\dimexpr\textwidth-2\tabcolsep}|}{\textbf{Comentarios/Remediación Requerida para Sesión 2:} \newline\newline\newline}\\
+        \hline
+    \end{tabularx}
+\end{table}
+
+\end{document}
