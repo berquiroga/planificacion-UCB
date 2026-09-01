@@ -1,0 +1,96 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
+
+\usepackage{amsmath, amssymb, amsfonts, bm}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Robótica (IMT-342)}
+\rhead{Semana 5 - Sesión 1}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{UNIVERSIDAD CATÓLICA BOLIVIANA "SAN PABLO" — SEDE TARIJA}}\\
+    \vspace{0.2cm}
+    \normalsize Departamento de Ciencias Exactas e Ingenierías | Carrera de Ingeniería Mecatrónica\\
+    Asignatura: Robótica Industrial (IMT-342) \\
+    Docente: M.Sc. Ing. Bernardo Quiroga Turdera
+\end{center}
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Hoja de Ejercicios: Cinemática Directa mediante D-H}]
+    \centering \large \textbf{Asignación Práctica Independiente}
+\end{tcolorbox}
+\vspace{0.4cm}
+
+\section*{Ejercicio 1: Evaluación de una fila D-H[cite: 1]}
+Dada la convención estándar y los siguientes parámetros para un eslabón $i$:
+\begin{equation*}
+    \alpha_i = 0, \quad a_i = 0.25\text{ m}, \quad d_i = 0, \quad \theta_i = q_i
+\end{equation*}
+\begin{enumerate}
+    \item Escriba la matriz de transformación genérica ${}^{i-1}T_i$.
+    \item Evalúe numéricamente la matriz para una configuración articular de $q_i = 90^\circ$.
+    \item Interprete físicamente la última columna de la matriz resultante.
+\end{enumerate}
+
+\section*{Ejercicio 2: Cinemática Directa Planar (3R)[cite: 1]}
+Considere un manipulador planar con los siguientes parámetros geométricos y configuración articular actual:
+\begin{equation*}
+    a_1 = 0.30\text{ m}, \quad a_2 = 0.25\text{ m}, \quad a_3 = 0.15\text{ m}
+\end{equation*}
+\begin{equation*}
+    q_1 = 0^\circ, \quad q_2 = 90^\circ, \quad q_3 = -90^\circ
+\end{equation*}
+\begin{enumerate}
+    \item Construya las tres matrices de transformación ${}^{0}T_1$, ${}^{1}T_2$ y ${}^{2}T_3$ asumiendo $\alpha_i = 0$, $d_i = 0$ y $\theta_i = q_i$ para todas las juntas.
+    \item Escriba la secuencia de multiplicación necesaria para obtener ${}^{0}T_3$.
+    \item Calcule numéricamente la matriz resultante ${}^{0}T_3$.
+    \item Extraiga el vector de posición del efector final.
+    \item Realice una verificación geométrica rápida que demuestre que su posición calculada es plausible en el plano.
+\end{enumerate}
+
+\section*{Ejercicio 3: Aplicación Restringida ABB IRB 120[cite: 1]}
+Usando el modelo D-H publicado por Truc \& Lam (2020), se le proporcionan las matrices individuales para la configuración $\mathbf{q} = [0, 0, 0, 0, 0, 0]^T$:
+
+\begin{align*}
+    {}^{0}T_1 &= \begin{bmatrix} 1&0&0&0 \\ 0&0&1&0 \\ 0&-1&0&0.290 \\ 0&0&0&1 \end{bmatrix}, &
+    {}^{1}T_2 &= \begin{bmatrix} 0&1&0&0 \\ -1&0&0&-0.270 \\ 0&0&1&0 \\ 0&0&0&1 \end{bmatrix} \\
+    {}^{2}T_3 &= \begin{bmatrix} 1&0&0&0.070 \\ 0&0&1&0 \\ 0&-1&0&0 \\ 0&0&0&1 \end{bmatrix}, &
+    {}^{3}T_4 &= \begin{bmatrix} 1&0&0&0 \\ 0&0&-1&0 \\ 0&1&0&0.302 \\ 0&0&0&1 \end{bmatrix} \\
+    {}^{4}T_5 &= \begin{bmatrix} 1&0&0&0 \\ 0&0&1&0 \\ 0&-1&0&0 \\ 0&0&0&1 \end{bmatrix}, &
+    {}^{5}T_6 &= \begin{bmatrix} 1&0&0&0 \\ 0&1&0&0 \\ 0&0&1&0.072 \\ 0&0&0&1 \end{bmatrix}
+\end{align*}
+
+\begin{enumerate}
+    \item Identifique en cuál de estas matrices se refleja explícitamente el offset D-H $\theta_2 = q_2 - \pi/2$ cuando $q_2 = 0$.
+    \item Escriba la cadena de transformación completa.
+    \item Calcule numéricamente ${}^{0}T_6$.
+    \item Extraiga $\mathbf{p}_6$ y los tres vectores ortonormales correspondientes a los ejes de la brida.
+    \item Explique por qué este resultado matemático no garantiza automáticamente coincidencia directa con el "cero de fábrica" de ABB en el controlador físico.
+\end{enumerate}
+
+\end{document}
