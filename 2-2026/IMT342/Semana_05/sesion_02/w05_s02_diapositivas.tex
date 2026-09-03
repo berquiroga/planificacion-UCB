@@ -1,0 +1,243 @@
+\documentclass[aspectratio=169, table, xcdraw]{beamer}
+
+% Tema y Colores Institucionales
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\renewcommand{\tablename}{Tabla}
+\renewcommand{\figurename}{Figura}
+
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+\title[Consolidación FK]{Consolidación Preevaluación de Cinemática Directa}
+\subtitle{Resolución, Diagnóstico y Verificación}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija \\ Robótica (IMT-342)}
+\date{Semana 5 - Sesión 2}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Flujo de la Sesión: Consolidación Activa}
+    \begin{center}
+        \large \textit{Esta sesión no es una clase expositiva. Es una evaluación formativa de su capacidad para ejecutar la cinemática directa de forma independiente.}
+    \end{center}
+    
+    \vspace{0.4cm}
+    \begin{center}
+    \begin{tikzpicture}[
+        node distance=0.6cm and 0.6cm,
+        box/.style={rectangle, draw=ucbblue, thick, fill=ucbblue!5, text width=2.2cm, align=center, rounded corners, minimum height=1cm, font=\footnotesize},
+        arrow/.style={-Stealth, thick, ucbblue, line width=1.2pt}
+    ]
+        \node[box] (i1) {\textbf{Intento 1}\\(Independiente)};
+        \node[box, right=of i1] (diag) {\textbf{Diagnóstico}\\(Identificar Errores)};
+        \node[box, right=of diag] (corr) {\textbf{Corrección}\\(Focalizada)};
+        \node[box, right=of corr] (i2) {\textbf{Intento 2}\\(Transferencia)};
+        \node[box, fill=green!10, right=of i2] (read) {\textbf{Readiness Check}\\(Evaluación)};
+        
+        \draw[arrow] (i1) -- (diag);
+        \draw[arrow] (diag) -- (corr);
+        \draw[arrow] (corr) -- (i2);
+        \draw[arrow] (i2) -- (read);
+    \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Problema Diagnóstico 1: Cinemática Planar 3R}
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            Un manipulador planar 3R tiene la siguiente tabla DH estándar[cite: 5]:
+            
+            \vspace{0.2cm}
+            \resizebox{\textwidth}{!}{
+            \begin{tabular}{c c c c c}
+            \toprule
+            $i$ & $\theta_i$ & $d_i$ [m] & $a_i$ [m] & $\alpha_i$ \\ \midrule
+            1 & $q_1$ & 0 & 0.30 & 0 \\
+            2 & $q_2$ & 0 & 0.20 & 0 \\
+            3 & $q_3$ & 0 & 0.10 & 0 \\ \bottomrule
+            \end{tabular}
+            }
+            
+            \vspace{0.3cm}
+            \textbf{Configuración actual:} \\
+            $q_1=30^\circ, \quad q_2=-60^\circ, \quad q_3=90^\circ$[cite: 5].
+        \end{column}
+        
+        \begin{column}{0.6\textwidth}
+            \begin{center}
+            \begin{tikzpicture}[scale=6, thick]
+                \draw[->, gray] (0,0) -- (0.6,0) node[right]{$X_0$};
+                \draw[->, gray] (0,0) -- (0,0.4) node[above]{$Y_0$};
+                
+                \coordinate (O) at (0,0);
+                \coordinate (J1) at (30:0.3);
+                \coordinate (J2) at ($(J1) + (-30:0.2)$);
+                \coordinate (J3) at ($(J2) + (60:0.1)$);
+                
+                \draw[ucbblue, line width=2pt] (O) -- (J1) node[midway, above left]{\small $a_1$};
+                \draw[ucbblue!70, line width=2pt] (J1) -- (J2) node[midway, below]{\small $a_2$};
+                \draw[ucbblue!40, line width=2pt] (J2) -- (J3) node[midway, right]{\small $a_3$};
+                
+                \filldraw[black] (O) circle (0.5pt);
+                \filldraw[black] (J1) circle (0.5pt);
+                \filldraw[black] (J2) circle (0.5pt);
+                \filldraw[red] (J3) circle (0.5pt) node[above]{\small Brida};
+            \end{tikzpicture}
+            \end{center}
+            \textbf{Objetivo:} Determine de forma independiente la pose del efector final respecto al marco base.
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Ruta de Diagnóstico de Errores}
+    \textit{Si su resultado fue incorrecto, ubique el punto de falla en la siguiente tubería[cite: 5]:}
+    
+    \vspace{0.5cm}
+    \begin{center}
+    \begin{tikzpicture}[
+        node distance=0.2cm and 0.3cm,
+        box/.style={rectangle, draw=ucbblue, thick, text width=1.5cm, align=center, rounded corners, minimum height=0.8cm, font=\scriptsize},
+        arrow/.style={-Stealth, thick, ucbblue}
+    ]
+        \node[box] (a) {\textbf{A}\\Interpretación};
+        \node[box, right=of a] (b) {\textbf{B}\\DH};
+        \node[box, right=of b] (c) {\textbf{C}\\Matriz $T_i$};
+        \node[box, right=of c] (d) {\textbf{D}\\Cadena};
+        \node[box, right=of d] (e) {\textbf{E}\\Álgebra};
+        \node[box, right=of e] (f) {\textbf{F}\\Pose};
+        \node[box, right=of f] (g) {\textbf{G}\\Verificación};
+
+        \draw[arrow] (a) -- (b);
+        \draw[arrow] (b) -- (c);
+        \draw[arrow] (c) -- (d);
+        \draw[arrow] (d) -- (e);
+        \draw[arrow] (e) -- (f);
+        \draw[arrow] (f) -- (g);
+    \end{tikzpicture}
+    \end{center}
+    
+    \vspace{0.3cm}
+    \begin{itemize}
+        \item \textbf{[A-B] Concepto:} ¿Identificó bien $a_i, d_i, \alpha_i, \theta_i$?
+        \item \textbf{[C-D] Estructura:} ¿Pudo armar ${}^{i-1}T_i$ y ordenarlas como $0 \to 1 \to 2 \to 3$?[cite: 5]
+        \item \textbf{[E] Ejecución:} Errores aritméticos aislados (no críticos para el concepto).
+        \item \textbf{[F-G] Físico:} ¿Es capaz de extraer $R$ y $p$ y comprobar si tienen sentido?[cite: 5]
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Recordatorio Técnico: Matriz D-H Estándar}
+    La convención del curso para una fila D-H es[cite: 5, 6]:
+    \begin{equation*}
+        {}^{i-1}T_i = R_z(\theta_i) T_z(d_i) T_x(a_i) R_x(\alpha_i)
+    \end{equation*}
+
+    Su expansión analítica directa es[cite: 5]:
+    \begin{equation*}
+        \boxed{
+        {}^{i-1}T_i =
+        \begin{bmatrix}
+        c_{\theta_i} & -s_{\theta_i}c_{\alpha_i} & s_{\theta_i}s_{\alpha_i} & a_i c_{\theta_i} \\
+        s_{\theta_i} & c_{\theta_i}c_{\alpha_i} & -c_{\theta_i}s_{\alpha_i} & a_i s_{\theta_i} \\
+        0 & s_{\alpha_i} & c_{\alpha_i} & d_i \\
+        0 & 0 & 0 & 1
+        \end{bmatrix}
+        }
+    \end{equation*}
+    
+    \begin{alertblock}{Intervención Rápida}
+        Si $(\theta, d, a, \alpha) = (q, 0.20, 0, -\pi/2)$, ¿cuál es el giro en el eslabón y cuál la traslación a lo largo de $Z$?[cite: 5]
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Semántica de Marcos y Extracción de Pose}
+    \textbf{1. Encadenamiento Correcto}[cite: 5] \\
+    El producto de transformaciones sigue una cadena semántica estricta:
+    \begin{center}
+        $\{0\} \xrightarrow{{}^0T_1} \{1\} \xrightarrow{{}^1T_2} \{2\} \xrightarrow{{}^2T_3} \{3\} \quad \implies \quad {}^0T_3 = {}^0T_1 {}^1T_2 {}^2T_3$
+    \end{center}
+    
+    \vspace{0.4cm}
+    \textbf{2. Anatomía de la Pose Final}[cite: 5] \\
+    No basta con calcular la matriz; debe saber leerla:
+    \begin{equation*}
+        T = 
+        \begin{bmatrix}
+        \color{red}\mathbf{R} & \color{blue}\mathbf{p} \\
+        \mathbf{0} & 1
+        \end{bmatrix}
+        \qquad \text{Ejemplo:} \quad
+        {}^0T_2 = \begin{bmatrix} 0&0&1&\color{blue}0.20 \\ 1&0&0&\color{blue}-0.10 \\ 0&1&0&\color{blue}0.30 \\ 0&0&0&1 \end{bmatrix} \implies {}^0p_2 = \begin{bmatrix} \color{blue}0.20 \\ \color{blue}-0.10 \\ \color{blue}0.30 \end{bmatrix}
+    \end{equation*}
+\end{frame}
+
+\begin{frame}{Problema Representativo 2: Transferencia (Espacial)}
+    Considere un manipulador serial 3R con la siguiente tabla DH[cite: 5]:
+    
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            \resizebox{\textwidth}{!}{
+            \begin{tabular}{c c c c c}
+            \toprule
+            $i$ & $\theta_i$ & $d_i$ [m] & $a_i$ [m] & $\alpha_i$ \\ \midrule
+            1 & $q_1$ & 0.20 & 0 & $+\pi/2$ \\
+            2 & $q_2$ & 0 & 0.30 & 0 \\
+            3 & $q_3$ & 0 & 0.20 & 0 \\ \bottomrule
+            \end{tabular}
+            }
+            \vspace{0.3cm}
+            
+            \textbf{Variables:} \\
+            $q_1=0^\circ, \ q_2=90^\circ, \ q_3=-90^\circ$[cite: 5].
+        \end{column}
+        
+        \begin{column}{0.6\textwidth}
+            \textbf{Tareas explícitas:}[cite: 5]
+            \begin{enumerate}
+                \item Construya las 3 transformaciones.
+                \item Escriba la cadena de composición.
+                \item Calcule ${}^0T_3$.
+                \item Extraiga posición y orientación.
+                \item Aplique una verificación física/matemática.
+            \end{enumerate}
+            \textit{Nota: Este problema introduce un giro en el primer eslabón, volviendo el sistema espacial[cite: 5].}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Lista de Verificación (Checklist) de la Pose Final}
+    \textit{Antes de entregar su examen, aplique siempre estos filtros mentales a su matriz final[cite: 5]:}
+    
+    \vspace{0.4cm}
+    \begin{itemize}
+        \item[\checkmark] \textbf{Fila Homogénea:} ¿La última fila es estrictamente $[0 \ 0 \ 0 \ 1]$?[cite: 5]
+        \item[\checkmark] \textbf{Rotación Ortonormal:} ¿La submatriz $R$ cumple $R^TR = I$? ¿Sus columnas son perpendiculares entre sí?[cite: 5]
+        \item[\checkmark] \textbf{Límites Geométricos:} ¿La magnitud de la posición calculada $\|p\|$ es menor o igual a la suma de todos los eslabones ($a_i + d_i$)?[cite: 5]
+        \item[\checkmark] \textbf{Dimensionalidad:} Si el robot es estrictamente planar en $XY$, ¿el componente $p_z$ dio exactamente $0$?[cite: 5]
+    \end{itemize}
+\end{frame}
+
+\end{document}

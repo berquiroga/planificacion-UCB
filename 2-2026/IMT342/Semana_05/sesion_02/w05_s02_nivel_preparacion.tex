@@ -1,0 +1,74 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Readiness Check Individual: Cinemática Directa}}\\[0.2cm]
+    \normalsize Robótica (IMT-342) - M.Sc. Ing. Bernardo Quiroga Turdera\\[0.1cm]
+    \textit{Tiempo objetivo: 10 minutos}[cite: 5, 6]
+\end{center}
+
+\vspace{0.4cm}
+\textbf{Nombre:} \rule{8cm}{0.15mm} \hfill \textbf{Fecha:} \rule{4cm}{0.15mm}
+
+\vspace{0.6cm}
+Considere un manipulador 2R planar con las longitudes de eslabón:
+\begin{equation*}
+    a_1 = 0.30\text{ m}, \qquad a_2 = 0.20\text{ m}
+\end{equation*}
+
+Y su tabla DH estándar:
+\begin{center}
+    \begin{tabular}{c c c c c}
+    \toprule
+    $i$ & $\theta_i$ & $d_i$ & $a_i$ & $\alpha_i$ \\ \midrule
+    1 & $q_1$ & 0 & 0.30 & 0 \\
+    2 & $q_2$ & 0 & 0.20 & 0 \\ \bottomrule
+    \end{tabular}
+\end{center}
+
+Para las variables articulares $q_1=90^\circ, \ q_2=-90^\circ$ determine[cite: 5]:
+
+\vspace{0.4cm}
+\noindent \textbf{1. Matriz de Transformación ${}^0T_1$:}
+\vspace{2.5cm}
+
+\noindent \textbf{2. Matriz de Transformación ${}^1T_2$:}
+\vspace{2.5cm}
+
+\noindent \textbf{3. Matriz Compuesta ${}^0T_2$:}
+\vspace{3.5cm}
+
+\noindent \textbf{4. Posición final $p$:} \rule{6cm}{0.15mm} \\[0.8cm]
+\noindent \textbf{5. Orientación final $\phi$ (o matriz $R$):} \rule{6cm}{0.15mm} \\[0.8cm]
+\noindent \textbf{6. Verificación (Compruebe geométricamente su resultado):} 
+
+\vfill
+\begin{tcolorbox}[colback=gray!10, colframe=gray!50, title=\textbf{Uso Exclusivo del Docente - Scoring[cite: 5]}]
+    \small
+    $\square$ Usa datos D-H correctos (1) \quad 
+    $\square$ ${}^0T_1$ correcto (2) \quad 
+    $\square$ ${}^1T_2$ correcto (2) \quad 
+    $\square$ Orden de cadena (1) \\
+    $\square$ Multiplicación sustancial (2) \quad
+    $\square$ Extracción (1) \quad
+    $\square$ Verificación (1) \\
+    \textbf{Clasificación:} $\square$ Ready (8-10) \quad $\square$ Borderline (5-7) \quad $\square$ Not Yet Ready (0-4)
+\end{tcolorbox}
+
+\end{document}

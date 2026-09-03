@@ -1,0 +1,128 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
+
+\usepackage{amsmath, amssymb, amsfonts, bm}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\usepackage{listings}
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    backgroundcolor=\color{gray!5},
+    frame=single,
+    rulecolor=\color{gray!40},
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{red!70!black},
+    commentstyle=\color{green!60!black}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Robótica (IMT-342) - Solucionario}
+\rhead{Semana 5 - Sesión 2}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{red!80!black}{SOLUCIONARIO Y GUÍA DIAGNÓSTICA DEL DOCENTE}}\\
+    \vspace{0.2cm}
+    \normalsize (Documento Confidencial - No distribuir)
+\end{center}
+
+\vspace{0.4cm}
+
+\section*{Solución Problema Diagnóstico 1[cite: 5]}
+\textbf{Transformaciones:} Para $a_i$ dadas y $\alpha_i = d_i = 0$:
+\begin{equation*}
+    {}^0T_1 = \begin{bmatrix} 0.866 & -0.5 & 0 & 0.2598 \\ 0.5 & 0.866 & 0 & 0.15 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}, \quad
+    {}^1T_2 = \begin{bmatrix} 0.5 & 0.866 & 0 & 0.10 \\ -0.866 & 0.5 & 0 & -0.1732 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}, \quad
+    {}^2T_3 = \begin{bmatrix} 0 & -1 & 0 & 0 \\ 1 & 0 & 0 & 0.10 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}
+\end{equation*}
+
+\textbf{Cadena y Resultado Final:} ${}^0T_3 = {}^0T_1 {}^1T_2 {}^2T_3$
+\begin{equation*}
+    {}^0T_3 \approx \begin{bmatrix} 0.5 & -0.866 & 0 & 0.4830 \\ 0.866 & 0.5 & 0 & 0.1366 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}
+\end{equation*}
+
+\textbf{Verificación:} Geometría máxima $a_1+a_2+a_3 = 0.60\text{ m}$. $\|p\| = \sqrt{0.4830^2+0.1366^2} \approx 0.502\text{ m} < 0.60\text{ m}$. Es consistente[cite: 5].
+
+\begin{tcolorbox}[colback=red!5, colframe=red!75!black, title=Diagnóstico de Errores Comunes (Prob 1) {[cite: 5]}]
+\begin{itemize}
+    \item \textbf{Error P1-1:} Trata $q_3=90^\circ$ como orientación absoluta. \textit{Causa:} No asocia la rotación al marco local previo.
+    \item \textbf{Error P1-2:} Encadena como ${}^2T_3{}^1T_2{}^0T_1$. \textit{Causa:} Semántica de marcos débil.
+    \item \textbf{Error P1-5:} Magnitud $> 0.60\text{m}$ y no lo cuestiona. \textit{Causa:} No aplica el paso de verificación física.
+\end{itemize}
+\end{tcolorbox}
+
+\section*{Solución Sección B (Micro-preguntas)[cite: 5]}
+\begin{enumerate}
+    \item Desplazamiento $Z$: $d = 0.20$. Torsión (Twist): $\alpha = -\pi/2$.
+    \item ${}^0T_4 = {}^0T_1 {}^1T_2 {}^2T_3 {}^3T_4$.
+    \item ${}^0p_2 = [0.20, -0.10, 0.30]^T$.
+\end{enumerate}
+
+\section*{Solución Problema Representativo 2[cite: 5]}
+1. \textbf{Transformaciones} ($q_1=0^\circ, q_2=90^\circ, q_3=-90^\circ$):
+\begin{equation*}
+    {}^0T_1 = \begin{bmatrix} 1&0&0&0 \\ 0&0&-1&0 \\ 0&1&0&0.20 \\ 0&0&0&1 \end{bmatrix}, \quad
+    {}^1T_2 = \begin{bmatrix} 0&-1&0&0 \\ 1&0&0&0.30 \\ 0&0&1&0 \\ 0&0&0&1 \end{bmatrix}, \quad
+    {}^2T_3 = \begin{bmatrix} 0&1&0&0 \\ -1&0&0&-0.20 \\ 0&0&1&0 \\ 0&0&0&1 \end{bmatrix}
+\end{equation*}
+
+3. \textbf{Matriz Resultante:}
+\begin{equation*}
+    {}^0T_3 = \begin{bmatrix} 1&0&0&0.20 \\ 0&0&-1&0 \\ 0&1&0&0.50 \\ 0&0&0&1 \end{bmatrix}
+\end{equation*}
+
+4. \textbf{Extracción:} ${}^0p_3 = [0.20, 0, 0.50]^T\text{ m}$. Ejes orientados hacia $+X_0$, $-Z_0$, $+Y_0$.
+
+\begin{tcolorbox}[colback=red!5, colframe=red!75!black, title=Diagnóstico de Errores Comunes (Prob 2) {[cite: 5]}]
+\begin{itemize}
+    \item \textbf{Error P2-1:} Usa $\alpha_1=+\pi/2$ como un ángulo de junta. \textit{Causa:} No distingue 'twist' de variable articular.
+    \item \textbf{Error P2-2:} Obtiene una matriz $R_z$ puramente planar. \textit{Causa:} Aplica ciegamente el atajo planar 3R sin evaluar $\alpha_1$.
+\end{itemize}
+\end{tcolorbox}
+
+\section*{Código de Verificación Rápida (Python)[cite: 5]}
+\begin{lstlisting}
+import numpy as np
+
+def dh_standard(theta, d, a, alpha):
+    ct, st = np.cos(theta), np.sin(theta)
+    ca, sa = np.cos(alpha), np.sin(alpha)
+    return np.array([
+        [ct, -st*ca,  st*sa, a*ct],
+        [st,  ct*ca, -ct*sa, a*st],
+        [0.0,    sa,     ca,    d],
+        [0.0,   0.0,    0.0,  1.0]
+    ])
+
+T01 = dh_standard(np.deg2rad(0),   0.20, 0.00, np.pi/2)
+T12 = dh_standard(np.deg2rad(90),  0.00, 0.30, 0.0)
+T23 = dh_standard(np.deg2rad(-90), 0.00, 0.20, 0.0)
+
+print(np.round(T01 @ T12 @ T23, 4))
+\end{lstlisting}
+
+\end{document}

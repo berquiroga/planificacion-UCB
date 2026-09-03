@@ -1,0 +1,116 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Robótica (IMT-342)}
+\rhead{Semana 5 - Sesión 2}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Hoja de Ejercicios}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{UNIVERSIDAD CATÓLICA BOLIVIANA "SAN PABLO"}}\\
+    \vspace{0.2cm}
+    \normalsize \textbf{Hoja de Ejercicios: Consolidación de Cinemática Directa} \\
+    (Resolución Independiente y Diagnóstico)
+\end{center}
+
+\vspace{0.4cm}
+
+\section*{Sección A: Problema Diagnóstico 1[cite: 5]}
+Un manipulador planar 3R posee la siguiente tabla geométrica (Convención D-H estándar):
+
+\begin{center}
+    \begin{tabular}{c c c c c}
+    \toprule
+    $i$ & $\theta_i$ & $d_i$ [m] & $a_i$ [m] & $\alpha_i$ \\ \midrule
+    1 & $q_1$ & 0 & 0.30 & 0 \\
+    2 & $q_2$ & 0 & 0.20 & 0 \\
+    3 & $q_3$ & 0 & 0.10 & 0 \\ \bottomrule
+    \end{tabular}
+\end{center}
+
+Determine la pose del efector final respecto al marco base si las variables articulares se encuentran en la configuración:
+\begin{equation*}
+    q_1=30^\circ, \qquad q_2=-60^\circ, \qquad q_3=90^\circ
+\end{equation*}
+
+\vspace{5cm}
+
+\section*{Sección B: Preguntas de Micro-Refuerzo Correctivo[cite: 5]}
+\textit{Responda estas preguntas solo después de la discusión diagnóstica con el docente.}
+\begin{enumerate}
+    \item Para la fila paramétrica $(\theta, d, a, \alpha) = (q, 0.20, 0, -\pi/2)$, identifique el desplazamiento en el eje local $Z$ y el ángulo de torsión (twist) del eslabón.
+    \item Dado el conjunto de matrices de transformación ${}^0T_1, {}^1T_2, {}^2T_3, {}^3T_4$, construya la expresión correcta para evaluar ${}^0T_4$.
+    \item Dada la siguiente matriz ${}^0T_2$, extraiga analíticamente el vector de posición ${}^0p_2$:
+    \begin{equation*}
+        {}^0T_2 = \begin{bmatrix} 0&0&1&0.20 \\ 1&0&0&-0.10 \\ 0&1&0&0.30 \\ 0&0&0&1 \end{bmatrix}
+    \end{equation*}
+\end{enumerate}
+
+\newpage
+\section*{Sección C: Problema Representativo 2 (Espacial)[cite: 5]}
+Considere un manipulador serial 3R con la siguiente tabla D-H estándar:
+
+\begin{center}
+    \begin{tabular}{c c c c c}
+    \toprule
+    $i$ & $\theta_i$ & $d_i$ [m] & $a_i$ [m] & $\alpha_i$ \\ \midrule
+    1 & $q_1$ & 0.20 & 0 & $+\pi/2$ \\
+    2 & $q_2$ & 0 & 0.30 & 0 \\
+    3 & $q_3$ & 0 & 0.20 & 0 \\ \bottomrule
+    \end{tabular}
+\end{center}
+
+Para la configuración $q_1=0^\circ, q_2=90^\circ, q_3=-90^\circ$, complete la siguiente secuencia analítica:
+
+\vspace{0.4cm}
+\noindent \textbf{1. Transformaciones Individuales:}
+\begin{align*}
+    {}^0T_1 &= \underline{\hspace{7cm}} \\[1cm]
+    {}^1T_2 &= \underline{\hspace{7cm}} \\[1cm]
+    {}^2T_3 &= \underline{\hspace{7cm}}
+\end{align*}
+
+\noindent \textbf{2. Cadena de Composición:}
+\begin{equation*}
+    {}^0T_3 = \underline{\hspace{10cm}}
+\end{equation*}
+
+\vspace{0.4cm}
+\noindent \textbf{3. Matriz Resultante ($T_{\text{final}}$):}
+\begin{equation*}
+    {}^0T_3 = \underline{\hspace{10cm}}
+\end{equation*}
+
+\vspace{1.5cm}
+\noindent \textbf{4. Extracción de Pose:} \\
+Posición $p = $ \underline{\hspace{5cm}} \quad Orientación $R = $ \underline{\hspace{5cm}}
+
+\vspace{1.5cm}
+\noindent \textbf{5. Verificación (Demuestre por qué es físicamente plausible):} \\
+\underline{\hspace{15cm}} \\
+\underline{\hspace{15cm}}
+
+\end{document}

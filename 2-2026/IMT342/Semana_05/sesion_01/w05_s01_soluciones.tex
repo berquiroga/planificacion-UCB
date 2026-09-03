@@ -1,0 +1,138 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
+
+\usepackage{amsmath, amssymb, amsfonts, bm}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\usepackage{listings}
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    backgroundcolor=\color{gray!5},
+    frame=single,
+    rulecolor=\color{gray!40},
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{red!70!black},
+    commentstyle=\color{green!60!black}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Robótica (IMT-342)}
+\rhead{Solucionario Docente}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{UNIVERSIDAD CATÓLICA BOLIVIANA "SAN PABLO"}}\\
+    \vspace{0.2cm}
+    \normalsize \textbf{SOLUCIONARIO DEL INSTRUCTOR (No Distribuir)} \\
+    Asignatura: Robótica Industrial (IMT-342) \\
+    Sesión: W05-S01 - Cinemática Directa
+\end{center}
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=red!5!white, colframe=red!75!black, title=\textbf{Notas Diagnósticas para el Docente}]
+    Esta hoja contiene las respuestas esperadas y heurísticas de corrección basadas en las dificultades anticipadas de la sesión[cite: 1, 2].
+\end{tcolorbox}
+\vspace{0.4cm}
+
+\section*{Solución Ejercicio 1[cite: 1]}
+1. \textbf{Matriz Genérica:} Sustituyendo en la fórmula D-H estándar:
+\begin{equation*}
+    {}^{i-1}T_i = \begin{bmatrix}
+    \cos q_i & -\sin q_i & 0 & 0.25\cos q_i \\
+    \sin q_i & \cos q_i & 0 & 0.25\sin q_i \\
+    0 & 0 & 1 & 0 \\
+    0 & 0 & 0 & 1
+    \end{bmatrix}
+\end{equation*}
+2. \textbf{Evaluación numérica ($90^\circ$):}
+\begin{equation*}
+    {}^{i-1}T_i = \begin{bmatrix}
+    0 & -1 & 0 & 0 \\
+    1 & 0 & 0 & 0.25 \\
+    0 & 0 & 1 & 0 \\
+    0 & 0 & 0 & 1
+    \end{bmatrix}
+\end{equation*}
+3. \textbf{Interpretación:} La última columna indica un desplazamiento de $0.25\text{ m}$ exclusivamente a lo largo del eje $y_{i-1}$ debido al giro de $90^\circ$. \\
+\textit{Diagnóstico:} Si el estudiante deja $[0.25, 0, 0]^T$ en la última columna, significa que no aplicó el operador de rotación al vector de desplazamiento del eslabón.
+
+\section*{Solución Ejercicio 2[cite: 1]}
+1. \textbf{Matrices:} Para $q_1=0^\circ, q_2=90^\circ, q_3=-90^\circ$:
+\begin{equation*}
+    {}^{0}T_1 = \begin{bmatrix} 1&0&0&0.30 \\ 0&1&0&0 \\ 0&0&1&0 \\ 0&0&0&1 \end{bmatrix}, \quad
+    {}^{1}T_2 = \begin{bmatrix} 0&-1&0&0 \\ 1&0&0&0.25 \\ 0&0&1&0 \\ 0&0&0&1 \end{bmatrix}, \quad
+    {}^{2}T_3 = \begin{bmatrix} 0&1&0&0 \\ -1&0&0&-0.15 \\ 0&0&1&0 \\ 0&0&0&1 \end{bmatrix}
+\end{equation*}
+2. \textbf{Secuencia:} ${}^{0}T_3 = {}^{0}T_1 {}^{1}T_2 {}^{2}T_3$.
+3. \textbf{Resultado Numérico:} 
+\begin{equation*}
+    {}^{0}T_3 = \begin{bmatrix} 1&0&0&0.45 \\ 0&1&0&0.25 \\ 0&0&1&0 \\ 0&0&0&1 \end{bmatrix}
+\end{equation*}
+4. \textbf{Posición:} $p_x = 0.45\text{ m}, p_y = 0.25\text{ m}, p_z = 0\text{ m}$.
+5. \textbf{Verificación:} La magnitud máxima planar teórica es $0.30+0.25+0.15 = 0.70\text{ m}$. El módulo actual es $\sqrt{0.45^2 + 0.25^2} \approx 0.515 < 0.70\text{ m}$. Es una posición geométricamente alcanzable.
+
+\section*{Solución Ejercicio 3 (ABB IRB 120)[cite: 1]}
+1. \textbf{Offset explícito:} La matriz ${}^{1}T_2$ presenta senos y cosenos evaluados en $-\pi/2$, reflejando $\theta_2 = 0 - \pi/2 = -\pi/2$. (Nótese que $(1,1)$ es 0 y $(2,1)$ es -1).
+2. \textbf{Cadena:} ${}^{0}T_6 = {}^{0}T_1 {}^{1}T_2 {}^{2}T_3 {}^{3}T_4 {}^{4}T_5 {}^{5}T_6$.
+3. \textbf{Resultado Final:}
+\begin{equation*}
+    {}^{0}T_6 = \begin{bmatrix}
+    0 & 0 & 1 & 0.374 \\
+    0 & -1 & 0 & 0 \\
+    1 & 0 & 0 & 0.630 \\
+    0 & 0 & 0 & 1
+    \end{bmatrix}
+\end{equation*}
+4. \textbf{Extracción:} $\mathbf{p} = [0.374, 0, 0.630]^T\text{ m}$. Ejes: $x_6 \parallel +z_0$, $y_6 \parallel -y_0$, $z_6 \parallel +x_0$.
+5. \textbf{Explicación del Cero:} Las matrices provienen de una convención D-H arbitraria (modelo analítico). El "cero" de fábrica depende de los topes mecánicos y la calibración del fabricante, los cuales pueden tener desfases angulares constantes adicionales[cite: 1].
+
+\section*{Script de Verificación Computacional (Python)[cite: 1]}
+\begin{lstlisting}
+import numpy as np
+
+def dh_std(theta, d, a, alpha):
+    ct = np.cos(theta); st = np.sin(theta)
+    ca = np.cos(alpha); sa = np.sin(alpha)
+    return np.array([
+        [ct, -st*ca,  st*sa, a*ct],
+        [st,  ct*ca, -ct*sa, a*st],
+        [0,      sa,     ca,    d],
+        [0,       0,      0,    1]
+    ], dtype=float)
+
+T01 = dh_std(0, 0.290, 0.0, -np.pi/2)
+T12 = dh_std(-np.pi/2, 0.0, 0.270, 0.0)
+T23 = dh_std(0, 0.0, 0.070, -np.pi/2)
+T34 = dh_std(0, 0.302, 0.0, np.pi/2)
+T45 = dh_std(0, 0.0, 0.0, -np.pi/2)
+T56 = dh_std(0, 0.072, 0.0, 0.0)
+
+T06 = T01 @ T12 @ T23 @ T34 @ T45 @ T56
+print(np.round(T06, 3))
+\end{lstlisting}
+
+\end{document}

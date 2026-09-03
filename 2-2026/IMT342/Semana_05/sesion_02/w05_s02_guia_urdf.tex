@@ -1,0 +1,135 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
+
+\usepackage{amsmath, amssymb}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\usepackage{listings}
+\lstdefinestyle{xmlstyle}{
+    language=XML,
+    basicstyle=\ttfamily\small,
+    backgroundcolor=\color{gray!5},
+    frame=single,
+    rulecolor=\color{gray!40},
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{red!70!black},
+    commentstyle=\color{green!60!black},
+    showstringspaces=false,
+    breaklines=true, % Soluciona desbordamientos en bloques de código
+    breakatwhitespace=true,
+    morekeywords={robot, link, joint, origin, axis, parent, child, limit}
+}
+\lstset{style=xmlstyle}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Robótica (IMT-342) - Guía Técnica}
+\rhead{Soporte de Implementación}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Guía de Construcción XML/URDF para el ABB IRB 120}}\\[0.2cm]
+    \normalsize \textbf{Objetivo:} Construir progresivamente un modelo URDF del manipulador y demostrar que su árbol cinemático es coherente con el modelo matemático D-H[cite: 5].
+\end{center}
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=red!5, colframe=red!75!black, title=\textbf{Concepto Crítico D-H vs. URDF {[cite: 5]}}]
+    \textbf{Una fila de parámetros D-H no puede copiarse directamente en un elemento \texttt{<origin>} de URDF.} D-H restringe la construcción del marco a 4 parámetros; URDF utiliza una transformación posicional explícita (\texttt{xyz/rpy}) y define mecánicamente el eje de rotación local.
+\end{tcolorbox}
+
+\section{Estructura Mínima URDF (Árbol Cinemático)[cite: 5]}
+La estructura de URDF usa la jerarquía \texttt{parent} (eslabón superior) y \texttt{child} (eslabón inferior).
+\begin{lstlisting}
+<robot name="irb120_student_model">
+  <link name="base_link"/>
+  <link name="link_1"/>
+
+  <joint name="joint_1" type="revolute">
+    <parent link="base_link"/>
+    <child link="link_1"/>
+    
+    <!-- Pose relativa del origen de J1 desde la base -->
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    
+    <!-- Eje de rotacion de J1 en coordenadas locales -->
+    <axis xyz="0 0 1"/>
+    
+    <!-- Limites fisicos (Requerira datos del datasheet ABB) -->
+    <limit lower="[VERIFY]" upper="[VERIFY]" effort="[VERIFY]" velocity="[VERIFY]"/>
+  </joint>
+</robot>
+\end{lstlisting}
+
+\section{Distinción de Componentes[cite: 5]}
+\begin{itemize}
+    \item \textbf{\texttt{type="revolute"}}: Junta giratoria con límites angulares finitos (usado para los 6 motores del IRB 120).
+    \item \textbf{Atributo \texttt{origin}}: Define el desplazamiento fijo en el espacio mediante \texttt{xyz} (metros) y \texttt{rpy} (radianes).
+    \item \textbf{Atributo \texttt{axis}}: Define el vector local de giro. Ej: \texttt{<axis xyz="0 1 0"/>} rota sobre el eje Y.
+\end{itemize}
+
+\section{Flujo de Trabajo Incremental[cite: 5]}
+No introduzca las 6 juntas a la vez. Siga este flujo:
+\begin{enumerate}
+    \item Cree el esqueleto y \texttt{base\_link}. Use \texttt{check\_urdf} para validar el parseo XML.
+    \item Añada \texttt{link\_1} y \texttt{joint\_1}. Evalúe en RViz. Verifique la dirección del giro.
+    \item Repita agregando el siguiente eslabón cuidando la cadena padre-hijo.
+\end{enumerate}
+
+\section{Hoja de Definición de Juntas (Evidencia Entregable)[cite: 5]}
+Complete esta tabla razonando la relación física entre los eslabones:
+
+\begin{center}
+    \small % Reduccion de fuente para evitar desbordamientos
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{|c|c|c|X|X|c|c|}
+    \hline
+    \textbf{Joint} & \textbf{Parent} & \textbf{Child} & \textbf{\texttt{xyz}} & \textbf{\texttt{rpy}} & \textbf{\texttt{axis}} & \textbf{Límites} \\ \hline
+    J1 & base\_link & link\_1 & & & & [VERIFY] \\ \hline
+    J2 & link\_1 & link\_2 & & & & [VERIFY] \\ \hline
+    J3 & link\_2 & link\_3 & & & & [VERIFY] \\ \hline
+    J4 & link\_3 & link\_4 & & & & [VERIFY] \\ \hline
+    J5 & link\_4 & link\_5 & & & & [VERIFY] \\ \hline
+    J6 & link\_5 & link\_6 & & & & [VERIFY] \\ \hline
+    \end{tabularx}
+\end{center}
+
+\section{Validación Cruzada FK $\leftrightarrow$ URDF[cite: 5]}
+Elija dos configuraciones articulares $\mathbf{q}^{(A)}$ y $\mathbf{q}^{(B)}$. Para cada una:
+\begin{enumerate}
+    \item Calcule la FK matemáticamente (${}^0T_6$).
+    \item Posicione el robot URDF en los mismos valores articulares usando el \textit{Joint State Publisher}.
+    \item Compare la posición/orientación resultante de la brida.
+\end{enumerate}
+
+\begin{center}
+    \begin{tabularx}{\textwidth}{|c|X|X|c|}
+    \hline
+    \textbf{Conf.} & \textbf{Posición FK calculada} & \textbf{Observación en URDF/RViz} & \textbf{¿Coinciden?} \\ \hline
+    A & $p = [ \quad, \quad, \quad ]$ & $p = [ \quad, \quad, \quad ]$ & \\ \hline
+    B & $p = [ \quad, \quad, \quad ]$ & $p = [ \quad, \quad, \quad ]$ & \\ \hline
+    \end{tabularx}
+\end{center}
+
+\end{document}
