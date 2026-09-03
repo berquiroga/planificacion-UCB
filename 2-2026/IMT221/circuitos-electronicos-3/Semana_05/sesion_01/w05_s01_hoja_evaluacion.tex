@@ -1,0 +1,67 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{tabularx}
+\usepackage{amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+\begin{document}
+\begin{center}
+    {\Large \textbf{Hoja de Calificación del Instructor - Defensa Hito 1}}\\[0.2cm]
+    {\large Circuitos Electrónicos III (IMT-221)}
+\end{center}
+\hrule
+\vspace{0.3cm}
+
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{1. Identificación}]
+\begin{tabularx}{\textwidth}{lXlX}
+\textbf{Estudiante:} & \hrulefill & \textbf{Grupo:} & \hrulefill \\
+\textbf{Fecha:} & \hrulefill & \textbf{Topología Asignada:} & \hrulefill \\
+\multicolumn{4}{l}{\textbf{Sustituciones de Componentes:} \hrulefill} \\
+\end{tabularx}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{2. Disponibilidad de Evidencia}]
+\begin{tabularx}{\textwidth}{XXX}
+$\square$ Cuaderno/Python & $\square$ Hardware Funcional & $\square$ Comparación Teoría-Sim-Exp \\
+$\square$ Archivo LTspice & $\square$ Osciloscopio/CSV & $\square$ Reporte/Artículo \\
+\end{tabularx}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{3. Dimensiones de la Rúbrica (Puntaje Oficial)}]
+\begin{tabularx}{\textwidth}{X X}
+Modelado Matemático + Python (20\%): \_\_\_\_ / 20 & Simulación + Hardware (30\%): \_\_\_\_ / 30 \\
+Validación + Análisis (20\%): \_\_\_\_ / 20 & Defensa Dinámica Individual (30\%): \_\_\_\_ / 30 \\
+\end{tabularx}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=blue!5, colframe=blue!75!black, title=\textbf{4. Prueba de Parámetro en Vivo (Live Prompt)}]
+\textbf{Parámetro Modificado:} \hrulefill \\[0.2cm]
+\textbf{Predicción del Estudiante:} \hrulefill \\[0.2cm]
+\textbf{Calidad de la Predicción:} $\square$ Correcta \hspace{0.2cm} $\square$ Parcialmente correcta \hspace{0.2cm} $\square$ Sin sustento \hspace{0.2cm} $\square$ Sin predicción \\[0.2cm]
+\textbf{Explicación Física:} \hrulefill \\[0.2cm]
+\textbf{Ubicación de Código / Ecuación Explicada:} \hrulefill 
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!75!black, title=\textbf{5. Diagnóstico Obligatorio: Transitorios y Flyback}]
+$\square$ Explica correctamente la continuidad de corriente ($i_L(0^-) = i_L(0^+)$)\\
+$\square$ Explica correctamente la polaridad del voltaje y el mecanismo de desconexión ($v_L = L\,di/dt$)\\
+$\square$ La trayectoria de corriente de recirculación Flyback es correcta\\
+$\square$ La orientación del diodo está justificada físicamente
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{6. Diagnóstico Final}]
+\textbf{Debilidades o Conceptos Erróneos Observados:} \hrulefill \\[0.2cm]
+\hrulefill \\[0.2cm]
+\textbf{Estado de Recuperación:}\\
+$\square$ Ninguno / Listo para BJT \hspace{0.2cm} $\square$ Refuerzo delimitado \hspace{0.2cm} $\square$ Requiere evidencia de recuperación
+\end{tcolorbox}
+
+\begin{center}
+    \Large \textbf{Puntaje Final del Hito: \_\_\_\_ / 100}
+\end{center}
+
+\end{document}

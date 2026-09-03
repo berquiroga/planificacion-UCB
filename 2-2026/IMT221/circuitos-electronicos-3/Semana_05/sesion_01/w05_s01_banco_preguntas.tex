@@ -1,0 +1,43 @@
+\documentclass[10pt, a4paper, landscape]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{xcolor}
+
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{Banco de Preguntas - Defensa Dinámica Individual (Hito 1)}}\\[0.2cm]
+    {\large Referencia para el Instructor - Progresión de Niveles}
+\end{center}
+
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{>{\bfseries}l l X X X X}
+\toprule
+Área & Nivel & Pregunta / Solicitud & Evidencia Esperada & Respuesta Débil Común & Sonda de Seguimiento \\
+\midrule
+Modelo Analítico & Básico & ``Muestre la ecuación que determina la corriente por la resistencia serie.'' & KVL/KCL correcto con voltajes de nodo específicos de la topología. & Cita $V/R$ sin identificar el voltaje a través de $R_s$. & ``Marque esos dos terminales de la resistencia en el circuito.'' \\
+\midrule
+Modelo Analítico & Razonamiento & ``¿Cómo verificó que el Zener está realmente en zona de ruptura?'' & Calcula $i_Z$, revisa signo/condición operativa. & ``Porque la entrada es superior a 5.1 V.'' & ``¿Qué ocurre si la corriente de carga aumenta?'' \\
+\midrule
+Modelo Analítico & Transferencia & ``¿Qué peor caso produce la corriente máxima en el dispositivo de protección?'' & Identifica entrada alta y carga baja aplicable a su topología. & ``Condición nominal.'' & ``Escriba la expresión simbólica de corriente e inspeccione cada término.'' \\
+\midrule
+Python & Básico & ``Muéstreme dónde aparece $R_s$ en su código.'' & Conecta la variable con la ecuación y la gráfica. & Encuentra la línea pero no explica su rol. & ``¿Qué corriente física cambia al modificar esta variable?'' \\
+\midrule
+Python & Transferencia & \textbf{Predecir primero:} ''Aumente la amplitud de entrada al 20\%. ¿Qué cambia antes de ejecutarlo?'' & Predice activación del límite/corriente/implicaciones térmicas. & Ejecuta el código inmediatamente. & \textit{Detener ejecución;} requerir predicción y dirección/signo primero. \\
+\midrule
+LTspice & Razonamiento & ``¿Por qué LTspice podría no coincidir con su modelo analítico lineal (PWL)?'' & Modelo no lineal del diodo, parásitos, efectos de fuente/carga. & ``La simulación es más exacta.'' & ``Mencione una característica del modelo responsable de una diferencia específica.'' \\
+\midrule
+Hardware & Razonamiento & ``¿Por qué es correcta la orientación de este diodo?'' & Explica la polarización en estado normal vs falla/desconexión. & ``Porque el esquemático lo muestra así.'' & ``¿Qué ocurre si lo invierto conceptualmente?'' \\
+\midrule
+Validación & Razonamiento & ``¿Por qué no se puede calcular RMSE en formas de onda no alineadas?'' & El error mezclaría falta de coincidencia de tiempo y de amplitud. & ``El número será más grande.'' & ``¿Qué conclusión física sería ambigua entonces?'' \\
+\midrule
+Flyback & Básico & ``Inmediatamente después de apagar el switch, ¿cuál es $i_L(0^+)$ relativo a $i_L(0^-)$?'' & Iguales para voltaje finito. & ``Cero.'' & ``Use $v=L\,di/dt$ para justificar su respuesta.'' \\
+\midrule
+Flyback & Razonamiento & ``¿Qué enciende realmente al diodo Flyback?'' & La polaridad del voltaje del inductor cambia para preservar la corriente. & ``El switch le envía corriente.'' & ``Dibuje la polaridad en la bobina en $0^+$.'' \\
+\bottomrule
+\end{tabularx}
+
+\end{document}

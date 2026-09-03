@@ -1,0 +1,210 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage[margin=1.8cm]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[american]{circuitikz}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+
+% Definición de colores
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{ucborange}{RGB}{204, 102, 0}
+\definecolor{resultgreen}{RGB}{230, 245, 230}
+\definecolor{resultborder}{RGB}{34, 139, 34}
+\definecolor{warningred}{RGB}{255, 230, 230}
+\definecolor{warningborder}{RGB}{200, 0, 0}
+
+% Entornos personalizados
+\newtcolorbox{expected}[1][]{
+    colback=resultgreen,
+    colframe=resultborder,
+    fonttitle=\bfseries,
+    title=Resultado Esperado #1,
+    boxrule=0.8pt,
+    left=5pt, right=5pt, top=3pt, bottom=3pt
+}
+
+\newtcolorbox{safety}[1][]{
+    colback=warningred,
+    colframe=warningborder,
+    fonttitle=\bfseries,
+    title=\textbf{Nota de Seguridad} #1,
+    boxrule=0.8pt,
+    left=5pt, right=5pt, top=3pt, bottom=3pt,
+    icon=\faExclamationTriangle % Requiere fontawesome, mejor lo omitimos si no esta
+}
+
+\newcommand{\phase}[1]{\vspace{0.4cm}\noindent\colorbox{ucbblue}{\textcolor{white}{\textbf{\large #1}}}\vspace{0.2cm}}
+\newcommand{\subphase}[1]{\vspace{0.2cm}\noindent\textbf{\textcolor{ucbblue}{#1}}\vspace{0.1cm}}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{Protocolo Oficial de Pruebas de Laboratorio}}\\[0.2cm]
+    {\Large \textbf{Hito 1 — Circuitos Electrónicos III (IMT-221)}}\\[0.3cm]
+    \hrule
+\end{center}
+\vspace{0.4cm}
+
+Este documento establece el procedimiento estandarizado para la validación física del hardware del Hito 1. Proceda únicamente con la alternativa que corresponda a la topología asignada a su grupo.
+
+% ======================================================================
+% ALTERNATIVA A: MECATRÓNICA
+% ======================================================================
+\section*{\textcolor{ucborange}{Alternativa A: Topología Mecatrónica}}
+
+\phase{Fase 1: Verificación de la Red de Recorte (Clamping) del ADC}
+Esta fase se realiza con el motor completamente apagado y desconectado de la red de protección. El objetivo es certificar que la barrera de diodos limite correctamente la tensión antes de integrarla al sistema de potencia.
+
+\subphase{1. Configuración del Hardware:}
+\begin{itemize}[leftmargin=*]
+    \item Alimenta la red de redundancia conectando el cátodo del diodo 1N4148 ($D_{\text{FAST\_2}}$) al riel de +5 V de la fuente de alimentación (o al pin de 5V del microcontrolador).
+    \item Asegúrate de que la resistencia de carga $R_{\text{LOAD}}$ ($10\,\text{k}\Omega$) esté conectada en paralelo con el diodo Zener en el nodo de salida hacia el ADC.
+    \item Interconecta la tierra del generador de funciones, la tierra de la fuente de poder y las tierras de las sondas del osciloscopio en el GND común del protoboard.
+\end{itemize}
+
+\subphase{2. Inyección de la Señal de Falla:}
+\begin{itemize}[leftmargin=*]
+    \item Enciende el Generador de Funciones (con la salida apagada o \textit{output off}).
+    \item Configura una señal senoidal de $15\,\text{Vpp}$, a una frecuencia de $1\,\text{kHz}$, con un offset de CC de $+2.5\,\text{V}$. (Esta señal oscilará críticamente entre $-5\,\text{V}$ y $+10\,\text{V}$, simulando una sobretensión masiva de falla).
+    \item Conecta el terminal positivo del generador directamente en el extremo de entrada de la resistencia serie $R_S$ (el valor calculado por los estudiantes, ej. $180\,\Omega$ o $220\,\Omega$).
+\end{itemize}
+
+\subphase{3. Medición y Captura:}
+\begin{itemize}[leftmargin=*]
+    \item Conecta la sonda del Canal 1 del osciloscopio en el punto de inyección del generador (entrada cruda).
+    \item Conecta la sonda del Canal 2 en el nodo de salida protegido (en bornes de la resistencia de carga $R_L$ o entrada al ADC).
+    \item Ajusta ambos canales del osciloscopio en acoplamiento CC (\textit{DC Coupling}) y activa la salida del generador.
+\end{itemize}
+
+\begin{expected}
+En la pantalla verás la senoidal completa de $15\,\text{Vpp}$ en el Canal 1, mientras que el Canal 2 mostrará una señal perfectamente recortada con un techo plano en $\approx 5.1\,\text{V}$ (acción del Zener BZX55C5V1 y el 1N4148 de redundancia) y un piso plano en $\approx -0.7\,\text{V}$ (acción del 1N4148 de piso). Exporta los datos en un archivo \texttt{.csv} para que el equipo calcule el RMSE en su Jupyter Notebook.
+\end{expected}
+
+\vspace{0.2cm}
+\phase{Fase 2: Verificación de la Planta de Potencia y Supresión Inductiva}
+Esta fase valida el comportamiento dinámico del motor y la efectividad del diodo Flyback. El generador de funciones se desconecta por completo.
+
+\subphase{1. Configuración del Hardware:}
+\begin{itemize}[leftmargin=*]
+    \item Conecta un extremo del motorreductor amarillo a la salida de $+12\,\text{V}$ de la fuente de alimentación.
+    \item Conecta el otro extremo del motor en serie a la resistencia $R_{\text{SHUNT}}$ ($1\,\text{k}\Omega$), y el extremo restante del Shunt a GND.
+\end{itemize}
+\begin{tcolorbox}[colback=warningred, colframe=warningborder, title=\textbf{Nota de Seguridad:}]
+Para proteger los componentes ante un posible error de conexión, limita estricta y manualmente la corriente de la fuente de alimentación a un máximo de \textbf{100 mA}.
+\end{tcolorbox}
+
+\subphase{2. Captura del Transitorio SIN Flyback (Pico Inductivo Destructivo):}
+\begin{itemize}[leftmargin=*]
+    \item Retira temporalmente el diodo 1N4007 del motor.
+    \item Conecta la sonda del Canal 1 directamente en el terminal del motor que se conecta a los 12V.
+    \item Configura el trigger del osciloscopio en modo Single-Shot, flanco de bajada (\textit{falling edge}) y ajusta el nivel de disparo a $6\,\text{V}$.
+    \item Realice una conmutación manual rápida: desconecte físicamente el cable de 12V del motor del riel de alimentación y vuélvalo a conectar rápidamente (\textit{tapping}).
+\end{itemize}
+
+\begin{expected}
+El osciloscopio congelará en pantalla un pico transitorio negativo/positivo masivo de alta tensión (que puede superar los $100\,\text{V}$ en una fracción de microsegundo) provocado por el colapso del campo magnético de la bobina del motor.
+\end{expected}
+
+\subphase{3. Captura del Transitorio CON Flyback (Sujeción de Seguridad):}
+\begin{itemize}[leftmargin=*]
+    \item Vuelva a conectar el diodo 1N4007 en paralelo directo a los terminales del motor. ¡Atención a la polaridad! El cátodo (banda plateada) va al terminal de $+12\,\text{V}$ y el ánodo al terminal hacia la Shunt/GND.
+    \item Repita la conmutación manual rápida (\textit{tapping}).
+\end{itemize}
+
+\begin{expected}
+El osciloscopio capturará que el pico inductivo destructivo ha desaparecido por completo. La tensión en bornes de la bobina queda ahora sujeta de forma segura a un máximo de $12.7\,\text{V}$ ($V_{CC} + V_{\text{on\_diodo}}$) gracias a la malla de rueda libre.
+\end{expected}
+
+\vspace{0.2cm}
+\phase{Fase 3: Integración Total y Simulación de Fallas de Corriente}
+
+\subphase{1. Configuración del Hardware:}
+Mantén el lazo del motor conectado a la fuente de $12\,\text{V}$ (con el diodo Flyback 1N4007 instalado) en serie con la resistencia $R_{\text{SHUNT}}$ ($1\,\text{k}\Omega$) a tierra. Conecta un cable desde el nodo superior de la Shunt hacia la entrada de la resistencia serie de protección $R_S$ probada en la Fase 1.
+
+\subphase{2. Prueba en Funcionamiento Normal:}
+Energiza la planta a $12\,\text{V}$ (el motor girará continuamente). Mide la tensión en el Shunt (Canal 1) y en la entrada al ADC (Canal 2).
+\begin{expected}
+La corriente en vacío es muy baja; la caída en el Shunt será pequeña ($\approx\,\text{mV}$ o $<2\,\text{V}$). El Canal 1 y 2 mostrarán la misma señal de CC limpia, ya que los diodos protectores están apagados (OFF).
+\end{expected}
+
+\subphase{3. Simulación de Falla por Sobretensión:}
+Retira momentáneamente el cable de la Shunt y simula una sobretensión (rotor trabado o cortocircuito) inyectando una rampa de CC ajustable de $0$ a $10\,\text{V}$ desde la fuente directamente en el nodo de entrada de la Shunt.
+\begin{expected}
+La tensión de entrada (Canal 1) sube libremente hasta $10\,\text{V}$. En el Canal 2 (salida al ADC), el voltaje sube linealmente y se engancha exactamente en $\approx 5.1\,\text{V}$ en cuanto la entrada supera ese nivel.
+\end{expected}
+
+\newpage
+% ======================================================================
+% ALTERNATIVA B: BIOMÉDICA
+% ======================================================================
+\section*{\textcolor{ucborange}{Alternativa B: Topología Biomédica}}
+
+\phase{Fase 1: Verificación de la Red de Recorte (Falla de Alta Tensión)}
+Esta prueba valida la capacidad de la barrera de diodos para sujetar sobretensiones masivas, protegiendo el pin analógico (ADC) antes de conectar el microcontrolador.
+
+\subphase{1. Configuración y Señal de Falla:}
+\begin{itemize}[leftmargin=*]
+    \item Conecta el cátodo del diodo rápido 1N4148 al riel de $+5\,\text{V}$. Coloca $R_{\text{LOAD}} = 220\,\Omega$ a la salida.
+    \item Configura el Generador a $15\,\text{Vpp}$, $1\,\text{kHz}$, offset $+2.5\,\text{V}$. Inyecta en el divisor resistivo ($R_{\text{DIV}} = 10\,\text{k}\Omega$).
+\end{itemize}
+
+\begin{expected}
+(Canal 1 en la entrada cruda, Canal 2 en el ADC). Canal 1 oscila entre $-5\,\text{V}$ y $+10\,\text{V}$. Canal 2 recortado perfectamente en $\approx 5.1\,\text{V}$ (Zener) y $\approx -0.7\,\text{V}$ (1N4148 de piso). Exporte a CSV.
+\end{expected}
+
+\phase{Fase 2: Simulación de Ruido por Inducción (EMI) y Validación Flyback}
+Demuestra cómo un actuador clínico ruidoso acopla ruido en la línea del biosensor, y cómo el Flyback lo suprime.
+
+\subphase{1. Configuración del Hardware y Captura de Interferencia:}
+\begin{itemize}[leftmargin=*]
+    \item Aísle eléctricamente la etapa del motor ($12\,\text{V}$) del biosensor. Acerque el cable de entrada del biosensor a los cables del motor para propiciar acoplamiento electromagnético.
+    \item \textbf{Sin Flyback:} Retira el 1N4007. Pon osciloscopio en Peak Detect (AC Coupling). Haz \textit{tapping} con el cable del motor a 12V. Aparecerán ráfagas de espigas de ruido en la línea del biosensor.
+    \item \textbf{Con Flyback:} Conecta el 1N4007 en paralelo al motor. Repite el \textit{tapping}.
+\end{itemize}
+
+\begin{expected}
+Las espigas de ruido en la sensible línea analógica del biosensor disminuirán drásticamente de amplitud, demostrando la supresión de EMI en la fuente.
+\end{expected}
+
+\phase{Fase 3: Medición de Corriente de Fuga (Norma IEC 60601)}
+Certifica que, ante una falla interna del MCU, $R_S$ limita la corriente hacia el paciente a un nivel seguro.
+
+\begin{center}
+\begin{circuitikz}[american, scale=1.1, transform shape]
+    % Fallas y MCU
+    \draw (6,3) node[vcc]{\textbf{+5V (Falla Interna)}} -- (6,1.5);
+    \draw (6,1.5) to[short, -*] (6,0) node[above]{\textbf{Nodo ADC}};
+    
+    % Diodos de protección
+    \draw (6,0) -- (6,-1) to[zzD, l_=$D_Z$] (6,-3) node[ground]{};
+    \draw (7.5,0) -- (7.5,-1) to[D, l=$1N4148$] (7.5,-3) node[ground]{};
+    \draw (6,0) -- (7.5,0);
+    \node at (6.75, -2.5) [right] {OFF};
+
+    % Resistencia serie y medición
+    \draw (6,0) to[R, l_=$R_S$ (Protección), i_=$I_{\text{fuga}}$] (0,0);
+    \draw (0,0) node[circ]{} node[left]{\textbf{Electrodo (Paciente)}};
+    \draw (0,0) to[ammeter, l=Multímetro ($\mu$A)] (0,-3) node[ground]{};
+\end{circuitikz}
+\end{center}
+
+\subphase{1. Configuración del Hardware y Medición:}
+\begin{itemize}[leftmargin=*]
+    \item Simula la falla catastrófica del MCU conectando un cable desde $+5\,\text{V}$ directo al nodo del ADC (extremo derecho de $R_S$).
+    \item Conecta un multímetro digital (escala $\mu\text{A}$ CC) en serie entre la entrada del biosensor (extremo izquierdo de $R_S$) y GND.
+\end{itemize}
+
+\begin{expected}
+Los diodos están en inversa para este nivel DC. Toda la corriente pasa por $R_S$. Los estudiantes verificarán que $I_{\text{fuga}} = \frac{5\,\text{V}}{R_S} \le I_{\text{límite\_seguro}}$, cumpliendo la norma IEC 60601 para partes aplicadas B/BF. Apaga la fuente y retira el puente al terminar.
+\end{expected}
+
+\end{document}

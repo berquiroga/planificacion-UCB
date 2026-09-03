@@ -1,0 +1,247 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage[margin=1.8cm]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[american]{circuitikz}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+
+% Colores Institucionales y de Bloques
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{ucborange}{RGB}{204, 102, 0}
+\definecolor{codebg}{RGB}{245, 245, 245}
+\definecolor{codeframe}{RGB}{200, 200, 200}
+\definecolor{objbg}{RGB}{230, 245, 255}
+\definecolor{objframe}{RGB}{0, 102, 204}
+\definecolor{warningred}{RGB}{255, 230, 230}
+\definecolor{warningborder}{RGB}{200, 0, 0}
+
+% Comandos de formato
+\newcommand{\parttitle}[1]{\vspace{0.6cm}\noindent\colorbox{ucborange}{\parbox{\dimexpr\textwidth-2\fboxsep\relax}{\textcolor{white}{\textbf{\Large #1}}}}\vspace{0.2cm}}
+\newcommand{\phasetitle}[1]{\vspace{0.4cm}\noindent\textcolor{ucbblue}{\textbf{\large #1}}\vspace{0.1cm}}
+
+% Entorno para código ascii/circuitos texto
+\newtcolorbox{objective}[1][]{
+    colback=objbg,
+    colframe=objframe,
+    fonttitle=\bfseries,
+    title=Objetivo y Condiciones,
+    boxrule=0.8pt,
+    left=5pt, right=5pt, top=3pt, bottom=3pt
+}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{Guía de Esquemas Eléctricos y Protocolos de Conexión}}\\[0.2cm]
+    {\Large \textbf{Hito 1 - PFI $\cdot$ Circuitos Electrónicos III (IMT-221)}}\\[0.2cm]
+    \textit{Universidad Católica Boliviana "San Pablo" - Sede Tarija}\\
+    \textit{Docente: M.Sc. Ing. Bernardo Quiroga Turdera}
+\end{center}
+\vspace{0.2cm}
+
+Este documento técnico de soporte detalla, paso a paso, los esquemas de conexión eléctrica y la integración de instrumentos de medición (Generador de Funciones, Osciloscopio, Fuentes de Alimentación y Multímetro) para las tres fases de prueba de las dos alternativas del proyecto.
+
+% ======================================================================
+% PARTE I: ALTERNATIVA A
+% ======================================================================
+\parttitle{PARTE I: ALTERNATIVA A - INGENIERÍA MECATRÓNICA}
+
+\phasetitle{FASE 1: Verificación de la Red de Recorte (Clamping) del ADC}
+\begin{objective}
+\begin{itemize}[leftmargin=*, nosep]
+    \item \textbf{Objetivo:} Certificar que la barrera de diodos limite la señal entre -0.7V y 5.1V antes de conectar el MCU. El motor está apagado.
+    \item \textbf{Señal de Prueba:} Senoidal, 15 Vpp, 1 kHz, offset de +2.5 V (oscila entre -5.0 V y +10.0 V).
+\end{itemize}
+\end{objective}
+
+\textbf{Esquema de Conexión y Mediciones:}
+\begin{center}
+\begin{circuitikz}[american, scale=0.95, transform shape]
+    % Generador
+    \draw (0,4) node[left]{\textbf{Generador}} to[sV, l=$15\text{Vpp}$, a=$1\text{kHz}$] (0,0);
+    \draw (0,4) -- (2,4) to[R, l_=$R_S$] (4,4) -- (9.5,4) node[right]{\textbf{Entrada ADC (Ch2)}};
+    
+    \draw (2,4) to[short, *-o] (2,4.5) node[above]{Ch1 (Cruda)};
+    \draw (4,0) to[R, l=$R_{\text{LOAD}}$, *-*] (4,4);
+    
+    % DIODOS CORREGIDOS: Zener en inversa (Cátodo arriba, Ánodo a GND)
+    \draw (6,0) to[zzD, l=$D_Z$, *-*] (6,4);
+    % Diodo Piso: Conduce de GND al ADC (Ánodo abajo, Cátodo arriba)
+    \draw (7.5,0) to[D, l_=$D_{\text{Piso}}$, *-*] (7.5,4);
+    % Diodo Techo: Conduce del ADC al riel 5V (Ánodo arriba, Cátodo abajo)
+    \draw (9.5,4) to[D, l=$D_{\text{Techo}}$, *-] (9.5,2) node[below]{$+5\text{V}$ (Riel)};
+    
+    \draw (0,0) -- (7.5,0);
+    \draw (4,0) node[ground]{};
+    
+    \node[align=center, font=\scriptsize] at (3.2, 1.5) {($10\,\text{k}\Omega$)};
+    \node[align=center, font=\scriptsize] at (6, -0.6) {BZX55C5V1\\(5.1V)};
+    \node[align=center, font=\scriptsize] at (7.5, -0.6) {1N4148\\(-0.7V)};
+\end{circuitikz}
+\end{center}
+
+\phasetitle{FASE 2: Verificación de la Planta de Potencia y Supresión Inductiva}
+\begin{objective}
+\begin{itemize}[leftmargin=*, nosep]
+    \item \textbf{Objetivo:} Capturar el transitorio inductivo de apagado del motorreductor con y sin la protección del diodo Flyback 1N4007. Generador desconectado.
+    \item \textbf{Alimentación:} +12 V CC, límite de corriente de fuente a 100 mA por seguridad.
+    \item \textbf{Osciloscopio:} Canal 1 en CC, Single-Shot, flanco de bajada, trigger a 6 V.
+\end{itemize}
+\end{objective}
+
+\textbf{Configuración A: SIN Diodo Flyback (Pico de sobretensión destructivo)}
+\begin{center}
+\begin{circuitikz}[american, scale=0.9, transform shape]
+    \draw (0,3) node[left]{$+12\text{V}$} to[cute open switch, l=Tapping manual] (3,3) to[L, l_=Motor Inductivo] (3,0) to[R, l_=$R_{\text{SHUNT}}$ ($1\,\text{k}\Omega$)] (0,0) node[ground]{};
+    \draw (3,0) to[short, *-o] (4,0) node[right]{Ch1 Osciloscopio};
+\end{circuitikz}
+\end{center}
+
+\textbf{Configuración B: CON Diodo Flyback (Sujeción segura de rueda libre)}
+\begin{center}
+\begin{circuitikz}[american, scale=0.9, transform shape]
+    \draw (0,3) node[left]{$+12\text{V}$} to[cute open switch, l=Tapping manual] (3,3) -- (5,3);
+    \draw (3,3) to[L, l=Motor] (3,0);
+    % Flyback en paralelo al motor (Ánodo abajo, Cátodo arriba)
+    \draw (5,0) to[D, l_=Flyback $1N4007$, *-*] (5,3);
+    \draw (2,0) -- (5,0);
+    \draw (3,0) to[R, l_=$R_{\text{SHUNT}}$ ($1\,\text{k}\Omega$)] (0,0) node[ground]{};
+    \draw (4,0) to[short, *-o] (6,0) node[right]{Ch1 Osciloscopio};
+\end{circuitikz}
+\end{center}
+
+\phasetitle{FASE 3: Integración Total y Simulación de Fallas de Corriente}
+\begin{objective}
+\begin{itemize}[leftmargin=*, nosep]
+    \item \textbf{Objetivo:} Unificar planta de potencia y ADC para observar censado continuo y comprobar seguridad bajo falla crítica.
+    \item \textbf{Alimentación:} +12 V CC para el motor, +5 V CC para el riel de redundancia.
+\end{itemize}
+\end{objective}
+
+\textbf{Esquema de Integración Total:}
+\begin{center}
+\begin{circuitikz}[american, scale=0.9, transform shape]
+    % Lazo de Potencia
+    \draw (0,4) node[vcc]{$+12\text{V}$} -- (3,4);
+    \draw (1,4) to[L, l=Motor, *-*] (1,2);
+    \draw (3,0) node[ground]{} to[D, l=1N4007, *-*] (3,4); % Diode parallel
+    \draw (1,2) -- (3,2);
+    
+    % Conmutador y Shunt
+    \draw (1,2) to[short, -o] (1,1.5) node[right, font=\scriptsize]{Al MCU/interruptor};
+    \draw (1,1.5) to[R, l=$R_{\text{SHUNT}}$, *-] (1,-0.5) node[ground]{};
+    
+    % Acople a la protección
+    \draw (1,1.5) -- (4,1.5) to[R, l=$R_S$] (7,1.5) -- (11.5,1.5) node[right]{\textbf{ADC (Ch2)}};
+    
+    % Diodos y Carga
+    \draw (7,-0.5) node[ground]{} to[R, l=$R_{\text{LOAD}}$, *-*] (7,1.5);
+    \draw (8.5,-0.5) node[ground]{} to[zzD, l=$D_Z$, *-*] (8.5,1.5);
+    \draw (10,-0.5) node[ground]{} to[D, l=$D_{\text{Piso}}$, *-*] (10,1.5);
+    \draw (11.5,1.5) to[D, l=$D_{\text{Techo}}$, *-] (11.5,3.5) node[vcc]{$+5\text{V}$};
+    
+    % Valores extra para no asfixiar el dibujo
+    \node[font=\scriptsize] at (7, -1) {$10\,\text{k}\Omega$};
+    \node[font=\scriptsize] at (1, -1) {$1\,\text{k}\Omega$};
+    \node[font=\scriptsize] at (8.5, -1) {BZX55C5V1};
+    \node[font=\scriptsize] at (10, -1) {1N4148};
+\end{circuitikz}
+\end{center}
+
+\newpage
+% ======================================================================
+% PARTE II: ALTERNATIVA B
+% ======================================================================
+\parttitle{PARTE II: ALTERNATIVA B - INGENIERÍA BIOMÉDICA}
+
+\phasetitle{FASE 1: Verificación de la Red de Recorte del ADC (Falla de Alta Tensión)}
+\begin{objective}
+\begin{itemize}[leftmargin=*, nosep]
+    \item \textbf{Objetivo:} Validar absorción de transitorios de sobretensión rápida atenuando la señal con divisor resistivo. Motor apagado.
+    \item \textbf{Señal de Prueba:} Senoidal, 15 Vpp, 1 kHz, offset de +2.5 V.
+\end{itemize}
+\end{objective}
+
+\textbf{Esquema de Conexión:}
+\begin{center}
+\begin{circuitikz}[american, scale=0.9, transform shape]
+    \draw (0,4) node[left]{Gen.} to[sV, l=$15\text{Vpp}$] (0,0);
+    \draw (0,4) to[R, l=$R_{\text{DIV}}$] (3,4) to[R, l=$R_S$] (6,4) -- (10.5,4) node[right]{ADC (Ch2)};
+    \draw (3,4) to[short, *-o] (3,4.5) node[above]{Ch1 Osc.};
+    
+    \draw (3,0) to[R, l=$R_{\text{SHUNT}}$, *-*] (3,4);
+    \draw (6,0) to[R, l=$R_{\text{LOAD}}$, *-*] (6,4);
+    \draw (7.5,0) to[zzD, l=$D_Z$, *-*] (7.5,4);
+    \draw (9,0) to[D, l=$D_{\text{Piso}}$, *-*] (9,4);
+    \draw (10.5,4) to[D, l=$D_{\text{Techo}}$, *-] (10.5,2.5) node[vcc]{$+5\text{V}$};
+    
+    \draw (0,0) -- (9,0);
+    \draw (4.5,0) node[ground]{};
+    
+    \node[font=\scriptsize, align=center] at (1.5, 4.5) {$10\,\text{k}\Omega$};
+    \node[font=\scriptsize, align=center] at (3, -0.6) {$1\,\text{k}\Omega$};
+    \node[font=\scriptsize, align=center] at (6, -0.6) {$220\,\Omega$};
+\end{circuitikz}
+\end{center}
+
+\phasetitle{FASE 2: Simulación de Ruido por Inducción (EMI) y Validación de Protección}
+\begin{objective}
+\begin{itemize}[leftmargin=*, nosep]
+    \item \textbf{Objetivo:} Demostrar cómo el transitorio del motor (bomba peristáltica) induce voltajes nocivos por EMI en el biosensor, y cómo el Flyback mitiga esto.
+\end{itemize}
+\end{objective}
+
+\textbf{Etapa 1: Planta Inductora (Arriba) y Etapa 2: Biosensor (Abajo) acoplados por aire:}
+\begin{center}
+\begin{circuitikz}[american, scale=0.85, transform shape]
+    % Planta
+    \draw (0,6) node[vcc]{$+12\text{V}$} to[cute open switch, l=Tapping] (2,6) -- (4,6);
+    \draw (2,6) to[L, l=Motor] (2,4) -- (0,4) node[ground]{};
+    \draw (4,4) to[D, l=1N4007] (4,6);
+    \draw (2,4) -- (4,4);
+    \node[font=\bfseries\small, color=ucborange] at (2,3) {((( Acoplamiento EMI por aire )))};
+    
+    % Sensor
+    \draw (0,1.5) node[left]{Gen. Señal} to[R, l=$R_{\text{DIV}}$] (3,1.5) to[R, l=$R_S$, *-*] (6,1.5) -- (8,1.5) node[right]{Ch1 Osc.};
+    \draw (3,-0.5) node[ground]{} to[R, l=$R_{\text{SHUNT}}$, *-*] (3,1.5);
+    \draw (6,-0.5) node[ground]{} to[zzD, l=$D_Z$, *-*] (6,1.5);
+    \draw (7.5,-0.5) node[ground]{} to[D, l=$1N4148$, *-*] (7.5,1.5);
+\end{circuitikz}
+\end{center}
+
+\phasetitle{FASE 3: Medición de Corriente de Fuga de Seguridad Clínica (IEC 60601)}
+\begin{objective}
+\begin{itemize}[leftmargin=*, nosep]
+    \item \textbf{Objetivo:} Certificar que ante una falla interna del microcontrolador (+5V directo al nodo), $R_S$ limita la corriente al paciente.
+\end{itemize}
+\end{objective}
+
+\begin{center}
+\begin{circuitikz}[american, scale=1.1, transform shape]
+    \draw (6,3) node[vcc]{\textbf{+5V (Falla MCU)}} -- (6,1.5);
+    \draw (6,1.5) to[short, -*] (6,0) node[right]{\textbf{Nodo ADC}};
+    
+    \draw (6,-2.5) node[ground]{} to[zzD, l=$D_Z$ (OFF), *-*] (6,0);
+    
+    \draw (6,0) to[R, l_=$R_S$ (Protección), i_=$I_{\text{fuga}}$] (1,0);
+    \draw (1,0) node[circ]{} node[above]{\textbf{Electrodo}};
+    \draw (1,0) to[ammeter, l=Multímetro ($\mu$A)] (1,-2.5) node[ground]{};
+\end{circuitikz}
+\end{center}
+
+\begin{tcolorbox}[colback=warningred, colframe=warningborder, title=\textbf{Nota de Seguridad Clínica:}]
+La corriente medida en el multímetro (sin señal del generador) debe cumplir con:
+\[ I_{\text{fuga}} = \frac{5.0\text{ V}}{R_{\text{SERIE}}} \le 50\,\mu\text{A} \]
+Si se supera este límite, el equipo debe recalcular un valor de $R_S$ más elevado.
+\end{tcolorbox}
+
+\end{document}
