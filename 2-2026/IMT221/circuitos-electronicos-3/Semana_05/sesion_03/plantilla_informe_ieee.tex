@@ -1,0 +1,137 @@
+\documentclass[10pt, a4paper, twocolumn]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[spanish]{babel}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{tabularx}
+\usepackage{microtype} % Soluciona la mayoría de los underfull/overfull de justificación
+\usepackage{titlesec} % Configura los títulos para evitar overfulls y rupturas raras
+
+% Evitar overfull/underfull en los títulos de sección en modo twocolumn
+\titleformat{\section}{\large\bfseries\raggedright}{\thesection.}{0.5em}{}
+
+\renewcommand{\abstractname}{Resumen}
+\renewcommand{\figurename}{Fig.}
+\renewcommand{\tablename}{Tabla}
+
+\title{\Large \textbf{Plantilla de Curso con Organización Estilo IEEE - Hito 1\\ [0.2cm] TÍTULO DEL PROYECTO / HITO 1}}
+\author{
+    \textbf{Autores:} [Nombres de los estudiantes] \\
+    \textbf{Carrera:} [Nombre de la carrera] \\
+    \textbf{Asignatura:} IMT-221 — Circuitos Electrónicos III \\
+    \textbf{Grupo:} [Número/Nombre del Grupo] \quad \textbf{Fecha:} [Fecha de entrega]
+}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+[Un solo párrafo. Resuma el problema de ingeniería (protección ADC y supresión inductiva), el método (modelado, simulación, hardware), la evidencia principal validada (ej. error RMSE, voltaje de clamp medido) y la conclusión final. Manténgalo autocontenido y por debajo de 250 palabras.]
+\end{abstract}
+
+\textbf{\textit{Palabras clave—} Diodo Zener, Flyback, Protección Analógica, RMSE, LTspice, Python.}
+
+\section{Introducción y Problema de Ingeniería}
+Incluya: qué componente se está protegiendo (ADC), por qué existen sobretensiones o transitorios inductivos destructivos, el objetivo general del Hito 1 y los límites o rangos de voltaje relevantes. No coloque resultados finales aquí.
+
+\section{Requisitos de Diseño y Supuestos}
+Defina la topología empleada (Mecatrónica, Biomédica, contingencias de 3.3V), rango de entrada, y componentes.
+
+\begin{table}[h]
+\centering
+\caption{Requisitos y Parámetros del Circuito}
+\begin{tabularx}{\linewidth}{X r >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Parámetro} & \textbf{Condición} & \textbf{Justificación} \\
+\midrule
+$V_{in}$ & [-12, +24]\,V & Guía Hito 1 \\
+$V_{ADC}$ perm. & [0, +5.1]\,V & Req. seguridad \\
+$V_{ZT}$ Zener & 5.1\,V & Datasheet \\
+$r_z$ (dinámica) & $15\,\Omega$ & Modelo PWL \\
+$R_s$ (serie) & [ ]\,$\Omega$ & Cálculo + BOM \\
+$R_{shunt}$ & $0.1\,\Omega$ & Anexo Hito 1 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Modelo Analítico y Cálculos}
+Muestre la deducción paso a paso. Plantee el modelo PWL del Zener:
+\begin{equation}
+    V_Z = V_{Z0} + r_z I_Z
+\end{equation}
+\begin{equation}
+    V_{Z0} = V_{ZT} - I_{ZT} r_z
+\end{equation}
+Incluya el cálculo de los límites de $R_s$, indicando el peor caso térmico ($V_{in,max}=24\text{ V}$, $I_L=0$) y justificando la potencia disipada $P_Z$. Si existe discrepancia entre la guía, la BOM y su cálculo analítico, documéntela aquí y explique su decisión de ingeniería.
+
+\section{Modelo Computacional en Python}
+Describa el script utilizado para evaluar la respuesta teórica. Incluya las ecuaciones programadas, el barrido (\textit{sweep}), y cómo evaluó las regiones de operación del diodo.
+
+\textit{[Insertar Fig. 1: Transferencia analítica $V_{out}$ vs $V_{in}$]}
+
+\textit{[Insertar Fig. 2: Potencia del Zener $P_Z$ vs $V_{in}$]}
+
+Explique en el texto qué demuestra cada figura generada por Python.
+
+\section{Simulación en LTspice}
+Documente el esquemático simulado. Indique los modelos de diodos utilizados, configuración de la simulación (\texttt{.dc}, \texttt{.tran}) y el impacto del diodo Flyback en la simulación de la carga inductiva.
+
+\textit{[Insertar Fig. 3: Captura de resultados LTspice]}
+
+Explique las diferencias encontradas respecto al modelo analítico simplificado.
+
+\section{Implementación Física y Procedimiento Experimental}
+Detalle el montaje en el laboratorio, los canales del osciloscopio, referencia de tierra común, y orientaciones físicas de los diodos (Zener, limitadores, y el diodo Flyback en paralelo a la carga).
+
+\textit{[Insertar Fig. 4: Foto o esquemático del banco de pruebas]}
+
+\section{Resultados}
+Presente los datos extraídos objetivamente.
+
+\begin{table}[h]
+\centering
+\caption{Comparación de Umbrales Críticos}
+\begin{tabularx}{\linewidth}{X r r r c}
+\toprule
+\textbf{Magnitud} & \textbf{Teoría} & \textbf{LTspice} & \textbf{Físico} & \textbf{Ud.} \\
+\midrule
+Clamp sup. & [ ] & [ ] & [ ] & V \\
+Clamp inf. & [ ] & [ ] & [ ] & V \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Comparación Cuantitativa y Validación}
+Valide que las señales comparadas correspondan al mismo nodo, unidades y referencia. Reporte el error calculando el Root Mean Square Error (RMSE) tras una alineación temporal justificable:
+\begin{equation}
+    \text{RMSE} = \sqrt{\frac{1}{N}\sum_{k=1}^{N}(y_k-\hat{y}_k)^2}
+\end{equation}
+
+\textit{[Insertar Fig. 5: Superposición gráfica de CSV: Teoría vs LTspice vs Osciloscopio]}
+
+Declare cualquier técnica de interpolación empleada.
+
+\section{Discusión}
+Interprete las discrepancias observadas en la Fig. 5. Analice el efecto de la resistencia dinámica $r_z$, tolerancias de los componentes, caídas directas no ideales, instrumentación, y limitaciones del modelo PWL de Python frente al hardware real.
+
+\section{Conclusiones}
+Responda concretamente si se logró la protección del ADC, basándose en la evidencia. Mencione qué limitación persiste en el diseño actual y qué aprendizaje analítico o práctico se lleva hacia el Hito 2 (sensado diferencial BJT).
+
+\section*{Referencias}
+[1] Guía del Hito 1 y Anexos, IMT-221, UCB Tarija. \\
+\relax [2] Datasheet BZX55C5V1, [Fabricante]. \\
+\relax [3] Jaeger, Blalock \& Blalock, \textit{Microelectronic Circuit Design}, 6th ed.
+
+\section*{Apéndice A - Auditoría de Uso de IA}
+(Requisito obligatorio de la asignatura). Describa:
+1) Herramientas utilizadas.
+2) Prompt o interacción relevante para el desarrollo.
+3) Identificación de al menos un error, simplificación o "alucinación" del modelo detectada por el equipo, y cómo fue corregida.
+
+\end{document}
