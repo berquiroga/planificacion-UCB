@@ -1,0 +1,64 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Notas S06}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Notas del Instructor: Transición y Evaluación Formativa (Semana 6)}]
+    \centering \large \textbf{Gestión de Aula y Preguntas de Recuperación}
+\end{tcolorbox}
+
+\section*{Arquitectura de la Sesión (90 min)}
+\begin{itemize}
+    \item \textbf{0–10 min | Recuperación Activa (Retrieval):} Evaluar mediante preguntas rápidas el modelo $\bm{A}\bm{x} = \bm{b}$, homogeneidad y additividad vistos en la sesión asincrónica.
+    \item \textbf{10–25 min | Principio de Superposición y Desactivación:} Presentar formalmente el teorema y justificar físicamente por qué $V_s \rightarrow \text{corto}$ e $I_s \rightarrow \text{abierto}$.
+    \item \textbf{25–50 min | Ejemplo Guiado Completo:} Desarrollar paso a paso el circuito con fuente de tensión y de corriente, enfatizando el control de signos y la verificación por nodos.
+    \item \textbf{50–70 min | Trabajo en Grupo / Ejercicio Independiente:} Resolver el Ejercicio 1 de la hoja de ejercicios con supervisión directa.
+    \item \textbf{70–85 min | Límites y Potencia:} Explicar por qué la potencia no se superpone directamente (término cruzado).
+    \item \textbf{85–90 min | Cierre y Exit Ticket:} Lanzar la pregunta puente hacia el Teorema de Thévenin.
+\end{itemize}
+
+\section*{Banco de Preguntas para Recuperación y Control}
+\begin{tcolorbox}[colback=white, colframe=black, boxrule=0.5pt, arc=1mm]
+\textbf{1. Preguntas de Inicio (Retrieval):}
+\begin{itemize}
+    \item En $\bm{A}\bm{x} = \bm{b}$, ¿qué representa $\bm{A}$ si solo cambian las fuentes? (\textit{R: La red física fija}).
+    \item Si $\bm{b} \rightarrow -2\bm{b}$ en un sistema lineal, ¿qué ocurre con $\bm{x}$? (\textit{R: Homogeneidad $\rightarrow -2\bm{x}$}).
+\end{itemize}
+
+\vspace{0.2cm}
+\textbf{2. Chequeo a mitad de sesión (Mid-session):}
+\begin{itemize}
+    \item "Desactivar una fuente de tensión ideal de $12\,\text{V}$ significa reemplazarla por \underline{\hspace{3cm}}". (\textit{R: Un cortocircuito}).
+    \item "Desactivar una fuente de corriente ideal de $2\,\text{mA}$ significa reemplazarla por \underline{\hspace{3cm}}". (\textit{R: Un circuito abierto}).
+\end{itemize}
+
+\vspace{0.2cm}
+\textbf{3. Pregunta de Cierre (Exit Ticket):}
+\begin{itemize}
+    \item ¿Por qué funciona el teorema de superposición en nuestros circuitos? (\textit{R: Porque la red es lineal, lo que garantiza additividad y permite sumar respuestas independientes manteniendo la misma referencia}).
+\end{itemize}
+\end{tcolorbox}
+
+\end{document}
