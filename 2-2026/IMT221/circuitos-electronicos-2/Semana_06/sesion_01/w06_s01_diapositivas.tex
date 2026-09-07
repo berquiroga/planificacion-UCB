@@ -1,0 +1,257 @@
+\documentclass[aspectratio=169, table, xcdraw]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\renewcommand{\tablename}{Tabla}
+\renewcommand{\figurename}{Figura}
+
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx} % Añadido para auto-ajustar tablas al ancho de la diapositiva
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+\title[Circuitos Electrónicos II: U2]{Amplificadores Operacionales: Modelado, Configuraciones Clásicas y Simulación}
+\subtitle{Circuitos Electrónicos II (IMT-221)}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Revisión del Modelo Ideal de Op-Amp}
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            \begin{center}
+            \begin{circuitikz}[scale=1.2, transform shape, thick]
+                \draw (0,0) node[op amp] (opamp) {};
+                \node[right] at (opamp.out) {$V_o$};
+                \draw (opamp.+) to[short, -o] ++(-0.5,0) node[left]{$V_+$};
+                \draw (opamp.-) to[short, -o] ++(-0.5,0) node[left]{$V_-$};
+                % Arco curvo para indicar el cortocircuito virtual sin solapar
+                \draw[dashed, ucbblue, Stealth-Stealth] ([xshift=-0.25cm]opamp.+) to[bend right=45] node[midway, right, align=left]{\footnotesize $V_+ \approx V_-$} ([xshift=-0.25cm]opamp.-);
+            \end{circuitikz}
+            \end{center}
+            \vspace{0.2cm}
+            \centering
+            \footnotesize \textbf{Igualdad aproximada de tensión \\ — NO conexión física[cite: 6]}
+        \end{column}
+        \begin{column}{0.6\textwidth}
+            \textbf{Hipótesis del Componente Ideal[cite: 6]:}
+            \begin{equation*}
+                A_{OL} \rightarrow \infty, \quad R_{in} \rightarrow \infty, \quad R_{out} \rightarrow 0 \text{[cite: 6]}
+            \end{equation*}
+            
+            \textbf{Consecuencia sobre las Corrientes[cite: 6]:}
+            \begin{equation*}
+                \boxed{ i_+ = i_- = 0 } \text{[cite: 6]}
+            \end{equation*}
+
+            \textbf{Consecuencia bajo Realimentación Negativa[cite: 6]:} \\
+            Si el circuito opera en la región lineal, el Op-Amp ajusta $V_o$ para minimizar el error diferencial[cite: 6]:
+            \begin{equation*}
+                V_+ - V_- = \frac{V_o}{A_{OL}} \xrightarrow{A_{OL} \to \infty} \boxed{ V_+ \approx V_- } \text{[cite: 6]}
+            \end{equation*}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Reconstrucción: Amplificador Inversor}
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            \begin{circuitikz}[scale=0.8, transform shape, thick]
+                % noinv input down asegura que el terminal V- esté ARRIBA, evitando cruces
+                \draw (0,0) node[op amp, noinv input down] (opamp) {};
+                \draw (opamp.+) -- ++(0,-0.5) node[ground]{} node[right]{$V_+=0$};
+                \node[above right] at (opamp.-) {$V_-$};
+                \draw ([xshift=-2.5cm]opamp.-) node[left]{$V_{in}$} to[R, l=$R_{in}$, i=$i_{in}$] (opamp.-);
+                \draw (opamp.-) -- ++(0,1.5) coordinate(tmp) to[R, l=$R_f$, i=$i_f$] (tmp -| opamp.out) -- (opamp.out) to[short, -o] ++(0.5,0) node[right]{$V_o$};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.6\textwidth}
+            \textbf{Análisis mediante KCL (Leyes de Kirchhoff)[cite: 6]:}
+            \begin{enumerate}
+                \item Realimentación negativa $\implies V_- \approx V_+ = 0$[cite: 6].
+                \item Corriente ideal $\implies i_- = 0$, por tanto $i_{in}$ continúa por $R_f$[cite: 6].
+            \end{enumerate}
+            \begin{equation*}
+                \frac{V_{in} - V_-}{R_{in}} + \frac{V_o - V_-}{R_f} = 0 \text{[cite: 6]}
+            \end{equation*}
+            \begin{equation*}
+                \frac{V_{in}}{R_{in}} + \frac{V_o}{R_f} = 0 \implies \boxed{ \frac{V_o}{V_{in}} = -\frac{R_f}{R_{in}} } \text{[cite: 6]}
+            \end{equation*}
+            
+            \vspace{0.2cm}
+            \textit{Impedancia de entrada vista por la fuente: $Z_{in, \text{circuito}} \approx R_{in}$[cite: 6].}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Derivación: Amplificador No Inversor}
+    \begin{columns}
+        \begin{column}{0.45\textwidth}
+            \begin{circuitikz}[scale=0.8, transform shape, thick]
+                % noinv input up asegura que V+ esté ARRIBA, ruteando la realimentación por ABAJO
+                \draw (0,0) node[op amp, noinv input up] (opamp) {};
+                \draw (opamp.+) to[short, -o] ++(-1.5,0) node[left]{$V_{in}$};
+                \node[below right] at (opamp.-) {$V_-$};
+                \draw (opamp.-) -- ++(0,-1.5) coordinate(tmp) to[R, l_=$R_f$] (tmp -| opamp.out) -- (opamp.out) to[short, -o] ++(0.5,0) node[right]{$V_o$};
+                \draw (opamp.-) -- ++(-0.5,0) to[R, l_=$R_g$] ++(0,-1.5) node[ground]{};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.55\textwidth}
+            \textbf{Razonamiento Analítico[cite: 6]:}
+            \begin{itemize}
+                \item $V_+ = V_{in}$ directamente desde la fuente[cite: 6].
+                \item Por realimentación negativa: $\boxed{V_- \approx V_{in}}$[cite: 6].
+                \item Como $i_- = 0$, $R_f$ y $R_g$ forman un divisor de tensión exacto desde la salida $V_o$[cite: 6]:
+            \end{itemize}
+            \begin{equation*}
+                V_- = V_o \frac{R_g}{R_f + R_g} \implies V_o = V_{in} \frac{R_f + R_g}{R_g} \text{[cite: 6]}
+            \end{equation*}
+            \begin{equation*}
+                \implies \boxed{ A_v = 1 + \frac{R_f}{R_g} } \text{[cite: 6]}
+            \end{equation*}
+            \textit{Impedancia de entrada: idealmente $Z_{in} \rightarrow \infty$[cite: 6].}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Comparación Estructural}
+    La diferencia de impedancia de entrada \textbf{proviene de la topología}, no de que un Op-Amp sea "inversor" por naturaleza[cite: 6].
+    
+    \vspace{0.2cm}
+    \begin{table}[]
+        \centering
+        \renewcommand{\arraystretch}{1.2}
+        \begin{tabularx}{\textwidth}{@{} >{\bfseries}l X X @{}}
+        \toprule
+        \rowcolor[HTML]{EFEFEF}
+        Característica & Inversor & No Inversor \\ \midrule
+        Entrada de señal & $V_-$ a través de $R_{in}$[cite: 6] & Directamente en $V_+$[cite: 6] \\
+        Ganancia & $-R_f / R_{in}$[cite: 6] & $1 + R_f / R_g$[cite: 6] \\
+        Polaridad & Invertida[cite: 6] & Preservada[cite: 6] \\
+        Magnitud mínima & Puede ser $< 1$[cite: 6] & $\ge 1$[cite: 6] \\
+        $Z_{in}$ del Circuito & $\approx R_{in}$ (Carga la fuente)[cite: 6] & $\rightarrow \infty$ (Entrada ideal)[cite: 6] \\
+        \bottomrule
+        \end{tabularx}
+    \end{table}
+\end{frame}
+
+\begin{frame}{Amplificador Sumador}
+    Extensión del nodo inversor (tierra virtual) a múltiples entradas usando KCL[cite: 6].
+    
+    \begin{columns}
+        \begin{column}{0.45\textwidth}
+            \begin{circuitikz}[scale=0.75, transform shape, thick]
+                \draw (0,0) node[op amp, noinv input down] (opamp) {};
+                \draw (opamp.+) -- ++(0,-0.5) node[ground]{};
+                \node[above right] at (opamp.-) {$V_-$};
+                
+                \draw (opamp.-) -- ++(-1,0) coordinate(sum);
+                \draw (sum) -- ++(0,1) to[R, l_=$R_1$] ++(-1.5,0) node[left]{$V_1$};
+                \draw (sum) -- ++(0,-1) to[R, l_=$R_2$] ++(-1.5,0) node[left]{$V_2$};
+                
+                \draw (opamp.-) -- ++(0,2) coordinate(tmp) to[R, l=$R_f$] (tmp -| opamp.out) -- (opamp.out) to[short, -o] ++(0.5,0) node[right]{$V_o$};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.55\textwidth}
+            Aplicando KCL en $V_- = 0$[cite: 6]:
+            \begin{equation*}
+                \frac{V_1}{R_1} + \frac{V_2}{R_2} + \frac{V_o}{R_f} = 0 \text{[cite: 6]}
+            \end{equation*}
+            \begin{equation*}
+                \implies \boxed{ V_o = -R_f \left( \frac{V_1}{R_1} + \frac{V_2}{R_2} \right) } \text{[cite: 6]}
+            \end{equation*}
+            \vspace{0.2cm}
+            
+            \textit{Cada señal genera una corriente proporcional a $V_i / R_i$. Las resistencias asignan pesos diferentes[cite: 6].}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Desafío Analítico No Familiar}
+    \textbf{Pregunta Visual:} ¿Qué sigue siendo cierto y qué cambió respecto al inversor estándar?[cite: 6]
+    
+    \begin{columns}
+        \begin{column}{0.45\textwidth}
+            \begin{circuitikz}[scale=0.8, transform shape, thick]
+                \draw (0,0) node[op amp, noinv input down] (opamp) {};
+                \draw (opamp.+) -- ++(0,-0.5) node[below]{$V_{ref} = 0.5\,\text{V}$};
+                \node[above right] at (opamp.-) {$V_-$};
+                \draw ([xshift=-2.5cm]opamp.-) node[left]{$V_{in}=1.0\,\text{V}$} to[R, l=$R_{in}$, a=$10\,\text{k}\Omega$] (opamp.-);
+                \draw (opamp.-) -- ++(0,1.5) coordinate(tmp) to[R, l=$R_f$, a=$20\,\text{k}\Omega$] (tmp -| opamp.out) -- (opamp.out) to[short, -o] ++(0.5,0) node[right]{$V_o$};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.55\textwidth}
+            \textbf{Objetivo:} Construir el modelo desde KCL, no aplicar gráficamente fórmulas memorizadas[cite: 6].
+            
+            \begin{enumerate}
+                \item Identificar realimentación negativa[cite: 6].
+                \item Establecer $V_- \approx V_+ = V_{ref}$[cite: 6].
+                \item Escribir la ecuación de KCL para el nodo $V_-$[cite: 6].
+                \item Determinar algebraicamente $V_o$[cite: 6].
+            \end{enumerate}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{LTSpice: Predicción y Verificación}
+    {\small \textbf{Secuencia Obligatoria:} $\text{Modelo} \rightarrow \text{Ecuaciones} \rightarrow \text{Predicción} \rightarrow \text{Simulación} \rightarrow \text{Interpretación}$[cite: 6].}
+    
+    \vspace{0.3cm}
+    \begin{table}[]
+        \centering
+        \renewcommand{\arraystretch}{1.3}
+        \begin{tabular}{l c c}
+        \toprule
+        \rowcolor[HTML]{EFEFEF}
+        \textbf{Magnitud} & \textbf{Predicción Analítica} & \textbf{LTSpice (Medido)} \\ \midrule
+        $V_{in,p}$ & \rule{2cm}{0.4pt} & \rule{2cm}{0.4pt} \\
+        $V_{out,p}$ & \rule{2cm}{0.4pt} & \rule{2cm}{0.4pt} \\
+        Ganancia $A_v$ & \rule{2cm}{0.4pt} & \rule{2cm}{0.4pt} \\
+        Polaridad & \rule{2cm}{0.4pt} & \rule{2cm}{0.4pt} \\
+        \bottomrule
+        \end{tabular}
+    \end{table}
+
+    \begin{alertblock}{Interpretación Crítica}
+        La simulación comprueba una instancia de un \textbf{modelo} matemático, no garantiza el comportamiento físico universal ni sustituye el cálculo[cite: 6].
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Fronteras del Modelo Ideal}
+    El modelo ideal es una aproximación deliberada. ¿Qué ocurre físicamente?[cite: 6]
+    
+    \begin{itemize}
+        \item \textbf{¿Salida de tensión ilimitada?} $\rightarrow$ \textit{Output swing (limitado por alimentación)}[cite: 6].
+        \item \textbf{¿Frecuencia de señal ilimitada?} $\rightarrow$ \textit{Ganancia de Ancho de Banda (GBW)}[cite: 6].
+        \item \textbf{¿Cambio de estado instantáneo?} $\rightarrow$ \textit{Slew Rate (velocidad máxima de cambio)}[cite: 6].
+        \item \textbf{¿Diferencia de entradas exacta a cero?} $\rightarrow$ \textit{Input Offset Voltage}[cite: 6].
+        \item \textbf{¿Corriente de entrada estrictamente cero?} $\rightarrow$ \textit{Input Bias Currents}[cite: 6].
+    \end{itemize}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,64 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amssymb} % Requerido para el comando \square
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2cm]{geometry}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Registro de Evaluación Individual — Hito 1 Diferido}}[cite: 5]
+\end{center}
+
+\textbf{Estudiante:} \rule{7cm}{0.4pt} \hfill \textbf{Fecha:} \rule{4cm}{0.4pt}
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{Matriz de Evaluación[cite: 5]}]
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{@{} l c c c X @{}}
+\toprule
+\rowcolor[HTML]{EFEFEF}
+\textbf{Criterio} & \textbf{Logrado} & \textbf{Parcial} & \textbf{Fallido} & \textbf{Evidencia Breve} \\ \midrule
+Operatividad / comprensión Lab 1[cite: 5] & $\square$ & $\square$ & $\square$ & \rule{\linewidth}{0.4pt} \\
+Operatividad / comprensión Lab 2[cite: 5] & $\square$ & $\square$ & $\square$ & \rule{\linewidth}{0.4pt} \\
+Integración de la cascada[cite: 5] & $\square$ & $\square$ & $\square$ & \rule{\linewidth}{0.4pt} \\
+Cálculo e interpretación de $K_L$[cite: 5] & $\square$ & $\square$ & $\square$ & \rule{\linewidth}{0.4pt} \\
+Validación LTSpice/experimental/Python[cite: 5] & $\square$ & $\square$ & $\square$ & \rule{\linewidth}{0.4pt} \\
+Defensa y razonamiento individual[cite: 5] & $\square$ & $\square$ & $\square$ & \rule{\linewidth}{0.4pt} \\
+\bottomrule
+\end{tabularx}
+\end{tcolorbox}
+
+\vspace{0.2cm}
+\textbf{Descriptores de la Rúbrica[cite: 5]:}
+\begin{itemize}
+    \item \textbf{Logrado:} Explica correctamente el fenómeno, relaciona ecuaciones con el sistema y justifica sus respuestas frente a preguntas de seguimiento[cite: 5].
+    \item \textbf{Parcial:} Reconoce el procedimiento y parte del fundamento, pero presenta una omisión, confusión o dependencia de ayudas para completar la explicación[cite: 5].
+    \item \textbf{Fallido:} No puede establecer el modelo o la relación física, reproduce procedimientos sin comprenderlos o no justifica la evidencia. Una presentación visual no compensa la falta de dominio técnico[cite: 5].
+\end{itemize}
+
+\vspace{0.4cm}
+\textbf{Etiquetas Diagnósticas (Marque las deficiencias observadas)[cite: 5]:}
+\begin{tcolorbox}[colback=gray!10!white, colframe=black, boxrule=0.5pt]
+    $\square$ [AC model][cite: 5] \hfill $\square$ [Complex arithmetic][cite: 5] \hfill $\square$ [Impedance][cite: 5] \\
+    $\square$ [Circuit laws][cite: 5] \hfill $\square$ [Transfer function][cite: 5] \hfill $\square$ [Magnitude][cite: 5] \\
+    $\square$ [Phase][cite: 5] \hfill $\square$ [Physical interpretation][cite: 5] \hfill $\square$ [LTSpice][cite: 5] \\
+    $\square$ [Oscilloscope / Grounding][cite: 5] \hfill $\square$ [Python / Data processing][cite: 5] \\
+    $\square$ [Loading / System integration][cite: 5] \hfill $\square$ [Individual ownership][cite: 5]
+\end{tcolorbox}
+
+\vspace{0.4cm}
+\textbf{Observaciones Adicionales:} \\
+\rule{\textwidth}{0.4pt} \\
+\rule{\textwidth}{0.4pt}
+
+\end{document}

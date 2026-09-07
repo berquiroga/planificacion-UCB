@@ -1,0 +1,84 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija}}
+\chead{Introducción a la Mecatrónica}
+\rhead{Verificación Computacional}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Guía de Ejercicio LTSpice: Verificación de Configuraciones Clásicas}]
+    \centering \large \textbf{Modelado Predictivo y Simulación de Op-Amps}
+\end{tcolorbox}
+
+\section*{Configuración Inicial[cite: 3]}
+Para esta sesión, utilizaremos el modelo \texttt{UniversalOpAmp2} incluido en la biblioteca nativa de LTSpice[cite: 3]. Este modelo idealizado nos permite verificar el comportamiento de lazo cerrado sin introducir inmediatamente limitaciones reales como slew rate o ganancia de ancho de banda (GBW)[cite: 3, 4].
+
+\section*{Actividad A: Amplificador Inversor[cite: 3]}
+\textbf{Parámetros del circuito:}
+$R_{in} = 10\,\text{k}\Omega$, $R_f = 20\,\text{k}\Omega$[cite: 3]. \\
+Señal de entrada: $V_i(t) = 0.5 \sin(2\pi \cdot 1000 \cdot t)\,\text{V}$[cite: 3].
+
+\vspace{0.2cm}
+\textbf{Paso 1. Predicción Analítica (¡Completar antes de simular!)}[cite: 3, 4]
+\begin{table}[h!]
+    \centering
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabular}{l|c|c}
+    \toprule
+    \rowcolor[HTML]{EFEFEF}
+    \textbf{Variable} & \textbf{Predicción Analítica} & \textbf{Medición en Simulación} \\ \midrule
+    $V_{i, pk}$ (Voltaje pico entrada) & 0.5 V[cite: 3] & \rule{3cm}{0.4pt} \\
+    Ganancia de Voltaje $A_v$ & \rule{3cm}{0.4pt} & \rule{3cm}{0.4pt} \\
+    $V_{o, pk}$ (Voltaje pico salida) & \rule{3cm}{0.4pt} & \rule{3cm}{0.4pt} \\
+    Relación de Fase & \rule{3cm}{0.4pt} & \rule{3cm}{0.4pt} \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+\textbf{Paso 2. Procedimiento de Simulación[cite: 3]}
+\begin{enumerate}
+    \item Construye la topología inversora usando el \texttt{UniversalOpAmp2}[cite: 3].
+    \item Configura una fuente sinusoidal de $1\,\text{kHz}$ de frecuencia y amplitud de $0.5\,\text{V}$[cite: 3].
+    \item Configura un análisis de tipo \texttt{.tran} (Transitorio) para abarcar de $3$ a $5$ ciclos de la señal[cite: 3].
+    \item Grafica simultáneamente $V_i(t)$ y $V_o(t)$. Mide las amplitudes utilizando los cursores y completa la tabla[cite: 3].
+\end{enumerate}
+
+\section*{Actividad B: Modificación a No Inversor[cite: 3]}
+Modifica tu circuito para obtener una topología No Inversora con una ganancia deseada de $A_v = 3$[cite: 3]. \\
+\textbf{Sugerencia de componentes:} Utiliza $R_f = 20\,\text{k}\Omega$ y $R_g = 10\,\text{k}\Omega$[cite: 3].
+
+\vspace{0.3cm}
+\textbf{Preguntas Comparativas[cite: 3]:}
+\begin{enumerate}
+    \item ¿Coincide el signo simulado de la salida con la predicción (sin inversión de fase)?[cite: 3]
+    \item ¿Por qué la entrada no inversora presenta una clara ventaja de diseño para señales débiles o de alta impedancia provenientes del Hito 1?[cite: 3]
+\end{enumerate}
+
+\section*{Resolución de Problemas (Troubleshooting)[cite: 3]}
+Si experimentas discrepancias severas (ej. $V_o$ plano, cortado o inexistente):
+\begin{itemize}
+    \item Verifica que conectaste correctamente los terminales IN+ e IN- del símbolo[cite: 3].
+    \item Asegúrate de haber definido un nodo de tierra (\texttt{GND}) global en tu simulación[cite: 3].
+    \item Comprueba los valores de las resistencias (la omisión de la letra "k" produce $10\,\Omega$ en lugar de $10000\,\Omega$)[cite: 3].
+\end{itemize}
+
+\end{document}

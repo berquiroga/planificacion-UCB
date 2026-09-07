@@ -1,0 +1,111 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Introducción a la Mecatrónica}
+\rhead{Semana 5 - Sesión 2}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Hoja de Referencia y Derivaciones: Amplificadores Operacionales}]
+    \centering \large \textbf{Unidad 2 - Configuraciones Clásicas}
+\end{tcolorbox}
+
+\section*{1. Modelo Ideal del Amplificador Operacional}
+El Op-Amp ideal simplifica el análisis de circuitos asumiendo las siguientes propiedades cuando opera en su región lineal y bajo realimentación negativa:
+\begin{itemize}
+    \item Ganancia en lazo abierto infinita: $A \rightarrow \infty$.
+    \item Impedancia de entrada infinita: $R_{in} \rightarrow \infty$.
+    \item Impedancia de salida nula: $R_{out} \rightarrow 0$.
+\end{itemize}
+
+\textbf{Consecuencias operativas para la resolución de circuitos:}
+\begin{align}
+    i_+ &= i_- = 0 \quad \text{(Corrientes de entrada nulas)} \\
+    V_+ &\approx V_- \quad \text{(Cortocircuito virtual debido a la realimentación negativa)}
+\end{align}
+
+\section*{2. Amplificador Inversor}
+\begin{minipage}{0.45\textwidth}
+    \begin{circuitikz}[scale=0.8, transform shape, thick]
+        \draw (0,0) node[op amp] (opamp) {};
+        \draw (opamp.+) -- ++(0,-0.5) node[ground]{};
+        \draw (opamp.-) node[above]{$V_-$} to[R, l_=$R_{in}$] ++(-2.5,0) node[left]{$V_i$};
+        \draw (opamp.-) -- ++(0,1.5) coordinate(tmp) to[R, l=$R_f$] (tmp -| opamp.out) -- (opamp.out) to[short, -o] ++(0.5,0) node[right]{$V_o$};
+    \end{circuitikz}
+\end{minipage}
+\hfill
+\begin{minipage}{0.5\textwidth}
+    \textbf{Esqueleto de Derivación:}
+    \begin{align*}
+        V_+ &= 0 \implies V_- = 0 \\
+        i_{in} &= i_f \implies \frac{V_i - V_-}{R_{in}} = \frac{V_- - V_o}{R_f}
+    \end{align*}
+    Sustituyendo la tierra virtual ($V_-=0$):
+    \begin{equation*}
+        \boxed{ A_v = \frac{V_o}{V_i} = -\frac{R_f}{R_{in}} }
+    \end{equation*}
+\end{minipage}
+
+\section*{3. Amplificador No Inversor}
+\begin{minipage}{0.45\textwidth}
+    \begin{circuitikz}[scale=0.8, transform shape, thick]
+        % Se utiliza "noinv input up" para colocar V+ arriba y V- abajo, 
+        % rutando la realimentación por debajo y evitando cruces de líneas.
+        \draw (0,0) node[op amp, noinv input up] (opamp) {};
+        \draw (opamp.+) to[short, -o] ++(-1.5,0) node[left]{$V_i$};
+        \draw (opamp.-) node[above]{$V_-$} to[short] ++(0,-1.5) coordinate(tmp) to[R, l_=$R_f$] (tmp -| opamp.out) -- (opamp.out) to[short, -o] ++(0.5,0) node[right]{$V_o$};
+        \draw (opamp.-) -- ++(-0.5,0) to[R, l_=$R_g$] ++(0,-1.5) node[ground]{};
+    \end{circuitikz}
+\end{minipage}
+\hfill
+\begin{minipage}{0.5\textwidth}
+    \textbf{Esqueleto de Derivación:}
+    \begin{align*}
+        V_+ &= V_i \implies V_- = V_i \\
+        V_- &= V_o \left( \frac{R_g}{R_f + R_g} \right) \text{ (Divisor)}
+    \end{align*}
+    Sustituyendo e igualando a $V_i$:
+    \begin{equation*}
+        \boxed{ A_v = \frac{V_o}{V_i} = 1 + \frac{R_f}{R_g} }
+    \end{equation*}
+\end{minipage}
+
+\section*{4. Tabla Comparativa de Topologías}
+\begin{table}[htbp]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{@{} l X X @{}}
+    \toprule
+    \rowcolor[HTML]{EFEFEF}
+    \textbf{Parámetro Analítico} & \textbf{Amplificador Inversor} & \textbf{Amplificador No Inversor} \\ \midrule
+    Relación de Fase (Signo) & Invertida ($-$) & En fase ($+$) \\
+    Expresión de Ganancia $A_v$ & $-R_f / R_{in}$ & $1 + R_f / R_g$ \\
+    Impedancia de Entrada ($Z_{in}$) & $\approx R_{in}$ (Carga la fuente) & Idealmente $\infty$ (No carga) \\
+    Aplicación Principal & Sumadores, inversores de señal & Buffers, adaptación de impedancias \\
+    \bottomrule
+    \end{tabularx}
+\end{table}
+
+\end{document}

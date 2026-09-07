@@ -1,0 +1,56 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{booktabs}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija}}
+\chead{Introducción a la Mecatrónica}
+\rhead{Semana 5 - Sesión 2}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Guía Docente}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Notas del Instructor - Sesión 2 (Semana 5)}]
+    \centering \large \textbf{Gestión de Tiempos y Pedagogía}
+\end{tcolorbox}
+
+\section*{Arquitectura del Tiempo (105 min totales)[cite: 4]}
+\begin{itemize}
+    \item \textbf{0–15 min | Diagnóstico EC1:} Objetivo focalizado en corrección analítica rápida. \textbf{Punto de corte:} Minuto 15. Si hay deficiencias graves sistémicas, extender un máximo de 10 minutos (hasta el min 25) y sacrificar la sección de sumador/diferencial[cite: 3, 4].
+    \item \textbf{15–25 min | Enlace conceptual (Hito 1):} Recuperar explícitamente el problema de "Loading"[cite: 3, 4].
+    \item \textbf{25–40 min | Modelo Ideal Op-Amp:} Establecer las reglas fundamentales. Recalcar la diferencia entre idealización, realimentación y realidad física[cite: 3, 4].
+    \item \textbf{40–60 min | Derivación Inversor:} Prioridad principal. Solicitar participación en la aplicación de KCL[cite: 3, 4].
+    \item \textbf{60–75 min | Derivación No Inversor:} Reducir el andamiaje (scaffolding). Pedir a los estudiantes que establezcan el divisor de tensión por su cuenta[cite: 3, 4].
+    \item \textbf{75–95 min | Actividad LTSpice:} Aplicar la regla pedagógica irrompible: "Ninguna simulación se ejecuta sin una predicción matemática previa escrita en papel"[cite: 3, 4].
+    \item \textbf{95–105 min | Cierre:} Revisión rápida del ticket de salida y overview (si el tiempo lo permite) de sumadores y diferenciales[cite: 3, 4].
+\end{itemize}
+
+\section*{Conceptos Erróneos (Misconceptions) a Vigilar[cite: 3, 4]}
+\begin{enumerate}
+    \item \textbf{Cortocircuito virtual interpretado como cortocircuito físico:} Asegurarse de realizar la pregunta de verificación: \textit{“¿Puedo medir continuidad con un multímetro entre V+ y V-?”} La respuesta debe ser NO[cite: 3, 4].
+    \item \textbf{Memorización ciega de fórmulas:} Evitar que los estudiantes usen $-R_f/R_{in}$ sin ser capaces de llegar a ello aplicando Nodos (KCL). El examen requerirá la derivación[cite: 4].
+    \item \textbf{Asumir $V_+ = V_-$ siempre:} Dejar claro que esta regla requiere realimentación negativa y operación en la región lineal[cite: 3, 4].
+\end{enumerate}
+
+\section*{Banco de Preguntas para Comprobación Formativa Dinámica[cite: 4]}
+\begin{tcolorbox}[colback=white, colframe=black, boxrule=0.5pt]
+    \textbf{Preguntas de transición (Hito 1):} ¿Qué característica debe tener la entrada de una etapa para alterar lo mínimo posible la etapa anterior?[cite: 3] \\
+    \textbf{Preguntas de modelo ideal:} Si el Op-Amp es ideal y la ganancia es infinita, ¿cuánta corriente fluye físicamente al interior del integrado?[cite: 3, 4] \\
+    \textbf{Pregunta sobre LTSpice:} Tu ganancia teórica es $A_v=4$, pero la simulación corta la parte superior de la señal sinusoidal. ¿Qué restricción real del modelo eléctrico, ausente en nuestras ecuaciones ideales, está sucediendo? \textit{(R: Saturación por voltaje de alimentación)}[cite: 3, 4].
+\end{tcolorbox}
+
+\end{document}

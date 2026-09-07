@@ -1,0 +1,84 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija}}
+\chead{Guía de Simulación: LTSpice}
+\rhead{Circuitos Electrónicos II}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Verificación en LTSpice: Configuraciones Ideales}}[cite: 6]
+\end{center}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Procedimiento Mínimo de Simulación[cite: 6]}]
+    \begin{enumerate}
+        \item Construir el circuito utilizando el modelo ideal o universal de Op-Amp estandarizado para el curso[cite: 6].
+        \item Conectar las fuentes de alimentación DC si el modelo seleccionado las requiere[cite: 6].
+        \item Configurar una fuente sinusoidal en la entrada ($V_{in}$)[cite: 6].
+        \item Configurar un análisis transitorio (\texttt{.tran}) adecuado a la frecuencia[cite: 6].
+        \item Graficar simultáneamente $V_{in}(t)$ y $V_o(t)$[cite: 6].
+        \item Medir amplitudes y calcular $A_{v, \text{sim}} = \frac{V_{o, \text{pico}}}{V_{in, \text{pico}}}$[cite: 6].
+    \end{enumerate}
+\end{tcolorbox}
+
+\section*{Circuito A: Amplificador No Inversor[cite: 6]}
+Parámetros: $R_g = 10\,\text{k}\Omega$, $R_f = 20\,\text{k}\Omega$, $V_{in} = 0.5\,\text{V}_{\text{pico}}$[cite: 6].
+
+\begin{table}[h]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{@{} X X @{}}
+    \toprule
+    \rowcolor[HTML]{EFEFEF}
+    \textbf{FASE 1: Antes de Simular (Analítico)} & \textbf{FASE 2: Después de Simular (Medido)} \\ \midrule
+    $A_{v, \text{pred}} =$ \rule{3cm}{0.4pt}[cite: 6] & $A_{v, \text{sim}} =$ \rule{3cm}{0.4pt}[cite: 6] \\
+    $V_{out, \text{pred}} =$ \rule{3cm}{0.4pt}[cite: 6] & $V_{out, \text{sim}} =$ \rule{3cm}{0.4pt}[cite: 6] \\
+    Polaridad predicha = \rule{3cm}{0.4pt}[cite: 6] & Polaridad observada = \rule{2.5cm}{0.4pt}[cite: 6] \\
+    & \% Diferencia = \rule{3cm}{0.4pt}[cite: 6] \\
+    \bottomrule
+    \end{tabularx}
+\end{table}
+
+\section*{Circuito B: Amplificador Inversor[cite: 6]}
+Parámetros: $R_{in} = 10\,\text{k}\Omega$, $R_f = 20\,\text{k}\Omega$, $V_{in} = 0.5\,\text{V}_{\text{pico}}$[cite: 6].
+
+\begin{table}[h]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{@{} X X @{}}
+    \toprule
+    \rowcolor[HTML]{EFEFEF}
+    \textbf{FASE 1: Antes de Simular (Analítico)} & \textbf{FASE 2: Después de Simular (Medido)} \\ \midrule
+    $A_{v, \text{pred}} =$ \rule{3cm}{0.4pt}[cite: 6] & $A_{v, \text{sim}} =$ \rule{3cm}{0.4pt}[cite: 6] \\
+    $V_{out, \text{pred}} =$ \rule{3cm}{0.4pt}[cite: 6] & $V_{out, \text{sim}} =$ \rule{3cm}{0.4pt}[cite: 6] \\
+    Polaridad predicha = \rule{3cm}{0.4pt}[cite: 6] & Polaridad observada = \rule{2.5cm}{0.4pt}[cite: 6] \\
+    & \% Diferencia = \rule{3cm}{0.4pt}[cite: 6] \\
+    \bottomrule
+    \end{tabularx}
+\end{table}
+
+\section*{Análisis Crítico Final[cite: 6]}
+\textbf{Pregunta:} ¿El resultado de su simulación confirma una ley física universal del Op-Amp o únicamente el comportamiento del modelo matemático simulado bajo estas condiciones? Explique su respuesta basándose en los límites del modelo ideal discutidos en clase (output swing, GBW, etc.)[cite: 6]. \\
+\rule{\textwidth}{0.4pt} \\
+\rule{\textwidth}{0.4pt} \\
+\rule{\textwidth}{0.4pt} \\
+\rule{\textwidth}{0.4pt}
+
+\end{document}

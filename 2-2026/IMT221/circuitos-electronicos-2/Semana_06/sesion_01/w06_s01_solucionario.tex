@@ -1,0 +1,69 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Documento Docente}
+\chead{Solucionario: Op-Amps Ideales}
+\rhead{Circuitos Electrónicos II}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Solucionario Oficial y Ejemplos Resueltos}}[cite: 6]
+\end{center}
+
+\section*{Solución de Ejercicios[cite: 6]}
+
+\textbf{Ejercicio 1: Reconstrucción Inversor[cite: 6]}
+\begin{enumerate}
+    \item $V_+ = 0\,\text{V}$ (Conectado a referencia)[cite: 6].
+    \item Por realimentación negativa, $V_- \approx 0\,\text{V}$[cite: 6].
+    \item $i_{in} = \frac{V_{in} - V_-}{R_{in}} = \frac{0.4}{5\text{k}} = 80\,\mu\text{A}$[cite: 6].
+    \item Por KCL, $i_f = i_{in} = 80\,\mu\text{A}$. $V_o = -i_f R_f = -(80\,\mu\text{A})(15\,\text{k}\Omega) = \boxed{-1.2\,\text{V}}$[cite: 6].
+    \item $A_v = -1.2 / 0.4 = \boxed{-3}$. Signo negativo indica inversión de fase[cite: 6].
+\end{enumerate}
+\textit{Errores comunes: Corriente con signo inconsistente, creer que $i_{in}$ entra físicamente al Op-Amp, u omitir el signo negativo en el cálculo final[cite: 6].}
+
+\vspace{0.3cm}
+\textbf{Ejercicio 2: No Inversor[cite: 6]}
+\begin{enumerate}
+    \item $A_v = 1 + \frac{R_f}{R_g} \implies 6 = 1 + \frac{R_f}{10\text{k}} \implies \boxed{R_f = 50\,\text{k}\Omega}$[cite: 6].
+    \item $V_o = 6(0.25\,\text{V}) = \boxed{1.5\,\text{V}}$[cite: 6].
+    \item Conserva polaridad porque la señal se aplica a $V_+$ y la realimentación ajusta $V_o$ hasta establecer $V_- \approx V_+$[cite: 6].
+    \item El modelo ideal predice $\boxed{Z_{in} \rightarrow \infty}$[cite: 6].
+\end{enumerate}
+
+\vspace{0.3cm}
+\textbf{Ejercicio 3: Sumador[cite: 6]}
+KCL en nodo inversor: $\frac{V_1}{R_1} + \frac{V_2}{R_2} + \frac{V_o}{R_f} = 0$[cite: 6]. \\
+Sustituyendo: $\frac{0.1}{10\text{k}} + \frac{0.3}{30\text{k}} + \frac{V_o}{30\text{k}} = 0 \implies 10\,\mu\text{A} + 10\,\mu\text{A} + \frac{V_o}{30\text{k}} = 0$[cite: 6]. \\
+$\frac{V_o}{30\text{k}} = -20\,\mu\text{A} \implies \boxed{V_o = -0.6\,\text{V}}$[cite: 6].
+
+\vspace{0.3cm}
+\textbf{Ejercicio 4: Comparación[cite: 6]}
+El estudiante B tiene razón[cite: 6]. En el inversor existe físicamente $R_{in}$ entre la fuente y el nodo de suma, por lo que $Z_{in, \text{circuito}} \approx R_{in}$[cite: 6]. En el no inversor, la señal conecta directamente a una entrada ideal con $i_+ = 0$, resultando en $Z_{in} \rightarrow \infty$. No se trata de dos tipos de circuitos integrados diferentes[cite: 6].
+
+\vspace{0.3cm}
+\textbf{Ejercicio 5: Predicción LTSpice[cite: 6]}
+$A_v = 1 + \frac{20\text{k}}{10\text{k}} = \boxed{3}$[cite: 6]. $V_{out, p} = 3(0.5) = \boxed{1.5\,\text{V}}$[cite: 6]. Polaridad $\boxed{\text{preservada}}$[cite: 6].
+
+\section*{Solución: Desafío Analítico No Familiar (Inversor Referenciado)[cite: 6]}
+Circuito: $V_{ref} = 0.5\,\text{V}, V_{in} = 1.0\,\text{V}, R_{in} = 10\,\text{k}\Omega, R_f = 20\,\text{k}\Omega$[cite: 6]. \\
+1. Realimentación negativa $\implies V_- \approx V_+ = 0.5\,\text{V}$[cite: 6]. \\
+2. KCL en $V_-$: $\frac{1.0 - 0.5}{10\text{k}} + \frac{V_o - 0.5}{20\text{k}} = 0$[cite: 6]. \\
+3. $50\,\mu\text{A} + \frac{V_o - 0.5}{20\text{k}} = 0 \implies V_o - 0.5 = -1 \implies \boxed{V_o = -0.5\,\text{V}}$[cite: 6].
+
+\end{document}

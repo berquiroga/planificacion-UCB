@@ -1,0 +1,95 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Circuitos Electrónicos II (IMT-221)}
+\rhead{EC1 Paralelo Diferido}
+\lfoot{Elemento de Competencia 1}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{UNIVERSIDAD CATÓLICA BOLIVIANA "SAN PABLO" — SEDE TARIJA}}\\
+    \vspace{0.2cm}
+    \normalsize Asignatura: Circuitos Electrónicos II (IMT-221) \\
+    \textbf{EC1 Diferido (Paralelo) — Elemento de Competencia 1}[cite: 5]
+\end{center}
+
+\vspace{0.2cm}
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Condiciones de la Evaluación}]
+    \begin{itemize}
+        \item \textbf{Tiempo:} 55 minutos[cite: 5].
+        \item \textbf{Puntaje:} 50 puntos[cite: 5].
+        \item \textbf{Material permitido:} calculadora científica y formulario de una hoja[cite: 5].
+        \item Muestre todo el desarrollo algebraico. Defina claramente las impedancias y referencias fasoriales empleadas[cite: 5].
+        \item Una respuesta aislada sin procedimiento recibe crédito limitado conforme a la clave[cite: 5].
+        \item Se utilizarán fasores de \textbf{valor pico}[cite: 5].
+    \end{itemize}
+\end{tcolorbox}
+
+\vspace{0.4cm}
+\section*{Problema 1 — Red pasiva RLC cargada (25 puntos)[cite: 5]}
+Una fuente sinusoidal ideal $\hat V_{in} = 2.0\angle0^\circ\,\text{V}_{\text{pico}}$ opera a $f = 1\,\text{kHz}$[cite: 5]. La fuente alimenta una resistencia $R_1 = 1\,\text{k}\Omega$ en serie con una red conectada entre el nodo $A$ y tierra[cite: 5]. Desde el nodo $A$ existen dos ramas en paralelo[cite: 5]:
+\begin{itemize}
+    \item \textbf{Rama 1:} Capacitor $C = 159.15\,\text{nF}$[cite: 5].
+    \item \textbf{Rama 2:} Resistor $R_2 = 1\,\text{k}\Omega$ en serie con un inductor $L = 159.15\,\text{mH}$[cite: 5].
+\end{itemize}
+La salida $\hat V_{out}$ se mide \textbf{únicamente sobre el inductor}[cite: 5].
+
+\begin{center}
+    \begin{circuitikz}[scale=1, transform shape, thick]
+        \draw (0,0) to[V, v=$\hat V_{in}$] (0,3) to[R, l=$R_1$] (3,3) coordinate(A) node[above]{$A$};
+        \draw (A) to[C, l=$C$] (3,0) -- (0,0);
+        \draw (A) -- (6,3) to[R, l=$R_2$] (6,1.5) to[L, l=$L$, v=$\hat V_{out}$] (6,0) -- (3,0);
+        \draw (3,0) node[ground]{};
+    \end{circuitikz}
+\end{center}
+
+\textbf{a) Modelado de impedancia (10 puntos)[cite: 5]} \\
+A la frecuencia dada, determine $Z_C$, $Z_L$, la impedancia total de la rama $R_2+L$, y calcule la impedancia equivalente vista desde el nodo $A$: $Z_A = Z_C \parallel (R_2+Z_L)$[cite: 5]. Exprese $Z_A$ en forma rectangular y polar[cite: 5].
+
+\vspace{0.3cm}
+\textbf{b) Análisis fasorial (15 puntos)[cite: 5]} \\
+Calcule la tensión $\hat V_A$ y, a partir de ella, determine $\hat V_{out}$ sobre el inductor expresándola en forma rectangular y polar[cite: 5]. Indique si $V_{out}$ adelanta o atrasa a $V_{in}$ y explique qué representa físicamente ese ángulo[cite: 5].
+
+\vspace{0.6cm}
+\section*{Problema 2 — Filtro RC con efecto de carga (25 puntos)[cite: 5]}
+Una fuente ideal alimenta un filtro pasabajos mediante $R_s = 1\,\text{k}\Omega$[cite: 5]. El filtro contiene $R = 1\,\text{k}\Omega$ en serie y $C = 159.15\,\text{nF}$ entre el nodo de salida y tierra[cite: 5]. Al nodo de salida se conecta una carga resistiva $R_L = 2\,\text{k}\Omega$[cite: 5]. La salida $V_o$ se mide sobre $R_L$, que se encuentra en paralelo con el capacitor[cite: 5].
+
+\begin{center}
+    \begin{circuitikz}[scale=1, transform shape, thick]
+        \draw (0,0) to[V, v=$\hat V_s$] (0,2.5) to[R, l=$R_s$] (2.5,2.5) to[R, l=$R$] (5,2.5) coordinate(Vo);
+        \draw (Vo) to[short, -o] (6.5,2.5) node[right]{$\hat V_o$};
+        \draw (Vo) to[C, l_=$C$] (5,0) -- (0,0);
+        \draw (6.5,2.5) to[R, l=$R_L$] (6.5,0) -- (5,0);
+        \draw (6.5,0) to[short, -o] (6.5,0);
+        \draw (5,0) node[ground]{};
+    \end{circuitikz}
+\end{center}
+
+\textbf{a) Función de transferencia cargada (10 puntos)[cite: 5]} \\
+Demuestre analíticamente cómo modifica $R_L$ la función de transferencia[cite: 5]. Parta de $Z_C = 1/(j\omega C)$ y obtenga $H_L(j\omega) = \hat V_o / \hat V_s$[cite: 5]. Simplifique el resultado hasta una expresión de la forma $H_L(j\omega) = K / (1+j\omega\tau)$, determinando $K$ y $\tau$[cite: 5].
+
+\vspace{0.3cm}
+\textbf{b) Respuesta frecuencial (15 puntos)[cite: 5]} \\
+Evalúe el circuito cargado a $f = 1\,\text{kHz}$ y determine $H_L(j\omega)$ en forma rectangular, $|H_L|$, $\angle H_L$, y la ganancia en dB ($G_{dB} = 20\log_{10}|H_L|$)[cite: 5]. Compare el resultado con el caso $R_L \rightarrow \infty$ y explique físicamente por qué la carga modifica la respuesta[cite: 5].
+
+\end{document}

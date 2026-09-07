@@ -1,0 +1,274 @@
+\documentclass[aspectratio=169, table, xcdraw]{beamer}
+
+% Tema y Colores Institucionales
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\renewcommand{\tablename}{Tabla}
+\renewcommand{\figurename}{Figura}
+
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+\title[Introducción a la Mecatrónica: U2]{Transición a la Unidad 2: Amplificadores Operacionales Ideales y Configuraciones Clásicas}
+\subtitle{Introducción a la Mecatrónica — Semana 5, Sesión 2}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}
+\date{Semana 5}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Retroalimentación Diagnóstica: EC1}
+    \begin{block}{Cierre del Ciclo de Evaluación}
+        El objetivo de esta revisión no es resolver nuevamente la prueba, sino identificar la raíz de los errores conceptuales para corregirlos[cite: 3, 4].
+    \end{block}
+    
+    \textbf{Patrones de Error Comunes[cite: 3]:}
+    \begin{itemize}
+        \item \textbf{Planteamiento vs. Álgebra:} Empezar manipulando fórmulas antes de establecer la ley física (Leyes de Kirchhoff) del circuito[cite: 3].
+        \item \textbf{Pérdida de Signos:} Distinguir entre magnitud $|A_v|$ y ganancia real $A_v$. Un signo negativo contiene información física sobre la polaridad[cite: 3].
+        \item \textbf{Interpretación Física:} Un resultado matemático sin sentido físico (ej. coincidencia numérica desde un planteamiento erróneo) no demuestra dominio del procedimiento[cite: 3].
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{El Problema del Hito 1: Efecto de Carga (Loading)}
+    En el Hito 1, observamos que conectar etapas pasivas (ej. Puente Wheatstone a Twin-T) altera la señal debido a la interacción de impedancias[cite: 3, 4].
+
+    \begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape, thick]
+        \draw (0,0) to[V, v=$V_{th}$] (0,2) to[R, l=$Z_s$] (2,2) coordinate(out) to[short, -o] (3,2);
+        \draw (0,0) -- (2,0) to[short, -o] (3,0);
+        \draw (3,2) to[R, l=$Z_{in}$] (3,0);
+        \draw[dashed, red] (-1,-0.5) rectangle (2.5, 3.5) node[above left]{Etapa 1 (Fuente)};
+        \draw[dashed, ucbblue] (2.8,-0.5) rectangle (4.5, 3.5) node[above right]{Etapa 2 (Carga)};
+        \node[above] at (3,2) {$V_L$};
+    \end{circuitikz}
+    \end{center}
+
+    \vspace{-0.3cm}
+    \begin{equation*}
+        V_L = V_{th} \frac{Z_{in}}{Z_s + Z_{in}} \text{[cite: 3]}
+    \end{equation*}
+
+    \textbf{Conclusión:} Si $Z_{in} \gg Z_s$, entonces $V_L \approx V_{th}$. Para aislar etapas, necesitamos un dispositivo con impedancia de entrada infinita y de salida nula[cite: 3].
+\end{frame}
+
+\begin{frame}{El Amplificador Operacional (Op-Amp) Ideal}
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            \begin{center}
+            \begin{circuitikz}[scale=1, transform shape, thick]
+                \draw (0,0) node[op amp] (opamp) {};
+                \node[left] at (opamp.+) {$V_+$};
+                \node[left] at (opamp.-) {$V_-$};
+                \node[right] at (opamp.out) {$V_o$};
+                \draw (opamp.up) -- ++(0,0.5) node[above]{\footnotesize $+V_S$};
+                \draw (opamp.down) -- ++(0,-0.5) node[below]{\footnotesize $-V_S$};
+            \end{circuitikz}
+            \end{center}
+            \begin{equation*}
+                V_o = A(V_+ - V_-) \text{[cite: 3]}
+            \end{equation*}
+        \end{column}
+        \begin{column}{0.6\textwidth}
+            \textbf{Suposiciones del Modelo Ideal[cite: 3]:}
+            \begin{itemize}
+                \item Ganancia en lazo abierto infinita: $A \rightarrow \infty$
+                \item Impedancia de entrada infinita: $R_{in} \rightarrow \infty$
+                \item Impedancia de salida nula: $R_{out} \rightarrow 0$
+            \end{itemize}
+            
+            \vspace{0.3cm}
+            \textbf{Consecuencia Directa de $R_{in} \rightarrow \infty$:}
+            \begin{equation*}
+                \boxed{ i_+ = i_- = 0 } \text{[cite: 3]}
+            \end{equation*}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Realimentación Negativa y Cortocircuito Virtual}
+    Si introducimos una red de realimentación negativa y el circuito opera linealmente, el Op-Amp ajustará su salida para minimizar el error diferencial[cite: 3].
+    
+    \begin{equation*}
+        V_+ - V_- = \frac{V_o}{A} \quad \xrightarrow{A \to \infty} \quad V_+ - V_- \rightarrow 0 \text{[cite: 3]}
+    \end{equation*}
+
+    \begin{alertblock}{Cortocircuito Virtual vs. Físico}
+        La condición $\boxed{V_+ \approx V_-}$ no implica una conexión eléctrica[cite: 3]. ¡Recordemos que $i_+ = i_- = 0$! Dos nodos pueden tener el mismo potencial sin estar unidos por un cable[cite: 3].
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Derivación: Amplificador Inversor}
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            \begin{circuitikz}[scale=0.8, transform shape, thick]
+                \draw (0,0) node[op amp] (opamp) {};
+                \draw (opamp.+) -- ++(0,-0.5) node[ground]{};
+                \draw (opamp.-) node[above]{$V_-$} to[R, l_=$R_{in}$] ++(-2.5,0) node[left]{$V_i$};
+                \draw (opamp.-) -- ++(0,1.5) coordinate(tmp) to[R, l=$R_f$] (tmp -| opamp.out) -- (opamp.out) to[short, -o] ++(0.5,0) node[right]{$V_o$};
+                \draw[-Stealth, ucbblue] (-2.5, 0.2) -- (-1.5, 0.2) node[midway, below]{\footnotesize $i_{in}$};
+                \draw[-Stealth, ucbblue] (-0.5, 1.7) -- (0.5, 1.7) node[midway, below]{\footnotesize $i_f$};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.6\textwidth}
+            \textbf{Paso 1: Aplicar Modelo Ideal[cite: 3]} \\
+            $V_+ = 0 \implies V_- \approx 0$ (Tierra virtual)[cite: 3]. \\
+            Además, la corriente de entrada $i_- = 0$[cite: 3].
+            
+            \vspace{0.3cm}
+            \textbf{Paso 2: KCL en el nodo inversor[cite: 3]}
+            \begin{equation*}
+                i_{in} = i_f \implies \frac{V_i - V_-}{R_{in}} = \frac{V_- - V_o}{R_f} \text{[cite: 3]}
+            \end{equation*}
+            Sustituyendo $V_- = 0$:
+            \begin{equation*}
+                \frac{V_i}{R_{in}} = -\frac{V_o}{R_f} \implies \boxed{ A_v = \frac{V_o}{V_i} = -\frac{R_f}{R_{in}} } \text{[cite: 3]}
+            \end{equation*}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Ejemplo Guiado: Amplificador Inversor}
+    \textbf{Datos:} $R_{in} = 5\,\text{k}\Omega$, $R_f = 20\,\text{k}\Omega$, $V_i = 0.25\,\text{V}$[cite: 3].
+    
+    \vspace{0.2cm}
+    \textbf{Resolución Analítica[cite: 3]:}
+    \begin{enumerate}
+        \item Por realimentación negativa, $V_- = V_+ = 0\,\text{V}$[cite: 3].
+        \item Corriente de entrada: $i_{in} = \frac{0.25\,\text{V}}{5\,\text{k}\Omega} = 50\,\mu\text{A}$[cite: 3].
+        \item Como $i_- = 0$, esta corriente atraviesa $R_f$[cite: 3].
+        \item Tensión de salida: $\frac{0 - V_o}{20\,\text{k}\Omega} = 50\,\mu\text{A} \implies \boxed{V_o = -1\,\text{V}}$[cite: 3].
+    \end{enumerate}
+
+    \begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=Impedancia de Entrada del Circuito]
+        Desde la fuente $V_i$, la corriente fluye hacia un nodo que está a $0\,\text{V}$. Por tanto, la impedancia que "ve" la fuente es $Z_{in, \text{circuit}} \approx R_{in}$, ¡no infinita![cite: 3]
+    \end{tcolorbox}
+\end{frame}
+
+\begin{frame}{Derivación: Amplificador No Inversor}
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            \begin{circuitikz}[scale=0.8, transform shape, thick]
+                % Se utiliza "noinv input up" para colocar V+ arriba y V- abajo, 
+                % rutando la realimentación por debajo y evitando cruces de líneas.
+                \draw (0,0) node[op amp, noinv input up] (opamp) {};
+                \draw (opamp.+) to[short, -o] ++(-1.5,0) node[left]{$V_i$};
+                \draw (opamp.-) node[above]{$V_-$} to[short] ++(0,-1.5) coordinate(tmp) to[R, l_=$R_f$] (tmp -| opamp.out) -- (opamp.out) to[short, -o] ++(0.5,0) node[right]{$V_o$};
+                \draw (opamp.-) -- ++(-0.5,0) to[R, l_=$R_g$] ++(0,-1.5) node[ground]{};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.6\textwidth}
+            \textbf{Paso 1: Aplicar Modelo Ideal[cite: 3]} \\
+            $V_+ = V_i \implies V_- \approx V_i$[cite: 3]. \\
+            Corriente de entrada $i_- = 0$[cite: 3].
+            
+            \vspace{0.3cm}
+            \textbf{Paso 2: Divisor de Tensión[cite: 3]} \\
+            Como el Op-Amp no drena corriente, $R_f$ y $R_g$ forman un divisor ideal respecto a $V_o$[cite: 3]:
+            \begin{equation*}
+                V_- = V_o \frac{R_g}{R_f + R_g} \text{[cite: 3]}
+            \end{equation*}
+            Sustituyendo $V_- = V_i$:
+            \begin{equation*}
+                V_i = V_o \frac{R_g}{R_f + R_g} \implies \boxed{ A_v = 1 + \frac{R_f}{R_g} } \text{[cite: 3]}
+            \end{equation*}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Ejemplo Guiado y Comparación}
+    \textbf{Datos No Inversor:} $R_f = 30\,\text{k}\Omega$, $R_g = 10\,\text{k}\Omega$, $V_i = 0.4\,\text{V}$[cite: 3].
+    
+    Cálculo rápido de salida[cite: 3]: 
+    $A_v = 1 + \frac{30\text{k}}{10\text{k}} = 4 \implies V_o = 4(0.4\,\text{V}) = \boxed{1.6\,\text{V}}$[cite: 3].
+
+    \vspace{0.4cm}
+    \begin{table}[]
+        \centering
+        \renewcommand{\arraystretch}{1.3}
+        \begin{tabular}{lcc}
+        \toprule
+        \rowcolor[HTML]{EFEFEF}
+        \textbf{Característica} & \textbf{Inversor} & \textbf{No Inversor} \\ \midrule
+        Signo de Salida & Negativo (Invierte) & Positivo (Conserva)[cite: 3] \\
+        Ganancia Ideal & $-R_f/R_{in}$ & $1 + R_f/R_g$[cite: 3] \\
+        $Z_{in}$ del Circuito & $\approx R_{in}$ & $\rightarrow \infty$[cite: 3] \\
+        \bottomrule
+        \end{tabular}
+    \end{table}
+    \textit{El Seguidor de Tensión ($A_v = 1$) es el límite del No Inversor cuando $R_f = 0$[cite: 3].}
+\end{frame}
+
+\begin{frame}{Overview: Configuraciones Sumadora y Diferencial}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \textbf{Sumador Inversor[cite: 3]} \\
+            \footnotesize
+            Utiliza KCL en el nodo de tierra virtual para sumar corrientes de múltiples fuentes de entrada. 
+            Permite combinar señales con pesos dictados por las resistencias[cite: 3, 4].
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Amplificador Diferencial[cite: 3]} \\
+            \footnotesize
+            Utiliza ambas entradas del Op-Amp. Su salida es proporcional a la diferencia $V_2 - V_1$. Base para la instrumentación[cite: 3, 4].
+        \end{column}
+    \end{columns}
+    \vspace{0.4cm}
+    \begin{center}
+        \textit{La derivación completa de estas topologías se explorará en detalle a medida que avancemos con el proyecto.[cite: 4]}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Verificación con LTSpice}
+    \begin{block}{Regla de Oro para Simulación[cite: 3]}
+        \textbf{Predicción $\rightarrow$ Simulación $\rightarrow$ Comparación.} La simulación no sustituye la derivación analítica[cite: 3].
+    \end{block}
+    
+    En la guía práctica usaremos el modelo \texttt{UniversalOpAmp2}[cite: 3].
+    
+    \vspace{0.2cm}
+    \textbf{Preguntas Comparativas en caso de error[cite: 3]:}
+    \begin{itemize}
+        \item ¿Se ha confundido la entrada inversora con la no inversora?
+        \item ¿Falta la referencia de tierra global?
+        \item ¿Está saturado el amplificador (alimentación $V_S$ insuficiente)?
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Comprobación Formativa (Exit Ticket)}
+    \begin{tcolorbox}[colback=white, colframe=ucbblue, title=Consolidación Rápida]
+        \begin{enumerate}
+            \item ¿Qué problema del Hito 1 motiva el uso de una etapa activa?[cite: 4]
+            \item ¿Por qué un Op-Amp ideal no carga sus entradas?[cite: 4]
+            \item ¿Bajo qué condiciones podemos utilizar con seguridad $V_+ \approx V_-$?[cite: 4]
+            \item ¿Qué significa físicamente el signo negativo obtenido en la derivación del amplificador inversor?[cite: 4]
+            \item ¿Qué configuración elegirías para obtener ganancia positiva y una impedancia de entrada idealmente muy elevada para minimizar el loading?[cite: 4]
+        \end{enumerate}
+    \end{tcolorbox}
+\end{frame}
+
+\end{document}

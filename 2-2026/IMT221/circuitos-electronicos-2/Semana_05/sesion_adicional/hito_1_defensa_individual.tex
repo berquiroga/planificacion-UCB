@@ -1,0 +1,98 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{graphicx}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Guía Docente}
+\chead{Defensa Individual Diferida (Hito 1)}
+\rhead{Circuitos Electrónicos II}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Guía de Entrevista: Defensa Individual Hito 1}]
+    Esta guía convierte la defensa grupal en una comprobación individual de 10-15 min, manteniendo el mismo rigor técnico[cite: 5]. \textbf{No debe proporcionarse a los estudiantes.[cite: 5]}
+\end{tcolorbox}
+
+\section*{Arquitectura del Sistema (Mapa Visual)[cite: 5]}
+\begin{center}
+    \begin{tikzpicture}[
+        box/.style={rectangle, draw=ucbblue, thick, fill=white, text width=2.5cm, align=center, rounded corners, minimum height=1cm, font=\footnotesize},
+        arrow/.style={-Stealth, thick, ucbblue}
+    ]
+        \node[box] (ntc) {1. Sensor NTC};
+        \node[box, right=0.8cm of ntc] (wheat) {2. Puente Wheatstone AC};
+        \node[box, right=0.8cm of wheat] (twin) {3. Twin-T Notch};
+        \node[box, right=0.8cm of twin] (out) {4. Salida del Sistema};
+        
+        \node[below=1cm of wheat, font=\footnotesize\itshape, color=gray] (lt) {LTSpice / Osciloscopio};
+        \node[below=1cm of out, font=\footnotesize\itshape, color=gray] (py) {CSV / Python};
+
+        \draw[arrow] (ntc) -- (wheat);
+        \draw[arrow] (wheat) -- node[above]{\footnotesize $V_{dif}$} (twin);
+        \draw[arrow] (twin) -- (out);
+        
+        \draw[dashed, gray] (wheat) -- (lt);
+        \draw[dashed, gray] (out) -- (py);
+    \end{tikzpicture}
+\end{center}
+
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape, thick]
+        \node[above] at (1.5,2.5) {\textbf{Modelo Conceptual del Efecto de Carga (Loading)[cite: 5]}};
+        \draw (0,0) to[V, v=$V_{th}$] (0,2) to[R, l=$Z_{out}$] (2,2) coordinate(out) to[short, -o] (3,2);
+        \draw (0,0) -- (2,0) to[short, -o] (3,0);
+        \draw (3,2) to[R, l=$Z_{in}$] (3,0);
+        \node[above] at (3,2) {$V_L = V_{th} \frac{Z_{in}}{Z_{out}+Z_{in}}$[cite: 5]};
+    \end{circuitikz}
+\end{center}
+
+\section*{Secuencia de la Entrevista (15 mins max)[cite: 5]}
+\begin{enumerate}
+    \item \textbf{0–2 min (System Overview):} Explique el sistema completo desde el NTC hasta la salida del Twin-T[cite: 5].
+    \item \textbf{2–5 min (Analytical Probe):} Pregunta Nivel B (requiere dibujar/escribir)[cite: 5].
+    \item \textbf{5–8 min (Evidence Probe):} Pregunta Nivel C sobre sus archivos reales[cite: 5].
+    \item \textbf{8–11 min (System/Loading):} Pregunta obligatoria sobre loading o $K_L$[cite: 5].
+    \item \textbf{11–13 min (Transfer):} Pregunta Nivel D[cite: 5].
+\end{enumerate}
+
+\section*{Banco de Preguntas[cite: 5]}
+\textbf{Nivel A — Fundamentos[cite: 5]}
+\begin{itemize}
+    \item \textbf{A3:} ¿Por qué la temperatura modifica principalmente la amplitud de la señal del puente y no la frecuencia de la portadora?[cite: 5]
+    \item \textbf{A6:} ¿Por qué la tensión diferencial del puente no debe confundirse con la tensión de uno de sus nodos respecto de tierra?[cite: 5]
+\end{itemize}
+
+\textbf{Nivel B — Razonamiento Analítico[cite: 5]}
+\begin{itemize}
+    \item \textbf{B3:} Explique matemáticamente por qué $V_{dif} = V_{CH1} - V_{CH2}$ y el error de confundirlo con $V_{CH1}$[cite: 5].
+    \item \textbf{B5 / B6:} Escriba $V_L = V_{th} \frac{Z_{in}}{Z_{out}+Z_{in}}$ y explique físicamente $K_L \approx 1$ frente a un valor menor[cite: 5].
+\end{itemize}
+
+\textbf{Nivel C — Evidencia Real (sobre capturas del estudiante)[cite: 5]}
+\begin{itemize}
+    \item \textbf{C1 / C3:} Muestre una captura del osciloscopio o Bode. Identifique CH1, CH2, MATH, amplitud, y frecuencia de notch[cite: 5].
+    \item \textbf{C5:} Explique cómo transformó un $\Delta t$ en desfase en Python mediante $\phi = 360^\circ f \Delta t$[cite: 5].
+\end{itemize}
+
+\textbf{Nivel D — Transferencia[cite: 5]}
+\begin{itemize}
+    \item \textbf{D2:} Si $Z_{in} \rightarrow \infty$, ¿qué ocurre idealmente con la tensión de la etapa anterior?[cite: 5]
+    \item \textbf{D4:} ¿Cómo distinguiría experimentalmente entre loading, un error de conexión, o un error de escala del osciloscopio?[cite: 5]
+\end{itemize}
+
+\end{document}

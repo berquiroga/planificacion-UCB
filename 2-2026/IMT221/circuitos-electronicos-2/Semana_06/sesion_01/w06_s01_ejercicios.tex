@@ -1,0 +1,72 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Circuitos Electrónicos II}
+\chead{Unidad 2 - Op-Amps Ideales}
+\rhead{Hoja de Ejercicios}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Ejercicios: Amplificadores Operacionales Ideales}}[cite: 6]
+\end{center}
+
+\section*{Ejercicio 1 — Reconstrucción: Inversor[cite: 6]}
+Sin utilizar inicialmente la fórmula de ganancia predefinida. Considere un amplificador inversor ideal con $R_{in} = 5\,\text{k}\Omega$, $R_f = 15\,\text{k}\Omega$ y $V_{in} = 0.4\,\text{V}$[cite: 6]. Determine:
+\begin{enumerate}
+    \item La tensión en la entrada no inversora $V_+$[cite: 6].
+    \item La tensión en la entrada inversora $V_-$[cite: 6].
+    \item La corriente que circula por $R_{in}$[cite: 6].
+    \item La tensión de salida $V_o$[cite: 6].
+    \item El signo y magnitud de la ganancia $A_v$[cite: 6].
+\end{enumerate}
+
+\section*{Ejercicio 2 — No Inversor[cite: 6]}
+Se desea diseñar un amplificador no inversor con una ganancia $A_v = 6$ utilizando una resistencia a tierra $R_g = 10\,\text{k}\Omega$[cite: 6]. Determine:
+\begin{enumerate}
+    \item El valor requerido para la resistencia de realimentación $R_f$[cite: 6].
+    \item La tensión de salida $V_o$ para una entrada $V_{in} = 0.25\,\text{V}$[cite: 6].
+    \item Por qué la salida de esta configuración no invierte la polaridad de la entrada[cite: 6].
+    \item Qué impedancia de entrada predice el modelo ideal para este circuito[cite: 6].
+\end{enumerate}
+
+\section*{Ejercicio 3 — Amplificador Sumador[cite: 6]}
+Considere un amplificador sumador inversor con $R_f = 30\,\text{k}\Omega$, $R_1 = 10\,\text{k}\Omega$, y $R_2 = 30\,\text{k}\Omega$[cite: 6]. Las tensiones de entrada son $V_1 = 0.1\,\text{V}$ y $V_2 = 0.3\,\text{V}$[cite: 6]. \\
+Determine la tensión de salida $V_o$ comenzando el análisis obligatoriamente desde la ecuación de nodos (KCL) en el terminal inversor[cite: 6].
+
+\section*{Ejercicio 4 — Comparación Conceptual[cite: 6]}
+Dos estudiantes debaten sobre las características de los Op-Amps: \\
+\textbf{Estudiante A:} "El inversor tiene menor impedancia de entrada porque el Op-Amp inversor absorbe corriente."[cite: 6] \\
+\textbf{Estudiante B:} "La diferencia de impedancia de entrada proviene exclusivamente de cómo se conecta la fuente a la topología del circuito."[cite: 6] \\
+¿Quién tiene razón? Justifique su respuesta basándose en el circuito ideal[cite: 6].
+
+\section*{Ejercicio 5 — Predicción Previa a LTSpice[cite: 6]}
+Considere un amplificador no inversor con $R_g = 10\,\text{k}\Omega$, $R_f = 20\,\text{k}\Omega$, excitado por una señal $V_{in}(t) = 0.5\sin(\omega t)\,\text{V}$[cite: 6]. \\
+\textbf{Antes de abrir el simulador}, escriba sus predicciones:
+\begin{itemize}
+    \item $A_v =$ \rule{2cm}{0.4pt}[cite: 6]
+    \item $V_{out, p} =$ \rule{2cm}{0.4pt}[cite: 6]
+    \item Polaridad = \rule{2cm}{0.4pt}[cite: 6]
+\end{itemize}
+\textbf{Después de simular}, registre:
+\begin{itemize}
+    \item $A_{v, \text{sim}} =$ \rule{2cm}{0.4pt}[cite: 6]
+\end{itemize}
+Explique cualquier discrepancia observada entre la predicción y la simulación[cite: 6].
+
+\end{document}

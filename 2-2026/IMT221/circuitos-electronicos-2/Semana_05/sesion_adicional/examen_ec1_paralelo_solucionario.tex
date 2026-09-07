@@ -1,0 +1,83 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Solucionario EC1 Paralelo}
+\rhead{Circuitos Electrónicos II}
+\lfoot{Documento Docente}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{success}{RGB}{46, 139, 87}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Clave de Corrección: EC1 Paralelo Diferido}]
+    \centering \large \textbf{Solucionario Oficial y Rúbrica}
+\end{tcolorbox}
+
+\section*{Problema 1 — Red pasiva RLC (25 puntos)[cite: 5]}
+
+\subsection*{a) Impedancias (10 puntos)[cite: 5]}
+$\omega = 2\pi(1000) = 6283.19\,\text{rad/s}$[cite: 5].
+Para el capacitor: $Z_C = \frac{1}{j\omega C} \implies \boxed{Z_C \approx -j1000\,\Omega}$[cite: 5]. \\
+Para el inductor: $Z_L = j\omega L \implies \boxed{Z_L \approx j1000\,\Omega}$[cite: 5]. \\
+La rama serie: $Z_{RL} = R_2 + Z_L \implies \boxed{Z_{RL} = 1000 + j1000\,\Omega}$[cite: 5]. \\
+La combinación paralela: 
+$Z_A = \frac{Z_C Z_{RL}}{Z_C + Z_{RL}} = \frac{(-j1000)(1000+j1000)}{-j1000+1000+j1000} = \frac{10^6 - j10^6}{1000}$[cite: 5]. \\
+Rectangular: $\boxed{Z_A = 1000 - j1000\,\Omega}$[cite: 5]. \\
+Polar: $|Z_A| = \sqrt{1000^2 + 1000^2} = 1414.2\,\Omega$, $\angle Z_A = -45^\circ \implies \boxed{Z_A = 1.414\,\text{k}\Omega\angle-45^\circ}$[cite: 5].
+
+\textbf{Distribución de puntos y etiquetas[cite: 5]:}
+\begin{itemize}
+    \item $Z_C$ (2 pt), $Z_L$ (2 pt), $Z_{RL}$ (1 pt), planteamiento del paralelo (2 pt), $Z_A$ rectangular (2 pt), $Z_A$ polar (1 pt)[cite: 5].
+    \item Etiquetas: \texttt{[Impedance]}, \texttt{[Complex arithmetic]}, \texttt{[AC model]}[cite: 5].
+\end{itemize}
+
+\subsection*{b) Análisis fasorial (15 puntos)[cite: 5]}
+Divisor 1: $\hat V_A = \hat V_{in} \frac{Z_A}{R_1 + Z_A} = 2 \frac{1000 - j1000}{1000 + 1000 - j1000} = 2 \frac{1-j}{2-j}$[cite: 5]. \\
+$\hat V_A = 2 \frac{(1-j)(2+j)}{(2-j)(2+j)} = \frac{2(3-j)}{5} \implies \boxed{\hat V_A = 1.2 - j0.4\,\text{V}}$[cite: 5]. \\
+Divisor 2: $\hat V_{out} = \hat V_A \frac{Z_L}{R_2 + Z_L} = (1.2 - j0.4) \frac{j}{1+j} = (1.2 - j0.4)\frac{1+j}{2}$[cite: 5]. \\
+Rectangular: $\boxed{\hat V_{out} = 0.8 + j0.4\,\text{V}_{\text{pico}}}$[cite: 5]. \\
+Polar: $|\hat V_{out}| = \sqrt{0.8^2 + 0.4^2} = 0.8944\,\text{V}$, $\angle V_{out} = \tan^{-1}\left(\frac{0.4}{0.8}\right) = 26.565^\circ \implies \boxed{\hat V_{out} = 0.894\angle26.6^\circ\,\text{V}_{\text{pico}}}$[cite: 5]. \\
+Interpretación: $\hat V_{out}$ \textbf{adelanta aproximadamente $26.6^\circ$} respecto a $\hat V_{in}$ ($0^\circ$). El ángulo expresa la relación temporal de fase entre dos señales sinusoidales de la misma frecuencia[cite: 5].
+
+\textbf{Distribución de puntos y etiquetas[cite: 5]:}
+\begin{itemize}
+    \item Divisor $V_A$ (3 pt), $V_A$ correcto (3 pt), divisor interno (3 pt), $V_{out}$ rectangular (2 pt), conversión polar (2 pt), interpretación (2 pt)[cite: 5].
+    \item Etiquetas: \texttt{[Circuit laws]}, \texttt{[Complex arithmetic]}, \texttt{[Magnitude]}, \texttt{[Phase]}, \texttt{[Physical interpretation]}[cite: 5].
+    \item \textit{Nota de crédito consecuencial:} Un error numérico inicial no elimina los puntos posteriores si se arrastra el resultado usando el procedimiento analítico correcto[cite: 5].
+\end{itemize}
+
+\section*{Problema 2 — Filtro RC con efecto de carga (25 puntos)[cite: 5]}
+
+\subsection*{a) Función de Transferencia Cargada (10 puntos)[cite: 5]}
+Sea $R_T = R_s + R = 2\,\text{k}\Omega$[cite: 5]. Impedancia de carga paralela: $Z_p = R_L \parallel Z_C = \frac{R_L}{1+j\omega C R_L}$[cite: 5]. \\
+$H_L(j\omega) = \frac{Z_p}{R_T + Z_p} = \frac{R_L}{R_T + R_L + j\omega C R_T R_L}$[cite: 5]. \\
+Factorizando: $\boxed{H_L(j\omega) = \frac{\frac{R_L}{R_T+R_L}}{1 + j\omega \frac{C R_T R_L}{R_T+R_L}}}$[cite: 5]. \\
+$\boxed{K = \frac{R_L}{R_T+R_L} = \frac{1}{2}}$, $\boxed{\tau = C(R_T \parallel R_L) = 159.15\,\text{nF} \cdot 1\,\text{k}\Omega = 159.15\,\mu\text{s}}$[cite: 5].
+
+\textbf{Distribución y Etiquetas:} $Z_C$ (1 pt), paralelo (2 pt), divisor (2 pt), álgebra (3 pt), $K$ y $\tau$ (2 pt)[cite: 5]. Etiquetas: \texttt{[Impedance], [Circuit laws], [Transfer function]}[cite: 5].
+
+\subsection*{b) Evaluación a 1 kHz (15 puntos)[cite: 5]}
+$\omega\tau \approx 1$[cite: 5]. $H_L(j\omega) = \frac{0.5}{1+j} \implies \boxed{H_L = 0.25 - j0.25}$[cite: 5]. \\
+$\boxed{|H_L| = \sqrt{0.25^2+0.25^2} = 0.3536}$ y $\boxed{\angle H_L = -45^\circ}$[cite: 5]. $\boxed{G_{dB} = 20\log_{10}(0.3536) \approx -9.03\,\text{dB}}$[cite: 5]. \\
+\textbf{Sin carga ($R_L \rightarrow \infty$)[cite: 5]:} $K \rightarrow 1$, $\tau_0 = CR_T = 318.3\,\mu\text{s}$. A 1 kHz, $\omega\tau_0 \approx 2 \implies H_0 = 1 / (1+j2)$[cite: 5]. $|H_0| = 1/\sqrt{5} = 0.4472 \implies G_{0,dB} \approx -6.99\,\text{dB}$[cite: 5]. \\
+\textbf{Física[cite: 5]:} La carga reduce la amplitud porque $R_L$ demanda corriente y forma una combinación de impedancias. No es un observador ideal: se convierte en parte del circuito[cite: 5].
+
+\textbf{Distribución:} Rectangular (3), Magnitud (2), Fase (2), dB (2), Comparación (3), Física (3)[cite: 5].
+
+\end{document}
