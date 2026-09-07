@@ -1,0 +1,78 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Ejercicios S06}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Hoja de Ejercicios: Teorema de Superposición}]
+    \centering \large \textbf{Análisis de Redes Resistivas con Múltiples Fuentes}
+\end{tcolorbox}
+
+\section*{Ejercicio 1: Aplicación Completa del Método}
+Considera el circuito alimentado por una fuente de tensión y una fuente de corriente:
+\begin{itemize}
+    \item $V_s = 9\,\text{V}$ (terminal positivo arriba, negativo a tierra).
+    \item $R_1 = 3\,\text{k}\Omega$ (conectado entre el positivo de $V_s$ y el nodo de salida $V_o$).
+    \item $R_2 = 6\,\text{k}\Omega$ (conectado entre el nodo $V_o$ y tierra).
+    \item $I_s = 1\,\text{mA}$ (conectado en el nodo $V_o$, extrayendo corriente hacia tierra).
+    \item \textbf{Variable de interés:} Tensión $V_o$ respecto a tierra.
+\end{itemize}
+
+\begin{enumerate}
+    \item Dibuja el subcircuito equivalente manteniendo activa únicamente la fuente de tensión $V_s$ (desactiva $I_s$). Calcula la contribución $V_o^{(1)}$.
+    \item Dibuja el subcircuito equivalente manteniendo activa únicamente la fuente de corriente $I_s$ (desactiva $V_s$). Calcula la contribución $V_o^{(2)}$. \textit{Atención al sentido de la corriente y la referencia de $V_o$.}
+    \item Realiza la suma algebraica para obtener la tensión total $V_o$.
+    \item Verifica tu resultado planteando el análisis nodal (KCL) en el circuito original.
+    \item Explica por qué una de las contribuciones resulta negativa.
+\end{enumerate}
+
+\section*{Ejercicio 2: Diagnóstico de Errores}
+Un estudiante analiza un circuito y calcula los siguientes valores parciales para la tensión de salida ante dos fuentes distintas:
+\begin{equation*}
+    V_o^{(1)} = 6\,\text{V}, \quad V_o^{(2)} = 2\,\text{V}
+\end{equation*}
+El estudiante concluye inmediatamente que $V_o = 8\,\text{V}$. 
+\begin{enumerate}
+    \item ¿Qué aspecto fundamental del análisis por superposición omitió el estudiante?
+    \item ¿Cómo influyen las referencias de polaridad y las direcciones de corriente en el cálculo final?
+\end{enumerate}
+
+\section*{Ejercicio 3: Razonamiento Físico de Desactivación}
+Explica con tus propias palabras, basándote en las Leyes de Kirchhoff y las definiciones de fuentes ideales:
+\begin{enumerate}
+    \item ¿Por qué desactivar una fuente de tensión ideal ($V_s = 0\,\text{V}$) equivale a un cortocircuito?
+    \item ¿Por qué desactivar una fuente de corriente ideal ($I_s = 0\,\text{A}$) equivale a un circuito abierto?
+\end{enumerate}
+
+\section*{Ejercicio 4: Limitación de Potencia}
+En un circuito lineal, se determinó mediante superposición que la tensión sobre un resistor de $R = 2\,\text{k}\Omega$ debido a dos fuentes separadas es $v_1 = 3\,\text{V}$ y $v_2 = -1\,\text{V}$.
+\begin{enumerate}
+    \item Calcula la tensión total $v_{\text{total}}$ sobre el resistor.
+    \item Calcula la potencia total disipada usando $v_{\text{total}}$.
+    \item Calcula las potencias parciales $P_1 = v_1^2/R$ y $P_2 = v_2^2/R$, y comprueba si $P_1 + P_2$ es igual a la potencia total. Explica la discrepancia matemáticamente.
+\end{enumerate}
+
+\end{document}

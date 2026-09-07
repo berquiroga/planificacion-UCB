@@ -1,0 +1,205 @@
+\documentclass[aspectratio=169, table, xcdraw]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+\title[Superposición]{Teorema de Superposición y Desactivación de Fuentes}
+\subtitle{IMT-121 Circuitos Electrónicos I — Semana 6, Sesión 1}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}
+\date{Semana 6}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Hilos Conductores: De EC1 a EC2}
+    \begin{block}{Evolución Metodológica del Curso}
+        \centering
+        $\bm{A}\bm{x} = \bm{b} \quad \longrightarrow \quad \text{Linealidad (Homogeneidad + Additividad)} \quad \longrightarrow \quad \text{Superposición}$
+    \end{block}
+    
+    \vspace{0.3cm}
+    \begin{itemize}
+        \item \textbf{Hito 1 (EC1):} Modelamos redes físicas mediante matrices y leyes de Kirchhoff ($\bm{A}\bm{x} = \bm{b}$).
+        \item \textbf{Micro-lección Asincrónica:} Comprobamos que si la red es fija ($\bm{A}$ constante), escalar $\bm{b}$ escala $\bm{x}$ (Homogeneidad), y sumar excitaciones suma respuestas (Additividad).
+        \item \textbf{Hoy (EC2):} Convertimos la additividad en un procedimiento sistemático para analizar circuitos con múltiples fuentes: \textbf{Superposición}.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Principio de Superposición}
+    \begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=Definición del Teorema]
+        En cualquier red resistiva lineal con múltiples fuentes independientes, la respuesta total (tensión o corriente) es igual a la \textbf{suma algebraica} de las respuestas producidas por cada fuente independiente actuando \textbf{por separado}, con todas las demás fuentes independientes desactivadas.
+    \end{tcolorbox}
+    
+    \vspace{0.2cm}
+    \textbf{Fundamento Matemático (Additividad):}
+    Si $\bm{b} = \bm{b}_1 + \bm{b}_2$, y conocemos $\bm{A}\bm{x}_1 = \bm{b}_1$ y $\bm{A}\bm{x}_2 = \bm{b}_2$:
+    \begin{equation*}
+        \bm{A}(\bm{x}_1 + \bm{x}_2) = \bm{b}_1 + \bm{b}_2 \implies \bm{x}_{\text{total}} = \bm{x}_1 + \bm{x}_2
+    \end{equation*}
+\end{frame}
+
+\begin{frame}{Reglas de Desactivación de Fuentes Independientes}
+    Para aislar el efecto de una sola fuente, las demás fuentes independientes ideales se llevan a cero ($V=0$ o $I=0$):
+    
+    \begin{columns}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{1. Fuente de Tensión Ideal ($V_s = 0$)}
+                \begin{itemize}
+                    \item Una fuente de tensión con valor cero impone $0\,\text{V}$ entre sus terminales.
+                    \item \textbf{Equivalente físico:} Un \textbf{Cortocircuito} (conductor ideal).
+                \end{itemize}
+            \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{2. Fuente de Corriente Ideal ($I_s = 0$)}
+                \begin{itemize}
+                    \item Una fuente de corriente con valor cero impone $0\,\text{A}$ en su rama.
+                    \item \textbf{Equivalente físico:} Un \textbf{Circuito Abierto} (interrupción).
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.3cm}
+    \textbf{Nota sobre Fuentes Dependientes:} Las fuentes dependientes \textit{nunca} se desactivan, ya que dependen de una variable interna del circuito y forman parte esencial de la red lineal $\bm{A}$.
+\end{frame}
+
+\begin{frame}{Ejemplo Guiado: Planteamiento del Circuito}
+    Calcular la tensión de nodo $V_o$ respecto a tierra utilizando superposición.
+    
+    \begin{center}
+    \begin{circuitikz}[scale=0.85, transform shape, thick]
+        % Fuente de voltaje (se reemplaza 'v=' por 'l=' con llaves protectoras para evitar el error de parseo interno de CircuitikZ)
+        \draw (0,0) to[V, l={$V_s = 12\,\text{V}$}] (0,2) to[R, l={$R_1 = 4\,\text{k}\Omega$}] (3,2);
+        % Nodo Vo
+        \draw (3,2) node[above]{$V_o$} to[short, *-] (3,2);
+        \draw (3,2) to[R, l_={$R_2 = 2\,\text{k}\Omega$}] (3,0);
+        % Fuente de corriente (se protege l_ con llaves)
+        \draw (5,0) to[I, l_={$I_s = 1\,\text{mA}$}] (5,2) -- (3,2);
+        % Tierra
+        \draw (0,0) -- (5,0);
+        \draw (2.5,0) node[ground]{};
+    \end{circuitikz}
+    \end{center}
+    \vspace{-0.2cm}
+    \textbf{Datos:} $V_s = 12\,\text{V}$, $I_s = 1\,\text{mA}$ (inyectando hacia $V_o$), $R_1 = 4\,\text{k}\Omega$, $R_2 = 2\,\text{k}\Omega$.
+\end{frame}
+
+\begin{frame}{Ejemplo Guiado: Paso 1 — Activa $V_s$, Desactiva $I_s$}
+    \begin{columns}
+        \begin{column}{0.45\textwidth}
+            \centering
+            \begin{circuitikz}[scale=0.75, transform shape, thick]
+                \draw (0,0) to[V, l={$12\,\text{V}$}] (0,2) to[R, l={$4\,\text{k}\Omega$}] (3,2);
+                \draw (3,2) node[above]{$V_o^{(1)}$} to[R, l={$2\,\text{k}\Omega$}] (3,0);
+                % Corriente abierta (indicada con trazo cortado o omitida)
+                \draw (4.5,0) node[above]{\small Abierto};
+                \draw (0,0) -- (4.5,0);
+                \draw (2,0) node[ground]{};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.52\textwidth}
+            \textbf{Acción:} $I_s = 1\,\text{mA} \rightarrow 0\,\text{A}$ (Circuito Abierto).
+            
+            \vspace{0.2cm}
+            \textbf{Análisis:} El circuito se reduce a un divisor de tensión simple entre $R_1$ y $R_2$.
+            \begin{align*}
+                V_o^{(1)} &= V_s \left( \frac{R_2}{R_1 + R_2} \right) \\
+                &= 12\,\text{V} \left( \frac{2\,\text{k}\Omega}{4\,\text{k}\Omega + 2\,\text{k}\Omega} \right) = \mathbf{4\,\text{V}}
+            \end{align*}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Ejemplo Guiado: Paso 2 — Activa $I_s$, Desactiva $V_s$}
+    \begin{columns}
+        \begin{column}{0.45\textwidth}
+            \centering
+            \begin{circuitikz}[scale=0.75, transform shape, thick]
+                % V_s = 0 -> Corto (reemplazado to[short] para evitar ambiguedades de parsing en nodos intermedios)
+                \draw (0,0) -- (0,2) node[midway, left]{\small Corto};
+                \draw (0,2) to[R, l={$4\,\text{k}\Omega$}] (3,2);
+                \draw (3,2) node[above]{$V_o^{(2)}$} to[R, l={$2\,\text{k}\Omega$}] (3,0);
+                \draw (4.5,0) to[I, l_={$1\,\text{mA}$}] (4.5,2) -- (3,2);
+                \draw (0,0) -- (4.5,0);
+                \draw (2,0) node[ground]{};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.52\textwidth}
+            \textbf{Acción:} $V_s = 12\,\text{V} \rightarrow 0\,\text{V}$ (Cortocircuito).
+            
+            \vspace{0.2cm}
+            \textbf{Análisis:} $R_1$ y $R_2$ quedan en paralelo respecto al nodo $V_o$.
+            \begin{align*}
+                R_{\text{eq}} &= R_1 \parallel R_2 = \frac{4 \cdot 2}{4 + 2} = 1.333\,\text{k}\Omega \\
+                V_o^{(2)} &= I_s \cdot R_{\text{eq}} = 1\,\text{mA} \cdot 1.333\,\text{k}\Omega = \mathbf{1.333\,\text{V}}
+            \end{align*}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Ejemplo Guiado: Paso 3 — Suma y Verificación}
+    \textbf{Suma Algebraica de Contribuciones:}
+    \begin{equation*}
+        V_o = V_o^{(1)} + V_o^{(2)} = 4\,\text{V} + 1.333\,\text{V} = \mathbf{5.333\,\text{V}}
+    \end{equation*}
+
+    \vspace{0.2cm}
+    \begin{block}{Verificación por Análisis Nodal (KCL)}
+        Planteando el nodo $V_o$ en el circuito original:
+        \begin{equation*}
+            \frac{V_o - 12}{4\,\text{k}} + \frac{V_o}{2\,\text{k}} - 1\,\text{mA} = 0 \implies 3V_o = 16 \implies V_o = \mathbf{5.333\,\text{V}}
+        \end{equation*}
+    \end{block}
+\end{frame}
+
+\begin{frame}{Límites de la Superposición: ¿Qué pasa con la Potencia?}
+    \begin{alertblock}{Advertencia Crítica}
+        La superposición se aplica estrictamente a \textbf{respuestas lineales} (tensiones y corrientes). \textbf{No se aplica directamente a la potencia eléctrica}.
+    \end{alertblock}
+    
+    \vspace{0.2cm}
+    \textbf{Razón Matemática:} La potencia es una función cuadrática ($P = V^2 / R$ o $I^2 R$). Si $v = v_1 + v_2$:
+    \begin{equation*}
+        P_{\text{total}} = \frac{(v_1 + v_2)^2}{R} = \frac{v_1^2}{R} + \frac{v_2^2}{R} + \frac{2v_1v_2}{R}
+    \end{equation*}
+    ¡El término cruzado $\frac{2v_1v_2}{R}$ impide sumar directamente $P_1 + P_2$! Para hallar la potencia en un elemento, primero se calcula la tensión o corriente total por superposición y luego se evalúa $P$.
+\end{frame}
+
+\begin{frame}{Puente hacia Thévenin y Norton}
+    \begin{block}{¿Hacia dónde vamos?}
+        \begin{itemize}
+            \item \textbf{Superposición:} Nos enseñó a separar contribuciones cuando hay múltiples fuentes.
+            \item \textbf{Próximo hito (Thévenin / Norton):} ¿Cómo podemos simplificar una red lineal compleja de múltiples fuentes y resistores vista desde un par de terminales ($a-b$) convirtiéndola en una única fuente equivalente y una resistencia en serie/paralelo?
+        \end{itemize}
+    \end{block}
+    \centering
+    \textit{La linealidad y la superposición son las herramientas teóricas que hacen posible el Teorema de Thévenin.}
+\end{frame}
+
+\end{document}
