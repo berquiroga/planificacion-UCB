@@ -1,0 +1,189 @@
+\documentclass[aspectratio=169, table, xcdraw]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, fit}
+
+\title[Linealidad]{Transición a la Unidad 2: Linealidad en Redes Resistivas}
+\subtitle{IMT-121 Circuitos Electrónicos I — Semana 5}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}
+\date{Semana 5}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{¿Qué acabamos de construir en el Hito 1?}
+    \begin{block}{Cadena de Representación y Validación}
+        El Hito 1 convirtió un circuito físico en un modelo que podemos resolver, simular y contrastar. No es una colección de entregables independientes, sino una sola identidad vista desde distintos niveles.
+    \end{block}
+    
+    \vspace{0.5cm}
+    \begin{center}
+    \begin{tikzpicture}[
+        node distance=0.8cm and 0.6cm,
+        box/.style={rectangle, draw=ucbblue, fill=ucbblue!10, rounded corners, text width=2cm, align=center, minimum height=1.2cm, font=\small},
+        arrow/.style={-Stealth, thick, draw=ucbblue}
+    ]
+        % Nodos
+        \node[box] (circuito) {Circuito Físico};
+        \node[box, right=of circuito] (ecuaciones) {Ecuaciones (Leyes)};
+        \node[box, right=of ecuaciones] (matriz) {$A\cdot x = b$};
+        \node[box, right=of matriz] (python) {Solver (NumPy)};
+        \node[box, right=of python] (simulacion) {Simulación (LTSpice)};
+        
+        % Flechas
+        \draw[arrow] (circuito) -- (ecuaciones);
+        \draw[arrow] (ecuaciones) -- (matriz);
+        \draw[arrow] (matriz) -- (python);
+        \draw[arrow] (python) -- (simulacion);
+        
+        % Etiquetas debajo
+        \node[below=0.2cm of ecuaciones, font=\scriptsize, text=black!70] {¿Qué ley?};
+        \node[below=0.2cm of matriz, font=\scriptsize, text=black!70] {¿Qué variable?};
+        \node[below=0.2cm of python, font=\scriptsize, text=black!70] {¿Qué solver?};
+        \node[below=0.2cm of simulacion, font=\scriptsize, text=black!70] {¿Qué magnitud?};
+    \end{tikzpicture}
+    \end{center}
+    
+    \vspace{0.3cm}
+    \textbf{Pregunta Abierta:} Si el circuito no cambia pero \textit{duplicamos} el valor de una fuente, ¿qué esperan que ocurra con las respuestas (corrientes/tensiones)?
+\end{frame}
+
+\begin{frame}{La Matriz nos da una pista}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            Partimos del modelo lineal estático consolidado:
+            \begin{equation*}
+                \bm{A} \bm{x} = \bm{b}
+            \end{equation*}
+            
+            \begin{itemize}
+                \item $\bm{A}$: Matriz de coeficientes (resistencias y topología).
+                \item $\bm{x}$: Vector de incógnitas (respuestas).
+                \item $\bm{b}$: Vector de excitaciones (fuentes independientes).
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=Condición de Red Fija]
+                Si las resistencias y la estructura del circuito permanecen iguales, la matriz $\bm{A}$ permanece fija. Todas las variaciones de las fuentes ingresan únicamente en $\bm{b}$.
+            \end{tcolorbox}
+            \textbf{Pregunta:} ¿Qué cambia matemáticamente si duplico únicamente una fuente independiente?
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Propiedad 1: Homogeneidad (Escalamiento)}
+    Si multiplicamos nuestro vector de excitación por un escalar $k$:
+    \begin{equation*}
+        \bm{A} \bm{x} = \bm{b} \quad \longrightarrow \quad k(\bm{A} \bm{x}) = k\bm{b}
+    \end{equation*}
+    
+    Como la matriz $\bm{A}$ es constante y la multiplicación matricial es distributiva con respecto a los escalares:
+    \begin{equation*}
+        \bm{A} (k\bm{x}) = k\bm{b}
+    \end{equation*}
+    
+    \begin{alertblock}{Interpretación Física}
+        Para la misma red resistiva ($\bm{A}$ fija), si la excitación se escala por $k$ (ej. $k\bm{b}$), la respuesta del circuito también se escala exactamente por $k$ (la nueva respuesta es $k\bm{x}$).
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Propiedad 2: Additividad}
+    Imaginemos dos escenarios distintos sobre el mismo circuito:
+    \begin{align*}
+        \text{Excitación } \bm{b}_1 \implies \text{Respuesta } \bm{x}_1 &\implies \bm{A} \bm{x}_1 = \bm{b}_1 \\
+        \text{Excitación } \bm{b}_2 \implies \text{Respuesta } \bm{x}_2 &\implies \bm{A} \bm{x}_2 = \bm{b}_2
+    \end{align*}
+    
+    Si aplicamos ambas excitaciones de forma simultánea ($\bm{b} = \bm{b}_1 + \bm{b}_2$):
+    \begin{equation*}
+        \bm{b}_1 + \bm{b}_2 = \bm{A} \bm{x}_1 + \bm{A} \bm{x}_2
+    \end{equation*}
+    Factorizando la matriz $\bm{A}$:
+    \begin{equation*}
+        \bm{b}_1 + \bm{b}_2 = \bm{A} (\bm{x}_1 + \bm{x}_2)
+    \end{equation*}
+    
+    \textbf{Conclusión:} La respuesta combinada a la suma de excitaciones es igual a la suma de las respuestas individuales.
+\end{frame}
+
+\begin{frame}{La Condición Física de Linealidad}
+    \begin{center}
+    \begin{tikzpicture}[
+        node distance=2cm,
+        box/.style={rectangle, draw=ucbblue, fill=ucbblue!10, text width=3cm, align=center, minimum height=2.5cm, font=\bfseries}
+    ]
+        % Nodo Central
+        \node[box] (sistema) {Red Lineal\\($\bm{A}$ Fija)};
+        
+        % Entradas
+        \node[left=of sistema, align=right] (entradas) {
+            $\bm{b}$ \\[0.3cm]
+            $k\bm{b}$ \\[0.3cm]
+            $\bm{b}_1 + \bm{b}_2$
+        };
+        
+        % Salidas
+        \node[right=of sistema, align=left] (salidas) {
+            $\bm{x}$ \\[0.3cm]
+            $k\bm{x}$ \\[0.3cm]
+            $\bm{x}_1 + \bm{x}_2$
+        };
+        
+        % Flechas de conexión (usando transform canvas para mover las flechas verticalmente)
+        \draw[-Stealth, thick, ucbblue, transform canvas={yshift=0.8cm}] (entradas.east) -- (sistema.west);
+        \draw[-Stealth, thick, ucbblue] (entradas.east) -- (sistema.west) node[midway, above, font=\scriptsize] {Homogeneidad};
+        \draw[-Stealth, thick, ucbblue, transform canvas={yshift=-0.8cm}] (entradas.east) -- (sistema.west) node[midway, below, font=\scriptsize] {Additividad};
+        
+        \draw[-Stealth, thick, ucbblue, transform canvas={yshift=0.8cm}] (sistema.east) -- (salidas.west);
+        \draw[-Stealth, thick, ucbblue] (sistema.east) -- (salidas.west);
+        \draw[-Stealth, thick, ucbblue, transform canvas={yshift=-0.8cm}] (sistema.east) -- (salidas.west);
+        
+    \end{tikzpicture}
+    \end{center}
+    
+    \begin{tcolorbox}[colback=white, colframe=black, boxrule=0.5pt, arc=1mm]
+        \textbf{Advertencia Importante:} La red debe estar conformada por elementos lineales. Un diodo con su característica completa no lineal rompe esta suposición y el argumento requiere revisión.
+    \end{tcolorbox}
+\end{frame}
+
+\begin{frame}{El Próximo Paso: Hacia la Superposición}
+    \begin{block}{Puente Conceptual: Hito 1 $\rightarrow$ Hito 2}
+        Si tenemos un circuito con múltiples fuentes de tensión y corriente, el vector de excitación total se puede descomponer:
+        \begin{equation*}
+            \bm{b} = \bm{b}_1 + \bm{b}_2 + \dots + \bm{b}_n
+        \end{equation*}
+    \end{block}
+    
+    \begin{itemize}
+        \item La próxima herramienta formal convertirá esta propiedad matemática en un \textbf{procedimiento de análisis de circuitos}.
+        \item Evaluar $\bm{b}_1$, $\bm{b}_2$ por separado significa analizar el circuito activando una fuente a la vez y "apagando" el resto.
+        \item \textbf{Cuidado:} Las respuestas lineales (corriente y tensión) pueden combinarse por suma directa. \textbf{La potencia no se suma directamente por superposición} (es una función cuadrática: $P = RI^2$).
+    \end{itemize}
+\end{frame}
+
+\end{document}

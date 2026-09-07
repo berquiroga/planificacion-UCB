@@ -1,0 +1,153 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, amsfonts, bm}
+\usepackage{graphicx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage{listings}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Sesión Asincrónica S05}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+% Configuracion de listings ajustada para evitar errores UTF-8 y advertencias de fuentes
+\lstset{
+    language=Python,
+    backgroundcolor=\color{ucbblue!5},
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}, % Se quito \bfseries para evitar el "font shape undefined"
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red!80!black},
+    showstringspaces=false,
+    frame=single,
+    rulecolor=\color{ucbblue},
+    tabsize=4,
+    xleftmargin=10pt,
+    xrightmargin=10pt,
+    % Mapeo de caracteres extendidos por si se usan tildes/signos en comentarios
+    literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ñ}{{\~n}}1 {¿}{{?`}}1 {¡}{{!`}}1
+}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Micro-Lección Asincrónica: ¿Qué pasa si cambia la excitación?}]
+    \centering \large \textbf{Puente Conceptual: Del Modelo $A\cdot x = b$ a la Linealidad}
+\end{tcolorbox}
+
+\section*{1. Reactivación del Modelo Matricial}
+En tu defensa del Hito 1 partiste de un circuito físico, aplicaste las Leyes de Kirchhoff y construiste un modelo matricial estático $\bm{A} \bm{x} = \bm{b}$. 
+\begin{itemize}
+    \item $\bm{A}$ representa la red física fija (resistencias y topología).
+    \item $\bm{x}$ representa las variables de respuesta (tensiones/corrientes desconocidas).
+    \item $\bm{b}$ representa las excitaciones impuestas (fuentes independientes).
+\end{itemize}
+
+\begin{tcolorbox}[colback=white, colframe=black, boxrule=0.5pt, arc=1mm]
+\textbf{Pregunta Central de hoy:} Si conservamos el mismo circuito (por tanto, la matriz $\bm{A}$ no cambia) pero modificamos las excitaciones en $\bm{b}$, ¿cómo cambia nuestra respuesta $\bm{x}$?
+\end{tcolorbox}
+
+\subsection*{Circuito de Calibración Base}
+\begin{minipage}{0.4\textwidth}
+    \begin{circuitikz}[scale=0.8, transform shape, thick]
+        % Nodo 1 y 2
+        \draw (0,2) to[I, l=$I_1$] (0,0);
+        \draw (0,2) to[short, -*] (1.5,2) node[above]{$V_1$};
+        \draw (1.5,2) to[R, l=$500\,\Omega$] (1.5,0);
+        
+        \draw (1.5,2) to[R, l=$1\,\text{k}\Omega$] (4.5,2);
+        
+        \draw (6,2) to[I, l_=$I_2$] (6,0);
+        \draw (6,2) to[short, -*] (4.5,2) node[above]{$V_2$};
+        \draw (4.5,2) to[R, l_=$1\,\text{k}\Omega$] (4.5,0);
+        
+        % Tierra comun
+        \draw (0,0) -- (6,0);
+        \draw (3,0) node[ground]{};
+    \end{circuitikz}
+\end{minipage}%
+\hfill
+\begin{minipage}{0.55\textwidth}
+    Aplicando KCL en nodos 1 y 2 obtenemos la representación en conductancias (mS):
+    \begin{equation*}
+        \underbrace{\begin{bmatrix} 3 & -1 \\ -1 & 2 \end{bmatrix}}_{\bm{A} \text{ (mS)}} 
+        \underbrace{\begin{bmatrix} V_1 \\ V_2 \end{bmatrix}}_{\bm{x} \text{ (V)}} = 
+        \underbrace{\begin{bmatrix} I_1 \\ I_2 \end{bmatrix}}_{\bm{b} \text{ (mA)}}
+    \end{equation*}
+    
+    Para un caso base conocido con $I_1 = 5\,\text{mA}$ e $I_2 = 0$:
+    \begin{equation*}
+        \bm{b}_1 = \begin{bmatrix} 5 \\ 0 \end{bmatrix} \implies \bm{x}_1 = \begin{bmatrix} 2 \\ 1 \end{bmatrix} \text{V}
+    \end{equation*}
+\end{minipage}
+
+\section*{2. Reto de Escalamiento (Homogeneidad)}
+Mantengamos la red $\bm{A}$ congelada. ¿Qué ocurre si multiplicamos la excitación $\bm{b}_1$ por un escalar $k$?
+\begin{equation*}
+    \bm{A} \bm{x} = \bm{b} \implies k(\bm{A} \bm{x}) = k\bm{b} \implies \bm{A} (k\bm{x}) = k\bm{b}
+\end{equation*}
+Matemáticamente, si la entrada se escala por $k$, la respuesta se escala por $k$.
+
+\textbf{Comprobación:} 
+Si $k = 2$, la nueva excitación es $\bm{b}' = 2\bm{b}_1 = [10, 0]^T\,\text{mA}$. \\
+Tu predicción de respuesta debe ser $\bm{x}' = 2\bm{x}_1 = [4, 2]^T\,\text{V}$. \\
+Verificación: $3(4) - 1(2) = 10$, y $-1(4) + 2(2) = 0$. ¡Cumple!
+
+A esta propiedad se le denomina \textbf{Homogeneidad}.
+
+\section*{3. Reto de Suma (Additividad)}
+¿Qué sucede si aplicamos una excitación diferente, por ejemplo, activamos solo la fuente 2?
+\begin{equation*}
+    \bm{b}_2 = \begin{bmatrix} 0 \\ 3 \end{bmatrix}\,\text{mA} \implies \text{Resolviendo el sistema: } \bm{x}_2 = \begin{bmatrix} 0.6 \\ 1.8 \end{bmatrix}\,\text{V}
+\end{equation*}
+
+Ahora imagina que aplicamos ambas excitaciones al mismo tiempo: $\bm{b}_{\text{total}} = \bm{b}_1 + \bm{b}_2 = [5, 3]^T\,\text{mA}$.
+\begin{equation*}
+    \bm{A} \bm{x}_1 + \bm{A} \bm{x}_2 = \bm{b}_1 + \bm{b}_2 \implies \bm{A} (\bm{x}_1 + \bm{x}_2) = \bm{b}_{\text{total}}
+\end{equation*}
+\textbf{Conclusión:} La respuesta combinada es simplemente la suma de las respuestas individuales.
+$\bm{x}_{\text{total}} = \bm{x}_1 + \bm{x}_2 = [2.6, 2.8]^T\,\text{V}$.
+
+A esta propiedad se le denomina \textbf{Additividad}.
+
+\section*{4. Definición de Linealidad}
+Un modelo eléctrico es \textbf{lineal} si cumple simultáneamente con la Homogeneidad y la Additividad.
+\begin{equation*}
+    \bm{A} (\alpha\bm{x}_1 + \beta\bm{x}_2) = \alpha\bm{b}_1 + \beta\bm{b}_2
+\end{equation*}
+\textit{Importante: Si cambias un componente (ej. reemplazas la resistencia de $500\,\Omega$ por $2\,\text{k}\Omega$), la matriz $\bm{A}$ cambia. Ya no estás analizando el mismo sistema lineal, por lo que no puedes aplicar estas propiedades de proporcionalidad directa respecto a los resultados anteriores.}
+
+\section*{5. Verificación Opcional en NumPy}
+\begin{lstlisting}
+import numpy as np
+
+A = np.array([[3.0, -1.0], [-1.0, 2.0]])
+b1 = np.array([5.0, 0.0])
+b2 = np.array([0.0, 3.0])
+
+x1 = np.linalg.solve(A, b1)
+x2 = np.linalg.solve(A, b2)
+x_total = np.linalg.solve(A, b1 + b2)
+
+print("x1 + x2 =", x1 + x2)
+print("x_total =", x_total)
+# Se elimino el caracter especial para evitar errores UTF-8 en lstlisting
+print("Coinciden:", np.allclose(x1 + x2, x_total))
+# Output esperado: True
+\end{lstlisting}
+
+\end{document}

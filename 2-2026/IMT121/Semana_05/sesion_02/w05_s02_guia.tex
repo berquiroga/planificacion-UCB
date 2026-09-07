@@ -1,0 +1,134 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+% Aumentamos el headheight por si acaso y dejamos el centro vacío para evitar solapamientos
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Defensa Hito 1}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Hoja de Ruta y Diagnóstico: Defensa del Hito 1}]
+    \centering \large \textbf{Validación de Modelado Matricial y Simulación Computacional}
+\end{tcolorbox}
+
+\section*{Secuencia Recomendada por Equipo (55-65 min total aprox.)}
+\begin{enumerate}
+    \item \textbf{30--60 s:} Propósito del circuito y variables.
+    \item \textbf{1--2 min:} Seleccionar una ecuación y reconstruirla físicamente.
+    \item \textbf{1--2 min:} Mapear ecuación $\leftrightarrow$ fila/coeficientes de $A$.
+    \item \textbf{1--2 min (por estudiante):} Pregunta individual de una categoría distinta (muestreo estratégico).
+    \item \textbf{1--2 min:} Verificación en Python y orden de variables en el vector $x$.
+    \item \textbf{1--2 min:} Correspondencia de magnitudes en LTSpice.
+    \item \textbf{1 min:} Discrepancia/validación y función del Hito 1 en el Proyecto Final de Ingeniería (PFI).
+\end{enumerate}
+
+\section*{Banco Compacto de Preguntas Equivalentes}
+\begin{tcolorbox}[colback=white, colframe=black, boxrule=0.5pt, arc=2mm]
+\textbf{Modelo / Ecuaciones:}
+\begin{itemize}\setlength\itemsep{-0.2em}
+    \item Explique una ecuación directamente desde el circuito.
+    \item ¿De dónde sale físicamente este coeficiente en la ecuación?
+    \item ¿Por qué este término tiene un signo negativo/positivo según su convención?
+\end{itemize}
+\textbf{Matriz ($A\cdot x=b$):}
+\begin{itemize}\setlength\itemsep{-0.2em}
+    \item ¿Qué representa físicamente esta fila de la matriz $A$?
+    \item ¿Cuál es el orden exacto de las variables en su vector $x$?
+    \item Si se cambia el valor de esta fuente (o resistencia), ¿qué cambia en el sistema matricial?
+\end{itemize}
+\textbf{Python / NumPy:}
+\begin{itemize}\setlength\itemsep{-0.2em}
+    \item ¿Qué está resolviendo matemáticamente la función \texttt{solve}?
+    \item ¿Dónde aparece esta variable específica en su vector de resultados $x$?
+    \item ¿Qué verifica exactamente la operación $A @ x \approx b$?
+\end{itemize}
+\textbf{LTSpice:}
+\begin{itemize}\setlength\itemsep{-0.2em}
+    \item ¿Qué salida (.op) de LTSpice corresponde a esta variable analítica?
+    \item ¿La corriente medida en simulación tiene el mismo sentido de referencia que su modelo?
+    \item ¿Esta corriente de malla se obtiene directamente o requiere derivarse (restarse) de otras corrientes?
+\end{itemize}
+\textbf{Validación y PFI:}
+\begin{itemize}\setlength\itemsep{-0.2em}
+    \item ¿Qué dos magnitudes (y unidades) está comparando exactamente en su cálculo de error?
+    \item ¿Cómo explica esta discrepancia (qué hipótesis tiene)?
+    \item ¿Qué demuestra la coincidencia numérica y qué \textit{no} demuestra?
+    \item ¿Qué aporta el modelo validado en este Hito 1 a los siguientes pasos del PFI?
+\end{itemize}
+\end{tcolorbox}
+\newpage
+
+\section*{Registro de Diagnóstico Individual (Rápido)}
+\vspace{0.2cm}
+
+\noindent
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|>{\columncolor{ucbblue!5}\bfseries}l|X|}
+\hline
+Estudiante 1: & \\
+\hline
+Fortalezas: & $\square$ Modelo \quad $\square$ Ecuaciones \quad $\square$ Matriz \quad $\square$ Python \quad $\square$ LTSpice \quad $\square$ Interp. \\
+\hline
+Brechas: & $\square$ KCL-KVL \quad $\square$ Signos \quad $\square$ Álgebra \quad $\square$ Python \quad $\square$ LTSpice \quad $\square$ Val./PFI \\
+\hline
+Evidencia breve: & \\
+\hline
+Autonomía: & $\square$ Sólida \quad $\square$ Parcial \quad $\square$ Insuficiente \\
+\hline
+\end{tabularx}
+
+\vspace{0.4cm}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\columncolor{ucbblue!5}\bfseries}l|X|}
+\hline
+Estudiante 2: & \\
+\hline
+Fortalezas: & $\square$ Modelo \quad $\square$ Ecuaciones \quad $\square$ Matriz \quad $\square$ Python \quad $\square$ LTSpice \quad $\square$ Interp. \\
+\hline
+Brechas: & $\square$ KCL-KVL \quad $\square$ Signos \quad $\square$ Álgebra \quad $\square$ Python \quad $\square$ LTSpice \quad $\square$ Val./PFI \\
+\hline
+Evidencia breve: & \\
+\hline
+Autonomía: & $\square$ Sólida \quad $\square$ Parcial \quad $\square$ Insuficiente \\
+\hline
+\end{tabularx}
+
+\vspace{0.4cm}
+
+\noindent
+\begin{tabularx}{\textwidth}{|>{\columncolor{ucbblue!5}\bfseries}l|X|}
+\hline
+Estudiante 3: & \\
+\hline
+Fortalezas: & $\square$ Modelo \quad $\square$ Ecuaciones \quad $\square$ Matriz \quad $\square$ Python \quad $\square$ LTSpice \quad $\square$ Interp. \\
+\hline
+Brechas: & $\square$ KCL-KVL \quad $\square$ Signos \quad $\square$ Álgebra \quad $\square$ Python \quad $\square$ LTSpice \quad $\square$ Val./PFI \\
+\hline
+Evidencia breve: & \\
+\hline
+Autonomía: & $\square$ Sólida \quad $\square$ Parcial \quad $\square$ Insuficiente \\
+\hline
+\end{tabularx}
+
+\end{document}

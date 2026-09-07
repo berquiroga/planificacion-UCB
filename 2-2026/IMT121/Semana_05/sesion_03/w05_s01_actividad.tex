@@ -1,0 +1,92 @@
+ \documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Actividad S05}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Actividad Formativa: Preparación para Linealidad}]
+    \centering \textbf{Instrucciones:} Completa esta hoja antes de la Sesión 1 de la Semana 6.\\Tus respuestas se utilizarán para iniciar la discusión presencial. No tiene calificación sumativa.
+\end{tcolorbox}
+
+\noindent \textbf{Modelo Fijo de Referencia:} 
+$\bm{A} = \begin{bmatrix} 3 & -1 \\ -1 & 2 \end{bmatrix}\,\text{mS}$, $\quad \bm{x} = \begin{bmatrix} V_1 \\ V_2 \end{bmatrix}\,\text{V}$. \\
+Caso conocido: $\bm{b}_1 = \begin{bmatrix} 5 \\ 0 \end{bmatrix}\,\text{mA} \implies \bm{x}_1 = \begin{bmatrix} 2 \\ 1 \end{bmatrix}\,\text{V}$.
+
+\vspace{0.4cm}
+\noindent\textbf{Actividad 1: ¿Qué cambia y qué permanece?}
+\begin{enumerate}
+    \item ¿Qué representa la matriz $\bm{A}$ físicamente? \hrulefill
+    \item Si $\bm{b}$ cambia a $[10, 0]^T\,\text{mA}$, ¿cambia la matriz $\bm{A}$? Explica. \hrulefill \\ \hrulefill
+    \item Predice $\bm{x}$ antes de calcular nada: \hrulefill
+\end{enumerate}
+
+\vspace{0.4cm}
+\noindent\textbf{Actividad 2: Reto de Escalamiento (Homogeneidad)} \\
+Completa la siguiente tabla. (\textit{Aplica siempre la propiedad sobre el Caso Conocido inicial $\bm{b}_1$}).
+\begin{table}[h!]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{c c c c l}
+    \toprule
+    \rowcolor[HTML]{EFEFEF}
+    \textbf{Caso} & $k$ & \textbf{Excitación $k\bm{b}_1$} (mA) & \textbf{Predicción de $k\bm{x}_1$} (V) & \textbf{Verificación ($\bm{A}\cdot\bm{x} \stackrel{?}{=} \bm{b}$)} \\ \midrule
+    A & $2$ & $[10, 0]^T$ & \rule{3cm}{0.4pt} & \rule{3cm}{0.4pt} \\
+    B & $-1$ & $[-5, 0]^T$ & \rule{3cm}{0.4pt} & \rule{3cm}{0.4pt} \\
+    C & $0.5$ & $[2.5, 0]^T$ & \rule{3cm}{0.4pt} & \rule{3cm}{0.4pt} \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+\noindent En una frase, define \textit{homogeneidad} eléctricamente, incluyendo la condición necesaria sobre la red: \\
+\rule{\textwidth}{0.4pt} \\ \rule{\textwidth}{0.4pt}
+
+\vspace{0.4cm}
+\noindent\textbf{Actividad 3: Reto de Suma (Additividad)} \\
+Se sabe que para $\bm{b}_2 = [0, 3]^T\,\text{mA}$, la respuesta es $\bm{x}_2 = [0.6, 1.8]^T\,\text{V}$.
+\begin{enumerate}
+    \item Suma las excitaciones: $\bm{b}_1 + \bm{b}_2 = $ \hrulefill
+    \item \textbf{Sin resolver el sistema}, predice la respuesta combinada: \hrulefill
+    \item Multiplica la matriz $\bm{A}$ por tu predicción para verificar si coincide con $\bm{b}_1 + \bm{b}_2$.
+\end{enumerate}
+
+\vspace{0.4cm}
+\noindent\textbf{Actividad 4: Clasificación del Comportamiento} \\
+Escribe \textbf{H} (Homogeneidad), \textbf{A} (Additividad), \textbf{L} (Ambas/Linealidad) o \textbf{?} (Información insuficiente).
+\begin{itemize}\setlength\itemsep{-0.1em}
+    \item \rule{1cm}{0.4pt} : Si $\bm{b} \rightarrow \bm{x}$, entonces $4\bm{b} \rightarrow 4\bm{x}$.
+    \item \rule{1cm}{0.4pt} : Si $\bm{b}_1 \rightarrow \bm{x}_1$ y $\bm{b}_2 \rightarrow \bm{x}_2$, entonces $\bm{b}_1+\bm{b}_2 \rightarrow \bm{x}_1+\bm{x}_2$.
+    \item \rule{1cm}{0.4pt} : $3\bm{b}_1 - 2\bm{b}_2 \rightarrow 3\bm{x}_1 - 2\bm{x}_2$.
+    \item \rule{1cm}{0.4pt} : Cambia una fuente de voltaje y también se reemplaza un resistor.
+\end{itemize}
+
+\vspace{0.4cm}
+\noindent\textbf{Actividad 5: Puente a Superposición (Próxima Clase)} \\
+Imagina un circuito lineal con \textbf{dos fuentes independientes}. Si pudieras calcular la respuesta producida por cada fuente por separado, ¿cómo esperarías obtener la respuesta cuando ambas actúan? \\
+\rule{\textwidth}{0.4pt}
+
+\noindent ¿Qué procedimiento (o regla) todavía falta aprender para poder simular "una sola fuente activa" en el circuito y poder aislar esas respuestas individuales? \\
+\rule{\textwidth}{0.4pt}
+
+\end{document}
