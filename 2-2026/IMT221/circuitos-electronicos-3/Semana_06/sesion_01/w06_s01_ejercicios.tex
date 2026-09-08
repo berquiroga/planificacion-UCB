@@ -1,0 +1,118 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{booktabs}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Ejercicios S06}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Hoja de Ejercicios Guiada: Polarización DC del BJT}]
+    \centering \large \textbf{Análisis de Redes de Polarización Fija}
+\end{tcolorbox}
+
+\section*{Ejercicio 1: Reconocimiento de Región}
+Clasifica y justifica la región de operación (Corte, Activa Directa o Saturación) para los siguientes casos:
+\begin{enumerate}
+    \item Unión BE no polarizada en directa, Unión BC no polarizada en directa.
+    \item Unión BE polarizada en directa, Unión BC polarizada en inversa.
+    \item Unión BE polarizada en directa, Unión BC polarizada en directa.
+\end{enumerate}
+
+\section*{Ejercicio 2: Análisis DC Guiado}
+Considera el Esquema de Ejercicio 1 (asumir $\beta=100$, $V_{BE}=0.7\,\text{V}$ en conducción):
+
+\begin{center}
+\begin{circuitikz}[scale=1, transform shape, thick]
+    \draw (0,0) node[npn](Q){};
+    \draw (Q.E) node[ground]{};
+    % PROTECCIÓN CON LLAVES EN LAS ETIQUETAS: l={...}
+    \draw (Q.C) to[R, l_={$R_C = 2.2\,\text{k}\Omega$}] (0,3);
+    \draw (Q.B) -- (-2.5, 0) to[R, l={$R_B = 560\,\text{k}\Omega$}] (-2.5, 3);
+    \draw (-2.5,3) -- (0,3) -- (0,3.5) node[above]{$+12\,\text{V}$};
+\end{circuitikz}
+\end{center}
+
+\begin{enumerate}
+    \item Añade al esquema (a lápiz) las direcciones de $I_B$, $I_C$, $I_E$, y las polaridades de $V_{BE}$ y $V_{CE}$.
+    \item Calcula la corriente de base $I_B$.
+    \item Calcula la corriente candidata de colector $I_C$.
+    \item Calcula $V_{CE}$.
+    \item Comprueba si la suposición de región activa es autoconsistente.
+    \item Deriva la ecuación de la recta de carga.
+    \item Encuentra las dos intersecciones con los ejes.
+    \item Indica el Punto $Q$ exacto.
+    \item \textbf{Predicción:} Sin recalcular, ¿qué sucede con $Q$ si $R_B$ aumenta? ¿Qué sucede si $R_C$ aumenta?
+\end{enumerate}
+
+\section*{Ejercicio 3: Variante Semi-Guiada}
+Utiliza la misma topología de polarización fija del Ejercicio 2, pero en este caso el diagrama no tiene etiquetas de tensión ni corrientes, sólo los componentes en crudo:
+
+\begin{center}
+\begin{circuitikz}[scale=1, transform shape, thick]
+    \draw (0,0) node[npn](Q){};
+    \draw (Q.E) node[ground]{};
+    \draw (Q.C) to[R] (0,3);
+    \draw (Q.B) -- (-2.5, 0) to[R] (-2.5, 3);
+    \draw (-2.5,3) -- (0,3) -- (0,3.5);
+\end{circuitikz}
+\end{center}
+
+\textbf{Tareas:}
+\begin{enumerate}
+    \item Dibuja todas las flechas de corriente ($I_B, I_C, I_E$).
+    \item Etiqueta explícitamente $V_{BE}$ y $V_{CE}$.
+    \item Identifica visualmente la malla base-emisor y la malla colector-emisor.
+    \item Escribe las ecuaciones de la Ley de Tensiones de Kirchhoff (KVL) para ambas mallas a partir de este diagrama.
+\end{enumerate}
+
+\section*{Ejercicio 4: Problema Independiente}
+Analiza el siguiente circuito (Esquema de Ejercicio 2). Datos adicionales: $\beta = 120$, $V_{BE} = 0.7\,\text{V}$.
+
+\begin{center}
+\begin{circuitikz}[scale=1, transform shape, thick]
+    \draw (0,0) node[npn](Q){};
+    \draw (Q.E) node[ground]{};
+    % PROTECCIÓN CON LLAVES EN LAS ETIQUETAS: l={...}
+    \draw (Q.C) to[R, l_={$R_C = 1.5\,\text{k}\Omega$}] (0,3);
+    \draw (Q.B) -- (-2.5, 0) to[R, l={$R_B = 330\,\text{k}\Omega$}] (-2.5, 3);
+    \draw (-2.5,3) -- (0,3) -- (0,3.5) node[above]{$+9\,\text{V}$};
+\end{circuitikz}
+\end{center}
+
+\begin{enumerate}
+    \item Calcula $I_B$, $I_C$ y $V_{CE}$.
+    \item Decide si la suposición de región activa es válida.
+    \item Deriva la recta de carga y encuentra las intersecciones.
+    \item Localiza el Punto $Q$.
+    \item Predice cualitativamente qué sucede con el circuito si $\beta$ cambia de $120$ a $60$ (por ejemplo, debido a un reemplazo de componente).
+\end{enumerate}
+
+\section*{Ejercicio 5: Transferencia Conceptual}
+\begin{enumerate}
+    \item ¿Por qué $I_C = \beta I_B$ no es una ley universal del transistor?
+    \item ¿Cuál es la diferencia entre una curva característica de salida del transistor y una recta de carga del colector?
+    \item ¿Qué representa físicamente el punto $Q$?
+    \item ¿Por qué es prudente incluir el esquema del circuito explícitamente en los primeros ejercicios de esta sesión en lugar de describirlo únicamente en texto?
+\end{enumerate}
+
+\end{document}

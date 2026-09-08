@@ -1,0 +1,93 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage{listings}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-121 | Preparación Asincrónica S06}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\lstset{
+    language=Python,
+    backgroundcolor=\color{gray!10},
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}, % Corrección: Se eliminó \bfseries para evitar la advertencia de fuente faltante
+    commentstyle=\color{green!50!black}\itshape,
+    stringstyle=\color{red},
+    frame=single,
+    breaklines=true,
+    numbers=left,
+    numberstyle=\tiny\color{gray}
+}
+
+\begin{document}
+
+\section*{Preparación Asincrónica: Análisis DC Computacional}
+
+El objetivo de esta sesión asincrónica es conectar el modelo algebraico del transistor BJT polarizado con una herramienta numérica para visualizar de manera instantánea el impacto de las tolerancias de componentes (especialmente la variación de $\beta$).
+
+\subsection*{Esquema Base}
+\begin{center}
+\begin{circuitikz}[scale=1, transform shape, thick]
+    \draw (0,0) node[npn](Q){};
+    \draw (Q.E) node[ground]{};
+    \draw (Q.C) to[R, l_=$R_C$] (0,3);
+    \draw (Q.B) -- (-2.5, 0) to[R, l=$R_B$] (-2.5, 3);
+    \draw (-2.5,3) -- (0,3) -- (0,3.5) node[above]{$+V_{CC}$};
+\end{circuitikz}
+\end{center}
+
+\subsection*{Código de Validación y Barrido}
+Ejecute el siguiente código en Python. Analice los resultados y cambie el valor de \texttt{beta} a 50 y 200.
+
+\begin{lstlisting}
+import numpy as np
+import matplotlib.pyplot as plt
+
+VCC = 10.0
+RB = 470e3
+RC = 2.0e3
+beta = 100.0
+VBE = 0.7
+
+IB = max((VCC - VBE) / RB, 0.0)
+IC_active = beta * IB
+VCE_active = VCC - IC_active * RC
+
+active_valid = (IB > 0) and (VCE_active > VBE)
+
+print(f"IB = {IB*1e6:.2f} uA")
+print(f"IC(active candidate) = {IC_active*1e3:.3f} mA")
+print(f"VCE(active candidate) = {VCE_active:.3f} V")
+print(f"Forward-active model consistent? {active_valid}")
+
+vce = np.linspace(0.0, VCC, 200)
+ic_load = (VCC - vce) / RC
+
+plt.figure()
+plt.plot(vce, ic_load, label="Collector load line")
+
+if active_valid:
+    plt.scatter([VCE_active], [IC_active], label="Q", color='red')
+
+plt.xlabel("VCE [V]")
+plt.ylabel("IC [A]")
+plt.legend()
+plt.grid(True)
+plt.show()
+\end{lstlisting}
+
+\end{document}

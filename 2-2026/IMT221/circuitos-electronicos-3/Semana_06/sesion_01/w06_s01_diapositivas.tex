@@ -1,0 +1,268 @@
+\documentclass[aspectratio=169, table, xcdraw]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage[most]{tcolorbox}
+\usepackage{booktabs} % Soluciona los errores \toprule, \midrule, \bottomrule
+\usepackage{tabularx} % Soluciona el Overfull \hbox permitiendo saltos de línea
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+\title[BJT y Polarización]{El Transistor BJT: Polarización DC y Recta de Carga}
+\subtitle{IMT-121 Circuitos Electrónicos I — Unidad 2}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}
+\date{Semana 6}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Hilos Conductores: De la Unidad 1 a la Unidad 2}
+    \begin{block}{Evolución del Análisis}
+        \centering
+        Protección $\rightarrow$ Señal pequeña $\rightarrow$ \textbf{Transistor Activo} $\rightarrow$ \textbf{Punto Q estable} $\rightarrow$ Par Diferencial
+    \end{block}
+    
+    \vspace{0.3cm}
+    \textbf{Pregunta Guía de Ingeniería:}
+    \begin{center}
+        \textit{¿Cómo situamos un transistor en un punto de operación predecible (DC) para que una pequeña señal de un sensor pueda ser amplificada posteriormente sin recortes ni pérdidas?}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Estructura Física del BJT (NPN)}
+    \begin{columns}
+        \begin{column}{0.48\textwidth}
+            \textbf{Regiones Semiconductoras:}
+            \begin{itemize}
+                \item \textbf{Emisor (E):} inyecta portadores.
+                \item \textbf{Base (B):} región delgada de control.
+                \item \textbf{Colector (C):} recolecta portadores.
+            \end{itemize}
+            
+            \vspace{0.2cm}
+            \textbf{Ley de Corrientes de Kirchhoff (KCL):}
+            \begin{equation*}
+                I_E = I_C + I_B
+            \end{equation*}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \centering
+            \begin{circuitikz}[scale=1.2, transform shape, thick]
+                \draw (0,0) node[npn, tr circle](Q){};
+                \node [right] at (Q.C) {C ($I_C$)};
+                \node [right] at (Q.E) {E ($I_E$)};
+                \node [left] at (Q.B) {B ($I_B$)};
+                \draw[->, blue] (Q.C) ++(0,0.5) -- ++(0,-0.4);
+                \draw[->, blue] (Q.B) ++(-0.5,0) -- ++(0.4,0);
+                \draw[->, blue] (Q.E) ++(0,-0.2) -- ++(0,-0.4);
+            \end{circuitikz}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Regiones de Operación}
+    El modelo del circuito depende de la región de operación. 
+    \textbf{Aproximación para análisis manual:} $V_{BE} \approx 0.7\,\text{V}$ (solo si está encendido).
+    
+    \vspace{0.2cm}
+    \begin{table}[]
+        \centering
+        \small
+        \renewcommand{\arraystretch}{1.3}
+        \begin{tabularx}{\textwidth}{|l|X|X|X|}
+        \hline
+        \rowcolor{ucbblue!20} 
+        \textbf{Región} & \textbf{Unión BE} & \textbf{Unión BC} & \textbf{Interpretación en el Circuito} \\ \hline
+        Corte & No polarizada en directa & No polarizada en directa & Transistor aprox. apagado \\ \hline
+        Activa Directa & Polarizada en directa & Polarizada en inversa & Región de \textbf{amplificación} \\ \hline
+        Saturación & Polarizada en directa & Polarizada en directa & Comportamiento de interruptor \\ \hline
+        \end{tabularx}
+    \end{table}
+
+    \begin{alertblock}{¡Cuidado!}
+        La relación $I_C \approx \beta I_B$ \textbf{no} es una ley universal. Solo es válida en la región Activa Directa, que requiere: $V_{BC} < 0$ (o $V_{CE} > V_{BE}$).
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Circuito de Polarización DC y Método de Verificación}
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            \centering
+            \begin{circuitikz}[scale=0.9, transform shape, thick]
+                \draw (0,0) node[npn](Q){};
+                \draw (Q.E) node[ground]{};
+                \draw (Q.C) to[R, l_=$R_C$, i_<=$I_C$] (0,3);
+                \draw (Q.B) -- (-2.5, 0 |- Q.B) to[R, l=$R_B$, i_<=$I_B$] (-2.5, 3);
+                \draw (-2.5,3) -- (0,3) -- (0,3.5) node[above]{$+V_{CC}$};
+                
+                \draw[->, red] (-0.8, -0.3) arc (-180:-90:0.5) node[midway, left]{$V_{BE}$};
+                \draw[->, red] (1, 2) arc (90:-90:1) node[midway, right]{$V_{CE}$};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.55\textwidth}
+            \textbf{Método Lógico:}
+            \begin{enumerate}
+                \item \textbf{Asumir} modelo (Activa: $V_{BE}=0.7\,\text{V}$, $I_C = \beta I_B$).
+                \item \textbf{Resolver} la red DC.
+                \item \textbf{Verificar} la suposición ($V_{CE} > 0.7\,\text{V}$).
+                \item \textbf{Aceptar o Rechazar} el modelo.
+            \end{enumerate}
+            
+            \vspace{0.2cm}
+            \textbf{Malla Base:} \quad $I_B = \frac{V_{CC} - V_{BE}}{R_B}$ \\
+            \textbf{Malla Colector:} \quad $V_{CE} = V_{CC} - I_C R_C$
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Ejemplo Guiado: Análisis DC Completo}
+    \textbf{Datos:} $V_{CC}=10\,\text{V}$, $R_B=470\,\text{k}\Omega$, $R_C=2.0\,\text{k}\Omega$, $\beta=100$, $V_{BE}=0.7\,\text{V}$.
+    
+    \vspace{0.2cm}
+    1. Corriente de Base ($I_B$):
+    \begin{equation*}
+        I_B = \frac{10\,\text{V} - 0.7\,\text{V}}{470\,\text{k}\Omega} = 19.79\,\mu\text{A}
+    \end{equation*}
+    
+    2. Candidato a Corriente de Colector ($I_C$):
+    \begin{equation*}
+        I_C = \beta I_B = 100(19.79\,\mu\text{A}) = 1.979\,\text{mA}
+    \end{equation*}
+    
+    3. Verificación de Tensión ($V_{CE}$ y $V_{BC}$):
+    \begin{equation*}
+        V_{CE} = 10\,\text{V} - (1.979\,\text{mA})(2\,\text{k}\Omega) = 6.04\,\text{V}
+    \end{equation*}
+    \begin{equation*}
+        V_{BC} = V_{BE} - V_{CE} = 0.7\,\text{V} - 6.04\,\text{V} = -5.34\,\text{V} < 0 \quad \mathbf{(\text{¡Consistente!})}
+    \end{equation*}
+    El Punto Q es: $\mathbf{Q \approx (1.98\,\text{mA},\, 6.04\,\text{V})}$.
+\end{frame}
+
+\begin{frame}{Ejemplo: Cuando la Suposición Falla}
+    Mismo circuito, pero reducimos fuertemente $R_B$: $\mathbf{R_B = 100\,\text{k}\Omega}$.
+    
+    \vspace{0.2cm}
+    1. Corriente de Base ($I_B$):
+    \begin{equation*}
+        I_B = \frac{10\,\text{V} - 0.7\,\text{V}}{100\,\text{k}\Omega} = 93\,\mu\text{A}
+    \end{equation*}
+    
+    2. Candidato a Corriente de Colector ($I_C$):
+    \begin{equation*}
+        I_C = \beta I_B = 100(93\,\mu\text{A}) = 9.3\,\text{mA}
+    \end{equation*}
+    
+    3. Verificación de Tensión ($V_{CE}$):
+    \begin{equation*}
+        V_{CE} = 10\,\text{V} - (9.3\,\text{mA})(2\,\text{k}\Omega) = \mathbf{-8.6\,\text{V}}
+    \end{equation*}
+    
+    \begin{alertblock}{Conclusión Correcta}
+        Un $V_{CE}$ negativo es \textbf{físicamente inconsistente} para este circuito. \textbf{Rechazamos} el modelo activo; el transistor está en (o fuertemente impulsado hacia) \textbf{saturación}.
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{La Recta de Carga DC y el Punto Q}
+    \begin{columns}
+        \begin{column}{0.48\textwidth}
+            La recta de carga es impuesta por el \textbf{circuito externo} al colector.
+            \begin{equation*}
+                V_{CE} = V_{CC} - I_C R_C \implies I_C = \frac{V_{CC} - V_{CE}}{R_C}
+            \end{equation*}
+            
+            \textbf{Intersecciones:}
+            \begin{itemize}
+                \item Eje $V_{CE}$ ($I_C=0$): $V_{CE} = V_{CC}$
+                \item Eje $I_C$ ($V_{CE}=0$): $I_C = \frac{V_{CC}}{R_C}$
+            \end{itemize}
+            El Punto Q reside sobre esta recta de carga.
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \centering
+            \begin{tikzpicture}
+                \begin{axis}[
+                    axis lines=left,
+                    xlabel={$V_{CE}$ (V)},
+                    ylabel={$I_C$ (mA)},
+                    xmin=0, xmax=11,
+                    ymin=0, ymax=6,
+                    grid=both,
+                    width=7cm, height=5.5cm,
+                    xtick={0,2,4,6,8,10},
+                    ytick={0,1,2,3,4,5}
+                ]
+                % Load line for Vcc=10, Rc=2k -> max Ic=5mA
+                \addplot[thick, ucbblue, domain=0:10] {(10-x)/2};
+                \addplot[mark=*, red, mark size=2.5pt] coordinates {(6.04, 1.979)} node[above right, font=\bfseries]{Q};
+                \node at (axis cs: 10, 0) [above left] {Corte};
+                \node at (axis cs: 0, 5) [right] {Saturación};
+                \end{axis}
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Sensibilidad a $\beta$ y Estabilidad de Polarización}
+    En polarización fija, $I_C \propto \beta$. Dado que $\beta$ varía drásticamente (por fabricación o temperatura), este circuito es frágil. \\
+    Ejemplo con $R_B=470\,\text{k}\Omega$, $R_C=2\,\text{k}\Omega$:
+    
+    \vspace{0.3cm}
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{ccc}
+    \toprule
+    \textbf{Parámetro $\beta$} & \textbf{$I_C$ Estimada} & \textbf{$V_{CE}$ Resultante} \\ \midrule
+    50 & 0.989\,\text{mA} & 8.02\,\text{V} \\
+    100 & 1.979\,\text{mA} & 6.04\,\text{V} \\
+    200 & 3.957\,\text{mA} & 2.09\,\text{V} \\ \bottomrule
+    \end{tabular}
+    
+    \vspace{0.3cm}
+    \begin{block}{Motivación para Diseños Futuros}
+        Una polarización robusta buscará independizar $I_C$ de variaciones en $\beta$.
+    \end{block}
+\end{frame}
+
+\begin{frame}{Puente hacia el Análisis de Pequeña Señal}
+    El modelo de pequeña señal no reemplaza al modelo DC, \textbf{depende de él}.
+    
+    Las señales en el circuito son perturbaciones locales alrededor del Punto Q:
+    \begin{align*}
+        i_C(t) &= I_{CQ} + i_c(t) \\
+        v_{BE}(t) &= V_{BEQ} + v_{be}(t) \\
+        v_{CE}(t) &= V_{CEQ} + v_{ce}(t)
+    \end{align*}
+    
+    \vspace{0.2cm}
+    \textbf{Parámetros dinámicos:} La transconductancia ($g_m$) o resistencia ($r_\pi$) no pueden ser elegidos sin primero establecer $Q$:
+    \begin{equation*}
+        g_m = \frac{I_{CQ}}{V_T}
+    \end{equation*}
+\end{frame}
+
+\end{document}

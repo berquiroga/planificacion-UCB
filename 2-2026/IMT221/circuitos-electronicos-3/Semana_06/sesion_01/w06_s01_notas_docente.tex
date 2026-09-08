@@ -1,0 +1,36 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-121 | Notas del Instructor S06-S09}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\section*{Notas de Planificación Semanal: Unidad 2 (S06)}
+
+\subsection*{Objetivo Estratégico de la Sesión S06-1}
+Esta sesión marca el inicio formal de la Unidad 2 tras el Hito 1. La prioridad es consolidar la noción de \textbf{Punto de Operación (DC)} antes de intentar explicar modelos dinámicos ($r_\pi$, $g_m$). El estudiante no debe pensar en AC hasta que entienda de dónde salen los valores estáticos.
+
+\subsection*{Por qué se usa el Circuito de Polarización Fija}
+El circuito BJT con emisor a tierra y divisor de base fijo se utiliza deliberadamente por su \textbf{transparencia algebraica}.
+\begin{itemize}
+    \item Hace muy evidente la suposición de región activa y el cálculo de $V_{CE}$.
+    \item Hace flagrante el problema de la sensibilidad a $\beta$ ($I_C \propto \beta$).
+    \item \textbf{No} se presenta como un buen diseño de amplificador (esto motiva las topologías estabilizadas posteriores).
+\end{itemize}
+
+\subsection*{Esquemas Explícitos en Ejercicios}
+Como recomendación pedagógica, los estudiantes no deben verse obligados a reconstruir la topología del circuito a partir de texto durante esta primera sesión. Ya están enfrentando la carga cognitiva de (1) la topología del BJT, (2) la suposición de estado, y (3) la ecuación de la recta de carga. Proveer los esquemas completos elimina una barrera innecesaria y asegura que evaluamos razonamiento en polarización DC.
+
+\end{document}

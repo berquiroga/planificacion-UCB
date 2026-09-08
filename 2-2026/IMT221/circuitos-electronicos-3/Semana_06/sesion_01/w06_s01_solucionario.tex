@@ -1,0 +1,111 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{booktabs}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Soluciones S06}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=green!5!white, colframe=green!50!black, title=\textbf{Solucionario: Polarización DC del BJT}]
+    \centering \large \textbf{Análisis de Redes de Polarización Fija}
+\end{tcolorbox}
+
+\section*{Solución al Ejercicio 1: Reconocimiento de Región}
+\begin{enumerate}
+    \item \textbf{Corte:} Ambas uniones están sin polarización directa. El transistor está bloqueado.
+    \item \textbf{Activa Directa:} Unión BE conduciendo, Unión BC en inversa. Es la región de amplificación normal.
+    \item \textbf{Saturación:} Ambas uniones polarizadas en directa. Actúa como un interruptor cerrado (corriente limitada por la red externa).
+\end{enumerate}
+
+\section*{Solución al Ejercicio 2: Análisis DC Guiado}
+\textbf{Circuito:} $V_{CC}=12\,\text{V}$, $R_B=560\,\text{k}\Omega$, $R_C=2.2\,\text{k}\Omega$, $\beta=100$, $V_{BE}=0.7\,\text{V}$.
+
+\textbf{2. Corriente de base ($I_B$):}
+\begin{equation*}
+    I_B = \frac{V_{CC} - V_{BE}}{R_B} = \frac{12 - 0.7}{560 \times 10^3} \approx 20.18\,\mu\text{A}
+\end{equation*}
+
+\textbf{3. Corriente de colector ($I_C$) asumiendo región activa:}
+\begin{equation*}
+    I_C = \beta I_B = 100 \times 20.18\,\mu\text{A} \approx 2.018\,\text{mA}
+\end{equation*}
+
+\textbf{4. Tensión Colector-Emisor ($V_{CE}$):}
+\begin{equation*}
+    V_{CE} = V_{CC} - I_C R_C = 12 - (2.018 \times 10^{-3})(2.2 \times 10^3) \approx 7.56\,\text{V}
+\end{equation*}
+
+\textbf{5. Consistencia:}
+$V_{BC} = V_{BE} - V_{CE} = 0.7 - 7.56 = -6.86\,\text{V} < 0$. La suposición de Activa Directa es \textbf{válida}.
+
+\textbf{6. Recta de Carga:}
+\begin{equation*}
+    V_{CE} = 12 - I_C(2.2\,\text{k}\Omega)
+\end{equation*}
+
+\textbf{7. Intersecciones:}
+\begin{itemize}
+    \item Corte ($I_C = 0$): $V_{CE} = 12\,\text{V}$
+    \item Saturación ideal ($V_{CE} = 0$): $I_C = 12 / 2.2\,\text{k}\Omega \approx 5.45\,\text{mA}$
+\end{itemize}
+
+\textbf{8. Punto Q:}
+$\mathbf{Q \approx (2.02\,\text{mA}, 7.56\,\text{V})}$
+
+\textbf{9. Predicciones:}
+\begin{itemize}
+    \item Si $R_B \uparrow$: $I_B \downarrow \implies I_C \downarrow \implies V_{CE} \uparrow$ (Q se mueve hacia el corte).
+    \item Si $R_C \uparrow$: $I_B$ e $I_C$ (teóricos) no cambian, pero $V_{CE}$ cae (la recta de carga se hace más horizontal). Si $R_C$ aumenta lo suficiente, obligará a la saturación.
+\end{itemize}
+
+
+\section*{Solución al Ejercicio 4: Problema Independiente}
+\textbf{Circuito:} $V_{CC}=9\,\text{V}$, $R_B=330\,\text{k}\Omega$, $R_C=1.5\,\text{k}\Omega$, $\beta=120$, $V_{BE}=0.7\,\text{V}$.
+
+\textbf{1. Cálculos de Mallas:}
+\begin{equation*}
+    I_B = \frac{9 - 0.7}{330 \times 10^3} \approx 25.15\,\mu\text{A}
+\end{equation*}
+\begin{equation*}
+    I_C = 120(25.15\,\mu\text{A}) \approx 3.018\,\text{mA}
+\end{equation*}
+\begin{equation*}
+    V_{CE} = 9 - (3.018\,\text{mA})(1.5\,\text{k}\Omega) \approx 4.47\,\text{V}
+\end{equation*}
+
+\textbf{2. Validación:}
+$V_{BC} = 0.7 - 4.47 = -3.77\,\text{V} < 0$. La región activa es \textbf{válida}.
+
+\textbf{3 \& 4. Recta de Carga e Intersecciones:}
+\begin{equation*}
+    V_{CE} = 9 - (1.5\,\text{k}\Omega)I_C
+\end{equation*}
+Corte: $V_{CE} = 9\,\text{V}$. Saturación ideal: $I_C = 9 / 1.5\,\text{k}\Omega = 6\,\text{mA}$.
+
+\textbf{5. Punto Q:}
+$\mathbf{Q \approx (3.02\,\text{mA}, 4.47\,\text{V})}$
+
+\textbf{6. Impacto del cambio de $\beta$ a 60:}
+$I_C$ disminuirá a la mitad (aprox. $1.51\,\text{mA}$). Al caer $I_C$, la caída de tensión en $R_C$ disminuye, por lo que $V_{CE}$ aumentará. El punto Q se moverá acercándose al estado de corte.
+
+\end{document}
