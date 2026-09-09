@@ -1,0 +1,164 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multicol} % Requerido para estructurar listas en columnas sin desbordamientos
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Circuitos Electrónicos II (IMT-221)}
+\rhead{W06S02}
+\lfoot{Taller de Recuperación Analítica}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Taller de Recuperación Analítica (Unidad 1)}}[cite: 8]
+\end{center}
+
+\section*{Bloque 1: Marco Operativo de Análisis[cite: 8]}
+Antes de calcular, estructure su razonamiento en siete etapas[cite: 8]:
+\begin{enumerate}
+    \item \textbf{Interpretar:} Identificar fuentes, frecuencia, componentes pasivos, conexiones y la variable solicitada[cite: 8].
+    \item \textbf{Modelar:} Transformar el circuito al dominio fasorial ($Z_R=R$, $Z_L=j\omega L$, $Z_C=-j/(\omega C)$)[cite: 8].
+    \item \textbf{Definir:} Establecer referencia, polaridades y direcciones de corriente. ¡No cambiarlas a mitad del desarrollo![cite: 8]
+    \item \textbf{Formular:} Elegir la ley adecuada según la topología (KCL, KVL, divisor, equivalentes)[cite: 8].
+    \item \textbf{Resolver:} Operar conservando las cantidades complejas sin sustituir prematuramente por magnitudes[cite: 8].
+    \item \textbf{Verificar:} Comprobar unidades, signos, orden de magnitud y límites físicos[cite: 8].
+    \item \textbf{Interpretar:} Convertir el fasor resultante en una afirmación eléctrica (magnitud y desfase respecto a la referencia)[cite: 8].
+\end{enumerate}
+
+\vspace{0.4cm}
+\section*{Problema Diagnóstico 1[cite: 8]}
+\begin{sloppypar}
+Una fuente sinusoidal ideal tiene fasor RMS $\hat{V}_s = 10\angle0^\circ\,\text{V}$ y frecuencia $f = 1.00\,\text{kHz}$[cite: 8]. La fuente alimenta $R_1 = 1.0\,\text{k}\Omega$[cite: 8]. Después de $R_1$ se encuentra el nodo $A$[cite: 8]. Desde $A$, un capacitor $C_1 = 159\,\text{nF}$ se conecta a tierra y $R_2 = 1.0\,\text{k}\Omega$ conecta $A$ con el nodo $B$[cite: 8]. Desde $B$, $C_2 = 159\,\text{nF}$ se conecta a tierra[cite: 8].
+\end{sloppypar}
+
+\begin{center}
+    \begin{circuitikz}[scale=1.2, transform shape, thick]
+        \draw (0,0) to[sV, v=$\hat{V}_s$] (0,2) to[R, l=$R_1$] (3,2) coordinate(A);
+        \draw (A) to[C, l_=$C_1$] (3,0);
+        \draw (A) to[R, l=$R_2$] (6,2) coordinate(B);
+        \draw (B) to[C, l_=$C_2$] (6,0);
+        \draw (0,0) -- (6,0) node[ground]{};
+        \node[above] at (A) {$A$};
+        \node[above] at (B) {$B$};
+    \end{circuitikz}
+\end{center}
+
+Se solicita determinar $\hat{V}_B$ en forma rectangular y polar e interpretar su magnitud y fase respecto de $\hat{V}_s$[cite: 8].
+\vspace{0.2cm}
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Espacio de Diagnóstico Docente (No llenar)}]
+    \begin{multicols}{3}
+    \begin{itemize}
+        \setlength{\itemsep}{0pt}
+        \item[$\square$] [Interpretation]
+        \item[$\square$] [Model]
+        \item[$\square$] [Impedance]
+        \item[$\square$] [Method]
+        \item[$\square$] [KCL/KVL]
+        \item[$\square$] [Sign]
+        \item[$\square$] [Complex]
+        \item[$\square$] [Algebra]
+        \item[$\square$] [Magnitude]
+        \item[$\square$] [Physical]
+        \item[$\square$] [Solution]
+    \end{itemize}
+    \end{multicols}
+\end{tcolorbox}
+
+\newpage
+\section*{Problema 2: Selección de Método[cite: 8]}
+\begin{sloppypar}
+Una fuente equivalente tiene $\hat{V}_s = 12\angle0^\circ\,\text{V}$ a $f = 1.00\,\text{kHz}$ y resistencia interna $R_s = 1.0\,\text{k}\Omega$[cite: 8]. La carga está formada por $R_L = 2.0\,\text{k}\Omega$ en paralelo con $L = 318\,\text{mH}$[cite: 8].
+\end{sloppypar}
+
+\begin{center}
+    \begin{circuitikz}[scale=1.2, transform shape, thick]
+        \draw (0,0) to[sV, v=$\hat{V}_s$] (0,2) to[R, l=$R_s$] (3,2) coordinate(VL);
+        \draw (VL) to[R, l_=$R_L$] (3,0);
+        \draw (VL) -- (5,2) to[L, l_=$L$] (5,0);
+        \draw (5,2) to[short, -o] (6.5,2) node[right]{$\hat{V}_L$};
+        \draw (0,0) -- (5,0);
+        \draw (5,0) to[short, -o] (6.5,0);
+        \draw (3,0) node[ground]{};
+    \end{circuitikz}
+\end{center}
+
+Determine: 1) $\hat{V}_L$, tensión sobre la carga; 2) corriente por $R_L$; 3) magnitud y fase de $\hat{V}_L$; 4) si la carga produce una reducción significativa de la tensión[cite: 8]. \\
+\textbf{Antes de calcular:} ¿Qué método utilizará y por qué? Justifique su respuesta[cite: 8].
+
+\vspace{1cm}
+\section*{Bloque de Micro-Práctica[cite: 8]}
+\begin{itemize}
+    \item \textbf{A:} A $f=500\,\text{Hz}, C=100\,\text{nF}$, escriba $Z_C$ en forma rectangular[cite: 8].
+    \item \textbf{B:} Un nodo $V_x$ está conectado a $V_s$ mediante $R$; y a tierra mediante $C$. Escriba KCL sin resolver[cite: 8].
+    \item \textbf{C:} Se define $I = (V_A - V_B)/R$. Al resolver, se obtiene $I = -2\,\text{mA}$. ¿Qué significa?[cite: 8]
+    \item \textbf{D:} Convierta $V = 3 - j4\,\text{V}$ a polar[cite: 8].
+    \item \textbf{E:} Una red RC pasiva presenta $H(j\omega) = 0.20\angle-70^\circ$. Interprete el resultado[cite: 8].
+\end{itemize}
+
+\vspace{0.4cm}
+\section*{Desafío Independiente: Red RLC de 2 Mallas[cite: 8]}
+\begin{minipage}{0.5\textwidth}
+\begin{sloppypar}
+Una fuente $\hat{V}_s = 8\angle0^\circ\,\text{V}$ opera a $f = 1.00\,\text{kHz}$[cite: 8]. \\
+La red contiene dos mallas: la fuente $V_s$ y $R_1 = 1.0\,\text{k}\Omega$ pertenecen a la malla izquierda; $R_2 = 1.0\,\text{k}\Omega$ y $L = 159\,\text{mH}$ pertenecen a la malla derecha[cite: 8]. Un capacitor $C = 159\,\text{nF}$ constituye la rama común[cite: 8].
+\end{sloppypar}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\textwidth}
+    \begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape, thick]
+        \draw (0,0) to[sV, v=$\hat{V}_s$] (0,3) to[R, l=$R_1$] (3,3);
+        \draw (3,3) to[C, l_=$C$] (3,0);
+        \draw (3,3) to[R, l=$R_2$] (6,3) to[L, l_=$L$] (6,0);
+        \draw (0,0) -- (6,0);
+    \end{circuitikz}
+    \end{center}
+\end{minipage}
+
+\vspace{0.4cm}
+Defina corrientes de malla horarias $I_1, I_2$[cite: 8]. Determine: 1) Modelo fasorial de $L$ y $C$[cite: 8]; 2) Ecuaciones necesarias[cite: 8]; 3) $\hat{I}_2$[cite: 8]; 4) Tensión sobre $R_2$ ($\hat{V}_{R2}$)[cite: 8]; 5) Magnitud y fase de $\hat{V}_{R2}$[cite: 8]; 6) Interpretación breve[cite: 8].
+
+\vspace{0.4cm}
+\section*{Lista de Auto-Auditoría (Marque antes de entregar)[cite: 8]}
+\begin{tcolorbox}[colback=white, colframe=ucbblue]
+    \begin{multicols}{2}
+    \begin{itemize}
+        \setlength{\itemsep}{2pt}
+        \item[$\square$] Identifiqué exactamente qué se solicita[cite: 8].
+        \item[$\square$] Convertí R, L y C a fasores[cite: 8].
+        \item[$\square$] Dibujé la topología equivalente[cite: 8].
+        \item[$\square$] Definí tierra/referencia si fue necesario[cite: 8].
+        \item[$\square$] Definí polaridades y direcciones[cite: 8].
+        \item[$\square$] No cambié convenciones en el cálculo[cite: 8].
+        \item[$\square$] Cada ecuación refleja una ley física[cite: 8].
+        \item[$\square$] Conservé cantidades complejas[cite: 8].
+        \item[$\square$] Mis unidades son coherentes[cite: 8].
+        \item[$\square$] Expresé magnitud/fase correctamente[cite: 8].
+        \item[$\square$] Comprobé si la magnitud es plausible[cite: 8].
+        \item[$\square$] Comprobé si el signo/fase tiene sentido[cite: 8].
+        \item[$\square$] Respondí la variable pedida[cite: 8].
+        \item[$\square$] Escribí una interpretación final[cite: 8].
+    \end{itemize}
+    \end{multicols}
+\end{tcolorbox}
+\textbf{Pregunta Final:} ¿En qué paso de análisis soy actualmente más propenso a cometer un error? \rule{4cm}{0.4pt}[cite: 8]
+
+\end{document}
