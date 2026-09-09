@@ -1,0 +1,93 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Documento Docente}
+\chead{Solucionario}
+\rhead{IMT221}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Guía Docente y Solucionario del Taller}}[cite: 8]
+\end{center}
+
+\section*{Solución al Problema Diagnóstico 1 (Nodal)[cite: 8]}
+Frecuencia $f = 1000\,\text{Hz} \implies \omega = 6283.19\,\text{rad/s}$[cite: 8]. \\
+Impedancia de $C$: $Z_C = \frac{1}{j\omega C} \approx -j1001\,\Omega \approx -j1.00\,\text{k}\Omega$[cite: 8].
+
+\textbf{Ecuación Nodo A (KCL corrientes salientes):}
+\begin{equation*}
+    \frac{V_A - V_s}{R_1} + \frac{V_A}{Z_{C1}} + \frac{V_A - V_B}{R_2} = 0 \implies (V_A - V_s) + jV_A + (V_A - V_B) = 0 \text{ (en k}\Omega\text{)} \text{[cite: 8]}
+\end{equation*}
+Agrupando: $(2 + j)V_A - V_B = V_s$[cite: 8].
+
+\textbf{Ecuación Nodo B:}
+\begin{equation*}
+    \frac{V_B - V_A}{R_2} + \frac{V_B}{Z_{C2}} = 0 \implies (V_B - V_A) + jV_B = 0 \implies V_A = (1 + j)V_B \text{[cite: 8]}
+\end{equation*}
+
+\textbf{Sustitución y Resolución:}
+\begin{equation*}
+    (2 + j)(1 + j)V_B - V_B = V_s \implies (1 + 3j)V_B - V_B = V_s \implies 3jV_B = V_s \text{[cite: 8]}
+\end{equation*}
+\begin{equation*}
+    V_B = \frac{10}{3j} = -j3.33\,\text{V} \implies \boxed{V_B = 3.33\angle-90^\circ\,\text{V}} \text{[cite: 8]}
+\end{equation*}
+\textbf{Interpretación:} Magnitud $\approx 1/3$ de la entrada y atraso de $-90^\circ$ respecto a la fuente[cite: 8].
+
+\begin{tcolorbox}[colback=gray!10, title=\textbf{Checkpoints y Errores Comunes[cite: 8]}]
+    \begin{itemize}
+        \item $Z_C = j\omega C \implies$ Tag: \texttt{[Impedance]}[cite: 8].
+        \item Tratar $C$ como $1000\,\Omega$ real $\implies$ Tag: \texttt{[Model]}[cite: 8].
+        \item Signos inconsistentes KCL $\implies$ Tag: \texttt{[KCL/KVL] / [Sign]}[cite: 8].
+        \item No interpretar físicamente el resultado final $\implies$ Tag: \texttt{[Magnitude/phase]}[cite: 8].
+    \end{itemize}
+\end{tcolorbox}
+
+\section*{Micro-Intervenciones Docentes[cite: 8]}
+\textit{(Usar solo 2-4 minutos si se detecta la falla específica)[cite: 8].}
+\begin{itemize}
+    \item \textbf{A (Impedancia):} Escribir fórmulas de Z y preguntar qué componente produce parte imaginaria positiva/negativa[cite: 8].
+    \item \textbf{B (KCL):} Dibujar nodo genérico. Mostrar que la ecuación proviene de las ramas físicas reales, no de fórmulas memorizadas[cite: 8].
+    \item \textbf{C (Signos):} Aclarar que $I < 0$ indica comportamiento contrario a la referencia elegida, no un error matemático per se[cite: 8].
+    \item \textbf{D (Rectangular vs Polar):} Suma/resta en rectangular. Multiplicación/división en polar. No hay formato universal "mejor"[cite: 8].
+    \item \textbf{E (Plausibilidad):} Preguntar: ¿Unidades correctas? ¿Magnitud pasiva posible? ¿Fase coherente con los componentes?[cite: 8]
+\end{itemize}
+
+\section*{Solución al Problema 2 (Reducción + Divisor)[cite: 8]}
+$\omega = 6283.19\,\text{rad/s}$[cite: 8]. $Z_L = j\omega L \approx j1998\,\Omega \approx j2.00\,\text{k}\Omega$[cite: 8]. \\
+$Z_{load} = R_L \parallel Z_L = \frac{(2000)(j2000)}{2000 + j2000} \approx 1000 + j1000\,\Omega$[cite: 8]. \\
+$V_L = V_s \frac{Z_{load}}{R_s + Z_{load}} = 12 \frac{1000 + j1000}{2000 + j1000} = 12 \frac{1+j}{2+j} = 12 \frac{3+j}{5} = 7.2 + j2.4\,\text{V}$[cite: 8]. \\
+Polar: $\boxed{V_L = 7.59\angle18.4^\circ\,\text{V}}$[cite: 8]. \\
+Corriente resistiva: $I_R = \frac{V_L}{R_L} = \frac{7.2 + j2.4}{2000} = \boxed{3.6 + j1.2\,\text{mA}}$ o $\boxed{3.79\angle18.4^\circ\,\text{mA}}$[cite: 8]. \\
+\textbf{Interpretación:} La carga recibe $7.59/12 \approx 0.633$ de la magnitud original. La impedancia de fuente produce una reducción relevante[cite: 8].
+\textit{Ruta Nodal Aceptable: $\frac{V_L - V_s}{R_s} + \frac{V_L}{R_L} + \frac{V_L}{j\omega L} = 0$[cite: 8].}
+
+\section*{Respuestas: Micro-Práctica[cite: 8]}
+\textbf{A:} $\omega = 3141.6$, $Z_C = \frac{1}{j(3141.6)(100\times10^{-9})} = \boxed{-j3183\,\Omega}$[cite: 8]. \textbf{B:} $\boxed{\frac{V_x - V_s}{R} + \frac{V_x}{Z_C} = 0}$[cite: 8]. \textbf{C:} La magnitud real es $2\,\text{mA}$ y circula opuesto a la flecha $A \to B$[cite: 8]. \textbf{D:} $|V| = 5, \theta = \tan^{-1}(-4/3) = -53.13^\circ \implies \boxed{5\angle-53.13^\circ\,\text{V}}$[cite: 8]. \textbf{E:} Magnitud al 20\% de la entrada, con un atraso de fase de $70^\circ$[cite: 8].
+
+\section*{Solución: Desafío Independiente (Mallas)[cite: 8]}
+$Z_L \approx j1.00\,\text{k}\Omega$, $Z_C \approx -j1.00\,\text{k}\Omega$[cite: 8]. \\
+Malla 1: $R_1 I_1 + Z_C(I_1 - I_2) = V_s \implies (1 - j)I_1 + jI_2 = 8$[cite: 8]. \\
+Malla 2: $(R_2 + Z_L)I_2 + Z_C(I_2 - I_1) = 0 \implies -Z_C I_1 + (R_2 + Z_L + Z_C)I_2 = 0$[cite: 8]. \\
+Como $Z_L + Z_C \approx 0 \implies jI_1 + I_2 = 0 \implies I_2 = -jI_1$[cite: 8]. \\
+Sustituyendo: $(1 - j)I_1 + j(-jI_1) = 8 \implies (2 - j)I_1 = 8 \implies I_1 = \frac{8}{2-j} = \frac{8(2+j)}{5} = 3.2 + j1.6\,\text{mA}$[cite: 8]. \\
+$I_2 = -j(3.2 + j1.6) = \boxed{1.6 - j3.2\,\text{mA}}$[cite: 8]. \\
+$V_{R2} = R_2 I_2 = (1\,\text{k}\Omega)(1.6 - j3.2\,\text{mA}) = 1.6 - j3.2\,\text{V} \implies \boxed{V_{R2} = 3.58\angle-63.4^\circ\,\text{V}}$[cite: 8]. \\
+\textbf{Interpretación:} Menor magnitud respecto a la fuente ($3.58\,\text{V} < 8\,\text{V}$) y atraso aprox. de $63^\circ$[cite: 8].
+
+\end{document}

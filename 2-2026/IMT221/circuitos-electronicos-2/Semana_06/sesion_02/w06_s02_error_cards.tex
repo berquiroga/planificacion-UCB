@@ -1,0 +1,149 @@
+\documentclass[aspectratio=169]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usefonttheme{serif} % Soluciona los errores de fuente "Font shape undefined"
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+
+\title[Tarjetas de Error]{Tarjetas de Análisis de Errores: Recuperación Analítica}
+\author[IMT-221]{Circuitos Electrónicos II}
+\institute{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Diagnóstico de Errores en Circuitos}
+    \textbf{Instrucciones para la dinámica[cite: 8]:}
+    \vspace{0.4cm}
+    
+    Analice cada fragmento de cálculo como una cadena:
+    \begin{equation*}
+        \text{modelo} \rightarrow \text{ecuación} \rightarrow \text{álgebra} \rightarrow \text{resultado} \rightarrow \text{interpretación} \text{[cite: 8]}
+    \end{equation*}
+    
+    \vspace{0.4cm}
+    Busque el \textbf{primer punto inválido}, no solamente el resultado final incorrecto[cite: 8]. Responda mentalmente antes de la revelación:
+    \begin{enumerate}
+        \item ¿Cuál es el primer paso inválido?[cite: 8]
+        \item ¿Qué tipo de error es (Tag)?[cite: 8]
+        \item ¿Cómo se corrige?[cite: 8]
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{Error Card 1 — Capacitor[cite: 8]}
+    \textbf{Desarrollo del estudiante[cite: 8]:}
+    \begin{align*}
+        Z_C &= j\omega C \\
+        Z_C &= j(6283)(159 \times 10^{-9}) \\
+        Z_C &= j0.001\,\Omega
+    \end{align*}
+    
+    \vspace{0.3cm}
+    \pause
+    \begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Diagnóstico}, width=\linewidth]
+        \textbf{Primer Error:} Definición de impedancia incorrecta[cite: 8]. \\
+        \textbf{Corrección:} $Z_C = \frac{1}{j\omega C} = -j\frac{1}{\omega C}$[cite: 8]. \\
+        \textbf{Tag:} \texttt{[Impedance] / [Model]}[cite: 8].
+    \end{tcolorbox}
+\end{frame}
+
+\begin{frame}{Error Card 2 — KCL Sign[cite: 8]}
+    El estudiante \textbf{define todas las corrientes saliendo} del nodo $V_A$, pero escribe[cite: 8]:
+    \begin{equation*}
+        \frac{V_A - V_s}{R_1} + \frac{V_A}{Z_C} - \frac{V_A - V_B}{R_2} = 0 \text{[cite: 8]}
+    \end{equation*}
+
+    \vspace{0.3cm}
+    \pause
+    \begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Diagnóstico}, width=\linewidth]
+        \textbf{Primer Error:} La tercera corriente fue definida con un signo negativo, asumiendo implícitamente la dirección contraria a su definición inicial[cite: 8]. \\
+        \textbf{Corrección:} $ \frac{V_A - V_s}{R_1} + \frac{V_A}{Z_C} + \frac{V_A - V_B}{R_2} = 0 $[cite: 8]. \\
+        \textbf{Tag:} \texttt{[Sign] / [KCL/KVL]}[cite: 8].
+    \end{tcolorbox}
+\end{frame}
+
+\begin{frame}{Error Card 3 — Magnitudes Prematuras[cite: 8]}
+    Dado $Z_R = 1000\,\Omega, Z_C = -j1000\,\Omega$, el estudiante escribe[cite: 8]:
+    \begin{equation*}
+        Z_R + Z_C = |1000| + |-j1000| = 2000\,\Omega \text{[cite: 8]}
+    \end{equation*}
+
+    \vspace{0.3cm}
+    \pause
+    \begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Diagnóstico}, width=\linewidth]
+        \textbf{Primer Error:} Sustituir fasores por magnitudes antes de completar la operación compleja[cite: 8]. \\
+        \textbf{Corrección:} $Z_R + Z_C = 1000 - j1000 \implies |Z_R + Z_C| = 1414\,\Omega$[cite: 8]. \\
+        \textbf{Tag:} \texttt{[Complex arithmetic]}[cite: 8].
+    \end{tcolorbox}
+\end{frame}
+
+\begin{frame}{Error Card 4 — Polar Addition[cite: 8]}
+    \textbf{Desarrollo del estudiante[cite: 8]:}
+    \begin{equation*}
+        5\angle0^\circ + 5\angle90^\circ = 10\angle90^\circ \text{[cite: 8]}
+    \end{equation*}
+
+    \vspace{0.3cm}
+    \pause
+    \begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Diagnóstico}, width=\linewidth]
+        \textbf{Primer Error:} Sumar magnitudes y ángulos directamente en forma polar[cite: 8]. \\
+        \textbf{Corrección:} Convertir a rectangular ($5 + j5$), y luego a polar $\implies 7.07\angle45^\circ$[cite: 8]. \\
+        \textbf{Tag:} \texttt{[Complex arithmetic]}[cite: 8].
+    \end{tcolorbox}
+\end{frame}
+
+\begin{frame}{Error Card 5 — Physical Plausibility[cite: 8]}
+    Un divisor pasivo sin fuentes dependientes entrega[cite: 8]:
+    \begin{equation*}
+        |V_o| = 37\,\text{V} \text{[cite: 8]}
+    \end{equation*}
+    Cuando la única fuente independiente tiene $|V_s| = 10\,\text{V}$[cite: 8]. \\
+    El estudiante concluye: \textit{"La calculadora dio 37 V, por tanto es correcto."[cite: 8]}
+
+    \vspace{0.3cm}
+    \pause
+    \begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Diagnóstico}, width=\linewidth]
+        \textbf{Primer Error:} Aceptar un resultado matemático sin comprobar su coherencia física con los límites del sistema[cite: 8]. \\
+        \textbf{Corrección:} Activar una auditoría completa (signos, complejos, KVL)[cite: 8]. \\
+        \textbf{Tag:} \texttt{[Physical interpretation]}[cite: 8].
+    \end{tcolorbox}
+\end{frame}
+
+\begin{frame}{Error Card 6 — Current Direction[cite: 8]}
+    El estudiante define[cite: 8]:
+    \begin{equation*}
+        I = \frac{V_A - V_B}{Z} \text{[cite: 8]}
+    \end{equation*}
+    Y posteriormente utiliza en la siguiente malla[cite: 8]:
+    \begin{equation*}
+        V_B - V_A = IZ \text{[cite: 8]}
+    \end{equation*}
+
+    \vspace{0.3cm}
+    \pause
+    \begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Diagnóstico}, width=\linewidth]
+        \textbf{Primer Error:} Ambas expresiones implican direcciones de referencia opuestas para la misma variable en el mismo circuito[cite: 8]. \\
+        \textbf{Corrección:} Mantener consistencia $\implies V_A - V_B = IZ$[cite: 8]. \\
+        \textbf{Tag:} \texttt{[Sign] / [Solution organization]}[cite: 8].
+    \end{tcolorbox}
+\end{frame}
+
+\end{document}
