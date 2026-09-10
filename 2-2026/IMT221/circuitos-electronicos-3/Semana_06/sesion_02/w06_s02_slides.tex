@@ -1,0 +1,349 @@
+\documentclass[aspectratio=169, table, xcdraw]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage[most]{tcolorbox}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+\title[Pequeña Señal y Emisor Común]{Pequeña señal alrededor del punto Q y primer análisis de emisor común}
+\subtitle{IMT-221 Circuitos Electrónicos III — Semana 6, Sesión 2}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}
+\date{Semana 6}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Principio Fundamental de la Sesión}
+    \begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=La Pequeña Señal NO reemplaza al Análisis DC]
+        El modelo de pequeña señal \textbf{existe porque primero se estableció un punto de operación DC ($Q$)}. No tiene sentido construir un modelo incremental sin conocer el estado estático del transistor.
+    \end{tcolorbox}
+    
+    \vspace{0.3cm}
+    \textbf{Progresión de la clase:}
+    \begin{center}
+        $Q \rightarrow \text{DC + perturbación} \rightarrow \text{Linealización} \rightarrow g_m, r_e, r_\pi \rightarrow \text{Híbrido-}\pi \rightarrow \text{Equivalente AC} \rightarrow A_v$
+    \end{center}
+\end{frame}
+
+\begin{frame}{Descomposición: DC + Pequeña Señal}
+    Las señales totales instantáneas se componen del valor de polarización (DC) más una variación incremental (AC):
+    \begin{align*}
+        v_{BE}(t) &= V_{BEQ} + v_{be}(t) \\
+        i_C(t) &= I_{CQ} + i_c(t) \\
+        v_{CE}(t) &= V_{CEQ} + v_{ce}(t)
+    \end{align*}
+    
+    \begin{center}
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=12cm, height=3.5cm,
+            axis lines=middle,
+            xmin=0, xmax=10, ymin=0, ymax=4,
+            xtick=\empty, ytick={2}, yticklabels={$I_{CQ}$},
+            xlabel={$t$}, ylabel={Corriente},
+            every axis y label/.style={at={(ticklabel* cs:1.05)},anchor=south},
+            every axis x label/.style={at={(ticklabel* cs:1.05)},anchor=west}
+        ]
+        % DC
+        \addplot[thick, dashed, gray, domain=0:10] {2};
+        % AC only (shifted for visualization)
+        \addplot[thick, blue, domain=0:10, samples=100] {0.8*sin(deg(x*1.5)) + 0.5} node[pos=0.9, above] {$i_c(t)$};
+        % Total
+        \addplot[thick, red, domain=0:10, samples=100] {0.8*sin(deg(x*1.5)) + 2};
+        \node[red] at (axis cs: 8, 3.2) {$i_C(t) = I_{CQ} + i_c(t)$};
+        \end{axis}
+    \end{tikzpicture}
+    \end{center}
+    \textit{Pequeña señal no significa baja frecuencia; significa perturbación pequeña alrededor de $Q$.}
+\end{frame}
+
+\begin{frame}{Linealización Local en el Punto Q}
+    \begin{columns}
+        \begin{column}{0.48\textwidth}
+            La relación fundamental es exponencial:
+            \begin{equation*}
+                i_C = I_S e^{v_{BE}/V_T}
+            \end{equation*}
+            Si la excursión de $v_{be}$ es muy pequeña ($|v_{be}| \ll V_T$), la curva puede aproximarse por su recta tangente en $Q$.
+            
+            \vspace{0.2cm}
+            La \textbf{transconductancia} $g_m$ es esa pendiente:
+            \begin{equation*}
+                g_m = \left. \frac{\partial i_C}{\partial v_{BE}} \right|_Q = \frac{I_{CQ}}{V_T}
+            \end{equation*}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \centering
+            \begin{tikzpicture}
+                \begin{axis}[
+                    width=7cm, height=5.5cm,
+                    axis lines=left,
+                    xmin=0.5, xmax=0.8, ymin=0, ymax=5,
+                    xlabel={$v_{BE}$ (V)}, ylabel={$i_C$ (mA)},
+                    xtick={0.7}, xticklabels={$V_{BEQ}$},
+                    ytick={2}, yticklabels={$I_{CQ}$},
+                    grid=none
+                ]
+                % Exponencial simulada
+                \addplot[thick, blue, domain=0.5:0.75, samples=50] {0.001 * exp(10.85*x)};
+                % Punto Q
+                \addplot[mark=*, red] coordinates {(0.7, 1.99)} node[above left] {$Q$};
+                % Tangente
+                \addplot[thick, red, dashed, domain=0.65:0.75] {21.6*(x-0.7) + 1.99};
+                \node at (axis cs: 0.74, 1) {$g_m = \text{pendiente}$};
+                \end{axis}
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Parámetros Incrementales del BJT}
+    Asumiendo $T \approx 300\,\text{K} \implies V_T \approx 25.85\,\text{mV}$. El modelo incremental de 1\textsuperscript{er} orden define:
+    
+    \vspace{0.2cm}
+    \begin{block}{1. Transconductancia ($g_m$)}
+        \begin{equation*}
+            g_m = \frac{I_{CQ}}{V_T} \quad [\text{S}]
+        \end{equation*}
+        Controla la fuente de corriente dependiente ($i_c = g_m v_{be}$).
+    \end{block}
+    
+    \begin{columns}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{2. Resistencia intrínseca ($r_e$)}
+                \begin{equation*}
+                    r_e \approx \frac{V_T}{I_{CQ}} \approx \frac{1}{g_m} \quad [\Omega]
+                \end{equation*}
+                \textit{No es un resistor físico externo.}
+            \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{3. Resistencia de Base ($r_\pi$)}
+                \begin{equation*}
+                    r_\pi = \frac{\beta}{g_m} \quad [\Omega]
+                \end{equation*}
+                Resistencia vista desde la base al emisor.
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Construcción del Modelo Híbrido-$\pi$}
+    Reemplazamos el BJT no lineal por una red lineal válida \textit{sólo} para pequeñas variaciones AC. \\
+    \textbf{Suposición de enseñanza:} Efecto Early despreciado ($r_o \rightarrow \infty$).
+    
+    \vspace{0.4cm}
+    \begin{columns}
+        \begin{column}{0.3\textwidth}
+            \centering
+            \textbf{Símbolo NPN}
+            \vspace{0.2cm}
+            
+            \begin{circuitikz}[scale=1.2, transform shape, thick]
+                \draw (0,0) node[npn](Q){};
+                \node[above] at (Q.C) {C};
+                \node[below] at (Q.E) {E};
+                \node[left]  at (Q.B) {B};
+                \draw[->, red] (-0.5,-0.1) arc (-180:-90:0.4) node[midway, left]{$v_{be}$};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.1\textwidth}
+            \centering
+            $\implies$
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \centering
+            \textbf{Modelo Híbrido-$\pi$}
+            \vspace{0.2cm}
+            
+            \begin{circuitikz}[scale=1, transform shape, thick]
+                \draw (0,0) node[left]{B} to[R, l=$r_\pi$, v=$v_\pi$] (0,-2.5) node[below]{E};
+                \draw (3,0) node[right]{C} to[cI, l=$g_m v_\pi$] (3,-2.5) -- (0,-2.5);
+                \draw (0,0) -- (0.5,0);
+                \draw (3,0) -- (2.5,0);
+            \end{circuitikz}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Regla de la Tierra AC (AC Ground)}
+    \begin{alertblock}{El Principio de Superposición en AC}
+        Una fuente de tensión DC ideal tiene una variación incremental de cero ($\Delta V_{CC} = 0$). En el análisis de pequeña señal, sus terminales se conectan a \textbf{Tierra AC}.
+    \end{alertblock}
+    
+    \begin{columns}
+        \begin{column}{0.45\textwidth}
+            \centering
+            \textbf{Circuito Original DC}
+            \begin{circuitikz}[scale=0.8, transform shape, thick]
+                \draw (0,3) -- (3,3) node[above]{$+V_{CC}$};
+                \draw (0,3) to[R, l_={$R_B$}] (0,1) node[below]{B};
+                \draw (3,3) to[R, l={$R_C$}] (3,1) node[below]{C};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.1\textwidth}
+            $\implies$
+        \end{column}
+        \begin{column}{0.45\textwidth}
+            \centering
+            \textbf{Red Externa AC}
+            \begin{circuitikz}[scale=0.8, transform shape, thick]
+                \draw (0,3) node[ground, rotate=180]{} -- (0,2);
+                \draw (3,3) node[ground, rotate=180]{} -- (3,2);
+                \draw (0,3) to[R, l_={$R_B$}] (0,0) node[below]{B};
+                \draw (3,3) to[R, l={$R_C$}] (3,0) node[below]{C};
+            \end{circuitikz}
+        \end{column}
+    \end{columns}
+    \vspace{0.2cm}
+    \textit{Consecuencia vital: ¡Los resistores de polarización NO desaparecen! Cambian de nodo de referencia.}
+\end{frame}
+
+\begin{frame}{Transformación del Emisor Común (Paso a Paso)}
+    \centering
+    \begin{columns}
+        \begin{column}{0.33\textwidth}
+            \centering
+            \textbf{1. Original}
+            \resizebox{\textwidth}{!}{
+            \begin{circuitikz}[thick]
+                \draw (0,0) node[npn](Q){};
+                \draw (Q.E) node[ground]{};
+                \draw (Q.C) to[R, l_={$R_C$}] (0,2) -- (-2,2) node[above]{$+V_{CC}$};
+                \draw (Q.B) -- (-2,0) to[R, l={$R_B$}] (-2,2);
+                \draw (-2.5,0) node[left]{$v_i$} to[short, o-] (-2,0);
+                \draw (Q.C) to[short, -o] (1,0.77) node[right]{$v_o$};
+            \end{circuitikz}
+            }
+        \end{column}
+        \begin{column}{0.33\textwidth}
+            \centering
+            \textbf{2. Externa AC}
+            \resizebox{\textwidth}{!}{
+            \begin{circuitikz}[thick]
+                \draw (0,0) node[npn](Q){};
+                \draw (Q.E) node[ground]{};
+                \draw (Q.C) to[R, l_={$R_C$}] (0,2) node[ground, rotate=180]{};
+                \draw (Q.B) -- (-2,0) to[R, l={$R_B$}] (-2,2) node[ground, rotate=180]{};
+                \draw (-2.5,0) node[left]{$v_i$} to[short, o-] (-2,0);
+                \draw (Q.C) to[short, -o] (1,0.77) node[right]{$v_o$};
+            \end{circuitikz}
+            }
+        \end{column}
+        \begin{column}{0.33\textwidth}
+            \centering
+            \textbf{3. Híbrido-$\pi$}
+            \resizebox{\textwidth}{!}{
+            \begin{circuitikz}[thick]
+                \draw (0,0) to[R, l_={$R_B$}] (0,2) node[ground, rotate=180]{};
+                \draw (1,0) to[R, l_={$r_\pi$}, v^={$v_\pi$}] (1,-2) node[ground]{};
+                \draw (-1,0) node[left]{$v_i$} to[short, o-] (1,0);
+                
+                \draw (3,0) to[cI, l={$g_m v_\pi$}] (3,-2) node[ground]{};
+                \draw (4,0) to[R, l={$R_C$}] (4,2) node[ground, rotate=180]{};
+                \draw (3,0) -- (4,0);
+                \draw (4,0) to[short, -o] (5,0) node[right]{$v_o$};
+            \end{circuitikz}
+            }
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Derivación de la Ganancia ($A_v$) y Fase}
+    Del modelo Híbrido-$\pi$ previo, observamos la entrada y la salida:
+    \begin{enumerate}
+        \item Como el emisor está a tierra AC: $\quad \mathbf{v_\pi = v_i}$
+        \item La fuente dependiente inyecta corriente hacia tierra, extrayéndola del nodo colector:
+        \begin{equation*}
+            i_c = g_m v_\pi
+        \end{equation*}
+        \item Esta corriente fluye por $R_C$ desde tierra hacia el colector (KCL), induciendo una caída negativa:
+        \begin{equation*}
+            v_o = -i_c R_C = -g_m v_\pi R_C
+        \end{equation*}
+    \end{enumerate}
+    
+    \begin{block}{Ganancia de Tensión Idealizada ($r_o \to \infty$, sin carga externa)}
+        \begin{equation*}
+            A_v = \frac{v_o}{v_i} = -g_m R_C
+        \end{equation*}
+    \end{block}
+    \textit{El signo negativo significa inversión de fase (180$^\circ$), no atenuación.}
+\end{frame}
+
+\begin{frame}{Efecto de Carga y Límite de Excursión Lineal}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \textbf{Efecto de la Carga ($R_L$):} \\
+            Si acoplamos una resistencia de carga en AC al colector, ésta queda en paralelo con $R_C$:
+            \begin{equation*}
+                A_v \approx -g_m (R_C \parallel R_L)
+            \end{equation*}
+            La ganancia magnitud disminuye invariablemente al agregar carga.
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{Precaución de Rango Lineal:} \\
+            Un gran $|A_v|$ teórico no garantiza amplificación ilimitada. La excursión total $V_{CE}(t)$ está atrapada entre el \textbf{Corte} y la \textbf{Saturación}.
+            \begin{center}
+            \begin{tikzpicture}[scale=0.7]
+                \draw[thick, ->] (0,0) -- (5,0) node[right]{$t$};
+                \draw[thick, ->] (0,-1) -- (0,3) node[above]{$v_{CE}(t)$};
+                \draw[dashed, red] (0,2.5) -- (5,2.5) node[right]{Corte};
+                \draw[dashed, red] (0,0.5) -- (5,0.5) node[right]{Sat.};
+                \draw[blue, thick, domain=0:4.5, samples=100] plot (\x, {1.5 + 1.2*sin(deg(\x*3))});
+                \node at (2.5, 3) {\small ¡Recorte si la señal es muy grande!};
+            \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Puente hacia el Hito 2: El Par Diferencial}
+    ¿Hacia dónde nos dirige este análisis de un solo transistor?
+    
+    \vspace{0.4cm}
+    \centering
+    \begin{tikzpicture}[node distance=2.5cm, auto, thick]
+        \node[draw, rounded corners, fill=blue!10] (bjt) {Un solo BJT};
+        \node[draw, rounded corners, fill=blue!10, right of=bjt, xshift=1cm] (ce) {Emisor Común};
+        \node[draw, rounded corners, fill=red!10, right of=ce, xshift=1.5cm] (diff) {\textbf{Par Diferencial}};
+        
+        \draw[->] (bjt) -- node[above]{$g_m, r_\pi$} (ce);
+        \draw[->] (ce) -- node[above]{Acoplar 2 BJTs} (diff);
+    \end{tikzpicture}
+    
+    \vspace{0.5cm}
+    \begin{itemize}
+        \item El amplificador diferencial usa la misma física incremental que hemos desarrollado hoy.
+        \item Entender $g_m$ y la referencia de emisor es el prerrequisito directo para analizar el modo diferencial y el rechazo en modo común (CMRR).
+    \end{itemize}
+\end{frame}
+
+\end{document}

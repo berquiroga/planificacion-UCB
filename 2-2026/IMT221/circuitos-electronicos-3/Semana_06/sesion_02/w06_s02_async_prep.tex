@@ -1,0 +1,76 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{listings}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Trabajo Asincrónico S06-2}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\lstset{
+    language=Python,
+    backgroundcolor=\color{gray!10},
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!50!black}\itshape,
+    stringstyle=\color{red},
+    frame=single,
+    breaklines=true,
+    numbers=left,
+    numberstyle=\tiny\color{gray}
+}
+
+\begin{document}
+
+\section*{Consolidación Asincrónica: Dependencia de Parámetros}
+
+\subsection*{Parte A y C: Ejercicios Numéricos}
+\textbf{A.} Asume $I_{CQ}=1.2\,\text{mA}$, $\beta=120$, $T \approx 300\,\text{K}$. Calcula los valores de $g_m, r_e, y r_\pi$. \\
+\textbf{C.} Para la etapa de emisor común con $R_C=2.7\,\text{k}\Omega$ y $R_L=10\,\text{k}\Omega$, calcula la ganancia de voltaje $A_v$. (Asume emisor en tierra AC y $r_o \to \infty$).
+
+\subsection*{Parte B y D: Evaluación Conceptual}
+Responde en tu cuaderno:
+\begin{enumerate}
+    \item ¿Por qué $g_m$ depende del punto de operación $Q$?
+    \item Al transformar un circuito a su equivalente AC, ¿por qué la fuente $V_{CC}$ se convierte en tierra pero el resistor $R_C$ no desaparece?
+    \item Dibuja de memoria el modelo Híbrido-$\pi$ (incluyendo nodos, resistencias y la dirección de la fuente de corriente).
+    \item ¿Por qué la fórmula $-g_m R_C$ puede fallar al predecir la salida si la señal de entrada es demasiado grande?
+\end{enumerate}
+
+\subsection*{Tabla de Parámetros en Python (Opcional)}
+Analiza este código. ¿Cuál es la tendencia de los parámetros cuando $I_C$ aumenta?
+
+\begin{lstlisting}
+import numpy as np
+
+VT = 25.85e-3      # V at approximately 300 K
+beta = 100.0
+
+IC = np.array([0.5e-3, 1e-3, 2e-3, 4e-3])
+
+gm = IC / VT
+re = 1.0 / gm
+rpi = beta / gm
+
+for ic, gm_i, re_i, rpi_i in zip(IC, gm, re, rpi):
+    print(
+        f"IC={ic*1e3:4.1f} mA | "
+        f"gm={gm_i*1e3:6.2f} mS | "
+        f"re={re_i:7.2f} ohm | "
+        f"rpi={rpi_i/1e3:6.2f} kohm"
+    )
+\end{lstlisting}
+
+\end{document}

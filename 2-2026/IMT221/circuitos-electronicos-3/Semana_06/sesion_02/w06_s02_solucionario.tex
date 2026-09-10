@@ -1,0 +1,60 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Soluciones S06-2}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\section*{Solucionario y Guía Docente}
+
+\subsection*{Ejercicio 1: Diagnóstico DC}
+1. $I_B = (10 - 0.7) / 470\text{k} \approx 19.79\,\mu\text{A}$. \\
+2. $I_C = 100(19.79\,\mu\text{A}) \approx 1.979\,\text{mA}$. \\
+3. $V_{CE} = 10 - (1.979\text{m})(2\text{k}) \approx 6.04\,\text{V}$. \\
+4. $V_{BC} = 0.7 - 6.04 = -5.34\,\text{V} < 0$ (Consistente). \\
+5. $Q \approx (1.98\,\text{mA}, 6.04\,\text{V})$. \\
+6. Representa el estado estático de referencia en ausencia de perturbaciones externas. \\
+7. Porque los parámetros incrementales ($g_m, r_\pi$) dependen directamente del valor de corriente DC en el punto $Q$.
+
+\subsection*{Ejercicio 2: Parámetros Guiados}
+1. $g_m = 2\text{mA} / 25.85\text{mV} \approx 77.37\,\text{mS}$. \\
+2. $r_e \approx 1/g_m \approx 12.93\,\Omega$. \\
+3. $r_\pi = 120 / 0.07737 \approx 1.55\,\text{k}\Omega$. \\
+4. $g_m$ en Siemens (o mS), $r_e$ y $r_\pi$ en Ohmios. \\
+5. \textbf{Predicción:} $g_m$ se duplica, $r_e$ se reduce a la mitad, $r_\pi$ se reduce a la mitad. \\
+\textbf{Error común:} $r_e = R_E$. \textit{Sonda pedagógica:} "¿Cuál es el resistor físico externo?"
+
+\subsection*{Ejercicio 4: Transformación AC}
+1. $+V_{CC}$ se cortocircuita a Tierra AC. \\
+2. $R_B$ permanece, ahora conectado de Base a Tierra AC. \\
+3. $R_C$ permanece, conectado de Colector a Tierra AC. \\
+\textbf{Error común:} Eliminar $R_B$. \textit{Sonda:} "¿Qué ocurre con la terminal que estaba atada a una fuente de tensión ideal sin variación incremental?"
+
+\subsection*{Ejercicio 5: Ganancia Guiada}
+1. $g_m = 1.5\text{mA} / 25.85\text{mV} \approx 58.03\,\text{mS}$. $r_\pi = 100 / 0.05803 \approx 1.72\,\text{k}\Omega$. \\
+2. $A_v \approx -(0.05803)(2200) \approx -127.7$. \\
+3. Inversión: un aumento en $v_{be}$ eleva $i_c$, aumentando la caída en $R_C$ y bajando $v_C$. \\
+4. $v_o \approx (-127.7)(4\text{mV}) \approx -0.511\,\text{V}$. \\
+5. La señal de gran amplitud puede acercarse a los límites de Corte o Saturación, distorsionando la onda. \\
+\textbf{Error común:} Interpretar ganancia negativa como atenuación. \textit{Sonda:} "¿Qué te dice el signo respecto a la fase?"
+
+\subsection*{Ejercicio 6: Carga Externa}
+1. $g_m \approx 38.68\,\text{mS}$, $r_e \approx 25.85\,\Omega$, $r_\pi \approx 3.88\,\text{k}\Omega$. \\
+2. $R_C \parallel R_L = 3.3\text{k} \parallel 10\text{k} \approx 2.48\,\text{k}\Omega$. \\
+3. $A_v \approx -(0.03868)(2481) \approx -96.0$. \\
+4. Suposición: Emisor atado a tierra en AC, efecto Early despreciado ($r_o \to \infty$).
+
+\end{document}

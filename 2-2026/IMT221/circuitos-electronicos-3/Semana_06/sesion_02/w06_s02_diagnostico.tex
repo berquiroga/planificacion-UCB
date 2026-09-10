@@ -1,0 +1,52 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Diagnóstico S06-2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Diagnóstico Breve de Prerrequisitos DC}]
+    Tiempo estimado: 5-7 minutos. Resuelve individualmente para habilitar el análisis AC.
+\end{tcolorbox}
+
+\section*{Ejercicio 1: Evaluación del Punto Q}
+Considera el siguiente circuito de polarización fija. 
+Datos: $V_{CC}=10\,\text{V}$, $\beta=100$, $V_{BE} \approx 0.7\,\text{V}$ (en conducción).
+
+\begin{center}
+\begin{circuitikz}[scale=1, transform shape, thick]
+    \draw (0,0) node[npn](Q){};
+    \draw (Q.E) node[ground]{};
+    \draw (Q.C) to[R, l_={$R_C = 2.0\,\text{k}\Omega$}] (0,3);
+    \draw (Q.B) -- (-2.5, 0) to[R, l={$R_B = 470\,\text{k}\Omega$}] (-2.5, 3);
+    \draw (-2.5,3) -- (0,3) -- (0,3.5) node[above]{$+10\,\text{V}$};
+\end{circuitikz}
+\end{center}
+
+\textbf{Calcula y responde:}
+\begin{enumerate}
+    \item Calcula la corriente de base $I_B$. \vspace{1.5cm}
+    \item Calcula la corriente candidata de colector $I_C$. \vspace{1.5cm}
+    \item Calcula el voltaje $V_{CE}$. \vspace{1.5cm}
+    \item Verifica matemáticamente la consistencia de la región (¿está en Activa Directa?). \vspace{1.5cm}
+    \item Escribe el punto de operación exacto $Q = (I_{CQ}, V_{CEQ})$. \vspace{1cm}
+    \item En una sola oración técnica: ¿Qué representa físicamente el punto $Q$? \vspace{1.5cm}
+    \item ¿Por qué el punto $Q$ debe conocerse \textit{antes} de realizar el análisis de pequeña señal?
+\end{enumerate}
+
+\end{document}

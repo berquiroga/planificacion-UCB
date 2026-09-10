@@ -1,0 +1,77 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Ejercicios Guiados S06-2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Hoja de Ejercicios: Parámetros Incrementales y Emisor Común}]
+    Asume $T \approx 300\,\text{K} \implies V_T = 25.85\,\text{mV}$ para todos los cálculos.
+\end{tcolorbox}
+
+\section*{Ejercicio 2: Parámetros de Pequeña Señal Guiados}
+Dado un transistor NPN polarizado en $I_{CQ}=2.0\,\text{mA}$, con $\beta=120$:
+\begin{enumerate}
+    \item Calcula la transconductancia $g_m$.
+    \item Calcula la resistencia intrínseca de emisor $r_e$.
+    \item Calcula la resistencia de base $r_\pi$.
+    \item Indica las unidades correctas de cada parámetro calculado.
+    \item \textbf{Predicción:} Antes de recalcular, si $I_{CQ}$ se duplica a temperatura constante y $\beta$ permanece fijo, ¿qué ocurre con $g_m, r_e, r_\pi$?
+\end{enumerate}
+
+\section*{Ejercicio 3: Dibujo del Modelo Híbrido-$\pi$}
+Reemplaza el símbolo del BJT NPN polarizado en activa por su modelo simplificado Híbrido-$\pi$.
+\textbf{Debes incluir y etiquetar:} $r_\pi$, $v_\pi$, la fuente de corriente $g_m v_\pi$ con su dirección correcta, nodos B/C/E, y escribir la suposición explícita sobre $r_o$ que estamos empleando.
+
+\section*{Ejercicio 4: Transformación AC Equivalente}
+Dada la etapa de emisor común sesgada:
+\begin{center}
+\begin{circuitikz}[scale=0.9, transform shape, thick]
+    \draw (0,0) node[npn](Q){};
+    \draw (Q.E) node[ground]{};
+    \draw (Q.C) to[R, l_={$R_C$}] (0,2) -- (-2.5,2) node[above]{$+V_{CC}$};
+    \draw (Q.B) -- (-2.5,0) to[R, l={$R_B$}] (-2.5,2);
+    \draw (-3.5,0) node[left]{$v_i$} to[short, o-] (-2.5,0);
+    \draw (Q.C) to[short, -o] (1.5,0.77) node[right]{$v_o$};
+\end{circuitikz}
+\end{center}
+\textbf{Tareas:}
+1. Reemplaza $+V_{CC}$ con su equivalente en pequeña señal.
+2. Indica si $R_B$ y $R_C$ permanecen en el circuito AC. ¿A qué se conectan ahora?
+3. Reemplaza el BJT con el modelo Híbrido-$\pi$ y dibuja el circuito AC resultante.
+
+\section*{Ejercicio 5: Ganancia Guiada}
+Asume $I_{CQ}=1.5\,\text{mA}$, $\beta=100$, $R_C=2.2\,\text{k}\Omega$. Emisor a tierra AC, $r_o \to \infty$, fuente ideal ($v_\pi = v_i$).
+\begin{enumerate}
+    \item Calcula $g_m$ y $r_\pi$.
+    \item Calcula la ganancia $A_v \approx -g_m R_C$.
+    \item Explica brevemente por qué el signo es negativo.
+    \item Si $v_i = 4\,\text{mV}$, estima el valor de $v_o$.
+    \item Menciona una razón por la que la salida real de gran señal podría diferir de esta estimación.
+\end{enumerate}
+
+\section*{Ejercicio 6: Aplicación Independiente (Con Carga)}
+Dado $I_{CQ}=1.0\,\text{mA}$, $\beta=150$, $R_C=3.3\,\text{k}\Omega$, $R_L=10\,\text{k}\Omega$. Asume $r_o \to \infty$.
+\begin{enumerate}
+    \item Calcula $g_m, r_e, r_\pi$.
+    \item Calcula el paralelo efectivo $R_C \parallel R_L$.
+    \item Estima la ganancia de tensión cargada $A_v = -g_m (R_C \parallel R_L)$.
+    \item Nombra al menos una suposición utilizada en este cálculo.
+\end{enumerate}
+
+\end{document}
