@@ -1,0 +1,50 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Diagnóstico AC S06-3}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Consolidación de Pequeña Señal}]
+    Tiempo estimado: 7-10 minutos. Evaluación de autonomía en parámetros intrínsecos.
+\end{tcolorbox}
+
+\section*{Ejercicio 1: Emisor Común Aislado}
+Considera el circuito mostrado, con punto de operación DC ya determinado. \\
+\textbf{Datos asignados:} $I_{CQ}=1.0\,\text{mA}$, $\beta=100$, $R_C=4.7\,\text{k}\Omega$, $T \approx 300\,\text{K}$ ($V_T=25.85\,\text{mV}$). 
+
+\begin{center}
+\begin{circuitikz}[scale=1, transform shape, thick]
+    \draw (0,0) node[npn](Q){};
+    \draw (Q.E) node[ground]{};
+    \draw (Q.C) to[R, l_={$R_C$}] (0,2) -- (0,2.5) node[above]{$+V_{CC}$};
+    \draw (Q.B) -- (-2,0) node[left]{$v_i$};
+    \draw (Q.C) to[short, -o] (1,0.77) node[right]{$v_o$};
+\end{circuitikz}
+\end{center}
+
+\textbf{Calcula y responde secuencialmente:}
+\begin{enumerate}
+    \item Calcula la transconductancia $g_m$. \vspace{1.5cm}
+    \item Calcula la resistencia de base en pequeña señal $r_\pi$. \vspace{1.5cm}
+    \item Dibuja el modelo Híbrido-$\pi$ equivalente del transistor, conectando los terminales B, C y E, y ubicando correctamente la Tierra AC. \vspace{3cm}
+    \item Estima la ganancia de etapa sin carga $A_{v0} = -g_m R_C$. \vspace{1cm}
+    \item Nombra al menos una suposición técnica que sustente el cálculo anterior.
+\end{enumerate}
+
+\end{document}

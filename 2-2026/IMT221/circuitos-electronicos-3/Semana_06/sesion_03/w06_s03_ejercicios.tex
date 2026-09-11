@@ -1,0 +1,60 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Ejercicios S06-3}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Ejercicio Integrado: Fuente - Amplificador - Carga}]
+    Aplica el modelo completo para determinar la ganancia global del sistema $G_v$.
+\end{tcolorbox}
+
+\section*{Circuito Equivalente AC}
+\textbf{Datos asignados:} $I_{CQ}=1.0\,\text{mA}$, $\beta=100$, $R_B=100\,\text{k}\Omega$, $R_S=10\,\text{k}\Omega$, $R_C=4.7\,\text{k}\Omega$, $R_L=10\,\text{k}\Omega$, $T \approx 300\,\text{K}$ ($V_T=25.85\,\text{mV}$). Suponga $r_o \to \infty$.
+
+\begin{center}
+\begin{circuitikz}[scale=1, transform shape, thick]
+    % Source part
+    \draw (-2,0) to[sV, l={$v_s$}] (-2,2) to[R, l={$R_S$}] (0,2);
+    \draw (-2,0) -- (0,0) node[ground]{};
+    % Ampli Input
+    \draw (0,2) to[short, *-] (2,2) node[right]{B};
+    \draw (0,2) to[R, l_={$R_B$}] (0,0) node[ground]{};
+    \draw (2,2) to[R, l={$r_\pi$}] (2,0) node[ground]{};
+    % Ampli Output
+    \draw (5,2) node[left]{C} to[cI, l_={$g_m v_\pi$}] (5,0) node[ground]{};
+    \draw (5,2) -- (7,2);
+    \draw (6,2) to[R, l={$R_C$}] (6,0) node[ground]{};
+    \draw (7,2) to[R, l={$R_L$}] (7,0) node[ground]{};
+    \draw (7,2) to[short, *-o] (8,2) node[right]{$v_o$};
+\end{circuitikz}
+\end{center}
+
+\section*{Secuencia de Análisis}
+\begin{enumerate}
+    \item Calcula los parámetros intrínsecos $g_m$ y $r_\pi$.
+    \item Calcula la resistencia de entrada total $R_{in}$.
+    \item \textbf{Predicción:} ¿Será la tensión de entrada $v_i$ igual, menor o mayor que $v_s$? Calcula la atenuación de entrada $v_i / v_s$.
+    \item \textbf{Predicción:} ¿Qué efecto tendrá $R_L$ sobre la ganancia de la etapa? Calcula el paralelo efectivo $R_C \parallel R_L$.
+    \item Calcula la ganancia de etapa cargada $A_v = v_o / v_i$.
+    \item Calcula la ganancia global de tensión $G_v = v_o / v_s$.
+    \item Si desconectamos $R_L$ ($R_L \to \infty$), ¿a qué valor tendería $A_v$?
+    \item Si reducimos la resistencia de la fuente $R_S \to 0\,\Omega$, ¿qué ocurriría con $G_v$?
+\end{enumerate}
+
+\end{document}

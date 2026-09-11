@@ -1,0 +1,49 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Soluciones S06-3}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\section*{Solucionario y Guía Docente: Interacción Multietapa}
+
+\subsection*{Ejercicio Diagnóstico}
+1. $g_m = 1\,\text{mA} / 25.85\,\text{mV} \approx 38.68\,\text{mS}$. \\
+2. $r_\pi = 100 / 0.03868 \approx 2.585\,\text{k}\Omega$. \\
+3. \textit{[Revisar dibujo del estudiante: B a E ($r_\pi$), C a E (fuente $g_m v_\pi$ apuntando abajo), E en Tierra AC].} \\
+4. $A_{v0} = -(38.68\text{mS})(4.7\text{k}\Omega) \approx -181.8$. \\
+5. Suposición: Emisor en tierra AC, $r_o \to \infty$, señal en la base ideal (sin resistencia de fuente).
+
+\subsection*{Ejercicio Integrado Fuente-Amplificador-Carga}
+1. $g_m \approx 38.68\,\text{mS}$ y $r_\pi \approx 2.585\,\text{k}\Omega$. \\
+2. $R_{in} = R_B \parallel r_\pi = 100\text{k}\Omega \parallel 2.585\text{k}\Omega \approx 2.520\,\text{k}\Omega$. \\
+3. $v_i$ será menor debido a la atenuación de $R_S$. $v_i/v_s = 2.520 / (10 + 2.520) \approx 0.2013$. \\
+\textbf{Error común:} Asumir $v_s = v_i$. \textit{Sonda pedagógica:} "¿Qué resistencia existe entre el generador ideal y el nodo de entrada del amplificador?" \\
+4. $R_L$ reducirá la magnitud de la ganancia. $R_C \parallel R_L = 4.7\text{k} \parallel 10\text{k} \approx 3.197\,\text{k}\Omega$. \\
+\textbf{Error común:} Usar $-g_m R_C$ ignorando $R_L$. \textit{Sonda:} "¿Qué resistencia paralela real ve la fuente dependiente en el colector?" \\
+5. $A_v = -g_m (R_C \parallel R_L) = -(0.03868)(3197) \approx -123.7$. \\
+6. $G_v = (v_i/v_s) A_v = (0.2013)(-123.7) \approx -24.9$. \\
+7. Tendería a $A_{v0} = -181.8$. \\
+8. Si $R_S \to 0$, entonces $v_i \approx v_s$, y $G_v$ subiría, igualando la magnitud de $A_v$ cargada (-123.7).
+
+\subsection*{Preguntas Conceptuales de Carga y Topología}
+\textbf{Selección de Topologías:}
+\begin{itemize}
+    \item \textbf{Buffer entre fuente y carga pesada:} Colector Común (CC). \textit{Sonda:} "¿Qué sucede con la corriente extraída de la fuente si usamos un CE directo?"
+    \item \textbf{Por qué no multiplicar ganancias descargadas en cascada:} La Etapa 2 modifica la resistencia de carga efectiva vista por la Etapa 1. Multiplicar $A_{v0,1} \times A_{v0,2}$ produce un error gigante por exceso.
+\end{itemize}
+
+\end{document}

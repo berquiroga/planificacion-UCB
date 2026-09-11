@@ -1,0 +1,55 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[table, xcdraw]{xcolor} % Soluciona el error de \rowcolor
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Referencia Rápida}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Comparación Funcional de Configuraciones del BJT}]
+    Esta tabla expone \textbf{tendencias funcionales} de pequeña señal, no garantías numéricas universales. Utiliza esta guía para seleccionar la topología adecuada según las necesidades de impedancia y voltaje del diseño.
+\end{tcolorbox}
+
+\vspace{0.5cm}
+
+\renewcommand{\arraystretch}{1.8}
+% El formato p{3.8cm} y \raggedright solucionan los Overfull y Underfull \hbox
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3.8cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!20}
+\textbf{Propiedad} & \textbf{Emisor Común (CE)} & \textbf{Colector Común (CC) / Seguidor} & \textbf{Base Común (CB)} \\ \hline
+\textbf{Terminal de Entrada} & Base & Base & Emisor \\ \hline
+\textbf{Terminal de Salida} & Colector & Emisor & Colector \\ \hline
+\textbf{Terminal Común (Tierra AC)} & Emisor & Colector & Base \\ \hline
+\textbf{Tendencia de Ganancia de Tensión} & Magnitud potencialmente alta ($|A_v| \gg 1$) & Cercana a la unidad ($A_v \approx 1$) & Potencialmente alta ($A_v > 1$) \\ \hline
+\textbf{Relación de Fase ($v_o$ vs $v_i$)} & Invertida ($180^\circ$) & No invertida ($0^\circ$) & No invertida ($0^\circ$) \\ \hline
+\textbf{Tendencia de Resistencia de Entrada ($R_{in}$)} & Moderada & \textbf{Alta} (minimiza carga en la fuente) & \textbf{Baja} \\ \hline
+\textbf{Tendencia de Resistencia de Salida ($R_{out}$)} & Moderada a Alta & \textbf{Baja} (ideal para manejar cargas pesadas) & Alta a Moderadamente Alta \\ \hline
+\textbf{Rol Típico en Diseño} & Etapa principal de ganancia de voltaje. & \textbf{Buffer} / Transformador de impedancia. & Interfaz de corriente o diseño de alta frecuencia. \\ \hline
+\end{tabularx}
+
+\vspace{1cm}
+
+\subsubsection*{Notas de Carga Multietapa}
+\begin{itemize}
+    \item La ganancia total de un amplificador de múltiples etapas \textbf{NO} es el producto simple de las ganancias aisladas de cada etapa.
+    \item La resistencia de entrada ($R_{in}$) de la segunda etapa actúa como la resistencia de carga ($R_L$) externa para la primera etapa, atenuando su ganancia real en el circuito integrado.
+    \item Por ello, el \textbf{Colector Común} es inmensamente valioso a pesar de no amplificar voltaje: su alta $R_{in}$ no afecta la ganancia de la etapa previa, y su baja $R_{out}$ permite alimentar cargas de bajos ohmios sin que la tensión se desplome.
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,290 @@
+\documentclass[aspectratio=169, table, xcdraw]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage[most]{tcolorbox}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+\title[Interacción y Multietapa]{Consolidación de emisor común, interacción fuente-amplificador-carga y puente hacia multietapa}
+\subtitle{IMT-221 Circuitos Electrónicos III — Semana 6, Sesión 3}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}
+\date{Semana 6}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{El Amplificador Completo}
+    \begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=Idea Central de la Sesión]
+        El amplificador útil es el sistema completo \textbf{fuente–transistor–carga}, no la ecuación del transistor en aislamiento.
+    \end{tcolorbox}
+    
+    \vspace{0.4cm}
+    \textbf{Cadena de Análisis:}
+    \begin{center}
+        $Q \rightarrow g_m, r_\pi \rightarrow \text{Híbrido-}\pi \rightarrow A_v \rightarrow R_{in} \rightarrow R_S \rightarrow R_L \rightarrow R_{out} \rightarrow G_v$
+    \end{center}
+\end{frame}
+
+\begin{frame}{Diagnóstico Breve: Emisor Común Aislado}
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            \centering
+            \begin{circuitikz}[scale=0.9, transform shape, thick]
+                \draw (0,0) node[npn](Q){};
+                \draw (Q.E) node[ground]{};
+                \draw (Q.C) to[R, l_={$R_C$}] (0,2) -- (0,2.5) node[above]{$+V_{CC}$};
+                \draw (Q.B) -- (-2,0) node[left]{$v_i$};
+                \draw (Q.C) to[short, -o] (1,0.77) node[right]{$v_o$};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.55\textwidth}
+            \textbf{Condiciones de Operación (Asignadas):}
+            \begin{itemize}
+                \item $I_{CQ} = 1.0\,\text{mA}$
+                \item $\beta = 100$
+                \item $R_C = 4.7\,\text{k}\Omega$
+                \item $T \approx 300\,\text{K} \implies V_T \approx 25.85\,\text{mV}$
+                \item Supuestos: Activa directa, $r_o \to \infty$, $v_i = v_\pi$
+            \end{itemize}
+            
+            \vspace{0.2cm}
+            \textbf{Parámetros Mínimos:}
+            \begin{align*}
+                g_m &= \frac{1\,\text{mA}}{25.85\,\text{mV}} \approx 38.68\,\text{mS} \\
+                r_\pi &= \frac{100}{38.68\,\text{mS}} \approx 2.585\,\text{k}\Omega
+            \end{align*}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Atenuación de Entrada (Efecto de $R_S$)}
+    Una fuente real tiene resistencia interna ($R_S$). La red de polarización ($R_B$) y el transistor ($r_\pi$) forman una resistencia de entrada que "carga" a la fuente.
+    
+    \vspace{0.2cm}
+    \begin{columns}
+        \begin{column}{0.55\textwidth}
+            \centering
+            \begin{circuitikz}[scale=0.85, transform shape, thick]
+                \draw (0,0) to[sV, l={$v_s$}] (0,2) to[R, l={$R_S$}] (2,2);
+                \draw (2,0) to[R, l={$R_{in}$}] (2,2);
+                \draw (2,2) to[short, -o] (3,2) node[right]{$v_i$};
+                \draw (0,0) -- (2,0) node[ground]{};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.4\textwidth}
+            \textbf{Resistencia de entrada:}
+            \begin{equation*}
+                R_{in} = R_B \parallel r_\pi
+            \end{equation*}
+            
+            \vspace{0.2cm}
+            \textbf{Divisor de tensión:}
+            \begin{equation*}
+                \frac{v_i}{v_s} = \frac{R_{in}}{R_S + R_{in}} < 1
+            \end{equation*}
+        \end{column}
+    \end{columns}
+    \vspace{0.3cm}
+    \textit{Si $R_S$ es comparable o mayor que $R_{in}$, el amplificador recibe sólo una fracción de la señal de la fuente.}
+\end{frame}
+
+\begin{frame}{Efecto de la Carga Externa ($R_L$)}
+    La carga externa se acopla en AC al nodo del colector, quedando en paralelo con $R_C$.
+    
+    \vspace{0.2cm}
+    \begin{columns}
+        \begin{column}{0.45\textwidth}
+            \centering
+            \textbf{Colector Sin Carga} \\
+            \vspace{0.2cm}
+            \begin{circuitikz}[scale=0.8, transform shape, thick]
+                \draw (0,2) node[ground, rotate=180]{} to[R, l_={$R_C$}] (0,0) node[below]{C};
+                \draw (0,0) to[short, -o] (1.5,0) node[right]{$v_o$};
+            \end{circuitikz}
+            \vspace{0.2cm}
+            \begin{equation*}
+                A_{v0} = -g_m R_C
+            \end{equation*}
+        \end{column}
+        \begin{column}{0.1\textwidth}
+            $\implies$
+        \end{column}
+        \begin{column}{0.45\textwidth}
+            \centering
+            \textbf{Colector Con Carga} \\
+            \vspace{0.2cm}
+            \begin{circuitikz}[scale=0.8, transform shape, thick]
+                \draw (0,2) node[ground, rotate=180]{} to[R, l_={$R_C$}] (0,0) node[below]{C};
+                \draw (0,0) -- (1.5,0) to[R, l={$R_L$}] (1.5,2) node[ground, rotate=180]{};
+                \draw (0,0) to[short, *-o] (2.5,0) node[right]{$v_o$};
+            \end{circuitikz}
+            \vspace{0.2cm}
+            \begin{equation*}
+                A_v = -g_m (R_C \parallel R_L)
+            \end{equation*}
+        \end{column}
+    \end{columns}
+    \vspace{0.3cm}
+    \textit{Nota: $R_{out} \approx R_C$ (asumiendo $r_o \to \infty$). Agregar $R_L$ invariablemente disminuye la magnitud de la ganancia del nodo.}
+\end{frame}
+
+\begin{frame}{Jerarquía de Ganancias: $A_{v0}$, $A_v$, $G_v$}
+    Definamos claramente las tres ganancias clave:
+    
+    \vspace{0.3cm}
+    \begin{itemize}
+        \item \textbf{$A_{v0} = -g_m R_C$:} Ganancia ideal intrínseca de la etapa sin carga externa.
+        \item \textbf{$A_v = -g_m (R_C \parallel R_L)$:} Ganancia de la etapa desde su entrada $v_i$ hasta su salida $v_o$, afectada por $R_L$.
+        \item \textbf{$G_v = \frac{v_o}{v_s} = \left(\frac{v_i}{v_s}\right) A_v$:} Ganancia \textbf{global} desde el generador de la fuente hasta la salida, afectada por $R_S$ y $R_L$.
+    \end{itemize}
+    
+    \begin{alertblock}{Conclusión Crítica}
+        Para predecir una medición real en laboratorio, \textbf{$G_v$} es el parámetro que describe el sistema completo.
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejemplo Integrado}
+    \textbf{Datos:} $I_{CQ}=1\,\text{mA}$ ($g_m=38.68\,\text{mS}$, $r_\pi=2.585\,\text{k}\Omega$), $R_B=100\,\text{k}\Omega$, $R_S=10\,\text{k}\Omega$, $R_C=4.7\,\text{k}\Omega$, $R_L=10\,\text{k}\Omega$.
+    
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            \resizebox{\textwidth}{!}{
+            \begin{circuitikz}[thick]
+                % Source part
+                \draw (-2,0) to[sV, l={$v_s$}] (-2,2) to[R, l={$R_S$}] (0,2);
+                \draw (-2,0) -- (0,0) node[ground]{};
+                
+                % Ampli Input
+                \draw (0,2) to[short, *-] (2,2) node[right]{B};
+                \draw (0,2) to[R, l_={$R_B$}] (0,0);
+                \draw (2,2) to[R, l={$r_\pi$}] (2,0);
+                \draw (0,0) -- (2,0) node[ground]{};
+                
+                % Ampli Output
+                \draw (5,2) node[left]{C} to[cI, l_={$g_m v_\pi$}] (5,0) node[ground]{};
+                \draw (5,2) -- (7,2);
+                \draw (6,2) to[R, l={$R_C$}] (6,0) node[ground]{};
+                \draw (7,2) to[R, l={$R_L$}] (7,0) node[ground]{};
+                \draw (7,2) to[short, *-o] (8,2) node[right]{$v_o$};
+            \end{circuitikz}
+            }
+        \end{column}
+        \begin{column}{0.55\textwidth}
+            \begin{enumerate}
+                \item $R_{in} = 100\text{k} \parallel 2.585\text{k} \approx 2.520\,\text{k}\Omega$
+                \item $\frac{v_i}{v_s} = \frac{2.520}{10 + 2.520} \approx 0.2013$
+                \item $R_C' = 4.7\text{k} \parallel 10\text{k} \approx 3.197\,\text{k}\Omega$
+                \item $A_v = -g_m R_C' \approx -123.7$
+                \item $G_v = (0.2013)(-123.7) \approx -24.9$
+            \end{enumerate}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Comparación Funcional: CE, CC, CB}
+    \centering
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabularx}{0.95\textwidth}{|X|X|X|X|}
+    \hline
+    \rowcolor{ucbblue!20}
+    \textbf{Propiedad} & \textbf{Emisor Común (CE)} & \textbf{Colector Común (CC)} & \textbf{Base Común (CB)} \\ \hline
+    \textbf{Entrada $\to$ Salida} & Base $\to$ Colector & Base $\to$ Emisor & Emisor $\to$ Colector \\ \hline
+    \textbf{Terminal Común} & Emisor & Colector & Base \\ \hline
+    \textbf{Ganancia Voltaje} & Magnitud alta ($>1$) & Cercana a 1 ($\approx 1$) & Magnitud alta ($>1$) \\ \hline
+    \textbf{Fase} & Invertida ($180^\circ$) & No invertida & No invertida \\ \hline
+    \textbf{Z de Entrada ($R_{in}$)} & Moderada & \textbf{Alta} & \textbf{Baja} \\ \hline
+    \textbf{Z de Salida ($R_{out}$)} & Moderada/Alta & \textbf{Baja} & Alta \\ \hline
+    \textbf{Rol Típico} & Amplificador principal de tensión & \textbf{Buffer} (adaptador de impedancia) & Interfaz de corriente / Alta frecuencia \\ \hline
+    \end{tabularx}
+\end{frame}
+
+\begin{frame}{Carga Interetapa y el Rol del Buffer (CC)}
+    En una cascada (múltiples etapas), la entrada de la Etapa 2 actúa como la carga ($R_L$) de la Etapa 1.
+    
+    \vspace{0.3cm}
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            \centering
+            \begin{circuitikz}[scale=0.8, transform shape, thick]
+                \draw (0,0) to[sV, l={$v_{th1}$}] (0,2) to[R, l={$R_{out1}$}] (2,2);
+                \draw (2,2) to[R, l={$R_{in2}$}] (2,0);
+                \draw (0,0) -- (2,0) node[ground]{};
+                \draw (2,2) to[short, *-o] (3,2) node[right]{$v_2$};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.55\textwidth}
+            La Etapa 1 entrega a la Etapa 2:
+            \begin{equation*}
+                v_2 = v_{th1} \left( \frac{R_{in2}}{R_{out1} + R_{in2}} \right)
+            \end{equation*}
+            Si $R_{in2} \ll R_{out1}$, la atenuación destruye la ganancia previa. \\
+            \vspace{0.2cm}
+            \textbf{Solución:} Insertar un \textbf{Colector Común (Buffer)} entre la ganancia y la carga pesada (su $R_{in}$ alto protege a la primera etapa, su $R_{out}$ bajo maneja bien la carga final).
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Puente Cualitativo al Par Diferencial (Hito 2)}
+    El Par Diferencial no son "dos Emisores Comunes independientes"; es una estructura acoplada que comparte polarización.
+    
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \centering
+            \begin{circuitikz}[scale=0.7, transform shape, thick]
+                % Q1 and Q2
+                \draw (0,0) node[npn](Q1){}; \node[right] at (Q1) {Q1};
+                \draw (4,0) node[npn, xscale=-1](Q2){}; \node[left] at (Q2) {Q2};
+                % Bias
+                \draw (Q1.C) to[R, l={$R_C$}] (0,3) -- (4,3) to[R, l_={$R_C$}] (Q2.C);
+                \draw (2,3) -- (2,3.5) node[above]{$+V_{CC}$};
+                \draw (Q1.E) -- (0,-1) -- (4,-1) -- (Q2.E);
+                \draw (2,-1) to[I, l={$I_{TAIL}$}] (2,-3) node[below]{$-V_{EE}$};
+                % Inputs
+                \draw (Q1.B) to[short, -o] (-1.5,0) node[left]{$v_1$};
+                \draw (Q2.B) to[short, -o] (5.5,0) node[right]{$v_2$};
+                % Outputs
+                \draw (Q1.C) to[short, *-o] (-1,2) node[left]{$v_{o1}$};
+                \draw (Q2.C) to[short, *-o] (5,2) node[right]{$v_{o2}$};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{Sensibilidad a la diferencia ($v_{id} = v_1 - v_2$):}
+            \begin{itemize}
+                \item Si $v_1 = v_2$, la corriente $I_{TAIL}$ se divide simétricamente.
+                \item Si $v_1 > v_2$, Q1 conduce más corriente, robándosela a Q2. 
+                \item El voltaje de colector de Q1 cae, el de Q2 sube.
+            \end{itemize}
+            \vspace{0.2cm}
+            \textit{Comprender $g_m$ y la simetría es vital para medir pequeñas caídas en shunts de corriente.}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\end{document}
