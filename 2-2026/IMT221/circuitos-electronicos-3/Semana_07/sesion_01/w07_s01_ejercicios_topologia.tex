@@ -1,0 +1,51 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Selección Topológica}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Ejercicio: Selección de Topología Basada en Función}]
+    Elige la configuración (CE, CC o CB) que mejor resuelva cada escenario. Justifica tu elección empleando al menos \textbf{dos} propiedades eléctricas (ej. ganancia, $R_{in}$, $R_{out}$, fase). No uses fórmulas numéricas para esta sección.
+\end{tcolorbox}
+
+\section*{Escenarios de Diseño}
+
+\subsection*{Escenario A}
+La señal proveniente de un sensor de temperatura tiene un nivel de tensión extremadamente bajo, pero su resistencia interna es moderada. Necesitas elevar significativamente la amplitud de tensión antes de procesarla.
+\vspace{2cm}
+
+\subsection*{Escenario B}
+Una fuente de señal de muy alta resistencia ($R_S \approx 50\,\text{k}\Omega$) debe impulsar un pequeño motor de altavoz cuya resistencia es apenas de $1\,\text{k}\Omega$. Si los conectas directo, casi todo el voltaje se pierde en la fuente.
+\vspace{2cm}
+
+\subsection*{Escenario C}
+Se requiere recibir la señal de un fotodiodo o sensor puramente de corriente. El circuito receptor no debe presentar una gran resistencia para que la corriente fluya sin generar grandes caídas de voltaje de retorno indeseadas.
+\vspace{2cm}
+
+\subsection*{Escenario D}
+Una etapa amplificadora ya ha elevado el nivel de tensión suficientemente. Sin embargo, al conectar una carga pesada al colector final, la ganancia de tensión se desploma dramáticamente debido al efecto de carga en paralelo. ¿Qué agregarías?
+\vspace{2cm}
+
+\subsection*{Escenario E (Interacción)}
+Un sistema necesita proveer simultáneamente una elevadísima ganancia de tensión y ser capaz de entregar esa señal a una carga de muy baja resistencia (como un auricular de $32\,\Omega$).
+\begin{itemize}
+    \item ¿Existe una sola topología BJT simple que logre ambas cosas eficientemente?
+    \item Si tuvieras que usar una arquitectura multietapa (ej. CE + CC, o CB + CE), ¿cuál sería la combinación lógica y en qué orden? Justifica.
+\end{itemize}
+
+\end{document}

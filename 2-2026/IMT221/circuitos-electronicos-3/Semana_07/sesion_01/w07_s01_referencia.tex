@@ -1,0 +1,54 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Referencia S07-1}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Comparación Funcional de Configuraciones BJT}]
+    Esta tabla sintetiza las \textbf{tendencias funcionales} bajo suposiciones estándar de pequeña señal. Úsala como guía de selección en problemas de diseño.
+\end{tcolorbox}
+
+\vspace{0.5cm}
+
+\renewcommand{\arraystretch}{1.8}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!20}
+\textbf{Característica} & \textbf{Emisor Común (CE)} & \textbf{Colector Común (CC) / Seguidor} & \textbf{Base Común (CB)} \\ \hline
+\textbf{Terminal Común} & Emisor & Colector & Base \\ \hline
+\textbf{Terminal de Entrada} & Base & Base & Emisor \\ \hline
+\textbf{Terminal de Salida} & Colector & Emisor & Colector \\ \hline
+\textbf{Tendencia de Ganancia de Tensión} & Magnitud alta ($|A_v| \gg 1$) & $0 < A_v < 1$ (frecuentemente cercana a 1) & Puede ser alta ($A_v \gg 1$) \\ \hline
+\textbf{Fase} & Invertida ($180^\circ$) & No invertida ($0^\circ$) & No invertida ($0^\circ$) \\ \hline
+\textbf{Tendencia de $R_{in}$} & Moderada / finita & \textbf{Alta} (minimiza la carga sobre la fuente) & \textbf{Baja} ($\approx r_e$) \\ \hline
+\textbf{Tendencia de $R_{out}$} & Moderada a Alta & \textbf{Baja} (ideal para manejar cargas) & Alta a Moderadamente Alta \\ \hline
+\textbf{Rol Funcional Principal} & Etapa principal de \textbf{ganancia de voltaje}. & \textbf{Buffer} / Transformación de impedancia. & \textbf{Interfaz de corriente} o fuente de baja impedancia. \\ \hline
+\end{tabularx}
+
+\vspace{1cm}
+
+\subsection*{Reflexiones de Diseño Multietapa}
+\begin{itemize}
+    \item \textbf{La ganancia aislada no es la ganancia total:} Cuando conectas dos etapas, la Etapa 2 se convierte en la carga ($R_L$) de la Etapa 1. Multiplicar sus ganancias aisladas ($A_{v1,oc} \times A_{v2,L}$) sin considerar la carga interetapa producirá estimaciones erróneamente altas.
+    \item \textbf{Carga Interetapa:} La ganancia de la Etapa 1 debe multiplicarse por un factor de carga $k_L = \frac{R_{in2}}{R_{o1} + R_{in2}}$.
+    \item \textbf{El poder del Buffer (CC):} Un circuito puede tener mucha ganancia de voltaje internamente pero entregar casi nada si su $R_{out}$ es alto y la carga es baja. Un CC soluciona esto preservando el voltaje mediante transformación de impedancia.
+\end{itemize}
+
+\end{document}

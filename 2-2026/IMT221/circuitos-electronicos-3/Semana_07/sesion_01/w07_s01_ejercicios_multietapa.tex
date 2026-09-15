@@ -1,0 +1,61 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Carga Multietapa}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Ejercicio: Carga Multietapa e Inserción de Buffer}]
+    Calcula el impacto de la conexión en cascada.
+\end{tcolorbox}
+
+\section*{Parte 1: Conexión Directa en Cascada}
+Se tienen dos etapas amplificadoras:
+\begin{itemize}
+    \item \textbf{Etapa 1 (CE):} Ganancia en circuito abierto $A_{v1,oc} = -25$, Resistencia de salida $R_{o1} = 5\,\text{k}\Omega$.
+    \item \textbf{Etapa 2 (CE):} Resistencia de entrada $R_{in2} = 10\,\text{k}\Omega$, Ganancia ya cargada $A_{v2,L} = -8$.
+\end{itemize}
+
+\begin{center}
+\begin{circuitikz}[scale=0.8, transform shape, thick]
+    \draw (0,0) node[ground]{} to[sV, l={$v_{th1}$}] (0,2) to[R, l={$R_{o1} = 5\text{k}$}] (3,2);
+    \draw (3,2) to[R, l={$R_{in2} = 10\text{k}$}] (3,0) node[ground]{};
+    \draw (3,2) to[short, *-o] (4,2) node[right]{$v_2$};
+\end{circuitikz}
+\end{center}
+
+\begin{enumerate}
+    \item \textbf{Predicción:} Antes de calcular, ¿consideras que el efecto de carga interetapa será insignificante?
+    \item Calcula el factor de carga interetapa $k_L = \frac{R_{in2}}{R_{o1} + R_{in2}}$.
+    \item Calcula la verdadera ganancia cargada de la Etapa 1 ($A_{v1,L}$).
+    \item Calcula la ganancia total del sistema $A_{v,total}$.
+    \item Compara este resultado con el "producto inocente o aislado" $(-25) \times (-8)$. Explica físicamente la discrepancia.
+\end{enumerate}
+
+\section*{Parte 2: Inserción de un Buffer CC}
+Para aliviar el problema anterior, insertamos un Seguidor de Emisor (CC) idealizado entre las Etapas 1 y 2.
+Datos del Buffer: $R_{in,B} = 100\,\text{k}\Omega$, $A_{v,B} = 1$, $R_{out,B} = 200\,\Omega$.
+
+\begin{enumerate}
+    \item Calcula el nuevo factor de carga de la Etapa 1 alimentando al Buffer ($k_1$).
+    \item Calcula el factor de carga del Buffer alimentando a la Etapa 2 ($k_2$).
+    \item Estima la nueva ganancia total del sistema: $A_{v,total} \approx A_{v1,oc} \times k_1 \times A_{v,B} \times k_2 \times A_{v2,L}$.
+    \item Compara el resultado con el de la Parte 1. Explica por qué la ganancia total aumentó a pesar de que el Buffer tiene una ganancia de tensión unitaria.
+\end{enumerate}
+
+\end{document}

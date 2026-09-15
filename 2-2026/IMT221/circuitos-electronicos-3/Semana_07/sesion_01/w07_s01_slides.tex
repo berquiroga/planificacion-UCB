@@ -1,0 +1,350 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[aspectratio=169]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage[most]{tcolorbox}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+\title[CC, CB y Multietapa]{Colector común, base común y fundamentos de amplificación multietapa}
+\subtitle{IMT-221 Circuitos Electrónicos III — Semana 7, Sesión 1}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}
+\date{Semana 7}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Idea Central de la Sesión}
+    \begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=Topología e Interacción]
+        \textbf{La topología determina la función} (ganancia, inversión, impedancia). \\
+        \textbf{La carga determina si esa función se conserva} cuando las etapas se conectan.
+    \end{tcolorbox}
+    
+    \vspace{0.3cm}
+    \textbf{Pregunta de Diseño:}
+    \textit{¿Por qué necesitamos más de una configuración de transistor y qué cambia cuando las conectamos entre sí?}
+\end{frame}
+
+\begin{frame}{Referencia: El Emisor Común (CE)}
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            \centering
+            \begin{circuitikz}[scale=0.9, transform shape, thick]
+                \draw (0,0) node[npn](Q){};
+                \draw (Q.E) node[ground]{};
+                \draw (Q.C) to[R, l_={$R_C$}] (0,2) node[ground, rotate=180]{};
+                \draw (Q.B) -- (-1.5,0) node[left]{$v_i$};
+                \draw (Q.C) to[short, -o] (1.5,0.77) node[right]{$v_o$};
+                \node[blue] at (2.5, 0.6) {\large $\boldsymbol{\curvearrowright 180^\circ}$};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.55\textwidth}
+            \textbf{Propiedades del CE:}
+            \begin{itemize}
+                \item \textbf{Entrada:} Base
+                \item \textbf{Salida:} Colector
+                \item \textbf{Común (Tierra AC):} Emisor
+            \end{itemize}
+            \vspace{0.2cm}
+            \begin{equation*}
+                A_v \approx -g_m (R_C \parallel R_L)
+            \end{equation*}
+            \vspace{0.1cm}
+            \textbf{Rol Principal:} Amplificación de \textbf{tensión}. Ofrece ganancia alta y resistencias de entrada/salida moderadas.
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{El Colector Común (CC) o Seguidor de Emisor}
+    \begin{columns}
+        \begin{column}{0.35\textwidth}
+            \centering
+            \textbf{Circuito Polarizado} \\
+            \vspace{0.2cm}
+            \begin{circuitikz}[scale=0.8, transform shape, thick]
+                \draw (0,0) node[npn](Q){};
+                \draw (Q.C) -- (0,1.5) node[above]{$+V_{CC}$};
+                \draw (Q.B) -- (-1.5,0) node[left]{$v_i$};
+                \draw (Q.E) to[R, l_={$R_E$}] (0,-2) node[ground]{};
+                \draw (Q.E) to[short, *-o] (1.5,-0.77) node[right]{$v_o$};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.1\textwidth}
+            \centering $\implies$
+        \end{column}
+        \begin{column}{0.45\textwidth}
+            \centering
+            \textbf{Equivalente AC} \\
+            \vspace{0.2cm}
+            \begin{circuitikz}[scale=0.8, transform shape, thick]
+                \draw (0,0) node[npn](Q){};
+                \draw (Q.C) node[ground, rotate=180]{};
+                \draw (Q.B) -- (-1.5,0) node[left]{$v_i$};
+                \draw (Q.E) to[R, l_={$R_E'$}] (0,-2) node[ground]{};
+                \draw (Q.E) to[short, *-o] (1.5,-0.77) node[right]{$v_o$};
+            \end{circuitikz}
+        \end{column}
+    \end{columns}
+    \vspace{0.3cm}
+    \textit{En AC, el colector se conecta a Tierra a través de la fuente ideal $V_{CC}$.}
+\end{frame}
+
+\begin{frame}{Ganancia y Reflexión de Impedancia en el CC}
+    \begin{columns}
+        \begin{column}{0.48\textwidth}
+            \textbf{Ganancia de Tensión:}
+            El voltaje de entrada se divide entre $r_e$ intrínseco y la carga de emisor $R_E'$.
+            \begin{equation*}
+                A_v \approx \frac{R_E'}{r_e + R_E'}
+            \end{equation*}
+            Si $R_E' \gg r_e$, entonces $\mathbf{A_v \approx 1}$ (sin inversión).
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{Resistencia de Entrada ($R_{in,B}$):}
+            \begin{equation*}
+                R_{in,B} \approx (\beta + 1)(r_e + R_E')
+            \end{equation*}
+            
+            \centering
+            \vspace{0.4cm}
+            \begin{tikzpicture}[scale=0.9]
+                \node at (0,0) {$R_E' + r_e$};
+                \draw[->, thick, blue] (1,0) -- (3,0) node[midway, above]{$\times (\beta+1)$};
+                \node at (4,0) {$R_{in,B}$};
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+    \vspace{0.4cm}
+    \begin{alertblock}{El valor del Buffer}
+        \textbf{CC:} Altísima resistencia de entrada ($R_{in}$) y bajísima resistencia de salida ($R_{out} \approx r_e$). Aunque su ganancia es $\approx 1$, \textbf{protege} al circuito de caídas de tensión.
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejemplo: Acción de Buffer (CC)}
+    Fuente débil: $R_S = 20\,\text{k}\Omega$. Carga pesada: $R_L = 1\,\text{k}\Omega$.
+    
+    \vspace{0.3cm}
+    \begin{columns}
+        \begin{column}{0.48\textwidth}
+            \centering
+            \textbf{1. Conexión Directa}
+            
+            \vspace{0.2cm}
+            \begin{circuitikz}[scale=0.85, transform shape, thick]
+                \draw (0,0) to[sV, l={$v_s$}] (0,2) to[R, l={$R_S$}] (2,2) to[R, l={$R_L$}] (2,0) -- (0,0) node[ground]{};
+            \end{circuitikz}
+            \begin{equation*}
+                \frac{v_L}{v_s} = \frac{1\,\text{k}}{20\,\text{k} + 1\,\text{k}} \approx \mathbf{0.0476}
+            \end{equation*}
+            \textit{¡Se pierde el 95\% de la señal!}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \centering
+            \textbf{2. Con Buffer CC}
+            
+            \vspace{0.2cm}
+            \begin{circuitikz}[scale=0.85, transform shape, thick]
+                \draw (0,0) to[sV, l={$v_s$}] (0,2) to[R, l={$R_S$}] (2,2);
+                % Caja del CC Buffer centralizada correctamente
+                \draw[fill=yellow!20, rounded corners] (2, 0.7) rectangle (3.5, 2.7) node[midway] {\textbf{CC}};
+                \draw (3.5,2) to[short] (4.5,2) to[R, l={$R_L$}] (4.5,0);
+                \draw (0,0) -- (4.5,0) node[ground]{};
+            \end{circuitikz}
+            \begin{equation*}
+                \frac{v_L}{v_s} \approx \underbrace{0.838}_{\text{Entrada}} \times \underbrace{0.975}_{A_v} \approx \mathbf{0.817}
+            \end{equation*}
+            \textit{¡Se preserva el 81.7\% de la señal!}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{La Base Común (CB)}
+    \begin{columns}
+        \begin{column}{0.45\textwidth}
+            \centering
+            \textbf{Circuito Equivalente AC} \\
+            \vspace{0.2cm}
+            \begin{circuitikz}[scale=0.9, transform shape, thick]
+                \draw (0,0) node[npn](Q){};
+                \draw (Q.B) node[ground]{};
+                \draw (Q.E) -- (-1.5,-0.77) node[left]{$v_i$};
+                \draw (Q.C) to[R, l_={$R_C$}] (0,2) node[ground, rotate=180]{};
+                \draw (Q.C) to[short, *-o] (1.5,0.77) node[right]{$v_o$};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Propiedades del CB:}
+            \begin{itemize}
+                \item \textbf{Entrada:} Emisor
+                \item \textbf{Salida:} Colector
+                \item \textbf{Común:} Base
+            \end{itemize}
+            \vspace{0.2cm}
+            \textbf{Análisis ($r_o \to \infty$):}
+            \begin{align*}
+                R_{in} &\approx r_e \quad \text{\textbf{(Muy baja)}} \\
+                A_v &\approx +g_m R_C' \quad \text{\textbf{(Alta, sin inversión)}} \\
+                i_c &\approx \alpha i_e \approx i_e \quad \text{\textbf{(Ganancia corr. $\approx 1$)}}
+            \end{align*}
+            \textit{Ideal para interfaces orientadas a corriente o fuentes de muy baja resistencia.}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Síntesis y Selección de Topología}
+    \begin{center}
+    \textbf{Flujo de Decisión de Diseño}
+    \end{center}
+    \vspace{0.2cm}
+    \centering
+    \begin{tikzpicture}[node distance=1.2cm, auto, thick]
+        % Posicionamiento correcto y espaciado fijo para evitar solapamientos
+        \node[draw, fill=blue!10, rounded corners, minimum height=0.8cm, text width=4.5cm, align=center] (v) {¿Alta Ganancia de Tensión?};
+        \node[draw, fill=green!10, rounded corners, minimum height=0.8cm, text width=3cm, align=center, right=1.5cm of v] (ce) {\textbf{Emisor Común}};
+        \draw[->] (v) -- (ce);
+        
+        \node[draw, fill=blue!10, rounded corners, minimum height=0.8cm, text width=4.5cm, align=center, below=0.5cm of v] (i) {¿Aislar fuente/carga?};
+        \node[draw, fill=green!10, rounded corners, minimum height=0.8cm, text width=3cm, align=center, right=1.5cm of i] (cc) {\textbf{Colector Común}};
+        \draw[->] (i) -- (cc);
+
+        \node[draw, fill=blue!10, rounded corners, minimum height=0.8cm, text width=4.5cm, align=center, below=0.5cm of i] (c) {¿Interfaz de baja $R_{in}$?};
+        \node[draw, fill=green!10, rounded corners, minimum height=0.8cm, text width=3cm, align=center, right=1.5cm of c] (cb) {\textbf{Base Común}};
+        \draw[->] (c) -- (cb);
+    \end{tikzpicture}
+    
+    \vspace{0.4cm}
+    \textit{¿Qué pasa si necesitamos más de una propiedad simultáneamente (ej. Alta ganancia \textbf{Y} aislar carga pesada)? $\implies$ \textbf{Amplificador Multietapa}.}
+\end{frame}
+
+\begin{frame}{Por Qué Existen los Multietapas (Carga Interetapa)}
+    En una cascada, la \textbf{Etapa 2 es la carga externa de la Etapa 1}.
+    
+    \vspace{0.2cm}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \centering
+            \begin{circuitikz}[scale=0.85, transform shape, thick]
+                \draw (0,0) node[ground]{} to[sV, l={$v_{th1}$}] (0,2) to[R, l={$R_{o1}$}] (3,2);
+                \draw (3,2) to[R, l={$R_{in2}$}] (3,0) node[ground]{};
+                \draw (3,2) to[short, *-o] (4,2) node[right]{$v_2$};
+                
+                \draw[dashed, red, rounded corners] (-1.2, -0.5) rectangle (1.8, 3.2);
+                \node[red] at (0.3, 3.5) {\small Etapa 1};
+                \draw[dashed, blue, rounded corners] (2.2, -0.5) rectangle (4.5, 3.2);
+                \node[blue] at (3.3, 3.5) {\small Etapa 2};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{Factor de Carga ($k_L$):}
+            \begin{equation*}
+                k_L = \frac{R_{in2}}{R_{o1} + R_{in2}}
+            \end{equation*}
+            \begin{equation*}
+                \mathbf{A_{v1,L} = A_{v1,oc} \times k_L}
+            \end{equation*}
+            
+            \vspace{0.2cm}
+            \begin{alertblock}{Precaución}
+                $A_{v,total} \neq A_{v1,aislada} \times A_{v2,aislada}$. \\ ¡Debes usar las ganancias \textbf{cargadas}!
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{El Buffer al Rescate en el Multietapa}
+    Si la Etapa 2 carga demasiado a la Etapa 1 ($R_{in2}$ bajo vs $R_{o1}$ alto), la ganancia se destruye.
+    
+    \vspace{0.2cm}
+    \textbf{Solución:} Insertar un Buffer CC.
+    \begin{center}
+    \begin{tikzpicture}[node distance=3.5cm, auto, thick]
+        \node[draw, fill=gray!20, rounded corners, minimum height=1.5cm, align=center] (s1) {Etapa 1 \\ CE \\ ($R_{o1}$ alto)};
+        \node[draw, fill=yellow!20, rounded corners, minimum height=1.5cm, right=1.5cm of s1, align=center] (buf) {Buffer \\ CC \\ ($R_{in}$ alto, $R_{out}$ bajo)};
+        \node[draw, fill=gray!20, rounded corners, minimum height=1.5cm, right=1.5cm of buf, align=center] (s2) {Etapa 2 \\ Carga \\ ($R_{in2}$ bajo)};
+        
+        \draw[->] (s1) -- (buf);
+        \draw[->] (buf) -- (s2);
+    \end{tikzpicture}
+    \end{center}
+    
+    \vspace{0.2cm}
+    \begin{itemize}
+        \item El CC presenta un $R_{in}$ gigante a la Etapa 1 $\implies k_L \approx 1$ (no la atenúa).
+        \item El CC entrega la señal con un $R_{out}$ minúsculo $\implies$ impulsa bien a la Etapa 2.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Puente hacia Hito 2: ¿Cascada o Par Diferencial?}
+    Una cascada propaga información en serie. Un Par Diferencial es una \textbf{estructura acoplada}.
+    
+    \vspace{0.2cm}
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            \centering
+            \textbf{1. Cascada} \\ \vspace{0.2cm}
+            \begin{tikzpicture}[node distance=1.2cm, auto, thick]
+                \node (in) {$v_1$};
+                \node[draw, right=0.6cm of in, fill=gray!20] (q1) {Q1};
+                \node[draw, right=0.6cm of q1, fill=gray!20] (q2) {Q2};
+                \node[right=0.6cm of q2] (out) {$v_o$};
+                \draw[->] (in) -- (q1); \draw[->] (q1) -- (q2); \draw[->] (q2) -- (out);
+            \end{tikzpicture}
+            \vspace{0.2cm}
+            
+            \textit{La carga es secuencial.}
+            \vspace{0.5cm}
+            
+            \textbf{Sensibilidad ($v_{id} = v_1 - v_2$):}
+            \begin{itemize}
+                \item Si $v_1 = v_2$, $I_{TAIL}$ se divide igual.
+                \item Si $v_1 > v_2$, Q1 "roba" corriente a Q2.
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.55\textwidth}
+            \centering
+            \textbf{2. Par Diferencial} \\ \vspace{0.2cm}
+            \begin{circuitikz}[scale=0.75, transform shape, thick]
+                \draw (0,0) node[npn](Q1){}; \node[left=0.2cm] at (Q1.B) {$v_1$};
+                \draw (3,0) node[npn, xscale=-1](Q2){}; \node[right=0.2cm] at (Q2.B) {$v_2$};
+                \draw (Q1.C) to[R, l={$R_C$}] (0,2) -- (3,2) to[R, l_={$R_C$}] (Q2.C);
+                \draw (1.5,2) -- (1.5,2.5) node[above]{$+V_{CC}$};
+                \draw (Q1.E) -- (0,-1) -- (3,-1) -- (Q2.E);
+                \draw (1.5,-1) to[I, l={$I_{TAIL}$}] (1.5,-2.5) node[below]{$-V_{EE}$};
+                \draw (Q1.B) to[short, -o] (-0.8,0);
+                \draw (Q2.B) to[short, -o] (3.8,0);
+                % Ajuste de las salidas para evitar solapamientos
+                \draw (0,0.77) to[short, *-o] (-0.8,0.77) node[left]{$v_{o1}$};
+                \draw (3,0.77) to[short, *-o] (3.8,0.77) node[right]{$v_{o2}$};
+            \end{circuitikz}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\end{document}
