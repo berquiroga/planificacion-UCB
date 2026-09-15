@@ -1,0 +1,51 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Soluciones S07-1}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\section*{Solucionario y Guía Docente: Topologías y Multietapa}
+
+\subsection*{Ejercicios de Selección de Topología}
+\textbf{Escenario A (Tensión Alta):} Emisor Común (CE). Ofrece alta ganancia de voltaje y un $R_{in}$ moderado suficiente para el sensor. \\
+\textbf{Escenario B (Aislamiento Fuente-Carga):} Colector Común (CC) / Buffer. Alta $R_{in}$ para no atenuar la fuente de $50\text{k}\Omega$, baja $R_{out}$ para entregar voltaje íntegro a $1\text{k}\Omega$. \\
+\textbf{Escenario C (Corriente/Baja Z):} Base Común (CB). Su $R_{in} \approx r_e$ es naturalmente bajo, adaptándose a fuentes de corriente o impidiendo fluctuaciones de voltaje indeseadas. \\
+\textbf{Escenario D (Caída por Carga):} Insertar un Colector Común (CC) a la salida. Aisla el CE de la carga pesada. \\
+\textbf{Escenario E (Alta ganancia + Baja Z$_{out}$):} No hay topología única ideal. La solución natural es Multietapa: \textbf{CE + CC}. La etapa CE multiplica el voltaje y luego la etapa CC asume la entrega de corriente hacia los auriculares de $32\Omega$ (buffer), protegiendo la ganancia del CE de la severa atenuación. \\
+\textbf{Sonda Docente:} Si el alumno dice que CB no invierte pero tiene baja ganancia, pregunte: "\textit{Rastrea el incremento positivo del emisor a través de $v_{be}$ y $i_c$ hacia el colector. ¿Es la ganancia de CB siempre baja o depende de $R_C$?}"
+
+\subsection*{Ejercicios de Carga Multietapa}
+\textbf{Parte 1: Cascada Directa}
+\begin{enumerate}
+    \item No será insignificante. $R_{in2}$ ($10\text{k}\Omega$) no es mucho mayor que $R_{o1}$ ($5\text{k}\Omega$). Habrá caída severa.
+    \item $k_L = 10\text{k} / (5\text{k} + 10\text{k}) = 10 / 15 \approx 0.6667$.
+    \item $A_{v1,L} = (-25) \times 0.6667 = -16.67$.
+    \item $A_{v,total} = (-16.67) \times (-8) \approx +133.3$.
+    \item Producto inocente: $+200$. La discrepancia surge porque el producto inocente asume falsamente que la Etapa 1 no "siente" la presencia eléctrica de la Etapa 2. \\
+    \textbf{Sonda Docente:} Si multiplican $-25 \times -8$, pregunte: "\textit{¿Qué resistencia de carga equivalente ve el transistor de la Etapa 1 en su colector AC?}"
+\end{enumerate}
+
+\textbf{Parte 2: Inserción de Buffer}
+\begin{enumerate}
+    \item $k_1 = 100\text{k} / (5\text{k} + 100\text{k}) \approx 0.952$.
+    \item $k_2 = 10\text{k} / (0.2\text{k} + 10\text{k}) \approx 0.980$.
+    \item $A_{v,total} \approx (-25) \times (0.952) \times (1) \times (0.980) \times (-8) \approx +186.6$.
+    \item La ganancia aumentó de +133.3 a +186.6. El buffer, a pesar de no ganar voltaje, \textbf{transfiere eficientemente} la ganancia existente aislando impedancias (alta $R_{in}$ no ahoga Etapa 1; baja $R_{out}$ impulsa Etapa 2 firmemente). \\
+    \textbf{Sonda Docente:} Si el alumno dice que el CC no sirve porque su ganancia es $\approx 1$, pregunte: "\textit{Compara el voltaje total transferido de extremo a extremo con y sin el CC.}"
+\end{enumerate}
+
+\end{document}
