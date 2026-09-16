@@ -1,0 +1,93 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr} 
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Guía del Instructor Lab A}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Material del Instructor y BOM: Experiencia Integrada A (Valores Corregidos)}]
+\end{tcolorbox}
+
+\section*{1. Lista de Materiales (BOM por equipo)}
+\renewcommand{\arraystretch}{1.3}
+\noindent 
+\begin{tabularx}{\textwidth}{|>{\RaggedRight}X|>{\centering\arraybackslash}p{1.5cm}|>{\RaggedRight}X|>{\RaggedRight}X|}
+\hline
+\rowcolor{ucbblue!10}\textbf{Ítem} & \textbf{Cant.} & \textbf{Especificación} & \textbf{Estado} \\ \hline
+Protoboard & $1$ & Estándar & Requerido \\ \hline
+Jumpers & $10-15$ & Macho-macho & Requerido \\ \hline
+Resistor $R_1$ & $1$ & $4.7\,\text{k}\Omega$, $1/4\,\text{W}$ & Requerido \\ \hline
+Resistor $R_2$ & $1$ & $10\,\text{k}\Omega$, $1/4\,\text{W}$ & Requerido \\ \hline
+Resistor $R_3$ & $1$ & $6.8\,\text{k}\Omega$, $1/4\,\text{W}$ & Requerido \\ \hline
+Cargas $R_L$ & $1$ de c/u & $1.0\,\text{k}\Omega, 2.2\,\text{k}\Omega, 4.7\,\text{k}\Omega, 10.0\,\text{k}\Omega$ ($1/4\,\text{W}$) & Requerido \\ \hline
+Resistores repuesto & $2-4$ & Valores anteriores & Recomendado \\ \hline
+Multímetro digital & $1$ & DC V/$\Omega$; corriente solo aprobado & Requerido \\ \hline
+Fuente DC (Canal 1) & $1$ & $10\,\text{V}$, límite configurable & Requerido (*) \\ \hline
+Fuente DC (Canal 2) & $1$ & $5\,\text{V}$, referencia compatible & Requerido (*) \\ \hline
+PC con LTSpice & $1$ & Instalación funcional & Requerido \\ \hline
+\end{tabularx}
+\textit{(*) Puede ser fuente dual o dos fuentes compatibles. Debe verificarse el hardware real.}
+
+\section*{2. Preparación y Seguridad (Hardware Assumptions)}
+\begin{itemize}\setlength\itemsep{-0.1em}
+    \item \textbf{Corriente de Cortocircuito ($\bm{I_{sc}}$):} No incluya como procedimiento obligatorio una medición directa de $I_{sc}$ mientras no se verifiquen las fuentes y los instrumentos reales. Una medición directa solo puede añadirse si el instructor valida previamente los límites, la protección y el procedimiento.
+    \item \textbf{Topología de la fuente:} Asegure que conectar las terminales negativas de $V_1$ y $V_2$ a la misma referencia no genere problemas con el hardware de banco.
+\end{itemize}
+
+\section*{3. Predicciones Analíticas de Referencia (Corrección Oficial)}
+De acuerdo a las especificaciones matemáticas corregidas para este diseño de experiencia integrada, los valores autoritativos de referencia para los estudiantes son:
+\begin{itemize}
+    \item \textbf{Superposición (Contribuciones):} $\bm{V_a^{(V1)} \approx 4.627\,\text{V}}$ y $\bm{V_a^{(V2)} \approx 1.087\,\text{V}}$
+    \item \textbf{Tensión de Thévenin:} $\bm{V_{th} = V_{oc} \approx 5.714\,\text{V}}$
+    \item \textbf{Resistencia equivalente:} $\bm{R_{th} = R_1 \parallel R_2 \parallel R_3 \approx 2.175\,\text{k}\Omega}$
+    \item \textbf{Corriente de Norton:} $\bm{I_N = V_{th}/R_{th} \approx 2.628\,\text{mA}}$ (Predicción analítica).
+\end{itemize}
+
+\textbf{Valores esperados en Carga ($\bm{V_L}$):}
+\begin{itemize}\setlength\itemsep{-0.1em}
+    \item Con $R_{L1} = 1.0\,\text{k}\Omega \implies \bm{V_{L1} \approx 1.800\,\text{V}}$
+    \item Con $R_{L2} = 2.2\,\text{k}\Omega \implies \bm{V_{L2} \approx 2.874\,\text{V}}$
+    \item Con $R_{L3} = 4.7\,\text{k}\Omega \implies \bm{V_{L3} \approx 3.907\,\text{V}}$
+    \item Con $R_{L4} = 10.0\,\text{k}\Omega \implies \bm{V_{L4} \approx 4.694\,\text{V}}$
+\end{itemize}
+
+\section*{4. Mapa de Evidencias (Prácticas 4 y 5)}
+\noindent 
+\begin{tabularx}{\textwidth}{|>{\RaggedRight\bfseries}p{2.2cm}|>{\RaggedRight}X|>{\RaggedRight}X|>{\RaggedRight}X|}
+\hline
+\rowcolor{ucbblue!10}
+\textbf{Evidencia Original} & \textbf{Actividad Integrada} & \textbf{Artefacto/Dato} & \textbf{Verificación} \\ \hline
+Superposición & Fase 3 & Contribuciones y suma & Coherencia con total \\ \hline
+Desactivación & Fase 3 & Subcircuitos dibujados & Topología correcta \\ \hline
+Signos/ref. & Fase 3 & Tabla de registros & Referencia constante \\ \hline
+$V_{oc}$ & Fase 4 & Teoría / SPICE / Medición & Comparación \\ \hline
+$R_{th}$ & Fase 5 & Cálculo / Medición & Red reconstruida \\ \hline
+$I_N / I_{sc}$ & Análisis + Simulación & $I_N = V_{th}/R_{th}$ & Coherencia modelos \\ \hline
+Thévenin y Norton & Análisis & Esquema / Parámetros & Reproduce carga \\ \hline
+Comp. con Carga & Fase 6 & $R_L, V_L, I_L$ & Tendencia coherente \\ \hline
+Teoría-Sim-Bench & Todas & Tabla consolidada & Trazabilidad completa \\ \hline
+\end{tabularx}
+
+\end{document}
