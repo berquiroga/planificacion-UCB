@@ -1,0 +1,69 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Diagnóstico S06}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Diagnóstico de Punto de Decisión: Superposición}]
+    \centering \textbf{Instrucciones:} Resuelve el siguiente problema de manera individual y autónoma (Tiempo objetivo: 10-12 min). Esta actividad no tiene calificación sumativa.
+\end{tcolorbox}
+
+\section*{Circuito de Análisis}
+\begin{center}
+\begin{circuitikz}[scale=1, transform shape, thick]
+    \draw (0,0) to[V, l={$V_s = 10\,\text{V}$}, invert] (0,2) to[R, l={$R_1 = 2\,\text{k}\Omega$}] (3,2);
+    \draw (3,2) node[above]{$V_o$} to[short, *-] (3,2);
+    \draw (3,2) to[R, l_={$R_2 = 3\,\text{k}\Omega$}] (3,0);
+    \draw (5,2) to[I, l={$I_s = 1\,\text{mA}$}] (5,0); % De arriba hacia abajo (hacia tierra)
+    \draw (3,2) -- (5,2);
+    \draw (0,0) -- (5,0);
+    \draw (2.5,0) node[ground]{};
+\end{circuitikz}
+\end{center}
+
+\vspace{0.3cm}
+\noindent\textbf{Tarea:} Calcule la tensión $V_o$ aplicando el Teorema de Superposición. \\
+Debe incluir de forma explícita los siguientes 6 pasos:
+
+\begin{enumerate}
+    \item \textbf{Referencia:} Indique claramente cuál es su terminal positivo y negativo para medir $V_o$.
+    \vspace{1.5cm}
+    \item \textbf{Subcircuito 1 (Solo $V_s$ activa):} Dibuje el circuito equivalente y calcule la contribución $V_o^{(1)}$.
+    \vspace{4.5cm}
+    \item \textbf{Subcircuito 2 (Solo $I_s$ activa):} Dibuje el circuito equivalente y calcule la contribución $V_o^{(2)}$. \textit{(Cuidado con el signo)}.
+    \vspace{4.5cm}
+    \item \textbf{Cálculo de contribuciones con signo:}
+    $V_o^{(1)} = $ \rule{3cm}{0.4pt} \hspace{2cm} $V_o^{(2)} = $ \rule{3cm}{0.4pt}
+    
+    \item \textbf{Suma final:} 
+    $V_o = $ \rule{6cm}{0.4pt}
+    
+    \item \textbf{Justificación conceptual:} Complete la siguiente frase justificando el procedimiento:\\
+    \textit{"El teorema de superposición funciona en este circuito porque..."}
+    \vspace{1.5cm}
+\end{enumerate}
+
+\end{document}

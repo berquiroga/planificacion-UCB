@@ -1,0 +1,250 @@
+\documentclass[aspectratio=169, table, xcdraw]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+\title[Thévenin y Norton]{Redes Equivalentes: Teoremas de Thévenin y Norton}
+\subtitle{IMT-121 Circuitos Electrónicos I — Semana 6, Sesión 3}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}
+\date{Semana 6}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Recuperación Inicial}
+    \begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=Diagnóstico Rápido]
+        \begin{enumerate}
+            \item ¿Qué diferencia física y de cálculo existe entre un \textbf{cortocircuito} y un \textbf{circuito abierto}?
+            \item ¿Qué sucede con una \textit{fuente de tensión independiente} al desactivarla para aplicar superposición?
+            \item Si cambiamos \textbf{todo} el interior de una radio por un circuito moderno que produce exactamente el mismo sonido y consume la misma corriente, ¿lo notaría el usuario externo?
+        \end{enumerate}
+    \end{tcolorbox}
+    \vspace{0.4cm}
+    \textbf{El hilo conductor de hoy:} \\
+    $\text{Red Original} \rightarrow \text{Puerto } a-b \rightarrow \text{Relación Externa } V-I \rightarrow \text{Equivalente Thévenin/Norton}$
+\end{frame}
+
+\begin{frame}{El Concepto de Puerto y Equivalencia Externa}
+    Un \textbf{puerto} es el par de terminales mediante el cual una red interactúa con el mundo exterior (una carga $R_L$).
+    
+    \vspace{0.3cm}
+    \begin{columns}
+        \begin{column}{0.48\textwidth}
+            \centering
+            \begin{circuitikz}[scale=0.8, transform shape, thick]
+                \draw[fill=ucbblue!10, draw=ucbblue, rounded corners] (-1,-1) rectangle (3,3);
+                \node at (1,1) [align=center, text width=2.5cm] {\textbf{Red Lineal Compleja}};
+                \draw (3,2) to[short, -o] (4,2) node[above]{$a$};
+                \draw (3,0) to[short, -o] (4,0) node[below]{$b$};
+                \draw (4,2) -- (5,2) to[R, l={$R_L$}] (5,0) -- (4,0);
+                \draw[-Stealth, red] (5,2) -- (4.2,2) node[midway, above]{\small $I_L$};
+                \draw[<->, blue] (4.2,1.8) -- (4.2,0.2) node[midway, left]{\small $V_{ab}$};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \centering
+            \begin{circuitikz}[scale=0.8, transform shape, thick]
+                \draw[fill=green!10, draw=green!60!black, rounded corners] (0,-1) rectangle (3,3);
+                \node at (1.5,1) [align=center, text width=2cm] {\textbf{Caja Ficticia}};
+                \draw (3,2) to[short, -o] (4,2) node[above]{$a$};
+                \draw (3,0) to[short, -o] (4,0) node[below]{$b$};
+                \draw (4,2) -- (5,2) to[R, l={$R_L$}] (5,0) -- (4,0);
+                \draw[-Stealth, red] (5,2) -- (4.2,2) node[midway, above]{\small $I_L$};
+                \draw[<->, blue] (4.2,1.8) -- (4.2,0.2) node[midway, left]{\small $V_{ab}$};
+            \end{circuitikz}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.4cm}
+    \textbf{Condición de Equivalencia:} Dos redes son equivalentes si generan \textbf{exactamente la misma relación} entre $V_{ab}$ e $I_L$. A la carga $R_L$ no le importan las variables internas.
+\end{frame}
+
+\begin{frame}{Equivalente de Thévenin}
+    Cualquier red resistiva lineal vista desde un puerto $a-b$ puede reemplazarse por una fuente ideal de tensión $\bm{V_{th}}$ en serie con una resistencia $\bm{R_{th}}$.
+
+    \begin{columns}
+        \begin{column}{0.48\textwidth}
+            \centering
+            \begin{circuitikz}[scale=0.8, transform shape, thick]
+                \draw (0,0) to[V, l={$V_{th}$}] (0,2) to[R, l={$R_{th}$}] (2,2) to[short, -o] (3,2) node[above]{$a$};
+                \draw (0,0) to[short, -o] (3,0) node[below]{$b$};
+                \draw[<->, blue] (3,1.8) -- (3,0.2) node[midway, left]{\small $V_{oc} = V_{th}$};
+            \end{circuitikz}
+            \textbf{Paso 1: $\bm{V_{th}}$} \\
+            Tensión de \textbf{circuito abierto} ($I_{\text{puerto}} = 0$).
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \centering
+            \begin{circuitikz}[scale=0.8, transform shape, thick]
+                \draw (0,0) -- (0,2) node[midway, left]{\small Corto} to[R, l={$R_{th}$}] (2,2) to[short, -o] (3,2) node[above]{$a$};
+                \draw (0,0) to[short, -o] (3,0) node[below]{$b$};
+                \draw[Stealth-, red] (2.8,1.8) -- (4,1.8) node[right]{Mirada};
+            \end{circuitikz}
+            \textbf{Paso 2: $\bm{R_{th}}$} \\
+            Resistencia equivalente desde $a-b$ con \textbf{fuentes independientes desactivadas}.
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Equivalente de Norton}
+    La \textbf{misma red} puede reemplazarse por una fuente ideal de corriente $\bm{I_N}$ en paralelo con una resistencia $\bm{R_N}$.
+    
+    \begin{columns}
+        \begin{column}{0.48\textwidth}
+            \centering
+            \begin{circuitikz}[scale=0.8, transform shape, thick]
+                \draw (0,0) to[I, l={$I_N$}] (0,2) -- (2,2) to[short, -o] (3,2) node[above]{$a$};
+                \draw (1.5,2) to[R, l={$R_N$}] (1.5,0);
+                \draw (0,0) to[short, -o] (3,0) node[below]{$b$};
+                \draw[red] (3,2) -- (3.5,2) -- (3.5,0) -- (3,0);
+                \node[red, right] at (3.5,1) {$I_{sc} = I_N$};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{itemize}
+                \item $\bm{I_N}$: Corriente de \textbf{cortocircuito} del puerto ($V_{ab} = 0$).
+                \item $\bm{R_N}$: Es exactamente idéntica a $\bm{R_{th}}$.
+            \end{itemize}
+            \vspace{0.3cm}
+            \begin{tcolorbox}[colback=white, colframe=ucbblue, title=Relación Thévenin $\leftrightarrow$ Norton]
+                \centering
+                $R_N = R_{th}$ \\[0.2cm]
+                $V_{th} = I_N \cdot R_{th}$
+            \end{tcolorbox}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Ejemplo Guiado: Red y Planteamiento}
+    Hallar equivalentes de Thévenin y Norton respecto a la carga $R_L$ (terminales $a-b$).
+    
+    \begin{center}
+    \begin{circuitikz}[scale=0.85, transform shape, thick]
+        % Red interna
+        \draw (0,0) to[V, l={$12\,\text{V}$}] (0,2) to[R, l={$4\,\text{k}\Omega$}] (3,2);
+        \draw (2.5,2) to[short, *-o] (6,2) node[above]{$a$};
+        \draw (2.5,2) to[R, l_={$8\,\text{k}\Omega$}] (2.5,0);
+        \draw (4.5,0) to[I, l={$1\,\text{mA}$}] (4.5,2);
+        
+        \draw (0,0) to[short, -o] (6,0) node[below]{$b$};
+        \draw (2.5,0) node[ground]{};
+        
+        % Carga (removible)
+        \draw[dashed, blue] (5,2) -- (6,2) to[R, l={$R_L$}] (6,0) -- (5,0);
+    \end{circuitikz}
+    \end{center}
+    \textbf{Primer paso obligatorio:} Retirar la carga $R_L$ de los terminales $a-b$. Dejar el puerto abierto.
+\end{frame}
+
+\begin{frame}{Ejemplo Guiado: Paso 1 — Hallar $V_{th}$}
+    Buscamos la tensión en los terminales abiertos $a-b$. Como no fluye corriente hacia el puerto, $V_{th}$ es simplemente la tensión del nodo interno superior respecto a tierra.
+    
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            \centering
+            \begin{circuitikz}[scale=0.75, transform shape, thick]
+                \draw (0,0) to[V, l={$12\,\text{V}$}] (0,2) to[R, l={$4\,\text{k}\Omega$}] (3,2);
+                \draw (2.5,2) to[short, *-o] (6,2) node[above]{$a$};
+                \draw (2.5,2) to[R, l_={$8\,\text{k}\Omega$}] (2.5,0);
+                \draw (4.5,0) to[I, l={$1\,\text{mA}$}] (4.5,2);
+                \draw (0,0) to[short, -o] (6,0) node[below]{$b$};
+                \draw (2.5,0) node[ground]{};
+                \node at (5.5,1) {\textcolor{blue}{$V_{th}$}};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.55\textwidth}
+            \textbf{Opción 1: KCL en el nodo $a$:}
+            \begin{equation*}
+                \frac{V_a - 12}{4\,\text{k}} + \frac{V_a}{8\,\text{k}} - 1\,\text{mA} = 0 \implies V_a = \mathbf{10.667\,\text{V}}
+            \end{equation*}
+            \textbf{Opción 2: ¡Superposición!}
+            \begin{itemize}
+                \item Solo 12V ($I$ abierto): $V_a = 12 \cdot \frac{8}{12} = 8\,\text{V}$.
+                \item Solo 1mA ($V$ corto): $V_a = 1\,\text{mA} \cdot (4\,\text{k} \parallel 8\,\text{k}) = 2.667\,\text{V}$.
+                \item Total: $V_{th} = \mathbf{10.667\,\text{V}}$.
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Ejemplo Guiado: Paso 2 — Hallar $R_{th}$}
+    Desactivamos TODAS las fuentes independientes y "miramos" la resistencia equivalente desde los terminales $a-b$ hacia adentro.
+    
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            \centering
+            \begin{circuitikz}[scale=0.75, transform shape, thick]
+                \draw (0,0) -- (0,2) node[midway, left]{\small Corto} to[R, l={$4\,\text{k}\Omega$}] (3,2);
+                \draw (3,2) to[short, *-o] (4.5,2) node[above]{$a$};
+                \draw (3,2) to[R, l={$8\,\text{k}\Omega$}] (3,0);
+                \node at (1.5,1) {\small Abierto};
+                \draw (0,0) to[short, -o] (4.5,0) node[below]{$b$};
+                \draw (2.5,0) node[ground]{};
+                \draw[Stealth-, red] (4.2,1) -- (5.5,1) node[right]{$R_{th}$};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.55\textwidth}
+            \begin{itemize}
+                \item La fuente de 12V se vuelve un cable (Corto).
+                \item La fuente de 1mA se vuelve una interrupción (Abierto).
+            \end{itemize}
+            Desde $a-b$, vemos claramente que la resistencia de $4\,\text{k}\Omega$ y la de $8\,\text{k}\Omega$ están en paralelo.
+            \begin{equation*}
+                R_{th} = 4\,\text{k}\Omega \parallel 8\,\text{k}\Omega = \frac{4 \cdot 8}{4 + 8} = \mathbf{2.667\,\text{k}\Omega}
+            \end{equation*}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Ejemplo Guiado: Paso 3 — Equivalentes y Verificación con Carga}
+    \begin{columns}
+        \begin{column}{0.45\textwidth}
+            \textbf{Thévenin} \\
+            $V_{th} = 10.667\,\text{V}$, $R_{th} = 2.667\,\text{k}\Omega$.
+            
+            \vspace{0.2cm}
+            \textbf{Norton} \\
+            $R_N = 2.667\,\text{k}\Omega$. \\
+            $I_N = \frac{V_{th}}{R_{th}} = \frac{10.667}{2.667\,\text{k}} = \mathbf{4\,\text{mA}}$.
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{block}{Prueba Definitiva: Reconectando $R_L = 8\,\text{k}\Omega$}
+                Si conectamos $8\,\text{k}\Omega$ al circuito Thévenin:
+                \begin{equation*}
+                    I_L = \frac{10.667\,\text{V}}{2.667\,\text{k} + 8\,\text{k}} = \mathbf{1\,\text{mA}}
+                \end{equation*}
+                \begin{equation*}
+                    V_L = 1\,\text{mA} \cdot 8\,\text{k}\Omega = \mathbf{8\,\text{V}}
+                \end{equation*}
+                \textit{(Puedes comprobar resolviendo la red original entera con los $8\,\text{k}\Omega$ conectados y dará exactamente lo mismo).}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,62 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Ejercicios S06-3}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Práctica Independiente: Conceptos y Teoremas Terminales}]
+\end{tcolorbox}
+
+\section*{Ejercicio 1: Identificación Conceptual de Puerto}
+Para un equipo de audio (carga $R_L$) conectado a la salida de un amplificador de varias etapas (terminales $a$ y $b$):
+\begin{enumerate}
+    \item Trace un diagrama de bloques sencillo marcando: Red Interna, Carga, Puerto, $V_{ab}$ e $I_L$.
+    \item Indique exactamente dónde colocaría un multímetro para medir experimentalmente $V_{th}$.
+    \item Indique dónde se colocaría un puente (cable) para determinar $I_N$.
+\end{enumerate}
+
+\vspace{0.5cm}
+
+\section*{Ejercicio 2: Equivalencia Analítica}
+Dada la siguiente red interna conectada a un puerto $a-b$:
+\begin{itemize}
+    \item $V_s = 9\,\text{V}$ (polo positivo arriba, negativo a tierra).
+    \item $R_1 = 3\,\text{k}\Omega$ (entre el terminal positivo de $V_s$ y el nodo $a$).
+    \item $R_2 = 6\,\text{k}\Omega$ (entre el nodo $a$ y tierra).
+    \item $I_s = 0.5\,\text{mA}$ (inyectada desde la tierra hacia el nodo $a$).
+    \item El terminal $b$ está conectado directamente a tierra.
+\end{itemize}
+
+\textbf{Tareas:}
+\begin{enumerate}
+    \item \textbf{Hallar $\bm{V_{th}}$:} Dibuje el circuito con el puerto $a-b$ en circuito abierto y encuentre la tensión del nodo $a$.
+    \item \textbf{Hallar $\bm{R_{th}}$:} Redibuja el circuito desactivando adecuadamente ambas fuentes y calcula la resistencia equivalente vista desde el puerto $a-b$.
+    \item \textbf{Hallar $\bm{I_N}$:} Usa la relación matemática de conversión para encontrar la fuente de corriente de Norton.
+    \item \textbf{Esquemas:} Dibuja el Circuito Equivalente de Thévenin y el Circuito Equivalente de Norton de esta red.
+    \item \textbf{Verificación Operativa:} Conecta imaginariamente una carga externa $R_L = 6\,\text{k}\Omega$ a tu modelo de Thévenin. Calcula la tensión final $V_L$ que aparecería en esa carga.
+\end{enumerate}
+
+\end{document}

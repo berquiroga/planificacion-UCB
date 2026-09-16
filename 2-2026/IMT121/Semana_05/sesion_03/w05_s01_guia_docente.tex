@@ -1,0 +1,77 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Instructor Key}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Clave del Instructor: Hacia la Superposición}]
+    \centering \textbf{Sesión Asincrónica (Semana 5) / Revisión Presencial (Semana 6)}
+\end{tcolorbox}
+
+\section*{Solucionario y Guía de Intervención (Actividad Formativa)}
+
+\subsection*{Actividad 1}
+\textbf{Respuesta correcta:} a) La red física (conductancias y topología). b) Excitaciones externas (corrientes inyectadas). c) No. Si solo cambia la fuente, la estructura y resistencias se mantienen, dejando $\bm{A}$ fija. d) Predicción: $[4, 2]^T\,\text{V}$. \\
+\textbf{Error frecuente:} "Se duplica porque 10 es el doble de 5." \\
+\textbf{Prompt correctivo:} "¿Qué condición física del circuito garantiza que esa regla matemática se cumpla siempre?" (R: Mismo modelo lineal fijo).
+
+\subsection*{Actividad 2 (Homogeneidad)}
+\begin{itemize}
+    \item $k=2 \implies [4, 2]^T\,\text{V}$
+    \item $k=-1 \implies [-2, -1]^T\,\text{V}$ (Invierte referencias de signo)
+    \item $k=0.5 \implies [1, 0.5]^T\,\text{V}$
+\end{itemize}
+\textbf{Explicación esperada:} En una red lineal cuya matriz $\bm{A}$ permanece fija, escalar la excitación por $k$ multiplica todas las respuestas por $k$. \\
+\textbf{Error frecuente:} Omitir la condición de "red fija". 
+
+\subsection*{Actividad 3 (Additividad)}
+\textbf{Suma excitaciones:} $\bm{b}_1 + \bm{b}_2 = [5, 3]^T\,\text{mA}$. \\
+\textbf{Predicción de respuesta:} $\bm{x}_1 + \bm{x}_2 = [2.6, 2.8]^T\,\text{V}$. \\
+\textbf{Propiedad observada:} Additividad. \\
+\textbf{Explicación conceptualmente débil:} "Se suman porque las matemáticas lo dicen". \\
+\textbf{Prompt correctivo:} "Ambas respuestas derivan de multiplicar por la inversa de la misma matriz constante. Físicamente, estamos superponiendo efectos sobre el mismo sistema inalterado".
+
+\subsection*{Actividad 4 (Clasificación)}
+\textbf{Respuestas:} 
+1: \textbf{H} \quad 
+2: \textbf{A} \quad 
+3: \textbf{L} \quad 
+4: \textbf{?} (Al cambiar resistor, $\bm{A}$ cambia; se pierde la referencia lineal directa).
+
+\subsection*{Actividad 5 (Puente a la Sesión Presencial de Semana 6)}
+\textbf{Hipótesis esperada:} La respuesta total debería ser la suma algebraica de las contribuciones individuales que genera cada fuente. \\
+\textbf{Lo que falta aprender (Target Cognitivo):} "Todavía no sabemos qué hacer físicamente con el resto de las fuentes en el circuito cuando intentamos simular que 'solo hay una fuente activa'". \\
+\textit{Nota para el Instructor: No exigir ni revelar aquí las reglas de desactivación (cortocircuito / circuito abierto). Esta pregunta está diseñada puramente para generar la necesidad del Teorema de Superposición en la Sesión 1 de la Semana 6.}
+
+\vspace{0.5cm}
+\begin{tcolorbox}[colback=white, colframe=black, boxrule=0.5pt, arc=1mm]
+\textbf{Prompt de Transición en Aula (10 min iniciales, Semana 6, S01):}
+\begin{enumerate}
+    \item (Proyectar $\bm{A}\bm{x} = \bm{b}$) "Si $\bm{A}$ es fija y $\bm{b}$ cambia a $-2\bm{b}$, ¿qué ocurre con $\bm{x}$?" (Espera: Homogeneidad $\rightarrow -2\bm{x}$).
+    \item "Dado $\bm{x}_1=[2,1]^T$ y $\bm{x}_2=[0.6,1.8]^T$. Sin resolver sistema, respondan a excitación $2\bm{b}_1 - \bm{b}_2$". (Espera: Linealidad combinada $\rightarrow [3.4, 0.2]^T$).
+    \item \textbf{Cierre:} "Si podemos separar y sumar contribuciones matemáticas, hagámoslo en el esquemático físico. ¿Cómo apagamos una fuente de voltaje sin romper las Leyes de Kirchhoff? (Inicia lección Superposición)".
+\end{enumerate}
+\end{tcolorbox}
+
+\end{document}

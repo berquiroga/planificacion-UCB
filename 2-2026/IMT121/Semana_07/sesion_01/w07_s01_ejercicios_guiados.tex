@@ -1,0 +1,76 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Ejercicio Guiado S07-1}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Hoja de Cálculo Guiada: Regímenes de Carga y Eficiencia}]
+    \centering \textbf{Análisis de Barrido Discreto sobre un Equivalente de Thévenin}
+\end{tcolorbox}
+
+\section*{Parámetros del Sistema}
+Asuma que se ha simplificado una red lineal compleja hasta obtener el siguiente equivalente de Thévenin:
+\begin{itemize}
+    \item $V_{th} = 12\,\text{V}$
+    \item $R_{th} = 3\,\text{k}\Omega$ ($3000\,\Omega$)
+\end{itemize}
+
+\section*{Tabla de Barrido Discreto de Carga ($R_L$)}
+Complete la siguiente tabla calculando la corriente de carga ($I_L$), voltaje de carga ($V_L$), potencia en la carga ($P_L$), potencia disipada en el modelo interno ($P_{Rth}$) y eficiencia ($\eta$) para cada valor de $R_L$. Utilice unidades estándar o consistentes ($\text{mA}$, $\text{V}$, $\text{mW}$).
+
+\vspace{0.4cm}
+\noindent\renewcommand{\arraystretch}{1.8}
+\begin{tabularx}{\textwidth}{|*{6}{>{\centering\arraybackslash}X|}}
+\hline
+\rowcolor{ucbblue!10} 
+\textbf{$R_L$ (k$\Omega$)} & \textbf{$I_L$ (mA)} & \textbf{$V_L$ (V)} & \textbf{$P_L$ (mW)} & \textbf{$P_{Rth}$ (mW)} & \textbf{$\eta$ (\%)} \\
+\hline
+$0.75$ & & & & & \\
+\hline
+$1.5$  & & & & & \\
+\hline
+$3.0$  & & & & & \\
+\hline
+$6.0$  & & & & & \\
+\hline
+$12.0$ & & & & & \\
+\hline
+\end{tabularx}
+
+\vspace{0.6cm}
+\section*{Interpretación de Resultados}
+Responda brevemente a partir de la tabla obtenida:
+\begin{enumerate}
+    \item ¿En qué caso se encuentra la mayor corriente circulando por el circuito ($I_L$)? \\[0.1cm] \hrulefill
+    \item ¿En qué caso se encuentra la mayor caída de voltaje sobre la carga ($V_L$)? \\[0.1cm] \hrulefill
+    \item ¿En qué caso se encuentra la mayor potencia útil ($P_L$)? \\[0.1cm] \hrulefill
+    \item ¿En qué caso se alcanza la mayor eficiencia energética ($\eta$)? \\[0.1cm] \hrulefill
+    \item ¿Por qué la máxima potencia y la máxima eficiencia no ocurren simultáneamente? Explique el compromiso de diseño.
+    \vspace{2cm}
+    \item Realice un boceto rápido cualitativo (a mano alzada) de $P_L$ en función de $R_L$, marcando explícitamente el punto donde $R_L = R_{th}$.
+\end{enumerate}
+
+\end{document}

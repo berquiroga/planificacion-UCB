@@ -1,0 +1,92 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr} % <--- PAQUETE AÑADIDO PARA SOLUCIONAR EL ERROR
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Guía Lab A}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Experiencia Integrada A — Guía de Laboratorio}]
+    \centering \large \textbf{Superposición, Thévenin, Norton y Comportamiento con Carga}
+\end{tcolorbox}
+
+\section{Propósito de la Experiencia}
+Recuperar y consolidar la evidencia práctica equivalente a las Prácticas 4 y 5 mediante una experiencia integrada que preserve la cadena de ingeniería completa: 
+\begin{center}
+    \textbf{Análisis $\rightarrow$ Simulación $\rightarrow$ Montaje $\rightarrow$ Medición $\rightarrow$ Comparación $\rightarrow$ Interpretación}
+\end{center}
+
+Se validará el teorema de superposición, el aislamiento de contribuciones, la medición de $V_{oc} = V_{th}$ y $R_{th}$, la equivalencia de Norton ($I_N = V_{th}/R_{th}$) y la evolución de la tensión al conectar diferentes cargas.
+
+\section{Circuito Base de Estudio}
+\begin{center}
+\begin{circuitikz}[scale=1, transform shape, thick]
+    \draw (0,0) to[V, l={$V_1=10\,\text{V}$}, invert] (0,3) to[R, l={$R_1=4.7\,\text{k}\Omega$}] (3,3);
+    \draw (6,0) to[V, l_={$V_2=5\,\text{V}$}, invert] (6,3) to[R, l_={$R_2=10\,\text{k}\Omega$}] (3,3);
+    \draw (6,3) to[short, *-o] (8,3) node[above]{$a$};
+    \draw (3,3) to[R, l={$R_3=6.8\,\text{k}\Omega$}] (3,0);
+    \draw (0,0) -- (8,0) node[below]{$b$} to[short, -o] (8,0);
+    \draw (4,0) node[ground]{};
+    \draw[dashed, blue] (8,3) -- (9.5,3) to[R, l={$R_L$}] (9.5,0) -- (8,0);
+\end{circuitikz}
+\end{center}
+\textit{Nota:} Las terminales negativas de $V_1$ y $V_2$ se conectan a la misma referencia (tierra común) \textbf{solo si las fuentes reales del laboratorio permiten esta configuración}. 
+
+\section{Prelaboratorio Obligatorio}
+Cada equipo debe presentar lo siguiente \textbf{antes} de montar el circuito:
+\begin{itemize}\setlength\itemsep{-0.1em}
+    \item Diagrama del circuito con el puerto $a-b$ y la referencia de $V_a$ claramente marcados.
+    \item \textbf{Superposición:} Cálculo de $V_a^{(V1)}$ (manteniendo $V_1$, llevando $V_2=0\,\text{V} \rightarrow$ corto) y $V_a^{(V2)}$ (manteniendo $V_2$, llevando $V_1=0\,\text{V} \rightarrow$ corto). Verificación de la suma.
+    \item \textbf{Thévenin y Norton:} Cálculo de $V_{oc}$, $R_{th}$ y deducción analítica de $I_N$. Dibujo de equivalentes.
+    \item \textbf{Tabla Teórica:} Cálculo de $V_L$ e $I_L$ para las siguientes cargas: $1.0\,\text{k}\Omega$, $2.2\,\text{k}\Omega$, $4.7\,\text{k}\Omega$, $10\,\text{k}\Omega$.
+    \item \textbf{Simulación:} Simulación en LTSpice debidamente ejecutada. Predicción explícita de qué resultados físicos deberían coincidir con la simulación.
+\end{itemize}
+
+\begin{tcolorbox}[colback=red!5!white, colframe=red!80!black, title=Restricción de Seguridad: Corriente de Cortocircuito]
+    \textbf{No incluya una medición física directa de $\bm{I_{sc}}$ en el puerto.} Obtenga $I_N$ analíticamente mediante $V_{th}/R_{th}$ y verifique su equivalente mediante las respuestas de carga. La medición directa solo procederá si el instructor valida los límites, la protección y el procedimiento seguro en mesa.
+\end{tcolorbox}
+
+\section{Procedimiento de Laboratorio}
+\textbf{Fase 1 — Verificación de componentes:} Mida todos los resistores (registre nominal vs. medido). Compruebe la tierra común de las fuentes y configure los límites de corriente. \\
+\textbf{Fase 2 — Montaje:} Monte la red con las fuentes apagadas. Identifique $a$ y $b$. Realice revisión cruzada y energice solo después de la inspección. \\
+\textbf{Fase 3 — Superposición experimental:} Para cada fuente: mantenga una activa, lleve la otra a $0\,\text{V}$ (según el procedimiento aprobado), mida $V_a$ conservando siempre la misma referencia y signo. Compare la suma con la red total operando. \\
+\textbf{Fase 4 — $\bm{V_{oc}}$:} Retire $R_L$. Mida $V_{oc}$ en el puerto $a-b$ y compare con la teoría y SPICE. \\
+\textbf{Fase 5 — $\bm{R_{th}}$:} Con las fuentes apagadas y la red aislada, mida la resistencia vista desde $a-b$ (o reconstruya la red pasiva equivalente y mídala separadamente). \\
+\textbf{Fase 6 — Cargas:} Conecte sucesivamente cada $R_L$. Registre $R_L$ medida, $V_L$ y calcule $I_L = V_L/R_L$ (o realice la medición de corriente si el procedimiento fue aprobado).
+
+\section{Preguntas de Análisis (Para el Informe)}
+\begin{enumerate}
+    \item ¿La suma experimental de contribuciones reproduce la respuesta total?
+    \item ¿Qué cambia en la topología al llevar una fuente a cero?
+    \item ¿Por qué $V_{oc} = V_{th}$?
+    \item ¿Por qué $R_{th}$ se determina mirando desde el puerto?
+    \item ¿Qué significa que la red original y el Thévenin sean equivalentes para una carga?
+    \item ¿Cómo verifica Norton el mismo comportamiento externo?
+    \item ¿Cómo cambia $V_L$ al aumentar $R_L$?
+    \item ¿Cómo distinguir tolerancia de componentes de un error de topología?
+    \item ¿Qué evidencia corresponde a superposición y cuál a Thévenin/Norton?
+\end{enumerate}
+
+\end{document}

@@ -1,0 +1,140 @@
+\documentclass[aspectratio=169, table, xcdraw]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+\title[Thévenin y Norton]{Introducción a las Redes Equivalentes: Thévenin y Norton}
+\subtitle{IMT-121 Circuitos Electrónicos I — PATH B}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}
+\date{Semana 6}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{El Problema de la Carga}
+    \begin{columns}
+        \begin{column}{0.48\textwidth}
+            \centering
+            \begin{circuitikz}[scale=0.8, transform shape, thick]
+                % Caja de red interna
+                \draw[fill=ucbblue!10, draw=ucbblue, rounded corners] (-1,-1) rectangle (3,3);
+                \node at (1,1) [align=center, text width=2.5cm] {\textbf{Red Lineal Interna}\\(Múltiples fuentes y resistores)};
+                
+                % Terminales de puerto
+                \draw (3,2) to[short, -o] (4,2) node[above]{$a$};
+                \draw (3,0) to[short, -o] (4,0) node[below]{$b$};
+                
+                % Carga
+                \draw (4,2) -- (5,2) to[R, l={$R_L$}] (5,0) -- (4,0);
+                
+                % Flecha y V
+                \draw[-Stealth, red] (5,2) -- (4.2,2) node[midway, above]{\small $I_L$};
+                \draw[<->, blue] (4.2,1.8) -- (4.2,0.2) node[midway, left]{\small $V_{ab}$};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{El Enfoque de Puerto (Terminales $a-b$):}
+            \begin{itemize}
+                \item Tenemos una red compleja conectada a una resistencia de carga $R_L$.
+                \item A la carga $R_L$ \textbf{no le importa} cuántas fuentes ni cómo están conectados los resistores internamente.
+                \item Lo único que "siente" $R_L$ es la tensión $V_{ab}$ y la corriente $I_L$ que se genera en esos terminales.
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.4cm}
+    \begin{tcolorbox}[colback=white, colframe=ucbblue, boxrule=0.5pt, arc=1mm]
+        \textbf{Pregunta Clave:} ¿Podemos reemplazar toda la "caja azul" por un circuito equivalente extremadamente simple que produzca exactamente el \textit{mismo comportamiento externo} sobre $R_L$?
+    \end{tcolorbox}
+\end{frame}
+
+\begin{frame}{El Equivalente de Thévenin}
+    Cualquier red lineal de un puerto puede representarse externamente por una \textbf{fuente ideal de voltaje} en serie con una \textbf{resistencia}.
+    
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \centering
+            \begin{circuitikz}[scale=0.9, transform shape, thick]
+                \draw (0,0) to[V, l={$V_{th}$}] (0,2) to[R, l={$R_{th}$}] (2.5,2) to[short, -o] (3.5,2) node[right]{$a$};
+                \draw (0,0) to[short, -o] (3.5,0) node[right]{$b$};
+                \draw[dashed, blue] (-1,-0.5) rectangle (2.8,3);
+                \node[blue] at (1,-0.8) {Equivalente Thévenin};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item $\bm{V_{th}}$: Tensión equivalente de Thévenin.
+                \item $\bm{R_{th}}$: Resistencia equivalente de Thévenin.
+                \item Si conectamos $R_L$ a los terminales $a-b$ de este nuevo circuito, la corriente y la tensión en la carga serán \textbf{idénticas} a las que producía la red compleja original.
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{El Equivalente de Norton}
+    De manera idéntica, la misma red puede representarse externamente por una \textbf{fuente ideal de corriente} en paralelo con una \textbf{resistencia}.
+    
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \centering
+            \begin{circuitikz}[scale=0.9, transform shape, thick]
+                \draw (0,0) to[I, l={$I_N$}] (0,2) -- (2,2);
+                \draw (2,2) to[R, l={$R_N$}] (2,0);
+                \draw (2,2) to[short, -o] (3.5,2) node[right]{$a$};
+                \draw (0,0) -- (3.5,0) node[right]{$b$};
+                \draw[dashed, red] (-1,-0.5) rectangle (2.8,3);
+                \node[red] at (1,-0.8) {Equivalente Norton};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item $\bm{I_N}$: Corriente equivalente de Norton.
+                \item $\bm{R_N}$: Resistencia equivalente de Norton.
+                \item Thévenin y Norton \textbf{no son} circuitos diferentes, son representaciones intercambiables de un mismo puerto físico.
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Relación Conceptual: Thévenin $\leftrightarrow$ Norton}
+    Puesto que ambas representaciones modelan la misma relación externa Tensión-Corriente ($V-I$) vista por la carga, deben estar directamente relacionadas.
+    
+    \vspace{0.4cm}
+    \begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=Igualdad de Equivalencias]
+        \centering
+        \Large
+        $R_N = R_{th}$ \\[0.3cm]
+        $V_{th} = I_N \cdot R_{th}$ \quad ó \quad $I_N = \frac{V_{th}}{R_{th}}$
+    \end{tcolorbox}
+    
+    \vspace{0.4cm}
+    \textbf{Siguiente paso (Próxima Sesión):} 
+    ¿Cómo manipulamos la red original, apagando y encendiendo fuentes (usando lo que acabamos de aprender de \textbf{Superposición}), para extraer los valores numéricos de $V_{th}$, $I_N$ y $R_{th}$?
+\end{frame}
+
+\end{document}

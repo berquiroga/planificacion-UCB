@@ -1,0 +1,216 @@
+\documentclass[aspectratio=169, table, xcdraw]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+\title[Máxima Transferencia]{Máxima Transferencia de Potencia y Eficiencia}
+\subtitle{IMT-121 Circuitos Electrónicos I — Semana 7, Sesión 1}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}
+\date{Semana 7}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Recuperación: Thévenin y Norton}
+    \begin{block}{Parámetros del Equivalente Externo}
+        Si una carga $R_L$ se conecta en los terminales $a-b$, el circuito equivalente debe conservar el comportamiento externo para que la carga no distinga la red original de la equivalente.
+    \end{block}
+    
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item $\bm{V_{th}}$: Voltaje de circuito abierto ($V_{oc}$).
+                \item $\bm{I_N}$: Corriente de cortocircuito ($I_{sc}$).
+                \item $\bm{R_{th} = R_N}$: Resistencia vista desde $a-b$ con fuentes independientes desactivadas.
+            \end{itemize}
+            \vspace{0.2cm}
+            \textbf{Relación Fundamental:}
+            \begin{equation*}
+                V_{th} = I_N \cdot R_{th}
+            \end{equation*}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{tcolorbox}[colback=white, colframe=ucbblue, title=Mini-Retrieval]
+                Una red presenta $V_{th}=12\,\text{V}$ y $R_{th}=3\,\text{k}\Omega$.
+                \begin{enumerate}
+                    \item ¿Cuánto vale $I_N$?
+                    \item Si conectamos $R_L=6\,\text{k}\Omega$, ¿cuál es $V_L$?
+                \end{enumerate}
+            \end{tcolorbox}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Potencia en una Carga Variable}
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            \centering
+            \begin{circuitikz}[scale=0.9, transform shape, thick]
+                \draw (0,0) to[V, l={$V_{th}$}] (0,2) to[R, l={$R_{th}$}] (2.5,2) to[short, -o] (3,2) node[above]{$a$};
+                \draw (0,0) to[short, -o] (3,0) node[below]{$b$};
+                \draw[dashed, blue] (3,2) -- (4,2) to[vR, l={$R_L$}] (4,0) -- (3,0);
+                \draw[-Stealth, red] (4,2) -- (3.3,2) node[midway, above]{\small $I_L$};
+                \draw[<->, blue] (3.3,1.8) -- (3.3,0.2) node[midway, left]{\small $V_L$};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.6\textwidth}
+            Mantenemos el equivalente de Thévenin fijo ($V_{th}$ y $R_{th}$ constantes) y variamos únicamente la carga $R_L$.
+            \begin{align*}
+                \text{Corriente:} \quad I_L &= \frac{V_{th}}{R_{th} + R_L} \\
+                \text{Voltaje:} \quad V_L &= I_L R_L = V_{th} \frac{R_L}{R_{th} + R_L} \\
+                \text{Potencia Útil:} \quad P_L &= I_L^2 R_L = V_{th}^2 \frac{R_L}{(R_{th} + R_L)^2}
+            \end{align*}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Los Tres Regímenes de Carga}
+    Usando el modelo $P_L(R_L) = V_{th}^2 \frac{R_L}{(R_{th} + R_L)^2}$:
+    
+    \vspace{0.3cm}
+    \begin{columns}
+        \begin{column}{0.32\textwidth}
+            \begin{block}{1. Carga Pequeña ($R_L \ll R_{th}$)}
+                \begin{itemize}
+                    \item Corriente alta.
+                    \item Voltaje bajo (casi todo cae en $R_{th}$).
+                    \item $P_L \rightarrow 0$ cuando $R_L \rightarrow 0$.
+                \end{itemize}
+            \end{block}
+        \end{column}
+        \begin{column}{0.32\textwidth}
+            \begin{block}{2. Carga Adaptada ($R_L = R_{th}$)}
+                \begin{itemize}
+                    \item Compromiso exacto entre tensión y corriente.
+                    \item Genera el máximo local de potencia.
+                \end{itemize}
+            \end{block}
+        \end{column}
+        \begin{column}{0.32\textwidth}
+            \begin{block}{3. Carga Grande ($R_L \gg R_{th}$)}
+                \begin{itemize}
+                    \item Voltaje alto (casi $V_{th}$).
+                    \item Corriente baja.
+                    \item $P_L \rightarrow 0$ cuando $R_L \rightarrow \infty$.
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Teorema de Máxima Transferencia de Potencia}
+    Para encontrar el máximo de $P_L(R_L)$, derivamos respecto a $R_L$ e igualamos a cero:
+    \begin{equation*}
+        \frac{d P_L}{d R_L} = V_{th}^2 \frac{d}{d R_L} \left[ R_L (R_{th} + R_L)^{-2} \right] = 0
+    \end{equation*}
+    Aplicando la regla del producto y simplificando:
+    \begin{equation*}
+        \frac{d P_L}{d R_L} = V_{th}^2 \frac{R_{th} - R_L}{(R_{th} + R_L)^3} = 0
+    \end{equation*}
+    Como el denominador y $V_{th}^2$ no son cero, la única forma de que la derivada sea cero es:
+    \begin{equation*}
+        \mathbf{R_L = R_{th}}
+    \end{equation*}
+    \begin{tcolorbox}[colback=white, colframe=ucbblue, boxrule=0.5pt, arc=1mm]
+        \textbf{Potencia Máxima Disponible:} Cuando $R_L = R_{th}$, $I_L = V_{th}/(2R_{th})$. \\
+        $P_{L,\text{max}} = \left( \frac{V_{th}}{2R_{th}} \right)^2 R_{th} = \mathbf{\frac{V_{th}^2}{4R_{th}}}$
+    \end{tcolorbox}
+\end{frame}
+
+\begin{frame}{Eficiencia vs. Potencia: El Trade-Off de Diseño}
+    La potencia entregada a la carga es $P_L = I_L^2 R_L$. \\
+    La potencia disipada internamente en el modelo es $P_{Rth} = I_L^2 R_{th}$. \\
+    
+    \vspace{0.2cm}
+    La eficiencia $\eta$ se define como la potencia útil respecto a la potencia total suministrada:
+    \begin{equation*}
+        \eta = \frac{P_L}{P_L + P_{Rth}} = \frac{I_L^2 R_L}{I_L^2 R_L + I_L^2 R_{th}} = \mathbf{\frac{R_L}{R_L + R_{th}}}
+    \end{equation*}
+
+    \begin{alertblock}{El Dilema en el Punto de Máxima Potencia}
+        Si $R_L = R_{th}$ (máxima transferencia de potencia), entonces $\eta = \frac{R_{th}}{R_{th} + R_{th}} = \mathbf{50\%}$.\\
+        ¡La mitad de la energía se pierde internamente en el modelo!
+    \end{alertblock}
+    Aumentar $R_L$ mejora la eficiencia (ej. $\eta \rightarrow 100\%$ si $R_L \rightarrow \infty$), pero sacrifica la cantidad absoluta de potencia entregada.
+\end{frame}
+
+\begin{frame}{Curvas de Potencia y Eficiencia}
+    \begin{center}
+    \begin{tikzpicture}[scale=0.9]
+        \begin{axis}[
+            domain=0:5,
+            samples=100,
+            axis lines=left,
+            xlabel={Relación de Carga ($R_L/R_{th}$)},
+            ylabel={Amplitud Normalizada},
+            ymin=0, ymax=1.1,
+            xmin=0, xmax=5,
+            width=10cm, height=5.5cm,
+            legend pos=south east,
+            grid=both,
+            grid style={dashed, gray!30}
+        ]
+        % Curva de Potencia: 4 * x / (1+x)^2 (Normalizada a 1 en x=1)
+        \addplot [thick, blue] {4*x / (1+x)^2};
+        \addlegendentry{$P_L / P_{\text{max}}$}
+        
+        % Curva de Eficiencia: x / (1+x)
+        \addplot [thick, red, dashed] {x / (1+x)};
+        \addlegendentry{Eficiencia $\eta$}
+        
+        % Punto de máxima transferencia
+        \draw[dotted, thick, black] (axis cs:1,0) -- (axis cs:1,1);
+        \filldraw[black] (axis cs:1,1) circle (2pt) node[above] {Max Potencia};
+        \filldraw[black] (axis cs:1,0.5) circle (2pt) node[below right] {$\eta = 50\%$};
+        
+        \end{axis}
+    \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Preparación: Experiencia Integrada A}
+    \begin{block}{Flujo de Trabajo para el Laboratorio}
+        \centering
+        Analizar $\rightarrow$ Predecir $\rightarrow$ Simular $\rightarrow$ Montar $\rightarrow$ Medir $\rightarrow$ Comparar
+    \end{block}
+    
+    \textbf{Requisitos Previos al Montaje Físico (Prelaboratorio):}
+    \begin{enumerate}
+        \item \textbf{Analítico:} Cálculo manual de $V_{oc} = V_{th}$ (por superposición), $R_{th}$, e $I_N$.
+        \item \textbf{Carga:} Predicción de $V_L$ e $I_L$ para al menos dos cargas distintas.
+        \item \textbf{Simulación (SPICE):} Modelo de la red original y barrido paramétrico para registrar $P_L$ vs $R_L$.
+    \end{enumerate}
+
+    \begin{alertblock}{Restricción de Seguridad: Medición de $I_{sc}$}
+        \textbf{NO se autoriza} cortocircuitar físicamente los terminales de salida con el multímetro (medición directa de $I_{sc}$) hasta que el instructor valide los límites de corriente de la fuente de alimentación real del laboratorio y la protección del instrumento.
+    \end{alertblock}
+\end{frame}
+
+\end{document}

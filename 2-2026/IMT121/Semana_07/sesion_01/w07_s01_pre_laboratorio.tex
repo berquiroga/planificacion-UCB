@@ -1,0 +1,70 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Prelaboratorio}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Experiencia Integrada A: Prelaboratorio Obligatorio}]
+    \centering \textbf{Cadena de Análisis Analítico, Simulación y Preparación para Medición}
+\end{tcolorbox}
+
+\textbf{Circuito Base:}
+\begin{center}
+\begin{circuitikz}[scale=1, transform shape, thick]
+    \draw (0,0) to[V, l={$V_s=12\,\text{V}$}] (0,2) to[R, l={$R_1=4\,\text{k}\Omega$}] (3,2);
+    \draw (3,2) to[short, *-o] (5,2) node[above]{$a$};
+    \draw (5,2) to[R, l={$R_2=8\,\text{k}\Omega$}] (5,0);
+    \draw (3,0) to[I, l={$I_s=1\,\text{mA}$}] (3,2);
+    \draw (0,0) to[short, -o] (5,0) node[below]{$b$};
+    \draw (2.5,0) node[ground]{};
+\end{circuitikz}
+\end{center}
+
+\textbf{Requisito de Acceso:} Cada equipo debe presentar este documento debidamente calculado e implementado en simulación \textbf{antes} de ser autorizado a montar el circuito en protoboard.
+
+\section*{Parte 1: Análisis Teórico de la Red}
+\begin{enumerate}
+    \item \textbf{Superposición para $\bm{V_{oc}}$:} Calcule la tensión de circuito abierto entre $a-b$ analizando el efecto de $V_s$ e $I_s$ por separado. Especifique las dos contribuciones y la suma algebraica ($V_{th}$).
+    \vspace{2.5cm}
+    \item \textbf{Cálculo de $\bm{R_{th}}$:} Redibuje la red con las fuentes independientes desactivadas y calcule la resistencia equivalente vista desde el puerto $a-b$.
+    \vspace{2.5cm}
+    \item \textbf{Predicción Norton:} Utilizando transformaciones de fuentes o relación directa, determine analíticamente la corriente teórica de cortocircuito $\bm{I_{sc}} = I_N$.
+    \vspace{1.5cm}
+    \item \textbf{Respuesta en Carga:} Si se conecta una carga de $R_L = 8\,\text{k}\Omega$, prediga $V_L$ e $I_L$.
+    \vspace{1.5cm}
+\end{enumerate}
+
+\section*{Parte 2: Simulación SPICE y Seguridad}
+\begin{enumerate}
+    \item Adjunte capturas de pantalla de la simulación (.op) que verifiquen el voltaje de circuito abierto y la respuesta con la carga conectada.
+    \item Escriba el procedimiento mediante el cual barrerá el valor de $R_L$ (usando comandos como \texttt{.step param}) para graficar $P_L$ vs $R_L$ en el simulador.
+\end{enumerate}
+
+\begin{tcolorbox}[colback=red!5!white, colframe=red!80!black, title=Gate de Seguridad Experimental para $\bm{I_{sc}}$]
+    \textbf{Alto:} Para el montaje físico, se medirá $V_{oc}$ y la respuesta a varias cargas $R_L$. Sin embargo, la medición directa de cortocircuito con amperímetro en los terminales $a-b$ dependerá \textbf{exclusivamente} de la revisión del instructor del equipo real en mesa. Prepare su tabla de datos, pero marque $I_{sc\_medido}$ como "Pendiente Autorización".
+\end{tcolorbox}
+
+\end{document}

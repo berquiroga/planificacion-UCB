@@ -1,0 +1,69 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | PATH A}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Práctica de Consolidación: Superposición (Path A)}]
+    \centering \textbf{Trabajo en Parejas - Superación de Errores Procedimentales}
+\end{tcolorbox}
+
+\section*{Parte 1: Clasificación de Errores Comunes}
+Lea las siguientes acciones realizadas por un estudiante ficticio al aplicar superposición. Indique qué regla infringió y cuál es la corrección física o matemática.
+
+\begin{enumerate}
+    \item \textit{"Al analizar el subcircuito de la fuente de corriente, reemplacé la fuente de voltaje de 10 V por un circuito abierto."} \\ \hrulefill \\ \hrulefill
+    
+    \item \textit{"Al analizar el subcircuito de la fuente de voltaje, reemplace la fuente de corriente de 5 mA por un cable."} \\ \hrulefill \\ \hrulefill
+    
+    \item \textit{"La primera contribución fue de $6\,\text{V}$ y la segunda de $-1.2\,\text{V}$. El resultado total que reporté fue $7.2\,\text{V}$ sumando ambas cantidades."} \\ \hrulefill \\ \hrulefill
+\end{enumerate}
+
+\section*{Parte 2: Práctica de Cálculo y Signos}
+
+\textbf{Ejercicio A1: Fuentes Aditivas}
+En un circuito se tiene:
+\begin{itemize}
+    \item $V_s = 15\,\text{V}$ (polo positivo conectado a $R_1$).
+    \item $R_1 = 5\,\text{k}\Omega$ (entre $V_s$ y el nodo $V_o$).
+    \item $R_2 = 10\,\text{k}\Omega$ (entre $V_o$ y tierra).
+    \item $I_s = 0.5\,\text{mA}$ (conectada entre tierra y $V_o$, inyectando corriente \textbf{hacia} el nodo $V_o$).
+\end{itemize}
+Calcule $V_o$ aplicando superposición y prestando extrema atención a las referencias. Muestre sus subcircuitos equivalentes.
+
+\vspace{5cm}
+
+\textbf{Ejercicio A2: Fuentes de Efecto Opuesto}
+En un circuito diferente se tiene:
+\begin{itemize}
+    \item $V_s = 8\,\text{V}$ (polo positivo conectado a $R_1$).
+    \item $R_1 = 2\,\text{k}\Omega$ (entre $V_s$ y el nodo $V_o$).
+    \item $R_2 = 2\,\text{k}\Omega$ (entre $V_o$ y tierra).
+    \item $I_s = 1\,\text{mA}$ (conectada entre el nodo $V_o$ y tierra, extrayendo corriente \textbf{desde} $V_o$ hacia tierra).
+\end{itemize}
+Calcule $V_o$ aplicando superposición. Compruebe la consistencia de sus signos.
+
+\end{document}

@@ -1,0 +1,59 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{ragged2e} % Agregado para mejor justificacion en celdas estrechas
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Matriz de Trazabilidad}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Matriz de Trazabilidad de Evidencia: Experiencia Integrada A}]
+    \centering \textbf{Recuperación de Competencias (Prácticas Previas 4-5)}
+\end{tcolorbox}
+
+\noindent La siguiente matriz articula cómo la Experiencia Integrada A recuperará la evidencia práctica rezagada y establecerá la trazabilidad completa desde la teoría hasta la medición física.
+
+\vspace{0.5cm}
+\noindent\renewcommand{\arraystretch}{1.6}
+% Reemplazamos 'p' por 'X' y agregamos \RaggedRight a las columnas de texto libre
+% para eliminar todos los Underfull \hbox y el Overfull \hbox de 1.8pt.
+\begin{tabularx}{\textwidth}{|>{\columncolor{ucbblue!10}\bfseries\RaggedRight}X|>{\RaggedRight}X|>{\RaggedRight}X|>{\RaggedRight}X|}
+\hline
+\rowcolor{ucbblue!20}
+\textbf{Evidencia Original P4/P5} & \textbf{Actividad en Experiencia Integrada} & \textbf{Dato/Artefacto Generado} & \textbf{Criterio de Verificación Físico/Simulado} \\
+\hline
+Teorema de Superposición & Analizar el efecto de $V_s$ e $I_s$ aislando cada fuente para el cálculo de $V_{oc}$. & Contribuciones parciales ($V_a^{(V_s)}$ y $V_a^{(I_s)}$) más suma algebraica. & Coincidencia exacta con la solución nodal completa y simulada. \\
+\hline
+Tensión de Circuito Abierto & Medir el puerto $a-b$ sin resistencia de carga $R_L$ conectada. & $V_{oc}$ analítico, SPICE (.op), y medición real con multímetro. & Coherencia cruzada entre representaciones teóricas y físicas. \\
+\hline
+Resistencia de Thévenin & Redibujar red con fuentes de voltaje en corto y fuentes de corriente abiertas. & Red reconstruida en papel + cálculo de $R_{th}$. & Resistencia equivalente vista exactamente desde el puerto. \\
+\hline
+Equivalente de Norton & Cálculo del cortocircuito de puerto y modelado de corriente paralela. & Cociente analítico $I_N = V_{th}/R_{th}$ e $I_{sc}$ simulado. & Relación de ley de Ohm entre equivalentes de caja. \\
+\hline
+Comportamiento con Carga y Máxima Transferencia & Conexión de resistencias $R_L$ y barrido paramétrico. & Curvas SPICE de $P_L$ vs $R_L$. Medición de $V_L$ e $I_L$ discretos. & Original $\approx$ Equivalente. El máximo práctico empata con la predicción. \\
+\hline
+Validación PFI & Contrastar tres vías de resolución (Cálculo $\rightarrow$ SPICE $\rightarrow$ Bench). & Tabla de registro completa y diagnóstico de observaciones. & Análisis ingenieril que explique razonablemente las discrepancias ($<5\%$). \\
+\hline
+\end{tabularx}
+
+\end{document}

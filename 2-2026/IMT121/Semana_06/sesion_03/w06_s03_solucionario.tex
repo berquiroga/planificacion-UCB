@@ -1,0 +1,68 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Solucionario Docente S06-3}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Clave de Evaluación Docente: Thévenin, Norton y Superposición}]
+\end{tcolorbox}
+
+\section*{Solución al Ejemplo Guiado (Artefacto 2)}
+\textbf{Paso 1: Aislar el Puerto y Hallar $V_{th}$}\\
+$V_{th}$ es el voltaje en el nodo $a$ con el puerto abierto. Usando KCL o superposición:
+\begin{itemize}
+    \item $V_a^{(V_s)} = 12 \cdot \frac{8}{12} = 8\,\text{V}$. \quad $V_a^{(I_s)} = 1\,\text{mA} \cdot (4\,\text{k} \parallel 8\,\text{k}) = 2.667\,\text{V}$.
+    \item $\mathbf{V_{th} = 10.667\,\text{V}}$.
+\end{itemize}
+
+\noindent\textbf{Paso 2: Desactivar Fuentes y Hallar $R_{th}$}\\
+Fuentes de tensión $\rightarrow$ Cortocircuito. Fuentes de corriente $\rightarrow$ Circuito abierto.
+Mirando desde $a-b$, los resistores de $4\,\text{k}\Omega$ y $8\,\text{k}\Omega$ quedan en paralelo (ambos están conectados entre el nodo $a$ y tierra).
+$\mathbf{R_{th} = 4\,\text{k} \parallel 8\,\text{k} = 2.667\,\text{k}\Omega}$.
+
+\noindent\textbf{Paso 3: Norton y Verificación Final}\\
+$R_N = R_{th} = \mathbf{2.667\,\text{k}\Omega}$. \quad $I_N = \frac{10.667\,\text{V}}{2.667\,\text{k}\Omega} = \mathbf{4\,\text{mA}}$. \\
+Verificación con $R_L = 8\,\text{k}\Omega$ en la serie de Thévenin:
+$I_L = \frac{10.667}{2.667\,\text{k} + 8\,\text{k}} = \mathbf{1\,\text{mA}}$. $V_L = 1\,\text{mA} \cdot 8\,\text{k}\Omega = \mathbf{8\,\text{V}}$.
+
+\section*{Solución al Ejercicio 2 (Artefacto 3)}
+\begin{enumerate}
+    \item \textbf{$V_{th}$:} Con puerto abierto, por superposición: 
+    $V_a^{(1)} = 9 \cdot \frac{6}{9} = 6\,\text{V}$. \quad $V_a^{(2)} = 0.5\,\text{mA} \cdot (3\,\text{k} \parallel 6\,\text{k}) = 0.5\,\text{mA} \cdot 2\,\text{k}\Omega = 1\,\text{V}$.
+    $\mathbf{V_{th} = 6 + 1 = 7\,\text{V}}$. \textit{(Error típico: calcular esto con la carga conectada).}
+    \item \textbf{$R_{th}$:} Desactivando fuentes: $V_s$ es un corto, $I_s$ es un abierto. Mirando desde $a-b$, se ven $3\,\text{k}\Omega$ y $6\,\text{k}\Omega$ en paralelo. $\mathbf{R_{th} = 2\,\text{k}\Omega}$. \textit{(Error típico: deducir la resistencia sin redibujar mentalmente el corto de la fuente).}
+    \item \textbf{$I_N$:} $I_N = \frac{7\,\text{V}}{2\,\text{k}\Omega} = \mathbf{3.5\,\text{mA}}$. \textit{(Error típico: medir $I$ en una rama interna en vez de hacer el corto de puerto).}
+    \item \textbf{Verificación:} Usando Thévenin ($7\,\text{V}$ en serie con $2\,\text{k}\Omega$), si conectamos $R_L = 6\,\text{k}\Omega$: \\
+    $I_L = \frac{7}{2\,\text{k} + 6\,\text{k}} = 0.875\,\text{mA}$. $\mathbf{V_L = 0.875\,\text{mA} \cdot 6\,\text{k}\Omega = 5.25\,\text{V}}$.
+\end{enumerate}
+
+\section*{Solucionario Guía de Práctica S1-S3 (Artefacto 4)}
+\begin{itemize}
+    \item \textbf{S1:} $V_o^{(1)} = 10(3/5) = 6\,\text{V}$. $V_o^{(2)} = -1\,\text{mA}(1.2\,\text{k}) = -1.2\,\text{V}$. $\mathbf{V_o = 4.8\,\text{V}}$.
+    \item \textbf{S2:} $V_o^{(1)} = 12(4/8) = 6\,\text{V}$. $V_o^{(2)} = -2\,\text{mA}(2\,\text{k}) = -4\,\text{V}$. $\mathbf{V_o = 2\,\text{V}}$.
+    \item \textbf{S3:} $V_o^{(1)} = 15(10/15) = 10\,\text{V}$. $V_o^{(2)} = +0.5\,\text{mA}(3.333\,\text{k}) = 1.667\,\text{V}$. $\mathbf{V_o = 11.667\,\text{V}}$.
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,68 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Tarea Superposición}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Guía de Práctica de Casa: Superposición Continua}]
+    \centering \textbf{Mantenimiento de Habilidades: Signos y Redibujo Topológico}
+\end{tcolorbox}
+
+\textbf{Instrucciones:} Esta guía complementa la transición hacia Thévenin. La superposición sigue siendo una herramienta fundamental. Para cada ejercicio, debe dibujar obligatoriamente el subcircuito correspondiente a cada contribución, prestando extrema atención a qué queda en corto y qué queda abierto. Calcule el voltaje $V_o$ referenciado a tierra.
+
+\section*{S1: Fuentes Mixtas (Caso Base)}
+\begin{itemize}
+    \item $V_s=10\,\text{V}$ (polo positivo arriba).
+    \item $R_1=2\,\text{k}\Omega$ (entre $V_s$ y el nodo $V_o$).
+    \item $R_2=3\,\text{k}\Omega$ (entre $V_o$ y tierra).
+    \item $I_s=1\,\text{mA}$ (conectada en $V_o$, extrayendo corriente hacia tierra).
+\end{itemize}
+\textbf{Resultado esperado:} $V_o = 4.8\,\text{V}$.
+
+\section*{S2: Contribuciones de Signo Opuesto}
+\begin{itemize}
+    \item $V_s=12\,\text{V}$ (polo positivo arriba).
+    \item $R_1=4\,\text{k}\Omega$ (entre $V_s$ y $V_o$).
+    \item $R_2=4\,\text{k}\Omega$ (entre $V_o$ y tierra).
+    \item $I_s=2\,\text{mA}$ (conectada en $V_o$, extrayendo corriente hacia tierra).
+\end{itemize}
+\textbf{Resultado esperado:} $V_o = 2\,\text{V}$. \textit{(Tome nota de la fuerte cancelación).}
+
+\section*{S3: Inyección de Corriente}
+\begin{itemize}
+    \item $V_s=15\,\text{V}$ (polo positivo arriba).
+    \item $R_1=5\,\text{k}\Omega$ (entre $V_s$ y $V_o$).
+    \item $R_2=10\,\text{k}\Omega$ (entre $V_o$ y tierra).
+    \item $I_s=0.5\,\text{mA}$ (conectada entre tierra y $V_o$, inyectando corriente hacia arriba).
+\end{itemize}
+\textbf{Resultado esperado:} $V_o \approx 11.667\,\text{V}$.
+
+\section*{S4: Caso de Cuidado Topológico (Fuente Flotante)}
+Utilice la topología con fuente de tensión flotante introducida previamente en clase.
+\\
+\textbf{Peligro Común:} Cuando desactive una fuente de tensión que \textbf{no} está referenciada a tierra (flotante), recuerde que se convierte en un cortocircuito. Esto significa que los dos nodos a los que estaba conectada se fusionan (se convierten en el mismo nodo eléctricamente hablando). Redibuje el circuito fusionando esos nodos antes de intentar calcular resistencias equivalentes o aplicar divisores. 
+
+\end{document}

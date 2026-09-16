@@ -1,0 +1,81 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Guía del Docente S06-2}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Guía de Decisión del Instructor y Solucionario}]
+    \centering \large \textbf{Semana 6 - Sesión 2: Consolidar vs. Avanzar}
+\end{tcolorbox}
+
+\section*{Parte 1: Solución del Diagnóstico}
+\begin{itemize}
+    \item \textbf{Referencia:} $V_o$ positivo en el nodo superior respecto a la tierra común.
+    \item \textbf{Solo $V_s$:} $I_s$ se reemplaza por circuito abierto. 
+    $V_o^{(1)} = 10\,\text{V} \cdot \frac{3\,\text{k}\Omega}{2\,\text{k}\Omega + 3\,\text{k}\Omega} = \mathbf{6\,\text{V}}$.
+    \item \textbf{Solo $I_s$:} $V_s$ se reemplaza por cortocircuito. $R_{\text{eq}} = 2\,\text{k} \parallel 3\,\text{k} = 1.2\,\text{k}\Omega$. 
+    Dado que la fuente extrae corriente del nodo hacia tierra: $V_o^{(2)} = -1\,\text{mA} \cdot 1.2\,\text{k}\Omega = \mathbf{-1.2\,\text{V}}$.
+    \item \textbf{Total:} $V_o = 6 + (-1.2) = \mathbf{4.8\,\text{V}}$.
+    \item \textbf{Fundamento esperado:} "...la red es lineal, por lo que las respuestas asociadas a las fuentes independientes pueden calcularse por separado y sumarse algebraicamente (additividad) manteniendo la misma referencia".
+\end{itemize}
+
+\section*{Parte 2: Árbol de Decisión Operativa}
+Registre la tendencia general del aula completando este perfil:
+
+\vspace{0.3cm}
+\noindent\begin{tabularx}{\textwidth}{|>{\columncolor{ucbblue!5}\bfseries}l|X|}
+\hline
+\textbf{Categoría Evaluada} & \textbf{Estado General de la Clase} \\ \hline
+Desactivación de fuentes & $\square$ Correcta (mayoría) \quad $\square$ Errores (cortos por abiertos) \\ \hline
+Conservación de referencia & $\square$ Consistente \quad $\square$ Inconsistente (invierten signos) \\ \hline
+Suma algebraica & $\square$ Correcta \quad $\square$ Error (suman magnitudes sin signo) \\ \hline
+Fundamento Lineal & $\square$ Explica additividad \quad $\square$ Parcial \quad $\square$ Receta memorizada \\ \hline
+\end{tabularx}
+\vspace{0.3cm}
+
+\begin{tcolorbox}[colback=white, colframe=black, boxrule=0.5pt, arc=1mm]
+\textbf{Regla de Decisión:}
+\begin{itemize}
+    \item \textbf{PATH B (Advance):} Si la mayoría desactiva correctamente, conserva la referencia, suma con signos y justifica desde la linealidad $\rightarrow$ Introducir Thévenin/Norton (Artefacto 3B).
+    \item \textbf{PATH A (Consolidate):} Si una proporción importante presenta errores repetidos en \textit{cualquiera} de esos puntos $\rightarrow$ Ejecutar Práctica en Parejas (Artefacto 3A).
+\end{itemize}
+\end{tcolorbox}
+
+\section*{Parte 3: Solucionario - PATH A (Práctica de Consolidación)}
+\textbf{Ejercicio A1:} $V_s = 15\,\text{V}$, $R_1 = 5\,\text{k}\Omega$, $R_2 = 10\,\text{k}\Omega$, $I_s = 0.5\,\text{mA}$ (hacia $V_o$). \\
+$V_o^{(1)} = 15 \cdot \frac{10}{15} = 10\,\text{V}$. \quad $V_o^{(2)} = 0.5\,\text{mA} \cdot (5\,\text{k} \parallel 10\,\text{k}) = +1.667\,\text{V}$. \quad \textbf{Total: $11.667\,\text{V}$}.
+
+\vspace{0.2cm}
+\noindent\textbf{Ejercicio A2:} $V_s = 8\,\text{V}$, $R_1 = 2\,\text{k}\Omega$, $R_2 = 2\,\text{k}\Omega$, $I_s = 1\,\text{mA}$ (desde $V_o$ hacia tierra). \\
+$V_o^{(1)} = 8 \cdot \frac{2}{4} = 4\,\text{V}$. \quad $V_o^{(2)} = -1\,\text{mA} \cdot (2\,\text{k} \parallel 2\,\text{k}) = -1\,\text{V}$. \quad \textbf{Total: $3\,\text{V}$}.
+
+\section*{Parte 4: Solucionario - PATH B (Preguntas Conceptuales)}
+\begin{enumerate}
+    \item \textbf{Red interna vs. Carga:} La carga es todo elemento conectado \textit{después} de los terminales del puerto. La red interna son todas las fuentes y resistores \textit{detrás} del puerto.
+    \item \textbf{Equivalencia:} El equivalente debe conservar la relación terminal $V-I$ vista por la carga.
+    \item \textbf{Topología:} La carga no necesita conocer la topología interna, solo la relación tensión-corriente que ésta le impone en los terminales $a-b$.
+\end{enumerate}
+
+\end{document}

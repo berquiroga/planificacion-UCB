@@ -1,0 +1,78 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Ejemplo Guiado S06-3}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Hoja de Trabajo Guiada: Thévenin y Norton}]
+    \centering \large \textbf{Reducción de Redes desde un Puerto de Dos Terminales}
+\end{tcolorbox}
+
+\section*{Circuito de Estudio}
+El objetivo es simplificar la "Red Interna" de la izquierda y encontrar sus circuitos equivalentes de Thévenin y Norton respecto a los terminales del puerto $a-b$, donde eventualmente conectaremos la carga $R_L$.
+
+\begin{center}
+\begin{circuitikz}[scale=0.85, transform shape, thick]
+        % Red interna
+        \draw (0,0) to[V, l={$12\,\text{V}$}] (0,2) to[R, l={$4\,\text{k}\Omega$}] (3,2);
+        \draw (2.5,2) to[short, *-o] (6,2) node[above]{$a$};
+        \draw (2.5,2) to[R, l_={$8\,\text{k}\Omega$}] (2.5,0);
+        \draw (4.5,0) to[I, l={$1\,\text{mA}$}] (4.5,2);
+        
+        \draw (0,0) to[short, -o] (6,0) node[below]{$b$};
+        \draw (2.5,0) node[ground]{};
+        
+        % Carga (removible)
+        \draw[dashed, blue] (5,2) -- (6,2) to[R, l={$R_L$}] (6,0) -- (5,0);
+    \end{circuitikz}
+\end{center}
+
+\section*{Paso 1: Aislar el Puerto y Hallar $V_{th}$}
+\textbf{Definición:} $V_{th}$ es el voltaje en los terminales $a-b$ cuando están en circuito abierto.
+\begin{enumerate}
+    \item Retira (borra) mentalmente la carga $R_L$.
+    \item Calcula la tensión en el nodo $a$. (Tip: Puedes usar superposición para simplificar el análisis).
+\end{enumerate}
+\vspace{3cm}
+
+\section*{Paso 2: Desactivar Fuentes y Hallar $R_{th}$}
+\textbf{Definición:} $R_{th}$ es la resistencia que se mide "mirando" hacia adentro desde el puerto $a-b$ cuando todas las fuentes independientes han sido apagadas.
+\begin{enumerate}
+    \item Redibuja el circuito: Las fuentes de tensión ideales se reemplazan por un \underline{\hspace{3cm}}, y las fuentes de corriente por un \underline{\hspace{3cm}}.
+    \item Dibuja una flecha entrando por $a-b$ y calcula la resistencia equivalente.
+\end{enumerate}
+\vspace{4.5cm}
+
+\section*{Paso 3: Calcular Norton y Dibujar los Equivalentes}
+Sabiendo que $R_N = R_{th}$ y que $I_N = \frac{V_{th}}{R_{th}}$, calcula el modelo de Norton. \\
+Luego, dibuja ambos modelos equivalentes \textbf{conectados a la carga $R_L = 8\,\text{k}\Omega$}.
+
+\vspace{5cm}
+\begin{itemize}
+    \item \textbf{Verificación Final:} Para el equivalente de Thévenin, ¿cuánto vale $I_L$? ¿Cuánto vale $V_L$?
+\end{itemize}
+
+\end{document}

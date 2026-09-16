@@ -1,0 +1,88 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr} % Agregado para resolver "Undefined control sequence"
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Hoja de Datos Lab A}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Hoja de Registro de Datos: Experiencia Integrada A}]
+    \centering \textbf{Registro de Predicciones y Mediciones en Banco}
+\end{tcolorbox}
+
+\vspace{0.2cm}
+\textbf{Equipo / Integrantes:} \hrulefill
+
+\section*{Tabla 1: Verificación de Componentes (Fase 1)}
+\renewcommand{\arraystretch}{1.5}
+% Eliminamos el exceso de ancho forzando la tabla a ser del ancho exacto del texto y sin desbordes.
+\noindent
+\begin{tabularx}{\textwidth}{|>{\RaggedRight}X|>{\RaggedRight}X|>{\RaggedRight}X|}
+\hline
+\rowcolor{ucbblue!10}\textbf{Componente} & \textbf{Valor Nominal} & \textbf{Valor Medido ($\Omega$)} \\
+\hline
+$R_1$ & $4.7\,\text{k}\Omega$ & \\ \hline
+$R_2$ & $10\,\text{k}\Omega$ & \\ \hline
+$R_3$ & $6.8\,\text{k}\Omega$ & \\ \hline
+$R_{L1}$ & $1.0\,\text{k}\Omega$ & \\ \hline
+$R_{L2}$ & $2.2\,\text{k}\Omega$ & \\ \hline
+$R_{L3}$ & $4.7\,\text{k}\Omega$ & \\ \hline
+$R_{L4}$ & $10\,\text{k}\Omega$ & \\ \hline
+\end{tabularx}
+
+\section*{Tabla 2: Predicciones Analíticas (Prelaboratorio)}
+\noindent
+\begin{tabularx}{\textwidth}{|>{\RaggedRight}X|>{\RaggedRight}X|>{\RaggedRight}X|}
+\hline
+\rowcolor{ucbblue!10}\textbf{Parámetro} & \textbf{Cálculo Analítico} & \textbf{Simulación SPICE} \\
+\hline
+$V_{a}^{(V1)}$ (Superposición) & & \\ \hline
+$V_{a}^{(V2)}$ (Superposición) & & \\ \hline
+$V_{th} = V_{oc}$ & & \\ \hline
+$R_{th}$ & & \\ \hline
+$I_{N}$ & & \\ \hline
+\end{tabularx}
+
+\section*{Tabla 3: Registro de Resultados Integrados (Fases 3 a 6)}
+Error Relativo: $\varepsilon_r = \left| \frac{\text{Medido} - \text{Teórico}}{\text{Teórico}} \right| \times 100\%$.
+
+\vspace{0.3cm}
+\noindent
+\begin{tabularx}{\textwidth}{|>{\bfseries\RaggedRight}p{2.8cm}|>{\centering\arraybackslash}p{1cm}|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}p{2.5cm}|}
+\hline
+\rowcolor{ucbblue!10}
+\textbf{Caso} & \textbf{Var.} & \textbf{Teoría} & \textbf{SPICE} & \textbf{Medición} & \textbf{Error \%} & \textbf{Observación} \\ \hline
+Superposición V1 & $V_{a}^{(V1)}$ & & & & & \\ \hline
+Superposición V2 & $V_{a}^{(V2)}$ & & & & & \\ \hline
+Red completa & $V_{a}$ & & & & & \\ \hline
+Puerto abierto & $V_{oc}$ & & & & & \\ \hline
+Equivalente & $R_{th}$ & & & & & \\ \hline
+Norton & $I_{N}$ & & & N/A & N/A & Supervisada \\ \hline
+Carga 1 ($1.0\,\text{k}\Omega$) & $V_L$ & & & & & \\ \hline
+Carga 2 ($2.2\,\text{k}\Omega$) & $V_L$ & & & & & \\ \hline
+Carga 3 ($4.7\,\text{k}\Omega$) & $V_L$ & & & & & \\ \hline
+Carga 4 ($10\,\text{k}\Omega$) & $V_L$ & & & & & \\ \hline
+\end{tabularx}
+
+\end{document}
