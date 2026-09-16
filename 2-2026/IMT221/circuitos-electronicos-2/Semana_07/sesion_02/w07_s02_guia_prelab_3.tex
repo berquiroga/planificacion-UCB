@@ -25,43 +25,43 @@
 \begin{document}
 
 \begin{center}
-    \Large\textbf{\textcolor{ucbblue}{Guía de Pre-Lab 3: Diagnóstico y Compensación DC}}[cite: 10]
+    \Large\textbf{\textcolor{ucbblue}{Guía de Pre-Lab 3: Diagnóstico y Compensación DC}}[cite: 11]
 \end{center}
 
 \begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{ADVERTENCIA IMPORTANTE}]
-    \textbf{PRE-LAB 3 — NO REEMPLAZA LA EJECUCIÓN FÍSICA DEL LABORATORIO.[cite: 10]} La actividad queda incompleta hasta implementar, medir, diagnosticar, compensar, volver a medir e interpretar el circuito físico en la Semana 8[cite: 10].
+    \textbf{PRE-LAB 3 — NO REEMPLAZA LA EJECUCIÓN FÍSICA DEL LABORATORIO.[cite: 11]} La actividad queda incompleta hasta implementar, medir, diagnosticar, compensar, volver a medir e interpretar el circuito físico en la Semana 8[cite: 11].
 \end{tcolorbox}
 
-\section*{A. Definición del Circuito y Datasheet[cite: 10]}
-\textbf{Op-Amp seleccionado:} \rule{4cm}{0.4pt} \textbf{Fabricante:} \rule{4cm}{0.4pt}[cite: 10] \\
-\textbf{Documento / revisión:} \rule{8cm}{0.4pt}[cite: 10] \\
-\textbf{Valores de diseño:} $R_1$: \rule{1.5cm}{0.4pt} $R_2$: \rule{1.5cm}{0.4pt} $R_3$: \rule{1.5cm}{0.4pt} $R_4$: \rule{1.5cm}{0.4pt}[cite: 10] \\
-\textbf{Alimentación permitida/elegida:} \rule{4cm}{0.4pt} \textbf{Pinout verificado:} Sí / No[cite: 10] \\
-\textbf{Elemento de compensación (si aplica):} \rule{6cm}{0.4pt}[cite: 10] \\
-\textbf{Input offset voltage ($V_{OS}$):} \rule{4cm}{0.4pt} \textit{Condición:} \rule{4cm}{0.4pt}[cite: 10] \\
-\textbf{Input bias current ($I_B$):} \rule{4.4cm}{0.4pt} \textit{Condición:} \rule{4cm}{0.4pt}[cite: 10] \\
-\textbf{Offset-null interno disponible:} Sí / No / No confirmado[cite: 10] \\
-\textbf{Pines de offset-null:} \rule{8cm}{0.4pt}[cite: 10]
+\section*{A. Definición del Circuito y Datasheet[cite: 11]}
+\textbf{Op-Amp Oficial:} LM741, encapsulado DIP-8[cite: 11]. \\
+\textbf{Fabricante físico:} \rule{4cm}{0.4pt} \textbf{Documento / revisión:} \rule{4cm}{0.4pt}[cite: 11] \\
+\textbf{Alimentación de laboratorio:} $V^+ = +15\,\text{V}$, $V^- = -15\,\text{V}$[cite: 11]. \\
+\textbf{Red diferencial ($1\%$):} $R_1=R_3=10\,\text{k}\Omega$, $R_2=R_4=100\,\text{k}\Omega$[cite: 11]. \\
+\textbf{Elemento de compensación:} Trimmer/potenciómetro lineal de $10\,\text{k}\Omega$[cite: 11]. \\
+\textbf{Desacoplo local mínimo:} $2 \times 100\,\text{nF}$ cerámicos[cite: 11]. \\
+\textbf{Pinout verificado:} Sí / No \hfill \textbf{Pines OFFSET NULL:} \rule{4cm}{0.4pt}[cite: 11] \\
+\textbf{Input offset voltage ($V_{OS}$):} \rule{3cm}{0.4pt} \textbf{Condición de prueba:} \rule{3cm}{0.4pt}[cite: 11] \\
+\textbf{Input bias current ($I_B$):} \rule{3cm}{0.4pt} \textbf{Condición de prueba:} \rule{3cm}{0.4pt}[cite: 11] \\
+\textbf{Input offset current ($I_{OS}$):} \rule{3cm}{0.4pt} \textbf{Procedimiento OFFSET NULL:} \rule{3cm}{0.4pt}[cite: 11]
 
-\section*{B. Análisis Ideal[cite: 10]}
-Derive, para el circuito confirmado: $V_{o,\mathrm{ideal}} = f(V_1, V_2, R_1, R_2, R_3, R_4)$[cite: 10].
-Verifique si se cumple $\frac{R_2}{R_1} = \frac{R_4}{R_3}$[cite: 10]. Si se cumple, calcule la ganancia diferencial teórica[cite: 10].
-\vspace{2cm}
+\section*{B. Análisis Ideal[cite: 11]}
+Derive simbólicamente, para el circuito confirmado: $V_{o,\mathrm{ideal}} = f(V_1, V_2, R_1, R_2, R_3, R_4)$[cite: 11].
+Verifique matemáticamente si se cumple $\frac{R_2}{R_1} = \frac{R_4}{R_3}$[cite: 11]. Dado que la razón es 10, confirme la ecuación $V_{o,\mathrm{ideal}} = 10(V_2 - V_1)$[cite: 11].
 
-\section*{C. Condiciones de Prueba Planificadas (DC)[cite: 10]}
+\section*{C. Condiciones de Prueba Planificadas (DC)[cite: 11]}
 \begin{table}[h]
     \centering
     \renewcommand{\arraystretch}{1.3}
     \begin{tabularx}{\textwidth}{|c|X|X|X|}
     \hline
     \textbf{Condición} & \textbf{$V_1$ (V)} & \textbf{$V_2$ (V)} & \textbf{Propósito} \\ \hline
-    T1 & \rule{3cm}{0.4pt} & \rule{3cm}{0.4pt} & Baseline diferencial[cite: 10] \\ \hline
-    T2 & \rule{3cm}{0.4pt} & \rule{3cm}{0.4pt} & Condición de salida ideal conocida[cite: 10] \\ \hline
-    T3 & \rule{3cm}{0.4pt} & \rule{3cm}{0.4pt} & Diagnóstico / Compensación[cite: 10] \\ \hline
+    T1 & \rule{3cm}{0.4pt} & \rule{3cm}{0.4pt} & Baseline diferencial[cite: 11] \\ \hline
+    T2 & \rule{3cm}{0.4pt} & \rule{3cm}{0.4pt} & Condición de salida ideal conocida[cite: 11] \\ \hline
+    T3 & \rule{3cm}{0.4pt} & \rule{3cm}{0.4pt} & Diagnóstico / Compensación[cite: 11] \\ \hline
     \end{tabularx}
 \end{table}
 
-\section*{D. Prediction Table (Columnas físicas vacías hasta Semana 8)[cite: 10]}
+\section*{D. Prediction Table (Columnas físicas vacías hasta Semana 8)[cite: 11]}
 \begin{table}[h]
     \centering
     \small
@@ -75,13 +75,20 @@ Verifique si se cumple $\frac{R_2}{R_1} = \frac{R_4}{R_3}$[cite: 10]. Si se cump
     \end{tabularx}
 \end{table}
 
-\section*{E. Procedimiento Baseline (Para Semana 8)[cite: 10]}
-1. Verificar circuito sin alimentación. 2. Medir valores reales de resistores. 3. Verificar orientación y pinout. 4. Establecer alimentación. 5. Aplicar condiciones de entrada. 6. Medir $V_1$ y $V_2$. 7. Medir $V_o$. 8. Registrar error ($e = V_{o,\mathrm{fis}} - V_{o,\mathrm{ideal}}$). 9. \textbf{NO compensar todavía.} 10. Ejecutar diagnóstico básico[cite: 10].
+\section*{E. Nodos Requeridos de Medición[cite: 11]}
+Identificar: $V_1, V_2, V_+, V_-, V_o$, Alimentación $+$, Alimentación $-$, Nodos de compensación[cite: 11].
 
-\section*{F. Preguntas de Hipótesis y Diagnóstico[cite: 10]}
-Antes del laboratorio: ¿Qué desviación respecto del modelo ideal espera observar y qué causa considera más plausible?[cite: 10] \\
+\section*{F. Procedimiento Baseline (Para Semana 8)[cite: 11]}
+1. Verificar circuito sin alimentación. 2. Medir valores reales resistivos. 3. Verificar orientación y pinout Op-Amp. 4. Establecer alimentación. 5. Aplicar $V_1, V_2$. 6. Medir $V_1, V_2$. 7. Medir $V_o$. 8. Registrar error ($e = V_{o,\mathrm{fis}} - V_{o,\mathrm{ideal}}$). 9. \textbf{NO compensar todavía.} 10. Diagnosticar[cite: 11].
+
+\section*{G. Preguntas de Diagnóstico y Plan de Compensación[cite: 11]}
+¿Las fuentes, tierra y pinout son correctos? ¿El error persiste con entradas balanceadas? ¿El instrumento mide respecto al nodo correcto?[cite: 11] \\
+\textbf{Método previsto:} \rule{6cm}{0.4pt} \textbf{Variable a ajustar:} \rule{4cm}{0.4pt}[cite: 11] \\
+\textbf{Condición durante compensación:} \rule{4cm}{0.4pt} \textbf{Criterio de mejora:} \rule{3cm}{0.4pt}[cite: 11] \\
+
+\section*{H. Hipótesis y Evidencia[cite: 11]}
+Antes del laboratorio: ¿Qué desviación respecto al modelo ideal espera y qué causa considera plausible?[cite: 11] \\
 \rule{\textwidth}{0.4pt} \\
-\rule{\textwidth}{0.4pt} \\
-\rule{\textwidth}{0.4pt}
+Requisito Sem 8: Fotos del montaje, medición baseline, error, diagnóstico y comparación before/after[cite: 11].
 
 \end{document}

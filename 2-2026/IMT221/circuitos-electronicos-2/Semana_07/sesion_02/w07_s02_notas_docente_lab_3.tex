@@ -12,7 +12,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \setlength{\headheight}{16pt}
-\lhead{\textbf{Ing. Mecatrónica}}
+\lhead{\textbf{UCB Sede Tarija}}
 \chead{Notas de Pre-Lab / Lab 3}
 \rhead{Circuitos Electrónicos II}
 \renewcommand{\headrulewidth}{0.4pt}
@@ -21,47 +21,47 @@
 \begin{document}
 
 \begin{center}
-    \Large\textbf{\textcolor{ucbblue}{Notas Docentes: Pre-Lab y Ejecución Lab 3}}[cite: 10]
+    \Large\textbf{\textcolor{ucbblue}{Notas Docentes: Pre-Lab y Ejecución Lab 3}}[cite: 11]
 \end{center}
 
-\section*{Evidencia Ideal Esperada del Estudiante[cite: 10]}
+\section*{Evidencia Ideal Esperada del Estudiante[cite: 11]}
 \begin{itemize}
-    \item Derivación simbólica del amplificador diferencial empleando KCL y divisor de tensión[cite: 10].
-    \item Verificación matemática explícita de los ratios resistivos ($\frac{R_2}{R_1} = \frac{R_4}{R_3}$)[cite: 10].
-    \item Cálculo numérico del resultado ideal para cada condición elegida[cite: 10].
-    \item Comparación $V_{o,\mathrm{ideal}}$ vs LTSpice $V_{o,\mathrm{sim}}$[cite: 10].
+    \item Derivación simbólica completa del amplificador diferencial[cite: 11].
+    \item Verificación explícita de los ratios ($R_2/R_1 = R_4/R_3$)[cite: 11].
+    \item Resultado ideal numérico para cada condición experimental elegida[cite: 11].
+    \item Comparación formal entre el modelo ideal vs. resultados de LTSpice[cite: 11].
 \end{itemize}
 
-\section*{Errores Conceptuales Comunes a Vigilar[cite: 10]}
+\section*{Errores Conceptuales Comunes a Vigilar[cite: 11]}
 \begin{itemize}
-    \item Confundir $V_{OS}$ interno con una diferencia de tensión aplicada externamente[cite: 10].
-    \item Tratar la aproximación $V_+ \approx V_-$ como una verdad física exacta, ignorando la ganancia finita y el offset[cite: 10].
-    \item Asumir que $I_B = 0$ físicamente, ignorando las caídas de tensión en las resistencias de fuente[cite: 10].
-    \item Atribuir automáticamente todo error al Op-Amp antes de auditar el cableado[cite: 10].
-    \item Confundir mismatch resistivo externo con offset interno del circuito integrado[cite: 10].
-    \item Creer que un error nulo en LTSpice constituye validación del circuito físico[cite: 10].
+    \item Confundir $V_{OS}$ interno con una diferencia de tensión aplicada externamente[cite: 11].
+    \item Tratar $V_+ \approx V_-$ como una verdad física irrefutable, ignorando la ganancia finita y el offset[cite: 11].
+    \item Asumir que $I_B = 0$ físicamente, ignorando las caídas de tensión resistivas de la fuente[cite: 11].
+    \item Atribuir automáticamente todo error de salida al Op-Amp sin auditar el circuito[cite: 11].
+    \item Confundir mismatch de resistores externos con el offset interno del componente[cite: 11].
+    \item Creer ciegamente que LTSpice constituye validación del circuito físico real[cite: 11].
 \end{itemize}
 
-\section*{Errores de Simulación Frecuentes en el Pre-Lab[cite: 10]}
+\section*{Errores de Simulación Frecuentes en el Pre-Lab[cite: 11]}
 \begin{itemize}
-    \item Utilizar un modelo distinto del dispositivo planificado sin registrar la divergencia[cite: 10].
-    \item Omitir las fuentes de alimentación DC requeridas por el macromodelo[cite: 10].
-    \item Invertir las entradas (conectar la señal a $V_+$ en lugar de $V_-$ o viceversa)[cite: 10].
-    \item Usar una referencia de tierra en SPICE que difiera topológicamente de la experimental[cite: 10].
-    \item Asumir ciegamente que el macromodelo implementa absolutamente todas las no idealidades del datasheet[cite: 10].
+    \item Utilizar un modelo SPICE distinto del LM741 sin registrar la divergencia[cite: 11].
+    \item Omitir conectar las fuentes de alimentación ($\pm15\,\text{V}$) requeridas por el macromodelo[cite: 11].
+    \item Invertir la conexión de entradas (señal a $V_+$ en lugar de $V_-$ o viceversa)[cite: 11].
+    \item Usar una referencia de tierra en simulación distinta a la real[cite: 11].
+    \item Asumir que el macromodelo implementa todas las no idealidades que documenta el datasheet[cite: 11].
 \end{itemize}
 
-\section*{Framework de Troubleshooting (Semana 8)[cite: 10]}
-Obligar a los estudiantes a descartar causas en este orden de menor a mayor abstracción:
+\section*{Framework de Troubleshooting (Semana 8)[cite: 11]}
+Obligar a los grupos a descartar causas en este orden estricto de menor a mayor abstracción[cite: 11]:
 \begin{enumerate}
-    \item \textbf{Supply rails:} ¿Están presentes? ¿Polaridad correcta? ¿Nivel compatible?[cite: 10]
-    \item \textbf{Ground / reference:} ¿Se mide con la referencia prevista? ¿Hay tierras flotantes?[cite: 10]
-    \item \textbf{Pinout:} ¿Entradas, salidas y alimentación coinciden con el datasheet?[cite: 10]
-    \item \textbf{Feedback:} ¿Existe realimentación negativa y al pin correcto?[cite: 10]
-    \item \textbf{Resistor values:} Medir los valores reales y comprobar las razones (mismatch)[cite: 10].
-    \item \textbf{Input signals:} Medir $V_1$ y $V_2$ en los pines, no asumir que la fuente entrega el valor exacto del display[cite: 10].
-    \item \textbf{Measurement setup:} Verificar rango, canal y conexión del instrumento[cite: 10].
-    \item \textbf{Real-device nonideality:} Solo después de descartar lo anterior, invocar $V_{OS}, I_B, I_{OS}$[cite: 10].
+    \item \textbf{Supply rails:} ¿Están presentes, en $\pm15\,\text{V}$ y con polaridad correcta?[cite: 11]
+    \item \textbf{Ground / reference:} ¿Todas las mediciones comparten la misma referencia física prevista?[cite: 11]
+    \item \textbf{Pinout:} ¿Entradas, salidas y alimentación coinciden con el LM741 DIP-8?[cite: 11]
+    \item \textbf{Feedback:} ¿Existe realimentación negativa hacia el pin correcto?[cite: 11]
+    \item \textbf{Resistor values:} Medir los resistores en ohmios reales y comprobar las razones (mismatch)[cite: 11].
+    \item \textbf{Input signals:} Medir $V_1$ y $V_2$ físicamente; no asumir lo que indica el generador/fuente[cite: 11].
+    \item \textbf{Measurement setup:} Verificar rango, referencia, canal y conexión del instrumento[cite: 11].
+    \item \textbf{Real-device nonideality:} Solo después de lo anterior, invocar $V_{OS}, I_B, I_{OS}$[cite: 11].
 \end{enumerate}
 
 \end{document}

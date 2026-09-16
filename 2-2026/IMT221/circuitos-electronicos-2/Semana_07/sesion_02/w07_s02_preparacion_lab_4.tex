@@ -1,0 +1,67 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{Ing. Mecatrónica}}
+\chead{Preparación Asincrónica: Lab 4}
+\rhead{Circuitos Electrónicos II}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Preparación Anticipada: Limitaciones Dinámicas (Lab 4)}}[cite: 11]
+\end{center}
+
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Objetivo Experimental[cite: 11]}]
+    ¿Por qué un amplificador que funciona correctamente a DC o baja frecuencia puede distorsionar una señal cuando aumentan la frecuencia o la amplitud?[cite: 11]
+\end{tcolorbox}
+
+\section*{1. Identificación de Dispositivos[cite: 11]}
+\textbf{Dispositivo 1:} \rule{4cm}{0.4pt} \textbf{¿LM741 confirmado?} Sí / No[cite: 11] \\
+\textbf{Dispositivo 2:} \rule{4cm}{0.4pt} \textbf{¿TL082 confirmado?} Sí / No[cite: 11] \\
+\textit{No utilizar estos modelos como definitivos hasta confirmación expresa del instructor.[cite: 11]}
+
+\section*{2. Extracción de Datasheet[cite: 11]}
+\begin{table}[h]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{|l|X|X|}
+    \hline
+    \textbf{Campo / Especificación} & \textbf{Dispositivo 1} & \textbf{Dispositivo 2} \\ \hline
+    Fabricante[cite: 11] & & \\ \hline
+    Número de parte exacto[cite: 11] & & \\ \hline
+    Revisión del Datasheet[cite: 11] & & \\ \hline
+    GBW (Ganancia Ancho de Banda)[cite: 11] & & \\ \hline
+    GBW Condiciones de prueba[cite: 11] & & \\ \hline
+    Slew Rate (SR)[cite: 11] & & \\ \hline
+    SR Condiciones de prueba[cite: 11] & & \\ \hline
+    Alimentación usada en especificación[cite: 11] & & \\ \hline
+    Notas adicionales[cite: 11] & & \\ \hline
+    \end{tabularx}
+\end{table}
+
+\section*{3. Cuestionario Conceptual[cite: 11]}
+Responda brevemente fundamentando en la teoría de circuitos dinámicos:
+\begin{enumerate}
+    \item ¿Qué significa físicamente que el ancho de banda de un Op-Amp sea finito?[cite: 11]
+    \item ¿Por qué la configuración de ganancia en lazo cerrado puede afectar la frecuencia máxima útil del circuito?[cite: 11]
+    \item ¿Qué representa matemáticamente y físicamente la expresión $SR = \max\left|\frac{dV_o}{dt}\right|$?[cite: 11]
+    \item Para una señal senoidal $v_o(t) = V_p\sin(2\pi ft)$, ¿qué ocurre con la rapidez máxima requerida (derivada) cuando aumenta la amplitud $V_p$?[cite: 11] ¿Y cuando aumenta la frecuencia $f$?[cite: 11]
+    \item ¿Qué evidencia experimental permitiría diferenciar claramente una limitación dinámica de un simple error DC o saturación estática?[cite: 11]
+\end{enumerate}
+
+\end{document}

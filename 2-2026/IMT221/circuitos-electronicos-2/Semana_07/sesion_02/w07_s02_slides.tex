@@ -35,16 +35,16 @@
 \end{frame}
 
 \begin{frame}{Pregunta Experimental Fundamental}
-    \begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{El Problema de Ingeniería[cite: 10]}]
-        ¿Por qué un amplificador diferencial físico puede entregar una salida distinta de la predicción ideal y cómo puede diagnosticarse y reducirse esa diferencia?[cite: 10]
+    \begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{El Problema de Ingeniería[cite: 11]}]
+        ¿Por qué un amplificador diferencial físico puede entregar una salida distinta de la predicción ideal y cómo puede diagnosticarse y reducirse esa diferencia?[cite: 11]
     \end{tcolorbox}
     
     \vspace{0.4cm}
-    \textbf{Secuencia de Trabajo (Lab 3)[cite: 10]:}
+    \textbf{Secuencia de Trabajo (Hacia Lab 3)[cite: 11]:}
     \begin{center}
         Predicción Ideal $\rightarrow$ Modelo Real Mínimo $\rightarrow$ Predicción de Error $\rightarrow$ Simulación $\rightarrow$ \\
         Plan de Medición $\rightarrow$ \textit{Implementación Física (Sem 8)} $\rightarrow$ \\
-        Comparación $\rightarrow$ Diagnóstico $\rightarrow$ Compensación[cite: 10]
+        Comparación $\rightarrow$ Diagnóstico $\rightarrow$ Compensación[cite: 11]
     \end{center}
 \end{frame}
 
@@ -61,54 +61,53 @@
         \end{column}
         \begin{column}{0.6\textwidth}
             \small
-            \textbf{Análisis Nodal (Modelo Ideal)[cite: 10]:} \\
+            \textbf{Análisis Nodal (Modelo Ideal)[cite: 11]:} \\
             Por divisor de tensión en la entrada no inversora ($i_+ = 0$):
             \begin{equation*}
-                V_+ = V_2\frac{R_4}{R_3+R_4} \text{[cite: 10]}
+                V_+ = V_2\frac{R_4}{R_3+R_4} \text{[cite: 11]}
             \end{equation*}
-            Por realimentación negativa: $V_x = V_- \approx V_+$[cite: 10]. \\
+            Por realimentación negativa: $V_x = V_- \approx V_+$[cite: 11]. \\
             KCL en nodo inversor ($i_- = 0$):
             \begin{align*}
-                \frac{V_1 - V_x}{R_1} + \frac{V_o - V_x}{R_2} &= 0 \text{[cite: 10]} \\
-                \frac{V_o}{R_2} &= V_x\left(\frac{1}{R_1} + \frac{1}{R_2}\right) - \frac{V_1}{R_1} \text{[cite: 10]} \\
-                V_o &= V_x\left(1+\frac{R_2}{R_1}\right) - V_1\frac{R_2}{R_1} \text{[cite: 10]}
+                \frac{V_1 - V_x}{R_1} + \frac{V_o - V_x}{R_2} &= 0 \text{[cite: 11]} \\
+                \frac{V_o}{R_2} &= V_x\left(\frac{1}{R_1} + \frac{1}{R_2}\right) - \frac{V_1}{R_1} \text{[cite: 11]} \\
+                V_o &= V_x\left(1+\frac{R_2}{R_1}\right) - V_1\frac{R_2}{R_1} \text{[cite: 11]}
             \end{align*}
         \end{column}
     \end{columns}
 \end{frame}
 
 \begin{frame}{Condición de Diferencia Ideal}
-    Sustituyendo $V_x = V_2\frac{R_4}{R_3+R_4}$ en la ecuación anterior[cite: 10]:
+    Sustituyendo $V_x = V_2\frac{R_4}{R_3+R_4}$ en la ecuación anterior[cite: 11]:
     \begin{equation*}
-        \boxed{ V_o = \left(1+\frac{R_2}{R_1}\right)\frac{R_4}{R_3+R_4}V_2 - \frac{R_2}{R_1}V_1 } \text{[cite: 10]}
+        \boxed{ V_o = \left(1+\frac{R_2}{R_1}\right)\frac{R_4}{R_3+R_4}V_2 - \frac{R_2}{R_1}V_1 } \text{[cite: 11]}
     \end{equation*}
     
-    Para obtener una resta diferencial pura, forzamos la igualdad de razones resistivas[cite: 10]:
+    Para obtener una resta diferencial pura, forzamos la igualdad de razones resistivas[cite: 11]:
     \begin{equation*}
-        \text{Si } \frac{R_2}{R_1} = \frac{R_4}{R_3} = k \implies \boxed{ V_o = k(V_2 - V_1) } \text{[cite: 10]}
+        \text{Si } \frac{R_2}{R_1} = \frac{R_4}{R_3} = k \implies \boxed{ V_o = k(V_2 - V_1) } \text{[cite: 11]}
     \end{equation*}
     
-    \textbf{Ejemplo Pedagógico[cite: 10]:} $R_1=R_3=10\,\text{k}\Omega$, $R_2=R_4=100\,\text{k}\Omega \implies k=10$. \\
-    Si $V_1=0.20\,\text{V}$ y $V_2=0.25\,\text{V}$, $V_{o,\mathrm{ideal}} = 10(0.25 - 0.20) = \boxed{0.50\,\text{V}}$[cite: 10].
+    \textbf{Ejemplo Pedagógico (Diseño Base Lab 3)[cite: 11]:} $R_1=R_3=10\,\text{k}\Omega$, $R_2=R_4=100\,\text{k}\Omega \implies k=10$[cite: 11]. \\
+    Si $V_1=0.20\,\text{V}$ y $V_2=0.25\,\text{V}$, $V_{o,\mathrm{ideal}} = 10(0.25 - 0.20) = \boxed{0.50\,\text{V}}$[cite: 11].
 \end{frame}
 
 \begin{frame}{Del Modelo Ideal al Op-Amp Real}
-    El modelo ideal elimina imperfecciones. En Lab 3, buscaremos estas correspondencias[cite: 10]:
+    El modelo ideal elimina imperfecciones. Clasificamos los errores físicos[cite: 11]:
     
     \vspace{0.3cm}
     \begin{table}[]
         \centering
         \small
         \renewcommand{\arraystretch}{1.3}
-        % \raggedright elimina los Underfull \hbox en columnas estrechas de tabularx
         \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash\hsize=1.2\hsize}X >{\raggedright\arraybackslash\hsize=0.8\hsize}X >{\raggedright\arraybackslash\hsize=1.0\hsize}X}
         \toprule
         \rowcolor[HTML]{EFEFEF}
         \textbf{Modelo Ideal} & \textbf{Situación Real (Lab 3)} & \textbf{Consecuencia Observable} \\ \midrule
-        Diferencia de entrada idealmente nula ($V_+ = V_-$) & $V_{OS}$ (Input Offset Voltage)[cite: 10] & Offset de salida[cite: 10] \\
-        $i_+ = i_- = 0$ & $I_{B+}, I_{B-}$ (Bias Currents)[cite: 10] & Caídas adicionales en resistencias[cite: 10] \\
-        Corrientes de entrada idénticas & $I_{OS} \neq 0$ (Offset Current)[cite: 10] & Error residual con red balanceada[cite: 10] \\
-        Razones resistivas exactas & Tolerancia / Desajuste[cite: 10] & Fuga de modo común ($CMRR$ pobre)[cite: 10] \\
+        Diferencia de entrada idealmente nula ($V_+ = V_-$) & $V_{OS}$ (Input Offset Voltage)[cite: 11] & Offset de salida[cite: 11] \\
+        $i_+ = i_- = 0$ & $I_{B+}, I_{B-}$ (Bias Currents)[cite: 11] & Caídas adicionales en resistencias[cite: 11] \\
+        Corrientes de entrada idénticas & $I_{OS} \neq 0$ (Offset Current)[cite: 11] & Error residual con red balanceada[cite: 11] \\
+        Razones resistivas exactas & Tolerancia / Desajuste[cite: 11] & Fuga de modo común ($CMRR$ pobre)[cite: 11] \\
         \bottomrule
         \end{tabularx}
     \end{table}
@@ -121,84 +120,81 @@
                 \draw (0,0) node[op amp] (opamp) {};
                 \draw (opamp.+) to[V, v=$V_{OS}$, invert] ++(-1.5,0) to[short, -o] ++(-0.5,0) node[left]{$\text{Entrada Real}$};
                 \draw (opamp.-) to[short, -o] ++(-2,0);
-                \node at (0, -1.5) {\textit{Modelo Equivalente[cite: 10]}};
+                \node at (0, -2.0) {\textit{Modelo Equivalente[cite: 11]}};
             \end{circuitikz}
         \end{column}
         \begin{column}{0.6\textwidth}
             \raggedright
-            $V_{OS}$ es una pequeña tensión DC equivalente en la entrada necesaria para anular la salida cuando las entradas físicas son cero[cite: 10]. \\
+            $V_{OS}$ es una pequeña tensión DC equivalente en la entrada necesaria para anular la salida cuando las entradas físicas son cero[cite: 11]. \\
             
             \vspace{0.2cm}
-            \textbf{Propagación a la Salida[cite: 10]:} \\
-            Este error se multiplica por la "Ganancia de Ruido" ($A_N$)[cite: 10].
+            \textbf{Propagación a la Salida[cite: 11]:} \\
+            Este error se multiplica por la "Ganancia de Ruido" ($A_N$)[cite: 11].
             \begin{equation*}
-                V_{o,\mathrm{offset}} \approx A_N V_{OS} \text{[cite: 10]}
+                V_{o,\mathrm{offset}} \approx A_N V_{OS} \text{[cite: 11]}
             \end{equation*}
-            \textit{Ejemplo:} Si $A_N = 11$ y $V_{OS} = 1\,\text{mV} \implies V_{o,\mathrm{offset}} \approx 11\,\text{mV}$[cite: 10].
+            \textit{Ejemplo Pedagógico:} Si $A_N = 11$ y $V_{OS} = 1\,\text{mV} \implies V_{o,\mathrm{offset}} \approx 11(1\,\text{mV}) = \boxed{11\,\text{mV}}$[cite: 11].
         \end{column}
     \end{columns}
 \end{frame}
 
 \begin{frame}{2. Corrientes de Polarización ($I_B$) y Offset ($I_{OS}$)}
-    Un Op-Amp real requiere corrientes DC minúsculas para polarizar sus transistores de entrada[cite: 10].
+    Un Op-Amp real requiere corrientes DC minúsculas para polarizar sus transistores de entrada[cite: 11].
     \begin{equation*}
-        I_B = \frac{|I_{B+}|+|I_{B-}|}{2}, \quad I_{OS} = |I_{B+} - I_{B-}| \text{[cite: 10]}
+        I_B = \frac{|I_{B+}|+|I_{B-}|}{2}, \quad I_{OS} = |I_{B+} - I_{B-}| \text{[cite: 11]}
     \end{equation*}
     
-    \textbf{Mecanismo de Error[cite: 10]:} \\
-    Estas corrientes atraviesan las resistencias equivalentes de la red, generando caídas de tensión parásitas ($V_{err} = I_B R_{eq}$)[cite: 10]. \\
+    \textbf{Mecanismo de Error[cite: 11]:} \\
+    Estas corrientes atraviesan las resistencias equivalentes de la red, generando caídas de tensión parásitas ($V_{err} = I_B R_{eq}$)[cite: 11]. \\
     
     \vspace{0.2cm}
-    \textit{Ejemplo Pedagógico:} Si $I_B = 100\,\text{nA}$ y $R_{eq} = 100\,\text{k}\Omega \implies V_{err} = (100\,\text{nA})(100\,\text{k}\Omega) = \boxed{10\,\text{mV}}$[cite: 10].
+    \textit{Ejemplo Pedagógico:} Si $I_B = 100\,\text{nA}$ y $R_{eq} = 100\,\text{k}\Omega \implies V_{err} = (100\,\text{nA})(100\,\text{k}\Omega) = \boxed{10\,\text{mV}}$[cite: 11].
     
     \vspace{0.2cm}
-    \textbf{Mitigación:} Igualar las resistencias equivalentes vistas por ambas entradas minimiza el efecto de $I_B$, pero el error debido a $I_{OS}$ persistirá[cite: 10].
+    \textbf{Mitigación:} Igualar las resistencias equivalentes vistas por ambas entradas minimiza el efecto de $I_B$, pero el error debido a $I_{OS}$ persistirá[cite: 11].
 \end{frame}
 
 \begin{frame}{3. Desajuste de Resistores (Mismatch)}
-    La resta diferencial depende de que $\frac{R_2}{R_1} = \frac{R_4}{R_3}$. Las tolerancias rompen esta igualdad[cite: 10].
+    La resta diferencial depende de que $\frac{R_2}{R_1} = \frac{R_4}{R_3}$. Las tolerancias rompen esta igualdad[cite: 11].
     
-    \textbf{Ejemplo Analítico[cite: 10]:}
-    $R_1=R_3=10\,\text{k}\Omega$, $R_2=100\,\text{k}\Omega$, \textbf{$R_4=101\,\text{k}\Omega$}. \\
-    Apliquemos una entrada de \textbf{modo común}: $V_1=V_2=1\,\text{V}$[cite: 10].
+    \textbf{Ejemplo Analítico[cite: 11]:}
+    $R_1=R_3=10\,\text{k}\Omega$, $R_2=100\,\text{k}\Omega$, \textbf{$R_4=101\,\text{k}\Omega$}[cite: 11]. \\
+    Apliquemos una entrada de \textbf{modo común}: $V_1=V_2=1\,\text{V}$[cite: 11].
     
-    Contribución de $V_2$: 
+    Contribución de $V_2$[cite: 11]: 
     \begin{align*}
-        V_o(V_2) &= \left(1+\frac{100}{10}\right)\frac{101}{10+101}(1\,\text{V}) \text{[cite: 10]} \\
-                 &= 11\left(\frac{101}{111}\right) \approx 10.009\,\text{V} \text{[cite: 10]}
+        V_o(V_2) &= \left(1+\frac{100}{10}\right)\frac{101}{10+101}(1\,\text{V}) \text{[cite: 11]} \\
+                 &= 11\left(\frac{101}{111}\right) \approx 10.009\,\text{V} \text{[cite: 11]}
     \end{align*}
-    Contribución de $V_1$:
-    \begin{equation*}
-        V_o(V_1) = -\frac{100}{10}(1\,\text{V}) = -10\,\text{V} \text{[cite: 10]}
-    \end{equation*}
-    \textbf{Resultado:} $V_o \approx 10.009 - 10 = \boxed{9\,\text{mV}}$ (Idealmente debería ser $0\,\text{V}$)[cite: 10].
+    Contribución de $V_1$: $V_o(V_1) = -\frac{100}{10}(1\,\text{V}) = -10\,\text{V}$[cite: 11]. \\
+    \textbf{Resultado:} $V_o \approx 10.009 - 10 = \boxed{9\,\text{mV}}$ (Idealmente debería ser $0\,\text{V}$)[cite: 11].
 \end{frame}
 
 \begin{frame}{Lógica de Compensación y LTSpice}
-    \textbf{Simulación (LTSpice)[cite: 10]:} \\
-    Constituye predicción basada en modelo. $e_{\mathrm{sim}} = V_{o,\mathrm{sim}} - V_{o,\mathrm{ideal}}$[cite: 10]. Un error nulo en simulación solo indica coherencia teórica, no prueba el circuito físico[cite: 10].
+    \textbf{Simulación (LTSpice)[cite: 11]:} \\
+    Constituye predicción basada en modelo. $e_{\mathrm{sim}} = V_{o,\mathrm{sim}} - V_{o,\mathrm{ideal}}$[cite: 11]. Un error nulo en simulación solo indica coherencia teórica, no prueba el circuito físico[cite: 11].
     
     \vspace{0.4cm}
-    \textbf{Flujo de Diagnóstico y Compensación en Laboratorio[cite: 10]:}
+    \textbf{Flujo de Diagnóstico y Compensación en Laboratorio[cite: 11]:}
     \begin{center}
-        $\boxed{\text{Baseline}} \rightarrow \boxed{\text{Cuantificar Error}} \rightarrow \boxed{\text{Descartar Fallas (Wiring)}} \rightarrow$ \\ $\boxed{\text{Compensar}} \rightarrow \boxed{\text{Re-Medir}} \rightarrow \boxed{\text{Comparar}}$[cite: 10]
+        $\boxed{\text{Baseline}} \rightarrow \boxed{\text{Cuantificar Error}} \rightarrow \boxed{\text{Descartar Fallas (Wiring)}} \rightarrow$ \\ $\boxed{\text{Compensar}} \rightarrow \boxed{\text{Re-Medir}} \rightarrow \boxed{\text{Comparar}}$[cite: 11]
     \end{center}
     
-    Métrica de mejora: $\Delta |e| = |e_{before}| - |e_{after}| > 0$[cite: 10]. \\
-    \textit{Nunca compense antes de verificar: alimentación, tierra, pinout, y lazos de realimentación.[cite: 10]}
+    Métrica de mejora: $\Delta |e| = |e_{before}| - |e_{after}| > 0$[cite: 11]. \\
+    \textit{Nunca compense antes de verificar: alimentación, tierra, pinout, y lazos de realimentación.[cite: 11]}
 \end{frame}
 
 \begin{frame}{Puente a Lab 4: Limitaciones Dinámicas}
-    Una vez controlados los errores DC (Lab 3), el circuito enfrentará restricciones dinámicas[cite: 10].
+    Una vez controlados los errores DC (Lab 3), el circuito enfrentará restricciones dinámicas[cite: 11].
     
     \begin{itemize}
-        \item \textbf{Ancho de Banda Finito (GBW):} El Op-Amp real no mantiene su ganancia ideal a cualquier frecuencia[cite: 10].
-        \item \textbf{Slew Rate (SR):} La salida física no puede variar arbitrariamente rápido[cite: 10].
+        \item \textbf{Ancho de Banda Finito (GBW):} El Op-Amp real no mantiene su ganancia ideal de lazo abierto a cualquier frecuencia[cite: 11].
+        \item \textbf{Slew Rate (SR):} La salida física no puede variar arbitrariamente rápido[cite: 11].
         \begin{equation*}
-            SR = \max\left|\frac{dV_o}{dt}\right| \text{[cite: 10]}
+            SR = \max\left|\frac{dV_o}{dt}\right| \text{[cite: 11]}
         \end{equation*}
     \end{itemize}
-    \textit{Pregunta Puente:} ¿Por qué un amplificador que funciona en DC produce salida distorsionada al subir la frecuencia o la amplitud?[cite: 10] \textbf{$\rightarrow$ Hacia Lab 4.[cite: 10]}
+    \textit{Pregunta Puente:} ¿Por qué un amplificador que funciona en DC produce salida distorsionada al subir la frecuencia o la amplitud?[cite: 11] \textbf{$\rightarrow$ Hacia Lab 4.[cite: 11]}
 \end{frame}
 
 \end{document}

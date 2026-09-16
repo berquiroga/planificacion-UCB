@@ -4,7 +4,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{tgpagella}
 \usepackage[spanish, es-noshorthands]{babel}
-\usepackage{amssymb} % Requerido para el comando \square
+\usepackage{amssymb}
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage[most]{tcolorbox}
@@ -15,47 +15,50 @@
 \begin{document}
 
 \begin{center}
-    \Large\textbf{\textcolor{ucbblue}{Checklist de Adquisición (BOM) y Logística - Lab 3}}[cite: 10]
+    \Large\textbf{\textcolor{ucbblue}{Checklist de Adquisición (BOM) y Logística - Lab 3}}[cite: 11]
 \end{center}
 
-\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Responsabilidad del Grupo[cite: 10]}]
-    \noindent \textbf{Grupo:} \rule{4cm}{0.4pt} \hfill \textbf{Deadline de adquisición:} \rule{4cm}{0.4pt}[cite: 10] 
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Group Accountability[cite: 11]}]
+    \noindent \textbf{Grupo:} \rule{5cm}{0.4pt} \hfill \textbf{Deadline de adquisición:} \rule{4cm}{0.4pt}[cite: 11] 
     
     \vspace{0.3cm}
-    \noindent \textbf{Responsable de componentes:} \rule{6cm}{0.4pt}[cite: 10] 
+    \noindent \textbf{Responsable LM741:} \rule{6cm}{0.4pt}[cite: 11] 
     
     \vspace{0.3cm}
-    \noindent \textbf{Responsable de datasheet:} \rule{6cm}{0.4pt}[cite: 10] 
+    \noindent \textbf{Responsable resistores y trimmer:} \rule{6cm}{0.4pt}[cite: 11] 
     
     \vspace{0.3cm}
-    \noindent \textbf{Responsable de LTSpice:} \rule{6cm}{0.4pt}[cite: 10] 
+    \noindent \textbf{Responsable capacitores/protoboard:} \rule{6cm}{0.4pt}[cite: 11] 
     
     \vspace{0.3cm}
-    \noindent \textbf{Responsable de tabla de medición:} \rule{6cm}{0.4pt}[cite: 10]
+    \noindent \textbf{Responsable datasheet:} \rule{6cm}{0.4pt}[cite: 11] 
+    
+    \vspace{0.3cm}
+    \noindent \textbf{Responsable LTSpice y tabla medición:} \rule{6cm}{0.4pt}[cite: 11]
 \end{tcolorbox}
 
 \vspace{0.4cm}
-\noindent \textit{Nota: Los componentes definitivos deben ser validados con el diseño aprobado por el instructor antes de la adquisición.[cite: 10]}
+\noindent \textbf{Readiness Gate:} La disponibilidad del hardware es una dependencia académica de Lab 3. El grupo NO está listo si falta LM741, la red resistiva, trimmer, datasheet, simulación o cálculo ideal[cite: 11].
 
 \vspace{0.4cm}
 \begin{table}[h]
     \centering
     \renewcommand{\arraystretch}{1.5}
-    % Se ajustan exactamente a 6 columnas. \linewidth en columnas X previene el desbordamiento.
+    \small
     \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{4cm}|c|X|X|c|c|}
     \hline
-    \textbf{Componente / Ítem} & \textbf{Cant.} & \textbf{Tolerancia / Especificación} & \textbf{Responsable} & \textbf{¿Disp.?} & \textbf{Datasheet} \\ \hline
-    Op-Amp Exacto (\rule{1cm}{0.4pt}) & & \rule{\linewidth}{0.4pt} & \rule{\linewidth}{0.4pt} & $\square$ & $\square$ \\ \hline
-    Resistor $R_1$ (\rule{1cm}{0.4pt}) & & \rule{\linewidth}{0.4pt} & \rule{\linewidth}{0.4pt} & $\square$ & N/A \\ \hline
-    Resistor $R_2$ (\rule{1cm}{0.4pt}) & & \rule{\linewidth}{0.4pt} & \rule{\linewidth}{0.4pt} & $\square$ & N/A \\ \hline
-    Resistor $R_3$ (\rule{1cm}{0.4pt}) & & \rule{\linewidth}{0.4pt} & \rule{\linewidth}{0.4pt} & $\square$ & N/A \\ \hline
-    Resistor $R_4$ (\rule{1cm}{0.4pt}) & & \rule{\linewidth}{0.4pt} & \rule{\linewidth}{0.4pt} & $\square$ & N/A \\ \hline
-    Compensación (\rule{1cm}{0.4pt})& & \rule{\linewidth}{0.4pt} & \rule{\linewidth}{0.4pt} & $\square$ & $\square$ \\ \hline
-    Protoboard & 1 & N/A & \rule{\linewidth}{0.4pt} & $\square$ & N/A \\ \hline
-    Cables / Jumpers & Varios & Buen estado de conductividad & \rule{\linewidth}{0.4pt} & $\square$ & N/A \\ \hline
-    Fuente Alimentación & & Rango: \rule{2cm}{0.4pt} & \rule{\linewidth}{0.4pt} & $\square$ & N/A \\ \hline
-    Instrumentos & & Multímetro / Osciloscopio & \rule{\linewidth}{0.4pt} & $\square$ & N/A \\ \hline
+    \textbf{Componente / Ítem} & \textbf{Mín.} & \textbf{Especificación / Modelo} & \textbf{Responsable} & \textbf{¿Disp.?} & \textbf{Datasheet} \\ \hline
+    Op-Amp & 1 & LM741 DIP-8 (verif. fab.)[cite: 11] & \rule{\linewidth}{0.4pt} & $\square$ & $\square$ \\ \hline
+    Resistor $R_1, R_3$ & 2 & $10\,\text{k}\Omega$, $1\%$ o mejor[cite: 11] & \rule{\linewidth}{0.4pt} & $\square$ & N/A \\ \hline
+    Resistor $R_2, R_4$ & 2 & $100\,\text{k}\Omega$, $1\%$ o mejor[cite: 11] & \rule{\linewidth}{0.4pt} & $\square$ & N/A \\ \hline
+    Trimmer / Potenciómetro & 1 & $10\,\text{k}\Omega$ lineal (offset-null)[cite: 11] & \rule{\linewidth}{0.4pt} & $\square$ & N/A \\ \hline
+    Capacitor Cerámico & 2 & $100\,\text{nF}$ (desacoplo)[cite: 11] & \rule{\linewidth}{0.4pt} & $\square$ & N/A \\ \hline
+    Resistores de repuesto & Var & $10\,\text{k}\Omega$, $100\,\text{k}\Omega$ ($1\%$ rec.)[cite: 11] & \rule{\linewidth}{0.4pt} & $\square$ & N/A \\ \hline
+    Protoboard & 1 & Funcional[cite: 11] & \rule{\linewidth}{0.4pt} & $\square$ & N/A \\ \hline
+    Cables / Jumpers & Var & Suficientes para montaje[cite: 11] & \rule{\linewidth}{0.4pt} & $\square$ & N/A \\ \hline
     \end{tabularx}
 \end{table}
+
+\textbf{Equipamiento de Banco Requerido (Lab):} Fuente DC dual ($\pm 15\,\text{V}$), Multímetro digital, Osciloscopio y Generador/Fuente de entrada según condición experimental definida[cite: 11].
 
 \end{document}
