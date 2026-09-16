@@ -1,0 +1,51 @@
+\documentclass[11pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor} % Soluciona el warning de fuente monospace en negrita (cmtt/b/n)
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt} % Soluciona el warning de fancyhdr (headheight too small)
+\lhead{\textbf{IMT-342} | Matriz Diagnóstica de Competencias (EC1)}
+\rhead{Uso Exclusivo Docente[cite: 7]}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\section*{Registro Individual de Competencias (EC1)[cite: 7]}
+\textit{Escala sugerida: S (Strong), P (Partial), W (Weak).}
+
+\vspace{0.4cm}
+{ \footnotesize % Reduce el tamaño de la tabla para evitar el Overfull \hbox
+\renewcommand{\arraystretch}{1.5}
+\noindent\begin{tabularx}{\textwidth}{|>{\hsize=1.2\hsize}X|c|c|c|c|c|c|c|c|>{\hsize=0.8\hsize}X|>{\hsize=1.0\hsize}X|}
+\hline
+\rowcolor{ucbblue!20} \textbf{Estudiante} & \textbf{Marcos} & \textbf{Homog T.} & \textbf{DH Int.} & \textbf{DH$\to$T} & \textbf{Composic.} & \textbf{Cin. Dir} & \textbf{Pose} & \textbf{Verific.} & \textbf{Falla Dominante} & \textbf{Notas} \\ \hline
+ & (P1a, 1d) & (P1b, 1c) & (P2a, 2b) & (P2c, 3a) & (P1b, 3b) & (P3c) & (P3d) & (P3e, P4) & & \\ \hline
+ & & & & & & & & & & \\ \hline
+ & & & & & & & & & & \\ \hline
+ & & & & & & & & & & \\ \hline
+ & & & & & & & & & & \\ \hline
+ & & & & & & & & & & \\ \hline
+ & & & & & & & & & & \\ \hline
+\end{tabularx}
+}
+
+\vspace{1cm}
+\section*{Lógica de Actualización de Estado (State-Update Logic)[cite: 7]}
+\begin{itemize}
+    \item \textbf{D-H $\to$ \texttt{achieved}:} Si la interpretación DH es mayormente 'Strong' y los errores de construcción (DH$\to$T) son aislados, no sistemáticos.
+    \item \textbf{FK $\to$ \texttt{achieved}:} Si establecen correctamente las cadenas de forma independiente, extraen la pose y los errores son principalmente deslices aritméticos.
+    \item \textbf{Retener \texttt{in\_progress}:} Si se altera el orden de transformación, los resultados carecen de interpretación física y se ignoran las validaciones espaciales.
+\end{itemize}
+
+\end{document}

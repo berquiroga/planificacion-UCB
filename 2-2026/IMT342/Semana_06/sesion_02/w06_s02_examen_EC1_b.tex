@@ -1,0 +1,110 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{Ing. Mecatrónica}}
+\chead{Examen EC1 - Versión B}
+\rhead{Robótica (IMT-342)}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{EC1 — Evaluación Diferida (Versión B)}}\\[0.2cm]
+\end{center}
+
+\textbf{Nombre:} \rule{8cm}{0.15mm} \hfill \textbf{Fecha:} \rule{4cm}{0.15mm}
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=gray!5, colframe=gray!50, title=\textbf{Condiciones de la Evaluación[cite: 8, 9]}]
+    \begin{itemize}
+        \item Examen escrito individual. No se permite el uso de calculadora ni formulario.
+        \item Muestre su razonamiento y transformaciones intermedias; respuestas finales sin respaldo tendrán crédito limitado.
+        \item Utilice la convención D-H \textbf{estándar} estudiada en clase.
+        \item A menos que se especifique, las distancias tienen unidades arbitrarias consistentes y los ángulos están en radianes.
+    \end{itemize}
+\end{tcolorbox}
+
+\section*{Problema 1 — Recuperación de Transformación (20 pts)[cite: 8]}
+Se conocen las siguientes matrices de transformación:
+\begin{equation*}
+    {}^{0}T_2 = \begin{bmatrix} 0 & -1 & 0 & 1 \\ 1 & 0 & 0 & 2 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}, \qquad
+    {}^{1}T_2 = \begin{bmatrix} 1 & 0 & 0 & 1 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}
+\end{equation*}
+
+\textbf{a) [6 pts]} Escriba la relación de encadenamiento de marcos que debe cumplirse entre ${}^{0}T_1$, ${}^{1}T_2$ y ${}^{0}T_2$.
+
+\textbf{b) [8 pts]} Determine analíticamente ${}^{0}T_1$.
+
+\textbf{c) [6 pts]} Explique físicamente por qué la traslación contenida en ${}^{1}T_2$ no puede simplemente restarse componente a componente de la traslación de ${}^{0}T_2$ sin considerar la orientación.
+
+\section*{Problema 2 — Detección y Corrección D-H (25 pts)[cite: 8]}
+Una articulación revoluta se describe mediante la siguiente fila D-H \textbf{estándar}:
+\begin{equation*}
+    \theta_i = q_i, \qquad d_i = 1, \qquad a_i = 2, \qquad \alpha_i = 0
+\end{equation*}
+Un estudiante propone la siguiente matriz de transformación:
+\begin{equation*}
+    \tilde{T} = \begin{bmatrix} \cos q_i & -\sin q_i & 0 & 2 \\ \sin q_i & \cos q_i & 0 & 1 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}
+\end{equation*}
+
+\textbf{a) [7 pts]} Identifique al menos \textbf{dos} errores conceptuales en la matriz propuesta por el estudiante.
+
+\textbf{b) [10 pts]} Construya la matriz de transformación homogénea correcta ${}^{i-1}T_i(q_i)$.
+
+\textbf{c) [4 pts]} Evalúe la matriz correcta en $q_i = \pi/2$.
+
+\textbf{d) [4 pts]} Indique cuál parámetro D-H es la variable articular y por qué.
+
+\section*{Problema 3 — FK de Representación Mixta (45 pts)[cite: 8]}
+Un manipulador serial 3R utiliza convención D-H estándar. En lugar de darle la tabla completa, ya se conocen las dos primeras transformaciones:
+\begin{equation*}
+    {}^{0}T_1 = \begin{bmatrix} 0 & -1 & 0 & 0 \\ 1 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}, \qquad
+    {}^{1}T_2 = \begin{bmatrix} 1 & 0 & 0 & 1 \\ 0 & 0 & -1 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}
+\end{equation*}
+La tercera articulación es revoluta y tiene los parámetros:
+\begin{equation*}
+    \theta_3 = q_3, \qquad d_3 = 0, \qquad a_3 = 1, \qquad \alpha_3 = 0 \qquad \text{con} \quad q_3 = \pi
+\end{equation*}
+
+\textbf{a) [8 pts]} Construya ${}^{2}T_3$.
+
+\textbf{b) [5 pts]} Escriba la cadena de transformación correcta para ${}^{0}T_3$.
+
+\textbf{c) [16 pts]} Calcule numéricamente ${}^{0}T_3$.
+
+\textbf{d) [8 pts]} Extraiga ${}^{0}p_3$ y ${}^{0}R_3$, y explique qué representa cada uno.
+
+\textbf{e) [8 pts]} Dé una verificación estructural y una verificación física/cinemática de su resultado.
+
+\section*{Problema 4 — Verificación de Estructura (10 pts)[cite: 8]}
+Un estudiante reporta que el resultado de cinemática directa de un manipulador planar 2R es:
+\begin{equation*}
+    \tilde{T} = \begin{bmatrix} 0 & -1 & 0 & 1 \\ 1 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 1 & 1 \end{bmatrix}
+\end{equation*}
+
+\textbf{a) [5 pts]} Sin recalcular la cinemática directa, identifique una razón \textbf{estructural} por la cual $\tilde{T}$ no puede ser una transformación homogénea de cuerpo rígido.
+
+\textbf{b) [5 pts]} El mismo estudiante argumenta: \textit{"La posición $[1, 1, 0]^T$ parece físicamente plausible, por lo tanto la transformación completa debe ser correcta."} Explique por qué ese argumento es insuficiente y mencione \textbf{una verificación independiente adicional} que debería realizarse.
+
+\end{document}

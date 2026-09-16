@@ -1,0 +1,119 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
+
+\usepackage{amsmath, amssymb}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+% Configuracion de listings con soporte UTF-8 (literate) para el español
+\lstdefinestyle{xmlstyle}{
+    language=XML,
+    basicstyle=\ttfamily\small,
+    backgroundcolor=\color{gray!5},
+    frame=single,
+    rulecolor=\color{gray!40},
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{red!70!black},
+    commentstyle=\color{green!60!black},
+    showstringspaces=false,
+    breaklines=true,
+    extendedchars=true,
+    literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ñ}{{\~n}}1 {¿}{{?`}}1 {¡}{{!`}}1
+}
+\lstset{style=xmlstyle}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+% Cabeceras acortadas para evitar el solapamiento (Overfull)
+\lhead{\textbf{IMT-342} | Robótica}
+\chead{Guía Defensa URDF}
+\rhead{Semana 6 - Sesión 2}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Guía de Defensa URDF (Hito 1)}}\\[0.2cm]
+    \normalsize \textit{Documento Estudiantil - Preparación para Evaluación[cite: 8]}
+\end{center}
+
+\begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{Lo que debe demostrar}]
+    La defensa no es una presentación sobre cómo se ve el modelo en RViz. Es una sustentación técnica donde deben probar que el modelo URDF es una representación \textbf{cinemáticamente coherente}.
+    \begin{center}
+        \textbf{Estructura + Movimiento + Razonamiento + Validación + Defensa Individual[cite: 8]}
+    \end{center}
+\end{tcolorbox}
+
+\section{Distinción entre Colocación y Eje de Movimiento[cite: 8]}
+\begin{center}
+\begin{tikzpicture}[scale=1.2, thick]
+    % Parent Frame
+    \coordinate (P) at (0,0);
+    \draw[->, ucbblue] (P) -- (1,0) node[right]{$x_{parent}$};
+    \draw[->, ucbblue] (P) -- (0,1) node[above]{$z_{parent}$};
+    \filldraw[black] (P) circle (1.5pt) node[below left]{Parent};
+    
+    % Origin translation
+    \coordinate (J) at (3,1.5);
+    \draw[-Stealth, dashed, gray] (P) -- (J) node[midway, above left]{origin xyz};
+    
+    % Joint Frame and Axis
+    \draw[->, red] (J) -- ($(J)+(1,0)$) node[right]{$x_{joint}$};
+    \draw[->, red] (J) -- ($(J)+(0,1)$) node[above]{$z_{joint}$};
+    \draw[->, red, line width=1.5pt] (J) -- ($(J)+(0,1)$) node[midway, right]{axis xyz="0 0 1"};
+    \draw[-Stealth, red] ($(J)+(0.3,0.5)$) arc (30:150:0.4);
+    
+    \filldraw[black] (J) circle (1.5pt) node[below right]{Joint};
+\end{tikzpicture}
+\end{center}
+\begin{itemize}
+    \item \textbf{\texttt{origin}:} Responde a \textit{¿Dónde está situado el frame de la articulación respecto al parent?}[cite: 8]
+    \item \textbf{\texttt{axis}:} Responde a \textit{¿Alrededor de qué vector local se mueve la articulación?}[cite: 8]
+\end{itemize}
+
+\section{D-H versus URDF[cite: 8]}
+No confundan los marcos D-H con los marcos URDF. En D-H, la colocación sigue las reglas de normales comunes. En URDF, se separan la colocación estática (\texttt{origin}) y el movimiento (\texttt{axis}). Dos modelos pueden diferir en sus marcos intermedios y seguir siendo cinemáticamente equivalentes si su comportamiento final concuerda.
+
+\section{Árbol de Decisión de Troubleshooting (Depuración)[cite: 8]}
+Utilice la siguiente lógica si detecta una anomalía en su validación:
+\begin{lstlisting}[style=xmlstyle, backgroundcolor=\color{white}]
+¿Parsea el archivo XML?
+ |- No -> Revisar sintaxis, cierre de etiquetas, comillas.
+ |- Si -> ¿El arbol Parent/Child es unicamente serial?
+           |- No -> Revisar declaraciones <parent> y <child>.
+           |- Si -> ¿El eje gira sobre una direccion errada? -> <axis>
+                    ¿El eje rota bien pero desde otro pivote? -> <origin>
+                    ¿Todo rota bien pero la malla visual esta salida? -> <visual><origin>
+\end{lstlisting}
+
+\section{Secuencia de la Defensa[cite: 8]}
+Para cada grupo, el docente solicitará una demostración ágil:
+\begin{enumerate}
+    \item Mostrar modelo y árbol.
+    \item Identificar parent/child de una junta elegida por el profesor.
+    \item Explicar su \texttt{origin} y \texttt{axis}.
+    \item Ejecutar pruebas de movimiento de juntas aisladas.
+    \item Mostrar una configuración de validación con juntas en posiciones diferentes de cero.
+    \item Responder preguntas individuales rotativas.
+\end{enumerate}
+
+\end{document}

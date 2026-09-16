@@ -1,0 +1,112 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+\lstdefinestyle{xmlstyle}{
+    language=XML,
+    basicstyle=\ttfamily\small,
+    backgroundcolor=\color{gray!5},
+    frame=single,
+    rulecolor=\color{gray!40},
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{red!70!black},
+    commentstyle=\color{green!60!black},
+    showstringspaces=false,
+    breaklines=true,
+    morekeywords={robot, link, joint, origin, axis, parent, child, limit}
+}
+\lstset{style=xmlstyle}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Guía URDF - Hito 1}
+\rhead{Semana 6}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Guía de Construcción URDF para el ABB IRB 120 (Hito 1)}}\\[0.2cm]
+\end{center}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!75!black, title=\textbf{Propósito de la Guía[cite: 7]}]
+    El objetivo \textbf{no} es meramente obtener un robot que se vea bien en RViz. El objetivo es construir un modelo URDF cuyo árbol de juntas sea coherente, los ejes correspondan al movimiento físico, y el comportamiento pueda compararse matemáticamente. \\
+    \textbf{Prioridad: Corrección Cinemática $>$ Apariencia Visual.}
+\end{tcolorbox}
+
+\section{Anatomía Mínima de URDF en XML[cite: 7]}
+Un robot serial se define a través de \texttt{links} (cuerpos rígidos) y \texttt{joints} (relaciones).
+\begin{lstlisting}
+<robot name="irb120_student_model">
+  <link name="base_link"/>
+  <link name="link_1"/>
+
+  <joint name="joint_1" type="revolute">
+    <parent link="base_link"/>
+    <child link="link_1"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="[VERIFY]" upper="[VERIFY]" effort="[VERIFY]" velocity="[VERIFY]"/>
+  </joint>
+</robot>
+\end{lstlisting}
+
+\begin{center}
+\begin{tikzpicture}[
+    node distance=0.5cm and 2cm,
+    box/.style={rectangle, draw=ucbblue, thick, fill=ucbblue!5, text width=3cm, align=center, rounded corners, minimum height=1cm, font=\small},
+    arrow/.style={-Stealth, thick, ucbblue, line width=1.5pt}
+]
+    % Visual U4 - Incremental gates
+    \node[box] (b) {1. \texttt{base\_link}};
+    \node[box, right=of b] (j1) {2. \texttt{J1} + Validar};
+    \node[box, right=of j1] (j2) {3. \texttt{J2} + Validar};
+    \node[box, below=of j2] (dots) {$\dots$};
+    \node[box, left=of dots] (j6) {4. \texttt{J6} + Validar};
+    \node[box, fill=green!10, left=of j6] (vis) {5. Agregar Visuals};
+    
+    \draw[arrow] (b) -- (j1);
+    \draw[arrow] (j1) -- (j2);
+    \draw[arrow] (j2) -- (dots);
+    \draw[arrow] (dots) -- (j6);
+    \draw[arrow] (j6) -- (vis);
+\end{tikzpicture}
+\end{center}
+
+\section{Diferencia Crítica: D-H $\neq$ \texttt{<origin>}[cite: 7]}
+\textbf{NO copie directamente $a, d, \alpha, \theta$ en \texttt{xyz/rpy}.} 
+En D-H estándar, la matriz está restringida a 4 parámetros. En URDF, el \texttt{<origin>} define la ubicación fija de la junta, separada del eje de rotación (\texttt{<axis>}) y de la variable articular. Las asignaciones de marcos intermedios pueden diferir entre D-H y URDF aunque describan el mismo brazo.
+
+\section{Eje de Movimiento: \texttt{<axis xyz="x y z">}[cite: 7]}
+El vector se interpreta en el \textbf{marco local de la junta}. Un giro en el eje $Z$ local es \texttt{<axis xyz="0 0 1"/>}. Para validarlo: fije todas las juntas, mueva solo una, y observe la dirección y el sentido de rotación en RViz.
+
+\section{Límites: \texttt{<limit>}[cite: 7]}
+No invente límites físicos. Para el ABB IRB 120, utilice exclusivamente datos documentados del manual oficial del fabricante (reemplazando los \texttt{[VERIFY]}).
+
+\section{Flujo de Validación y Comportamiento ROS[cite: 7]}
+El URDF describe la cinemática; \texttt{robot\_state\_publisher} lee los estados articulares (\texttt{joint\_states}), calcula transformaciones y las publica vía \texttt{TF} hacia RViz. Que "se mueva" no significa que esté cinemáticamente correcto. Verifique usando valores conocidos de $q_i$.
+
+\end{document}

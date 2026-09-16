@@ -1,0 +1,90 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342} | Worksheet Validación URDF}
+\rhead{Hito 1 - Semana 6[cite: 8]}
+
+\begin{document}
+
+\section*{A. Identificación[cite: 8]}
+\textbf{Grupo:} \rule{4cm}{0.15mm} \quad \textbf{URDF File/Versión:} \rule{4cm}{0.15mm} \\
+\textbf{Integrantes:} \rule{10cm}{0.15mm} \\
+\textbf{Base Frame:} \rule{4cm}{0.15mm} \quad \textbf{Terminal/Flange Frame:} \rule{4cm}{0.15mm}
+
+\section*{B. Validez XML / URDF[cite: 8]}
+\textbf{Herramienta/Método:} \rule{4cm}{0.15mm} \quad \textbf{Resultado:} Pass / Fail \\
+\textbf{Error y Corrección:} \rule{10cm}{0.15mm}
+
+\section*{C. Kinematic Tree[cite: 8]}
+\textit{(Dibuje el árbol jerárquico)}
+\vspace{1.5cm}
+
+Checklist: $\square$ Conexiones completas $\square$ Cero ramas accidentales $\square$ Nombres exactos $\square$ Flange identificable
+
+\section*{D. Evidencia de Definición de Juntas[cite: 8]}
+\begin{center}
+    \footnotesize
+    \renewcommand{\arraystretch}{1.5}
+    \noindent\begin{tabularx}{\textwidth}{|c|c|c|X|X|c|c|X|}
+    \hline
+    \textbf{Joint} & \textbf{Parent} & \textbf{Child} & \textbf{\texttt{xyz}} & \textbf{\texttt{rpy}} & \textbf{\texttt{axis}} & \textbf{Límite Fuente} & \textbf{Justificación Física} \\ \hline
+    J1 & & & & & & & \\ \hline
+    J2 & & & & & & & \\ \hline
+    J3 & & & & & & & \\ \hline
+    J4 & & & & & & & \\ \hline
+    J5 & & & & & & & \\ \hline
+    J6 & & & & & & & \\ \hline
+    \end{tabularx}
+\end{center}
+
+\section*{E. Zero / Reference Configuration[cite: 8]}
+$q^{(0)} = [ \quad, \quad, \quad, \quad, \quad, \quad ]^T$ \\
+\textbf{Pose esperada cualitativamente:} \rule{8cm}{0.15mm} \\
+\textbf{¿Pose cero suficiente para probar corrección? ¿Por qué?} \rule{6cm}{0.15mm}
+
+\section*{F. Pruebas de Juntas Individuales[cite: 8]}
+\begin{center}
+    \footnotesize
+    \noindent\begin{tabularx}{\textwidth}{|c|X|c|X|X|c|c|}
+    \hline
+    \textbf{Joint} & \textbf{Demás fijas en} & \textbf{Test Val} & \textbf{Mov. Esperado} & \textbf{Mov. Observado} & \textbf{Match?} & \textbf{Notas} \\ \hline
+    J1 & & & & & $\square$ & \\ \hline
+    J2 & & & & & $\square$ & \\ \hline
+    J3 & & & & & $\square$ & \\ \hline
+    J4 & & & & & $\square$ & \\ \hline
+    J5 & & & & & $\square$ & \\ \hline
+    J6 & & & & & $\square$ & \\ \hline
+    \end{tabularx}
+\end{center}
+
+\section*{G \& H. Configuraciones de Prueba 1 y 2 (Comparación FK)[cite: 8]}
+\textbf{Test A:} $q^{(A)} = [ \quad, \quad, \quad, \quad, \quad, \quad ]^T$. Ref. Matemática $p^{(A)} =$ \rule{2cm}{0.15mm}, $R^{(A)} =$ \rule{2cm}{0.15mm}. \\
+Evidencia ROS/TF: \rule{10cm}{0.15mm} \\
+\textbf{Test B:} $q^{(B)} = [ \quad, \quad, \quad, \quad, \quad, \quad ]^T$. Ref. Matemática $p^{(B)} =$ \rule{2cm}{0.15mm}, $R^{(B)} =$ \rule{2cm}{0.15mm}. \\
+Comparación: $\square$ Coherente \quad $\square$ Discrepancia \quad $\square$ Pendiente relación de marcos.
+
+\section*{I. Discrepancia y Debugging[cite: 8]}
+\textbf{Síntoma:} \rule{12cm}{0.15mm} \\
+\textbf{Revisado:} $\square$ Sintaxis $\square$ Parent/Child $\square$ Origin xyz/rpy $\square$ Axis $\square$ Visual origin $\square$ ROS $\square$ DH vs URDF \\
+\textbf{Corrección y evidencia:} \rule{12cm}{0.15mm}
+
+\section*{J. Conclusión Final y Preparación Individual[cite: 8]}
+\textbf{Grupo:} \textit{Consideramos que nuestro URDF es cinemáticamente defendible porque...} \rule{5cm}{0.15mm} \\
+\textbf{Individual:} \textit{(Cada miembro preparará su defensa individual respondiendo: ¿Qué junta defenderé? ¿Por qué su axis/origin son correctos? ¿Qué diferencia existe entre DH y URDF en esta junta?)}
+
+\end{document}

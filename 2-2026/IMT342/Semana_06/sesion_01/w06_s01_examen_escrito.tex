@@ -1,0 +1,145 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, 3d}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Examen EC1}
+\rhead{Robótica (IMT-342) W06S01}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{EC1 — Marcos, Transformaciones, Denavit–Hartenberg y Cinemática Directa}}\\[0.2cm]
+\end{center}
+
+\textbf{Nombre:} \rule{8cm}{0.15mm} \hfill \textbf{Fecha:} \rule{4cm}{0.15mm}
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=gray!5, colframe=gray!50, title=\textbf{Condiciones de la Evaluación}]
+    \begin{itemize}
+        \item Examen escrito individual.
+        \item No se permite el uso de calculadora ni formulario.
+        \item Muestre su razonamiento y transformaciones intermedias; respuestas finales sin respaldo tendrán crédito limitado.
+        \item Utilice la convención D-H \textbf{estándar} estudiada en clase.
+        \item Si detecta una inconsistencia en su propio resultado, indíquelo y explique por qué.
+        \item A menos que se especifique lo contrario, los ángulos están en radianes y las distancias en metros.
+    \end{itemize}
+\end{tcolorbox}
+
+\section*{Problema 1 — Marcos y Transformaciones Homogéneas (20 pts)}
+Se conocen las siguientes matrices de transformación:
+\begin{equation*}
+    {}^{0}T_1 = \begin{bmatrix} 0 & -1 & 0 & 2 \\ 1 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}, \qquad
+    {}^{1}T_2 = \begin{bmatrix} 1 & 0 & 0 & 1 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}
+\end{equation*}
+
+\textbf{a) [4 pts]} Explique con palabras qué representa físicamente ${}^{0}T_1$.
+
+\textbf{b) [6 pts]} Sin realizar toda la multiplicación primero, escriba la expresión correcta para la pose del marco 2 respecto al marco 0. Luego, calcule numéricamente ${}^{0}T_2$.
+
+\textbf{c) [6 pts]} Calcule ${}^{1}T_0$.
+
+\textbf{d) [4 pts]} Un estudiante propone que ${}^{0}T_2 = {}^1T_2{}^0T_1$. Explique por qué esta cadena no es correcta.
+
+\section*{Problema 2 — Interpretación D-H y Transformación (25 pts)}
+Una junta revoluta $i$ se describe con los parámetros D-H estándar:
+\begin{equation*}
+    \theta_i = q_i, \qquad d_i = L, \qquad a_i = 0, \qquad \alpha_i = -\frac{\pi}{2}
+\end{equation*}
+
+\textbf{a) [6 pts]} Para cada parámetro ($\theta_i, d_i, a_i, \alpha_i$), indique su significado geométrico en la convención D-H estándar.
+
+\textbf{b) [4 pts]} Identifique cuál de los parámetros D-H es la variable articular y explique por qué.
+
+\textbf{c) [11 pts]} Construya la matriz de transformación homogénea completa ${}^{i-1}T_i(q_i)$.
+
+\textbf{d) [4 pts]} Evalúe su matriz resultante en la configuración $q_i = 0$.
+
+\section*{Problema 3 — Cinemática Directa de un Manipulador 3R (45 pts)}
+Un manipulador serial didáctico 3R se describe mediante la siguiente tabla D-H estándar:
+
+\begin{center}
+    \begin{tabular}{c c c c c}
+    \toprule
+    $i$ & $\theta_i$ & $d_i$ & $a_i$ & $\alpha_i$ \\ \midrule
+    1 & $q_1$ & $1$ & $0$ & $+\pi/2$ \\
+    2 & $q_2$ & $0$ & $2$ & $0$ \\
+    3 & $q_3$ & $0$ & $1$ & $0$ \\ \bottomrule
+    \end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tikzpicture}[scale=1.5, thick]
+    % Visual E2 - 3R Chain Concept
+    \draw[->, gray] (0,0) -- (1,0) node[right]{$x_0$};
+    \draw[->, gray] (0,0) -- (0,1) node[above]{$z_0$};
+    
+    \coordinate (O) at (0,0);
+    \coordinate (J1) at (0,1);
+    \draw[ucbblue, line width=2pt] (O) -- (J1) node[midway, left]{$d_1=1$};
+    \filldraw[black] (O) circle (1.5pt) node[below left]{$\{0\}$};
+    \filldraw[black] (J1) circle (1.5pt) node[left]{$\{1\}$};
+    
+    % Following alpha = pi/2, the new Z1 points into the page (or outward), and X1 points right.
+    % Link a2 moves along X1.
+    \coordinate (J2) at (2,1);
+    \draw[ucbblue!70, line width=2pt] (J1) -- (J2) node[midway, above]{$a_2=2$};
+    \filldraw[black] (J2) circle (1.5pt) node[above]{$\{2\}$};
+    
+    % Link a3
+    \coordinate (J3) at (3,1);
+    \draw[ucbblue!40, line width=2pt] (J2) -- (J3) node[midway, above]{$a_3=1$};
+    \filldraw[red] (J3) circle (1.5pt) node[right]{$\{3\}$};
+\end{tikzpicture}
+\end{center}
+
+Para la configuración $q_1 = 0, \quad q_2 = \pi/2, \quad q_3 = -\pi/2$, determine la pose del marco 3 respecto al marco 0.
+
+\textbf{a) [15 pts]} Construya ${}^{0}T_1$, ${}^{1}T_2$ y ${}^{2}T_3$.
+
+\textbf{b) [5 pts]} Escriba la cadena de transformación correcta para ${}^{0}T_3$.
+
+\textbf{c) [13 pts]} Calcule numéricamente ${}^{0}T_3$.
+
+\textbf{d) [6 pts]} Extraiga ${}^{0}p_3$ y ${}^{0}R_3$. Explique qué representa físicamente cada uno.
+
+\textbf{e) [6 pts]} Realice una verificación matemática o física significativa de su resultado.
+
+\section*{Problema 4 — Verificación y Diagnóstico de Errores (10 pts)}
+Un robot planar 2R tiene longitudes de eslabón $a_1 = 2$ y $a_2 = 1$. Un estudiante reporta que la posición del efector final es:
+\begin{equation*}
+    p = \begin{bmatrix} 4 \\ 0 \\ 0 \end{bmatrix}
+\end{equation*}
+
+\textbf{a) [5 pts]} Sin resolver todo el problema de cinemática directa nuevamente, determine si este resultado puede ser físicamente correcto. Justifique su respuesta.
+
+\textbf{b) [5 pts]} Otro estudiante obtiene la siguiente matriz de orientación:
+\begin{equation*}
+    R = \begin{bmatrix} 1 & 0 & 0 \\ 0 & 2 & 0 \\ 0 & 0 & 1 \end{bmatrix}
+\end{equation*}
+Dé una razón matemática por la cual esta no puede ser una matriz de rotación válida.
+
+\end{document}

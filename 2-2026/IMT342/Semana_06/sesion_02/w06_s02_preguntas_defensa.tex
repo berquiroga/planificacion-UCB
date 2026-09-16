@@ -1,0 +1,62 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Robótica (IMT-342) - Banco de Preguntas}
+\rhead{Semana 6 - Sesión 2}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{Banco de Preguntas para Defensa URDF (Hito 1)}\\[0.2cm]
+    \normalsize \textit{Uso Exclusivo Docente[cite: 8]}
+\end{center}
+
+\textit{Regla de uso: Haga al menos una pregunta sustancial a cada estudiante rotando las categorías para evitar respuestas memorizadas por el grupo.}
+
+\subsection*{A. Básicas[cite: 8]}
+\begin{enumerate}
+    \item Identifique el parent y el child de esta junta. \textit{(Esperado: Nombres exactos y dirección en el árbol).}
+    \item ¿Qué elemento es el cuerpo rígido y cuál es la conexión? \textit{(Esperado: \texttt{link} vs \texttt{joint}).}
+    \item ¿Qué se mueve cuando esta variable articular cambia? \textit{(Esperado: El child y todo el sub-árbol descendente).}
+    \item ¿Qué indicaría que su árbol no es serial donde debería serlo? \textit{(Esperado: Rama no intencional o parent erróneo).}
+\end{enumerate}
+
+\subsection*{B. Intermedias[cite: 8]}
+\begin{enumerate}
+    \setcounter{enumi}{4}
+    \item ¿Qué representa \texttt{origin xyz}? \textit{(Esperado: Traslación del marco de la junta relativo al marco parent).}
+    \item ¿Qué cambia el \texttt{origin rpy}? \textit{(Esperado: Orientación fija del marco de la junta relativo al parent).}
+    \item ¿Por qué su \texttt{axis} es correcto? \textit{(Esperado: Vincula el vector a la junta física y al marco local).}
+    \item ¿Qué sucede si se niega el vector del eje? \textit{(Esperado: Invierte el sentido positivo sobre la misma línea).}
+\end{enumerate}
+
+\subsection*{C. Conceptuales[cite: 8]}
+\begin{enumerate}
+    \setcounter{enumi}{8}
+    \item ¿Por qué la fila DH no puede copiarse directo al \texttt{origin}? \textit{(Esperado: Diferencia de convención; URDF separa colocación fija del eje de movimiento).}
+    \item ¿Qué debe coincidir entre DH y URDF si los marcos intermedios difieren? \textit{(Esperado: La relación cinemática física entre marcos/configuraciones correspondientes).}
+\end{enumerate}
+
+\subsection*{D. Validación y Troubleshooting[cite: 8]}
+\begin{enumerate}
+    \setcounter{enumi}{10}
+    \item Muestre una configuración de prueba distinta de cero y qué comportamiento esperaba.
+    \item Si una junta gira sobre la línea correcta pero el pivote es erróneo, ¿qué revisa primero? \textit{(Esperado: \texttt{origin xyz} o transformación aguas arriba).}
+    \item Si el robot se ve bien en cero, pero J2 se mueve al revés, nombre dos causas. \textit{(Esperado: Signo de \texttt{axis} o convención de orientación de \texttt{origin}).}
+    \item Si la cinemática es correcta pero la malla visual está salida, ¿qué revisa? \textit{(Esperado: \texttt{<visual><origin>} o convención de la malla 3D).}
+\end{enumerate}
+
+\end{document}

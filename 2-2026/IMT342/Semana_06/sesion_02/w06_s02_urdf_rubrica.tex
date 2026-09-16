@@ -1,0 +1,58 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342} | Robótica}
+\chead{Guía Defensa URDF}
+\rhead{Semana 6 - Sesión 2}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Rúbrica de Defensa URDF (Hito 1)}}\\[0.2cm]
+\end{center}
+
+\section*{A. Artefacto Técnico Grupal (45 pts)[cite: 8]}
+\begin{itemize}
+    \item \textbf{A1. Completitud estructural (10 pts):} Árbol link/joint coherente; sin ramas accidentales; nombres consistentes; cadena base a terminal identificable.
+    \item \textbf{A2. Orígenes y ejes (15 pts):} \texttt{origin} deliberado y justificado; \texttt{axis} corresponde al movimiento esperado; dirección y signo explicables; no asume copia ciega de DH.
+    \item \textbf{A3. Comportamiento cinemático (10 pts):} Movimiento individual correcto; configuración cero congruente; al menos un movimiento no nulo consistente.
+    \item \textbf{A4. Higiene técnica (10 pts):} XML/URDF válido; límites (si hay) con fuente documentada; cinemática sobre estética.
+\end{itemize}
+
+\section*{B. Evidencia de Validación (30 pts)[cite: 8]}
+\begin{itemize}
+    \item \textbf{B1. Worksheet (8 pts):} Hoja de trabajo de validación completa.
+    \item \textbf{B2. Configuración de prueba 1 (7 pts):} Incluye valores articulares, comportamiento matemático esperado, evidencia URDF y comparación explícita.
+    \item \textbf{B3. Configuración de prueba 2 (7 pts):} Añade evidencia genuinamente útil adicional al Test 1.
+    \item \textbf{B4. Razonamiento de Debugging (8 pts):} Explicación lógica de discrepancia detectada y corregida, o un procedimiento diagnóstico verosímil.
+\end{itemize}
+
+\section*{C. Defensa Individual (25 pts por estudiante)[cite: 8]}
+\begin{itemize}
+    \item \textbf{C1. Razonamiento de árbol (5 pts):} Explica por qué la junta conecta su parent/child específico.
+    \item \textbf{C2. Origin (5 pts):} Explica qué representa el origen en su relación parent/joint.
+    \item \textbf{C3. Axis (5 pts):} Explica elección del eje local, movimiento positivo y efecto de inversión de signo.
+    \item \textbf{C4. Distinción D-H vs URDF (5 pts):} Explica por qué los marcos intermedios pueden diferir manteniendo consistencia física.
+    \item \textbf{C5. Validación (5 pts):} Defiende un resultado de prueba y no simplemente afirma que "funciona en RViz".
+\end{itemize}
+
+\end{document}

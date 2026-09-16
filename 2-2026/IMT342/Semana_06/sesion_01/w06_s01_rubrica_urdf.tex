@@ -1,0 +1,70 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Robótica (IMT-342) - Rúbrica Defensa}
+\rhead{Hito 1 - Semana 6}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Guía y Rúbrica de Defensa URDF (Hito 1)}}\\[0.2cm]
+\end{center}
+
+\section*{Propósito de Evaluación[cite: 7]}
+Determinar si los estudiantes construyeron un artefacto técnico coherente, lo validaron más allá de su apariencia visual (RViz), entienden la relación modelo matemático-computacional y demuestran entendimiento individual. (Compatible con defensas síncronas o asíncronas).
+
+\section*{Rúbrica de Calificación (100 Puntos)[cite: 7]}
+
+\subsection*{A. Artefacto Técnico Grupal (45 pts)}
+\begin{itemize}
+    \item \textbf{A1. Completitud Estructural (10 pts):} Árbol coherente de eslabones/juntas; sin ramas accidentales; nombres consistentes.
+    \item \textbf{A2. Orígenes y Ejes (15 pts):} Los orígenes (\texttt{xyz/rpy}) son deliberados; los ejes corresponden a la intención física; no asumen copia ciega de D-H.
+    \item \textbf{A3. Comportamiento Cinemático (10 pts):} Movimiento correcto de juntas individuales; configuración cero es congruente.
+    \item \textbf{A4. Higiene Técnica (10 pts):} XML válido; documentación de límites (manual ABB); priorización de cinemática sobre detalles estéticos.
+\end{itemize}
+
+\subsection*{B. Evidencia de Validación (30 pts)}
+\begin{itemize}
+    \item \textbf{B1. Completitud de la Hoja de Trabajo (8 pts):} Worksheet llenado adecuadamente.
+    \item \textbf{B2. Configuración de Prueba 1 (7 pts):} Incluye valores articulares, expectativa matemática, evidencia URDF y comparación estructurada.
+    \item \textbf{B3. Configuración de Prueba 2 (7 pts):} Añade evidencia útil a un segundo escenario.
+    \item \textbf{B4. Razonamiento de Debugging (8 pts):} Explica lógicamente cómo detectaron y corrigieron un error real (ej. orientación invertida de un eje).
+\end{itemize}
+
+\subsection*{C. Defensa Individual (25 pts por estudiante)}
+\begin{itemize}
+    \item \textbf{C1. Razonamiento de Árbol (5 pts):} Explica por qué una junta conecta dos eslabones específicos.
+    \item \textbf{C2. Origin (5 pts):} Justifica qué representa el origen en su junta asignada.
+    \item \textbf{C3. Axis (5 pts):} Explica la elección del vector de eje local.
+    \item \textbf{C4. Distinción D-H vs URDF (5 pts):} Argumenta por qué los marcos intermedios de D-H pueden no coincidir con los de URDF sin perder exactitud en la pose final.
+    \item \textbf{C5. Validación (5 pts):} Defiende los resultados de una prueba en RViz vs matemáticas.
+\end{itemize}
+
+\section*{Banco de Preguntas Docente[cite: 7]}
+\begin{enumerate}
+    \item Si el eje de rotación es correcto pero el eslabón gira alrededor del punto equivocado, ¿qué propiedad inspeccionaría primero? \textit{(Respuesta esperada: el \texttt{origin} de la junta).}
+    \item ¿Qué sucede topológicamente si la Junta 3 declara a \texttt{base\_link} como \texttt{parent} en vez de \texttt{link\_2}? \textit{(Respuesta esperada: se crea una nueva ramificación separada, rompiendo la cadena serial pretendida).}
+    \item ¿Por qué probar únicamente la configuración $q=0$ es insuficiente? \textit{(Respuesta esperada: los signos invertidos en los ejes o errores de pivote solo se manifiestan al introducir movimiento).}
+\end{enumerate}
+
+\end{document}
