@@ -1,0 +1,177 @@
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{multicol}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{14pt}
+\lhead{\textbf{UCB Sede Tarija} | Circuitos Electrónicos II}
+\chead{\textbf{Formulario Oficial}}
+\rhead{Recuperatorio 1 (EC1)}
+\lfoot{IMT-221}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+% Ajuste de espacios para ecuaciones en columnas
+\setlength{\abovedisplayskip}{4pt}
+\setlength{\belowdisplayskip}{4pt}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Formulario Oficial de Análisis Fasorial}}
+\end{center}
+
+\begin{tcolorbox}[colback=yellow!10, colframe=ucbblue, title=\textbf{Instrucciones de Uso Permitido}]
+    \small Este formulario contiene relaciones generales del curso. \textbf{No sustituye} la selección del método de análisis ni la formulación de las ecuaciones del circuito. Debe ser entregado junto con su examen. No se permite material adicional.
+\end{tcolorbox}
+
+\begin{multicols*}{2}
+
+\subsection*{1. Frecuencia Angular}
+\begin{equation*}
+    \boxed{\omega = 2\pi f} \quad \implies \quad f = \frac{\omega}{2\pi}
+\end{equation*}
+
+\subsection*{2. Representación Compleja}
+\textbf{Forma rectangular:} $\boxed{Z = a + jb}$ \\
+\textbf{Forma polar:} $\boxed{Z = |Z|\angle\theta}$
+
+\vspace{0.2cm}
+\textbf{Conversión Rectangular $\rightarrow$ Polar:}
+\begin{equation*}
+    |Z| = \sqrt{a^2 + b^2}, \quad \theta = \operatorname{atan2}(b,a)
+\end{equation*}
+\textbf{Conversión Polar $\rightarrow$ Rectangular:}
+\begin{equation*}
+    a = |Z|\cos\theta, \quad b = |Z|\sin\theta
+\end{equation*}
+\textbf{Relación fundamental:} $\boxed{j^2 = -1}$
+
+\subsection*{3. Operaciones Complejas}
+\textbf{Suma y resta (en rectangular):}
+\begin{equation*}
+    (a+jb) \pm (c+jd) = (a\pm c) + j(b\pm d)
+\end{equation*}
+\textbf{Multiplicación (en polar):}
+\begin{equation*}
+    A\angle\alpha \cdot B\angle\beta = AB\angle(\alpha+\beta)
+\end{equation*}
+\textbf{División (en polar):}
+\begin{equation*}
+    \frac{A\angle\alpha}{B\angle\beta} = \frac{A}{B}\angle(\alpha-\beta)
+\end{equation*}
+\textbf{Conjugado complejo:} $\boxed{Z^* = a - jb}$
+
+\subsection*{4. Impedancias}
+Resistor: $\boxed{Z_R = R}$ \\
+Inductor: $\boxed{Z_L = j\omega L}$ \\
+Capacitor: $\boxed{Z_C = \frac{1}{j\omega C} = -\frac{j}{\omega C}}$
+
+\subsection*{5. Admitancia}
+\begin{equation*}
+    \boxed{Y = \frac{1}{Z}}
+\end{equation*}
+Para ramas en paralelo:
+\begin{equation*}
+    Y_{eq} = Y_1 + Y_2 + \dots + Y_n \implies \boxed{Z_{eq} = \frac{1}{Y_{eq}}}
+\end{equation*}
+
+\subsection*{6. Asociaciones de Impedancias}
+\textbf{Serie:}
+\begin{equation*}
+    \boxed{Z_{eq} = Z_1 + Z_2 + \dots + Z_n}
+\end{equation*}
+\textbf{Dos impedancias en paralelo:}
+\begin{equation*}
+    \boxed{Z_{eq} = \frac{Z_1 Z_2}{Z_1 + Z_2}}
+\end{equation*}
+
+\subsection*{7. Ley de Ohm Fasorial}
+\begin{equation*}
+    \boxed{\hat{V} = \hat{I} Z} \quad \implies \quad \boxed{\hat{I} = \frac{\hat{V}}{Z}}
+\end{equation*}
+
+\subsection*{8. Leyes de Kirchhoff}
+\textbf{KCL (Corrientes):} $\boxed{\sum \hat{I}_k = 0}$ \\
+\textbf{KVL (Tensiones):} $\boxed{\sum \hat{V}_k = 0}$
+
+\vspace{0.2cm}
+\textbf{Corriente en una rama entre nodos $a$ y $b$:}
+\begin{equation*}
+    \boxed{\hat{I}_{ab} = \frac{\hat{V}_a - \hat{V}_b}{Z}}
+\end{equation*}
+\textit{La dirección de referencia debe mantenerse durante todo el análisis.}
+
+\subsection*{9. División de Tensión}
+Para impedancias en serie:
+\begin{equation*}
+    \boxed{\hat{V}_k = \hat{V}_s \frac{Z_k}{\sum Z}}
+\end{equation*}
+
+\subsection*{10. División de Corriente}
+Para dos ramas en paralelo:
+\begin{equation*}
+    \boxed{\hat{I}_1 = \hat{I}_T \frac{Z_2}{Z_1 + Z_2}}, \quad \boxed{\hat{I}_2 = \hat{I}_T \frac{Z_1}{Z_1 + Z_2}}
+\end{equation*}
+
+\subsection*{11. Análisis Nodal y de Mallas}
+\textbf{Nodal (para un nodo $V_x$):}
+\begin{equation*}
+    \boxed{\sum_k \frac{\hat{V}_x - \hat{V}_k}{Z_k} = 0}
+\end{equation*}
+\textit{(Cuando todas las corrientes se asumen saliendo. Cualquier convención consistente es válida).}
+
+\vspace{0.2cm}
+\textbf{Mallas (impedancia $Z_s$ compartida):}
+\begin{equation*}
+    \boxed{\hat{V}_{Zs} = Z_s(\hat{I}_1 - \hat{I}_2)}
+\end{equation*}
+\textit{(Según las direcciones de referencia adoptadas).}
+
+\subsection*{12. Función de Transferencia}
+\begin{equation*}
+    \boxed{H(j\omega) = \frac{\hat{V}_o(j\omega)}{\hat{V}_i(j\omega)}}
+\end{equation*}
+Magnitud: $\boxed{|H(j\omega)| = \frac{|V_o|}{|V_i|}}$ \\
+Fase: $\boxed{\angle H = \angle V_o - \angle V_i}$
+
+\vspace{0.2cm}
+\textbf{Ganancia en decibelios (Tensiones):}
+\begin{equation*}
+    \boxed{G_{dB} = 20\log_{10}|H|}
+\end{equation*}
+
+\subsection*{13. Resonancia Ideal RLC (Serie)}
+Condición: $\omega_0 L = \frac{1}{\omega_0 C}$
+\begin{equation*}
+    \boxed{\omega_0 = \frac{1}{\sqrt{LC}}} \quad \implies \quad \boxed{f_0 = \frac{1}{2\pi\sqrt{LC}}}
+\end{equation*}
+
+\subsection*{14. Comprobaciones Útiles}
+Antes de aceptar un resultado, verifique sus unidades:
+\begin{align*}
+    [\Omega] \, [\text{A}] &= [\text{V}] \\
+    [\text{k}\Omega] \, [\text{mA}] &= [\text{V}] \\
+    [\text{M}\Omega] \, [\mu\text{A}] &= [\text{V}]
+\end{align*}
+\textbf{Auditoría final de respuesta:}
+\begin{itemize}[leftmargin=*, nosep]
+    \item Signo y dirección.
+    \item Orden de magnitud (plausibilidad pasiva).
+    \item Cuadrante de la fase.
+    \item Coherencia física con el circuito.
+\end{itemize}
+
+\end{multicols*}
+\end{document}

@@ -1,0 +1,107 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multicol}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Circuitos Electrónicos II (IMT-221)}
+\rhead{Recuperatorio 1 (EC1)}
+\lfoot{Evaluación Sumativa}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Recuperatorio 1: Análisis Dinámico de CA}}[cite: 9]
+\end{center}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Instrucciones y Condiciones de Evaluación[cite: 9]}]
+    \begin{itemize}
+        \setlength{\itemsep}{0pt}
+        \item \textbf{Tiempo de aplicación:} 80 minutos[cite: 9].
+        \item \textbf{Material permitido:} Calculadora científica y formulario de una hoja[cite: 9].
+        \item \textbf{Convención:} Todos los fasores de tensión están expresados en valor pico ($\hat{V}$)[cite: 9].
+        \item Muestre todo el desarrollo analítico. Un resultado final sin procedimiento no es válido[cite: 9].
+        \item Conserve las cantidades complejas durante todo el análisis y exprese los resultados solicitados en magnitud y fase[cite: 9].
+    \end{itemize}
+\end{tcolorbox}
+
+\vspace{0.4cm}
+\section*{Problema 1: Red RLC Cargada (25 puntos)[cite: 9]}
+Una fuente sinusoidal ideal $\hat{V}_s = 10\angle0^\circ\,\text{V}_{\text{pico}}$ opera a $f = 1.00\,\text{kHz}$[cite: 9]. La fuente alimenta primero un capacitor $C = 159.15\,\text{nF}$[cite: 9]. Después del capacitor se encuentra el nodo $A$[cite: 9]. Entre el nodo $A$ y tierra existen dos ramas en paralelo:
+\begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \item \textbf{Rama 1:} Resistor $R_1 = 1.00\,\text{k}\Omega$[cite: 9].
+    \item \textbf{Rama 2:} Resistor $R_2 = 1.00\,\text{k}\Omega$ en serie con un inductor $L = 159.15\,\text{mH}$[cite: 9].
+\end{itemize}
+El nodo $B$ se encuentra entre $R_2$ y $L$[cite: 9]. La salida solicitada es $\hat{V}_B$, la tensión sobre el inductor referida a tierra[cite: 9].
+
+\begin{center}
+    \begin{circuitikz}[scale=1.2, transform shape, thick]
+        \draw (0,0) to[V, v=$\hat{V}_s$] (0,3) to[C, l=$C$] (3,3) coordinate(A);
+        \draw (A) to[R, l_=$R_1$] (3,0);
+        \draw (A) -- (5,3) to[R, l=$R_2$] (5,1.5) coordinate(B);
+        \draw (B) to[L, l=$L$, v=$\hat{V}_B$] (5,0);
+        \draw (0,0) -- (5,0) node[ground]{};
+        
+        \node[above] at (A) {$A$};
+        \node[right] at (B) {$B$};
+    \end{circuitikz}
+\end{center}
+
+\textbf{a) Modelo fasorial (6 pts):} Determine $Z_C$ y $Z_L$ a la frecuencia indicada[cite: 9]. Identifique la impedancia total de la rama $R_2 + L$[cite: 9]. \\
+\textbf{b) Modelo equivalente y método (6 pts):} Determine la impedancia equivalente vista desde el nodo $A$ ($Z_A$) y la impedancia total vista por la fuente ($Z_T$)[cite: 9]. Indique brevemente por qué su método es apropiado[cite: 9]. \\
+\textbf{c) Análisis fasorial (9 pts):} Determine $\hat{V}_B$ en forma rectangular y polar, mostrando los pasos intermedios[cite: 9]. \\
+\textbf{d) Interpretación (4 pts):} Respecto de $\hat{V}_s$, ¿la magnitud de $\hat{V}_B$ es mayor o menor?[cite: 9] ¿$\hat{V}_B$ adelanta o atrasa a la fuente?[cite: 9] Explique qué representa físicamente ese ángulo[cite: 9].
+
+\newpage
+\section*{Problema 2: Respuesta Frecuencial RLC (25 puntos)[cite: 9]}
+Una fuente sinusoidal alimenta una red serie formada por $R = 1.00\,\text{k}\Omega$, $L = 159.15\,\text{mH}$ y $C = 159.15\,\text{nF}$[cite: 9]. La salida $\hat{V}_o$ se mide únicamente sobre $R$[cite: 9].
+
+\begin{center}
+    \begin{circuitikz}[scale=1.2, transform shape, thick]
+        \draw (0,0) to[V, v=$\hat{V}_s$] (0,2) to[L, l=$L$] (2,2) to[C, l=$C$] (4,2) to[R, l=$R$, v=$\hat{V}_o$] (4,0) -- (0,0);
+    \end{circuitikz}
+\end{center}
+
+Defina la función de transferencia como $H(j\omega) = \frac{\hat{V}_o}{\hat{V}_s}$[cite: 9].
+
+\vspace{0.3cm}
+\textbf{a) Función de transferencia (8 pts):} Derivando desde las impedancias, encuentre $H(j\omega)$[cite: 9]. Simplifique su respuesta hasta obtener una expresión en términos de $R, L, C$ y $\omega$[cite: 9]. \\
+\textbf{b) Frecuencia característica (5 pts):} Determine la frecuencia $f_0$ para la cual las reactancias inductiva y capacitiva se cancelan[cite: 9]. Evalúe $H(j\omega_0)$ e interprete físicamente el resultado[cite: 9]. \\
+\textbf{c) Evaluación fuera de $f_0$ (8 pts):} Evalúe la función a $f = 500\,\text{Hz}$[cite: 9]. Determine $H(j\omega)$ en forma rectangular, su magnitud $|H|$, su fase $\angle H$ y la ganancia en decibelios $20\log_{10}|H|$[cite: 9]. \\
+\textbf{d) Interpretación frecuencial (4 pts):} Sin recalcular, explique cualitativamente qué espera para frecuencias $f \ll f_0$ y $f \gg f_0$[cite: 9]. Clasifique cualitativamente la respuesta del circuito (ej. pasabajas, pasaaltas, etc.)[cite: 9].
+
+\vspace{2cm}
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Auditoría Autónoma (Antes de entregar)[cite: 9]}]
+    \begin{multicols}{2}
+    \begin{itemize}
+        \setlength{\itemsep}{0pt}
+        \item[$\square$] ¿Modelé correctamente $L$ y $C$?[cite: 9]
+        \item[$\square$] ¿Interpreté correctamente serie/paralelo?[cite: 9]
+        \item[$\square$] ¿Conserve las polaridades definidas?[cite: 9]
+        \item[$\square$] ¿Mis ecuaciones provienen del circuito?[cite: 9]
+        \item[$\square$] ¿Operé cantidades complejas debidamente?[cite: 9]
+        \item[$\square$] ¿Mis unidades son correctas?[cite: 9]
+        \item[$\square$] ¿Respondí en magnitud y fase?[cite: 9]
+        \item[$\square$] ¿La fase es coherente con el circuito?[cite: 9]
+    \end{itemize}
+    \end{multicols}
+\end{tcolorbox}
+
+\end{document}

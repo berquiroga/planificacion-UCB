@@ -1,0 +1,81 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Documento Docente}
+\chead{Solucionario: Recuperatorio 1 (EC1)}
+\rhead{Circuitos Electrónicos II}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Solucionario Oficial y Rúbrica Docente}}[cite: 9]
+\end{center}
+
+\begin{tcolorbox}[colback=yellow!10, colframe=orange, title=\textbf{Guía de Errores Consecuenciales}]
+    Si $Z_C$ o $Z_L$ contiene un error aislado pero el estudiante construye correctamente las relaciones posteriores utilizando coherentemente su propio valor: descuente en la etapa inicial y conceda crédito estructural en las siguientes. No penalice repetidamente el mismo error[cite: 9].
+\end{tcolorbox}
+
+\section*{Problema 1: Red RLC Cargada (25 puntos)[cite: 9]}
+
+\textbf{a) Modelo fasorial (6 pts)[cite: 9]} \\
+$\omega = 2\pi(1000) = \boxed{6283.19\,\text{rad/s}}$[cite: 9]. (1 pt) \\
+$Z_C = \frac{1}{j(6283.19)(159.15\times10^{-9})} \approx \boxed{-j1000\,\Omega}$[cite: 9]. (2 pts) \\
+$Z_L = j(6283.19)(159.15\times10^{-3}) \approx \boxed{j1000\,\Omega}$[cite: 9]. (2 pts) \\
+Rama $2$: $Z_{R2L} = R_2 + Z_L = \boxed{1000 + j1000\,\Omega}$[cite: 9]. (1 pt)
+
+\textbf{b) Modelo equivalente (6 pts)[cite: 9]} \\
+$Z_A = R_1 \parallel Z_{R2L} = \frac{(1000)(1000+j1000)}{1000+(1000+j1000)} = 1000 \frac{1+j}{2+j}$[cite: 9]. Multiplicando conjugado: $Z_A = \frac{1000(3+j)}{5} = \boxed{600 + j200\,\Omega}$[cite: 9]. (2 pts) \\
+$Z_T = Z_C + Z_A = -j1000 + 600 + j200 \implies \boxed{Z_T = 600 - j800\,\Omega = 1000\angle-53.13^\circ\,\Omega}$[cite: 9]. (1 pt) \\
+Identificación paralelo (2 pts). Justificación reducción: Estructura serie/paralelo reducible desde la rama (1 pt)[cite: 9].
+
+\textbf{c) Análisis fasorial (9 pts)[cite: 9]} \\
+$\hat{I}_s = \frac{\hat{V}_s}{Z_T} = \frac{10\angle0^\circ}{1000\angle-53.13^\circ} = 10\angle53.13^\circ\,\text{mA} = 6 + j8\,\text{mA}$[cite: 9]. (2 pts) \\
+$\hat{V}_A = \hat{I}_s Z_A = (6+j8\text{ mA})(0.6+j0.2\text{ k}\Omega) = \boxed{2 + j6\,\text{V}}$[cite: 9]. (2 pts) \\
+$\hat{I}_{R2L} = \frac{\hat{V}_A}{Z_{R2L}} = \frac{2+j6}{1+j} \text{ mA} = \frac{(2+j6)(1-j)}{2} \text{ mA} = \boxed{4 + j2\,\text{mA}}$[cite: 9]. (2 pts) \\
+$\hat{V}_B = \hat{I}_{R2L} Z_L = (4+j2\text{ mA})(j1\text{ k}\Omega) = \boxed{-2 + j4\,\text{V}}$[cite: 9]. (1.5 pts rectangular) \\
+Magnitud: $|\hat{V}_B| = \sqrt{20} = 4.47\,\text{V}$[cite: 9]. Fase: $\tan^{-1}(4/-2)$ en Cuadrante II $\implies 116.6^\circ$[cite: 9]. $\boxed{\hat{V}_B = 4.47\angle116.6^\circ\,\text{V}_{\text{pico}}}$[cite: 9]. (1.5 pts polar)
+
+\textbf{d) Interpretación (4 pts)[cite: 9]} \\
+$|\hat{V}_B| = 4.47\,\text{V} < |\hat{V}_s| = 10\,\text{V} \implies$ magnitud es \textbf{menor}[cite: 9]. (1 pt) \\
+La fase es $+116.6^\circ$ frente a $0^\circ \implies$ $\hat{V}_B$ \textbf{adelanta} a la fuente[cite: 9]. (1 pt) \\
+El ángulo representa el desfase temporal entre las ondas sinusoidales, no un cambio de frecuencia[cite: 9]. (2 pts)
+
+\section*{Problema 2: Respuesta Frecuencial RLC (25 puntos)[cite: 9]}
+
+\textbf{a) Función de Transferencia (8 pts)[cite: 9]} \\
+Impedancias correctas (2 pts)[cite: 9]. $Z_T = R + j\omega L + \frac{1}{j\omega C} = R + j\left(\omega L - \frac{1}{\omega C}\right)$[cite: 9]. (2 pts) \\
+Salida sobre $R$: $H(j\omega) = \frac{V_o}{V_s} = \frac{R}{Z_T}$[cite: 9]. (2 pts) \\
+$\implies \boxed{H(j\omega) = \frac{R}{R + j\left(\omega L - \frac{1}{\omega C}\right)}}$[cite: 9]. (2 pts)
+
+\textbf{b) Frecuencia característica (5 pts)[cite: 9]} \\
+Cancelación: $\omega_0 L = \frac{1}{\omega_0 C} \implies \omega_0 = \frac{1}{\sqrt{LC}} \implies \boxed{f_0 = \frac{1}{2\pi\sqrt{LC}} \approx 1000\,\text{Hz}}$[cite: 9]. (Condición 2 pts, $f_0$ 1.5 pts) \\
+A resonancia, término imaginario es $0 \implies \boxed{H(j\omega_0) = 1\angle0^\circ}$[cite: 9]. (0.5 pt) \\
+Físicamente: Cancelación de reactancias hace que $R$ reciba toda la tensión (modelo ideal)[cite: 9]. (1 pt)
+
+\textbf{c) Evaluación a 500 Hz (8 pts)[cite: 9]} \\
+$f = 500\,\text{Hz} \implies \omega L \approx 500\,\Omega, \frac{1}{\omega C} \approx 2000\,\Omega \implies \omega L - \frac{1}{\omega C} \approx -1500\,\Omega$[cite: 9]. (2 pts) \\
+$H = \frac{1000}{1000 - j1500} = \frac{1000(1000+j1500)}{1000^2+1500^2} = \boxed{0.3077 + j0.4615}$[cite: 9]. (2 pts rect.) \\
+Magnitud: $\boxed{|H| = 0.5547}$[cite: 9] (1.5 pts). Fase: $\boxed{\angle H = \tan^{-1}(0.4615/0.3077) \approx +56.3^\circ}$[cite: 9] (1.5 pts). \\
+$\boxed{G_{dB} = 20\log_{10}(0.5547) \approx -5.12\,\text{dB}}$[cite: 9]. (1 pt)
+
+\textbf{d) Interpretación Frecuencial (4 pts)[cite: 9]} \\
+$f \ll f_0$: Impedancia capacitiva es alta $\implies$ baja corriente $\implies V_R$ cae[cite: 9]. (1 pt) \\
+$f \gg f_0$: Impedancia inductiva es alta $\implies$ baja corriente $\implies V_R$ cae[cite: 9]. (1 pt) \\
+Respuesta del circuito: Comportamiento \textbf{pasabanda}[cite: 9]. (1 pt) \\
+A 500 Hz: Fase positiva consistente con predominio capacitivo general de $Z_T$[cite: 9]. (1 pt)
+
+\end{document}

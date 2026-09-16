@@ -1,0 +1,61 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amssymb} % Requerido para el comando \square
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Checklist de Adquisición (BOM) y Logística - Lab 3}}[cite: 10]
+\end{center}
+
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Responsabilidad del Grupo[cite: 10]}]
+    \noindent \textbf{Grupo:} \rule{4cm}{0.4pt} \hfill \textbf{Deadline de adquisición:} \rule{4cm}{0.4pt}[cite: 10] 
+    
+    \vspace{0.3cm}
+    \noindent \textbf{Responsable de componentes:} \rule{6cm}{0.4pt}[cite: 10] 
+    
+    \vspace{0.3cm}
+    \noindent \textbf{Responsable de datasheet:} \rule{6cm}{0.4pt}[cite: 10] 
+    
+    \vspace{0.3cm}
+    \noindent \textbf{Responsable de LTSpice:} \rule{6cm}{0.4pt}[cite: 10] 
+    
+    \vspace{0.3cm}
+    \noindent \textbf{Responsable de tabla de medición:} \rule{6cm}{0.4pt}[cite: 10]
+\end{tcolorbox}
+
+\vspace{0.4cm}
+\noindent \textit{Nota: Los componentes definitivos deben ser validados con el diseño aprobado por el instructor antes de la adquisición.[cite: 10]}
+
+\vspace{0.4cm}
+\begin{table}[h]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    % Se ajustan exactamente a 6 columnas. \linewidth en columnas X previene el desbordamiento.
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{4cm}|c|X|X|c|c|}
+    \hline
+    \textbf{Componente / Ítem} & \textbf{Cant.} & \textbf{Tolerancia / Especificación} & \textbf{Responsable} & \textbf{¿Disp.?} & \textbf{Datasheet} \\ \hline
+    Op-Amp Exacto (\rule{1cm}{0.4pt}) & & \rule{\linewidth}{0.4pt} & \rule{\linewidth}{0.4pt} & $\square$ & $\square$ \\ \hline
+    Resistor $R_1$ (\rule{1cm}{0.4pt}) & & \rule{\linewidth}{0.4pt} & \rule{\linewidth}{0.4pt} & $\square$ & N/A \\ \hline
+    Resistor $R_2$ (\rule{1cm}{0.4pt}) & & \rule{\linewidth}{0.4pt} & \rule{\linewidth}{0.4pt} & $\square$ & N/A \\ \hline
+    Resistor $R_3$ (\rule{1cm}{0.4pt}) & & \rule{\linewidth}{0.4pt} & \rule{\linewidth}{0.4pt} & $\square$ & N/A \\ \hline
+    Resistor $R_4$ (\rule{1cm}{0.4pt}) & & \rule{\linewidth}{0.4pt} & \rule{\linewidth}{0.4pt} & $\square$ & N/A \\ \hline
+    Compensación (\rule{1cm}{0.4pt})& & \rule{\linewidth}{0.4pt} & \rule{\linewidth}{0.4pt} & $\square$ & $\square$ \\ \hline
+    Protoboard & 1 & N/A & \rule{\linewidth}{0.4pt} & $\square$ & N/A \\ \hline
+    Cables / Jumpers & Varios & Buen estado de conductividad & \rule{\linewidth}{0.4pt} & $\square$ & N/A \\ \hline
+    Fuente Alimentación & & Rango: \rule{2cm}{0.4pt} & \rule{\linewidth}{0.4pt} & $\square$ & N/A \\ \hline
+    Instrumentos & & Multímetro / Osciloscopio & \rule{\linewidth}{0.4pt} & $\square$ & N/A \\ \hline
+    \end{tabularx}
+\end{table}
+
+\end{document}
