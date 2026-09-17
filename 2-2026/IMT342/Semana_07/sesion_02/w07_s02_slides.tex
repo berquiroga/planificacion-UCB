@@ -1,0 +1,330 @@
+\documentclass[aspectratio=169, xcolor={table,xcdraw}]{beamer}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\renewcommand{\tablename}{Tabla}
+\renewcommand{\figurename}{Figura}
+
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, angles, quotes}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+
+\title[Cinemática Inversa]{Cinemática Inversa: Multiplicidad y Desacoplamiento}
+\subtitle{Recuperación Curricular y Arquitectura Analítica}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija \\ Robótica (IMT-342)}
+\date{Semana 7 - Sesión 2}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Cinemática Directa vs. Cinemática Inversa}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=Cinemática Directa (FK){[cite: 10]}, left=1mm, right=1mm, top=1mm, bottom=1mm, boxsep=0mm]
+                \begin{center}
+                    $\boxed{\mathbf{q} \longrightarrow {}^{0}T_n(\mathbf{q})}$
+                \end{center}
+                \small
+                \textbf{Conocido:} Geometría y articulares ($\mathbf{q}$). \\
+                \textbf{Incógnita:} Pose del efector final. \\
+                \textbf{Solución:} Única (evaluación directa).
+            \end{tcolorbox}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=Cinemática Inversa (IK){[cite: 10]}, left=1mm, right=1mm, top=1mm, bottom=1mm, boxsep=0mm]
+                \begin{center}
+                    $\boxed{{}^{0}T_n^{\,d} \longrightarrow \left\{ \mathbf{q}^{(1)}, \mathbf{q}^{(2)}, \ldots \right\}}$
+                \end{center}
+                \small
+                \textbf{Conocido:} Geometría y pose deseada (${}^{0}T_n^{\,d}$). \\
+                \textbf{Incógnita:} Configuraciones articulares. \\
+                \textbf{Solución:} Múltiple (conjunto).
+            \end{tcolorbox}
+        \end{column}
+    \end{columns}
+    
+    \vfill
+    
+    \begin{alertblock}{Precaución Conceptual{[cite: 10]}}
+        \small
+        "Cinemática Inversa" \textbf{no} significa calcular la matriz inversa $({}^{0}T_n)^{-1}$. Invertir la matriz solo invierte el sentido de la transformación de coordenadas; \textbf{no} recupera las variables articulares a partir de la pose.
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Desarrollo Matemático: Manipulador Planar 2R (1/3)}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{Cinemática directa de posición}[cite: 10]:
+            \vspace{0.2cm}
+            
+            $x = a_1\cos q_1 + a_2\cos(q_1+q_2)$
+            
+            \vspace{0.2cm}
+            $y = a_1\sin q_1 + a_2\sin(q_1+q_2)$
+            
+            \vspace{0.6cm}
+            \textbf{Objetivo IK:} Despejar $q_1$ y $q_2$ analíticamente en función de un objetivo espacial dado $(x, y)$[cite: 10].
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \centering
+            \begin{tikzpicture}[scale=0.85, thick]
+                \draw[->, gray] (0,0) -- (2.5,0) node[right]{$x$};
+                \draw[->, gray] (0,0) -- (0,2.5) node[above]{$y$};
+                
+                \coordinate (O) at (0,0);
+                \coordinate (J1) at (60:1.5);
+                \coordinate (TCP) at ($(J1) + (-20:1)$);
+                
+                \draw[ucbblue, line width=2pt] (O) -- (J1) node[midway, above left]{$a_1$};
+                \draw[ucbblue!70, line width=2pt] (J1) -- (TCP) node[midway, above right]{$a_2$};
+                
+                \draw[dashed] (O) -- (TCP) node[midway, below right]{$r$};
+                
+                \filldraw[black] (O) circle (1.5pt);
+                \filldraw[black] (J1) circle (1.5pt) node[above left]{$(x_1, y_1)$};
+                \filldraw[red] (TCP) circle (1.5pt) node[right]{$(x, y)$};
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Desarrollo Matemático: Manipulador Planar 2R (2/3)}
+    Elevamos al cuadrado ambas ecuaciones y las sumamos para eliminar $q_1$[cite: 10]:
+    \begin{align*}
+        x^2 &= a_1^2 c_1^2 + a_2^2 c_{12}^2 + 2a_1 a_2 c_1 c_{12} \\
+        y^2 &= a_1^2 s_1^2 + a_2^2 s_{12}^2 + 2a_1 a_2 s_1 s_{12}
+    \end{align*}
+    Sumando $x^2 + y^2$ y factorizando:
+    \begin{equation*}
+        x^2 + y^2 = a_1^2(c_1^2+s_1^2) + a_2^2(c_{12}^2+s_{12}^2) + 2a_1 a_2 (c_1 c_{12} + s_1 s_{12})
+    \end{equation*}
+    Usando la identidad trigonométrica de la resta ($\cos(\alpha-\beta) = \cos\alpha\cos\beta + \sin\alpha\sin\beta$)[cite: 10]:
+    \begin{equation*}
+        x^2 + y^2 = a_1^2 + a_2^2 + 2a_1 a_2 \cos q_2
+    \end{equation*}
+    Despejando $\cos q_2$ (notado como $c_2$)[cite: 10]:
+    \begin{equation*}
+        \boxed{c_2 = \frac{x^2+y^2-a_1^2-a_2^2}{2a_1 a_2}}
+    \end{equation*}
+\end{frame}
+
+\begin{frame}{Desarrollo Matemático: Manipulador Planar 2R (3/3)}
+    Sabiendo que $s_2^2 + c_2^2 = 1$, obtenemos dos posibles soluciones geométricas para el seno[cite: 10]:
+    \begin{equation*}
+        \boxed{s_2 = \pm\sqrt{1-c_2^2}} \qquad \text{para } |c_2| \le 1
+    \end{equation*}
+    
+    Aplicando la función $\operatorname{atan2}$ que preserva los cuadrantes, encontramos las dos soluciones para la segunda articulación[cite: 10]:
+    \begin{equation*}
+        \boxed{q_2 = \operatorname{atan2}(s_2, c_2)}
+    \end{equation*}
+    
+    Con $q_2$ conocido, una manipulación geométrica conveniente permite despejar $q_1$[cite: 10]:
+    \begin{equation*}
+        \boxed{q_1 = \operatorname{atan2}(y, x) - \operatorname{atan2}(a_2\sin q_2, a_1+a_2\cos q_2)}
+    \end{equation*}
+    
+    \textit{Nota: El signo $\pm$ de $s_2$ representa ramas geométricas reales (codo arriba / codo abajo), no un mero artificio algebraico[cite: 10].}
+\end{frame}
+
+\begin{frame}{Ejemplo Resuelto: Multiplicidad y Alcance}
+    \textbf{Problema:} Brazo planar con $a_1=1, a_2=1$. Objetivo final $P=(1,1)$[cite: 10].
+    
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \textbf{Cálculo analítico[cite: 10]:}
+            \begin{align*}
+                c_2 &= \frac{1^2 + 1^2 - 1^2 - 1^2}{2(1)(1)} = 0 \\
+                s_2 &= \pm\sqrt{1-0} = \pm 1 \\
+                q_2 &= \operatorname{atan2}(\pm 1, 0) = \pm \frac{\pi}{2}
+            \end{align*}
+            
+            \textbf{Soluciones (Ramas)[cite: 10]:} \\
+            Para $q_2 = +\pi/2 \implies q_1 = 0$ \\
+            $\mathbf{q}^{(1)} = [0, \pi/2]^T$ \\
+            \vspace{0.1cm}
+            Para $q_2 = -\pi/2 \implies q_1 = \pi/2$ \\
+            $\mathbf{q}^{(2)} = [\pi/2, -\pi/2]^T$
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \centering
+            \begin{tikzpicture}[scale=1.0, thick]
+                \draw[->, gray] (0,0) -- (1.5,0) node[right]{$x$};
+                \draw[->, gray] (0,0) -- (0,1.5) node[above]{$y$};
+                
+                \coordinate (O) at (0,0);
+                \coordinate (TCP) at (1,1);
+                
+                % Rama 1 (Codo Abajo)
+                \coordinate (J1A) at (1,0);
+                \draw[ucbblue, line width=2pt] (O) -- (J1A);
+                \draw[ucbblue!70, line width=2pt] (J1A) -- (TCP);
+                \filldraw[black] (J1A) circle (1.5pt) node[below right]{\footnotesize $\mathbf{q}^{(1)}$};
+                
+                % Rama 2 (Codo Arriba)
+                \coordinate (J1B) at (0,1);
+                \draw[red!70!black, line width=2pt] (O) -- (J1B);
+                \draw[red!50, line width=2pt] (J1B) -- (TCP);
+                \filldraw[black] (J1B) circle (1.5pt) node[above left]{\footnotesize $\mathbf{q}^{(2)}$};
+                
+                \filldraw[black] (O) circle (1.5pt);
+                \filldraw[black] (TCP) circle (1.5pt) node[above right]{$P(1,1)$};
+            \end{tikzpicture}
+            
+            \vspace{0.1cm}
+            \footnotesize \textbf{Alcance (Reachability):} \\ $|a_1-a_2| \le \sqrt{x^2+y^2} \le a_1+a_2$[cite: 10].
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Frontera Conceptual: DH versus URDF[cite: 10]}
+    \small
+    \textit{Uno de los mayores errores es confundir el \textbf{eje físico} con las \textbf{coordenadas} usadas para describirlo en un marco específico[cite: 10].}
+    
+    \vfill
+    
+    \begin{center}
+    \begin{tikzpicture}[scale=0.9, thick]
+        % Cylinder representing the physical axis
+        \node[cylinder, draw=black, aspect=0.3, minimum height=2.5cm, minimum width=0.8cm, shape border rotate=90, fill=gray!20] (cyl) at (0,0) {};
+        \draw[dashed, line width=1.5pt] (0,-1.5) -- (0,1.5) node[above]{Eje Físico de Rotación};
+        
+        % DH Frame
+        \coordinate (D) at (-3,0);
+        \draw[->, ucbblue] (D) -- ($(D)+(1,0)$) node[right]{$x_D$};
+        \draw[->, ucbblue] (D) -- ($(D)+(0,1)$) node[above]{$z_D \equiv \mathbf{a}$};
+        \node[below, ucbblue] at (D) {Marco D-H ($D$)};
+        \node[ucbblue] at (-3, -0.8) {${}^{D}a = [0 \;\; 0 \;\; 1]^T$};
+        
+        % URDF Frame (Rotated)
+        \coordinate (U) at (3,0);
+        \draw[->, red!70!black] (U) -- ($(U)+(0,-1)$) node[below]{$x_U$};
+        \draw[->, red!70!black] (U) -- ($(U)+(0,1)$) node[above]{$y_U \equiv \mathbf{a}$};
+        \node[below right, red!70!black] at (U) {Marco URDF ($U$)};
+        \node[red!70!black] at (3, -0.8) {${}^{U}a = [0 \;\; 1 \;\; 0]^T$};
+    \end{tikzpicture}
+    \end{center}
+    
+    \vfill
+    
+    \begin{center}
+        $\boxed{{}^{U}a = {}^UR_D{}^Da}$ \\[0.15cm]
+        \small El vector físico no cambia, sus componentes coordenados sí[cite: 10].
+    \end{center}
+\end{frame}
+
+\begin{frame}{Muñeca Esférica y Centro de Muñeca (Spherical Wrist)}
+    \textbf{Desacoplamiento geométrico:} Posible en brazos 6R si los últimos 3 ejes de rotación se intersectan en un único punto (Centro de Muñeca, $W$)[cite: 10].
+    
+    \begin{columns}[T]
+        \begin{column}{0.65\textwidth}
+            \small
+            \vspace{0.4cm}
+            Si la convención establece un offset final $d_6$ a lo largo del eje $z_6$[cite: 10]:
+            \begin{equation*}
+                {}^{0}z_6^{\,d} = {}^{0}R_6^{\,d} \begin{bmatrix} 0 & 0 & 1 \end{bmatrix}^T \text{[cite: 10]}
+            \end{equation*}
+            
+            La ubicación del centro de la muñeca ($p_W$) expresada en la base se extrae de la pose deseada de la herramienta[cite: 10]:
+            \begin{equation*}
+                \boxed{{}^{0}p_W = {}^{0}p_6^{\,d} - d_6\,{}^{0}z_6^{\,d}} \text{[cite: 10]}
+            \end{equation*}
+            
+            \scriptsize \textit{Nota: Verificaremos el offset exacto $[VERIFY]$ para el robot del curso en el laboratorio.}
+        \end{column}
+        \begin{column}{0.35\textwidth}
+            \centering
+            \vspace{0.4cm}
+            \begin{tikzpicture}[scale=0.9, thick]
+                \coordinate (W) at (0,0);
+                \coordinate (TCP) at (2, 1);
+                
+                \filldraw[black] (W) circle (2pt) node[below]{$W ({}^{0}p_W)$};
+                \filldraw[red] (TCP) circle (2pt) node[right]{${}^{0}p_6^{\,d}$};
+                
+                \draw[-Stealth, ucbblue, line width=1.5pt] (W) -- (TCP) node[midway, above left]{$d_6 {}^{0}z_6^{\,d}$};
+                
+                \draw[dashed, gray] (-1,-0.5) -- (1,0.5);
+                \draw[dashed, gray] (0,-1) -- (0,1);
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Hoja de Ruta de Pieper: Estructura Analítica (1/2)[cite: 10]}
+    Metodología general para desacoplar y resolver la cinemática inversa:
+    \begin{enumerate}
+        \item \textbf{Pose Deseada:} ${}^0T_6^d = [R_d \; p_d; 0 \; 1]$.
+        \item \textbf{Desacoplamiento de Posición:} Calcular el centro de muñeca $p_W$.
+        \item \textbf{Cinemática del Brazo:} Resolver la sub-cadena para posición $p_W \rightarrow (q_1, q_2, q_3)$.
+        \item \textbf{Matriz de Rotación Intermedia:} Computar ${}^0R_3(q_1, q_2, q_3)$ con la solución obtenida.
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{Hoja de Ruta de Pieper: Estructura Analítica (2/2)[cite: 10]}
+    \begin{enumerate}
+        \setcounter{enumi}{4}
+        \item \textbf{Desacoplamiento de Orientación:} La orientación que debe aportar la muñeca es $\boxed{{}^3R_6 = ({}^0R_3)^T R_d}$[cite: 10].
+        \item \textbf{Cinemática de la Muñeca:} Resolver orientación ${}^3R_6 \rightarrow (q_4, q_5, q_6)$.
+        \item \textbf{Enumeración de Ramas:} Expandir todas las combinaciones reales posibles.
+        \item \textbf{Filtrado:} Descartar las que violen los límites articulares físicos.
+        \item \textbf{Verificación:} Comprobar cada candidato pasando por Cinemática Directa (FK)[cite: 10].
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{Cierre: La importancia de \texttt{atan2}[cite: 10]}
+    \textbf{Funciones Cuadrante-Conscientes:} \\
+    A diferencia de $\tan^{-1}(y/x)$, la función computacional $\operatorname{atan2}(y, x)$ preserva el signo del numerador y denominador independientemente, determinando el cuadrante correcto[cite: 10].
+    \vspace{0.4cm}
+    
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \textbf{Ejemplos críticos:}
+            \begin{itemize}
+                \item $\operatorname{atan2}(1, 1) = \pi/4$ (Cuadrante I)
+                \item $\operatorname{atan2}(-1, -1) = -3\pi/4$ (Cuadrante III)
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            Si usáramos $\tan^{-1}(-1/-1)$, el resultado sería $\pi/4$, introduciendo un error de $180^\circ$ en la articulación[cite: 10].
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Cierre: Verificación mediante FK[cite: 10]}
+    \textbf{Cerrando el bucle analítico:} \\
+    Ninguna solución de cinemática inversa está completa sin verificación matemática rigurosa[cite: 10].
+    
+    Para cada vector candidato $\mathbf{q}^{(k)}$, se debe reingresar a la cinemática directa:
+    \begin{equation*}
+        {}^0T_n^{(k)} = {}^0T_n(\mathbf{q}^{(k)})
+    \end{equation*}
+    Y evaluar si restituye exitosamente la pose original:
+    \begin{equation*}
+        {}^0R_n^{(k)} \approx {}^0R_n^d, \qquad {}^0p_n^{(k)} \approx {}^0p_n^d \text{[cite: 10]}
+    \end{equation*}
+    \textit{Una solución válida para el centro de la muñeca ($p_W$) aún podría fallar en alcanzar la orientación final requerida[cite: 10].}
+\end{frame}
+
+\end{document}

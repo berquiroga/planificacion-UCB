@@ -1,0 +1,94 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{listings}
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    backgroundcolor=\color{gray!5},
+    frame=single,
+    rulecolor=\color{gray!40},
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{red!70!black},
+    commentstyle=\color{green!60!black},
+    showstringspaces=false
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{Ing. Mecatrónica}}
+\chead{Notas del Docente y Guía Diagnóstica}
+\rhead{Semana 7 - Sesión 2}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{red!80!black}{Notas del Docente y Guía de Diagnóstico}}\\[0.2cm]
+    \normalsize Cinemática Inversa (W07-S02)[cite: 10]
+\end{center}
+
+\section*{Matriz de Diagnóstico y Mitigación Rápida[cite: 10]}
+Durante el trabajo de los estudiantes, preste atención a las siguientes observaciones para intervenir oportunamente:
+
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{|>{\hsize=0.8\hsize}X|>{\hsize=1.0\hsize}X|>{\hsize=1.2\hsize}X|}
+\hline
+\rowcolor{ucbblue!10} \textbf{Observación} & \textbf{Posible Concepto Erróneo} & \textbf{Intervención Inmediata} \\ \hline
+Afirma que la IK es $T^{-1}$. & Inversión de transformación confundida con IK. & Pregunte qué variables contiene físicamente la matriz $T^{-1}$. \\ \hline
+Acepta solo una solución 2R. & Multiplicidad no interiorizada. & Pida que esboce las configuraciones de codo-arriba y codo-abajo. \\ \hline
+Trata el signo $\pm$ como arbitrario. & No hay significado de rama geométrica. & Mapee cada signo a una postura física del robot. \\ \hline
+Llama "caso único" a un target en el límite. & Conexión con singularidad ausente. & Compare un objetivo interior versus un brazo estirado. \\ \hline
+Usa $\tan^{-1}(y/x)$ en todas partes. & Se pierde la información del cuadrante. & Compare analíticamente QI y QIII con coordenadas negativas. \\ \hline
+Centro de muñeca = origen de herramienta siempre. & Confusión de offset/marco. & Dibuje la brida y el vector $d_6$ de retroceso. \\ \hline
+No puede derivar $R_3^6 = (R_0^3)^TR_d$. & Composición de rotaciones débil. & Inicie desde la ecuación base $R_0^6 = R_0^3 R_3^6$. \\ \hline
+El marco D-H debe ser igual al marco URDF. & Representación / Geometría confundidas. & Recuerde que el vector físico es invariante, las coordenadas no. \\ \hline
+Trata \texttt{axis} de URDF como global. & Semántica del marco de junta débil. & Pida que identifique el marco local de la junta primero. \\ \hline
+Busca las ocho ramas exactas de inmediato. & Conflación de ruta analítica con la derivación final completa. & Restablezca el límite de la sesión: hoy es solo la arquitectura general. \\ \hline
+Verifica solo la posición para la pose completa. & Orientación omitida en validación. & Requiera comparación tanto de matriz $R$ como vector $p$. \\ \hline
+\end{tabularx}
+
+\section*{Código de Verificación Opcional (Python 2R IK)[cite: 10]}
+El siguiente código implementa analíticamente la cinemática inversa de 2R considerando la multiplicidad, ideal para verificar los cálculos manuales en el aula.
+
+\begin{lstlisting}
+import numpy as np
+
+a1 = 1.0
+a2 = 1.0
+x, y = 1.0, 1.0
+
+c2 = (x*x + y*y - a1*a1 - a2*a2) / (2*a1*a2)
+
+for sign in (+1, -1):
+    s2 = sign * np.sqrt(max(0.0, 1 - c2*c2))
+    q2 = np.arctan2(s2, c2)
+    q1 = np.arctan2(y, x) - np.arctan2(a2*s2, a1 + a2*c2)
+
+    x_fk = a1*np.cos(q1) + a2*np.cos(q1 + q2)
+    y_fk = a1*np.sin(q1) + a2*np.sin(q1 + q2)
+
+    print(np.round([q1, q2], 6), np.round([x_fk, y_fk], 6))
+
+# Salidas esperadas:
+# [0.000000, 1.570796] -> [1.0, 1.0]
+# [1.570796, -1.570796] -> [1.0, 1.0]
+\end{lstlisting}
+
+\end{document}

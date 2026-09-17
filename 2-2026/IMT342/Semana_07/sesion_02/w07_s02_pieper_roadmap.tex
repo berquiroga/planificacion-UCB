@@ -1,0 +1,75 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT342}}
+\chead{Hoja de Referencia}
+\rhead{Semana 7 - Sesión 2}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Ruta Analítica de Cinemática Inversa — Vista Previa Pieper}}\\[0.2cm]
+    \normalsize \textit{Metodología de Desacoplamiento para Manipuladores 6R con Muñeca Esférica[cite: 10]}
+\end{center}
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=gray!5, colframe=ucbblue, title=\textbf{Flujo del Algoritmo Analítico}, fonttitle=\large\bfseries]
+    \renewcommand{\arraystretch}{1.8}
+    \begin{enumerate}
+        \item \textbf{Pose Deseada:} Definir la matriz homogénea objetivo a partir de los requerimientos de la tarea:
+        \begin{equation*}
+            {}^0T_6^d = \begin{bmatrix} R_d & p_d \\ \mathbf{0} & 1 \end{bmatrix} \text{[cite: 10]}
+        \end{equation*}
+        
+        \item \textbf{Centro de la Muñeca ($p_W$):} Aislar la cinemática de posición. Usando la convención de muñeca esférica adoptada (donde el eje $Z_6$ intersecta el centro):
+        \begin{equation*}
+            p_W = p_d - d_6 z_6^d \text{[cite: 10]}
+        \end{equation*}
+        \textit{(Nota: $d_6$ es el offset específico a validar con la geometría del robot ABB en el modelo final).}
+        
+        \item \textbf{Cinemática del Brazo:} Resolver las ecuaciones no lineales para las primeras tres articulaciones basadas en la posición $p_W$[cite: 10]:
+        \begin{equation*}
+            p_W \longrightarrow (q_1, q_2, q_3)
+        \end{equation*}
+        
+        \item \textbf{Orientación Residual:} Computar la matriz de orientación que el brazo aporta $R_0^3(q_1, q_2, q_3)$, y despejar la orientación que la muñeca debe compensar[cite: 10]:
+        \begin{equation*}
+            R_3^6 = ({}^0R_3)^T R_d \text{[cite: 10]}
+        \end{equation*}
+        
+        \item \textbf{Cinemática de la Muñeca:} Resolver los ángulos de Euler esféricos correspondientes a la orientación requerida[cite: 10]:
+        \begin{equation*}
+            R_3^6 \longrightarrow (q_4, q_5, q_6)
+        \end{equation*}
+        
+        \item \textbf{Enumeración de Ramas:} Calcular analíticamente todas las multiplicidades geométricas posibles (codo arriba/abajo, giro muñeca, etc.) usando los signos de $\operatorname{atan2}$[cite: 10].
+        
+        \item \textbf{Filtrado Físico:} Descartar las soluciones matemáticamente imaginarias y aquellas configuraciones reales que violen los límites mecánicos verificados de las articulaciones (DataSheet del robot)[cite: 10].
+        
+        \item \textbf{Verificación FK:} Garantizar que toda solución $\mathbf{q}^{(k)}$ recuperada reproduce la pose original cuando se evalúa en el modelo directo[cite: 10]:
+        \begin{equation*}
+            T_0^6(\mathbf{q}^{(k)}) \stackrel{?}{\approx} T_0^{6,d} \text{[cite: 10]}
+        \end{equation*}
+    \end{enumerate}
+\end{tcolorbox}
+
+\vspace{0.5cm}
+\noindent \textit{Nota de alcance: Este documento establece la arquitectura del algoritmo. Las derivaciones matemáticas completas de cada rama (las "8 soluciones de Pieper") son objeto de la siguiente sesión analítica del curso[cite: 10].}
+
+\end{document}

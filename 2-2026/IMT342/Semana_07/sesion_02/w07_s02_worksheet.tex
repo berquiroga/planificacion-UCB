@@ -1,0 +1,95 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Worksheet: Conceptos de Cinemática Inversa}
+\rhead{Semana 7 - Sesión 2}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Hoja de Trabajo Guiada: Cinemática Inversa y Desacoplamiento}}\\[0.2cm]
+\end{center}
+
+\vspace{0.4cm}
+
+\section*{Ejercicio 1 — ¿Cinemática Directa (FK) o Inversa (IK)?[cite: 10]}
+Clasifique los siguientes escenarios indicando si requieren la formulación FK, IK, o ninguna de las dos.
+\begin{enumerate}
+    \item Dados $q_1, \ldots, q_6$, determinar la pose de la brida. \rule{4cm}{0.15mm}
+    \item Dada una pose deseada para la brida, encontrar todas las combinaciones articulares admisibles. \rule{4cm}{0.15mm}
+    \item Dada ${}^0T_6$, computar matemáticamente ${}^6T_0$. \rule{4cm}{0.15mm}
+    \item Dada una posición objetivo para un brazo 2R, determinar las configuraciones de codo arriba y codo abajo. \rule{4cm}{0.15mm}
+\end{enumerate}
+
+\section*{Ejercicio 2 — Multiplicidad y Alcance (Reachability)[cite: 10]}
+Para un brazo planar de dos enlaces con $a_1 = 1$ y $a_2 = 1$, el rango de alcance admisible es $|a_1-a_2| \le \sqrt{x^2+y^2} \le a_1+a_2$[cite: 10]. Clasifique los siguientes objetivos $(x,y)$ como: \textbf{Interior alcanzable (con multiplicidad), Límite singular (único), o Inalcanzable}.
+\begin{itemize}
+    \item $P = (1, 1)$: \rule{6cm}{0.15mm}
+    \item $P = (2, 0)$: \rule{6cm}{0.15mm}
+    \item $P = (3, 0)$: \rule{6cm}{0.15mm}
+    \item $P = (0, 0)$: \rule{6cm}{0.15mm}
+\end{itemize}
+
+\section*{Ejercicio 3 — Uso Analítico de $\operatorname{atan2}$[cite: 10]}
+Determine el ángulo principal (en radianes o grados) utilizando la función cuadrante-consciente $\operatorname{atan2}(y, x)$:
+\begin{itemize}
+    \item $\operatorname{atan2}(1, 1) =$ \rule{2cm}{0.15mm}
+    \item $\operatorname{atan2}(1, -1) =$ \rule{2cm}{0.15mm}
+    \item $\operatorname{atan2}(-1, -1) =$ \rule{2cm}{0.15mm}
+    \item $\operatorname{atan2}(-1, 1) =$ \rule{2cm}{0.15mm}
+\end{itemize}
+
+\section*{Ejercicio 4 — Cálculo Geométrico del Centro de Muñeca[cite: 10]}
+Asuma un modelo cinemático donde la brida (herramienta) está desplazada $d_6$ a lo largo del eje $z_6$[cite: 10]. Dados la posición y el vector de orientación deseados para la brida:
+\begin{equation*}
+    p_6^d = \begin{bmatrix} p_x \\ p_y \\ p_z \end{bmatrix}, \qquad z_6^d = \begin{bmatrix} 0 \\ 1 \\ 0 \end{bmatrix}
+\end{equation*}
+Aplique la ecuación ${}^{0}p_W = {}^{0}p_6^{\,d} - d_6\,{}^{0}z_6^{\,d}$ y determine analíticamente las coordenadas del centro de la muñeca $p_W$[cite: 10]:
+\vspace{3cm}
+
+\section*{Ejercicio 5 — Descomposición de Posición vs. Orientación (Pieper)[cite: 10]}
+Ordene lógicamente los siguientes 5 pasos del algoritmo de desacoplamiento de muñeca esférica numerándolos del 1 al 5:
+\begin{itemize}
+    \item[\rule{1cm}{0.15mm}] Computar la orientación residual ${}^3R_6 = ({}^0R_3)^T R_d$.
+    \item[\rule{1cm}{0.15mm}] Verificar los candidatos obtenidos usando Cinemática Directa (FK).
+    \item[\rule{1cm}{0.15mm}] Resolver cinemáticamente $q_4, q_5, q_6$ (problema de orientación).
+    \item[\rule{1cm}{0.15mm}] Calcular el centro de muñeca $p_W$.
+    \item[\rule{1cm}{0.15mm}] Resolver cinemáticamente $q_1, q_2, q_3$ (problema de posición).
+\end{itemize}
+
+\section*{Ejercicio 6 — Paradoja D-H vs. URDF[cite: 10]}
+Si el vector físico del eje de una articulación rotatoria se modela como $[0, 0, 1]^T$ bajo las coordenadas de un marco D-H, y como $[0, 1, 0]^T$ bajo las coordenadas de un marco de junta URDF, ¿demuestra esto por sí solo que uno de los modelos es incorrecto? Explique brevemente basándose en la transformación ${}^Ua = {}^UR_D{}^Da$[cite: 10].
+\vspace{3cm}
+
+\begin{tcolorbox}[colback=gray!5, colframe=gray!50, title=\textbf{Exit Check de Consolidación[cite: 10]}]
+    \small
+    \textbf{1.} ¿Por qué la IK puede tener múltiples soluciones? \rule{6cm}{0.15mm} \\
+    \textbf{2.} ¿Cuál es el propósito de calcular el centro de la muñeca? \rule{6cm}{0.15mm} \\
+    \textbf{3.} ¿Por qué $\operatorname{atan2}$ es superior a $\tan^{-1}$ para robótica? \rule{6cm}{0.15mm} \\
+    \textbf{4.} ¿Por qué verificar la IK con la FK? \rule{6cm}{0.15mm}
+\end{tcolorbox}
+
+\end{document}
