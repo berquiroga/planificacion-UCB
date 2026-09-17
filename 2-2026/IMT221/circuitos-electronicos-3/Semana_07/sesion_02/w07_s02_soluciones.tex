@@ -19,36 +19,31 @@
 
 \begin{document}
 
-\section*{Solucionario y Notas Docentes}
+\section*{Solucionario y Guía para Retroalimentación Docente}
 
-\subsection*{Diagnóstico Transversal (Esquema Colector Común)}
+\subsection*{Resolución: Diagnóstico Transversal (Circuito de Base Común)}
 \begin{enumerate}
-    \item \textbf{Identificación:} La señal entra por la \textbf{base}, sale por el \textbf{emisor}. El \textbf{colector} es el terminal común porque al apagar fuentes DC, $V_{CC}$ se vuelve Tierra AC[cite: 15].
-    \item \textbf{Parámetros:} $g_m = I_{CQ}/V_T$ y $r_e \approx 1/g_m$ (o $r_\pi = \beta/g_m$).
-    \item \textbf{Equivalente AC:} El alumno debe dibujar el modelo (Híbrido-$\pi$ o T), asegurando que el Colector aterrice en el símbolo de tierra y $R_E$ esté conectada desde emisor a tierra.
-    \item \textbf{Leyes de Kirchhoff:} Si usa Modelo T: KVL en la malla de entrada $\implies v_i = i_e r_e + i_e R_E$.
-    \item \textbf{Supuestos:} Banda media, operación en activa-directa, pequeña señal[cite: 15].
+    \item \textbf{Terminales:} Entrada por el \textbf{emisor}, salida por el \textbf{colector}. Terminal común: \textbf{Base} (conectada a Tierra AC). (Nota: La figura del diagnóstico mostraba entrada en emisor y $R_C'$ al colector; es un CB)[cite: 16].
+    \item \textbf{Parámetros intrínsecos:} $g_m = \frac{I_{CQ}}{V_T}$ y $r_e \approx \frac{1}{g_m}$[cite: 16].
+    \item \textbf{Equivalente AC:} Alumno debe dibujar Base a tierra. El modelo T es ideal aquí.
+    \item \textbf{KVL/KCL inicial (Modelo T):} El voltaje en el emisor determina la caída base-emisor. Al estar la base en $0\,\text{V}$, $v_{be} = -v_i$[cite: 16]. Por tanto, la corriente de fuente dependiente es $i_c = -g_m v_i$[cite: 16].
+    \item \textbf{Supuestos:} Pequeña señal, $r_o \to \infty$, banda media, operación en Activa Directa[cite: 16].
 \end{enumerate}
-\textbf{Error Común:} Memorizar que $A_v = -g_m R_C$ sin ver el circuito. \textbf{Sonda pedagógica:} "\textit{Mira por dónde sale la señal. ¿Hay un $R_C$ en el camino de salida en tu diagrama AC?}"[cite: 15].
+\textbf{Sonda Docente:} Si el estudiante aplica $A_v = -g_m R_C$ ciegamente. \textit{Pregunta:} "Sigue la corriente desde tu entrada en el emisor hasta tu salida en el colector. ¿En qué dirección cruza la carga $R_C$? ¿Invierte la fase o no?"[cite: 16].
 
-\subsection*{Ejercicio Guiado: Par Diferencial DC}
-\textbf{Paso 1: Estado Balanceado}
+\subsection*{Resolución: Ejercicio Guiado Par Diferencial DC}
+\textbf{Valores dados:} $V_{CC}=5\,\text{V}$, $V_{EE}=-5\,\text{V}$, $I_T=1.2\,\text{mA}$, $R_C=2.7\,\text{k}\Omega$, $\beta=120$, $v_1=v_2=0\,\text{V}$[cite: 16].
+
 \begin{enumerate}
-    \item KCL en nodo E: $I_{E1} + I_{E2} = I_{TAIL}$. Por simetría ($v_1 = v_2$), $I_{E1} = I_{E2}$. Sustituyendo: $2I_{E1} = 2\,\text{mA} \implies \mathbf{I_{E1} = 1\,\text{mA}}$ y $\mathbf{I_{E2} = 1\,\text{mA}}$[cite: 15].
-    \item Asumiendo $\alpha \approx 1$, entonces $\mathbf{I_{C1} \approx 1\,\text{mA}}$ e $\mathbf{I_{C2} \approx 1\,\text{mA}}$[cite: 15].
-    \item Ley de Ohm en colectores: $V_{RC1} = I_{C1}R_C = (1\,\text{mA})(4.7\,\text{k}\Omega) = \mathbf{4.7\,\text{V}}$. Igual para $V_{RC2} = 4.7\,\text{V}$[cite: 15].
-    \item Potencial en colectores (KVL desde fuente): $V_{C1} = V_{CC} - V_{RC1} = 10\,\text{V} - 4.7\,\text{V} = \mathbf{5.3\,\text{V}}$. Igual para $V_{C2} = \mathbf{5.3\,\text{V}}$[cite: 15].
-    \item \textbf{Verificación:} Si $V_B = 0\,\text{V}$ y la unión conduce, $V_E = V_B - V_{BE} = 0 - 0.7 = \mathbf{-0.7\,\text{V}}$. \\
-    Voltaje Colector-Emisor: $V_{CE1} = V_{C1} - V_E = 5.3\,\text{V} - (-0.7\,\text{V}) = \mathbf{6.0\,\text{V}}$. \\
-    Como $V_{CE} > 0.3\,\text{V}$ (aprox), el BJT no está saturado; opera correctamente en \textbf{Activa Directa}[cite: 15].
+    \item \textbf{Corrientes de Emisor:} KCL en nodo común $\implies I_{E1} + I_{E2} = I_T$[cite: 16]. Por simetría perfecta con entradas iguales ($v_1=v_2$), $I_{E1} = I_{E2}$. $\implies 2 I_E = 1.2\,\text{mA} \implies \mathbf{I_{E1} = I_{E2} = 0.6\,\text{mA}}$[cite: 16].
+    \item \textbf{Cálculo de $\alpha$:} $\alpha = \frac{\beta}{\beta+1} = \frac{120}{121} \approx \mathbf{0.99174}$[cite: 16].
+    \item \textbf{Corrientes de Colector:} $I_C = \alpha I_E = (0.99174)(0.6\,\text{mA}) \approx \mathbf{0.595\,\text{mA}}$[cite: 16].
+    \item \textbf{Tensiones de Colector ($v_C$):} Por Ley de Ohm: caída $V_{RC} = I_C \cdot R_C = (0.595\text{m})(2.7\text{k}) = 1.6065\,\text{V}$[cite: 16]. Por KVL: $v_{C1} = v_{C2} = V_{CC} - V_{RC} = 5\,\text{V} - 1.6065\,\text{V} = \mathbf{3.3935\,\text{V}}$[cite: 16].
+    \item \textbf{Tensión de Emisor ($v_E$):} KVL de base a emisor: $v_B - v_{BE} = v_E \implies 0\,\text{V} - 0.7\,\text{V} = \mathbf{-0.7\,\text{V}}$[cite: 16].
+    \item \textbf{Verificación:} $V_{CE} = v_C - v_E = 3.3935\,\text{V} - (-0.7\,\text{V}) = \mathbf{4.0935\,\text{V}}$[cite: 16]. Como $V_{BC} = 0 - 3.3935 < 0$, las uniones Base-Colector están inversamente polarizadas. Opera correctamente en \textbf{Activa Directa}[cite: 16].
+    \item \textbf{Conclusión:} Puntos estáticos: $\mathbf{Q_1 = Q_2 \approx (0.595\,\text{mA}, 4.094\,\text{V})}$[cite: 16]. El voltaje de salida diferencial es $V_{OD,Q} = v_{C2} - v_{C1} = 3.3935 - 3.3935 = \mathbf{0\,\text{V}}$[cite: 16].
 \end{enumerate}
-\textbf{Error Común:} Decir que $V_C$ aumenta si la corriente aumenta. \textbf{Sonda pedagógica:} "\textit{Escribe la ecuación $V_C = V_{CC} - I_C R_C$. Si el término que restas se hace más grande, ¿qué le pasa a $V_C$?}"[cite: 15].
 
-\textbf{Paso 2: Direccionamiento Cualitativo}
-\begin{itemize}
-    \item $\mathbf{v_1 > v_2}$: $I_{C1} \uparrow$, $I_{C2} \downarrow$. Consecuencia: $V_{C1} \downarrow$ (cae), $V_{C2} \uparrow$ (sube)[cite: 15].
-    \item $\mathbf{v_1 < v_2}$: $I_{C1} \downarrow$, $I_{C2} \uparrow$. Consecuencia: $V_{C1} \uparrow$ (sube), $V_{C2} \downarrow$ (cae)[cite: 15].
-\end{itemize}
-\textit{Interpretación:} La naturaleza del Par Diferencial convierte un desbalance de voltaje en las bases en una redirección competitiva de la corriente de cola[cite: 15].
+\textbf{Direccionamiento Cualitativo (Sonda Docente):} Si un estudiante indica que $v_C$ sube cuando $v_B$ sube. \textit{Pregunta:} "Aplica tu ecuación de la parte 4: $v_C = V_{CC} - I_C R_C$. Si $v_B$ sube, el transistor conduce más ($I_C$ sube). ¿Qué le pasa a la resta final $v_C$?"[cite: 16].
 
 \end{document}

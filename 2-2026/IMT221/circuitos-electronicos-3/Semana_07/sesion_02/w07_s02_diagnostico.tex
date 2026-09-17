@@ -21,30 +21,46 @@
 
 \begin{document}
 
-\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Diagnóstico Breve: Transferencia del Método de Pequeña Señal}]
-    Tiempo estimado: 8-10 minutos[cite: 15]. Trabaja individualmente. El objetivo es comprobar que sabes \textbf{cómo iniciar y estructurar} la derivación, no que memorizaste una fórmula final[cite: 15].
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Diagnóstico Formativo: Transferencia del Método Incremental}]
+    Tiempo estimado: 8-10 minutos. Este diagnóstico busca evidenciar si sabes \textbf{cómo iniciar una derivación matemática} usando un método común, en lugar de recuperar fórmulas finales de memoria[cite: 16].
 \end{tcolorbox}
 
-\section*{Evaluación de Topología BJT}
-Se te presenta la siguiente topología de amplificador polarizado en región activa. Se asume que el punto de operación $I_{CQ}$ ya es conocido.
+\section*{Análisis de Topología}
+Se te presenta la siguiente topología de amplificador. Asume que el transistor opera en región activa directa y que el punto $Q$ ($I_{CQ}$) ya ha sido calculado[cite: 16].
 
-\begin{center}
-\begin{circuitikz}[scale=1, transform shape, thick]
-    \draw (0,0) node[npn](Q){};
-    \draw (Q.C) -- (0,1.5) node[above]{$+V_{CC}$};
-    \draw (Q.B) to[short, -o] (-1.5,0) node[left]{$v_i$};
-    \draw (Q.E) to[R, l_={$R_E$}] (0,-2.5) node[ground]{};
-    \draw (Q.E) to[short, *-o] (1.5,-0.77) node[right]{$v_o$};
-\end{circuitikz}
-\end{center}
+\vspace{0.3cm}
+\noindent
+\begin{minipage}{0.4\textwidth}
+    \begin{center}
+    \begin{circuitikz}[scale=1, transform shape, thick]
+        \draw (0,0) node[npn](Q){};
+        \draw (Q.B) node[ground]{};
+        \draw (Q.E) to[short, -o] (-1.5,-0.77) node[left]{$v_i$};
+        \draw (Q.C) to[R, l_={$R_C'$}] (0,2) node[ground, rotate=180]{};
+        \draw (Q.C) to[short, *-o] (1.5,0.77) node[right]{$v_o$};
+    \end{circuitikz}
+    \end{center}
+\end{minipage}%
+\hfill
+\begin{minipage}{0.55\textwidth}
+    \textbf{1. Identificación de Topología:}
+    \begin{itemize}
+        \item Nodo de Entrada: \rule{4cm}{0.15mm}
+        \item Nodo de Salida: \rule{4cm}{0.15mm}
+        \item Nodo Común (Tierra AC): \rule{3.2cm}{0.15mm}
+    \end{itemize}
+    \vspace{0.3cm}
+    \textbf{2. Parámetros dependientes del Punto Q:} \\
+    Escribe explícitamente las ecuaciones para calcular los parámetros que usarás en tu modelo (ej. $g_m, r_e, r_\pi$) en función de $I_{CQ}$ y $V_T$[cite: 16]. \vspace{1cm}
+\end{minipage}
 
-\textbf{Completa el esqueleto de derivación explícitamente:}
-\begin{enumerate}
-    \item \textbf{Identificación de terminales:} ¿Por qué terminal entra la señal, por cuál sale, y cuál será conectado a Tierra AC? \vspace{1cm}
-    \item \textbf{Parámetros intrínsecos:} Escribe las fórmulas para calcular $g_m$ y $r_e$ a partir del punto $Q$. \vspace{1cm}
-    \item \textbf{Equivalente AC:} Dibuja el circuito reemplazando fuentes DC por Tierra AC y el transistor por su Modelo T simplificado (o Híbrido-$\pi$). \vspace{3.5cm}
-    \item \textbf{Leyes de Kirchhoff:} Escribe la primera ecuación (KVL o KCL) que plantearías en tu circuito equivalente para relacionar $v_i$ con $v_o$. \vspace{1.5cm}
-    \item \textbf{Supuestos:} Escribe al menos un supuesto técnico bajo el cual esta derivación es válida. \vspace{1cm}
-\end{enumerate}
+\vspace{0.5cm}
+\textbf{3. Elección de Modelo y Ecuaciones Base:} \\
+Selecciona el \textit{Modelo Híbrido-$\pi$} o el \textit{Modelo T} (Justifica tu elección brevemente basándote en el terminal de entrada)[cite: 16]. Escribe las \textbf{dos primeras ecuaciones algebraicas} (KVL o KCL) que relacionan la variable de entrada ($v_i$) con la fuente de corriente interna del transistor ($i_c$) y el voltaje de salida ($v_o$)[cite: 16]. No escribas el resultado final directamente.
+\vspace{4cm}
+
+\textbf{4. Impedancias de Puerto:} \\
+Explica brevemente (con palabras o una ecuación) cómo abordarías el cálculo de la resistencia de entrada ($R_{in}$) mirando hacia los terminales del amplificador[cite: 16].
+\vspace{2cm}
 
 \end{document}

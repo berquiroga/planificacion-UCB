@@ -27,7 +27,7 @@
 \usepackage[american]{circuitikz}
 \usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
 
-\title[Par Diferencial DC]{Consolidación Transversal y Análisis DC del Par Diferencial BJT}
+\title[Par Diferencial DC]{Transferencia de Pequeña Señal y Análisis DC del Par Diferencial BJT}
 \subtitle{IMT-221 Circuitos Electrónicos III — Semana 7, Sesión 2}
 \author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
 \institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}
@@ -40,147 +40,222 @@
 \end{frame}
 
 \begin{frame}{Objetivos de la Sesión}
-    \textbf{Preguntas guía de hoy:}
-    \begin{enumerate}
-        \item ¿Podemos reconstruir el modelo de cualquier topología (CE, CC, CB) usando un solo método sin depender de fórmulas memorizadas?[cite: 15]
-        \item ¿Qué cambia en el circuito cuando dos ramas de transistores ya no son independientes, sino que comparten una restricción de corriente (Par Diferencial)?[cite: 15]
-    \end{enumerate}
+    \begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=Transición Conceptual]
+        El salto conceptual principal de hoy es pasar de \textbf{una sola rama BJT} (aislada) a \textbf{dos ramas BJT acopladas por una restricción de corriente común}[cite: 16].
+    \end{tcolorbox}
     
     \vspace{0.4cm}
-    \begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=Transición Conceptual]
-        Pasaremos del análisis de \textbf{un solo transistor} (donde la topología dicta la función) a una \textbf{etapa de detección acoplada de dos transistores} (el Par Diferencial)[cite: 15].
-    \end{tcolorbox}
+    \textbf{Hoja de Ruta:}
+    \begin{enumerate}
+        \item Consolidación del Método Incremental (CE, CC, CB)[cite: 16].
+        \item Estructura Física del Par Diferencial[cite: 16].
+        \item Derivación Matemática Paso a Paso del Estado DC Balanceado[cite: 16].
+        \item Direccionamiento de Corriente (Current Steering)[cite: 16].
+        \item Puente Analítico hacia el Hito 2[cite: 16].
+    \end{enumerate}
 \end{frame}
 
-\begin{frame}{Revisión Transversal: Un Método, Tres Topologías}
-    No existen tres sets de fórmulas desconectadas. Existe \textbf{un solo método incremental}[cite: 15]:
+\begin{frame}{Revisión: Un Método, Tres Topologías}
+    No existen tres sets de fórmulas desconectadas. Existe \textbf{un solo método incremental} invariable[cite: 16]:
     
-    \vspace{0.4cm}
+    \vspace{0.3cm}
     \begin{center}
+    \resizebox{0.95\textwidth}{!}{
     \begin{tikzpicture}[auto, thick]
-        % Uso de "positioning" para evitar solapamiento entre cajas, midiendo desde los bordes.
-        \node[draw, fill=blue!10, rounded corners, align=center, text width=2cm] (q) {1. Punto Q \\ $I_{CQ}$};
-        \node[draw, fill=blue!10, rounded corners, align=center, text width=2.4cm, right=0.4cm of q] (param) {2. Parámetros \\ $g_m, r_e, r_\pi$};
-        \node[draw, fill=blue!10, rounded corners, align=center, text width=2.5cm, right=0.4cm of param] (ac) {3. Eq. AC \\ (Tierra AC)};
-        \node[draw, fill=blue!10, rounded corners, align=center, text width=2.8cm, right=0.4cm of ac] (eq) {4. KVL / KCL \\ $A_v, R_{in}, R_{out}$};
+        \node[draw, fill=blue!10, rounded corners, align=center, text width=1.5cm] (q) {1. Punto Q};
+        \node[draw, fill=blue!10, rounded corners, align=center, text width=2cm, right=0.3cm of q] (param) {2. Parámetros \\ ($g_m, r_\pi, r_e$)};
+        \node[draw, fill=blue!10, rounded corners, align=center, text width=2cm, right=0.3cm of param] (ac) {3. Equivalente AC};
+        \node[draw, fill=blue!10, rounded corners, align=center, text width=2.4cm, right=0.3cm of ac] (eq) {4. Leyes \\ (KVL/KCL)};
+        \node[draw, fill=green!10, rounded corners, align=center, text width=1.8cm, right=0.3cm of eq] (res) {$A_v, R_{in}, R_{out}$};
         
-        \draw[->] (q) -- (param);
-        \draw[->] (param) -- (ac);
-        \draw[->] (ac) -- (eq);
+        \draw[->] (q) -- (param); \draw[->] (param) -- (ac); \draw[->] (ac) -- (eq); \draw[->] (eq) -- (res);
     \end{tikzpicture}
+    }
     \end{center}
     
-    \vspace{0.5cm}
-    \textbf{¿Qué es invariante?} La física del transistor incremental ($i_c = g_m v_\pi$)[cite: 15]. \\
-    \textbf{¿Qué cambia?} El terminal común (Tierra AC), por dónde entra la señal ($v_i$) y por dónde sale ($v_o$)[cite: 15].
+    \vspace{0.4cm}
+    \textbf{Lo que cambia es puramente topológico:}
+    \begin{itemize}
+        \item \textbf{CE:} Entrada Base, Salida Colector, \textbf{Emisor Común (Tierra AC)}. Ecuación: $v_o = -g_m v_i R_C$.
+        \item \textbf{CC:} Entrada Base, Salida Emisor, \textbf{Colector Común (Tierra AC)}. Ecuación: $v_o = i_e R_E$.
+        \item \textbf{CB:} Entrada Emisor, Salida Colector, \textbf{Base Común (Tierra AC)}. Ecuación: $v_o = -(-g_m v_i) R_C$.
+    \end{itemize}
 \end{frame}
 
 \begin{frame}{Estructura del Par Diferencial Canónico}
-    \begin{columns}
-        \begin{column}{0.4\textwidth}
+    \begin{columns}[c]
+        \begin{column}{0.45\textwidth}
             \centering
-            % Escala ligeramente ajustada para asegurar que no se solape con los bordes
-            \begin{circuitikz}[scale=0.75, transform shape, thick]
+            \begin{circuitikz}[scale=0.65, transform shape, thick]
                 \draw (0,0) node[npn](Q1){}; \node[left=0.2cm] at (Q1.B) {$v_1$};
                 \draw (3,0) node[npn, xscale=-1](Q2){}; \node[right=0.2cm] at (Q2.B) {$v_2$};
                 \draw (Q1.C) to[R, l={$R_C$}, i={$I_{C1}$}] (0,2.5) -- (3,2.5) to[R, l_={$R_C$}, i_={$I_{C2}$}] (Q2.C);
-                \draw (1.5,2.5) -- (1.5,3) node[above]{$+V_{CC}$};
+                \draw (1.5,2.5) -- (1.5,2.8) node[above]{$+V_{CC}$};
                 \draw (Q1.E) -- (0,-1.5) -- (3,-1.5) -- (Q2.E);
-                \draw (1.5,-1.5) node[circle, fill, inner sep=1.5pt]{} node[right]{Nodo $E$} to[I, l={$I_{TAIL}$}] (1.5,-3.5) node[below]{$-V_{EE}$};
+                \draw (1.5,-1.5) node[circle, fill, inner sep=1.5pt]{} node[above right]{Nodo $E$} to[I, l={$I_T$}] (1.5,-3.0) node[below]{$-V_{EE}$};
                 \draw (Q1.B) to[short, -o] (-1,0);
                 \draw (Q2.B) to[short, -o] (4,0);
                 \draw (Q1.C) to[short, *-o] (-1,1) node[left]{$v_{C1}$};
                 \draw (Q2.C) to[short, *-o] (4,1) node[right]{$v_{C2}$};
             \end{circuitikz}
         \end{column}
-        \begin{column}{0.55\textwidth}
-            \textbf{Anatomía de la etapa acoplada[cite: 15]:}
+        \begin{column}{0.52\textwidth}
+            \textbf{Anatomía de la etapa acoplada[cite: 16]:}
             \begin{itemize}
-                \item \textbf{Dos ramas} ($Q_1$ y $Q_2$) idealmente idénticas (emparejadas).
-                \item Dos nodos de entrada ($v_1, v_2$).
+                \item \textbf{Dos ramas} ($Q_1$ y $Q_2$) idealmente idénticas (\textit{matched}).
+                \item Dos nodos de entrada independientes ($v_1, v_2$).
                 \item Resistores de colector simétricos ($R_C$).
-                \item \textbf{Restricción Fundamental:} Emisores unidos a una única fuente de corriente (Cola o \textit{Tail}) $I_{TAIL}$[cite: 15].
+                \item \textbf{Restricción de Acoplamiento:} Los emisores están unidos y alimentados por una sola fuente de cola ($I_T$)[cite: 16].
             \end{itemize}
             
-            \vspace{0.2cm}
-            \begin{alertblock}{No son dos CE independientes}
-                Por KCL en el nodo E: $I_{E1} + I_{E2} = I_{TAIL}$[cite: 15]. ¡Ambas ramas deben \textbf{compartir} esta corriente constante!
+            \begin{alertblock}{La Ecuación Maestra DC}
+                Por Ley de Corrientes de Kirchhoff en el Nodo E:
+                \begin{equation*}
+                    \mathbf{I_{E1} + I_{E2} = I_T} \quad \text{[cite: 16]}
+                \end{equation*}
             \end{alertblock}
         \end{column}
     \end{columns}
 \end{frame}
 
-\begin{frame}{Análisis DC: Estado Balanceado ($v_1 = v_2$)}
-    Si aplicamos exactamente la misma tensión DC en ambas bases ($v_1 = v_2 = V_{CM}$) y los transistores son idénticos[cite: 15]:
+\begin{frame}{Análisis DC Paso a Paso: Corrientes de Emisor}
+    Derivación explícita cuando las entradas son iguales ($v_1 = v_2 = V_{CM}$) y los transistores son idénticos[cite: 16]:
     
-    \vspace{0.2cm}
-    \textbf{1. Simetría de Corrientes[cite: 15]:}
-    Como $v_{BE1} = v_1 - V_E$ y $v_{BE2} = v_2 - V_E$, entonces $v_{BE1} = v_{BE2}$. Por lo tanto:
-    \begin{equation*}
-        I_{E1} = I_{E2} \quad \text{y como} \quad I_{E1} + I_{E2} = I_{TAIL} \implies I_{E1} = I_{E2} = \frac{I_{TAIL}}{2} \quad \text{[cite: 15]}
-    \end{equation*}
+    \textbf{1. Simetría de Corrientes de Emisor:}
+    La tensión base-emisor en ambas ramas es:
+    \begin{align*}
+        v_{BE1} &= v_1 - v_E \\
+        v_{BE2} &= v_2 - v_E
+    \end{align*}
+    Como $v_1 = v_2$, entonces $v_{BE1} = v_{BE2}$. En transistores idénticos, mismos $v_{BE}$ generan mismas corrientes: $I_{E1} = I_{E2}$[cite: 16].
     
-    \textbf{2. Corrientes de Colector (Punto Q)[cite: 15]:}
-    Asumiendo $\alpha \approx 1$ (despreciando corriente de base para este análisis simplificado):
+    Aplicando KCL en el nodo común:
     \begin{equation*}
-        I_{C1} \approx I_{C2} \approx \frac{I_{TAIL}}{2} \quad \text{[cite: 15]}
-    \end{equation*}
-    
-    \textbf{3. Tensiones de Colector (Salida DC)[cite: 15]:}
-    Por KVL desde la fuente $V_{CC}$ hacia abajo:
-    \begin{equation*}
-        V_{C1} = V_{CC} - I_{C1}R_C \quad \text{y} \quad V_{C2} = V_{CC} - I_{C2}R_C \implies \mathbf{V_{C1} = V_{C2}} \quad \text{[cite: 15]}
+        I_{E1} + I_{E2} = I_T \implies 2 I_{E1} = I_T \implies \mathbf{I_{E1} = I_{E2} = \frac{I_T}{2}} \quad \text{[cite: 16]}
     \end{equation*}
 \end{frame}
 
-\begin{frame}{Direccionamiento de Corriente (Current Steering)}
-    ¿Qué ocurre si introducimos una diferencia $v_d = v_1 - v_2$?[cite: 15]
+\begin{frame}{Análisis DC Paso a Paso: Colectores}
+    \textbf{2. Corrientes de Colector (Punto Q)[cite: 16]:}
+    Sabiendo que $I_C = \alpha I_E$, donde $\alpha = \frac{\beta}{\beta+1}$[cite: 16]:
+    \begin{equation*}
+        \mathbf{I_{C1} = I_{C2} = \alpha \frac{I_T}{2} \approx \frac{I_T}{2}} \quad \text{(Aproximación para $\beta$ grande)} \quad \text{[cite: 16]}
+    \end{equation*}
     
-    \vspace{0.1cm}
-    % Reducción de espaciado y tamaño para evitar Overfull \vbox
+    \textbf{3. Tensiones de Colector (Salida DC)[cite: 16]:}
+    Aplicamos KVL desde la fuente $V_{CC}$ descendiendo por el resistor $R_C$:
+    \begin{align*}
+        v_{C1} &= V_{CC} - I_{C1}R_C \\
+        v_{C2} &= V_{CC} - I_{C2}R_C
+    \end{align*}
+    Como $I_{C1} = I_{C2}$, entonces $\mathbf{v_{C1} = v_{C2}}$[cite: 16]. La salida diferencial quiescente es $V_{OD,Q} = v_{C2} - v_{C1} = 0\,\text{V}$[cite: 16].
+\end{frame}
+
+\begin{frame}{Análisis DC Paso a Paso: Emisor y Verificación}
+    \textbf{4. Voltaje de Emisor y $V_{CE}$[cite: 16]:}
+    Asumiendo $V_{BE} \approx 0.7\,\text{V}$ en conducción:
+    \begin{equation*}
+        v_E = v_1 - V_{BE} = V_{CM} - 0.7\,\text{V} \quad \text{[cite: 16]}
+    \end{equation*}
+    
+    El voltaje Colector-Emisor en el punto $Q$ para ambas ramas es:
+    \begin{equation*}
+        \mathbf{V_{CE} = v_C - v_E} \quad \text{[cite: 16]}
+    \end{equation*}
+    
+    \textbf{5. Verificación de Región Activa Directa[cite: 16]:}
+    Debe verificarse rigurosamente que las uniones Base-Colector estén polarizadas en inversa:
+    \begin{equation*}
+        V_{BC} = v_B - v_C < 0 \quad \text{[cite: 16]}
+    \end{equation*}
+    Solo así se garantiza que los transistores no han entrado en saturación[cite: 16].
+\end{frame}
+
+\begin{frame}{Ejemplo Numérico: Corrientes de Equilibrio}
+    \textbf{Datos (Ejemplo Pedagógico):} $V_{CC}=5\,\text{V}$, $I_T=1.0\,\text{mA}$, $R_C=3.3\,\text{k}\Omega$, $v_1=v_2=0\,\text{V}$, $\beta=100$, $V_{BE}\approx0.7\,\text{V}$[cite: 16].
+    
+    \textbf{Paso 1 - Corrientes de Emisor:}
+    \begin{equation*}
+        I_{E1} = I_{E2} = \frac{I_T}{2} = \frac{1.0\,\text{mA}}{2} = \mathbf{0.500\,\text{mA}} \quad \text{[cite: 16]}
+    \end{equation*}
+    
+    \textbf{Paso 2 - Factor $\alpha$ y Corrientes de Colector:}
+    \begin{equation*}
+        \alpha = \frac{\beta}{\beta+1} = \frac{100}{101} \approx \mathbf{0.9901} \quad \text{[cite: 16]}
+    \end{equation*}
+    \begin{equation*}
+        I_{C1} = I_{C2} = \alpha I_E = (0.9901)(0.500\,\text{mA}) \approx \mathbf{0.495\,\text{mA}} \quad \text{[cite: 16]}
+    \end{equation*}
+\end{frame}
+
+\begin{frame}{Ejemplo Numérico: Tensiones de Colector y Emisor}
+    Continuando con el circuito ($I_C \approx 0.495\,\text{mA}$, $V_{CC}=5\,\text{V}$, $R_C=3.3\,\text{k}\Omega$, $v_1=0\,\text{V}$, $V_{BE}\approx0.7\,\text{V}$)[cite: 16]:
+    
+    \textbf{Paso 3 - Tensiones de Colector:}
+    \begin{equation*}
+        v_C = V_{CC} - I_C R_C = 5\,\text{V} - (0.495\,\text{mA})(3.3\,\text{k}\Omega) = 5 - 1.6335 = \mathbf{3.366\,\text{V}} \quad \text{[cite: 16]}
+    \end{equation*}
+    
+    \textbf{Paso 4 - Tensión de Emisor y $V_{CE}$:}
+    \begin{equation*}
+        v_E = v_1 - V_{BE} = 0\,\text{V} - 0.7\,\text{V} = \mathbf{-0.700\,\text{V}} \quad \text{[cite: 16]}
+    \end{equation*}
+    \begin{equation*}
+        V_{CE} = v_C - v_E = 3.366\,\text{V} - (-0.700\,\text{V}) = \mathbf{4.066\,\text{V}} \quad \text{[cite: 16]}
+    \end{equation*}
+\end{frame}
+
+\begin{frame}{Ejemplo Numérico: Verificación de Región y Punto Q}
+    \textbf{Paso 5 - Verificación Final (Región de Operación):}
+    Evaluamos la unión Base-Colector para asegurar que no existe saturación:
+    \begin{equation*}
+        V_{BC} = v_B - v_C = 0\,\text{V} - 3.366\,\text{V} = \mathbf{-3.366\,\text{V}} \quad \text{[cite: 16]}
+    \end{equation*}
+    
+    \begin{tcolorbox}[colback=green!5, colframe=green!50!black, title=\textbf{Conclusión Matemática}]
+        Como $V_{BC} < 0$, se confirma que las uniones están polarizadas en inversa y los transistores operan correctamente en \textbf{Activa Directa}[cite: 16]. \\
+        El Punto de Operación estático para cada rama es:
+        \begin{equation*}
+            \mathbf{Q_1 = Q_2 \approx (0.495\,\text{mA},\, 4.066\,\text{V})} \quad \text{[cite: 16]}
+        \end{equation*}
+    \end{tcolorbox}
+\end{frame}
+
+\begin{frame}{Direccionamiento de Corriente (Current Steering)}
+    Definimos el voltaje diferencial como: $\mathbf{v_d = v_1 - v_2}$[cite: 16]. ¿Qué pasa cualitativamente si $v_d \neq 0$?[cite: 16]
+    
     \begin{table}
         \centering
         \small
         \renewcommand{\arraystretch}{1.2}
-        \begin{tabularx}{0.95\textwidth}{|>{\centering\arraybackslash}p{2.5cm}|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}
+        \begin{tabularx}{0.95\textwidth}{|>{\raggedright\arraybackslash}p{2.5cm}|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}
         \hline
         \rowcolor{ucbblue!20}
-        \textbf{Condición} & $\mathbf{I_{C1}}$ & $\mathbf{I_{C2}}$ & $\mathbf{V_{C1}}$ (Salida 1) & $\mathbf{V_{C2}}$ (Salida 2) \\ \hline
-        $\mathbf{v_1 = v_2}$ ($v_d = 0$) & $I_{TAIL}/2$ & $I_{TAIL}/2$ & Balanceado & Balanceado \\ \hline
-        $\mathbf{v_1 > v_2}$ ($v_d > 0$) & $\uparrow$ (Sube) & $\downarrow$ (Baja) & $\downarrow$ (Cae) & $\uparrow$ (Sube) \\ \hline
-        $\mathbf{v_1 < v_2}$ ($v_d < 0$) & $\downarrow$ (Baja) & $\uparrow$ (Sube) & $\uparrow$ (Sube) & $\downarrow$ (Cae) \\ \hline
+        \textbf{Condición} & $\mathbf{I_{C1}}$ & $\mathbf{I_{C2}}$ & $\mathbf{v_{C1}}$ & $\mathbf{v_{C2}}$ \\ \hline
+        $v_1 = v_2$ ($v_d = 0$) & Iguales & Iguales & Iguales & Iguales \\ \hline
+        $\mathbf{v_1 > v_2}$ ($v_d > 0$) & Sube ($\uparrow$) & Baja ($\downarrow$) & Cae ($\downarrow$) & Sube ($\uparrow$) \\ \hline
+        $\mathbf{v_1 < v_2}$ ($v_d < 0$) & Baja ($\downarrow$) & Sube ($\uparrow$) & Sube ($\uparrow$) & Cae ($\downarrow$) \\ \hline
         \end{tabularx}
     \end{table}
     
-    \vspace{0.1cm}
-    \begin{alertblock}{Física del Direccionamiento}
-        La corriente $I_{TAIL}$ es un recurso constante. Un aumento en $v_1$ hace que $Q_1$ conduzca más, lo que \textbf{obliga} a $Q_2$ a conducir menos para cumplir $I_{E1} + I_{E2} = I_{TAIL}$[cite: 15]. Las tensiones de colector se mueven en \textbf{direcciones opuestas}[cite: 15].
+    \begin{alertblock}{La Clave de la Interacción: KVL y KCL}
+        La corriente total $I_T$ impone que lo que gana $Q_1$, lo pierde $Q_2$ ($I_{C1} \uparrow \implies I_{C2} \downarrow$)[cite: 16]. Por KVL ($v_C = V_{CC} - I_C R_C$), el voltaje del colector se mueve en \textbf{dirección opuesta} a la corriente del colector[cite: 16].
     \end{alertblock}
 \end{frame}
 
-\begin{frame}{La Realidad del Diseño: Sensibilidad y "Mismatch"}
-    ¿Por qué el balance perfecto $V_{C1} = V_{C2}$ casi nunca ocurre en hardware real aunque $v_1 = v_2$?[cite: 15]
-    
-    \vspace{0.3cm}
+\begin{frame}{El Diseño Real: Sensibilidad, "Mismatch" y el Hito 2}
+    En hardware real, incluso con $v_1 = v_2$, casi nunca observamos $v_{C1} = v_{C2}$ perfectos. ¿Por qué?[cite: 16]
     \begin{itemize}
-        \item \textbf{Mismatch de transistores:} $Q_1$ y $Q_2$ tienen leves diferencias de fabricación en el voltaje $V_{BE}$ y la ganancia $\beta$[cite: 15].
-        \item \textbf{Mismatch de Resistores:} $R_{C1}$ y $R_{C2}$ tienen tolerancias reales (ej. 1\% o 5\%)[cite: 15].
-        \item \textbf{Deriva Térmica:} Diferencias sutiles de temperatura alteran la distribución de corriente[cite: 15].
+        \item \textbf{Mismatch de transistores:} $V_{BE}$ y $\beta$ difieren ligeramente por fabricación[cite: 16].
+        \item \textbf{Mismatch de Resistores:} Las tolerancias de $R_{C1}$ y $R_{C2}$ causan caídas distintas[cite: 16].
+        \item Todo esto genera un \textbf{Voltaje de Offset} en la salida[cite: 16].
     \end{itemize}
     
-    \vspace{0.3cm}
-    Todo esto genera un \textbf{Voltaje de Offset} en la salida. Para aplicaciones de precisión (como medir una caída minúscula en un Shunt de corriente para el \textbf{Hito 2}), requeriremos transistores acoplados térmicamente y análisis formal de CMRR[cite: 15].
-\end{frame}
-
-\begin{frame}{Planificación de Laboratorio (Hito 2)}
-    El \textbf{Hito 2} requerirá implementar un Par Diferencial discreto para detección de corriente mediante shunt[cite: 15].
-    
-    \vspace{0.3cm}
-    \textbf{Aviso Operacional:}
+    \textbf{Preparación para el Laboratorio Hito 2 (Semana 8, Sesión 2)[cite: 16]:}
     \begin{itemize}
-        \item \textbf{Fecha objetivo provisional:} Semana 8, Sesión 2[cite: 15].
-        \item \textbf{Lista de Materiales (BOM):} NO compren componentes aún. La topología exacta, las tensiones de alimentación y la especificación del transistor/shunt están pendientes de los documentos autoritativos del curso[cite: 15].
-        \item El éxito en el laboratorio requerirá validar teóricamente el CMRR $> 60\,\text{dB}$, concepto matemático que exploraremos la próxima sesión[cite: 15].
+        \item El proyecto requerirá medir corrientes con una resistencia Shunt ($V_{sh} = I_{sense} \cdot R_{sh}$)[cite: 17].
+        \item La cadena de señal será: $\mathbf{I_{load} \to R_{sh} \to v_d \to \text{Par Diferencial} \to v_{od}}$[cite: 17].
+        \item \textbf{NO armar ni comprar} sin revisar la "Guía Previa" oficial; utilizaremos un \textbf{Espejo de Corriente} en la cola para mejorar el CMRR[cite: 17].
     \end{itemize}
 \end{frame}
 

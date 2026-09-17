@@ -1,3 +1,4 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
 \documentclass[11pt, a4paper]{article}
 
 \usepackage[T1]{fontenc}
@@ -6,6 +7,8 @@
 \usepackage[spanish, es-noshorthands]{babel}
 \usepackage{amsmath, amssymb}
 \usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage{tabularx}
 \usepackage[margin=2.5cm]{geometry}
 \usepackage{fancyhdr}
 
@@ -13,47 +16,94 @@
 \fancyhf{}
 \setlength{\headheight}{16pt}
 \lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
-\rhead{IMT-221 | Brechas de Laboratorio Hito 2}
+\rhead{IMT-221 | Guía Previa Hito 2}
 \renewcommand{\headrulewidth}{0.4pt}
 \definecolor{ucbblue}{RGB}{0, 51, 102}
 
 \begin{document}
 
-\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Documento Interno Docente: Planificación y Brechas Operacionales (Hito 2)}]
-    \textbf{Advertencia de Integridad Operacional:} No emitir la Lista de Materiales (BOM) a los estudiantes hasta que la Especificación Oficial de Diseño del Hito 2 sea recibida de la coordinación[cite: 15]. Inferir componentes basados en teoría de clase podría ocasionar compras erróneas[cite: 15].
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Guía Previa y Lista de Materiales (BOM) — Hito 2}]
+    \textbf{Par Diferencial BJT discreto para sensado de corriente mediante Shunt[cite: 17].} \\
+    \textit{Importante: Esta guía fija el circuito pedagógico propuesto. Los valores son para el montaje académico. El pinout exacto debe verificarse en el datasheet de sus componentes[cite: 17].}
 \end{tcolorbox}
 
-\section*{1. Parámetros Fijos (Conocidos Oficialmente)}
-Información ya confirmada por los planes del curso:
-\begin{itemize}
-    \item \textbf{Objetivo:} Amplificador diferencial BJT discreto para detección de corriente en shunt (Shunt Current Sensing)[cite: 15].
-    \item \textbf{Métricas Clave de Validación:} Polarización DC estable, análisis de pequeña señal, y un \textbf{CMRR experimental medido $> 60\,\text{dB}$}[cite: 15].
-    \item \textbf{Fecha Objetivo Provisional de Laboratorio:} Semana 8, Sesión 2[cite: 15].
-\end{itemize}
+\section{Problema a Resolver y Arquitectura}
+Queremos medir una corriente de forma indirecta ($I_{sense} \approx 5\,\text{mA}$) usando una resistencia Shunt muy baja ($R_{sh} = 1\,\Omega$)[cite: 17]. Esto produce una minúscula caída de voltaje $V_{sh} = 5\,\text{mV}$[cite: 17]. El Par Diferencial amplificará esta pequeña diferencia, rechazando ruido común[cite: 17].
+La arquitectura exige tres bloques: Generador/Shunt, Par Diferencial (Q1-Q2), y Espejo de Corriente de Cola (Q3-Q4)[cite: 17].
 
-\section*{2. Brechas de Diseño (Requieren Fuentes Autoritativas)}
-Los siguientes parámetros \textbf{no pueden ser inventados} en clase. El docente debe asegurar la documentación de diseño final para fijarlos:
-\begin{itemize}
-    \item Número de parte exacto del transistor BJT (ej. BC547, 2N3904, o pares monolíticos como MAT12 para asegurar "matching")[cite: 15].
-    \item Topología de la fuente de cola (¿Resistor simple $R_E$, espejo de corriente discreto, o fuente ideal de laboratorio?)[cite: 15].
-    \item Rango del Shunt y requerimientos de voltaje de alimentación ($V_{CC}$, $V_{EE}$)[cite: 15].
-    \item Tolerancias de resistores requeridas para asegurar un CMRR $> 60\,\text{dB}$ frente al "mismatch"[cite: 15].
-\end{itemize}
+\section{Esquema Completo Propuesto}
+La alimentación nominal de diseño será $+9\,\text{V}$, $0\,\text{V}$ (Tierra Central) y $-9\,\text{V}$[cite: 17].
+\begin{center}
+\begin{circuitikz}[scale=0.9, transform shape, thick]
+    % --- Generador Shunt (Aislado Visualmente) ---
+    \draw (-3,4) node[above]{$+9\,\text{V}$} to[R, l={$R_{LIM}$}, a={$1.8\,\text{k}\Omega$}] (-3,1.5);
+    \draw (-3,1.5) node[circle,fill,inner sep=1.5pt](V1){} node[left]{$v_1$};
+    \draw (-3,1.5) to[R, l={$R_{sh}$}, a={$1\,\Omega$}] (-3,-0.5);
+    \draw (-3,-0.5) node[circle,fill,inner sep=1.5pt](V2){} node[left]{$v_2 = 0\,\text{V}$} node[ground]{};
+    
+    % --- Par Diferencial ---
+    \draw (1,2) node[npn](Q1){}; \node[right=1cm] at (Q1.B) {Q1};
+    \draw (5,2) node[npn, xscale=-1](Q2){}; \node[left=1cm] at (Q2.B) {Q2};
+    
+    % Conexiones de Entrada
+    \draw (V1) |- (Q1.B);
+    \draw (Q2.B) -- (6,2) node[ground]{} node[right]{$v_2 = 0\,\text{V}$};
+    
+    % Resistores de Colector
+    \draw (Q1.C) to[R, l={$R_{C1}$}, a={$4.7\,\text{k}\Omega$}] (1,4.5) node[above]{$+9\,\text{V}$};
+    \draw (Q2.C) to[R, l={$R_{C2}$}, a_={$4.7\,\text{k}\Omega$}] (5,4.5) node[above]{$+9\,\text{V}$};
+    
+    \draw (Q1.C) node[circle,fill,inner sep=1.5pt]{} node[right]{$v_{C1}$};
+    \draw (Q2.C) node[circle,fill,inner sep=1.5pt]{} node[left]{$v_{C2}$};
+    
+    % Unión Emisores
+    \draw (Q1.E) -- (1,0.5) -- (5,0.5) -- (Q2.E);
+    
+    % --- Espejo de Corriente ---
+    % Q4 (Transistor de Cola) apuntando hacia la derecha
+    \draw (3,-1.5) node[npn, xscale=-1](Q4){}; \node[left=1cm] at (Q4.B) {Q4};
+    % Q3 (Referencia Diódica)
+    \draw (6,-1.5) node[npn](Q3){}; \node[right=1cm] at (Q3.B) {Q3};
+    
+    % Conexión Cola-Emisores
+    \draw (3,0.5) node[circle,fill,inner sep=1.5pt]{} -- (Q4.C);
+    
+    % Unión de Bases
+    \draw (Q4.B) -- (Q3.B);
+    % Conexión Diódica de Q3
+    \draw (Q3.B) node[circle,fill,inner sep=1.5pt]{} |- (Q3.C) node[circle,fill,inner sep=1.5pt]{};
+    
+    % Resistor de Referencia
+    \draw (Q3.C) to[R, l={$R_{REF}$}, a_={$8.2\,\text{k}\Omega$}] (9,-0.75) node[ground]{} node[above]{$0\,\text{V}$};
+    
+    % Conexión Emisores del Espejo a -9V
+    \draw (Q4.E) -- (3,-3) node[below]{$-9\,\text{V}$};
+    \draw (Q3.E) -- (6,-3) node[below]{$-9\,\text{V}$};
 
-\section*{3. Entregables Propuestos de Pre-Laboratorio (Una vez fijada la topología)}
-Los estudiantes deberán generar la siguiente evidencia antes de armar en protoboard:
+\end{circuitikz}
+\end{center}
+\section{Cálculos Pre-Laboratorio Exigidos}
+Deberá incluir las siguientes derivaciones matemáticas exactas en su reporte previo:
 \begin{enumerate}
-    \item \textbf{Análisis Analítico DC:} Determinación matemática de $I_{C1}, I_{C2}, V_{C1}, V_{C2}$ y prueba de operación en región Activa Directa[cite: 15].
-    \item \textbf{Simulación DC (LTspice):} Verificación del punto de operación simulado frente a los cálculos manuales[cite: 15].
-    \item \textbf{Simulación Dinámica AC:} Trazado de ganancia diferencial ($A_d$), ganancia en modo común ($A_c$) y el perfil frecuencial del CMRR[cite: 15].
-    \item \textbf{Protocolo de Medición:} Esquema exacto de cómo inyectar señales en modo común y modo diferencial en el hardware para la verificación en la Semana 8[cite: 15].
+    \item \textbf{Generación de Señal:} Calcule analíticamente $I_{sense} = \frac{9\,\text{V}}{1800\,\Omega + 1\,\Omega}$ y obtenga $V_{sh}$[cite: 17].
+    \item \textbf{Espejo de Corriente:} Determine la corriente de referencia. Asuma que la base de Q3 está en $-9\,\text{V} + 0.7\,\text{V} = -8.3\,\text{V}$. Derive $I_{REF} = \frac{0\,\text{V} - (-8.3\,\text{V})}{8.2\,\text{k}\Omega}$ y compruebe que resulta $\approx 1.01\,\text{mA}$. Justifique por qué $I_T \approx I_{REF}$[cite: 17].
+    \item \textbf{Punto de Operación del Par:} Usando $I_T \approx 1\,\text{mA}$, asuma $v_1 \approx v_2 \approx 0\,\text{V}$. Calcule $I_{CQ}$, las caídas en los resistores de colector, el potencial de emisor $V_E$, las tensiones de salida $V_C$ y el $V_{CE}$ para verificar la región activa[cite: 17].
+    \item \textbf{Ganancia Diferencial Teórica ($A_d$):} Calcule $g_m = I_{CQ}/V_T$ (use $25.85\,\text{mV}$). Utilizando $A_d \approx g_m R_C$, determine el voltaje de salida diferencial esperado $v_{od} = A_d \cdot v_d$ considerando la entrada de $5\,\text{mV}$ del Shunt[cite: 17].
 \end{enumerate}
 
-\section*{4. Criterios de Go/No-Go Temporal}
-Para preservar la Semana 8 Sesión 2 como fecha de montaje físico:
+\section{Lista de Materiales Oficial (BOM)}
+Se exigen los siguientes componentes por grupo[cite: 17]:
 \begin{itemize}
-    \item \textbf{Límite para obtención del BOM oficial:} Fines de Semana 7.
-    \item \textbf{Acción de mitigación:} Si el BOM y las tolerancias no se definen a tiempo, se debe reprogramar la sesión de laboratorio físico a la Semana 8 Sesión 3, transformando la Sesión 2 en validación exclusiva por software (LTspice) y cálculo de tolerancias por mismatch[cite: 15].
+    \item \textbf{Transistores:} 6 unidades 2N3904 (Q1-Q4 más repuestos para seleccionar el mejor \textit{matching})[cite: 17].
+    \item \textbf{Resistores (Película Metálica 1\%):}
+    \begin{itemize}
+        \item 4.7 k$\Omega$ x 4-6 unidades (Seleccionar el par más idéntico para $R_{C1}$ y $R_{C2}$)[cite: 17].
+        \item 8.2 k$\Omega$ x 2 (Para $R_{REF}$)[cite: 17].
+        \item 1.8 k$\Omega$ x 2 (Para $R_{LIM}$)[cite: 17].
+        \item 1 $\Omega$ ($\ge 1/4\,\text{W}$) x 2 (Para Shunt)[cite: 17].
+    \end{itemize}
+    \item Protoboard, jumpers y acceso a fuente dual $\pm 9\,\text{V}$ (o dos baterías de 9V cuadradas)[cite: 17].
 \end{itemize}
+\textit{Atención: Para lograr el CMRR $> 60\,\text{dB}$, la simetría de Q1-Q2 y $R_{C1}-R_{C2}$ es crítica. Use un multímetro para medir y seleccionar los componentes más parecidos antes de montar. Verifique el orden de los pines (E-B-C) en el datasheet de su marca de transistor[cite: 17].}
 
 \end{document}
