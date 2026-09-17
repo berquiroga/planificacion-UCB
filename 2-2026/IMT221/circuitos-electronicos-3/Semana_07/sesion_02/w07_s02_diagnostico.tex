@@ -1,0 +1,50 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Diagnóstico S07-2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Diagnóstico Breve: Transferencia del Método de Pequeña Señal}]
+    Tiempo estimado: 8-10 minutos[cite: 15]. Trabaja individualmente. El objetivo es comprobar que sabes \textbf{cómo iniciar y estructurar} la derivación, no que memorizaste una fórmula final[cite: 15].
+\end{tcolorbox}
+
+\section*{Evaluación de Topología BJT}
+Se te presenta la siguiente topología de amplificador polarizado en región activa. Se asume que el punto de operación $I_{CQ}$ ya es conocido.
+
+\begin{center}
+\begin{circuitikz}[scale=1, transform shape, thick]
+    \draw (0,0) node[npn](Q){};
+    \draw (Q.C) -- (0,1.5) node[above]{$+V_{CC}$};
+    \draw (Q.B) to[short, -o] (-1.5,0) node[left]{$v_i$};
+    \draw (Q.E) to[R, l_={$R_E$}] (0,-2.5) node[ground]{};
+    \draw (Q.E) to[short, *-o] (1.5,-0.77) node[right]{$v_o$};
+\end{circuitikz}
+\end{center}
+
+\textbf{Completa el esqueleto de derivación explícitamente:}
+\begin{enumerate}
+    \item \textbf{Identificación de terminales:} ¿Por qué terminal entra la señal, por cuál sale, y cuál será conectado a Tierra AC? \vspace{1cm}
+    \item \textbf{Parámetros intrínsecos:} Escribe las fórmulas para calcular $g_m$ y $r_e$ a partir del punto $Q$. \vspace{1cm}
+    \item \textbf{Equivalente AC:} Dibuja el circuito reemplazando fuentes DC por Tierra AC y el transistor por su Modelo T simplificado (o Híbrido-$\pi$). \vspace{3.5cm}
+    \item \textbf{Leyes de Kirchhoff:} Escribe la primera ecuación (KVL o KCL) que plantearías en tu circuito equivalente para relacionar $v_i$ con $v_o$. \vspace{1.5cm}
+    \item \textbf{Supuestos:} Escribe al menos un supuesto técnico bajo el cual esta derivación es válida. \vspace{1cm}
+\end{enumerate}
+
+\end{document}

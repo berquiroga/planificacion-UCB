@@ -1,0 +1,59 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Brechas de Laboratorio Hito 2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Documento Interno Docente: Planificación y Brechas Operacionales (Hito 2)}]
+    \textbf{Advertencia de Integridad Operacional:} No emitir la Lista de Materiales (BOM) a los estudiantes hasta que la Especificación Oficial de Diseño del Hito 2 sea recibida de la coordinación[cite: 15]. Inferir componentes basados en teoría de clase podría ocasionar compras erróneas[cite: 15].
+\end{tcolorbox}
+
+\section*{1. Parámetros Fijos (Conocidos Oficialmente)}
+Información ya confirmada por los planes del curso:
+\begin{itemize}
+    \item \textbf{Objetivo:} Amplificador diferencial BJT discreto para detección de corriente en shunt (Shunt Current Sensing)[cite: 15].
+    \item \textbf{Métricas Clave de Validación:} Polarización DC estable, análisis de pequeña señal, y un \textbf{CMRR experimental medido $> 60\,\text{dB}$}[cite: 15].
+    \item \textbf{Fecha Objetivo Provisional de Laboratorio:} Semana 8, Sesión 2[cite: 15].
+\end{itemize}
+
+\section*{2. Brechas de Diseño (Requieren Fuentes Autoritativas)}
+Los siguientes parámetros \textbf{no pueden ser inventados} en clase. El docente debe asegurar la documentación de diseño final para fijarlos:
+\begin{itemize}
+    \item Número de parte exacto del transistor BJT (ej. BC547, 2N3904, o pares monolíticos como MAT12 para asegurar "matching")[cite: 15].
+    \item Topología de la fuente de cola (¿Resistor simple $R_E$, espejo de corriente discreto, o fuente ideal de laboratorio?)[cite: 15].
+    \item Rango del Shunt y requerimientos de voltaje de alimentación ($V_{CC}$, $V_{EE}$)[cite: 15].
+    \item Tolerancias de resistores requeridas para asegurar un CMRR $> 60\,\text{dB}$ frente al "mismatch"[cite: 15].
+\end{itemize}
+
+\section*{3. Entregables Propuestos de Pre-Laboratorio (Una vez fijada la topología)}
+Los estudiantes deberán generar la siguiente evidencia antes de armar en protoboard:
+\begin{enumerate}
+    \item \textbf{Análisis Analítico DC:} Determinación matemática de $I_{C1}, I_{C2}, V_{C1}, V_{C2}$ y prueba de operación en región Activa Directa[cite: 15].
+    \item \textbf{Simulación DC (LTspice):} Verificación del punto de operación simulado frente a los cálculos manuales[cite: 15].
+    \item \textbf{Simulación Dinámica AC:} Trazado de ganancia diferencial ($A_d$), ganancia en modo común ($A_c$) y el perfil frecuencial del CMRR[cite: 15].
+    \item \textbf{Protocolo de Medición:} Esquema exacto de cómo inyectar señales en modo común y modo diferencial en el hardware para la verificación en la Semana 8[cite: 15].
+\end{enumerate}
+
+\section*{4. Criterios de Go/No-Go Temporal}
+Para preservar la Semana 8 Sesión 2 como fecha de montaje físico:
+\begin{itemize}
+    \item \textbf{Límite para obtención del BOM oficial:} Fines de Semana 7.
+    \item \textbf{Acción de mitigación:} Si el BOM y las tolerancias no se definen a tiempo, se debe reprogramar la sesión de laboratorio físico a la Semana 8 Sesión 3, transformando la Sesión 2 en validación exclusiva por software (LTspice) y cálculo de tolerancias por mismatch[cite: 15].
+\end{itemize}
+
+\end{document}

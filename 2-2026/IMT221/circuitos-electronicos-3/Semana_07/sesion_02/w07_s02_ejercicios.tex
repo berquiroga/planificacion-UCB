@@ -1,0 +1,69 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage{tabularx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Ejercicio Guiado S07-2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Ejercicio Guiado: Análisis DC del Par Diferencial}]
+    Desarrollo del estado balanceado, validación de la región de operación y análisis cualitativo del direccionamiento de corriente[cite: 15]. \textit{Nota: Los valores aquí son genéricos de enseñanza, no determinan la lista de materiales final del Hito 2}[cite: 15].
+\end{tcolorbox}
+
+\section*{Circuito de Análisis}
+Considere el siguiente Par Diferencial implementado con transistores NPN perfectamente emparejados ($\beta = 100$, $V_{BE(on)} \approx 0.7\,\text{V}$). La fuente de corriente de cola es ideal con $I_{TAIL} = 2\,\text{mA}$. Los componentes externos son $R_C = 4.7\,\text{k}\Omega$, $V_{CC} = +10\,\text{V}$, $V_{EE} = -10\,\text{V}$. 
+
+\begin{center}
+\begin{circuitikz}[scale=0.85, transform shape, thick]
+    \draw (0,0) node[npn](Q1){}; \node[left=0.2cm] at (Q1.B) {$v_1$};
+    \draw (4,0) node[npn, xscale=-1](Q2){}; \node[right=0.2cm] at (Q2.B) {$v_2$};
+    \draw (Q1.C) to[R, l_={$4.7\,\text{k}\Omega$}, v^<={$V_{RC1}$}] (0,2.5) -- (4,2.5) to[R, l={$4.7\,\text{k}\Omega$}, v_>={$V_{RC2}$}] (Q2.C);
+    \draw (2,2.5) -- (2,3) node[above]{$+10\,\text{V}$};
+    \draw (Q1.E) -- (0,-1.5) -- (4,-1.5) -- (Q2.E);
+    \draw (2,-1.5) to[I, l={$2\,\text{mA}$}] (2,-3.5) node[below]{$-10\,\text{V}$};
+    \draw (Q1.B) to[short, -o] (-1,0);
+    \draw (Q2.B) to[short, -o] (5,0);
+    \draw (Q1.C) to[short, *-o] (-1,1) node[left]{$V_{C1}$};
+    \draw (Q2.C) to[short, *-o] (5,1) node[right]{$V_{C2}$};
+\end{circuitikz}
+\end{center}
+
+\section*{Paso 1: Análisis del Estado Balanceado DC ($v_1 = v_2 = 0\,\text{V}$)}
+Suponga que ambas entradas están conectadas a tierra DC ($0\,\text{V}$)[cite: 15].
+\begin{enumerate}
+    \item Aplique la Ley de Corrientes de Kirchhoff en el nodo emisor común. Escriba la ecuación relacionando $I_{E1}$, $I_{E2}$ e $I_{TAIL}$. Calcule $I_{E1}$ y $I_{E2}$.
+    \item Asumiendo $\alpha \approx 1$ (es decir, $I_C \approx I_E$), determine explícitamente $I_{C1}$ e $I_{C2}$[cite: 15].
+    \item Calcule la caída de tensión en cada resistor de colector ($V_{RC1}$ y $V_{RC2}$) usando la Ley de Ohm.
+    \item Calcule el potencial absoluto en ambos nodos de colector ($V_{C1}$ y $V_{C2}$) respecto a tierra[cite: 15].
+    \item \textbf{Verificación de Región:} Sabiendo que $V_B = 0\,\text{V}$ y $V_{BE} = 0.7\,\text{V}$, calcule el potencial en los emisores ($V_E$). Luego, calcule $V_{CE1}$ y $V_{CE2}$. ¿Operan los transistores en la región Activa Directa? Justifique con la condición de tensiones.
+\end{enumerate}
+
+\section*{Paso 2: Direccionamiento Cualitativo ($v_d \neq 0$)}
+Llene la tabla indicando con flechas ($\uparrow$, $\downarrow$) si la magnitud aumenta, disminuye, o se mantiene constante al perturbar las entradas (sin realizar cálculos numéricos complejos)[cite: 15]. Considere $I_{TAIL}$ constante.
+
+\renewcommand{\arraystretch}{1.6}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{4cm}|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!20}
+\textbf{Escenario Diferencial} & \textbf{Dirección de $I_{C1}$} & \textbf{Dirección de $I_{C2}$} & \textbf{Dirección de $V_{C1}$} & \textbf{Dirección de $V_{C2}$} \\ \hline
+Se aplica $v_1 > v_2$ & & & & \\ \hline
+Se aplica $v_1 < v_2$ & & & & \\ \hline
+\end{tabularx}
+
+\end{document}
