@@ -1,0 +1,103 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage{tabularx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Derivación $A_d$ S07-3}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Guía de Derivación: Ganancia Diferencial ($A_d$) de Pequeña Señal}]
+    Derivación matemática explícita relacionando el modelo Híbrido-$\pi$ del transistor con el voltaje diferencial de entrada[cite: 18].
+\end{tcolorbox}
+
+\section*{1. Excitación del Medio Circuito Simétrico}
+\noindent\begin{minipage}[t]{0.5\textwidth}
+    Definimos formalmente el voltaje de entrada diferencial como[cite: 18]:
+    \begin{equation*}
+        \mathbf{v_d = v_1 - v_2} \quad \text{[cite: 18]}
+    \end{equation*}
+    Bajo análisis perfectamente simétrico, dividimos la excitación asignando la mitad de la variación a cada base[cite: 18]:
+    \begin{equation*}
+        \mathbf{v_1 = +\frac{v_d}{2}}, \qquad \mathbf{v_2 = -\frac{v_d}{2}} \quad \text{[cite: 18]}
+    \end{equation*}
+    (Verificación: $v_1 - v_2 = \frac{v_d}{2} - (-\frac{v_d}{2}) = v_d$)[cite: 18].
+\end{minipage}\hfill
+\begin{minipage}[t]{0.45\textwidth}
+    \vspace{-0.5cm}
+    \begin{center}
+    \begin{circuitikz}[scale=0.8, transform shape, thick]
+        \draw (0,0) node[npn](Q1){}; \node[left=0.1cm] at (Q1.B) {$+v_d/2$};
+        \draw (3,0) node[npn, xscale=-1](Q2){}; \node[right=0.1cm] at (Q2.B) {$-v_d/2$};
+        \draw (Q1.C) to[R, l={$R_C$}, i_={$\Delta i_{c1}$}] (0,2) node[ground, rotate=180]{};
+        \draw (Q2.C) to[R, l_={$R_C$}, i={$\Delta i_{c2}$}] (3,2) node[ground, rotate=180]{};
+        \draw (Q1.E) -- (0,-1) -- (3,-1) -- (Q2.E);
+        \draw (1.5,-1) node[circle,fill,inner sep=1pt]{} -- (1.5,-1.5) node[ground]{}; % Tierra virtual AC
+        \draw (Q1.B) to[short, -o] (-1,0); \draw (Q2.B) to[short, -o] (4,0);
+        \draw (Q1.C) to[short, *-o] (-0.5,1) node[left]{$v_{c1}$};
+        \draw (Q2.C) to[short, *-o] (3.5,1) node[right]{$v_{c2}$};
+    \end{circuitikz}
+    \end{center}
+\end{minipage}
+
+\section*{2. Variación Incremental de Corriente ($\Delta i_c$)}
+Como el nodo emisor común se comporta como Tierra AC ("Tierra Virtual") para el modo diferencial puro, aplicamos el modelo base $i_c = g_m v_\pi$[cite: 18]:
+\begin{equation*}
+    \Delta i_{c1} = g_m \left(+\frac{v_d}{2}\right) \quad \text{y} \quad \Delta i_{c2} = g_m \left(-\frac{v_d}{2}\right) \quad \text{[cite: 18]}
+\end{equation*}
+
+\section*{3. Conversión de Corriente a Voltaje de Colector}
+La variación de voltaje en cada colector se obtiene multiplicando la corriente por $R_C$ (Ley de Ohm). Una corriente entrante a $R_C$ baja el potencial de salida[cite: 18]:
+\begin{equation*}
+    \Delta v_{c1} = -R_C \cdot \Delta i_{c1} = -R_C \left( g_m \frac{v_d}{2} \right) = \mathbf{-g_m R_C \frac{v_d}{2}} \quad \text{[cite: 18]}
+\end{equation*}
+\begin{equation*}
+    \Delta v_{c2} = -R_C \cdot \Delta i_{c2} = -R_C \left( -g_m \frac{v_d}{2} \right) = \mathbf{+g_m R_C \frac{v_d}{2}} \quad \text{[cite: 18]}
+\end{equation*}
+
+\section*{4. Ganancia de Tensión Diferencial ($A_d$)}
+Nuestra convención de curso para la salida diferencial "Double-Ended" es[cite: 18]:
+\begin{equation*}
+    v_{od} = v_{c2} - v_{c1} \quad \text{[cite: 18]}
+\end{equation*}
+Sustituyendo las expresiones halladas[cite: 18]:
+\begin{equation*}
+    v_{od} = \left(+g_m R_C \frac{v_d}{2}\right) - \left(-g_m R_C \frac{v_d}{2}\right) = g_m R_C \frac{v_d}{2} + g_m R_C \frac{v_d}{2} = \mathbf{g_m R_C v_d} \quad \text{[cite: 18]}
+\end{equation*}
+\begin{equation*}
+    \boxed{ \mathbf{A_{d,de} = \frac{v_{od}}{v_d} = g_m R_C} } \quad \text{[cite: 18]}
+\end{equation*}
+
+\section*{5. Single-Ended vs Double-Ended[cite: 18]}
+Si tomamos la salida en un solo colector respecto a tierra (Single-Ended):
+\begin{equation*}
+    A_{d,se1} = \frac{v_{c1}}{v_d} = -\frac{g_m R_C}{2} \quad \text{y} \quad A_{d,se2} = \frac{v_{c2}}{v_d} = +\frac{g_m R_C}{2} \implies \mathbf{|A_{d,de}| = 2|A_{d,se}|} \quad \text{[cite: 18]}
+\end{equation*}
+
+\section*{6. Predicción Hito 2 (Valor Nominal)}
+Si el punto $Q$ tiene $I_{C} = 0.5\,\text{mA}$, calculamos $g_m = \frac{0.5\,\text{mA}}{25.85\,\text{mV}} \approx \mathbf{19.34\,\text{mS}}$[cite: 18].
+Con $R_C = 4.7\,\text{k}\Omega$:
+\begin{equation*}
+    A_d \approx (19.34\,\text{mS})(4.7\,\text{k}\Omega) \approx \mathbf{90.9\,\text{V/V}} \quad \text{[cite: 18]}
+\end{equation*}
+Si la entrada diferencial desde el Shunt es $v_d = 5\,\text{mV}$:
+\begin{equation*}
+    v_{od} \approx A_d \cdot v_d = (90.9)(0.005\,\text{V}) \approx \mathbf{0.455\,\text{V}} \quad \text{[cite: 18]}
+\end{equation*}
+
+\end{document}

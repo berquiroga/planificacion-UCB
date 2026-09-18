@@ -1,0 +1,79 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Hoja de Medición DC S07-3}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Registro de Mediciones Estáticas (DC) — Par Diferencial}]
+    Complete esta tabla con sus predicciones analíticas, la simulación de LTspice y las mediciones físicas en placa antes de proceder al análisis de señal diferencial[cite: 18].
+\end{tcolorbox}
+
+\section*{1. Valores de Componentes y Rieles}
+\renewcommand{\arraystretch}{1.6}
+% Se utiliza \raggedright y \centering para evitar advertencias de Underfull/Overfull \hbox
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!20}
+\textbf{Componente / Riel} & \textbf{Valor Nominal[cite: 18]} & \textbf{Valor Real Medido} \\ \hline
+Resistor $R_{C1}$ & $4.7\,\text{k}\Omega$ & \\ \hline
+Resistor $R_{C2}$ & $4.7\,\text{k}\Omega$ & \\ \hline
+Resistor de Referencia $R_{REF}$ & $8.2\,\text{k}\Omega$ & \\ \hline
+Resistor Limitador $R_{LIM}$ & $1.8\,\text{k}\Omega$ & \\ \hline
+Resistor Shunt $R_{sh}$ & $1\,\Omega$ & \\ \hline
+Voltaje Positivo $V_{CC}$ (vs $0\,\text{V}$) & $+9.0\,\text{V}$ & \\ \hline
+Voltaje Negativo $V_{EE}$ (vs $0\,\text{V}$) & $-9.0\,\text{V}$ & \\ \hline
+\end{tabularx}
+
+\section*{2. Subsistema: Espejo de Corriente (Cola)}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{4.5cm}|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!20}
+\textbf{Variable DC} & \textbf{Predicho Analíticamente} & \textbf{Simulado (LTspice)} & \textbf{Medido en Hardware} \\ \hline
+$V_{REF}$ (Voltaje Base Q3/Q4) & $\approx -8.3\,\text{V}$[cite: 18] & & \\ \hline
+$I_{REF}$ (Corriente en $R_{REF}$) & $\approx 1.01\,\text{mA}$[cite: 18] & & \\ \hline
+$I_T$ (Corriente de Cola) & $\approx 1\,\text{mA}$[cite: 18] & & \\ \hline
+\end{tabularx}
+
+\vspace{0.3cm}
+\textit{Nota: No conecte Q1 ni Q2 hasta validar que la corriente de cola $I_T$ está en el orden de $1\,\text{mA}$[cite: 18].}
+
+\section*{3. Subsistema: Par Diferencial (Estado Balanceado, $v_1=v_2=0\,\text{V}$)}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{4.5cm}|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!20}
+\textbf{Variable DC} & \textbf{Predicho Analíticamente[cite: 18]} & \textbf{Simulado (LTspice)} & \textbf{Medido en Hardware} \\ \hline
+Voltaje de Emisor ($v_E$) & $\approx -0.7\,\text{V}$ & & \\ \hline
+Voltaje Colector 1 ($v_{C1}$) & $\approx 6.65\,\text{V}$ & & \\ \hline
+Voltaje Colector 2 ($v_{C2}$) & $\approx 6.65\,\text{V}$ & & \\ \hline
+Corriente Colector 1 ($I_{C1}$) & $\approx 0.5\,\text{mA}$ & & \\ \hline
+Corriente Colector 2 ($I_{C2}$) & $\approx 0.5\,\text{mA}$ & & \\ \hline
+Voltaje Unión $V_{CE1}$ & $\approx 7.35\,\text{V}$ & & \\ \hline
+Voltaje Unión $V_{CE2}$ & $\approx 7.35\,\text{V}$ & & \\ \hline
+Voltaje de Offset ($V_{OD,0}$) & $0\,\text{V}$ (Ideal) & & \\ \hline
+\end{tabularx}
+
+\vspace{0.6cm}
+\textbf{Notas de Troubleshooting (Desviaciones observadas, Offset térmico, problemas de Mismatch y correcciones aplicadas)[cite: 18]:}
+\vspace{0.3cm}
+\hrule\vspace{0.7cm}
+\hrule\vspace{0.7cm}
+\hrule
+
+\end{document}

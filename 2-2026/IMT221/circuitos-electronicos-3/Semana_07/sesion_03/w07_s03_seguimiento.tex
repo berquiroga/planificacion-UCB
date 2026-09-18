@@ -1,0 +1,71 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Matriz de Progreso de Laboratorio}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+% Definición de columnas robustas: evitan el colapso de tabularx (Emergency Stop) 
+% forzando el ajuste de texto y el salto de línea.
+\newcolumntype{C}[1]{>{\centering\arraybackslash\hspace{0pt}}p{#1}}
+\newcolumntype{L}{>{\raggedright\arraybackslash\hspace{0pt}}X}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Matriz de Progreso Dual-Track (Hardware y Simulación) — Hito 2}]
+    Esta matriz monitorea el avance equitativo de todos los grupos. \textbf{Track A} llena campos físicos; \textbf{Track B} llena campos analíticos y simulados, dejando mediciones físicas explícitamente pendientes[cite: 18].
+\end{tcolorbox}
+
+\vspace{0.3cm}
+
+{\footnotesize % Reducimos la fuente para acomodar 13 columnas holgadamente
+\renewcommand{\arraystretch}{2}
+\begin{tabularx}{\textwidth}{|C{0.6cm}|C{1.1cm}|L|C{1.3cm}|C{1.5cm}|C{1.3cm}|C{1.5cm}|C{1.5cm}|C{1.5cm}|C{1.5cm}|C{1.3cm}|L|L|}
+\hline
+\rowcolor{ucbblue!20}
+\textbf{Grp} & \textbf{BOM OK?} & \textbf{Faltantes} & \textbf{Pinout OK?} & \textbf{$I_T$ analít.} & \textbf{$I_T$ sim.} & \textbf{$I_T$ medido} & \textbf{Q sim.} & \textbf{Q medido} & \textbf{$A_d$ pred.} & \textbf{Estado} & \textbf{Problema} & \textbf{Próxima Acción} \\ \hline
+\textbf{1} & & & & & & & & & & & & \\ \hline
+\textbf{2} & & & & & & & & & & & & \\ \hline
+\textbf{3} & & & & & & & & & & & & \\ \hline
+\textbf{4} & & & & & & & & & & & & \\ \hline
+\textbf{5} & & & & & & & & & & & & \\ \hline
+\textbf{6} & & & & & & & & & & & & \\ \hline
+\textbf{7} & & & & & & & & & & & & \\ \hline
+\textbf{8} & & & & & & & & & & & & \\ \hline
+\end{tabularx}
+}
+
+\vspace{0.8cm}
+\textbf{Criterios de Evaluación y Exigencia Matemática por Columna[cite: 18]:}
+\begin{itemize}
+    \item \textbf{BOM/Pinout:} Validación documental en el datasheet. No se acepta "asumir" el pinout del 2N3904.
+    \item \textbf{$I_T$ analítico:} Exigir la derivación matemática KVL para el espejo de corriente: 
+    \begin{equation*}
+        I_{REF} = \frac{0\,\text{V} - (V_{EE} + 0.7\,\text{V})}{R_{REF}}
+    \end{equation*}
+    Y la corrección teórica considerando un $\beta$ finito para obtener la corriente de cola: $I_T \approx \frac{I_{REF}}{1+2/\beta}$[cite: 18].
+    \item \textbf{Puntos Q (simulado y medido):} Los datos deben mostrar coherencia con KVL/KCL y operación activa. Exigir explícitamente la verificación de la inecuación para ambas ramas: 
+    \begin{equation*}
+        V_{BC} = V_B - V_C < 0\,\text{V} \quad \text{[cite: 18]}
+    \end{equation*}
+    \item \textbf{$A_d$ predicho:} Debe ser calculado matemáticamente a partir del Punto Q real (medido o simulado por el estudiante), \textbf{NO} a partir del valor nominal ideal. Ecuación exigida para validación: 
+    \begin{equation*}
+        A_{d,\text{pred}} = g_{m,\text{real}} R_{C,\text{real}} = \left(\frac{I_{CQ,\text{real}}}{V_T}\right) R_{C,\text{real}} \quad \text{[cite: 18]}
+    \end{equation*}
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,79 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Construcción Hito 2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Hito 2: Checklist de Construcción Escalonada}]
+    El Par Diferencial es un circuito sensible a variaciones. \textbf{NO monte todo a la vez.} Proceda bloque por bloque, validando cada etapa antes de continuar[cite: 18].
+\end{tcolorbox}
+
+\section*{Etapa 1 — Verificación de Lista de Materiales (BOM) y Pinout}
+\renewcommand{\arraystretch}{1.5}
+% Se utiliza \raggedright y \centering para evitar advertencias de Underfull/Overfull \hbox
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!20}
+\textbf{Ítem a Verificar} & \textbf{Valor Esperado} & \textbf{Valor Observado} & \textbf{PASS/FAIL} & \textbf{Firma} \\ \hline
+Q1–Q4 presentes & 2N3904[cite: 18] & & & \\ \hline
+Pinout verificado & E-B-C confirmado en datasheet[cite: 18] & & & \\ \hline
+Resistores $R_C$ & $4.7\,\text{k}\Omega$ (Nominales)[cite: 18] & & & \\ \hline
+Resistor $R_{REF}$ & $8.2\,\text{k}\Omega$[cite: 18] & & & \\ \hline
+Resistor Shunt $R_{sh}$ & $1\,\Omega$[cite: 18] & & & \\ \hline
+\end{tabularx}
+
+\section*{Etapa 2 — Configuración de Rieles de Alimentación}
+Mida en su protoboard antes de insertar cualquier semiconductor. \\
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{5cm}|>{\raggedright\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!20}
+\textbf{Medición (Voltímetro)} & \textbf{Valor Esperado} & \textbf{Valor Medido} & \textbf{PASS/FAIL} \\ \hline
+Voltaje entre $+9\,\text{V}$ y $0\,\text{V}$ & $+9\,\text{V}$[cite: 18] & & \\ \hline
+Voltaje entre $0\,\text{V}$ y $-9\,\text{V}$ & $+9\,\text{V}$[cite: 18] & & \\ \hline
+Voltaje entre $+9\,\text{V}$ y $-9\,\text{V}$ & $18\,\text{V}$[cite: 18] & & \\ \hline
+\end{tabularx}
+
+\section*{Etapa 3 y 4 — Verificación de la Fuente de Cola (Espejo)}
+Monte \textbf{exclusivamente} Q3, Q4 y $R_{REF}$. Use una resistencia de carga temporal $R_{TEST} = 4.7\,\text{k}\Omega$ de $0\,\text{V}$ al colector de Q4[cite: 18].
+\begin{itemize}
+    \item $V_{REF}$ (Base Q3/Q4): \rule{2cm}{0.15mm} V \quad (Nominal: $\approx -8.3\,\text{V}$)
+    \item $I_{REF}$ (Calculado desde $V_{REF}$): \rule{2cm}{0.15mm} mA \quad (Nominal: $\approx 1.01\,\text{mA}$)
+    \item $V_{C4}$ (Sobre $R_{TEST}$ temporal): \rule{2cm}{0.15mm} V
+    \item $I_T$ (Inferido de $V_{C4}$): \rule{2cm}{0.15mm} mA \quad (Rango Pass: $\approx 0.8 \dots 1.1\,\text{mA}$)[cite: 18].
+\end{itemize}
+\textbf{Firma Aprobación Etapa 4:} \rule{4cm}{0.15mm} \textit{(No proceda sin esto)}.
+
+\section*{Etapa 5, 6 y 7 — Montaje del Par y Balance DC}
+Retire $R_{TEST}$. Añada Q1, Q2 y los resistores $R_C$. Conecte $v_1$ y $v_2$ directamente a $0\,\text{V}$[cite: 18].
+% Se han introducido saltos de línea (\\) para evitar el desbordamiento de las ecuaciones y las reglas.
+\begin{itemize}
+    \item \textbf{Voltaje en nodo Emisor ($v_E$):} \rule{2cm}{0.15mm} V \quad (Esperado: $\approx -0.7\,\text{V}$)[cite: 18].
+    
+    \item \textbf{Voltajes de Colector:} \\
+    $v_{C1} = $ \rule{2cm}{0.15mm} V, \quad $v_{C2} = $ \rule{2cm}{0.15mm} V \quad (Esperado: $\approx 6.65\,\text{V}$)[cite: 18].
+    
+    \item \textbf{Verificación Región Activa:} \\
+    $V_{CE1} = $ \rule{2cm}{0.15mm} V, \quad $V_{CE2} = $ \rule{2cm}{0.15mm} V[cite: 18].
+    
+    \item \textbf{Cálculo de Offset Estático:} \\
+    $V_{OD,0} = v_{C2} - v_{C1} = $ \rule{3cm}{0.15mm} V[cite: 18].
+\end{itemize}
+
+\end{document}

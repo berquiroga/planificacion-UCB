@@ -1,0 +1,43 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Requerimiento Pre-Lab Hito 2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Requisito de Avance: Entre Sesiones (Pre-Lab Hito 2)}]
+    Para garantizar que la implementación del hardware y las derivaciones matemáticas están alineadas, cada grupo debe remitir el siguiente informe de progreso antes de la próxima sesión[cite: 18].
+\end{tcolorbox}
+
+\section*{Lista de Entregables Exigidos}
+Envíe un documento PDF respondiendo de forma explícita a los siguientes 10 puntos[cite: 18]. Si su grupo no dispone de hardware físico (Track B), complete los campos teóricos/simulados y marque los medidos como explícitamente "Pendiente"[cite: 18].
+
+\begin{enumerate}
+    \item \textbf{Evidencia Fotográfica / Esquemática:} Fotografía nítida del estado actual del circuito en protoboard, o el esquema desarrollado detalladamente[cite: 18].
+    \item \textbf{Corriente de Cola ($I_T$):} Valor medido físicamente de la corriente generada por el espejo Q3-Q4 (si el hardware está disponible)[cite: 18].
+    \item \textbf{Estado Balanceado DC:} Mediciones físicas logradas en el Par Diferencial (Voltajes $V_E$, $V_{C1}$, $V_{C2}$) asumiendo entradas $0\,\text{V}$[cite: 18].
+    \item \textbf{Evidencia de Simulación (LTspice):} Captura del esquemático simulado demostrando el Punto de Operación (.op) del circuito completo[cite: 18].
+    \item \textbf{Identidad del Transistor:} Registro exacto del modelo/número de parte (ej. 2N3904) del transistor empleado tanto en hardware como en la simulación LTspice (proveer la directiva \texttt{.model} utilizada)[cite: 18].
+    \item \textbf{Transconductancia ($g_m$):} Cálculo matemático explícito de $g_m$ utilizando la corriente $I_C$ de reposo real/simulada de su circuito (No la teórica ideal)[cite: 18].
+    \item \textbf{Ganancia Diferencial ($A_d$):} Predicción de su ganancia $A_d \approx g_m R_C$ utilizando los valores reales de $R_C$ medidos por su grupo[cite: 18].
+    \item \textbf{Problemas no resueltos:} Descripción de cualquier comportamiento anómalo detectado (ej. offset severo, saturación)[cite: 18].
+    \item \textbf{Componentes Faltantes:} Lista de cualquier elemento del BOM que el grupo aún deba adquirir[cite: 18].
+    \item \textbf{Próxima Acción Física:} Describa cuál será la siguiente conexión o medida a realizar en el laboratorio[cite: 18].
+\end{enumerate}
+
+\end{document}
