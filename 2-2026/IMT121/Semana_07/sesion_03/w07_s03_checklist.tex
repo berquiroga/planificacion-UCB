@@ -1,0 +1,79 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Checklist Lab A}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Lista de Verificación: Cierre de Experiencia Integrada A}]
+    \centering \textbf{Triage y Control de Trazabilidad: Teoría $\rightarrow$ SPICE $\rightarrow$ Banco}
+\end{tcolorbox}
+
+\textbf{Equipo:} \hrulefill \quad \textbf{Fecha:} \hrulefill
+
+\vspace{0.3cm}
+\noindent Marque con una "X" a medida que consolide la evidencia técnica. \textbf{Un montaje funcional no es una experiencia terminada}. Debe existir evidencia que conecte modelo, simulación y medición antes de desarmar el circuito.
+
+\section*{1. Definición del Circuito y Modelo}
+\begin{itemize}\setlength\itemsep{0.1em}
+    \item[$\square$] Circuito base identificado correctamente en papel y simulador.
+    \item[$\square$] Puerto $a-b$ definido claramente.
+    \item[$\square$] Referencia de $V_a$ fijada respecto a una tierra común bien definida.
+\end{itemize}
+
+\section*{2. Superposición (Analítica, Simulada y Medida)}
+\begin{itemize}\setlength\itemsep{0.1em}
+    \item[$\square$] Cálculo teórico de contribuciones completado ($V_a^{(V1)} \approx 4.627\,\text{V}$ y $V_a^{(V2)} \approx 1.087\,\text{V}$).
+    \item[$\square$] Simulación SPICE de los dos subcircuitos (fuentes individuales) completada.
+    \item[$\square$] Medición experimental de $V_a^{(V1)}$ aislando físicamente $V_1$ (llevando $V_2 \rightarrow 0\,\text{V}$).
+    \item[$\square$] Medición experimental de $V_a^{(V2)}$ aislando físicamente $V_2$ (llevando $V_1 \rightarrow 0\,\text{V}$).
+    \item[$\square$] Comprobación de que la suma algebraica reproduce la respuesta total del circuito energizado.
+\end{itemize}
+
+\section*{3. Parámetros del Equivalente Thévenin / Norton}
+\begin{itemize}\setlength\itemsep{0.1em}
+    \item[$\square$] Medición de $V_{oc} = V_{th}$ realizada con el puerto $a-b$ \textbf{completamente abierto} (sin carga).
+    \item[$\square$] Medición de $R_{th}$ realizada con la red \textbf{desenergizada} y medida mirando desde el puerto $a-b$.
+    \item[$\square$] Valor analítico de la corriente de Norton reportado ($I_N = V_{th}/R_{th} \approx 2.628\,\text{mA}$).
+    \item[$\square$] Dibujo esquemático explícito del equivalente de Thévenin y del equivalente de Norton.
+\end{itemize}
+
+\section*{4. Validación con Carga Externa}
+\begin{itemize}\setlength\itemsep{0.1em}
+    \item[$\square$] Respuesta medida ($V_L, I_L$) al conectar al menos una carga $R_L$ conocida al puerto $a-b$.
+\end{itemize}
+
+\section*{5. Interpretación y Discrepancias}
+\begin{itemize}\setlength\itemsep{0.1em}
+    \item[$\square$] Tabla comparativa (Teoría vs. SPICE vs. Medición) completamente llena.
+    \item[$\square$] Cálculo de error relativo efectuado para las variables principales.
+    \item[$\square$] Redacción de al menos \textbf{una hipótesis técnica} que justifique físicamente la discrepancia principal observada (ej. impedancia de instrumentos, tolerancia de componentes, falsos contactos, no usar tierra común).
+\end{itemize}
+
+\vspace{0.5cm}
+\begin{center}
+    \textbf{Firma del Instructor (Aprobación para Iniciar Exp. B):} \rule{6cm}{0.4pt}
+\end{center}
+
+\end{document}

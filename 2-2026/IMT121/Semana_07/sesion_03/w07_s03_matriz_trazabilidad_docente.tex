@@ -1,0 +1,62 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Matriz de Evidencia Docente}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Matriz de Trazabilidad y Estado de EC2}]
+    \centering \textbf{Progreso de Evidencias: Recuperación y Avance Hacia Hito 2}
+\end{tcolorbox}
+
+\noindent Esta matriz permite al instructor confirmar visualmente qué competencias de la Unidad EC2 (Teoremas y Simplificación) han sido recuperadas formalmente al cerrar la Experiencia A, y cuáles quedan pendientes estrictamente para la Experiencia B.
+
+\vspace{0.4cm}
+\renewcommand{\arraystretch}{1.8}
+\noindent
+\begin{tabularx}{\textwidth}{|>{\RaggedRight\bfseries}p{3.5cm}|>{\centering\arraybackslash}p{2cm}|>{\RaggedRight\arraybackslash}X|>{\bfseries\centering\arraybackslash}p{2.5cm}|}
+\hline
+\rowcolor{ucbblue!10}
+\textbf{Evidencia de EC2 (Syllabus)} & \textbf{Asignada a Experiencia} & \textbf{Evidencia Producida / Medida} & \textbf{Estado Esperado (Fin S7-S3)} \\ \hline
+Superposición y Linealidad & A & Medición individual de contribuciones ($V_a^{(V1)}$, $V_a^{(V2)}$) y validación de suma algebraica. & \cellcolor{green!20}Completado \\ \hline
+Desactivación y Topología & A & Reconfiguración física de $V \rightarrow 0$ (Corto) e $I \rightarrow 0$ (Abierto). & \cellcolor{green!20}Completado \\ \hline
+Voltaje de C.A. ($V_{oc}$) & A & Medición en puerto aislado (Teoría vs SPICE vs Bench). & \cellcolor{green!20}Completado \\ \hline
+Resistencia Eq. ($R_{th}$) & A & Medición desde puerto con red pasiva desactivada. & \cellcolor{green!20}Completado \\ \hline
+Equivalentes con Carga & A & Validación $V_L$ e $I_L$ con al menos un $R_L$ conectado. & \cellcolor{green!20}Completado \\ \hline
+Comparación y Discrepancias & A & Cuantificación de $\varepsilon_r$ y elaboración de hipótesis técnicas. & \cellcolor{green!20}Completado \\ \hline
+\rowcolor{gray!10}
+Curva de Potencia ($P_L(R_L)$) & B & Barrido físico y simulado de cargas y registro de potencia. & \cellcolor{yellow!20}Pendiente \\ \hline
+\rowcolor{gray!10}
+Máxima Transferencia & B & Demostración física de que el máximo ocurre en $R_L \approx R_{th}$. & \cellcolor{yellow!20}Pendiente \\ \hline
+\rowcolor{gray!10}
+Efecto de Carga y Eficiencia & B & Trazado de $\eta$ y caída de tensión respecto al régimen de carga. & \cellcolor{yellow!20}Pendiente \\ \hline
+\rowcolor{gray!10}
+Simulación Paramétrica (DC Sweep) & B & Modelado dinámico en LTSpice (\texttt{.step param}). & \cellcolor{yellow!20}Pendiente \\ \hline
+\end{tabularx}
+
+\vspace{0.6cm}
+\textbf{Acción Docente Requerida:} 
+El "Hito 2" requiere ineludiblemente las evidencias de la Experiencia B. No considere a la cohorte lista para la evaluación sumativa hasta que los elementos "Pendientes" cambien a "Completados".
+
+\end{document}

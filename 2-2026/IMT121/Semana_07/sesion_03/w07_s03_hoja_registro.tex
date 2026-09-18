@@ -1,0 +1,65 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Tabla de Registro A}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Hoja de Registro y Comparación de Evidencia}]
+    \centering \textbf{Trilogía de Validación: Cálculo Analítico $\rightarrow$ Simulación $\rightarrow$ Banco de Pruebas}
+\end{tcolorbox}
+
+\textbf{Equipo:} \hrulefill 
+
+\vspace{0.2cm}
+\noindent El Error Relativo debe calcularse respecto al valor teórico: 
+\begin{equation*}
+    \varepsilon_r = \left| \frac{\text{Medido} - \text{Teórico}}{\text{Teórico}} \right| \times 100\%
+\end{equation*}
+
+\renewcommand{\arraystretch}{1.8}
+\noindent
+\begin{tabularx}{\textwidth}{|>{\bfseries\RaggedRight}p{2.5cm}|>{\centering\arraybackslash}p{1.2cm}|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}p{2.5cm}|}
+\hline
+\rowcolor{ucbblue!10}
+\textbf{Magnitud} & \textbf{Var.} & \textbf{Teoría} & \textbf{SPICE} & \textbf{Medición} & \textbf{Error \%} & \textbf{Observación / Discrepancia} \\ \hline
+Superposición Contribución 1 & $V_{a}^{(V1)}$ & $4.627\,\text{V}$ & & & & \\ \hline
+Superposición Contribución 2 & $V_{a}^{(V2)}$ & $1.087\,\text{V}$ & & & & \\ \hline
+Voltaje Total \newline (Nodal) & $V_{a}$ & $5.714\,\text{V}$ & & & & \\ \hline
+Voltaje de Circ. Abierto & $V_{oc}$ & $5.714\,\text{V}$ & & & & \\ \hline
+Resistencia de Thévenin & $R_{th}$ & $2.175\,\text{k}\Omega$ & & & & \\ \hline
+Corriente de Norton & $I_{N}$ & $2.628\,\text{mA}$ & & \textit{(Indirecta)} & & \\ \hline
+Carga 1 \newline ($R_L \approx 1\,\text{k}\Omega$) & $V_{L1}$ & $1.800\,\text{V}$ & & & & \\ \hline
+Carga 2 \newline ($R_L \approx 2.2\,\text{k}\Omega$) & $V_{L2}$ & $2.874\,\text{V}$ & & & & \\ \hline
+Carga 3 \newline ($R_L \approx 4.7\,\text{k}\Omega$) & $V_{L3}$ & $3.907\,\text{V}$ & & & & \\ \hline
+Carga 4 \newline ($R_L \approx 10\,\text{k}\Omega$) & $V_{L4}$ & $4.694\,\text{V}$ & & & & \\ \hline
+\end{tabularx}
+
+\vspace{0.5cm}
+\textbf{Conclusión de Discrepancias:} Identifique la fuente principal de error físico (no humano) observada en el banco. \\
+\rule{\textwidth}{0.4pt} \\
+\rule{\textwidth}{0.4pt}
+
+\end{document}

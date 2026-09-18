@@ -1,0 +1,133 @@
+\documentclass[journal, a4paper]{IEEEtran}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{ragged2e}
+\usepackage[american]{circuitikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{hyperref}
+
+\renewcommand{\tablename}{Tabla}
+
+\begin{document}
+
+\title{Verificación Experimental de Superposición y Equivalentes de Thévenin/Norton en una Red Resistiva}
+
+\author{
+    [Nombre del Estudiante 1], [Nombre del Estudiante 2]\\
+    Ingeniería Mecatrónica, Universidad Católica Boliviana ``San Pablo'' -- Sede Tarija\\
+    IMT-121 --- Circuitos Electrónicos I\\
+    Fecha: \today \quad | \quad Grupo: [ID del Grupo]
+}
+
+\maketitle
+
+\begin{abstract}
+% Escriba un párrafo (80-120 palabras) indicando el objetivo, el método, la comparación principal y la conclusión técnica.
+[Escribir resumen aquí]
+\end{abstract}
+
+\begin{IEEEkeywords}
+Superposición, equivalente de Thévenin, equivalente de Norton, linealidad, LTSpice, validación experimental.
+\end{IEEEkeywords}
+
+\section{Introducción y Objetivo}
+% Explique la relación que se evalúa (linealidad, equivalencia de puertos) y el objetivo explícito del experimento.
+[Escribir introducción aquí]
+
+\section{Modelo del Circuito y Predicciones Analíticas}
+
+\subsection{Definición del Circuito y Referencias}
+% Incluya el esquemático usando circuitikz del circuito base indicando las referencias de tensión V_a, el puerto a-b, las polaridades y los valores nominales.
+[Insertar esquemático aquí]
+
+\subsection{Relaciones Fundamentales}
+Las respuestas parciales bajo el principio de superposición se combinan algebraicamente:
+\begin{equation}
+    V_{a,\text{total}} = V_{a}^{(V1)} + V_{a}^{(V2)}
+\end{equation}
+Los parámetros del equivalente se relacionan mediante:
+\begin{align}
+    V_{th} &= V_{oc} \\
+    R_{th} &= R_{\text{vista desde puerto}} \\
+    I_{N} &= \frac{V_{th}}{R_{th}}
+\end{align}
+
+\subsection{Predicciones Analíticas}
+\begin{table}[htbp]
+    \centering
+    \caption{Predicciones Analíticas Base}
+    \label{tab:predicciones_a}
+    \begin{tabularx}{\columnwidth}{>{\RaggedRight\arraybackslash}X >{\centering\arraybackslash}X c}
+        \toprule
+        \textbf{Magnitud} & \textbf{Predicción Analítica} & \textbf{Unidad} \\
+        \midrule
+        $V_{a}^{(V1)}$ & & V \\
+        $V_{a}^{(V2)}$ & & V \\
+        $V_{oc} = V_{th}$ & & V \\
+        $R_{th}$ & & k$\Omega$ \\
+        $I_{N}$ & & mA \\
+        $V_L$ ($R_L$ conectada) & & V \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\section{Metodología}
+\subsection{Simulación}
+% Describa la configuración en LTSpice para obtener las contribuciones de superposición, el voltaje a circuito abierto y el comportamiento con carga.
+[Descripción de simulación]
+
+\subsection{Montaje Experimental}
+% Documente la implementación en protoboard, configuración de fuentes, instrumentos y nodos de referencia.
+[Descripción del montaje]
+
+\subsection{Procedimiento}
+% Secuencia numerada de medición de contribuciones, V_oc, R_th y validación con carga.
+% ATENCIÓN: Indique explícitamente que I_N se obtuvo analíticamente o por simulación, NO mediante un corto físico del puerto, a menos que el instructor lo haya autorizado expresamente.
+[Secuencia de pasos]
+
+\section{Resultados}
+
+\begin{table*}[htbp]
+    \centering
+    \caption{Comparación de Evidencia Experimental y Simulada}
+    \label{tab:resultados_a}
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}X *{4}{>{\centering\arraybackslash}X}}
+        \toprule
+        \textbf{Magnitud} & \textbf{Teoría} & \textbf{SPICE} & \textbf{Medición} & \textbf{Error Relativo (\%)} \\
+        \midrule
+        $V_a^{(V1)}$ & & & & \\
+        $V_a^{(V2)}$ & & & & \\
+        $V_{a,\text{total}}$ & & & & \\
+        $V_{oc}$ & & & & \\
+        $R_{th}$ & & & & \\
+        $I_{N}$ & & & \textit{N/A (Cálculo)} & \textit{N/A} \\
+        $V_L$ (con $R_L$) & & & & \\
+        $I_L$ (con $R_L$) & & & & \\
+        \bottomrule
+    \end{tabularx}
+\end{table*}
+
+\section{Discusión}
+% Responda explícitamente:
+% 1. ¿Se sostuvo experimentalmente la superposición?
+% 2. ¿El equivalente de Thévenin reprodujo el voltaje terminal de la red original bajo carga?
+% 3. Justifique físicamente la causa más probable de las discrepancias observadas (observación -> hipótesis -> evidencia).
+[Escribir discusión aquí]
+
+\section{Conclusiones}
+% Proporcione de 3 a 5 conclusiones técnicas precisas y ligadas a su evidencia cuantitativa.
+[Escribir conclusiones aquí]
+
+\begin{thebibliography}{00}
+\bibitem{guia_a} Instructor del Curso, \emph{Experiencia Integrada A — Guía de Laboratorio}, Universidad Católica Boliviana, 2026.
+\end{thebibliography}
+
+\end{document}

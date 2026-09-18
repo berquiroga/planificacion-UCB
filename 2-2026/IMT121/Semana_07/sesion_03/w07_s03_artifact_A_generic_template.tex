@@ -1,0 +1,191 @@
+\documentclass[journal, a4paper]{IEEEtran}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{ragged2e}
+\usepackage[american]{circuitikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{hyperref}
+
+\renewcommand{\tablename}{Tabla}
+
+\begin{document}
+
+% ==========================================
+% TÍTULO Y AUTORES
+% ==========================================
+% INDIQUE el problema técnico, no solo "Informe de Laboratorio".
+% Ejemplo: "Verificación Experimental de [Fenómeno/Teorema] en Redes Resistivas"
+\title{Título del Informe: [Fenómeno/Teorema] en Redes Resistivas}
+
+\author{
+    Nombre del Estudiante 1 (ID: XXXXXXXX), Nombre del Estudiante 2 (ID: XXXXXXXX)\\
+    Ingeniería Mecatrónica, Universidad Católica Boliviana ``San Pablo'' -- Sede Tarija\\
+    IMT-121 --- Circuitos Electrónicos I\\
+    Fecha: \today \quad | \quad Grupo: [Número o Identificador]
+}
+
+\maketitle
+
+% ==========================================
+% ABSTRACT Y PALABRAS CLAVE
+% ==========================================
+\begin{abstract}
+% STATE what you tested.
+% SHOW the analytical prediction.
+% REPORT the simulation and measurement.
+% QUANTIFY the difference.
+% EXPLAIN what the comparison means.
+% Escriba entre 80 y 120 palabras en un solo párrafo. No incluya detalles del procedimiento.
+En este documento se presenta la verificación experimental de...
+\end{abstract}
+
+\begin{IEEEkeywords}
+Término 1, Término 2, Término 3. % Ej: Superposición, Equivalente de Thévenin, LTSpice.
+\end{IEEEkeywords}
+
+% ==========================================
+% I. INTRODUCCIÓN Y OBJETIVOS
+% ==========================================
+\section{Introducción y Objetivo}
+% Defina la pregunta de ingeniería. ¿Qué relación o teorema se está evaluando?
+% Termine esta sección (1 a 3 párrafos cortos) con un objetivo explícito.
+Este experimento investiga si una red resistiva lineal puede...
+
+% ==========================================
+% II. MODELO DEL CIRCUITO Y PREDICCIONES
+% ==========================================
+\section{Modelo del Circuito y Predicciones Analíticas}
+% Presente el modelo analítico antes que las mediciones experimentales.
+
+\subsection{Definición del Circuito y Referencias}
+% Incluya un esquemático con las referencias de voltaje, corriente, polaridades, nodos y el puerto a-b.
+\begin{figure}[htbp]
+    \centering
+    % Placeholder para el circuito (usar circuitikz)
+    \begin{circuitikz}[scale=0.8, transform shape]
+        % Dibuje aquí el circuito
+        \draw (0,0) to[R, l={$R$}] (2,0);
+    \end{circuitikz}
+    \caption{Esquemático del circuito bajo prueba indicando referencias y puerto de análisis.}
+    \label{fig:circuito}
+\end{figure}
+
+\subsection{Relaciones Fundamentales}
+% Incluya SOLO las ecuaciones estrictamente necesarias para el experimento.
+% Muestre suficiente desarrollo intermedio para que el método se entienda. No provea páginas de álgebra.
+Las ecuaciones que gobiernan el comportamiento del circuito son:
+\begin{equation}
+    % Ecuación de ejemplo
+    V_{th} = V_{oc}
+\end{equation}
+
+\subsection{Predicciones Analíticas}
+% Resuma en una tabla compacta los valores esperados antes de la simulación y medición.
+\begin{table}[htbp]
+    \centering
+    \caption{Predicciones Analíticas Previas}
+    \label{tab:predicciones}
+    \begin{tabularx}{\columnwidth}{>{\RaggedRight\arraybackslash}X >{\centering\arraybackslash}X c}
+        \toprule
+        \textbf{Magnitud} & \textbf{Predicción Analítica} & \textbf{Unidad} \\
+        \midrule
+        Variable 1 & Valor & Unidad \\
+        Variable 2 & Valor & Unidad \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+% ==========================================
+% III. METODOLOGÍA
+% ==========================================
+\section{Metodología}
+
+\subsection{Simulación (SPICE)}
+% Describa el software usado, la configuración del circuito, qué parámetros se barrieron (si aplica) y qué cantidades se extrajeron.
+
+\subsection{Montaje Experimental}
+% Documente la implementación en protoboard, configuración de fuentes de alimentación, instrumentos usados, y punto/nodo de referencia (tierra).
+% No invente números de modelo de instrumentos si no los registró.
+
+\subsection{Procedimiento}
+% Use una secuencia numerada y concisa indicando qué cambió, qué permaneció fijo, qué se midió y cómo se construyó la comparación.
+\begin{enumerate}
+    \item Se configuró...
+    \item Se mantuvo fijo...
+    \item Se midió...
+\end{enumerate}
+
+% ==========================================
+% IV. RESULTADOS
+% ==========================================
+\section{Resultados}
+% Reporte la evidencia sin mezclarla inmediatamente con largas interpretaciones.
+
+% Utilice la siguiente fórmula para el error relativo cuando sea apropiado (no cuando el teórico sea cero):
+% \varepsilon_r = \frac{|x_{\text{medido}} - x_{\text{teórico}}|}{|x_{\text{teórico}}|} \times 100\%
+
+\begin{table*}[htbp]
+    \centering
+    \caption{Comparación de Resultados: Teoría, Simulación y Medición}
+    \label{tab:resultados}
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}X *{4}{>{\centering\arraybackslash}X}}
+        \toprule
+        \textbf{Magnitud} & \textbf{Teoría} & \textbf{SPICE} & \textbf{Medición} & \textbf{Error Relativo (\%)} \\
+        \midrule
+        Variable 1 & Valor & Valor & Valor & Valor \\
+        Variable 2 & Valor & Valor & Valor & Valor \\
+        \bottomrule
+    \end{tabularx}
+\end{table*}
+
+% Agregue aquí la figura principal del experimento (ej. gráfica P_L vs R_L).
+% Evite llenar el reporte con capturas de pantalla de osciloscopios o simuladores si no aportan valor.
+
+% ==========================================
+% V. DISCUSIÓN
+% ==========================================
+\section{Discusión}
+% Esta es la sección principal de razonamiento de ingeniería.
+% Responda explícitamente:
+% 1. ¿Acordaron razonablemente la teoría, SPICE y la medición?
+% 2. ¿Cuál fue la magnitud de la discrepancia más importante?
+% 3. ¿Qué causas físicas o procedimentales plausibles podrían explicarla? (ej. tolerancia de resistores, resistencia de cables, tierra incorrecta).
+% MODELO A SEGUIR: Observación -> Hipótesis Técnica -> Evidencia.
+% NO escriba simplemente "error experimental o humano".
+
+% ==========================================
+% VI. CONCLUSIONES
+% ==========================================
+\section{Conclusiones}
+% Proporcione de 3 a 5 conclusiones técnicas concisas ligadas a su evidencia.
+% NO escriba "los objetivos se cumplieron".
+\begin{itemize}
+    \item La medición de la tensión de circuito abierto difirió del $V_{th}$ analítico en un X\%, lo cual...
+    \item La red cargada y su equivalente de Thévenin produjeron tensiones terminales similares, soportando...
+\end{itemize}
+
+% ==========================================
+% REFERENCIAS
+% ==========================================
+\begin{thebibliography}{00}
+\bibitem{ref1}
+% Use formato IEEE real para la guía de lab, el libro de texto o documentación de LTSpice.
+% Ejemplo de formato: Autor, \emph{Título del Documento}, Edición. Ciudad: Editorial, Año.
+B. Quiroga Turdera, \emph{Guía de Laboratorio IMT-121}, Universidad Católica Boliviana, 2026.
+\end{thebibliography}
+
+% ==========================================
+% APÉNDICE (Opcional)
+% ==========================================
+% \section*{Apéndice}
+% Úselo SOLO para tablas raw muy largas, cálculos extensos o código. El reporte principal debe entenderse sin el apéndice.
+
+\end{document}

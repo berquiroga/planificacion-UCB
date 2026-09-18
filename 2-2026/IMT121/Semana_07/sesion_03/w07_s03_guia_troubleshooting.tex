@@ -1,0 +1,58 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Troubleshooting Docente}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Guía Docente: Diagnóstico Rápido de Discrepancias (Troubleshooting)}]
+    \centering \textbf{Identificación y Corrección de Errores Comunes de Banco}
+\end{tcolorbox}
+
+\section*{El Proceso de Diagnóstico Estructurado}
+Cuando un equipo reporta "el resultado no coincide", no revise el circuito de inmediato. Obligue al estudiante a seguir el árbol de fallos: \textbf{Referencia $\rightarrow$ Topología $\rightarrow$ Valores $\rightarrow$ Fuentes $\rightarrow$ Medición $\rightarrow$ SPICE $\rightarrow$ Hipótesis}.
+
+\vspace{0.3cm}
+\renewcommand{\arraystretch}{1.6}
+\noindent
+\begin{tabularx}{\textwidth}{|>{\bfseries\RaggedRight}p{3cm}|>{\RaggedRight\arraybackslash}X|>{\RaggedRight\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!10}
+\textbf{Síntoma Observado} & \textbf{Causa Raíz Probable} & \textbf{Intervención del Instructor} \\ \hline
+\textbf{$V_a$ muy diferente en todas las configuraciones.} & Tierra común no establecida entre las dos fuentes de tensión, o polaridades invertidas respecto al esquema. & Pedir al estudiante que mida con el multímetro la tensión entre las terminales negativas de ambas fuentes (debe ser $0\,\text{V}$). Revisar el nodo $a$. \\ \hline
+\textbf{Las contribuciones individuales son correctas pero no suman algebraicamente.} & Cambiaron la referencia (las puntas del multímetro) entre subproblemas, perdiendo el signo. O abrieron una fuente de tensión en lugar de llevarla a cero (corto). & "Muestre cómo apagó $V_2$." Si desconectó el cable, explicar que "desactivar" $0\,\text{V}$ significa un puente físico a tierra. Revisar polaridad de medición. \\ \hline
+\textbf{$V_{oc}$ menor o distinto de lo esperado.} & Se midió con la resistencia de carga $R_L$ o algún otro instrumento conectado accidentalmente. & "Confirmar que el puerto $a-b$ está literalmente flotando/aislado hacia la derecha de la red." \\ \hline
+\textbf{$R_{th}$ no coincide en absoluto.} & Se intentó medir la resistencia con la placa energizada, destruyendo la lectura del óhmetro. & Exigir desconexión total de las fuentes de banco. Comprobar que los nodos donde estaban $V_1$ y $V_2$ estén conectados a tierra. \\ \hline
+\textbf{Hardware y SPICE coinciden, pero la teoría no.} & El modelo analítico usado para calcular a mano difiere de la topología real o tiene errores de unidad (ej. mezclar $\Omega$ con $\text{k}\Omega$). & Revisar KCL en papel. Los estudiantes suelen cometer errores algebraicos antes que de simulación. \\ \hline
+\end{tabularx}
+
+\section*{Punto de Control Crítico}
+\textbf{Seguridad para la Corriente de Cortocircuito ($I_N / I_{sc}$):} No prescriba a los estudiantes realizar un cortocircuito físico directo con el amperímetro en el puerto para medir $I_N$ ($2.628\,\text{mA}$) a menos que:
+\begin{enumerate}
+    \item Conozca perfectamente la resistencia interna y el fusible del amperímetro a utilizar.
+    \item Haya configurado la limitación de corriente constante (CC) en las fuentes de banco.
+\end{enumerate}
+Para el cierre de la Experiencia A, una deducción indirecta ($I_N = V_{th}/R_{th}$) comparada con la simulación SPICE de la corriente de rama de cortocircuito es prueba técnica y pedagógicamente suficiente.
+
+\end{document}

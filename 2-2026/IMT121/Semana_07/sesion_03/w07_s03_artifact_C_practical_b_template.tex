@@ -1,0 +1,131 @@
+\documentclass[journal, a4paper]{IEEEtran}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{ragged2e}
+\usepackage[american]{circuitikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{hyperref}
+
+\renewcommand{\tablename}{Tabla}
+
+\begin{document}
+
+\title{Análisis Experimental del Efecto de Carga y Máxima Transferencia de Potencia en una Red Equivalente de Thévenin}
+
+\author{
+    [Nombre del Estudiante 1], [Nombre del Estudiante 2]\\
+    Ingeniería Mecatrónica, Universidad Católica Boliviana ``San Pablo'' -- Sede Tarija\\
+    IMT-121 --- Circuitos Electrónicos I\\
+    Fecha: \today \quad | \quad Grupo: [ID del Grupo]
+}
+
+\maketitle
+
+\begin{abstract}
+% Escriba un párrafo (80-120 palabras) indicando el barrido de resistencias realizado, la comparación entre SPICE y el banco, y la confirmación empírica del punto de máxima transferencia de potencia.
+[Escribir resumen aquí]
+\end{abstract}
+
+\begin{IEEEkeywords}
+Máxima transferencia de potencia, efecto de carga, eficiencia, equivalente de Thévenin, DC Sweep, LTSpice.
+\end{IEEEkeywords}
+
+\section{Introducción y Objetivo}
+% Defina la dependencia de la potencia con respecto a la carga y plantee el objetivo del experimento.
+[Escribir introducción aquí]
+
+\section{Modelo del Circuito y Predicciones Analíticas}
+
+\subsection{Definición del Circuito y Referencias}
+% Incluya el equivalente de Thévenin conectado a una resistencia de carga variable (R_L). Indique polaridades y corrientes.
+[Insertar esquemático de equivalente y carga]
+
+\subsection{Relaciones Fundamentales}
+La respuesta en carga de la red está gobernada por:
+\begin{align}
+    I_L &= \frac{V_{th}}{R_{th} + R_L} \\
+    P_L(R_L) &= V_{th}^2 \frac{R_L}{(R_{th} + R_L)^2}
+\end{align}
+Matemáticamente, derivando respecto a $R_L$, la potencia se maximiza en la condición adaptada:
+\begin{equation}
+    R_{L,\text{max}} = R_{th}
+\end{equation}
+
+\subsection{Predicciones Analíticas}
+El punto óptimo esperado para la red caracterizada es:
+\begin{itemize}
+    \item $R_{L,\text{max}} = R_{th} = $ [Valor]
+    \item $P_{L,\text{max}} = $ [Valor]
+\end{itemize}
+
+\section{Metodología}
+\subsection{Simulación (DC Sweep)}
+% Describa el uso de LTSpice y el comando parametrizado (ej. .step param) para barrer múltiples valores de R_L y obtener la curva teórica.
+[Descripción de simulación]
+
+\subsection{Montaje y Procedimiento Experimental}
+% Detalle cómo se realizó el barrido discreto de cargas físicas en la protoboard. Qué se mantuvo fijo (red) y qué variables (V_L, I_L) se registraron para calcular la potencia.
+[Procedimiento del barrido físico]
+
+\section{Resultados}
+
+\begin{table*}[htbp]
+    \centering
+    \caption{Barrido Discreto: Evolución de Tensión, Corriente y Potencia}
+    \label{tab:resultados_b}
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}p{2.5cm} *{5}{>{\centering\arraybackslash}X}}
+        \toprule
+        $\bm{R_L}$ \textbf{Medido} ($\Omega$) & $\bm{V_L}$ \textbf{Teórico} (V) & $\bm{V_L}$ \textbf{Medido} (V) & $\bm{I_L}$ \textbf{Calculado} (mA) & $\bm{P_L}$ \textbf{Teórico} (mW) & $\bm{P_L}$ \textbf{Medido} (mW) \\
+        \midrule
+        $R_{L1}$ & & & & & \\
+        $R_{L2}$ & & & & & \\
+        $R_{L3} \approx R_{th}$ & & & & & \\
+        $R_{L4}$ & & & & & \\
+        $R_{L5}$ & & & & & \\
+        \bottomrule
+    \end{tabularx}
+\end{table*}
+
+\begin{figure}[htbp]
+    \centering
+    % El estudiante debe reemplazar este entorno por su gráfico (P_L vs R_L) generado desde Python, MATLAB o Excel, mostrando los puntos medidos sobre la curva teórica/simulada. Priorice la legibilidad de ejes y leyenda.
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\columnwidth,
+            height=6cm,
+            xlabel={Resistencia de Carga $R_L$ ($\Omega$)},
+            ylabel={Potencia $P_L$ (mW)},
+            grid=major,
+            legend pos=north east
+        ]
+        % \addplot table {data.txt}; % Placeholder para datos reales
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Curva de Potencia en función de la resistencia de carga $R_L$. Se indican el máximo predicho y los puntos discretos medidos experimentalmente.}
+    \label{fig:curva_potencia}
+\end{figure}
+
+\section{Discusión}
+% Responda explícitamente:
+% 1. ¿Coincidió razonablemente el pico experimental de potencia con el valor medido de R_th?
+% 2. Analice el efecto de carga: ¿Qué le sucede a V_L y a la potencia útil cuando R_L es excesivamente grande o excesivamente pequeña respecto a R_th?
+% 3. ¿Cómo se comportó la eficiencia de transferencia en el punto exacto de máxima potencia?
+[Escribir discusión aquí]
+
+\section{Conclusiones}
+% Escriba de 3 a 5 conclusiones técnicas precisas respaldadas por los datos.
+[Escribir conclusiones aquí]
+
+\begin{thebibliography}{00}
+\bibitem{guia_b} Instructor del Curso, \emph{Experiencia Integrada B}, Universidad Católica Boliviana, 2026.
+\end{thebibliography}
+
+\end{document}
