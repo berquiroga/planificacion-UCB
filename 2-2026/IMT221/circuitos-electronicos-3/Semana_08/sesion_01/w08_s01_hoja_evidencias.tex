@@ -1,0 +1,71 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Hoja de Evidencia Hito 2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Registro de Evidencia: Hito 2 (Sesión 1)}]
+    Llene esta hoja progresivamente. \textbf{Track A} completará las mediciones hoy; \textbf{Track B} llenará las columnas Analíticas y Simuladas y dejará Medición en "Pendiente"[cite: 19].
+\end{tcolorbox}
+
+\section*{1. Rieles y Subsistema Espejo}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3cm}|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}p{2.5cm}|}
+\hline
+\rowcolor{ucbblue!20}
+\textbf{Variable} & \textbf{Predicho / Nominal} & \textbf{Simulado (LTspice)} & \textbf{Medido} & \textbf{Status} \\ \hline
+$V(+9,0)$ (Riel $+$) & $+9.0\,\text{V}$ & & & \\ \hline
+$V(0,-9)$ (Riel $-$) & $+9.0\,\text{V}$ & & & \\ \hline
+$V_{REF}$ & $\approx -8.3\,\text{V}$[cite: 19] & & & \\ \hline
+$I_{REF}$ & $\approx 1.01\,\text{mA}$[cite: 19] & & & \\ \hline
+$I_T$ (Cola) & $\approx 1.0\,\text{mA}$[cite: 19] & & & \\ \hline
+\end{tabularx}
+
+\section*{2. Punto Q y Balance del Par Diferencial ($v_1=v_2=0$)}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3cm}|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}p{2.5cm}|}
+\hline
+\rowcolor{ucbblue!20}
+\textbf{Variable} & \textbf{Predicho} & \textbf{Simulado (LTspice)} & \textbf{Medido} & \textbf{Interpretación} \\ \hline
+$v_E$ (Volt. Emisores) & $\approx -0.7\,\text{V}$[cite: 19] & & & Activo? \\ \hline
+$v_{C1}$ & $\approx 6.65\,\text{V}$[cite: 19] & & & \\ \hline
+$v_{C2}$ & $\approx 6.65\,\text{V}$[cite: 19] & & & \\ \hline
+$I_{C1}$ & $\approx 0.5\,\text{mA}$[cite: 19] & & & \\ \hline
+$I_{C2}$ & $\approx 0.5\,\text{mA}$[cite: 19] & & & \\ \hline
+$V_{CE1}$ & $\approx 7.35\,\text{V}$[cite: 19] & & & \\ \hline
+$V_{CE2}$ & $\approx 7.35\,\text{V}$[cite: 19] & & & \\ \hline
+$V_{OD,0}$ (Offset) & $0\,\text{V}$[cite: 19] & & & Tolerable? \\ \hline
+\end{tabularx}
+
+\section*{3. Pequeña Señal y Ganancia Diferencial}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3cm}|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}p{2.5cm}|}
+\hline
+\rowcolor{ucbblue!20}
+\textbf{Variable} & \textbf{Predicho (Teoría)} & \textbf{Simulado (LTspice)} & \textbf{Medido} & \textbf{Status} \\ \hline
+$g_m$ (Basado en $I_C$) & $\approx 19.34\,\text{mS}$[cite: 19] & & & \\ \hline
+$A_{d,de}$ (Ganancia) & $\approx 90.9\,\text{V/V}$[cite: 19] & & & \\ \hline
+$A_c$ y CMRR & Diferido a Ses. 2[cite: 19] & Diferido & Diferido & Pendiente[cite: 19] \\ \hline
+\end{tabularx}
+
+\vspace{0.5cm}
+\textbf{Registro de Debugging / Fallas (Troubleshooting):} \\
+(Anote aquí variaciones térmicas, reemplazo de transistores por mismatch, o reajustes).
+\vspace{0.2cm}\hrule\vspace{0.5cm}\hrule\vspace{0.5cm}\hrule
+
+\end{document}

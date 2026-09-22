@@ -1,0 +1,96 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+
+\pagestyle{empty}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Theory Burst: El Espejo de Corriente y Efectos de $\beta$ Finito}]
+    Para evitar la falsa afirmación de que "$R_{REF}$ impone la corriente sin importar el transistor", derivaremos la cadena causal exacta que define $I_T$[cite: 19].
+\end{tcolorbox}
+
+\section*{1. Cadena Causal del Espejo BJT[cite: 19]}
+La corriente de cola se genera bajo la siguiente relación física[cite: 19]:
+\begin{equation*}
+    \mathbf{R_{REF} + \text{Rieles} \implies I_{REF} \implies V_{BE3} \implies V_{BE4} \implies I_{C4} \approx I_T} \quad \text{[cite: 19]}
+\end{equation*}
+
+\noindent
+\begin{minipage}{0.35\textwidth}
+    \begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape, thick]
+        % Q4 (Salida) a la izquierda, base apuntando a la derecha
+        \draw (0,0) node[npn, xscale=-1](Q4){}; 
+        \node at (-0.6, -0.2) {Q4};
+        
+        % Q3 (Referencia) a la derecha, base apuntando a la izquierda
+        \draw (2.5,0) node[npn](Q3){}; 
+        \node at (3.1, -0.2) {Q3};
+        
+        % Conexión de emisores a -9V
+        \draw (Q4.E) -- (0,-1.2) node[below]{$-9\,\text{V}$};
+        \draw (Q3.E) -- (2.5,-1.2) node[below]{$-9\,\text{V}$};
+        
+        % Conexión de bases (ahora enfrentadas) y nodo V_B
+        \draw (Q4.B) -- (1.25,0) node[circle,fill,inner sep=1.5pt](Bmid){} -- (Q3.B);
+        \node[below] at (Bmid) {$V_B$};
+        
+        % Conexión diódica de Q3 (Colector a Base) con ángulos rectos
+        \draw (Q3.C) node[circle,fill,inner sep=1.5pt]{} -| (Bmid);
+        
+        % Rama de referencia (R_REF hacia 0V)
+        \draw (2.5,2.5) node[above]{$0\,\text{V}$} to[R, l={$R_{REF}$}, a={$8.2\,\text{k}\Omega$}] (Q3.C);
+        
+        % Rama de salida (I_T hacia Nodo E)
+        \draw (Q4.C) -- (0,2) node[above]{Hacia Nodo E};
+        \draw[<-, red, thick] (0,1.3) -- (0,0.8) node[midway, left]{$I_T$};
+    \end{circuitikz}
+    \end{center}
+\end{minipage}\hfill
+\begin{minipage}{0.6\textwidth}
+    \textbf{Paso 1: Estimación de $V_B$ (Nodos compartidos)} \\
+    Q3 está conectado como diodo (Base y Colector unidos: $B_3 = C_3$)[cite: 19]. Las bases comparten nodo ($V_{B3} = V_{B4}$), y los emisores comparten riel ($V_{E3} = V_{E4} = -9\,\text{V}$)[cite: 19]. Por tanto, $V_{BE3} = V_{BE4}$[cite: 19].
+    Asumiendo $V_{BE} \approx 0.7\,\text{V}$, el voltaje en el nodo común es[cite: 19]:
+    $$ V_B \approx -9\,\text{V} + 0.7\,\text{V} = \mathbf{-8.3\,\text{V}} \quad \text{[cite: 19]} $$
+    
+    \textbf{Paso 2: Corriente de Referencia} \\
+    Usando la Ley de Ohm en $R_{REF}$[cite: 19]:
+    $$ I_{REF} = \frac{0\,\text{V} - (-8.3\,\text{V})}{8.2\,\text{k}\Omega} \approx \mathbf{1.01\,\text{mA}} \quad \text{[cite: 19]} $$
+\end{minipage}
+
+\section*{2. Interpretación de $\beta$ Finito (¿Por qué $I_T \neq I_{REF}$?)}
+En un espejo ideal con transistores idénticos, asumimos $I_{C3} \approx I_{C4} = I_O$[cite: 19]. 
+Aplicando la Ley de Corrientes de Kirchhoff en el nodo $V_B$, vemos que la corriente de referencia debe suplir a la corriente de colector de Q3 MÁS ambas corrientes de base[cite: 19]:
+\begin{equation*}
+    I_{REF} = I_{C3} + I_{B3} + I_{B4} \implies I_{REF} = I_O + I_{B3} + I_{B4} \quad \text{[cite: 19]}
+\end{equation*}
+Dado que $I_B \approx I_O / \beta$[cite: 19]:
+\begin{equation*}
+    I_{REF} = I_O + \frac{I_O}{\beta} + \frac{I_O}{\beta} = I_O \left(1 + \frac{2}{\beta}\right) \quad \text{[cite: 19]}
+\end{equation*}
+Despejando la corriente de salida real $I_O$ (que es $I_T$)[cite: 19]:
+\begin{equation*}
+    \boxed{\mathbf{ I_T = I_O \approx \frac{I_{REF}}{1 + 2/\beta} }} \quad \text{[cite: 19]}
+\end{equation*}
+\textit{Conclusión: $I_T$ será ligeramente menor que $I_{REF}$ debido a las corrientes robadas por las bases. Desviaciones mayores implican mismatch térmico o Efecto Early[cite: 19].}
+
+\section*{3. Troubleshooting Básico (Si $I_T \approx 0\,\mu\text{A}$)}
+Antes de llamar al docente, verifique estrictamente lo siguiente[cite: 19]:
+\begin{itemize}
+    \item \textbf{¿Rieles correctos?:} Mida que haya $9\,\text{V}$ entre el nodo $0\,\text{V}$ y el riel inferior[cite: 19].
+    \item \textbf{¿Pinout cruzado?:} Verifique si intercambió Colector y Emisor en Q4[cite: 19].
+    \item \textbf{¿Q3 está conectado como diodo?:} Verifique el puente entre Base y Colector en Q3[cite: 19].
+    \item \textbf{¿Hay un camino de carga?:} Medir corriente requiere que cierre el circuito. Una salida de Q4 al aire no conduce corriente. ¿Puso el $R_{TEST}$ temporal?[cite: 19].
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,75 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Matriz de Evaluación Hito 2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Comunicación de Evaluación (Entregables) — Hito 2}]
+    El Hito 2 evalúa la capacidad de integrar diseño DC, pequeña señal y validación experimental en un amplificador discreto[cite: 19]. \textit{(Nota: No se asignan pesos porcentuales en esta fase[cite: 19]).}
+\end{tcolorbox}
+
+\section*{Requisitos Exigidos (Checklist de Competencia)[cite: 19]}
+
+\textbf{1. Usted DEBE Armar (Implementación):}
+\begin{itemize}
+    \item La fuente de cola basada en Espejo de Corriente[cite: 19].
+    \item El Par Diferencial BJT[cite: 19].
+    \item La rama del Shunt (cuando sea autorizado)[cite: 19].
+\end{itemize}
+
+\textbf{2. Usted DEBE Calcular (Análisis Matemático):}
+\begin{itemize}
+    \item Corrientes de referencia ($I_{REF}$) y de cola ($I_T$)[cite: 19].
+    \item Punto de Operación (Q) de ambas ramas[cite: 19].
+    \item Transconductancia analítica ($g_m$)[cite: 19].
+    \item Ganancia diferencial teórica ($A_d$)[cite: 19].
+    \item Ganancia común ($A_c$) y CMRR (se desarrollará en futuras sesiones)[cite: 19].
+\end{itemize}
+
+\textbf{3. Usted DEBE Simular (Software LTspice):}
+\begin{itemize}
+    \item El comportamiento DC del espejo de corriente[cite: 19].
+    \item El Par Diferencial balanceado (Análisis \texttt{.op})[cite: 19].
+    \item La respuesta ante excitación diferencial[cite: 19].
+    \item Posteriormente, la respuesta de modo común[cite: 19].
+\end{itemize}
+
+\textbf{4. Usted DEBE Medir (Instrumentación Física):}
+\begin{itemize}
+    \item Rieles de alimentación reales (+9V, -9V)[cite: 19].
+    \item Corriente $I_T$[cite: 19].
+    \item Voltajes y corrientes de rama, comprobando el offset[cite: 19].
+    \item Respuesta diferencial[cite: 19].
+    \item Posteriormente, la respuesta de modo común[cite: 19].
+\end{itemize}
+
+\textbf{5. Usted DEBE Interpretar y Conservar (Informe Final):}
+\begin{itemize}
+    \item Verificación matemática de operación en región activa[cite: 19].
+    \item Diagnóstico de mismatch y desviaciones[cite: 19].
+    \item Registro de Troubleshooting (Cómo solucionaron sus fallos)[cite: 19].
+    \item Todo cálculo, evidencia de LTspice, fotografías del circuito y mediciones deben retenerse como anexo[cite: 19].
+\end{itemize}
+
+\vspace{0.5cm}
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Defensa Individual vs Grupal}]
+    El trabajo en grupo valida el hardware (implementación y medición conjunta). Sin embargo, el entendimiento matemático debe demostrarse \textbf{individualmente} mediante el mecanismo de defensa establecido por el docente[cite: 19].
+\end{tcolorbox}
+
+\end{document}

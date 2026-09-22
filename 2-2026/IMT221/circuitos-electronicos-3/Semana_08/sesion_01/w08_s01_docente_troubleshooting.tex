@@ -1,0 +1,59 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Troubleshooting Docente}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Instructor Troubleshooting Decision Tree[cite: 19]}]
+    Úsese durante los Checkpoints 1 y 2 para diagnosticar problemas comunes. El objetivo es guiar al estudiante mediante \textbf{Sondas (Probes)}, no cablear por ellos[cite: 19].
+\end{tcolorbox}
+
+\section*{1. Fallo: Rieles Incorrectos}
+\textbf{Síntoma:} Voltaje anómalo en $V_{CC}$ o $V_{EE}$. \\
+\textbf{Primera acción:} Medir voltajes de los rieles directamente en la protoboard con multímetro[cite: 19]. \\
+\textbf{Sonda Docente:} \textit{"¿Dónde definiste tu nodo de $0\,\text{V}$ relativo a tus fuentes?"}[cite: 19] \\
+\textbf{Criterio GO:} Proceda solo cuando se confirmen $+9\,\text{V}$, $0\,\text{V}$ y $-9\,\text{V}$ inequívocos[cite: 19].
+
+\section*{2. Fallo: Pinout Incierto o Cruzado}
+\textbf{Síntoma:} Transistores se calientan o corrientes son nulas pese a voltaje correcto. \\
+\textbf{Primera acción:} Exigir el datasheet del fabricante específico de los 2N3904 adquiridos[cite: 19]. \\
+\textbf{Sonda Docente:} \textit{"Muéstrame el pinout documentado de este fabricante específico. ¿Lo comprobaste con el multímetro (modo diodo)?"}[cite: 19] \\
+\textbf{Criterio GO:} Continuar cuando E/B/C estén identificados sin ambigüedades[cite: 19].
+
+\section*{3. Fallo: Corriente de Cola Nula ($I_T \approx 0$)}
+\textbf{Síntoma:} La caída en $R_{TEST}$ es cero. \\
+\textbf{Revisión Rápida:} Bases compartidas, Q3 diodo-conectado, Emisores físicamente en el riel de $-9\,\text{V}$, y camino de carga cerrado[cite: 19]. \\
+\textbf{Sonda Docente:} \textit{"¿Por dónde debería circular la corriente $I_{REF}$? Sigue la malla desde $0\,\text{V}$ hasta $-9\,\text{V}$ con tu dedo."}[cite: 19]
+
+\section*{4. Fallo: Corriente de Cola Excesiva}
+\textbf{Síntoma:} $I_T \gg 1\,\text{mA}$. \\
+\textbf{Revisión Rápida:} Comprobar si $R_{REF}$ es realmente $8.2\,\text{k}\Omega$ (¿colores correctos?), medir magnitud del riel de $-9\,\text{V}$, buscar cortocircuitos (bases directo a $0\,\text{V}$ saltando $R_{REF}$)[cite: 19]. \\
+\textbf{Sonda Docente:} \textit{"Toma el voltímetro. ¿Qué tensión cae REALMENTE a través de la resistencia $R_{REF}$ en tu placa?"}[cite: 19]
+
+\section*{5. Fallo: Región Inválida (Q1/Q2 en Saturación)}
+\textbf{Síntoma:} $V_{CE}$ muy pequeño. \\
+\textbf{Primera acción:} Medir $v_E, v_B, v_C$ respecto a tierra. Calcular $V_{CE}$ y $V_{CB}$[cite: 19]. \\
+\textbf{Sonda Docente:} \textit{"Analiza los tres voltajes nodales. ¿Qué unión semiconductora no está polarizada como esperabas (inversa vs directa)?"}[cite: 19]
+
+\section*{6. Fallo: Gran Asimetría de Colectores (Gran Offset)}
+\textbf{Síntoma:} Con $v_1=v_2=0$, $\Delta v_C$ es de cientos de mV. \\
+\textbf{Primera acción:} Medir los valores óhmicos reales de $R_{C1}$ y $R_{C2}$ (apagado). Medir voltajes de base. Si el docente lo aprueba, intercambiar Q1 y Q2[cite: 19]. \\
+\textbf{Sonda Docente:} \textit{"Después de intercambiar Q1 y Q2, ¿la asimetría siguió al transistor físico o se quedó en la rama del circuito?"}[cite: 19]
+
+\end{document}

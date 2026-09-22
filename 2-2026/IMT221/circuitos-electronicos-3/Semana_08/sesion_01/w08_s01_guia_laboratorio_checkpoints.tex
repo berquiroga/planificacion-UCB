@@ -1,0 +1,88 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Laboratorio Hito 2 - Checkpoints}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Guía de Laboratorio Estructurada: Hito 2 (Sesión 1)}]
+    \textbf{Regla de Oro:} El circuito NO se monta como una receta completa de una sola vez. La progresión es estrictamente secuencial. \textbf{No se agrega un subsistema hasta validar analítica y experimentalmente el anterior}.
+\end{tcolorbox}
+
+\section*{Flujo de Trabajo Obligatorio}
+La secuencia de validación exigida es:
+\begin{equation*}
+    \mathbf{\text{BOM/Rieles} \to \text{Espejo (Cola)} \to I_T \to \text{Par Balanceado} \to Q \to g_m \to A_d \to \text{Shunt}}
+\end{equation*}
+
+\section*{Checkpoint 0: Readiness, BOM y Evidencia}
+Antes de energizar cualquier componente, valide lo siguiente:
+\begin{itemize}
+    \item \textbf{Pinout de Transistores:} No asuma el orden de los pines. Identifique la marca de sus 2N3904, busque su hoja de datos exacta y dibuje el pinout (E, B, C) físicamente[cite: 19].
+    \item \textbf{Verificación de Rieles:} El circuito exige $+9\,\text{V}$, $0\,\text{V}$ y $-9\,\text{V}$[cite: 19]. \textbf{$0\,\text{V}$ no es "otro negativo"}, es la referencia central común[cite: 19].
+    \item Mida y registre: $V(+9,0) \approx 9\,\text{V}$, $V(0,-9) \approx 9\,\text{V}$ y $V(+9,-9) \approx 18\,\text{V}$[cite: 19].
+\end{itemize}
+\textit{$\implies$ NO CONTINÚE si no tiene un nodo $0\,\text{V}$ inequívocamente definido[cite: 19].}
+
+\section*{Checkpoint 1: Espejo Aislado (Fuente de Cola)[cite: 19]}
+Arme \textbf{únicamente} los transistores Q3, Q4 y $R_{REF} = 8.2\,\text{k}\Omega$[cite: 19].
+Para probar el espejo antes de conectar el Par Diferencial, coloque un resistor de prueba $R_{TEST} = 4.7\,\text{k}\Omega$ (previa aprobación docente) entre $0\,\text{V}$ y el colector de Q4[cite: 19].
+
+\textbf{Validación Analítica y Medición:}
+\begin{enumerate}
+    \item Mida el voltaje en el colector de Q4 ($V_{C4}$) respecto a $0\,\text{V}$[cite: 19].
+    \item Infera la corriente de cola aplicando la Ley de Ohm sobre el resistor temporal[cite: 19]:
+    \begin{equation*}
+        \mathbf{I_T \approx \frac{0\,\text{V} - V_{C4}}{R_{TEST}}} \quad \text{[cite: 19]}
+    \end{equation*}
+    \textit{Ejemplo: Si $V_{C4} = -4.5\,\text{V} \implies I_T \approx \frac{4.5\,\text{V}}{4700\,\Omega} \approx 0.957\,\text{mA}$[cite: 19].}
+\end{enumerate}
+\textit{$\implies$ STOP / GO: Si $I_T \approx 0$, revise pinout y conexiones. Si $I_T \approx 1\,\text{mA}$, avance[cite: 19].}
+
+\section*{Checkpoint 2: Par Diferencial Balanceado[cite: 19]}
+Retire $R_{TEST}$ y conecte Q1, Q2 y los resistores de colector $R_C = 4.7\,\text{k}\Omega$[cite: 19]. Conecte las bases a $0\,\text{V}$ ($v_1 = v_2 = 0$)[cite: 19].
+
+\textbf{Cálculos Estáticos Analíticos (Valores de Enseñanza):}
+\begin{enumerate}
+    \item \textbf{Corriente de ramas:} Asumiendo simetría y $I_T \approx 1\,\text{mA}$, $I_{E1} \approx I_{E2} \approx I_T/2 \approx 0.5\,\text{mA}$[cite: 19]. Para $\beta$ grande, $I_{C1} \approx I_{C2} \approx 0.5\,\text{mA}$[cite: 19].
+    \item \textbf{Voltajes de Colector (KVL):} $v_C = V_{CC} - I_C R_C \approx 9\,\text{V} - (0.5\,\text{mA})(4.7\,\text{k}\Omega) = 6.65\,\text{V}$[cite: 19].
+    \item \textbf{Voltaje de Emisor (KVL):} $v_E = v_B - V_{BE} \approx 0\,\text{V} - 0.7\,\text{V} = -0.7\,\text{V}$[cite: 19].
+    \item \textbf{Comprobación de Región:} $V_{CE} = v_C - v_E \approx 6.65\,\text{V} - (-0.7\,\text{V}) = 7.35\,\text{V}$[cite: 19]. Además $V_{BC} = 0\,\text{V} - 6.65\,\text{V} < 0$. ¡Activa Directa confirmada![cite: 19].
+\end{enumerate}
+\textbf{Acción:} Mida $v_{C1}$, $v_{C2}$ y $v_E$. Calcule sus $I_C$ reales usando $I_C = \frac{V_{CC}-v_C}{R_C}$[cite: 19]. Evalúe el Offset: $V_{OD,0} = v_{C2} - v_{C1}$[cite: 19].
+
+\section*{Checkpoint 3: Aplicación de $g_m$ y $A_d$[cite: 19]}
+Utilice el Punto Q \textbf{real medido} para predecir la respuesta AC[cite: 19].
+\begin{equation*}
+    g_m = \frac{I_{CQ,\text{medido}}}{V_T} \quad \text{donde} \quad V_T \approx 25.85\,\text{mV} \quad \text{[cite: 19]}
+\end{equation*}
+Ganancia diferencial (salida Double-Ended, $v_{od} = v_{C2} - v_{C1}$):
+\begin{equation*}
+    \mathbf{A_{d,de} \approx g_m R_{C,\text{medido}}} \quad \text{[cite: 19]}
+\end{equation*}
+
+\section*{Checkpoint 4: Respuesta Diferencial con Shunt (Opcional)[cite: 19]}
+Genere una caída diferencial inyectando corriente de prueba a través de un shunt de $1\,\Omega$:
+\begin{equation*}
+    I_{sense} \approx \frac{9\,\text{V}}{1800\,\Omega + 1\,\Omega} \approx 4.997\,\text{mA} \implies V_{sh} = I_{sense} \cdot R_{sh} \approx 5\,\text{mV} \quad \text{[cite: 19]}
+\end{equation*}
+Inyectando esto como $v_d = 5\,\text{mV}$ al par, la salida esperada es $v_{od} \approx A_d \cdot v_d$[cite: 19].
+
+\end{document}
