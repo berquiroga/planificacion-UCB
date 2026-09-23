@@ -1,0 +1,56 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Remedial Lab A}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=red!5!white, colframe=red!70!black, title=\textbf{Triage Residual: Cierre Obligatorio de Experiencia A}]
+    \centering \textbf{Formulario de Remediación Acotada}
+\end{tcolorbox}
+
+\noindent \textit{Aviso: Si su equipo no ha logrado consolidar los parámetros base de su red, NO debe iniciar el montaje de la Experiencia B. Identifique su rezago a continuación y resuélvalo en los próximos 15 minutos.}
+
+\vspace{0.4cm}
+\textbf{Equipo:} \hrulefill \quad \textbf{Prioridad Residual Única Asignada:} \hrulefill
+
+\vspace{0.5cm}
+\section*{Checklist de Evidencia Mínima}
+Marque únicamente lo que \textbf{ya está validado y documentado} con datos en su hoja de registro. Lo que quede desmarcado es su prioridad inmediata.
+
+\begin{itemize}\setlength\itemsep{0.3em}
+    \item[$\square$] \textbf{Topología Funcional:} Circuito base montado, tierras unificadas, sin cortocircuitos indeseados.
+    \item[$\square$] \textbf{Superposición Experimental Completa:} Mediciones de $V_a^{(V1)}$ y $V_a^{(V2)}$ registradas (desactivando las fuentes con puentes a tierra, no abriendo el circuito). La suma algebraica coincide con la lectura total.
+    \item[$\square$] \textbf{Voltaje de Circuito Abierto:} $V_{oc} = V_{th}$ medido correctamente retirando la carga del puerto.
+    \item[$\square$] \textbf{Resistencia Equivalente:} $R_{th}$ medida con la red totalmente desenergizada, mirando desde $a-b$.
+    \item[$\square$] \textbf{Comparación con SPICE:} Se verificaron las desviaciones relativas entre la simulación y la protoboard.
+    \item[$\square$] \textbf{Discrepancia Documentada:} Tienen escrita al menos una hipótesis técnica que explique los errores (ej. tolerancia real de las resistencias $\neq$ nominal).
+\end{itemize}
+
+\vspace{1cm}
+\begin{center}
+    \textbf{Firma del Instructor (Habilitación para iniciar Experiencia B):} \rule{6cm}{0.4pt}
+\end{center}
+
+\end{document}

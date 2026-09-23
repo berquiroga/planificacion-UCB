@@ -1,0 +1,71 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage[american]{circuitikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Guía Lab B}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Experiencia Integrada B — Guía de Laboratorio}]
+    \centering \large \textbf{Máxima Transferencia, Efecto de Carga y Curva de Potencia}
+\end{tcolorbox}
+
+\section{Propósito de la Experiencia}
+Utilizar el circuito caracterizado en la Experiencia A para verificar físicamente el Teorema de Máxima Transferencia de Potencia. Se debe trazar experimentalmente la curva $P_L(R_L)$ y comprobar empíricamente el efecto de carga (loading effect).
+
+\section{Preparación y Predicción Analítica}
+No se puede "adivinar" el máximo. Su equipo debe usar los valores obtenidos en el laboratorio anterior (Teoría o SPICE si la medición aún no está estable) para predecir dónde ocurrirá el fenómeno.
+
+\begin{itemize}
+    \item \textbf{Tensión equivalente de su circuito:} $V_{th} = \text{\rule{3cm}{0.4pt}} \text{V}$.
+    \item \textbf{Resistencia interna de su circuito:} $R_{th} = \text{\rule{3cm}{0.4pt}} \text{k}\Omega$.
+    \item \textbf{Predicción del Máximo:} La teoría exige que $R_{L,\text{max}} = R_{th}$, por tanto, esperamos el pico de potencia en $R_{L,\text{pred}} = \text{\rule{3cm}{0.4pt}} \text{k}\Omega$.
+\end{itemize}
+
+\section{Selección de Cargas ($R_L$)}
+Seleccione de su kit un rango de resistores que permita observar la campana completa. Si su $R_{th}$ es aproximadamente $2.2\,\text{k}\Omega$, un conjunto útil es:
+\begin{center}
+    \textbf{470\,$\bm{\Omega}$ - 1.0\,k$\bm{\Omega}$ - 1.5\,k$\bm{\Omega}$ - 2.2\,k$\bm{\Omega}$ - 3.3\,k$\bm{\Omega}$ - 4.7\,k$\bm{\Omega}$ - 10\,k$\bm{\Omega}$}
+\end{center}
+\textit{Nota: Debe tener valores claramente por debajo, uno muy cercano, y valores claramente por encima de su $R_{th}$.}
+
+\section{Simulación en LTSpice (Barrido Paramétrico)}
+A diferencia de un análisis `.dc` (que barre voltajes/corrientes de fuentes), para barrer valores de una resistencia utilizaremos el comando de pasos parametrizados. 
+\begin{enumerate}
+    \item Cambie el valor de su resistencia de carga a la variable \texttt{\{RL\}}.
+    \item Agregue la directiva: \texttt{.param RL 2.2k}
+    \item Agregue la directiva de barrido discreto: \\
+    \texttt{.step param RL list 470 1k 1.5k 2.2k 3.3k 4.7k 10k}
+    \item Mantenga el análisis en \texttt{.op}
+    \item Registre en su tabla los valores de $V_L$ e $I_L$ arrojados por SPICE para cada paso de resistencia, y calcule $P_L = V_L \cdot I_L$.
+\end{enumerate}
+
+\section{Procedimiento Físico (Banco)}
+\begin{enumerate}
+    \item \textbf{Medición de Corriente (Opcional/Supervisada):} Si el instructor autorizó la medición de corriente en serie, registre $I_L$ directamente. De lo contrario, opte por el \textbf{Método Indirecto}: mida $V_L$ con el multímetro y calcule $I_L = V_L / R_{L,\text{medido}}$.
+    \item Conecte sucesivamente cada una de las resistencias seleccionadas en el puerto $a-b$ de su circuito físico y anote los resultados en la Hoja de Datos.
+    \item Analice el Efecto de Carga (Loading Effect): Observe cómo $V_L$ va cambiando a medida que aumenta la $R_L$.
+\end{enumerate}
+
+\end{document}

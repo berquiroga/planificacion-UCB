@@ -1,0 +1,64 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Observación Docente}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Hoja de Observación Docente (Evaluación Formativa)}]
+    \centering \textbf{Monitoreo en Banco - Experiencias A y B}
+\end{tcolorbox}
+
+\noindent \textit{Esta tabla no es una rúbrica sumativa numérica, sino un instrumento de registro formativo para evaluar el nivel de autonomía y asimilación conceptual de cada equipo durante el laboratorio.}
+
+\vspace{0.4cm}
+\renewcommand{\arraystretch}{1.5}
+\noindent
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight}p{6.5cm} >{\RaggedRight\arraybackslash}X}
+\toprule
+\textbf{Categoría Evaluada} & \textbf{Observación / Nivel de Desempeño del Equipo} \\ 
+\midrule
+\multicolumn{2}{l}{\textcolor{ucbblue}{\textbf{\textit{Triage y Cierre Residual (Experiencia A)}}}} \\ 
+\midrule
+Estado Pendiente Exp. A & \\ \addlinespace
+Referencia y Desactivación & \\ \addlinespace
+Autonomía Experimental & \\ 
+\midrule
+\multicolumn{2}{l}{\textcolor{ucbblue}{\textbf{\textit{Desempeño en Experiencia B}}}} \\ 
+\midrule
+Predijo máximo antes de medir & \\ \addlinespace
+Rango de cargas cubre bien $R_{th}$ & \\ \addlinespace
+Corriente obtenida consistentemente & \\ \addlinespace
+Potencia calculada correctamente & \\ \addlinespace
+Reconoce visualmente la tendencia & \\ \addlinespace
+Identifica máximo numérico & \\ \addlinespace
+Conecta el máximo medido con $R_{th}$ & \\ \addlinespace
+Interpreta bien el Loading Effect ($V_L$) & \\ \addlinespace
+Compara Teoría-SPICE-Medición & \\ \addlinespace
+Explica causas de discrepancia & \\ \addlinespace
+Calidad y Trazabilidad de Datos & \\ 
+\bottomrule
+\end{tabularx}
+
+\end{document}

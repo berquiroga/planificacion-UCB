@@ -1,0 +1,82 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Registro Lab B}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Hoja de Registro de Datos: Experiencia Integrada B}]
+    \centering \textbf{Registro de Barrido de Cargas, Potencia y Discrepancias}
+\end{tcolorbox}
+
+\textbf{Equipo:} \hrulefill
+
+\vspace{0.2cm}
+\textbf{Valores Base del Equivalente:} $V_{th} = $ \rule{2cm}{0.4pt} V \quad | \quad $R_{th} = $ \rule{2cm}{0.4pt} k$\Omega$
+
+\section*{Tabla de Barrido de Potencia}
+\textit{Nota: Registre si $I_L$ es medida directamente o calculada de manera indirecta ($V_L/R_L$).}
+
+\vspace{0.3cm}
+\renewcommand{\arraystretch}{2.2}
+\noindent
+% Ajustamos las proporciones de las columnas X. Suma total de \hsize = 7.
+% 6 columnas * 0.85 = 5.1. La ultima columna = 1.9. Total = 7.
+\begin{tabularx}{\textwidth}{*{6}{>{\centering\arraybackslash\hsize=0.85\hsize}X} >{\RaggedRight\arraybackslash\hsize=1.9\hsize}X}
+\toprule
+\textbf{$\bm{R_L}$ med.} \newline ($\Omega$) & 
+\textbf{$\bm{V_L}$ SPICE} \newline (V) & 
+\textbf{$\bm{V_L}$ med.} \newline (V) & 
+\textbf{$\bm{I_L}$ deriv.} \newline (mA) & 
+\textbf{$\bm{P_L}$ SPICE} \newline (mW) & 
+\textbf{$\bm{P_L}$ med.} \newline (mW) & 
+\textbf{Observación} \newline (Error \%) \\ 
+\midrule
+ & & & & & & \\ \midrule
+ & & & & & & \\ \midrule
+ & & & & & & \\ \midrule
+ & & & & & & \\ \midrule
+ & & & & & & \\ \midrule
+ & & & & & & \\ \midrule
+ & & & & & & \\ 
+\bottomrule
+\end{tabularx}
+
+\vspace{0.3cm}
+\section*{Análisis de Resultados (Efecto de Carga y Máximo)}
+\begin{enumerate}
+    \item Resistencia experimental donde se obtuvo el mayor valor de potencia ($P_{L,\text{max}}$): 
+    \par\vspace{0.2cm}\noindent\hrulefill
+    
+    \item Desviación respecto al valor teórico predicho ($\Delta R = R_{L,\text{max,exp}} - R_{th}$): 
+    \par\vspace{0.2cm}\noindent\hrulefill
+    
+    \item \textbf{Efecto de Carga:} Observe sus datos de $V_L$. ¿Qué ocurre con la tensión que recibe la carga a medida que inserta resistencias ($R_L$) cada vez más grandes? Justifique brevemente mediante el concepto de divisor de tensión con $R_{th}$.
+    \vspace{2cm}
+    
+    \item A partir de sus observaciones, formule \textbf{una hipótesis técnica} que justifique las discrepancias entre SPICE y la medición de potencia máxima obtenida. (Evite justificaciones como "error humano").
+    \vspace{2cm}
+\end{enumerate}
+
+\end{document}

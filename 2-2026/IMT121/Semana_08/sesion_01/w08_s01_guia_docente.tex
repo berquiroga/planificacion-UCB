@@ -1,0 +1,68 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Solucionario S08-1}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Clave Docente y Valores Referenciales: Experiencia Integrada B}]
+\end{tcolorbox}
+
+\section*{1. Valores Base del Circuito Oficial}
+De acuerdo a las correcciones oficiales previas, el modelo analítico de la red es:
+\begin{itemize}
+    \item $V_{th} = 5.71448\,\text{V}$
+    \item $R_{th} = 2.17474\,\text{k}\Omega$
+    \item $\mathbf{R_{L,\text{max}} = R_{th} \approx 2.175\,\text{k}\Omega}$
+    \item $\mathbf{P_{L,\text{max}} = V_{th}^2 / (4R_{th}) \approx 3.75\,\text{mW}}$
+\end{itemize}
+
+\section*{2. Tabla de Barrido Teórico Referencial (Clave Docente)}
+\textit{Nota: Esta tabla es exclusiva para validación del instructor. No la comparta con los estudiantes antes de que realicen sus propias simulaciones.}
+
+\vspace{0.3cm}
+\renewcommand{\arraystretch}{1.3}
+\noindent
+\begin{tabularx}{\textwidth}{*{5}{>{\centering\arraybackslash}X}}
+\toprule
+\textbf{$R_L$ ($\Omega$)} & \textbf{$V_L$ (V)} & \textbf{$I_L$ (mA)} & \textbf{$P_L$ (mW)} & \textbf{$\eta$ (\%)} \\ 
+\midrule
+$470$ & $1.016$ & $2.161$ & $2.194$ & $17.8\%$ \\ \addlinespace
+$1000$ & $1.800$ & $1.800$ & $3.240$ & $31.5\%$ \\ \addlinespace
+$1500$ & $2.333$ & $1.555$ & $3.627$ & $40.8\%$ \\ \addlinespace
+$\mathbf{2200}$ & $\mathbf{2.874}$ & $\mathbf{1.306}$ & $\mathbf{3.754}$ & $\mathbf{50.3\%}$ \\ \addlinespace
+$3300$ & $3.445$ & $1.044$ & $3.595$ & $60.3\%$ \\ \addlinespace
+$4700$ & $3.907$ & $0.831$ & $3.247$ & $68.4\%$ \\ \addlinespace
+$10000$ & $4.694$ & $0.469$ & $2.203$ & $82.1\%$ \\ 
+\bottomrule
+\end{tabularx}
+
+\section*{3. Interpretaciones y Evaluaciones}
+\begin{itemize}
+    \item \textbf{Verificación de LTSpice:} La directiva correcta que los estudiantes deben mostrar en su archivo es: \texttt{.step param RL list 470 1k 1.5k 2.2k 3.3k 4.7k 10k} sumado al comando \texttt{.op} y la resistencia de carga declarada como \texttt{\{RL\}}.
+    \item \textbf{Efecto de Carga (Loading Effect):} El instructor debe evaluar si el estudiante comprende que a medida que $R_L \gg R_{th}$, la caída de voltaje $V_L$ se aproxima al voltaje de circuito abierto ($V_{th}$), pero la corriente y la potencia disminuyen fuertemente.
+    \item \textbf{Desviación Experimental:} Si un equipo reporta su máximo en la carga de $2.2\,\text{k}\Omega$, la desviación real no es $0$, sino $\Delta R = 2200\,\Omega - 2174.74\,\Omega \approx 25\,\Omega$, lo que representa un error relativo de $\approx 1.15\%$. Esta observación diferencia a un estudiante que copia datos de uno que comprende el carácter discreto del muestreo físico.
+\end{itemize}
+
+\end{document}
