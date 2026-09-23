@@ -1,0 +1,168 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Suplemento Lab 3: Caracterización DC}
+\rhead{Semana 8 - Sesión 2}
+\lfoot{Circuitos Electrónicos II}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Suplemento Lab 3: Caracterización DC Ampliada del Amplificador Diferencial}}[cite: 13]
+\end{center}
+
+\begin{tcolorbox}[colback=yellow!10, colframe=ucbblue, title=\textbf{Aviso Importante}]
+    \textbf{Este documento no reemplaza la guía anterior de Lab 3.[cite: 13]} Solo actualiza dos aspectos críticos[cite: 13]:
+    \begin{enumerate}
+        \item La alimentación nominal del LM741 pasa de $\pm15\,\text{V}$ a $\pm10\,\text{V}$[cite: 13].
+        \item La prueba diferencial se amplía de un único punto a una pequeña caracterización DC completa[cite: 13].
+    \end{enumerate}
+\end{tcolorbox}
+
+\section*{1. Propósito y Pregunta Central[cite: 13]}
+La actividad debe permitir observar experimentalmente la siguiente cadena[cite: 13]:
+\begin{equation*}
+    \text{modelo ideal} \rightarrow \text{respuesta física} \rightarrow \text{error} \rightarrow \text{diagnóstico} \rightarrow \text{compensación} \rightarrow \text{validación} \text{[cite: 13]}
+\end{equation*}
+\textbf{Pregunta central:} ¿Qué tan bien reproduce un amplificador diferencial real la relación ideal $V_o=10(V_2-V_1)$, qué errores aparecen en DC y cuáles pueden reducirse mediante compensación?[cite: 13]
+
+\section*{2. Actualización de Alimentación y Circuito[cite: 13]}
+\begin{minipage}{0.45\textwidth}
+    \raggedright % Evita el Underfull \hbox en párrafos estrechos
+    \textbf{Nuevos parámetros de fuente[cite: 13]:}
+    \begin{equation*}
+        \boxed{V^+ = +10\,\text{V}, \quad V^- = -10\,\text{V}} \text{[cite: 13]}
+    \end{equation*}
+    Con referencia en $0\,\text{V}$[cite: 13].
+
+    Antes de energizar[cite: 13]:
+    \begin{itemize}
+        \item Verificar fabricante y marcado del LM741[cite: 13].
+        \item Verificar pinout[cite: 13].
+        \item Confirmar que la alimentación es válida[cite: 13].
+        \item Medir $+10\,\text{V}, 0\,\text{V}$ y $-10\,\text{V}$ con multímetro[cite: 13].
+    \end{itemize}
+\end{minipage}
+\hfill
+\begin{minipage}{0.5\textwidth}
+    \begin{center}
+        \begin{circuitikz}[scale=0.8, transform shape, thick]
+            \draw (0,0) node[op amp, noinv input up] (opamp) {};
+            \draw (opamp.+) to[R, l_={$R_3=10\,\text{k}\Omega$}, *-o] ++(-2.5,0) node[left]{$V_2$};
+            \draw (opamp.-) to[R, l_={$R_1=10\,\text{k}\Omega$}, *-o] ++(-2.5,0) node[left]{$V_1$};
+            \draw (opamp.+) -- ++(0,1.5) coordinate(tmp1) to[R, l={$R_4=100\,\text{k}\Omega$}] (tmp1 -| opamp.out) node[ground]{};
+            \draw (opamp.-) -- ++(0,-1.5) coordinate(tmp2) to[R, l_={$R_2=100\,\text{k}\Omega$}] (tmp2 -| opamp.out) -- (opamp.out);
+            \draw (opamp.out) to[short, *-o] ++(1,0) node[right]{$V_o$};
+            \draw (opamp.up) -- ++(0,0.5) node[above]{$+10\,\text{V}$};
+            \draw (opamp.down) -- ++(0,-0.5) node[below]{$-10\,\text{V}$};
+        \end{circuitikz}
+    \end{center}
+\end{minipage}
+
+\section*{3. Derivación Explícita del Modelo Ideal[cite: 13]}
+Para comprender el origen de la predicción, realizaremos el análisis paso a paso con los valores nominales adoptados: $R_1=R_3=10\,\text{k}\Omega$ y $R_2=R_4=100\,\text{k}\Omega$[cite: 13].
+
+Asumiendo un Op-Amp ideal en régimen lineal ($i_+ = i_- = 0$, $V_+ = V_-$):
+
+\textbf{Paso 1: Tensión en la entrada no inversora ($V_+$).} Al ser $i_+ = 0$, $R_3$ y $R_4$ forman un divisor de tensión exacto:
+\begin{equation*}
+    V_+ = V_2 \frac{R_4}{R_3 + R_4} = V_2 \frac{100\,\text{k}\Omega}{10\,\text{k}\Omega + 100\,\text{k}\Omega} = V_2 \frac{100}{110} = V_2 \frac{10}{11}
+\end{equation*}
+
+\textbf{Paso 2: Condición de realimentación.} $V_- = V_+ = V_2 \frac{10}{11}$.
+
+\textbf{Paso 3: Ley de Corrientes de Kirchhoff (KCL) en el nodo inversor ($V_-$).} Como $i_- = 0$:
+\begin{equation*}
+    \frac{V_1 - V_-}{10\,\text{k}\Omega} + \frac{V_o - V_-}{100\,\text{k}\Omega} = 0
+\end{equation*}
+Multiplicando toda la ecuación por $100\,\text{k}\Omega$ para eliminar denominadores:
+\begin{align*}
+    10(V_1 - V_-) + 1(V_o - V_-) &= 0 \\
+    10V_1 - 10V_- + V_o - V_- &= 0 \\
+    V_o &= 11V_- - 10V_1
+\end{align*}
+
+\textbf{Paso 4: Sustitución de $V_-$ y resultado final.} Sustituimos $V_- = V_2 \frac{10}{11}$:
+\begin{equation*}
+    V_o = 11\left(V_2 \frac{10}{11}\right) - 10V_1 = 10V_2 - 10V_1 = 10(V_2 - V_1)
+\end{equation*}
+Definiendo el voltaje diferencial como $V_d = V_2 - V_1$[cite: 13], llegamos a la relación ideal oficial:
+\begin{equation*}
+    \boxed{V_{o,\mathrm{ideal}} = 10V_d} \text{[cite: 13]}
+\end{equation*}
+
+\section*{4. Caracterización Diferencial DC[cite: 13]}
+Mantenga $V_1 = 0\,\text{V}$ y varíe $V_2$[cite: 13]. \textbf{Importante:} Mida siempre los valores reales en los pines de entrada[cite: 13]. $V_d = V_{2,\mathrm{meas}} - V_{1,\mathrm{meas}}$[cite: 13]. $e = V_{o,\mathrm{meas}} - V_{o,\mathrm{ideal}}$[cite: 13].
+
+\begin{table}[h]
+    \centering
+    \footnotesize % Evita el Overfull \hbox en la tabla
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{|c| *{6}{>{\centering\arraybackslash}X|} }
+    \hline
+    \textbf{Pt.} & \textbf{$V_{1,\mathrm{meas}}$} & \textbf{$V_{2,\mathrm{meas}}$} & \textbf{$V_d$} & \textbf{$V_{o,\mathrm{ideal}}$} & \textbf{$V_{o,\mathrm{meas}}$} & \textbf{Error ($e$)} \\ \hline
+    D0[cite: 13] & $0\,\text{V}$ (Nom)[cite: 13] & $0\,\text{mV}$ (Nom)[cite: 13] & & $0.00\,\text{V}$[cite: 13] & & \\ \hline
+    D1[cite: 13] & $0\,\text{V}$ (Nom)[cite: 13] & $20\,\text{mV}$ (Nom)[cite: 13] & & $0.20\,\text{V}$[cite: 13] & & \\ \hline
+    D2[cite: 13] & $0\,\text{V}$ (Nom)[cite: 13] & $50\,\text{mV}$ (Nom)[cite: 13] & & $0.50\,\text{V}$[cite: 13] & & \\ \hline
+    D3[cite: 13] & $0\,\text{V}$ (Nom)[cite: 13] & $100\,\text{mV}$ (Nom)[cite: 13] & & $1.00\,\text{V}$[cite: 13] & & \\ \hline
+    \end{tabularx}
+\end{table}
+
+\textbf{Interpretación de Datos[cite: 13]:}
+\begin{enumerate}
+    \setlength{\itemsep}{0pt}
+    \item ¿La salida aumenta de forma lineal con $V_d$?[cite: 13]
+    \item ¿La ganancia experimental (pendiente) parece cercana a 10?[cite: 13]
+    \item ¿Existe salida distinta de cero cuando $V_d \approx 0$ (intercepto)?[cite: 13] ¿Qué mecanismo podría causarlo?[cite: 13]
+\end{enumerate}
+\textit{Guía de análisis:} Un offset constante apunta a un error DC referido a entrada. Una pendiente distinta de 10 apunta a un desajuste en las razones resistivas (mismatch)[cite: 13].
+
+\section*{5. Prueba de Condición Común (Si el tiempo lo permite)[cite: 13]}
+\begin{table}[h]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{|c|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}
+    \hline
+    \textbf{Pt.} & \textbf{$V_{1,\mathrm{meas}}$ (Nominal)} & \textbf{$V_{2,\mathrm{meas}}$ (Nominal)} & \textbf{$V_{o,\mathrm{meas}}$} & \textbf{Observación ($V_{o,\mathrm{ideal}} = 0\,\text{V}$)[cite: 13]} \\ \hline
+    C0[cite: 13] & $0\,\text{V}$ (Nom)[cite: 13] & $0\,\text{V}$ (Nom)[cite: 13] & & \\ \hline
+    C1[cite: 13] & $0.5\,\text{V}$ (Nom)[cite: 13] & $0.5\,\text{V}$ (Nom)[cite: 13] & & \\ \hline
+    C2[cite: 13] & $1.0\,\text{V}$ (Nom)[cite: 13] & $1.0\,\text{V}$ (Nom)[cite: 13] & & \\ \hline
+    \end{tabularx}
+\end{table}
+
+\section*{6. Compensación y Repetición[cite: 13]}
+Verifique el circuito. Bajo $V_1=V_2=0$, registre $V_{o,\mathrm{before}}$[cite: 13]. Aplique el potenciómetro a los pines OFFSET NULL según datasheet[cite: 13]. Registre $V_{o,\mathrm{after}}$ y calcule $\Delta|e|=|e_{\mathrm{before}}|-|e_{\mathrm{after}}|$[cite: 13].
+
+\textbf{Remedición:} Repita los puntos D0, D2 y D3.
+\begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \item ¿Qué cambió después de compensar? ¿Cambió el offset, la pendiente, o ambos?[cite: 13]
+    \item ¿Qué error residual se puede explicar por mismatch en lugar de offset interno del Op-Amp?[cite: 13]
+\end{itemize}
+
+\section*{7. LTSpice - Actividad Suplementaria y Evidencia Mínima[cite: 13]}
+Simular el circuito con $\pm10\,\text{V}$ bajo las condiciones D0-D3[cite: 13]. Si el tiempo no permite ambas, la regla es clara: $\boxed{\text{hardware físico} > \text{LTSpice}}$[cite: 13].
+
+\textbf{Evidencia requerida:} Resistores medidos, $V_1, V_2$ medidos, tablas completas, error calculado, compensación aplicada y una interpretación clara de las discrepancias respecto al modelo ideal[cite: 13].
+
+\end{document}

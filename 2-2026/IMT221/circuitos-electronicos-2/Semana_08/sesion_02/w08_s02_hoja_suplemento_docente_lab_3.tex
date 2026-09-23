@@ -1,0 +1,85 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Documento Docente}
+\chead{Suplemento Técnico: Lab 3}
+\rhead{Semana 8 - Sesión 2}
+\lfoot{Circuitos Electrónicos II}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Suplemento del Instructor — Lab 3: Caracterización DC Ampliada}}[cite: 14]
+\end{center}
+
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Propósito de este Suplemento}]
+    Complementar, \textbf{no reemplazar}, los artefactos de Lab 3 ya distribuidos[cite: 14]. Introduce dos modificaciones principales:
+    \begin{enumerate}
+        \item Alimentación nominal: $\boxed{\pm15\,\text{V} \rightarrow \pm10\,\text{V}}$[cite: 14].
+        \item Prueba diferencial: $\boxed{\text{Un único punto} \rightarrow \text{Pequeño barrido DC}}$[cite: 14].
+    \end{enumerate}
+\end{tcolorbox}
+
+\section*{1. Justificación Técnica de la Alimentación a $\pm10\,\text{V}$[cite: 14]}
+Para el LM741 de Texas Instruments, el rango de tensión total de alimentación publicado comienza en $10\,\text{V}$ y el dispositivo no es \textit{rail-to-rail}[cite: 14]. El laboratorio utiliza salidas previstas de $0$ a $1\,\text{V}$[cite: 14]. Operar a $\pm10\,\text{V}$ (total de $20\,\text{V}$) proporciona un margen amplio sin mantener innecesariamente $30\,\text{V}$ en la protoboard[cite: 14]. No se recomienda reducir a $\pm5\,\text{V}$ ya que el margen respecto a los rieles sería demasiado limitante[cite: 14].
+
+\section*{2. Lectura Pedagógica de los Resultados Experimentales[cite: 14]}
+El nuevo objetivo es: \textit{Caracterizar experimentalmente la respuesta DC, identificar discrepancias y comprobar qué componente del error se reduce por compensación}[cite: 14].
+
+\textbf{Análisis Gráfico y Analítico Esperado en Estudiantes[cite: 14]:}
+\begin{itemize}
+    \item \textbf{Línea recta aproximada con intercepto distinto de cero:} La red tiene la ganancia prevista, pero existe un offset. No asuma que todo el intercepto es $V_{OS}$ sin descartar mismatch resistivo o corrientes de polarización ($I_B$)[cite: 14].
+    \item \textbf{Pendiente incorrecta (Error de ganancia):} Priorice revisar valores de resistores, ratios (mismatch), topología incorrecta o efectos de carga de la fuente antes de culpar al LM741[cite: 14].
+    \item \textbf{Puntos fuertemente erráticos:} Problema de cableado, alimentación, referencias de tierra sueltas o mal uso del instrumento[cite: 14].
+\end{itemize}
+
+\section*{3. Uso y Efecto de la Compensación[cite: 14]}
+Aplicar el ajuste offset-null (según datasheet) bajo $V_1=V_2=0\,\text{V}$[cite: 14]. \\
+La observación pedagógicamente deseable \textbf{no es} que "todo quede perfecto en $0\,\text{V}$ en todo el rango", sino que el estudiante descubra lo siguiente[cite: 14]:
+\begin{quote}
+    \textit{Compensar el offset puede mover principalmente el intercepto (corrige el error DC interno), pero no necesariamente corrige una pendiente anómala (causada por tolerancias externas en la red de resistores).}[cite: 14]
+\end{quote}
+Esto ayuda a que el estudiante distinga empíricamente entre \texttt{internal device error} y \texttt{network ratio error} sin requerir todavía un análisis completo de presupuesto de errores (error budget)[cite: 14].
+
+\section*{4. LTSpice y Evidencia Mínima Aceptable[cite: 14]}
+\textbf{Prioridad Absoluta:} $\boxed{\text{Physical Evidence} > \text{Simulation}}$[cite: 14]. \\
+LTSpice es una actividad suplementaria para contrastar $V_{o,\mathrm{ideal}}$ vs $V_{o,\mathrm{sim}}$ vs $V_{o,\mathrm{physical}}$[cite: 14]. Puede completarse de manera asincrónica si el tiempo no alcanza en la sesión física[cite: 14].
+
+\textbf{Evidencia Mínima para un Laboratorio Significativo[cite: 14]:}
+\begin{itemize}
+    \item Circuito construido y verificado[cite: 14].
+    \item Medición de al menos los puntos D0, D2 y D3[cite: 14].
+    \item Discrepancia calculada e intento de troubleshooting documentado[cite: 14].
+    \item Compensación de offset intentada (si el hardware lo permitió)[cite: 14].
+    \item Una comparación Before/After documentada, junto con una interpretación final[cite: 14].
+\end{itemize}
+
+\section*{5. Gestión del Tiempo en Sesión (105 min)[cite: 14]}
+\begin{tabularx}{\textwidth}{@{} l X @{}}
+    \textbf{5–10 min:} & Readiness + prediction[cite: 14] \\
+    \textbf{20 min:} & Construcción física + pre-power check[cite: 14] \\
+    \textbf{10–15 min:} & Barrido D0–D3 (Baseline)[cite: 14] \\
+    \textbf{15–20 min:} & Diagnóstico "Just-in-Time" ($V_{OS}, I_B, I_{OS}$, mismatch)[cite: 14] \\
+    \textbf{10–15 min:} & Compensación de offset-null[cite: 14] \\
+    \textbf{10 min:} & Repetición de puntos clave o modo común[cite: 14] \\
+    \textbf{5–10 min:} & Interpretación y captura de evidencia[cite: 14]
+\end{tabularx}
+
+\end{document}
