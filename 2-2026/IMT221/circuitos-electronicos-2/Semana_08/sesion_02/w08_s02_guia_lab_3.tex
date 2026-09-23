@@ -1,0 +1,155 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multicol}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Circuitos Electrónicos II (IMT-221)}
+\rhead{Semana 8 - Sesión 2}
+\lfoot{Lab 3: Errores DC}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Guía Integrada de Laboratorio 3: Amplificador Diferencial Real y Errores DC}}[cite: 12]
+\end{center}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Objetivo y Condición de Finalización}]
+    El objetivo es predecir, construir, medir, cuantificar discrepancias, diagnosticar, compensar, remedir e interpretar el comportamiento DC de un amplificador operacional físico[cite: 12]. \textbf{El Lab 3 solo estará completo cuando exista evidencia física de toda esta cadena[cite: 12].}
+\end{tcolorbox}
+
+\section*{1. Circuito Exacto de Lab 3 y Lista de Materiales (BOM)[cite: 12]}
+\textbf{Valores Oficiales Adoptados[cite: 12]:}
+$R_1=R_3=10\,\text{k}\Omega$ ($1\%$)[cite: 12]; $R_2=R_4=100\,\text{k}\Omega$ ($1\%$)[cite: 12]. Alimentación: $V^+ = +15\,\text{V}$, $V^- = -15\,\text{V}$[cite: 12]. Referencia común: $0\,\text{V}$[cite: 12].
+
+\vspace{0.4cm}
+\begin{center}
+    \begin{circuitikz}[scale=1, transform shape, thick]
+        % Lazo principal de señal
+        \draw (0,0) node[op amp, noinv input up] (opamp) {};
+        
+        % Entradas: se dibujan los resistores directamente en el trazo horizontal
+        \draw (opamp.+) to[R, l_=$R_3$, *-o] ++(-2.5,0) node[left]{$V_2$};
+        \draw (opamp.-) to[R, l_=$R_1$, *-o] ++(-2.5,0) node[left]{$V_1$};
+        
+        % Realimentación y Referencia a Tierra
+        \draw (opamp.+) -- ++(0,1.5) coordinate(tmp1) to[R, l=$R_4$] (tmp1 -| opamp.out) node[ground]{};
+        \draw (opamp.-) -- ++(0,-1.5) coordinate(tmp2) to[R, l_=$R_2$] (tmp2 -| opamp.out) -- (opamp.out);
+        
+        % Salida y Alimentación del Op-Amp
+        \draw (opamp.out) to[short, *-o] ++(1,0) node[right]{$V_o$};
+        \draw (opamp.up) -- ++(0,0.5) node[above]{$+15\,\text{V}$};
+        \draw (opamp.down) -- ++(0,-0.5) node[below]{$-15\,\text{V}$};
+        
+        % Red de Desacoplo Aislada (Buena práctica de esquemáticos)
+        \draw (5, 1.5) node[above]{$+15\,\text{V}$} to[short, o-] ++(0,-0.2) to[C, l_=$100\,\text{nF}$] ++(0,-1.5) node[ground]{};
+        \draw (7, 1.5) node[above]{$-15\,\text{V}$} to[short, o-] ++(0,-0.2) to[C, l=$100\,\text{nF}$] ++(0,-1.5) node[ground]{};
+        \node[align=center] at (6, -1) {\footnotesize \textit{Desacoplo local}};
+    \end{circuitikz}
+\end{center}
+\vspace{0.2cm}
+
+\textbf{Lista de Materiales Mínima por Grupo[cite: 12]:}
+\begin{itemize}
+    \item $1\times$ Op-Amp LM741 (DIP-8). \textit{Verifique el fabricante real disponible}[cite: 12].
+    \item $2\times 10\,\text{k}\Omega$ y $2\times 100\,\text{k}\Omega$ (Resistores $1\%$ o mejor)[cite: 12].
+    \item $1\times$ Trimmer / potenciómetro lineal de $10\,\text{k}\Omega$ para compensación[cite: 12].
+    \item $2\times 100\,\text{nF}$ capacitores cerámicos para desacoplo local[cite: 12].
+\end{itemize}
+
+\section*{2. Predicción Analítica Ideal (Completar antes de energizar)[cite: 12]}
+Asumiendo un Op-Amp ideal en realimentación negativa ($i_+ = i_- = 0$ y $V_+ \approx V_-$)[cite: 12].
+\begin{enumerate}
+    \item \textbf{Tensión en la entrada no inversora ($V_+$)[cite: 12]:}
+    \begin{equation*}
+        V_+ = V_2\left(\frac{R_4}{R_3 + R_4}\right) \text{[cite: 12]}
+    \end{equation*}
+    
+    \item \textbf{Aplicando KCL en el nodo inversor ($V_- = V_x \approx V_+$)[cite: 12]:}
+    \begin{equation*}
+        \frac{V_1 - V_x}{R_1} + \frac{V_o - V_x}{R_2} = 0 \text{[cite: 12]}
+    \end{equation*}
+    Despejando $V_o$[cite: 12]:
+    \begin{equation*}
+        V_o = V_x\left(1 + \frac{R_2}{R_1}\right) - \frac{R_2}{R_1}V_1 \text{[cite: 12]}
+    \end{equation*}
+    
+    \item \textbf{Sustituyendo $V_x$ y estableciendo la condición de resta diferencial[cite: 12]:}
+    \begin{equation*}
+        V_o = \left(1 + \frac{R_2}{R_1}\right)\frac{R_4}{R_3 + R_4}V_2 - \frac{R_2}{R_1}V_1 \text{[cite: 12]}
+    \end{equation*}
+    Dado que el diseño oficial establece $\frac{R_2}{R_1} = \frac{R_4}{R_3} = 10$, la ecuación final es:
+    \begin{equation*}
+        \boxed{ V_{o,\mathrm{ideal}} = 10(V_2 - V_1) } \text{[cite: 12]}
+    \end{equation*}
+\end{enumerate}
+
+\section*{3. Protocolo de Medición y Diagnóstico (Baseline)[cite: 12]}
+\textbf{Paso 1: Checklist sin energía (Pre-power)[cite: 12]}
+\begin{itemize}
+    \item Medir los valores resistivos reales de $R_1, R_2, R_3, R_4$ y calcular los ratios reales[cite: 12].
+    \item Identificar en el LM741: Pin 2 (IN-), Pin 3 (IN+), Pin 4 ($V^-$), Pin 6 (OUT), Pin 7 ($V^+$)[cite: 12].
+    \item Verificar capacitores de desacoplo ($100\,\text{nF}$) entre cada riel y $0\,\text{V}$[cite: 12].
+\end{itemize}
+
+\textbf{Paso 2: Condición Baseline (T1)[cite: 12]}
+Aplique $V_1 = 0\,\text{V}$ y $V_2 = 0\,\text{V}$ (conectar las entradas físicas a tierra)[cite: 12].
+\begin{itemize}
+    \item \textbf{Predicción T1:} $V_{o,\mathrm{ideal}} = 10(0 - 0) = 0\,\text{V}$[cite: 12].
+    \item \textbf{Medición:} Registre $V_{o,\mathrm{before}}$.
+    \item \textbf{Cálculo de error:} $e_{before} = V_{o,\mathrm{before}} - V_{o,\mathrm{ideal}} = V_{o,\mathrm{before}}$[cite: 12].
+\end{itemize}
+
+\textbf{Paso 3: Troubleshooting (NO compensar todavía)[cite: 12]}
+Si $V_{o,\mathrm{before}} \neq 0$, siga este orden estricto de descarte:
+\begin{enumerate}
+    \item ¿Rieles de $\pm15\,\text{V}$ presentes y medidos respecto a la referencia común ($0\,\text{V}$)?[cite: 12]
+    \item ¿El pinout físico coincide con el datasheet?[cite: 12]
+    \item ¿Existe realimentación negativa hacia el pin correcto (2)?[cite: 12]
+    \item ¿Los multímetros están referenciados al nodo correcto ($0\,\text{V}$)?[cite: 12]
+    \item ¿Existe "Mismatch" de resistores? Calcule $k_- = \frac{R_2}{R_1}$ y $k_+ = \frac{R_4}{R_3}$[cite: 12].
+\end{enumerate}
+
+\section*{4. Teoría Just-in-Time: Errores Internos del Op-Amp Real[cite: 12]}
+Si descartó todos los errores de montaje e instrumentación, considere las no idealidades internas:
+\begin{itemize}
+    \item \textbf{Input Offset Voltage ($V_{OS}$):} Modela una diferencia interna de voltaje. Se amplifica por la ganancia de ruido $A_N = 1 + \frac{R_2}{R_1} = 11$. Efecto estimado: $V_{o,OS} \approx 11 \cdot V_{OS}$[cite: 12].
+    \item \textbf{Input Bias Current ($I_B$):} Corrientes requeridas por los pines de entrada. Producen caídas de tensión en las resistencias equivalentes: $V_{err} \approx I_B R_{eq}$[cite: 12].
+    \item \textbf{Input Offset Current ($I_{OS}$):} Diferencia entre ambas corrientes de polarización ($|I_{B+} - I_{B-}|$). Produce un error residual aunque la red esté balanceada[cite: 12].
+\end{itemize}
+
+\section*{5. Procedimiento de Compensación[cite: 12]}
+\textbf{ADVERTENCIA:} La conexión exacta del potenciómetro de $10\,\text{k}\Omega$ a los pines OFFSET NULL (1 y 5) debe verificarse \textbf{estrictamente} contra el datasheet del fabricante real del LM741 físico[cite: 12].
+\begin{enumerate}
+    \item Mantenga la condición T1 ($V_1 = 0, V_2 = 0$)[cite: 12].
+    \item Conecte el circuito de offset-null según el fabricante[cite: 12].
+    \item Ajuste lentamente el potenciómetro hasta minimizar $|V_o|$[cite: 12].
+    \item Registre el nuevo valor como $V_{o,\mathrm{after}}$. Calcule $e_{after}$[cite: 12].
+    \item \textbf{Criterio de éxito:} $\Delta|e| = |e_{before}| - |e_{after}| > 0$ (el error absoluto se redujo)[cite: 12].
+\end{enumerate}
+
+\section*{6. Verificación Diferencial (T2)[cite: 12]}
+Aplique la condición T2: $V_1 = 0\,\text{V}$, $V_2 = 50\,\text{mV}$[cite: 12].
+\begin{itemize}
+    \item \textbf{Predicción T2:} $V_o = 10(0.050 - 0) = 0.500\,\text{V}$[cite: 12].
+    \item \textbf{Medición:} Registre $V_{o,T2}$ y compare con $0.500\,\text{V}$ para verificar que la compensación no destruyó el comportamiento diferencial[cite: 12].
+\end{itemize}
+
+\end{document}

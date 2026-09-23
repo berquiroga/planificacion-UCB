@@ -1,0 +1,72 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Hoja Conceptual: Op-Amp Real}
+\rhead{Semana 8 - Sesión 2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Conceptos Compactos: Op-Amp Ideal vs Real}}[cite: 12]
+\end{center}
+
+\begin{tcolorbox}[colback=yellow!5, colframe=ucbblue, title=\textbf{Regla Diagnóstica de Oro}]
+    \textbf{No culpe al Op-Amp} antes de revisar exhaustivamente: alimentación, tierra, pinout, lazo de realimentación, resistores, señales de entrada y la conexión de sus instrumentos[cite: 12].
+\end{tcolorbox}
+
+\section*{Tabla de Correspondencias[cite: 12]}
+\begin{table}[h]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    % Se añade \raggedright\arraybackslash para evitar el Underfull \hbox
+    \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash\hsize=0.8\hsize}X >{\raggedright\arraybackslash\hsize=0.8\hsize}X >{\raggedright\arraybackslash\hsize=1.4\hsize}X}
+    \toprule
+    \rowcolor[HTML]{EFEFEF}
+    \textbf{Hipótesis Ideal} & \textbf{Desviación Real} & \textbf{Consecuencia Observable} \\ \midrule
+    $V_+ \approx V_-$ bajo lazo cerrado & $V_{OS}$ (Input Offset Volt.) & Offset de salida residual DC[cite: 12] \\
+    $i_+ = i_- = 0$ & $I_B$ (Input Bias Curr.) & Error dependiente de la resistencia[cite: 12] \\
+    Corrientes idénticas & $I_{OS}$ (Input Offset Curr.) & Error de desbalance residual[cite: 12] \\
+    Ratios de resistores exactos & Tolerancia / Mismatch & Resta imperfecta / Error de ganancia[cite: 12] \\
+    Predicción de salida exacta & Efectos combinados & Discrepancia Teoría-Medición[cite: 12] \\
+    \bottomrule
+    \end{tabularx}
+\end{table}
+
+\section*{Modelos Analíticos de No Idealidades DC[cite: 12]}
+\textbf{1. Tensión de Offset de Entrada ($V_{OS}$)[cite: 12]} \\
+Pequeño error diferencial equivalente referido a la entrada. Para el amplificador diferencial acoplado de Lab 3, el error aproximado propagado a la salida es:
+\begin{equation*}
+    V_{o,OS} \approx \left(1 + \frac{R_2}{R_1}\right)V_{OS} = A_N V_{OS} \text{[cite: 12]}
+\end{equation*}
+
+\textbf{2. Corrientes de Polarización y de Offset ($I_B$ e $I_{OS}$)[cite: 12]} \\
+Las corrientes generan caídas de tensión parásitas al atravesar las resistencias equivalentes vistas por los terminales:
+\begin{equation*}
+    V_{err} \approx I_B R_{eq} \text{[cite: 12]}
+\end{equation*}
+La corriente de offset es la diferencia neta entre ambas entradas:
+\begin{equation*}
+    I_{OS} = |I_{B+} - I_{B-}| \text{[cite: 12]}
+\end{equation*}
+
+\textbf{3. Desajuste de Resistores (Mismatch)[cite: 12]} \\
+La resta perfecta asume matemáticamente que $\frac{R_2}{R_1} = \frac{R_4}{R_3}$. Las desviaciones introducen coeficientes desiguales que filtran voltaje en modo común a la salida[cite: 12].
+
+\end{document}

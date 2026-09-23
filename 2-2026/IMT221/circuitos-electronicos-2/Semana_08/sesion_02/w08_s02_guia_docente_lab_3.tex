@@ -1,0 +1,56 @@
+% ARTEFACTO 2: Guía Técnica Docente - Lab 3
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Documento Docente}
+\chead{Notas Técnicas: Lab 3}
+\rhead{Circuitos Electrónicos II}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Guía Técnica Docente: Lab 3 (Errores DC)}}[cite: 12]
+\end{center}
+
+\section*{1. Resultados Ideales Esperados[cite: 12]}
+\begin{itemize}
+    \item \textbf{Condición T1 (Baseline):} $V_1=V_2=0\,\text{V} \implies V_{o,\mathrm{ideal}} = 0\,\text{V}$[cite: 12].
+    \item \textbf{Condición T2 (Verificación):} $V_1=0\,\text{V}, V_2=50\,\text{mV} \implies V_{o,\mathrm{ideal}} = 0.500\,\text{V}$[cite: 12].
+    \item \textbf{Condición T3 (Modo común, opcional):} $V_1=V_2=1.00\,\text{V} \implies V_{o,\mathrm{ideal}} = 0\,\text{V}$[cite: 12].
+\end{itemize}
+
+\section*{2. Referencia de Dispositivo (LM741 PDIP Texas Instruments)[cite: 12]}
+\textbf{Pinout Estándar[cite: 12]:}
+1: OFFSET NULL, 2: IN-, 3: IN+, 4: $V^-$, 5: OFFSET NULL, 6: OUT, 7: $V^+$, 8: NC. \\
+\textbf{Rango de Resultado Físico:} No se prescribe un offset medido exacto. Depende del dispositivo, temperatura, tolerancias y montaje. Úsense los valores del datasheet como contexto, no como un resultado inamovible[cite: 12].
+
+\section*{3. Criterios de Evidencia Física Aceptable[cite: 12]}
+Un ensamble físico sin medición es insuficiente[cite: 12]. La evidencia mínima válida incluye:
+1) Circuito físico claro; 2) Rieles verificados; 3) Entradas medidas; 4) Baseline teórico y físico; 5) Error calculado; 6) Troubleshooting documentado; 7) Compensación documentada; 8) Re-medición bajo la misma condición; 9) Comparación cuantitativa (Before/After); 10) Interpretación[cite: 12].
+
+\section*{4. Prompts de Interpretación para Estudiantes[cite: 12]}
+\begin{itemize}
+    \item \textbf{Para $V_{OS}$:} ¿Es el orden de magnitud compatible con un error de entrada amplificado por la ganancia de ruido ($A_N=11$)?[cite: 12]
+    \item \textbf{Para $I_B$:} ¿Son las resistencias equivalentes lo suficientemente grandes para que la caída de tensión importe?[cite: 12]
+    \item \textbf{Para Mismatch:} ¿Cuáles fueron los dos ratios medidos reales ($k_-$ y $k_+$)?[cite: 12]
+\end{itemize}
+
+\section*{5. Errores Comunes de Laboratorio a Identificar[cite: 12]}
+\textbf{Montaje e Instrumentación:} Invertir pines 2 y 3; rieles de poder invertidos; pin 4 tratado equivocadamente como $0\,\text{V}$; generador sin referencia común; medir multímetro respecto a un nodo flotante; ajustar offset antes de realizar troubleshooting básico[cite: 12]. \\
+\textbf{Simulación (LTSpice):} Usar modelos distintos sin registrarlo, omitir alimentación $\pm15\,\text{V}$, asumir que el macromodelo reproduce tolerancias o todos los comportamientos físicos[cite: 12].
+
+\end{document}

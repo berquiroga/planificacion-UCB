@@ -1,0 +1,64 @@
+% ARTEFACTO 4: Hoja de Registro y Evidencia - Lab 3
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Hoja de Registro y Evidencia: Lab 3 (LM741)}}[cite: 12]
+\end{center}
+
+\textbf{Grupo:} \rule{4cm}{0.4pt} \hfill \textbf{Fecha:} \rule{3cm}{0.4pt} \\
+\textbf{Integrantes:} \rule{10cm}{0.4pt}[cite: 12] \\
+\textbf{Marcado LM741:} \rule{4cm}{0.4pt} \textbf{Fabricante:} \rule{4cm}{0.4pt}[cite: 12] \\
+\textbf{Datasheet verificado:} Sí / No[cite: 12]
+
+\vspace{0.3cm}
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{1. Readiness Gate (Validación Previa)[cite: 12]}]
+    \begin{tabularx}{\textwidth}{X c c}
+    Circuito construido $\square$ & Pinout verificado $\square$ & Alimentación verificada $\square$ \\
+    Valores resistores medidos $\square$ & Lazo de feedback revisado $\square$ & Nodos E/S identificados $\square$
+    \end{tabularx}
+\end{tcolorbox}
+
+\section*{2. Medición Teórica y Resistiva[cite: 12]}
+$R_1 =$ \rule{2cm}{0.4pt} $R_2 =$ \rule{2cm}{0.4pt} $R_3 =$ \rule{2cm}{0.4pt} $R_4 =$ \rule{2cm}{0.4pt}[cite: 12] \\
+Ratio $k_- = R_2/R_1 =$ \rule{2cm}{0.4pt} \quad Ratio $k_+ = R_4/R_3 =$ \rule{2cm}{0.4pt} \quad $\Delta k =$ \rule{2cm}{0.4pt}[cite: 12] \\
+\textbf{Relación ideal predecida:} $V_{o,\mathrm{ideal}} =$ \rule{6cm}{0.4pt}[cite: 12]
+
+\section*{3. Medición Baseline (T1)[cite: 12]}
+Condición $V_1 = V_2 = 0\,\text{V}$[cite: 12]. \\
+$V_{1,meas} =$ \rule{2cm}{0.4pt} \quad $V_{2,meas} =$ \rule{2cm}{0.4pt} \quad $V_{o,ideal} = 0\,\text{V}$[cite: 12] \\
+$V_{o,before} =$ \rule{2cm}{0.4pt} \quad $e_{before} = V_{o,before} - 0 =$ \rule{2cm}{0.4pt}[cite: 12]
+
+\section*{4. Troubleshooting (Auditoría previa a compensar)[cite: 12]}
+Marcar completado[cite: 12]: Supply $\square$, Ground $\square$, Pinout $\square$, Feedback $\square$, Valores $\square$, Inputs $\square$, Instrumento $\square$, Saturación $\square$, Mismatch $\square$. \\
+\textbf{Causa Probable Propuesta[cite: 12]:} Wiring $\square$, Supply/Ref $\square$, Mismatch $\square$, Instru. $\square$, $V_{OS} \square$, $I_B/I_{OS} \square$.
+
+\section*{5. Procedimiento de Compensación[cite: 12]}
+\textbf{¿Intento de ajuste realizado?} Sí / No \quad \textbf{Método usado:} \rule{6cm}{0.4pt}[cite: 12] \\
+\textbf{Magnitud ajustada (minimizada):} \rule{6cm}{0.4pt}[cite: 12]
+
+\section*{6. Post-Compensación (Misma condición T1)[cite: 12]}
+$V_{o,after} =$ \rule{2cm}{0.4pt} \quad $e_{after} =$ \rule{2cm}{0.4pt} \quad $\Delta|e| = |e_{before}| - |e_{after}| =$ \rule{2cm}{0.4pt}[cite: 12]
+
+\section*{7. Interpretación Final y Verificación T2[cite: 12]}
+\textbf{Verificación T2 ($V_2 = 50\,\text{mV}$):} $V_{o,T2} =$ \rule{2cm}{0.4pt} (Ideal: $0.500\,\text{V}$)[cite: 12]. \\
+\textbf{¿El error bajo T1 disminuyó?} Sí / No[cite: 12]. \\
+\textbf{¿Qué evidencia respalda esto?} \rule{10cm}{0.4pt}[cite: 12] \\
+\rule{\textwidth}{0.4pt} \\
+\textbf{Problemas restantes sin explicar:} \rule{10cm}{0.4pt}[cite: 12] \\
+\textbf{Fotografías/Evidencia guardada:} Sí / No[cite: 12].
+
+\end{document}
