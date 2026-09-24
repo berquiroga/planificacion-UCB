@@ -1,0 +1,91 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT342}}
+\chead{Consolidación}
+\rhead{Semana 8 - Sesión 2}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Hoja de Trabajo: Jacobiano Geométrico y Singularidades}}\\[0.2cm]
+\end{center}
+
+\vspace{0.2cm}
+
+\section*{Ejercicio 1: Construcción Diagnóstica Independiente[cite: 12]}
+Considere un brazo planar 2R con $a_1=a_2=1$, evaluado en la configuración $q_1=0, q_2=\pi/2$. Los ejes y orígenes expresados en el marco base $\{0\}$ son:
+\begin{equation*}
+    \mathbf{o}_0=\begin{bmatrix}0\\0\\0\end{bmatrix}, \quad \mathbf{o}_1=\begin{bmatrix}1\\0\\0\end{bmatrix}, \quad \mathbf{o}_2=\begin{bmatrix}1\\1\\0\end{bmatrix}, \quad \mathbf{z}_0=\mathbf{z}_1=\begin{bmatrix}0\\0\\1\end{bmatrix}
+\end{equation*}
+Complete analíticamente los vectores de radio, los productos cruz y ensamble la matriz Jacobiana.
+
+\textbf{Junta 1:} \\
+Radio $\mathbf{r}_1 = \mathbf{o}_2 - \mathbf{o}_0 =$ \underline{\hspace{4cm}} \\
+Producto cruz $\mathbf{z}_0 \times \mathbf{r}_1 =$ \underline{\hspace{4cm}} \\
+Columna $J_1 =$ \underline{\hspace{5cm}}
+
+\vspace{0.4cm}
+\textbf{Junta 2:} \\
+Radio $\mathbf{r}_2 = \mathbf{o}_2 - \mathbf{o}_1 =$ \underline{\hspace{4cm}} \\
+Producto cruz $\mathbf{z}_1 \times \mathbf{r}_2 =$ \underline{\hspace{4cm}} \\
+Columna $J_2 =$ \underline{\hspace{5cm}}
+
+\vspace{0.4cm}
+\textbf{Matriz Final $J (\in \mathbb{R}^{6 \times 2}) =$ } \underline{\hspace{8cm}}
+
+\section*{Ejercicio 2: Interpretación de Columnas[cite: 12]}
+Para el Jacobiano construido en el Ejercicio 1, explique por qué ambas columnas comparten el mismo componente angular $+z$ pero exhiben componentes lineales distintos.
+\vspace{2cm}
+
+\section*{Ejercicio 3: Mapeo de Velocidad Diferencial[cite: 12]}
+Utilizando la matriz $J$ obtenida, si las velocidades de las juntas son $\dot{\mathbf{q}} = [2, 0]^T$, encuentre el vector de velocidad espacial en el efector final $\mathbf{v}_e$. Interprete física y direccionalmente las partes traslacional y angular de su respuesta.
+\vspace{3cm}
+
+\section*{Ejercicio 4: Cinemática Inversa Diferencial[cite: 12]}
+Sabiendo que el sub-Jacobiano planar de traslación evaluado es $J_p = \begin{bmatrix} -1 & -1 \\ 1 & 0 \end{bmatrix}$, y dado un comando de velocidad deseada en el efector $\dot{\mathbf{p}}_d = [1, 0]^T$, calcule analíticamente las velocidades articulares requeridas $\dot{\mathbf{q}}$. Verifique multiplicando su respuesta por $J_p$.
+\vspace{4cm}
+
+\section*{Ejercicio 5: Clasificación de Rango[cite: 12]}
+Dadas las siguientes matrices Jacobianas hipotéticas:
+\begin{equation*}
+    J_A = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}, \qquad J_B = \begin{bmatrix} 1 & 2 \\ 2 & 4 \end{bmatrix}
+\end{equation*}
+Calcule el rango de cada una. Físicamente, ¿qué implica el rango de $J_B$ para la movilidad de ese manipulador?
+\vspace{2.5cm}
+
+\section*{Ejercicio 6: Calificación del Determinante[cite: 12]}
+Un compañero afirma: \textit{"Un robot se encuentra en singularidad exacta si y solo si $\det(J) = 0$"}. Explique por qué esta afirmación no es universalmente cierta, especialmente para un Jacobiano $6 \times 7$.
+\vspace{2cm}
+
+\section*{Ejercicio 7: Singularidad Geométrica 2R[cite: 12]}
+Para el manipulador 2R, compare la configuración de codo a $90^\circ$ ($q_2 = \pi/2$) con el brazo completamente extendido ($q_2 = 0$). Identifique explícitamente cuál es la configuración singular, describa la relación entre las columnas de $J_p$ en ese punto y nombre la dirección de movimiento cartesiano local que se pierde físicamente.
+\vspace{3cm}
+
+\section*{Ejercicio 8: Amplificación Cercana a la Singularidad (Extensión)[cite: 12]}
+Use el Jacobiano diagonal simplificado $J_\varepsilon = \begin{bmatrix} 1 & 0 \\ 0 & \varepsilon \end{bmatrix}$. Si se demanda la velocidad cartesiana constante $\dot{\mathbf{x}}_d = [0, 1]^T$, calcule la velocidad articular requerida $\dot{q}_2$ para $\varepsilon = 1, 0.1, 0.01$. Explique por qué estar "no exactamente en singularidad" no significa que la inversión sea segura.
+\vspace{3cm}
+
+\end{document}

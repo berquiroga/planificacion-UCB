@@ -1,0 +1,324 @@
+\documentclass[aspectratio=169, xcolor={table,xcdraw}]{beamer}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\renewcommand{\tablename}{Tabla}
+\renewcommand{\figurename}{Figura}
+
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, angles, quotes}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+
+\title[Cinemática Diferencial]{Cinemática Diferencial y Jacobiano Geométrico}
+\subtitle{Velocidades Articulares y del Efector Final}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija \\ Robótica (IMT-342)}
+\date{Semana 8 - Sesión 1}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{¿Qué pasa si el robot se mueve?[cite: 11]}
+    Hasta ahora, hemos resuelto la cinemática a \textbf{nivel de posición}[cite: 11]:
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=Cinemática Directa (Global), left=1mm, right=1mm, top=1mm, bottom=1mm]
+                \begin{center}
+                    $\mathbf{x} = f(\mathbf{q})$
+                \end{center}
+                \small
+                Dada una configuración articular estática, ¿dónde está el efector?
+            \end{tcolorbox}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=Pregunta de Velocidad (Local), left=1mm, right=1mm, top=1mm, bottom=1mm]
+                \begin{center}
+                    Si $\mathbf{q}$ cambia con velocidad $\dot{\mathbf{q}}$...
+                \end{center}
+                \small
+                ¿A qué velocidad lineal y angular se mueve instantáneamente el efector final?
+            \end{tcolorbox}
+        \end{column}
+    \end{columns}
+    \vfill
+    Para pequeños incrementos, por regla de la cadena multivariable[cite: 11]:
+    \begin{equation*}
+        d\mathbf{x} \approx \frac{\partial f}{\partial \mathbf{q}} d\mathbf{q} \quad \implies \quad \dot{\mathbf{x}} = J(\mathbf{q}) \dot{\mathbf{q}}
+    \end{equation*}
+    Donde $J(\mathbf{q})$ es la \textbf{Matriz Jacobiana}.
+\end{frame}
+
+\begin{frame}{Jacobiano Analítico: El Brazo Planar 2R (1/2)[cite: 11]}
+    Consideremos la cinemática directa de posición del brazo 2R:
+    \begin{align*}
+        x &= a_1\cos q_1 + a_2\cos(q_1+q_2) \\
+        y &= a_1\sin q_1 + a_2\sin(q_1+q_2)
+    \end{align*}
+    Calculamos las derivadas parciales para encontrar la relación de velocidad[cite: 11]:
+    \begin{equation*}
+        J_p(\mathbf{q}) = \begin{bmatrix} 
+            \frac{\partial x}{\partial q_1} & \frac{\partial x}{\partial q_2} \\[0.2cm]
+            \frac{\partial y}{\partial q_1} & \frac{\partial y}{\partial q_2} 
+        \end{bmatrix}
+    \end{equation*}
+\end{frame}
+
+\begin{frame}{Jacobiano Analítico: El Brazo Planar 2R (2/2)[cite: 11]}
+    \begin{equation*}
+        \boxed{
+        J_p =
+        \begin{bmatrix}
+        -a_1\sin q_1-a_2\sin(q_1+q_2) & -a_2\sin(q_1+q_2)\\
+        a_1\cos q_1+a_2\cos(q_1+q_2) & a_2\cos(q_1+q_2)
+        \end{bmatrix}
+        }
+    \end{equation*}
+    \vfill
+    El mapeo de velocidad resulta[cite: 11]:
+    \begin{equation*}
+        \begin{bmatrix}\dot x\\\dot y\end{bmatrix} = J_p \begin{bmatrix}\dot q_1\\\dot q_2\end{bmatrix}
+    \end{equation*}
+    \vfill
+    \begin{alertblock}{Precaución}
+        El Jacobiano \textbf{no} es constante. Depende de la configuración actual $\mathbf{q}$. El resultado $J\dot{\mathbf{q}}$ es una \textbf{velocidad} ($\mathrm{m/s}$), no una pose[cite: 11].
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Convención de Velocidad Espacial (Twist)[cite: 11]}
+    Para un manipulador 3D, el efector final tiene velocidad lineal y angular. Adoptaremos la convención (Siciliano et al.) con \textbf{velocidad lineal arriba}[cite: 11]:
+    
+    \begin{equation*}
+        \boxed{
+        \mathbf{v}_e=
+        \begin{bmatrix}
+        \mathbf{v}_L\\
+        \boldsymbol\omega_e
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+        \dot{\mathbf{p}}_e\\
+        \boldsymbol\omega_e
+        \end{bmatrix}
+        }
+    \end{equation*}
+    
+    \begin{itemize}
+        \item $\dot{\mathbf{p}}_e \in \mathbb{R}^3$: Velocidad lineal (translación) en $\mathrm{m/s}$[cite: 11].
+        \item $\boldsymbol\omega_e \in \mathbb{R}^3$: Velocidad angular (rotación) en $\mathrm{rad/s}$[cite: 11].
+    \end{itemize}
+    \vfill
+    Para $n$ articulaciones, el Jacobiano completo es $J \in \mathbb{R}^{6 \times n}$[cite: 11].
+\end{frame}
+
+\begin{frame}{Jacobiano Geométrico: Columna de Junta Revoluta[cite: 11]}
+    ¿Qué velocidad induce el movimiento de \textbf{una sola} junta en el efector final?[cite: 11]
+    
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            Si la junta $i$ rota con $\dot{q}_i$, su vector de velocidad angular es $\boldsymbol{\omega}_i = \dot{q}_i {}^0\mathbf{z}_{i-1}$.
+            
+            \vspace{0.2cm}
+            El brazo rígido crea una velocidad tangencial en la punta[cite: 11]:
+            \begin{equation*}
+                \mathbf{v}_i = \boldsymbol{\omega}_i \times \mathbf{r}_i
+            \end{equation*}
+            donde el radio es $\mathbf{r}_i = {}^0\mathbf{o}_n - {}^0\mathbf{o}_{i-1}$.
+            
+            \vspace{0.2cm}
+            La contribución a la velocidad espacial (columna del Jacobiano) es[cite: 11]:
+            \begin{equation*}
+                \boxed{
+                J_i = \begin{bmatrix}
+                {}^0\mathbf{z}_{i-1} \times ({}^0\mathbf{o}_n - {}^0\mathbf{o}_{i-1}) \\
+                {}^0\mathbf{z}_{i-1}
+                \end{bmatrix}
+                }
+            \end{equation*}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \centering
+            \begin{tikzpicture}[scale=1.2, thick]
+                \coordinate (O) at (0,0);
+                \coordinate (ON) at (2.5,1.5);
+                \coordinate (Z) at (0,1.5);
+                
+                \draw[-Stealth, gray, dashed] (-1,0) -- (3,0);
+                \filldraw[black] (O) circle (2pt) node[below left]{${}^0\mathbf{o}_{i-1}$};
+                \filldraw[red] (ON) circle (2pt) node[right]{${}^0\mathbf{o}_n$ (Efector)};
+                
+                \draw[-Stealth, ucbblue, line width=2pt] (O) -- (Z) node[above]{${}^0\mathbf{z}_{i-1}$};
+                \draw[-Stealth, black, line width=1pt] (O) -- (ON) node[midway, below right]{$\mathbf{r}_i$};
+                
+                \draw[-Stealth, red, line width=1.5pt] (ON) -- ++(-0.5, 1.5) node[above]{$\mathbf{v}_L = \mathbf{z} \times \mathbf{r}$};
+                \draw[-Stealth, ucbblue, dashed] (ON) arc (0:60:1);
+            \end{tikzpicture}
+            
+            \small \textit{Nota: Todos los vectores deben estar expresados en el mismo marco base $\{0\}$ para que el producto cruz sea válido[cite: 11].}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Construcción: Junta Prismática vs. Revoluta[cite: 11]}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=Junta Revoluta]
+                Movimiento rotacional alrededor de $Z$. Genera velocidad lineal tangencial y velocidad angular[cite: 11].
+                \begin{equation*}
+                    \boxed{
+                    J_i = \begin{bmatrix}
+                    \mathbf{z}_{i-1} \times (\mathbf{o}_n - \mathbf{o}_{i-1}) \\
+                    \mathbf{z}_{i-1}
+                    \end{bmatrix}
+                    }
+                \end{equation*}
+            \end{tcolorbox}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=Junta Prismática]
+                Movimiento de traslación pura a lo largo de $Z$. No genera rotación ($\boldsymbol{\omega} = 0$)[cite: 11].
+                \begin{equation*}
+                    \boxed{
+                    J_i = \begin{bmatrix}
+                    \mathbf{z}_{i-1} \\
+                    \mathbf{0}
+                    \end{bmatrix}
+                    }
+                \end{equation*}
+            \end{tcolorbox}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Reconstruyendo el Jacobiano 2R Geométricamente (1/2)[cite: 11]}
+    Geometría base para las dos juntas revolutas[cite: 11]:
+    \begin{align*}
+        {}^0\mathbf{z}_0 &= {}^0\mathbf{z}_1 = [0, 0, 1]^T \\
+        {}^0\mathbf{o}_0 &= [0, 0, 0]^T \\
+        {}^0\mathbf{o}_1 &= [a_1c_1, a_1s_1, 0]^T \\
+        {}^0\mathbf{o}_2 &= [a_1c_1+a_2c_{12}, a_1s_1+a_2s_{12}, 0]^T
+    \end{align*}
+    
+    \textbf{Columna 1:}
+    \begin{equation*}
+        J_{v_1} = {}^0\mathbf{z}_0 \times ({}^0\mathbf{o}_2 - {}^0\mathbf{o}_0) = \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix} \times \begin{bmatrix} a_1c_1+a_2c_{12} \\ a_1s_1+a_2s_{12} \\ 0 \end{bmatrix} = \begin{bmatrix} -a_1s_1 - a_2s_{12} \\ a_1c_1 + a_2c_{12} \\ 0 \end{bmatrix}
+    \end{equation*}
+\end{frame}
+
+\begin{frame}{Reconstruyendo el Jacobiano 2R Geométricamente (2/2)[cite: 11]}
+    \textbf{Columna 2:}
+    \begin{equation*}
+        J_{v_2} = {}^0\mathbf{z}_1 \times ({}^0\mathbf{o}_2 - {}^0\mathbf{o}_1) = \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix} \times \begin{bmatrix} a_2c_{12} \\ a_2s_{12} \\ 0 \end{bmatrix} = \begin{bmatrix} -a_2s_{12} \\ a_2c_{12} \\ 0 \end{bmatrix}
+    \end{equation*}
+    Ensamblando la matriz $6 \times 2$ completa (lineal y angular)[cite: 11]:
+    \begin{equation*}
+        \boxed{
+        J = \begin{bmatrix}
+        -a_1s_1-a_2s_{12} & -a_2s_{12} \\
+        a_1c_1+a_2c_{12} & a_2c_{12} \\
+        0 & 0 \\
+        0 & 0 \\
+        0 & 0 \\
+        1 & 1
+        \end{bmatrix}
+        }
+    \end{equation*}
+    \textit{Conclusión: La vista analítica (derivada) y la geométrica concuerdan exactamente para la parte traslacional $J_p$[cite: 11].}
+\end{frame}
+
+\begin{frame}{Superposición de Velocidades (Mapeo)[cite: 11]}
+    El Jacobiano permite calcular la velocidad final como una suma de contribuciones.
+    Ejemplo: $a_1=a_2=1, q_1=0, q_2=\pi/2$[cite: 11].
+    \begin{equation*}
+        J = \begin{bmatrix}
+        -1 & -1 \\
+        1 & 0 \\
+        0 & 0 \\
+        0 & 0 \\
+        0 & 0 \\
+        1 & 1
+        \end{bmatrix}
+    \end{equation*}
+    Si comandamos velocidades articulares $\dot{\mathbf{q}} = [1, -1]^T$ rad/s[cite: 11]:
+    \begin{equation*}
+        \mathbf{v}_e = J \dot{\mathbf{q}} = \begin{bmatrix} -1 \\ 1 \\ 0 \\ 0 \\ 0 \\ 1 \end{bmatrix}(1) + \begin{bmatrix} -1 \\ 0 \\ 0 \\ 0 \\ 0 \\ 1 \end{bmatrix}(-1) = \boxed{ \begin{bmatrix} 0 \\ 1 \\ 0 \\ 0 \\ 0 \\ 0 \end{bmatrix} }
+    \end{equation*}
+    \textit{Las contribuciones angulares se cancelan, resultando en traslación pura a $1 \, \mathrm{m/s}$ en $+y$[cite: 11].}
+\end{frame}
+
+\begin{frame}{Cinemática Inversa Diferencial (Local)[cite: 11]}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{IK Analítica (Global)[cite: 11]}
+            \begin{equation*}
+                \mathbf{x}_d \longrightarrow \{ \mathbf{q}^{(1)}, \mathbf{q}^{(2)}, \ldots \}
+            \end{equation*}
+            Problema a nivel de pose. Contiene múltiples ramas geométricas (Pieper).
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{IK Diferencial (Local)[cite: 11]}
+            \begin{equation*}
+                ( \mathbf{q}_{\text{actual}}, \dot{\mathbf{x}}_d ) \longrightarrow \dot{\mathbf{q}}
+            \end{equation*}
+            Problema a nivel de velocidad instantánea.
+        \end{column}
+    \end{columns}
+    
+    \vfill
+    Si $J$ es cuadrada y no singular, invertimos la relación local[cite: 11]:
+    \begin{equation*}
+        \boxed{\dot{\mathbf{q}} = J^{-1}(\mathbf{q})\dot{\mathbf{x}}_d}
+    \end{equation*}
+    
+    \begin{alertblock}{No reemplaza a Pieper[cite: 11]}
+        $J^{-1}$ resuelve una velocidad para seguir una trayectoria continua, pero \textbf{no} resuelve el problema global de alcanzar una pose desde cero.
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Pérdida de Rango y Singularidades[cite: 11]}
+    ¿Qué sucede cuando el determinante del Jacobiano se hace cero?
+    Para el brazo 2R, calculamos el determinante del sub-Jacobiano $J_p$[cite: 11]:
+    \begin{equation*}
+        \det(J_p) = (-a_1 s_1 - a_2 s_{12})(a_2 c_{12}) - (-a_2 s_{12})(a_1 c_1 + a_2 c_{12}) = \boxed{a_1 a_2 \sin q_2}
+    \end{equation*}
+    Las configuraciones singulares ocurren en $q_2 = 0, \pi$[cite: 11]. Evaluando en $q_1=0, q_2=0$:
+    \begin{equation*}
+        J_p = \begin{bmatrix} 0 & 0 \\ a_1+a_2 & a_2 \end{bmatrix}
+    \end{equation*}
+    
+    \textbf{Interpretación Física[cite: 11]:}
+    Las columnas son linealmente dependientes. El brazo totalmente extendido no puede generar instantáneamente velocidad en la dirección $X$. Ha perdido un grado de libertad efectivo en el espacio cartesiano.
+\end{frame}
+
+\begin{frame}{Consolidación: Check de Salida[cite: 11]}
+    \begin{tcolorbox}[colback=white, colframe=ucbblue, title=Cierre Conceptual]
+        \begin{enumerate}
+            \item ¿Qué relación física describe la matriz Jacobiana $J(\mathbf{q})$?[cite: 11]
+            \item ¿Qué representa físicamente \textbf{una columna} del Jacobiano?[cite: 11]
+            \item ¿Por qué la columna de una junta revoluta contiene un producto cruz y la prismática no?[cite: 11]
+            \item ¿Qué significa físicamente una pérdida de rango (singularidad)?[cite: 11]
+            \item ¿Por qué la IK diferencial no reemplaza al método de Pieper?[cite: 11]
+        \end{enumerate}
+    \end{tcolorbox}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,104 @@
+\documentclass[11pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Referencia Visual: Rango y Singularidades}
+\rhead{Semana 8}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Arquitectura de las Singularidades: De la Geometría a la Velocidad}}\\[0.2cm]
+\end{center}
+
+\vspace{0.4cm}
+\begin{minipage}{0.48\textwidth}
+    \begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{1. Configuración Regular ($q_2 = \pi/2$)[cite: 12]}]
+        \centering
+        \vspace{0.2cm}
+        \begin{tikzpicture}[scale=1.5, thick]
+            \draw[->, gray] (0,0) -- (1.5,0);
+            \draw[->, gray] (0,0) -- (0,1.5);
+            
+            \coordinate (O0) at (0,0);
+            \coordinate (O1) at (1,0);
+            \coordinate (O2) at (1,1);
+            
+            \draw[ucbblue, line width=2pt] (O0) -- (O1);
+            \draw[ucbblue!70, line width=2pt] (O1) -- (O2);
+            \filldraw[black] (O0) circle (1pt); \filldraw[black] (O1) circle (1pt); \filldraw[red] (O2) circle (1pt);
+            
+            \draw[-Stealth, red!70!black, line width=1.5pt] (O2) -- ++(-0.5, 0.5) node[above]{$J_{p1}$};
+            \draw[-Stealth, orange, line width=1.5pt] (O2) -- ++(-0.5, 0) node[left]{$J_{p2}$};
+        \end{tikzpicture}
+        \vspace{0.2cm}
+        
+        Las columnas del Jacobiano representan contribuciones de velocidad linealmente \textbf{independientes}. \\
+        \textbf{Resultado:} Rango completo ($\operatorname{rank} J_p = 2$). Control cartesiano posible en cualquier dirección del plano XY[cite: 12].
+    \end{tcolorbox}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+    \begin{tcolorbox}[colback=white, colframe=red!70!black, title=\textbf{2. Configuración Singular ($q_2 = 0$)[cite: 12]}]
+        \centering
+        \vspace{0.4cm}
+        \begin{tikzpicture}[scale=1.5, thick]
+            \draw[->, gray] (0,0) -- (2.5,0);
+            \draw[->, gray] (0,0) -- (0,1);
+            
+            \coordinate (O0) at (0,0);
+            \coordinate (O1) at (1,0);
+            \coordinate (O2) at (2,0);
+            
+            \draw[ucbblue, line width=2pt] (O0) -- (O1);
+            \draw[ucbblue!70, line width=2pt] (O1) -- (O2);
+            \filldraw[black] (O0) circle (1pt); \filldraw[black] (O1) circle (1pt); \filldraw[red] (O2) circle (1pt);
+            
+            \draw[-Stealth, red!70!black, line width=1.5pt] (O2) -- ++(0, 1) node[right]{$J_{p1}$};
+            \draw[-Stealth, orange, line width=1.5pt] (O2) -- ++(0, 0.5) node[left]{$J_{p2}$};
+        \end{tikzpicture}
+        \vspace{0.4cm}
+        
+        Las contribuciones de velocidad son \textbf{paralelas} (linealmente dependientes). \\
+        \textbf{Resultado:} Pérdida de rango ($\operatorname{rank} J_p = 1$). El robot pierde la capacidad física instantánea de moverse a lo largo del eje local X (radial)[cite: 12].
+    \end{tcolorbox}
+\end{minipage}
+
+\vspace{0.5cm}
+
+\begin{tcolorbox}[colback=gray!5, colframe=black, title=\textbf{3. Criterios Analíticos de Singularidad[cite: 12]}]
+    \textbf{A. Definición Universal (Pérdida de Rango):}
+    Una configuración es singular si y solo si el rango de la matriz Jacobiana $J(q) \in \mathbb{R}^{m \times n}$ es menor a su valor máximo posible: $\operatorname{rank}(J) < \min(m, n)$[cite: 12].
+    
+    \vspace{0.2cm}
+    \textbf{B. Criterio de Determinante (Solo Matrices Cuadradas):}
+    Si la tarea y los GDL convergen en un Jacobiano cuadrado (ej. $6 \times 6$ o el $J_p$ de $2 \times 2$), la singularidad ocurre cuando:
+    \begin{equation*}
+        \det(J) = 0 \text{[cite: 12]}
+    \end{equation*}
+    Para el brazo 2R planar, calculamos: $\det(J_p) = a_1 a_2 \sin q_2$. Por tanto, el brazo colapsa en singularidad cuando $q_2 = 0$ (estirado) o $q_2 = \pi$ (plegado sobre sí mismo)[cite: 12].
+\end{tcolorbox}
+
+\vspace{0.2cm}
+\begin{tcolorbox}[colback=yellow!10, colframe=orange, title=\textbf{4. El Problema de la Cercanía a la Singularidad (Amplificación de Velocidad)[cite: 12]}]
+    No basta con que $\det(J) \neq 0$. Si el robot está \textit{cerca} a la singularidad, requerirá velocidades de articulación inusualmente altas y peligrosas para mantener una velocidad cartesiana finita. 
+    Ejemplo con $J = \operatorname{diag}(1, \varepsilon)$: $\dot{x}_d = 1 \implies \dot{q} = 1/\varepsilon$[cite: 12]. Conforme $\varepsilon \to 0$, $\dot{q} \to \infty$.
+\end{tcolorbox}
+
+\end{document}

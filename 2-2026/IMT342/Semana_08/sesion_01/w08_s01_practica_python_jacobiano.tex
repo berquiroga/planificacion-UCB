@@ -1,0 +1,105 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage[most]{tcolorbox}
+\usepackage{listings}
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    backgroundcolor=\color{gray!5},
+    frame=single,
+    rulecolor=\color{gray!40},
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{red!70!black},
+    commentstyle=\color{green!60!black},
+    showstringspaces=false,
+    breaklines=true,          % Permite salto de linea automatico
+    breakatwhitespace=true,   % Salta solo en espacios en blanco
+    columns=flexible          % Ajusta el espaciado de los caracteres
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Código: Jacobiano en Python}
+\rhead{Opcional W08-S01}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Verificación Computacional: Jacobiano Analítico 2R}}\\[0.2cm]
+\end{center}
+
+Este script correlaciona el modelo matemático simbólico con la evaluación numérica, mapeo de velocidades y cálculo de rango (para validación de singularidades)[cite: 11]. 
+\textit{Dependencias requeridas: Python 3 y Numpy.}
+
+\begin{lstlisting}
+import numpy as np
+
+def jacobian_2r(q, a1=1.0, a2=1.0):
+    """ 
+    Retorna el sub-jacobiano de traslacion 
+    2x2 para brazo 2R 
+    """
+    q1, q2 = q
+    
+    s1 = np.sin(q1)
+    c1 = np.cos(q1)
+    s12 = np.sin(q1 + q2)
+    c12 = np.cos(q1 + q2)
+    
+    # Ensamblaje del modelo simbolico derivado en clase
+    return np.array([
+        [-a1*s1 - a2*s12, -a2*s12],
+        [ a1*c1 + a2*c12,  a2*c12]
+    ], dtype=float)
+
+# ==========================================
+# 1. PRUEBA DE MAPEO DE VELOCIDAD
+# ==========================================
+
+# q1=0, q2=90 grados
+q = np.array([0.0, np.pi/2])  
+
+# qdot: velocidades articulares comandadas
+qd = np.array([1.0, -1.0])    
+
+J = jacobian_2r(q)
+pd = J @ qd                   # Map: J * q_dot
+
+print("--- Configuracion Regular ---")
+print("Matriz J =\n", np.round(J, 4))
+print("Vel. Cartesiana (p_dot) =", 
+      np.round(pd, 4))
+print("Rango(J) =", np.linalg.matrix_rank(J))
+
+# ==========================================
+# 2. PRUEBA DE SINGULARIDAD (Brazo estirado)
+# ==========================================
+
+# q2 = 0 es configuracion singular analitica
+q_sing = np.array([0.0, 0.0]) 
+J_sing = jacobian_2r(q_sing)
+
+print("\n--- Configuracion Singular ---")
+print("Matriz J_sing =\n", np.round(J_sing, 4))
+print("Rango(J_sing) =", np.linalg.matrix_rank(J_sing))
+\end{lstlisting}
+
+\begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{Salida Esperada y Correspondencia}]
+\textbf{Configuración Regular:} La salida de \texttt{p\_dot} será \texttt{[0. 1.]}, confirmando la cancelación de la traslación en X (rango = 2, control cartesiano completo). \\
+\textbf{Configuración Singular:} La matriz tendrá columnas dependientes \texttt{[[0. 0.], [2. 1.]]}, y el rango caerá a \texttt{1}, comprobando matemáticamente que el robot perdió movilidad instantánea independiente en una dirección[cite: 11].
+\end{tcolorbox}
+
+\end{document}

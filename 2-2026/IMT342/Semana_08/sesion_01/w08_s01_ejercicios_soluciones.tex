@@ -1,0 +1,78 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
+
+\usepackage{amsmath, amssymb, bm}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Solucionario y Diagnóstico (W08-S01)}
+\rhead{Uso Docente}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{red!80!black}{SOLUCIONARIO Y GUÍA DE DIAGNÓSTICO DOCENTE}}\\[0.2cm]
+\end{center}
+
+\section*{Solucionario de la Hoja de Trabajo[cite: 11]}
+
+\textbf{Ejercicio 1:} $\dot{x} = -2\sin(q) \cdot \dot{q}$. El Jacobiano escalar es $J(q) = -2\sin(q)$.
+
+\textbf{Ejercicio 2:}
+$\mathbf{r}_i = \mathbf{o}_n - \mathbf{o}_{i-1} = [1,2,0]^T - [1,0,0]^T = [0,2,0]^T$.
+Vel. Lineal: $J_{v_i} = [0,0,1]^T \times [0,2,0]^T = [-2,0,0]^T$.
+Vel. Angular: $J_{\omega_i} = [0,0,1]^T$.
+Total: $J_i = [-2, 0, 0, 0, 0, 1]^T$.
+
+\textbf{Ejercicio 3:} Para una junta prismática $J_{\omega_i} = \mathbf{0}$. El eje aporta pura traslación, $J_i = [0, 1, 0, 0, 0, 0]^T$.
+
+\textbf{Ejercicio 4:} Reemplazando $\sin(0)=0, \cos(0)=1, \sin(\pi/2)=1, \cos(\pi/2)=0$:
+\begin{equation*}
+    J = \begin{bmatrix} -1 & -1 \\ 1 & 0 \\ 0 & 0 \\ 0 & 0 \\ 0 & 0 \\ 1 & 1 \end{bmatrix}
+\end{equation*}
+
+\textbf{Ejercicio 5:}
+$\mathbf{v}_e = J \begin{bmatrix} 0 \\ 2 \end{bmatrix} = \begin{bmatrix} -2 \\ 0 \\ 0 \\ 0 \\ 0 \\ 2 \end{bmatrix}$. 
+Interpretación: Velocidad lineal de $-2$ en X, y el efector está rotando globalmente a $2$ rad/s en Z.
+
+\textbf{Ejercicio 6:} No. El producto cruz requiere que ambos vectores operen en el mismo espacio vectorial (mismo marco de referencia). Operar mezclando marcos produce un vector basura sin sentido físico.
+
+\textbf{Ejercicio 7:} Las raíces de $\sin(q_2) = 0$ en el rango dado son $q_2 = 0$ y $q_2 = \pi$.
+
+\textbf{Ejercicio 8:} El primer mapeo es IK Global (Analítica), resuelve la pose. El segundo es IK Diferencial (Local), requiere conocer un $\mathbf{q}$ actual para invertir el Jacobiano y generar una velocidad continua $\dot{\mathbf{q}}$. El $J^{-1}$ no reemplaza a la IK Global (Pieper) porque no puede encontrar los ángulos iniciales partiendo de cero.
+
+\vspace{0.5cm}
+
+\section*{Guía de Intervención Diagnóstica para el Aula[cite: 11]}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|X|X|X|}
+\hline
+\rowcolor{gray!20} \textbf{Observación / Error} & \textbf{Concepto Probablemente Débil} & \textbf{Intervención Inmediata} \\ \hline
+Asume que el Jacobiano es una matriz de transformación homogénea. & Confusión de objetos matemáticos. & Contrastar matrices: $T$ dimensiona posiciones $4\times4$; $J$ proyecta velocidades $6\times n$. \\ \hline
+Calcula el producto cruz en reversa $(\mathbf{r} \times \mathbf{z})$. & Dirección de velocidad tangencial errónea. & Recuerde la física de cuerpo rígido $\mathbf{v} = \boldsymbol{\omega} \times \mathbf{r}$. \\ \hline
+Coloca componente angular no nula en columna prismática. & Naturaleza física de la junta no comprendida. & Contraste visualmente que un actuador lineal no hace rotar a su efector propio. \\ \hline
+Evalúa $J\dot{q}$ como si fuera un punto en el espacio. & Comprensión de unidades y física ausente. & Requiera explícitamente escribir las unidades ($\mathrm{m/s}$ y $\mathrm{rad/s}$) al final. \\ \hline
+Afirma que en singularidad el robot no se mueve en absoluto. & Naturaleza matricial de la pérdida de rango. & Muestre que las columnas del Jacobiano aún operan (el brazo "bare" se mueve en Y tangencialmente). \\ \hline
+\end{tabularx}
+
+\end{document}

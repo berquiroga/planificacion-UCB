@@ -1,0 +1,88 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Robótica (IMT-342) - Worksheet}
+\rhead{Semana 8 - Sesión 1}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Hoja de Trabajo: Jacobiano Geométrico y Analítico}}\\[0.2cm]
+\end{center}
+
+\vspace{0.4cm}
+
+\section*{Ejercicio 1: Puente Derivativo (1 GDL)[cite: 11]}
+La cinemática directa de un mecanismo simple de 1 GDL es $x = 2\cos q$.
+Derive analíticamente $\dot{x}$ respecto al tiempo e identifique el Jacobiano escalar $J(q)$.
+\vspace{1.5cm}
+
+\section*{Ejercicio 2: Columna de Junta Revoluta[cite: 11]}
+Para una junta $i$ revoluta, en una configuración dada, se conocen los vectores expresados en el marco base:
+\begin{equation*}
+    {}^0\mathbf{z}_{i-1} = [0, 0, 1]^T, \quad {}^0\mathbf{o}_{i-1} = [1, 0, 0]^T, \quad {}^0\mathbf{o}_n = [1, 2, 0]^T
+\end{equation*}
+Determine matemáticamente la columna completa $J_i \in \mathbb{R}^6$ del Jacobiano espacial.
+\vspace{4cm}
+
+\section*{Ejercicio 3: Contraste Prismático[cite: 11]}
+Para una junta $i$ prismática que se desplaza a lo largo del eje local Y, cuyo vector dirección en el marco base actual es ${}^0\mathbf{z}_{i-1} = [0, 1, 0]^T$. Escriba la columna $J_i \in \mathbb{R}^6$ correspondiente.
+\vspace{2cm}
+
+\section*{Ejercicio 4: Jacobiano Completo 2R[cite: 11]}
+Dado el Jacobiano del brazo planar 2R derivado en clase:
+\begin{equation*}
+    J = \begin{bmatrix}
+    -a_1s_1-a_2s_{12} & -a_2s_{12} \\
+    a_1c_1+a_2c_{12} & a_2c_{12} \\
+    0 & 0 \\ 0 & 0 \\ 0 & 0 \\ 1 & 1
+    \end{bmatrix}
+\end{equation*}
+Evalúe la matriz numéricamente para $a_1=a_2=1$, en la configuración $q_1=0$, $q_2=\pi/2$.
+\vspace{3cm}
+
+\section*{Ejercicio 5: Mapeo de Velocidad[cite: 11]}
+Utilizando la matriz numérica hallada en el Ejercicio 4, calcule el vector de velocidad espacial (Twist) $\mathbf{v}_e$ en el efector final si se aplican velocidades articulares $\dot{\mathbf{q}} = [0, 2]^T$ rad/s. Interprete el resultado físico de la parte lineal y angular.
+\vspace{4cm}
+
+\section*{Ejercicio 6: Consistencia de Marcos (Frames)[cite: 11]}
+Un estudiante intenta calcular el producto cruz $J_{v_i} = \mathbf{z}_{i-1} \times (\mathbf{o}_n - \mathbf{o}_{i-1})$ extrayendo $\mathbf{z}_{i-1}$ del marco $\{1\}$ local y los orígenes $\mathbf{o}_n, \mathbf{o}_{i-1}$ del marco base $\{0\}$. ¿Es matemáticamente correcto? Explique brevemente.
+\vspace{2cm}
+
+\section*{Ejercicio 7: Singularidad[cite: 11]}
+Se determinó que el determinante del Jacobiano de traslación 2R es $\det(J_p) = a_1 a_2 \sin q_2$.
+Identifique en qué ángulos de $q_2$ dentro del rango $(-\pi, \pi]$ el manipulador pierde grados de libertad operacionales.
+\vspace{2cm}
+
+\section*{Ejercicio 8: IK Global vs IK Diferencial[cite: 11]}
+Clasifique los dos mapeos siguientes y explique por qué la segunda ecuación no elimina la necesidad de la primera en robótica:
+\begin{align*}
+    1. \quad T_d &\longrightarrow \mathbf{q} \\
+    2. \quad \dot{\mathbf{x}}_d &\longrightarrow \dot{\mathbf{q}}
+\end{align*}
+\vspace{3cm}
+
+\end{document}

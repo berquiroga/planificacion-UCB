@@ -1,0 +1,81 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Práctica Autónoma: Cinemática Inversa}
+\rhead{Semana 8}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Práctica Autónoma de Refuerzo: Cinemática Inversa}}\\[0.2cm]
+\end{center}
+
+\begin{tcolorbox}[colback=yellow!10, colframe=black, title=\textbf{Nota del Docente}]
+    Esta práctica es fundamental para consolidar el Desacoplamiento de Muñeca (Pieper) que requerimos para el Hito 2[cite: 11].
+\end{tcolorbox}
+
+\section*{A. Reconstrucción del Centro de Muñeca[cite: 11]}
+La ecuación de desacoplamiento establece que $p_W = p_d - d_6 z_6^d$, donde $z_6^d = R_d [0, 0, 1]^T$.
+\begin{enumerate}
+    \item Explique con sus palabras por qué un simple cambio de la orientación objetivo (matriz $R_d$) altera las coordenadas físicas del centro de la muñeca $p_W$, asumiendo que el offset $d_6 \neq 0$.
+\end{enumerate}
+
+\vspace{2cm}
+
+\section*{B. Reconstrucción de Ramas (Branches)[cite: 11]}
+Al resolver el brazo planar 2R encontramos que $\cos(q_2) = c_2 = \frac{x^2+y^2-a_1^2-a_2^2}{2a_1 a_2}$.
+Al despejar el seno, la matemática entrega dos raíces: $s_2 = \pm\sqrt{1-c_2^2}$.
+\begin{enumerate}
+    \item ¿Qué representan físicamente ambos signos en el espacio real del manipulador? (Evite responder simplemente "una ecuación de segundo grado").
+\end{enumerate}
+
+\vspace{2cm}
+
+\section*{C. Justificación de la función $\operatorname{atan2}$[cite: 11]}
+\begin{enumerate}
+    \item Explique por qué el uso de $q_2 = \operatorname{atan2}(s_2, c_2)$ preserva la información de la rama geométrica de manera mucho más confiable que calcular $\tan^{-1}\left(\frac{s_2}{c_2}\right)$ en un lenguaje de programación.
+\end{enumerate}
+
+\vspace{2cm}
+
+\section*{D. Secuencia de Desacoplamiento (Pieper Roadmap)[cite: 11]}
+Ordene lógicamente los siguientes pasos del algoritmo de resolución de 6 grados de libertad (del 1 al 8):
+\begin{itemize}
+    \item[\rule{1cm}{0.15mm}] Calcular centro de muñeca ($p_W$).
+    \item[\rule{1cm}{0.15mm}] Despejar matriz de orientación intermedia $R_0^3$.
+    \item[\rule{1cm}{0.15mm}] Filtrar ramas geométricas incompatibles con los límites.
+    \item[\rule{1cm}{0.15mm}] Conocer la matriz de Pose Deseada ${}^0T_6^d$.
+    \item[\rule{1cm}{0.15mm}] Verificar los candidatos finales con Cinemática Directa (FK).
+    \item[\rule{1cm}{0.15mm}] Calcular $R_3^6$ para la orientación residual.
+    \item[\rule{1cm}{0.15mm}] Resolver los tres ángulos de brazo $(q_1, q_2, q_3)$.
+    \item[\rule{1cm}{0.15mm}] Resolver los tres ángulos de muñeca $(q_4, q_5, q_6)$.
+\end{itemize}
+
+\section*{E. Verificación[cite: 11]}
+\begin{enumerate}
+    \item Explique por qué evaluar únicamente la posición $p$ a la salida de su modelo FK es insuficiente para validar una pose completa de 6 GDL de cinemática inversa.
+\end{enumerate}
+
+\end{document}

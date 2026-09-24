@@ -1,0 +1,74 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor} % <--- Soluciona el warning de la fuente monospace en negrita
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT342}}
+\chead{Práctica Autónoma IK / Pieper}
+\rhead{Semana 8 - Sesión 2}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Mantenimiento Práctico: Desacoplamiento Cinemático}}\\[0.2cm]
+\end{center}
+
+\begin{tcolorbox}[colback=gray!5, colframe=gray!50, title=\textbf{Propósito}[cite: 12]]
+    La evaluación de la cinemática inversa global no es desplazada por el Jacobiano. Esta práctica autónoma mantiene operativas las competencias de desacoplamiento de muñeca y manejo de ramas (Pieper) que requerimos formalizar[cite: 12].
+\end{tcolorbox}
+
+\section*{A. Reconstrucción del Centro de Muñeca[cite: 12]}
+Asuma un manipulador con muñeca esférica y una pose final deseada dada por $T_0^{6,d} = \begin{bmatrix} R_d & p_d \\ 0 & 1 \end{bmatrix}$. La relación del centro de muñeca se simboliza como $p_W = p_d - d_6 z_6^d$.
+\begin{enumerate}
+    \item Demuestre matricialmente cómo se obtiene el vector $z_6^d$ extrayéndolo directamente de la matriz $R_d$.
+    \item Explique lógicamente por qué dos posturas del brazo totalmente distintas (ej. codo-arriba y codo-abajo) pueden alcanzar físicamente el mismo punto de centro de muñeca $p_W$.
+\end{enumerate}
+\vspace{3cm}
+
+\section*{B. Reconstrucción de Ramas (Branches)[cite: 12]}
+De la derivación de cinemática inversa planar se obtiene $c_2 = \frac{x^2+y^2-a_1^2-a_2^2}{2a_1 a_2}$. Para encontrar el ángulo, se despeja $s_2 = \pm\sqrt{1-c_2^2}$.
+\begin{enumerate}
+    \item Explique el significado geométrico y físico de los signos $\pm$ presentes en la ecuación de $s_2$. ¿Qué pasaría con el manipulador en el espacio físico si uno de esos signos matemáticos se ignora sistemáticamente?
+\end{enumerate}
+\vspace{3cm}
+
+\section*{C. Razonamiento \texttt{atan2}[cite: 12]}
+\begin{enumerate}
+    \item Escriba una explicación técnica clara de por qué $\operatorname{atan2}(s,c)$ es una función preferible y más segura que $\tan^{-1}(s/c)$ para recuperar ángulos de articulación en robótica. Utilice la preservación de cuadrantes en su respuesta.
+\end{enumerate}
+\vspace{3cm}
+
+\section*{D. Secuencia de Desacoplamiento (Brazo/Muñeca)[cite: 12]}
+Ordene lógicamente los siguientes procesos para resolver la IK analítica global (1 al 8):
+\begin{itemize}
+    \item[\rule{1cm}{0.15mm}] Identificar la Pose Deseada.
+    \item[\rule{1cm}{0.15mm}] Enumerar y filtrar ramas geométricas por viabilidad.
+    \item[\rule{1cm}{0.15mm}] Despejar matriz de orientación $R_0^3$.
+    \item[\rule{1cm}{0.15mm}] Verificar los candidatos $T_0^6(q^{(k)}) \approx T_0^{6,d}$ mediante FK.
+    \item[\rule{1cm}{0.15mm}] Calcular centro de muñeca $p_W$.
+    \item[\rule{1cm}{0.15mm}] Calcular $R_3^6 = (R_0^3)^T R_d$ para la orientación residual.
+    \item[\rule{1cm}{0.15mm}] Resolver los tres ángulos de muñeca $(q_4, q_5, q_6)$.
+    \item[\rule{1cm}{0.15mm}] Resolver los tres ángulos de brazo $(q_1, q_2, q_3)$.
+\end{itemize}
+
+\section*{E. Lógica de Verificación[cite: 12]}
+\begin{enumerate}
+    \item ¿Por qué comprobar únicamente la posición $[x, y, z]^T$ a la salida del modelo matemático (FK) es una evidencia estructuralmente insuficiente para dar como correcta una configuración candidata $\mathbf{q}^{(k)}$?
+\end{enumerate}
+
+\end{document}

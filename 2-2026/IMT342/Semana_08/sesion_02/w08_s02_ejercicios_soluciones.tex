@@ -1,0 +1,72 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT342}}
+\chead{Solucionario y Diagnóstico (W08-S02)}
+\rhead{Uso Docente}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{red!80!black}{SOLUCIONARIO Y GUÍA DIAGNÓSTICA DEL DOCENTE}}\\[0.2cm]
+    \normalsize Consolidación de Jacobiano y Singularidades[cite: 12]
+\end{center}
+
+\section*{Solucionario de la Hoja de Trabajo[cite: 12]}
+
+\textbf{Ejercicio 1:}
+$\mathbf{r}_1 = [1, 1, 0]^T$. $\mathbf{z}_0 \times \mathbf{r}_1 = [-1, 1, 0]^T$. $J_1 = [-1, 1, 0, 0, 0, 1]^T$. \\
+$\mathbf{r}_2 = [0, 1, 0]^T$. $\mathbf{z}_1 \times \mathbf{r}_2 = [-1, 0, 0]^T$. $J_2 = [-1, 0, 0, 0, 0, 1]^T$. \\
+$J = \begin{bmatrix} -1 & -1 \\ 1 & 0 \\ 0 & 0 \\ 0 & 0 \\ 0 & 0 \\ 1 & 1 \end{bmatrix}$.
+
+\textbf{Ejercicio 2:} Ambas juntas rotan sobre ejes paralelos a $+z$, por lo que su aporte de velocidad angular es el mismo ($[0,0,1]^T$). Sin embargo, sus componentes lineales difieren porque tienen brazos de palanca ($\mathbf{r}_i$) diferentes respecto al efector final.
+
+\textbf{Ejercicio 3:} $\mathbf{v}_e = J [2, 0]^T = [-2, 2, 0, 0, 0, 2]^T$. Significa que la punta se traslada linealmente a $-2$ en X y $+2$ en Y, mientras que todo el efector rota sobre Z a $2$ rad/s.
+
+\textbf{Ejercicio 4:} Inversión: $J_p^{-1} = \begin{bmatrix} 0 & 1 \\ -1 & -1 \end{bmatrix}$. $\dot{\mathbf{q}} = J_p^{-1} [1, 0]^T = \begin{bmatrix} 0 \\ -1 \end{bmatrix}$. \\
+\textit{Verificación:} $J_p \dot{\mathbf{q}} = \begin{bmatrix} -1 & -1 \\ 1 & 0 \end{bmatrix} \begin{bmatrix} 0 \\ -1 \end{bmatrix} = \begin{bmatrix} 1 \\ 0 \end{bmatrix} = \dot{\mathbf{p}}_d$.
+
+\textbf{Ejercicio 5:} $\operatorname{rank}(J_A) = 2$. $\operatorname{rank}(J_B) = 1$ (la segunda columna es el doble de la primera). Físicamente, el manipulador B perdió un grado de libertad operativo y no puede moverse en todas las direcciones del plano.
+
+\textbf{Ejercicio 6:} El determinante está definido exclusivamente para matrices cuadradas. En robots redundantes (ej. $6 \times 7$), el Jacobiano no es cuadrado. La definición universal de singularidad es la \textbf{pérdida de rango} ($\operatorname{rank} J < \operatorname{rank}_{\max}$), independientemente de la dimensionalidad.
+
+\textbf{Ejercicio 7:} La configuración singular es $q_2 = 0$ (brazo estirado). En ella, las columnas de $J_p$ ($[0, 2]^T$ y $[0, 1]^T$) son paralelas. Se pierde la capacidad de movimiento tangencial radial independiente a lo largo del eje local X.
+
+\textbf{Ejercicio 8:} $\dot{q}_2 = 1/\varepsilon$. Para $\varepsilon = 1 \to 1$; $\varepsilon = 0.1 \to 10$; $\varepsilon = 0.01 \to 100$. Estar cerca a la singularidad significa que el algoritmo numérico exigirá velocidades de motor físicamente imposibles para seguir una trayectoria cartesiana recta normal.
+
+\vspace{0.5cm}
+\section*{Guía de Intervención Diagnóstica[cite: 12]}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\textwidth}{|X|X|X|}
+\hline
+\rowcolor{gray!20} \textbf{Error Observado} & \textbf{Posible Concepto Erróneo} & \textbf{Intervención Corta} \\ \hline
+Usa $\mathbf{z}_i$ en lugar de $\mathbf{z}_{i-1}$. & Indexación de ejes articulares. & Identifique el eje físico de pivote antes de meterlo en la fórmula. \\ \hline
+Centro de rotación incorrecto ($\mathbf{o}_n - \mathbf{o}_0$ para todos). & No comprende qué es $\mathbf{r}_i$. & Pregunte: "¿Sobre qué punto está rotando físicamente esta junta en particular?" \\ \hline
+Orden del producto cruz invertido. & Dirección tangencial débil. & Recuerde la física clásica: $\mathbf{v} = \boldsymbol{\omega} \times \mathbf{r}$. \\ \hline
+Mezcla marcos (Frames). & Expresión coordinada débil. & Obligue a añadir superíndices a todos los vectores antes de operarlos algebraicamente. \\ \hline
+Término angular distinto de cero en junta prismática. & Física de la junta no comprendida. & Contraste el movimiento de traslación pura frente al rotatorio. \\ \hline
+Llama "Pose" al resultado de $J\dot{\mathbf{q}}$. & Confusión de posición/velocidad. & Pregunte cuáles son las unidades del resultado (m/s). \\ \hline
+Usa $J^{-1}$ para IK Global (Pose). & Confunde local vs. global IK. & Ponga las tareas $T_d \to \mathbf{q}$ y $\dot{\mathbf{x}}_d \to \dot{\mathbf{q}}$ lado a lado. \\ \hline
+Determinante evaluado en $J$ no cuadrada. & Confunde el test con el concepto. & Rango primero, determinante después. \\ \hline
+Ignora efectos cerca de la singularidad. & Pensamiento binario (Singular o No). & Use el ejemplo de $J_\varepsilon$ mostrado en clase. \\ \hline
+\end{tabularx}
+
+\end{document}
