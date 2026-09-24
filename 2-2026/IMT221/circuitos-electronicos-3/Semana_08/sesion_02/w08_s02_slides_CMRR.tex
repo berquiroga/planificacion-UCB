@@ -1,0 +1,222 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[aspectratio=169]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+\title[Modo Común y CMRR]{Análisis en Modo Común y Derivación del CMRR}
+\subtitle{IMT-221 Circuitos Electrónicos III — Semana 8, Sesión 2}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}
+\date{Semana 8}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{1. Descomposición de Señales en las Bases}
+    Toda pareja de entradas ($v_1, v_2$) puede expresarse matemáticamente como la superposición de una componente Diferencial ($v_d$) y una Común ($v_{cm}$)[cite: 5]:
+    
+    \begin{columns}[c]
+        \begin{column}{0.5\textwidth}
+            \textbf{Definiciones Clave[cite: 5]:}
+            \begin{align*}
+                \mathbf{v_d} &= \mathbf{v_1 - v_2} \\
+                \mathbf{v_{cm}} &= \mathbf{\frac{v_1 + v_2}{2}}
+            \end{align*}
+            
+            \vspace{0.2cm}
+            \textbf{Reconstrucción (Superposición)[cite: 5]:}
+            \begin{align*}
+                \mathbf{v_1} &= \mathbf{v_{cm} + \frac{v_d}{2}} \\
+                \mathbf{v_2} &= \mathbf{v_{cm} - \frac{v_d}{2}}
+            \end{align*}
+        \end{column}
+        \begin{column}{0.45\textwidth}
+            \begin{center}
+            \begin{tikzpicture}[scale=0.9, thick]
+                \draw[->, blue] (0,2) -- (1.5,2) node[right]{$+v_d/2$};
+                \draw[->, blue] (0,1) -- (1.5,1) node[right]{$-v_d/2$};
+                \node at (0.75, 2.3) {\small Diferencial};
+                
+                \node at (2.5, 1.5) {\Large $+$};
+                
+                \draw[->, red] (3.5,2) -- (5,2) node[right]{$v_{cm}$};
+                \draw[->, red] (3.5,1) -- (5,1) node[right]{$v_{cm}$};
+                \node at (4.25, 2.3) {\small Común};
+            \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{2. Ejemplos de Descomposición}
+    \textbf{Ejemplo 1: Diferencial Puro[cite: 5]}
+    \begin{equation*}
+        v_1 = +5\,\text{mV}, \quad v_2 = -5\,\text{mV} \implies \mathbf{v_d = 10\,\text{mV}}, \quad \mathbf{v_{cm} = 0\,\text{mV}}
+    \end{equation*}
+    
+    \vspace{0.2cm}
+    \textbf{Ejemplo 2: Modo Común Puro[cite: 5]}
+    \begin{equation*}
+        v_1 = 200\,\text{mV}, \quad v_2 = 200\,\text{mV} \implies \mathbf{v_d = 0\,\text{mV}}, \quad \mathbf{v_{cm} = 200\,\text{mV}}
+    \end{equation*}
+    
+    \vspace{0.2cm}
+    \textbf{Ejemplo 3: Señal Mixta (Realidad)[cite: 5]}
+    \begin{equation*}
+        v_1 = 105\,\text{mV}, \quad v_2 = 95\,\text{mV} \implies \mathbf{v_d = 10\,\text{mV}}, \quad \mathbf{v_{cm} = 100\,\text{mV}}
+    \end{equation*}
+    
+    \begin{tcolorbox}[colback=yellow!10, colframe=orange, title=Nota Conceptual]
+        El modo diferencial \textbf{redistribuye} la corriente entre las ramas. El modo común mueve ambas bases \textbf{juntas}, exigiendo a la fuente de cola que mantenga la corriente constante[cite: 5].
+    \end{tcolorbox}
+\end{frame}
+
+\begin{frame}{3. Comportamiento Físico bajo Modo Común Puro}
+    ¿Qué ocurre cuando $v_1 = v_2 = v_{cm}$?[cite: 5]
+    
+    \begin{itemize}
+        \item \textbf{Fuente de Cola Ideal ($R_T \to \infty$):} El nodo emisor sigue a las bases. $\Delta v_{BE1} \approx \Delta v_{BE2} \approx 0 \implies \Delta I_{C1} \approx \Delta I_{C2} \approx 0$. Los voltajes de colector no cambian. \textbf{Rechazo perfecto}[cite: 5].
+        \item \textbf{Fuente Real (Resistencia Incremental $R_T < \infty$):} El movimiento del nodo emisor sobre $R_T$ finita genera una variación de corriente $\Delta I_T \neq 0$[cite: 5]. 
+    \end{itemize}
+    
+    \vspace{0.2cm}
+    Por simetría, esta nueva corriente se divide en dos:
+    \begin{equation*}
+        \Delta i_{c1} \approx \Delta i_{c2} \implies \Delta v_{c1} \approx \Delta v_{c2} \quad \text{[cite: 5]}
+    \end{equation*}
+    \textit{¡Ambos colectores se mueven en la misma dirección! Este es el \textbf{error de modo común}}[cite: 5].
+\end{frame}
+
+\begin{frame}{4. Medio Circuito de Modo Común}
+    Usamos el \textbf{Medio Circuito de Modo Común} para derivar la respuesta. Como la fuente de cola lleva la corriente sumada de ambas ramas ($2 i_e$), por Ley de Ohm el voltaje en el emisor es $v_e = (2 i_e) R_T$[cite: 5]. Esto se modela asignando una resistencia $2R_T$ a la rama individual[cite: 5].
+    
+    \begin{columns}[c]
+        \begin{column}{0.4\textwidth}
+            \centering
+            \begin{circuitikz}[scale=0.75, transform shape, thick]
+                \draw (0,0) node[npn](Q1){}; 
+                \draw (Q1.B) to[short, -o] (-1,0) node[left]{$v_{cm}$};
+                \draw (Q1.C) to[R, l={$R_C$}] (0,2) node[above]{Tierra AC};
+                \draw (Q1.E) to[R, l={$2 R_T$}] (0,-2) node[below]{Tierra AC};
+                \draw (Q1.C) to[short, *-o] (1,0.77) node[right]{$v_o = v_{c1}$};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.55\textwidth}
+            \textbf{KVL en Malla de Entrada (Modelo T)[cite: 5]:}
+            \begin{equation*}
+                v_{cm} = i_e r_e + v_e = i_e r_e + i_e (2 R_T) \quad \text{[cite: 5]}
+            \end{equation*}
+            
+            \vspace{0.3cm}
+            Factorizando y despejando la corriente incremental de emisor ($i_e$)[cite: 5]:
+            \begin{equation*}
+                \mathbf{i_e = \frac{v_{cm}}{r_e + 2R_T}} \quad \text{[cite: 5]}
+            \end{equation*}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{5. Derivación de $A_{c,se}$ (Salida Single-Ended)}
+    Ya determinamos la corriente de emisor inducida por el modo común: $i_e = \frac{v_{cm}}{r_e + 2R_T}$[cite: 5].
+    
+    \vspace{0.3cm}
+    \textbf{Voltaje de Salida (Ley de Ohm)[cite: 5]:} \\
+    Sabiendo que $i_c \approx \alpha i_e$, la caída en la resistencia de colector produce la salida:
+    \begin{equation*}
+        v_o = -i_c R_C = -\alpha \left(\frac{v_{cm}}{r_e + 2R_T}\right) R_C \quad \text{[cite: 5]}
+    \end{equation*}
+    
+    \vspace{0.3cm}
+    \textbf{Ganancia Común Single-Ended ($A_{c,se} = v_o / v_{cm}$)[cite: 5]:}
+    \begin{equation*}
+        \mathbf{A_{c,se} \approx -\frac{\alpha R_C}{r_e + 2R_T}} \quad \text{[cite: 5]}
+    \end{equation*}
+    
+    Si $R_T \gg r_e$ y $\alpha \approx 1$, la expresión se simplifica a:
+    \begin{equation*}
+        \mathbf{A_{c,se} \approx -\frac{R_C}{2 R_T}} \quad \text{[cite: 5]}
+    \end{equation*}
+\end{frame}
+
+\begin{frame}{6. Modo Común con Salida Diferencial (Dilema del CMRR)}
+    \begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Advertencia: Mismatch y Convención Oficial[cite: 5]}]
+        Si la salida es \textbf{diferencial} ($v_{od} = v_{c2} - v_{c1}$), y el par está \textbf{perfectamente emparejado}, entonces $\Delta v_{c1} = \Delta v_{c2}$, lo que significa que $\mathbf{A_{c,diff} = 0}$ incluso si $R_T$ es baja[cite: 5].
+    \end{tcolorbox}
+    
+    En el mundo real, $A_{c,diff} \neq 0$ únicamente por asimetrías (Mismatch). Si solo existe un error en resistores $\Delta R_C = R_{C2} - R_{C1}$[cite: 5]:
+    \begin{align*}
+        v_{c1} &= -i_c R_C \\
+        v_{c2} &= -i_c (R_C + \Delta R_C) \\
+        v_{od} &= v_{c2} - v_{c1} = -i_c \Delta R_C
+    \end{align*}
+    Sustituyendo $i_c$[cite: 5]:
+    \begin{equation*}
+        \mathbf{A_{c,diff} \approx -\frac{\alpha \Delta R_C}{r_e + 2R_T} \approx -\frac{\Delta R_C}{2 R_T}} \quad \text{[cite: 5]}
+    \end{equation*}
+\end{frame}
+
+\begin{frame}{7. Definición de CMRR y Puerta Lógica de Medición}
+    El \textbf{Rechazo de Modo Común (CMRR)} mide la calidad del amplificador. Es la razón entre la ganancia útil y el error[cite: 5]:
+    \begin{equation*}
+        \mathbf{CMRR = \left|\frac{A_d}{A_c}\right|} \qquad \mathbf{CMRR_{dB} = 20 \log_{10} (CMRR)} \quad \text{[cite: 5]}
+    \end{equation*}
+    
+    \begin{alertblock}{Puerta Lógica de Consistencia (Obligatoria)[cite: 5]}
+        ¡Es un error conceptual grave medir $A_d$ como \textit{Double-Ended} (Diferencial) y calcular el CMRR dividiéndolo entre una $A_c$ \textit{Single-Ended} (Un colector)![cite: 5]
+        
+        \textbf{¿Usa la misma convención de salida física para el numerador ($A_d$) y el denominador ($A_c$)?}
+        \begin{itemize}
+            \item SI $\implies$ Proceda a calcular CMRR.
+            \item NO $\implies$ Corrija su método de medición.
+        \end{itemize}
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{8. Ejemplos Numéricos de CMRR}
+    \textbf{Ejemplo 1: Target Hito 2 ($> 60\,\text{dB}$)[cite: 5]}
+    \begin{equation*}
+        A_d = 80, \quad A_c = 0.08 \implies CMRR = \left| \frac{80}{0.08} \right| = 1000 \implies \mathbf{CMRR_{dB} = 60\,\text{dB}} \quad \text{[cite: 5]}
+    \end{equation*}
+    
+    \textbf{Ejemplo 2: Impacto del aumento de $A_c$[cite: 5]}
+    \begin{equation*}
+        A_d = 80, \quad A_c = 0.16 \implies CMRR = 500 \implies \mathbf{CMRR_{dB} \approx 54.0\,\text{dB}} \quad \text{[cite: 5]}
+    \end{equation*}
+    \textit{Nota: Duplicar $A_c$ empeora el CMRR en $\approx 6\,\text{dB}$[cite: 5].}
+    
+    \vspace{0.2cm}
+    \textbf{Ejemplo 3: Una alta $A_d$ no es suficiente[cite: 5]}
+    \begin{align*}
+        \text{Circuito A: } & A_d = 100, \quad A_c = 0.1 \implies \mathbf{CMRR_{dB} = 60\,\text{dB}} \quad \text{[cite: 5]} \\
+        \text{Circuito B: } & A_d = 200, \quad A_c = 1.0 \implies \mathbf{CMRR_{dB} \approx 46.0\,\text{dB}} \quad \text{[cite: 5]}
+    \end{align*}
+    \textit{El Circuito B amplifica más, pero rechaza peor el ruido común[cite: 5].}
+\end{frame}
+
+\end{document}

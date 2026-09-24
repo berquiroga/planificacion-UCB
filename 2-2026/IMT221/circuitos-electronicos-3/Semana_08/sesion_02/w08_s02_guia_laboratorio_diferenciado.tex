@@ -1,0 +1,75 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Laboratorio Diferenciado S08-2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Guía de Laboratorio: Checkpoints Diferenciados (Hito 2)}]
+    \textbf{Regla de Operación:} El trabajo continúa desde el último checkpoint validado de su grupo. Determine su estado actual y proceda estrictamente según el flujo indicado.
+\end{tcolorbox}
+
+\section*{Evaluación de Estado Actual (Triage)}
+Marque la casilla correspondiente al estado validado por el docente en la sesión anterior:
+\begin{itemize}
+    \item[$\square$] \textbf{Estado A (Espejo Pendiente):} No hay validación de la fuente de cola.
+    \item[$\square$] \textbf{Estado B (Espejo Validado / Par Pendiente):} $I_T$ demostrada, pero Par Q1-Q2 no medido.
+    \item[$\square$] \textbf{Estado C (Par Validado / Diferencial Pendiente):} Punto Q aprobado, falta inyectar señal.
+    \item[$\square$] \textbf{Estado D (Respuesta Diferencial Disponible):} Preparado para Modo Común y CMRR.
+\end{itemize}
+
+\vspace{0.3cm}
+\hrule
+\vspace{0.3cm}
+
+\section*{Rutas de Acción según su Estado}
+
+\subsection*{Para Estado A: Espejo de Corriente}
+\textbf{Objetivo:} Validar la fuente de cola antes de conectar Q1 y Q2.
+\begin{enumerate}
+    \item Verifique magnitud y polaridad de los rieles ($+9\,\text{V}, 0\,\text{V}, -9\,\text{V}$) y pinout en el datasheet.
+    \item Mida $I_{REF}$ a través de $R_{REF}$ y verifique $V_{BE}$ de la referencia diódica Q3[cite: 5].
+    \item Utilice una carga temporal ($R_{TEST}$) en Q4 para inferir $I_T$. Solicite el \textbf{GO} del docente[cite: 5].
+\end{enumerate}
+
+\subsection*{Para Estado B: Par Diferencial Balanceado}
+\textbf{Objetivo:} Encontrar el Punto de Operación estático con $v_1 = v_2 = 0\,\text{V}$[cite: 5].
+\begin{enumerate}
+    \item Conecte Q1 y Q2 con las cargas $R_{C1}$ y $R_{C2}$ y emisores unidos al colector de Q4[cite: 5].
+    \item Mida $v_E$, $v_{C1}$, $v_{C2}$ y verifique la operación en \textbf{Activa Directa} ($V_{CE} > 0.3\,\text{V}$, $V_{BC} < 0$)[cite: 5].
+    \item Calcule el Offset Estático: $V_{OD,0} = v_{C2} - v_{C1}$. Solicite el \textbf{GO} del docente[cite: 5].
+\end{enumerate}
+
+\subsection*{Para Estado C: Ganancia Diferencial ($A_d$) y Shunt}
+\textbf{Objetivo:} Predecir e inyectar señal diferencial pura[cite: 5].
+\begin{enumerate}
+    \item Calcule $g_m = I_{CQ,\text{medido}} / V_T$. Prediga $A_d = g_m R_C$ y la salida esperada $v_{od, \text{pred}}$[cite: 5].
+    \item Arme la rama del Shunt ($R_{LIM}, R_{sh}$) y mida el voltaje generado $v_d = v_1 - v_2$ real[cite: 5].
+    \item Inyecte $v_d$ al par diferencial y mida la salida $v_{od} = v_{C2} - v_{C1}$ con osciloscopio o DMM de precisión. Compare con su predicción teórica[cite: 5].
+\end{enumerate}
+
+\subsection*{Para Estado D: Preparación de Modo Común ($v_{cm}$)}
+\textbf{Objetivo:} Diseñar la medición de la ganancia común ($A_c$)[cite: 5].
+\begin{enumerate}
+    \item \textbf{Defina su Convención:} Declare explícitamente si usará salida Single-Ended o Diferencial. \textit{Advertencia: CMRR exige usar la misma convención para $A_d$ y $A_c$}[cite: 5].
+    \item Realice la simulación de Modo Común ($v_1 = v_2 = v_{cm}$) en LTspice y genere su plan de medición antes de inyectar señal física[cite: 5].
+\end{enumerate}
+
+\end{document}

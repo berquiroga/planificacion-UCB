@@ -1,0 +1,65 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Matriz de Evidencia S08-2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Matriz de Evidencia Actualizada (Hito 2)}]
+    Registro oficial de datos analíticos, simulados y medidos. Todos los cálculos posteriores (como $g_m$ y $A_d$) deben realizarse a partir del \textbf{Punto Q medido}, no de estimaciones nominales[cite: 5].
+\end{tcolorbox}
+
+% Se utiliza \hfill y \hrulefill para que LaTeX calcule los anchos automáticamente sin desbordar los márgenes
+\noindent\textbf{Grupo:} \rule{3cm}{0.15mm} \hfill \textbf{Estado Inicio:} \rule{2.5cm}{0.15mm} \hfill \textbf{Estado Final:} \rule{2.5cm}{0.15mm} \\[0.3cm]
+\noindent\textbf{Bloqueo Principal:} \hrulefill \\[0.3cm]
+\noindent\textbf{Próxima Acción:} \hrulefill
+
+\vspace{0.4cm}
+\renewcommand{\arraystretch}{1.5}
+\small % Se reduce la fuente levemente para acomodar las 6 columnas con holgura
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3.8cm}|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\centering\arraybackslash}p{2.2cm}|}
+\hline
+\rowcolor{ucbblue!20}
+\textbf{Variable} & \textbf{Predicho} & \textbf{Simulado} & \textbf{Medido} & \textbf{Interpretación} & \textbf{Status} \\ \hline
+Rieles $\pm9\,\text{V}$ & & & & & \\ \hline
+$I_T$ & & & & & \\ \hline
+$v_E$ & & & & & \\ \hline
+$v_{C1}$ & & & & & \\ \hline
+$v_{C2}$ & & & & & \\ \hline
+$I_{C1}$ & & & & & \\ \hline
+$I_{C2}$ & & & & & \\ \hline
+$V_{CE1}$ & & & & & \\ \hline
+$V_{CE2}$ & & & & & \\ \hline
+$V_{OD,0}$ (Offset) & & & & & \\ \hline
+$g_m$ & & & & & \\ \hline
+$A_d$ & & & & & \\ \hline
+Resp. Diferencial ($v_{od}$) & & & & & \\ \hline
+$A_c$[cite: 5] & Pendiente & & & & Pendiente \\ \hline
+CMRR[cite: 5] & Pendiente & & & & Pendiente \\ \hline
+\end{tabularx}
+\normalsize % Restaurar el tamaño de fuente normal para el resto del documento
+
+\vspace{0.5cm}
+\begin{tcolorbox}[colback=yellow!10, colframe=orange, title=\textbf{Registro de Convención (Auditoría de Consistencia)[cite: 5]}]
+    \textbf{Convención de Salida $A_d$:} \hrulefill (Ej. $v_{C2} - v_{C1}$) \\[0.2cm]
+    \textbf{Convención de Salida $A_c$:} \hrulefill (Ej. $v_{C2} - v_{C1}$) \\[0.2cm]
+    \textbf{¿Convención de salida consistente para CMRR? (SI / NO):} \rule{2cm}{0.15mm}
+\end{tcolorbox}
+
+\end{document}

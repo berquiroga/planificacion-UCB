@@ -1,0 +1,61 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Assessment Decision Brief Hito 2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Documento Interno Docente: Formato de Evaluación - Hito 2}]
+    Este documento formaliza las alternativas de evaluación para el Hito 2, separando el éxito grupal de la implementación del conocimiento matemático individual[cite: 5].
+\end{tcolorbox}
+
+\section*{1. Objetivo Oficial (Invariable)[cite: 5]}
+El plan de la asignatura exige autoritativamente:
+\begin{itemize}
+    \item Prototipo de Par Diferencial BJT discreto operando con polarización DC estable[cite: 5].
+    \item Análisis AC de pequeña señal[cite: 5].
+    \item Verificación experimental de $\mathbf{CMRR > 60\,\text{dB}}$[cite: 5].
+    \item \textbf{Defensa individual interactiva}[cite: 5].
+\end{itemize}
+
+\section*{2. Opciones de Ejecución de la Defensa}
+
+\subsection*{Opción A: Defensa Interactiva Oficial (Tradicional)[cite: 5]}
+Estructura: Evidencia técnica presentada en grupo $+$ Interrogatorio interactivo individual a cargo del docente[cite: 5].
+\textit{Consideraciones operacionales:} Requiere evaluar la escalabilidad en tiempo, la compatibilidad con el Syllabus y el riesgo de que el trabajo grupal enmascare vacíos individuales[cite: 5].
+
+\subsection*{Opción B: Propuesta de Evidencia Mixta (\textbf{No aprobada aún})[cite: 5]}
+Estructura fragmentada para optimizar tiempo y trazabilidad:
+\begin{itemize}
+    \item \textbf{Reporte Técnico Grupal:} Consolida el diseño, cálculos, simulaciones LTspice, implementación física, mediciones DC/AC, debugging y comparación Teoría-Simulación-Experimento[cite: 5].
+    \item \textbf{Evaluación Escrita Individual:} Demostración matemática del análisis DC (Espejo y Punto Q), derivación del modelo Híbrido-$\pi$ para $g_m, A_d, A_c$, y cálculo de CMRR[cite: 5].
+    \item \textbf{Micro-defensa Condicional:} Utilizada como disparador solo si el docente detecta incongruencias graves entre el reporte grupal y la evaluación individual[cite: 5].
+\end{itemize}
+
+\section*{3. Registro de Decisión (A rellenar por el Docente)[cite: 5]}
+\begin{itemize}
+    \item \textbf{Formato Final Aprobado:} \rule{8cm}{0.15mm}
+    \item \textbf{Fecha de Aprobación:} \rule{8cm}{0.15mm}
+    \item \textbf{Requisito de Evidencia Grupal:} \rule{7.3cm}{0.15mm}
+    \item \textbf{Requisito de Evidencia Individual:} \rule{6.8cm}{0.15mm}
+    \item \textbf{Gatillo para Micro-defensa (Si aplica):} \rule{6.3cm}{0.15mm}
+    \item \textbf{Relación con Examen de Recuperación:} \rule{6.2cm}{0.15mm}
+    \item \textbf{Fecha de Comunicación a Estudiantes:} \rule{6.2cm}{0.15mm}
+\end{itemize}
+
+\end{document}

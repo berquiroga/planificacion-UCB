@@ -1,0 +1,74 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Planificación CMRR S08-2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Planificación de Medición: Modo Común y CMRR}]
+    Es indispensable \textbf{diseñar} la medición analíticamente antes de aplicar señales en el hardware. Valores ambiguos producirán lecturas del "ruido instrumental" y no del circuito[cite: 5].
+\end{tcolorbox}
+
+\section*{1. Estado Operativo del Circuito}
+\begin{itemize}
+    \item ¿Espejo validado?: \rule{2.5cm}{0.15mm} \hfill ¿Par Balanceado validado?: \rule{2.5cm}{0.15mm}[cite: 5]
+    \item ¿Respuesta Diferencial validada?: \rule{2.5cm}{0.15mm} \hfill Offset DC ($V_{OD,0}$): \rule{2.5cm}{0.15mm}[cite: 5]
+\end{itemize}
+
+\section*{2. Definición de Convención de Salida}
+Seleccione UNA y manténgala estrictamente para todas las pruebas[cite: 5]:
+\begin{itemize}
+    \item[$\square$] Single-Ended Colector 1 ($v_o = v_{c1}$)
+    \item[$\square$] Single-Ended Colector 2 ($v_o = v_{c2}$)
+    \item[$\square$] Diferencial ($v_o = v_{C2} - v_{C1}$)
+\end{itemize}
+
+\section*{3. Prueba Diferencial Consolidada}
+\begin{itemize}
+    \item Amplitud $v_d$: \rule{2cm}{0.15mm} \hfill Frecuencia: \rule{2cm}{0.15mm} \hfill DC Común: \rule{2cm}{0.15mm}[cite: 5]
+    \item Definición de Salida: \rule{4.5cm}{0.15mm} \hfill Ganancia $A_d$ Medida: \rule{2.5cm}{0.15mm}[cite: 5]
+\end{itemize}
+
+\section*{4. Inyección de Modo Común}
+Para medir $A_c$, debe forzarse físicamente la igualdad de señales $\mathbf{v_1 = v_2 = v_{cm}}$[cite: 5].
+\begin{itemize}
+    \item Método de inyección propuesto: \rule{4.5cm}{0.15mm} \textit{(PENDIENTE APROBACIÓN)}[cite: 5]
+    \item Amplitud $v_{cm}$: \textit{(PENDIENTE)} \hfill Frecuencia: \textit{(PENDIENTE)} \hfill Nivel DC: \textit{(PENDIENTE)}[cite: 5]
+    \item ¿Cortocircuito $v_1=v_2$ verificado con osciloscopio?: \rule{3cm}{0.15mm}[cite: 5]
+\end{itemize}
+
+\section*{5. Resultados de Modo Común y CMRR}
+\begin{itemize}
+    \item Definición de Salida: \rule{4.5cm}{0.15mm} \hfill Ganancia $A_c$ Medida: \rule{2.5cm}{0.15mm}[cite: 5]
+    \item ¿Es la MISMA convención de salida usada para $A_d$?: \rule{3cm}{0.15mm}[cite: 5]
+\end{itemize}
+\textbf{Cálculo del CMRR[cite: 5]:}
+\begin{align*}
+    \mathbf{CMRR} &= \mathbf{\left|\frac{A_d}{A_c}\right|} = \rule{4cm}{0.15mm} \quad \text{[cite: 5]} \\
+    \mathbf{CMRR_{dB}} &= \mathbf{20\log_{10}(CMRR)} = \rule{4cm}{0.15mm} \text{ dB} \quad \text{[cite: 5]}
+\end{align*}
+
+\section*{6. Comprobaciones de Integridad Instrumental[cite: 5]}
+Si $A_{c}$ medida es minúscula, verifique que no está observando los límites del instrumento[cite: 5]:
+\begin{itemize}
+    \item Magnitud de salida esperada: \rule{3cm}{0.15mm} \hfill Piso de ruido: \rule{3cm}{0.15mm}[cite: 5]
+    \item Desajuste canales / puntas: \rule{3cm}{0.15mm} \hfill Saturación ausente: \rule{3cm}{0.15mm}[cite: 5]
+\end{itemize}
+
+\end{document}
