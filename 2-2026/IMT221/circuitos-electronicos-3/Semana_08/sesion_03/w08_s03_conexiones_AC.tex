@@ -1,0 +1,130 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Conexiones Hito 2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Guía Complementaria: Conexiones Físicas y de Instrumentación (Hito 2)}]
+    Documento ilustrativo sobre la topología física de los ensayos[cite: 6]. La salida oficial es $\mathbf{v_o = v_{C2}}$[cite: 6]. Todo instrumento de laboratorio debe referenciarse estrictamente al nodo \textbf{0 V} central del circuito[cite: 6].
+\end{tcolorbox}
+
+\section*{1. Par Diferencial (Estado Estático DC y polarización)}
+Antes de inyectar AC, este es el diagrama de polarización. Las bases están aterrizadas a 0 V.
+\begin{center}
+\begin{circuitikz}[scale=0.9, transform shape, thick]
+    % Riel superior
+    \draw (-2, 2.5) -- (5, 2.5) node[right]{$+9\,\text{V}$};
+    
+    % Resistencias de colector
+    \draw (0, 2.5) to[R, l_={$4.7\,\text{k}\Omega$}] (0, 0.5);
+    \draw (3, 2.5) to[R, l={$4.7\,\text{k}\Omega$}] (3, 0.5);
+    
+    % Nodos de colector
+    \draw (0, 0.5) node[circle,fill,inner sep=1.5pt]{} node[left]{$v_{C1}$};
+    \draw (3, 0.5) node[circle,fill,inner sep=1.5pt]{} node[right]{$v_{C2}$ (\textbf{Salida})};
+    
+    % Transistores Q1 y Q2
+    \draw (0,-0.5) node[npn](Q1){}; \node[right=0.5cm] at (Q1.B) {Q1};
+    \draw (3,-0.5) node[npn, xscale=-1](Q2){}; \node[left=0.5cm] at (Q2.B) {Q2};
+    
+    % Conexiones C y E
+    \draw (0,0.5) -- (Q1.C);
+    \draw (3,0.5) -- (Q2.C);
+    \draw (Q1.E) -- (0, -1.5) -- (1.5, -1.5) node[circle,fill,inner sep=1.5pt]{} node[above]{$v_E$};
+    \draw (Q2.E) -- (3, -1.5) -- (1.5, -1.5);
+    
+    % Bases a 0V
+    \draw (Q1.B) -- (-2, -0.5) node[left]{$v_1 = 0\,\text{V}$};
+    \draw (Q2.B) -- (5, -0.5) node[right]{$v_2 = 0\,\text{V}$};
+    
+    % Cola (Espejo)
+    \draw (1.5, -1.5) -- (1.5, -2.5);
+    \draw (1.5, -3) node[npn, xscale=-1](Q4){}; \node[left=0.2cm] at (Q4.C) {Q4};
+    \draw (Q4.E) -- (1.5, -5) node[below]{$-9\,\text{V}$};
+    
+    % Q3 (Referencia)
+    \draw (4.5, -3) node[npn](Q3){}; \node[right=0.2cm] at (Q3.C) {Q3};
+    \draw (Q3.E) -- (4.5, -5) node[below]{$-9\,\text{V}$};
+    
+    % Conexiones del espejo
+    \draw (Q4.B) -- (Q3.B);
+    \draw (3, -3) node[circle,fill,inner sep=1.5pt]{} |- (Q3.C);
+    \draw (Q3.C) to[R, l_={$8.2\,\text{k}\Omega$}] (4.5, -0.5) node[above]{$0\,\text{V}$};
+    
+\end{circuitikz}
+\end{center}
+
+\vspace{0.5cm}
+\section*{2. Prueba DC de Sensado (Inyección vía Shunt)}
+Este ensayo \textbf{NO usa generador de funciones}, es puramente DC[cite: 6]. Emplea un Shunt para generar $v_d$[cite: 6].
+\begin{center}
+\begin{circuitikz}[scale=1, transform shape, thick]
+    \draw (0,3) node[above]{$+9\,\text{V}$} to[R, l={$1.8\,\text{k}\Omega$}, a={$R_{LIM}$}] (0,1);
+    \draw (0,1) node[circle,fill,inner sep=1.5pt]{} node[right]{$v_1$ (Base Q1)} to[R, l={$1\,\Omega$}, a={$R_{sh}$}] (0,-1);
+    \draw (0,-1) node[circle,fill,inner sep=1.5pt]{} node[right]{$v_2$ (Base Q2)} node[ground]{};
+    \draw (-2.5, 0) node[red]{$DMM (v_1 - v_2)$};
+    \draw[<->, red, dashed] (-1, 1) -- (-1, -1);
+\end{circuitikz}
+\end{center}
+
+\vspace{0.5cm}
+\section*{3. Inyección AC Diferencial (One-Sided con Atenuador)}
+Uso de un generador de un canal. La atenuación evita saturar el circuito. Objetivo: $v_d \approx 5\,\text{mV peak}$ en la base[cite: 6].
+\begin{center}
+\begin{circuitikz}[scale=0.9, transform shape, thick]
+    % Generador
+    \draw (-2,2) to[sV, l_={$V_G$ (Gen OUT)}] (-2,0) node[ground]{};
+    \draw (-2,-1) node[below, align=center]{GEN GND \\ ($0\,\text{V}$ Circuito)};
+    
+    % Divisor
+    \draw (-2,2) to[R, l={$R_1$ (Ej. $10\,\text{k}\Omega$)}] (1,2);
+    \draw (1,2) node[circle,fill,inner sep=1.5pt]{} to[R, l={$R_2$ (Ej. $100\,\Omega$)}] (1,0) node[ground]{};
+    
+    % Conexiones a bases
+    \draw (1,2) to[short, -o] (3,2) node[right]{$v_1$ (Base Q1)};
+    \draw (3,0) node[ground]{} to[short, -o] (3,0) node[right]{$v_2$ (Base Q2)};
+    
+    % Osciloscopio
+    \draw[blue, dashed, ->] (4.5, 2) -- (6,2) node[right]{Scope CH1 (Mide $v_d$)};
+    \draw[blue, dashed, ->] (4.5, 1) -- (6,1) node[right]{Scope CH2 (Mide $v_{C2}$)};
+\end{circuitikz}
+\end{center}
+
+\vspace{0.5cm}
+\section*{4. Inyección AC Modo Común}
+La misma señal del generador se envía a ambas bases ($v_1 = v_2 = v_{cm}$)[cite: 6].
+\begin{center}
+\begin{circuitikz}[scale=0.9, transform shape, thick]
+    % Generador
+    \draw (0,2) to[sV, l={Gen OUT}] (0,0) node[ground]{};
+    
+    % Distribución (RS)
+    \draw (0,2) -- (0,3) -- (1.5,3);
+    \draw (1.5,3) -- (1.5,4) to[R, l={$R_{S1}$}] (4,4) node[circle,fill,inner sep=1.5pt]{} node[right]{$v_1$ (Base Q1)};
+    \draw (1.5,3) -- (1.5,2) to[R, l={$R_{S2}$}] (4,2) node[circle,fill,inner sep=1.5pt]{} node[right]{$v_2$ (Base Q2)};
+    
+    \draw (5, 5) node[align=left, red]{Objetivo: $v_1 \approx v_2$ \\ (Verificar con Osciloscopio)};
+    
+\end{circuitikz}
+\end{center}
+\textit{Nota: $R_{S1} = R_{S2}$. Su valor depende de la impedancia del generador y cables; su fin es equilibrar la inyección[cite: 6].}
+
+\end{document}

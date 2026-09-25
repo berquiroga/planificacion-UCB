@@ -1,0 +1,132 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[aspectratio=169]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+\title[Suplemento CMRR]{Cierre Conceptual Hito 2: Convenciones AC y Realidad Instrumental}
+\subtitle{IMT-221 Circuitos Electrónicos III — Semana 8, Sesión 3}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}
+\date{Semana 8}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Decisión de Curso: Convención Single-Ended (Un Colector)}
+    % Se reducen los márgenes internos del tcolorbox para ahorrar espacio vertical
+    \begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, boxsep=1pt, left=4pt, right=4pt, top=2pt, bottom=2pt, title=\textbf{Convención Primaria Oficial para Hito 2[cite: 8]}]
+        Para garantizar la consistencia del CMRR, se adopta \textbf{la salida Single-Ended en el Colector 2} ($v_o = v_{C2}$) como referencia única para numerador y denominador[cite: 8].
+    \end{tcolorbox}
+    
+    \vspace{0.1cm}
+    \begin{columns}[c]
+        \begin{column}{0.4\textwidth}
+            \centering
+            % Escala reducida sutilmente a 0.65 para encajar en la mitad inferior
+            \begin{circuitikz}[scale=0.65, transform shape, thick]
+                \draw (0,0) node[npn](Q1){}; \node[left=0.1cm] at (Q1.B) {$v_1$};
+                \draw (3,0) node[npn, xscale=-1](Q2){}; \node[right=0.1cm] at (Q2.B) {$v_2$};
+                \draw (Q1.C) to[R] (0,2) -- (3,2) to[R] (Q2.C);
+                \draw (1.5,2) -- (1.5,2.5) node[above]{$+V_{CC}$};
+                \draw (Q1.E) -- (0,-1) -- (3,-1) -- (Q2.E);
+                \draw (1.5,-1) to[I] (1.5,-2.5) node[below]{$-V_{EE}$};
+                \draw (Q1.B) to[short, -o] (-1,0); \draw (Q2.B) to[short, -o] (4,0);
+                % Resaltar nodo de salida
+                \draw[red, thick] (Q2.C) to[short, *-o] (4,1) node[right]{\Large $\mathbf{v_o = v_{C2}}$};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.58\textwidth}
+            \textbf{Restricción Matemática[cite: 8]:}
+            % Reemplazo de equation* por \displaystyle centrado para evitar displayskips enormes
+            \begin{center}
+                $\displaystyle A_{d,se} = \frac{v_{C2,ac}}{v_d} \quad \text{y} \quad A_{c,se} = \frac{v_{C2,ac}}{v_{cm}}$ \quad \text{[cite: 8]}
+            \end{center}
+            
+            \vspace{0.1cm}
+            \begin{alertblock}{CMRR Consistente}
+                \begin{center}
+                    $\displaystyle \mathbf{CMRR = \left| \frac{A_{d,se}}{A_{c,se}} \right|}$ \quad \text{[cite: 8]}
+                \end{center}
+                \vspace{0.1cm}
+                \textit{Mezclar $A_{d,diff}$ (salida entre colectores) con $A_{c,se}$ invalida toda la medición[cite: 8].}
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Inyección con Generador de 1 Canal (Descomposición)}
+    La mayoría de los generadores de laboratorio tienen un solo canal. Para el ensayo diferencial excitamos un lado y aterrizamos el otro ($v_1 = v_s, v_2 = 0$)[cite: 8].
+    
+    \vspace{0.3cm}
+    \textbf{Descomposición Matemática Obligatoria[cite: 8]:}
+    \begin{align*}
+        v_d &= v_1 - v_2 = v_s - 0 = \mathbf{v_s} \quad \text{[cite: 8]} \\
+        v_{cm} &= \frac{v_1 + v_2}{2} = \frac{v_s + 0}{2} = \mathbf{\frac{v_s}{2}} \quad \text{[cite: 8]}
+    \end{align*}
+    
+    \vspace{0.3cm}
+    \begin{tcolorbox}[colback=yellow!10, colframe=orange, title=\textbf{Implicación Física[cite: 8]}]
+        ¡La excitación de un solo lado (One-Sided) \textbf{contiene modo común} simultáneamente![cite: 8]
+    \end{tcolorbox}
+\end{frame}
+
+\begin{frame}{Inyección con Generador de 1 Canal (Corrección de Ganancia)}
+    Debido a que inyectamos $v_d = v_s$ y $v_{cm} = v_s/2$ al mismo tiempo, la ganancia cruda observada en el osciloscopio ($A_{obs} = v_{C2} / v_s$) mezcla ambos efectos[cite: 8].
+    
+    \vspace{0.3cm}
+    \textbf{Separación Analítica (Superposición)[cite: 8]:}
+    \begin{equation*}
+        v_{C2} = A_{d,se} v_d + A_{c,se} v_{cm} \quad \text{[cite: 8]}
+    \end{equation*}
+    
+    Sustituyendo nuestras excitaciones reales:
+    \begin{equation*}
+        v_{C2} = A_{d,se} (v_s) + A_{c,se} \left(\frac{v_s}{2}\right) \quad \text{[cite: 8]}
+    \end{equation*}
+    
+    Dividiendo todo entre la señal del generador $v_s$, obtenemos la relación final[cite: 8]:
+    \begin{equation*}
+        A_{obs} = A_{d,se} + \frac{A_{c,se}}{2} \implies \mathbf{A_{d,se} = A_{obs} - \frac{A_{c,se}}{2}} \quad \text{[cite: 8]}
+    \end{equation*}
+\end{frame}
+
+\begin{frame}{Puerta de Validación Obligatoria (Validity Gate)}
+    Antes de reportar el CMRR del Hito 2 como finalizado, el grupo debe verificar el siguiente checklist[cite: 8]:
+    
+    \vspace{0.3cm}
+    \begin{itemize}
+        \item[\checkmark] ¿Polarización DC ($Q$-point) validada y preservada sin alteraciones?[cite: 8]
+        \item[\checkmark] ¿Se utilizó \textbf{exactamente el mismo nodo de salida física} para medir la respuesta diferencial y la respuesta común?[cite: 8]
+        \item[\checkmark] ¿Se empleó la misma convención de amplitud (ej. $V_{peak}$ a $V_{peak}$)?[cite: 8]
+        \item[\checkmark] ¿Operación 100\% lineal sin recortes (clipping) en el osciloscopio?[cite: 8]
+        \item[\checkmark] En la prueba de modo común, ¿verificó físicamente en la placa que $v_1 = v_2$ exacto?[cite: 8]
+        \item[\checkmark] ¿La amplitud de $v_{C2}$ de modo común está claramente por encima del piso de ruido del osciloscopio?[cite: 8]
+    \end{itemize}
+\end{frame}
+
+\end{document}

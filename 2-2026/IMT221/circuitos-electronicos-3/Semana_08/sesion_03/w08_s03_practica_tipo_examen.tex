@@ -1,0 +1,54 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Práctica Analítica Individual}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Práctica Individual Tipo Examen: Análisis DC y CMRR}]
+    Demuestre su comprensión matemática del hardware analizado. Documente cada ecuación utilizada[cite: 8].
+\end{tcolorbox}
+
+\textbf{Nombre Estudiante:} \hrulefill \quad \textbf{Fecha:} \hrulefill
+
+\vspace{0.5cm}
+\noindent\textbf{1. Diagnóstico de Punto de Operación (Q-Point)[cite: 8]} \\
+Mediciones reportadas: $V_{CC}=9.0\,\text{V}$, $R_C=4.7\,\text{k}\Omega$, $v_C=8.85\,\text{V}$, $v_E=-0.69\,\text{V}$[cite: 8].
+Calcule matemáticamente la corriente de colector ($I_C$) y el voltaje colector-emisor ($V_{CE}$)[cite: 8]. Basado en sus resultados, determine técnica y rigurosamente si el circuito está listo para recibir señal AC o requiere troubleshooting.
+\vspace{3cm}
+
+\noindent\textbf{2. Análisis de Fuente de Cola (Espejo de Corriente)[cite: 8]} \\
+Para un espejo con $R_{REF}=8.2\,\text{k}\Omega$ y riel negativo de $-9\,\text{V}$, asumiendo un $V_{BE} \approx 0.7\,\text{V}$, estime matemáticamente la corriente de referencia $I_{REF}$[cite: 8]. 
+Si en hardware se mide una corriente de cola $I_T = 0.86\,\text{mA}$, provea tres razones físicas/matemáticas que justifiquen esta desviación de la teoría ideal[cite: 8].
+\vspace{3cm}
+
+\noindent\textbf{3. Parámetros de Pequeña Señal y Ganancia Diferencial[cite: 8]} \\
+Considerando un Punto Q validado donde $I_C = 0.44\,\text{mA}$ y $R_C = 4.7\,\text{k}\Omega$, calcule explícitamente la transconductancia $g_m$ (use $V_T = 25.85\,\text{mV}$) y la ganancia single-ended esperada $|A_{d,se}|$[cite: 8].
+¿Cuál será la amplitud de salida $V_o$ si inyecta un $v_d = 4\,\text{mV}$?[cite: 8]
+\vspace{3cm}
+
+\noindent\textbf{4. Descomposición de Modos y Excitación Asimétrica[cite: 8]} \\
+Usted conecta $v_1 = 1.012\,\text{V}$ y $v_2 = 0.988\,\text{V}$. Calcule matemáticamente la magnitud del voltaje diferencial inyectado ($v_d$) y del voltaje de modo común ($v_{cm}$)[cite: 8].
+\vspace{2.5cm}
+
+\noindent\textbf{5. Auditoría de Metodología de CMRR[cite: 8]} \\
+Un grupo reporta lo siguiente: "Medimos la salida diferencial entre los dos colectores y hallamos $A_{d,diff} = 90$. Luego inyectamos modo común, medimos un solo colector y hallamos $A_{c,se} = 0.045$"[cite: 8]. 
+¿Es válido dividir $90 / 0.045$ para calcular el CMRR? Responda usando principios de convención de salida[cite: 8].
+\vspace{2cm}
+
+\end{document}

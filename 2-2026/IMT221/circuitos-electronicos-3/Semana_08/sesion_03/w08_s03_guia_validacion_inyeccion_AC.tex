@@ -1,0 +1,77 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Guía AC y CMRR S08-3}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Guía de Laboratorio: Inyección AC 1-Canal, Atenuación y CMRR}]
+    Realidad instrumental: Asumiremos un generador de un solo canal por grupo[cite: 8]. Para el modo diferencial excitaremos un solo lado. Para el modo común, puentearemos ambas bases al generador[cite: 8].
+\end{tcolorbox}
+
+\section*{1. Diseño de Inyección Diferencial y Atenuador[cite: 8]}
+Para mantener el par en pequeña señal, el voltaje objetivo en la base Q1 debe ser sumamente pequeño: $\mathbf{V_{target} = 5\,\text{mV peak}}$ ($10\,\text{mV}_{pp}$)[cite: 8]. Los generadores no regulan bien valores tan bajos, por lo que diseñaremos un divisor de tensión (Atenuador)[cite: 8].
+
+\noindent
+\begin{minipage}{0.45\textwidth}
+    \begin{center}
+    \begin{circuitikz}[scale=0.8, transform shape, thick]
+        \draw (0,2) to[sV, l_={$V_G$ (Gen)}] (0,0) node[ground]{};
+        \draw (0,2) to[R, l={$R_1$}] (2,2);
+        \draw (2,2) to[R, l={$R_2$}] (2,0) node[ground]{};
+        \draw (2,2) to[short, *-o] (3.5,2) node[above]{Hacia $v_1$ (Base Q1)};
+        \draw[dashed, blue] (3.5,2) -- (4.5,2) to[R, l={$R_{in}$ (BJT)}] (4.5,0) -- (3.5,0);
+        \draw (2,0) -- (4.5,0) node[ground]{};
+    \end{circuitikz}
+    \end{center}
+\end{minipage}\hfill
+\begin{minipage}{0.5\textwidth}
+    \textbf{Cálculo del Atenuador ($k = V_{target} / V_G$)[cite: 8]:} \\
+    Fije un $V_G$ cómodo (ej. $0.5\,\text{V peak}$). Calcule $k$. 
+    Si fija $R_2$ pequeño (ej. $100\,\Omega$), halle $R_1$[cite: 8]:
+    \begin{equation*}
+        R_1 = R_2 \left(\frac{1}{k} - 1\right) \quad \text{[cite: 8]}
+    \end{equation*}
+    \textit{Nota Causal:} La base del BJT tiene resistencia $R_{in}$. La división real sufre "carga" ($R_2 \parallel R_{in}$)[cite: 8]. Por ende, mida $v_1$ en el circuito real; no confíe solo en el cálculo[cite: 8].
+\end{minipage}
+
+\section*{2. Medición Diferencial ($A_{obs}$ y corrección a $A_{d,se}$)[cite: 8]}
+Aterrice $v_2 = 0\,\text{V}$. Inyecte su atenuador a $v_1$.
+\begin{itemize}
+    \item $v_1$ medido real ($v_s$): \hrulefill \quad $v_2$ medido: $0\,\text{V}$ \quad $\implies \mathbf{v_d = v_s}$ \quad \text{[cite: 8]}
+    \item Amplitud en la salida elegida ($V_{C2, ac}$): \hrulefill \quad $\implies \mathbf{A_{obs} = \frac{V_{C2, ac}}{v_s}}$ \quad \text{[cite: 8]}
+\end{itemize}
+\textit{No calcule $A_{d,se}$ hasta conocer $A_{c,se}$ para aplicar la corrección de un solo lado[cite: 8].}
+
+\section*{3. Medición de Modo Común ($A_{c,se}$)[cite: 8]}
+Desconecte el atenuador. Conecte \textbf{ambas bases} directamente al generador: $v_1 = v_2 = v_{cm}$[cite: 8]. Para separar la señal del ruido, use amplitudes escalonadas si el circuito no satura ($100 \to 250 \to \mathbf{500\,\text{mV peak}}$)[cite: 8].
+\begin{itemize}
+    \item $v_{cm}$ Inyectado: \hrulefill \quad Frecuencia: \hrulefill \quad ¿Residual $v_1 - v_2 \approx 0$?: \hrulefill[cite: 8]
+    \item Salida $V_{C2,ac,cm}$: \hrulefill \quad $\implies \mathbf{A_{c,se} = \frac{V_{C2,ac,cm}}{v_{cm}}}$ \quad \text{[cite: 8]}
+\end{itemize}
+\textit{Si $V_{C2,ac,cm}$ está enterrado en el piso de ruido, anótelo como limitación instrumental[cite: 8].}
+
+\section*{4. Cálculo Final y Validación[cite: 8]}
+\begin{align*}
+    \text{Ganancia corregida:} \quad \mathbf{A_{d,se}} &= \mathbf{A_{obs} - \frac{A_{c,se}}{2}} = \hrulefill \quad \text{[cite: 8]} \\
+    \text{CMRR:} \quad \mathbf{CMRR} &= \mathbf{\left| \frac{A_{d,se}}{A_{c,se}} \right|} = \hrulefill \quad \implies \mathbf{CMRR_{dB}} = \mathbf{20\log_{10}(CMRR)} = \hrulefill\,\text{dB} \quad \text{[cite: 8]}
+\end{align*}
+
+\end{document}

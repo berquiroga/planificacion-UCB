@@ -1,0 +1,76 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Solucionario Práctica S08-3}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Material Reservado Docente: Solucionario y Blueprint de Examen}]
+    Contiene las respuestas analíticas precisas de la práctica individual[cite: 8]. Retenga este documento hasta la corrección en pizarra.
+\end{tcolorbox}
+
+\section*{Solucionario Matemático Explicito}
+
+\textbf{1. Diagnóstico de Punto Q[cite: 8]} \\
+Datos: $V_{CC}=9.0\,\text{V}$, $R_C=4.7\,\text{k}\Omega$, $v_C=8.85\,\text{V}$, $v_E=-0.69\,\text{V}$[cite: 8].
+\begin{align*}
+    I_C &= \frac{V_{CC} - v_C}{R_C} = \frac{9.0\,\text{V} - 8.85\,\text{V}}{4700\,\Omega} = \frac{0.15\,\text{V}}{4700\,\Omega} \approx \mathbf{31.9\,\mu\text{A}} \quad \text{[cite: 8]} \\
+    V_{CE} &= v_C - v_E = 8.85\,\text{V} - (-0.69\,\text{V}) = \mathbf{9.54\,\text{V}} \quad \text{[cite: 8]}
+\end{align*}
+\textit{Interpretación:} Aunque $V_{CE}$ indica que no hay saturación, un $I_C$ de $\sim 31.9\,\mu\text{A}$ (frente al nominal esperado de $\sim 0.5\,\text{mA}$) es sintomático de una fuente de cola caída. \textbf{No está listo para AC}. Requiere troubleshooting en el espejo de corriente[cite: 8].
+
+\vspace{0.3cm}
+\textbf{2. Análisis de Fuente de Cola[cite: 8]} \\
+El nodo de referencia $V_B$ del espejo se asume a $V_{EE} + V_{BE} \approx -9\,\text{V} + 0.7\,\text{V} = -8.3\,\text{V}$[cite: 8].
+\begin{equation*}
+    I_{REF} = \frac{0\,\text{V} - (-8.3\,\text{V})}{8.2\,\text{k}\Omega} \approx \mathbf{1.01\,\text{mA}} \quad \text{[cite: 8]}
+\end{equation*}
+Razones si $I_T = 0.86\,\text{mA}$:
+1) Desviación de $I_T$ por pérdida en las corrientes de base debido al $\beta$ finito ($I_T \approx \frac{I_{REF}}{1+2/\beta}$).
+2) Discrepancia real en el $V_{BE}$ vs el aproximado de $0.7\,\text{V}$.
+3) Tolerancia real del resistor $R_{REF}$ o efecto Early[cite: 8].
+
+\vspace{0.3cm}
+\textbf{3. Pequeña Señal y Ganancia $A_d$[cite: 8]}
+\begin{align*}
+    g_m &= \frac{I_C}{V_T} = \frac{0.44\,\text{mA}}{25.85\,\text{mV}} \approx \mathbf{17.02\,\text{mS}} \quad \text{[cite: 8]} \\
+    |A_{d,se}| &= \frac{g_m R_C}{2} = \frac{(17.02\,\text{mS})(4.7\,\text{k}\Omega)}{2} \approx \mathbf{40.0\,\text{V/V}} \quad \text{[cite: 8]} \\
+    V_o &= |A_{d,se}| \cdot v_d = (40.0)(4\,\text{mV}) \approx \mathbf{160\,\text{mV}} \quad \text{[cite: 8]}
+\end{align*}
+
+\vspace{0.3cm}
+\textbf{4. Descomposición de Modos[cite: 8]}
+\begin{align*}
+    v_d &= v_1 - v_2 = 1.012\,\text{V} - 0.988\,\text{V} = \mathbf{24\,\text{mV}} \quad \text{[cite: 8]} \\
+    v_{cm} &= \frac{v_1 + v_2}{2} = \frac{1.012\,\text{V} + 0.988\,\text{V}}{2} = \mathbf{1.000\,\text{V}} \quad \text{[cite: 8]}
+\end{align*}
+
+\vspace{0.3cm}
+\textbf{5. Auditoría de CMRR[cite: 8]} \\
+\textit{Respuesta:} \textbf{Completamente Inválido}[cite: 8]. El CMRR ($|A_d / A_c|$) exige estrictamente el uso del mismo nodo físico y convención de salida. Mezclar un numerador Diferencial con un denominador Single-Ended rompe la coherencia matemática del rechazo[cite: 8].
+
+\section*{Exam Blueprint (Sugerencias de Diseño para Evaluación Final)[cite: 8]}
+Para el examen individual escrito oficial (Opción C/D del Brief), asegure evaluar:
+\begin{itemize}
+    \item \textbf{Cálculo + Diagnóstico:} Entregar voltajes crudos e identificar si la unión B-C indica saturación[cite: 8].
+    \item \textbf{Predicción Relativa:} Qué sucede con $A_{c,se}$ si se altera el resistor de referencia de la cola[cite: 8].
+    \item \textbf{Error Metodológico:} Identificar fallas en procedimientos descritos textualmente (ej. olvido de medir la atenuación real en lugar del cálculo ideal)[cite: 8].
+\end{itemize}
+
+\end{document}
