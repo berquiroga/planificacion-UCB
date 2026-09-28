@@ -1,0 +1,71 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Solucionario Examen EC2}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Clave Docente y Guía de Calificación (Marking Guide): Examen EC2}]
+    \centering \textbf{Políticas de Evaluación y Referencias Numéricas}
+\end{tcolorbox}
+
+\section*{Políticas de Calificación}
+\begin{itemize}
+    \item \textbf{Aritmética vs. Método:} La evaluación no debe concentrar la puntuación en el número final. Otorgue crédito parcial si el estudiante demostró desactivación correcta, manejó bien la referencia, pero cometió un pequeño error aritmético al sumar.
+    \item \textbf{Regla de Propagación:} Si un estudiante comete un error aritmético temprano (ej. calcula mal $V_a^{(1)}$) pero realiza perfectamente el paso final de suma algebraica arrastrando el error, no penalice dos veces.
+\end{itemize}
+
+\section*{Solucionario de Referencia}
+
+\subsection*{Parte A: Superposición (25 pts)}
+\begin{itemize}
+    \item \textbf{Fuente de +12V:} Se apaga el nodo de $-6\,\text{V}$ enviándolo a tierra ($0\,\text{V}$). La $R_2$ y $R_3$ quedan en paralelo ($2\text{k} \parallel 2\text{k} = 1\,\text{k}\Omega$). \\
+    Divisor de tensión: $V_a^{(1)} = 12\,\text{V} \cdot \left(\frac{1\,\text{k}\Omega}{2\,\text{k}\Omega + 1\,\text{k}\Omega}\right) = \mathbf{+4\,\text{V}}$. \textit{(10 pts)}
+    \item \textbf{Fuente de -6V:} Se apaga el nodo de $+12\,\text{V}$ a tierra. $R_1$ y $R_3$ quedan en paralelo ($1\,\text{k}\Omega$). \\
+    Divisor de tensión desde el nodo negativo: $V_a^{(2)} = -6\,\text{V} \cdot \left(\frac{1\,\text{k}\Omega}{2\,\text{k}\Omega + 1\,\text{k}\Omega}\right) = \mathbf{-2\,\text{V}}$. \textit{(10 pts)}
+    \item \textbf{Total:} $V_a = (+4\,\text{V}) + (-2\,\text{V}) = \mathbf{2\,\text{V}}$. \textit{(5 pts integrando interpretación)}
+\end{itemize}
+
+\subsection*{Parte B: Equivalencias de Puerto (35 pts)}
+\begin{itemize}
+    \item $\mathbf{V_{th}}$ \textbf{(10 pts):} Se retira $R_L$. Divisor de tensión: $12\,\text{V} \cdot \frac{4\text{k}}{4\text{k}+4\text{k}} = \mathbf{6\,\text{V}}$.
+    \item $\mathbf{R_{th}}$ \textbf{(15 pts):} Se cortocircuita la fuente de $12\,\text{V}$. Mirando desde $a-b$, quedan en paralelo: $4\text{k} \parallel 4\text{k} = \mathbf{2\,\text{k}\Omega}$.
+    \item $\mathbf{I_{N}}$ \textbf{(10 pts integrando dibujos):} Transformación directa: $I_N = \frac{6\,\text{V}}{2\,\text{k}\Omega} = \mathbf{3\,\text{mA}}$.
+\end{itemize}
+
+\subsection*{Parte C: Máxima Transferencia e Interpretación (40 pts)}
+\textbf{C1 Analítico (20 pts):}
+\begin{itemize}
+    \item $R_L = 2\,\text{k}\Omega \rightarrow I_L = 12/(4\text{k}+2\text{k}) = \mathbf{2\,\text{mA}}; V_L = \mathbf{4\,\text{V}}; P_L = \mathbf{8\,\text{mW}}$.
+    \item $R_L = 4\,\text{k}\Omega \rightarrow I_L = 12/(4\text{k}+4\text{k}) = \mathbf{1.5\,\text{mA}}; V_L = \mathbf{6\,\text{V}}; P_L = \mathbf{9\,\text{mW}}$. \textit{(Condición Óptima teórica)}
+    \item $R_L = 8\,\text{k}\Omega \rightarrow I_L = 12/(4\text{k}+8\text{k}) = \mathbf{1\,\text{mA}}; V_L = \mathbf{8\,\text{V}}; P_L = \mathbf{8\,\text{mW}}$.
+\end{itemize}
+
+\textbf{C2 Interpretación (20 pts):}
+\begin{itemize}
+    \item El máximo experimental de los datos simulados ocurre en $R_L \approx \mathbf{5\,\text{k}\Omega}$. (Difiere en $1\,\text{k}\Omega$ de la predicción).
+    \item \textbf{Criterio de Evaluación Crítico:} El estudiante NO debe afirmar que "la teoría está mal" ni que "fue error humano". Una hipótesis plausible excelente es que los componentes físicos sumaron tolerancias, la fuente tiene resistencia interna no despreciable o la resistencia de los contactos modificó la red. Para comprobarlo, el estudiante debería proponer medir físicamente $R_{th}$ con la red apagada o medir el valor real de los resistores usados en el divisor.
+\end{itemize}
+
+\end{document}

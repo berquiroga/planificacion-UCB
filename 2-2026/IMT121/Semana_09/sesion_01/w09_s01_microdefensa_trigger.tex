@@ -1,0 +1,52 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Protocolo Microdefensa}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Guía de Ejecución: Auditoría por Microdefensa}]
+    \centering \textbf{Uso Exclusivo del Instructor}
+\end{tcolorbox}
+
+\section*{1. Naturaleza y Propósito}
+La microdefensa \textbf{no es un tercer componente de evaluación} (carece de peso fijo independiente), no es una evaluación universal ni un castigo por reprobar. Es una herramienta de auditoría oral (duración acotada) para resolver \textbf{discrepancias documentadas} entre la evidencia entregada por el estudiante.
+
+\section*{2. Criterios para Activar el Trigger}
+Se activa la microdefensa SÓLO si existe una anomalía en la "Matriz de Comparación Post-Evaluación", por ejemplo:
+\begin{itemize}
+    \item \textbf{Disparidad Cognitiva Extrema:} El reporte IEEE del equipo presenta un análisis impecable y complejo del "Efecto de Carga", pero en el examen escrito individual el estudiante no logró identificar ni el puerto de salida.
+    \item \textbf{Asimetría de Autoría:} Se sospecha fuertemente que uno de los integrantes del equipo no participó en la construcción ni análisis de los datos del laboratorio.
+    \item \textbf{Incompatibilidad Práctica:} El reporte incluye una curva de potencia obtenida con mediciones físicas de laboratorio, pero la evidencia práctica en sala indicaba que el equipo jamás logró aislar el cortocircuito.
+\end{itemize}
+
+\section*{3. Protocolo de Ejecución}
+\begin{enumerate}
+    \item Identifique la incertidumbre exacta.
+    \item Formule entre 2 y 4 preguntas técnicas cerradas, atadas a la evidencia en duda (Ej. \textit{"En el reporte entregado afirman haber medido $R_{th}$ con la red desenergizada. Explíqueme por qué apagar el banco es indispensable para obtener ese valor y no otro"}).
+    \item Registre el resultado de la auditoría: \textbf{Confirmada} (dominio demostrado), \textbf{Clarificada} (malentendido aislado), o \textbf{No Resuelta} (evidencia del reporte rechazada para ese individuo).
+    \item Cualquier afectación a la calificación se aplica sobre el porcentaje del "Componente de Laboratorio", ajustando el peso de acuerdo con la invalidez de la evidencia rechazada.
+\end{enumerate}
+
+\end{document}

@@ -1,0 +1,133 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage[american]{circuitikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Examen EC2}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Evaluación Escrita Individual: Hito 2 (Unidad EC2)}]
+    \centering \textbf{Teoremas de Redes y Simplificación Estática}
+\end{tcolorbox}
+
+\vspace{0.2cm}
+\textbf{Estudiante:} \hrulefill \quad \textbf{Fecha:} \hrulefill
+
+\vspace{0.2cm}
+\noindent\textit{Instrucciones: Duración 45--60 min. No se permite calculadora ni formulario. La evaluación prioriza el método, la desactivación correcta de fuentes y el manejo de referencias/signos por sobre la aritmética. Muestre su procedimiento completo. (Se asume la relación de potencia: $P_L = V_L \cdot I_L$ y $P_L(R_L) = V_{th}^2 \frac{R_L}{(R_{th}+R_L)^2}$).}
+
+\vspace{0.3cm}
+% =====================================
+% PARTE A
+% =====================================
+\section*{Parte A: Superposición y Referencias (25 pts)}
+Para la siguiente red lineal, se solicita determinar la tensión del nodo $a$ con respecto a tierra ($V_a$) utilizando el Teorema de Superposición.
+
+\begin{center}
+\begin{circuitikz}[scale=1, transform shape]
+    % Fuente izquierda y R1 protegidos con llaves {...}
+    \draw (0,0) to[V, l={$12\,\text{V}$}, invert] (0,2) to[R, l={$R_1=2\,\text{k}\Omega$}] (3,2);
+    % Rama central a tierra
+    \draw (3,2) to[short, *-o] (3,2) node[above]{$a$};
+    \draw (3,2) to[R, l={$R_3=2\,\text{k}\Omega$}] (3,0);
+    % Fuente derecha y R2. Protegidos con llaves {...}
+    \draw (6,0) to[V, l_={$-6\,\text{V}$}, invert] (6,2) to[R, l_={$R_2=2\,\text{k}\Omega$}] (3,2);
+    
+    % Tierra
+    \draw (0,0) -- (6,0);
+    \draw (3,0) node[ground]{};
+    
+    % Flecha indicativa de Va
+    \draw[->, thick, blue] (2.5, 1.8) -- (2.5, 0.2) node[midway, left]{$V_a$};
+\end{circuitikz}
+\end{center}
+
+\begin{enumerate}
+    \item Defina y documente la desactivación de la fuente de $-6\,\text{V}$. Calcule la contribución de la fuente de $12\,\text{V}$ ($V_a^{(1)}$).
+    \item Defina y documente la desactivación de la fuente de $+12\,\text{V}$. Calcule la contribución de la fuente de $-6\,\text{V}$ ($V_a^{(2)}$).
+    \item Obtenga el valor total de $V_a$.
+    \item En una sola oración, interprete físicamente qué significa que una de las contribuciones calculadas haya resultado negativa respecto a la referencia solicitada.
+\end{enumerate}
+
+% =====================================
+% PARTE B
+% =====================================
+\section*{Parte B: Equivalencias de Puerto (Thévenin y Norton) (35 pts)}
+Considere el siguiente circuito de alimentación con una resistencia de carga extraíble $R_L$ conectada en el puerto $a-b$ (donde $b$ es la referencia de tierra).
+
+\begin{center}
+\begin{circuitikz}[scale=1, transform shape]
+    % Todo protegido con llaves {...}
+    \draw (0,0) to[V, l={$V_s=12\,\text{V}$}, invert] (0,3) to[R, l={$R_1=4\,\text{k}\Omega$}] (4,3);
+    \draw (4,3) to[R, l={$R_2=4\,\text{k}\Omega$}] (4,0);
+    \draw (4,3) to[short, *-o] (6,3) node[above]{$a$};
+    \draw (0,0) -- (6,0) node[below]{$b$} to[short, *-o] (6,0);
+    \draw (2,0) node[ground]{};
+    \draw[dashed, blue] (6,3) -- (7.5,3) to[R, l={$R_L$}] (7.5,0) -- (6,0);
+\end{circuitikz}
+\end{center}
+
+\begin{enumerate}
+    \item Retire la carga $R_L$ conceptualmente y determine la tensión de circuito abierto ($V_{th}$).
+    \item Desactive correctamente las fuentes independientes y determine la resistencia equivalente mirando desde el puerto $a-b$ ($R_{th}$). 
+    \item Dibuje explícitamente el equivalente de Thévenin.
+    \item Determine la corriente de corto circuito de puerto ($I_N$) y dibuje el equivalente de Norton.
+\end{enumerate}
+
+% =====================================
+% PARTE C
+% =====================================
+\section*{Parte C: Efecto de Carga y Máxima Transferencia (40 pts)}
+A partir de este punto, asuma un Equivalente de Thévenin caracterizado por: $\mathbf{V_{th} = 12\,\text{V}}$ y $\mathbf{R_{th} = 4\,\text{k}\Omega}$. 
+
+\subsection*{C1. Evaluación Analítica Limpia}
+Se conectan sucesivamente tres resistencias de carga $R_L$: \textbf{$2\,\text{k}\Omega$, $4\,\text{k}\Omega$ y $8\,\text{k}\Omega$}.
+\begin{enumerate}
+    \item Calcule la corriente de carga ($I_L$), la tensión de carga ($V_L$) y la potencia consumida ($P_L$) para \textbf{cada uno} de los tres resistores. Muestre su procedimiento.
+    \item A partir de sus cálculos, encierre en un círculo cuál carga produce el máximo voltaje, cuál la máxima corriente y cuál la máxima potencia. ¿Por qué estas tres condiciones no ocurren con el mismo resistor?
+\end{enumerate}
+
+\subsection*{C2. Interpretación Experimental (Datos Simulados de Evaluación)}
+La siguiente tabla presenta valores obtenidos por un grupo de estudiantes en el laboratorio midiendo una red cuyo $R_{th}$ teórico y medido fue \textbf{$4\,\text{k}\Omega$}.
+
+\vspace{0.2cm}
+\noindent
+\begin{tabularx}{\textwidth}{*{4}{>{\centering\arraybackslash}X}}
+\toprule
+\textbf{$R_L$ (k$\Omega$)} & \textbf{$V_L$ medido (V)} & \textbf{$I_L$ medido (mA)} & \textbf{$P_L$ medido (mW)} \\
+\midrule
+$2$ & $3.9$ & $1.95$ & $7.6$ \\ \addlinespace
+$4$ & $5.8$ & $1.45$ & $8.4$ \\ \addlinespace
+$5$ & $6.6$ & $1.32$ & $8.7$ \\ \addlinespace
+$8$ & $7.8$ & $0.98$ & $7.6$ \\
+\bottomrule
+\end{tabularx}
+\vspace{0.2cm}
+
+\begin{enumerate}
+    \item ¿En qué resistencia $R_L$ ocurre el máximo experimental de potencia? Compare este hallazgo con la predicción teórica ($R_{th} = 4\,\text{k}\Omega$).
+    \item ¿Esta discrepancia observada invalida el modelo matemático de la máxima transferencia? Proponga \textbf{una hipótesis técnica} que justifique físicamente el desplazamiento del máximo y diga cómo lo comprobaría experimentalmente.
+\end{enumerate}
+
+\end{document}
