@@ -1,0 +1,134 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT221}}
+\chead{Solucionario: Limitaciones Dinámicas}
+\rhead{Circuitos Electrónicos II}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Solucionario Oficial y Notas Técnicas Docentes}}[cite: 15]
+\end{center}
+
+\section*{I. Ejemplos Resueltos (Worked Examples)[cite: 15]}
+
+\textbf{1. Compromiso Ganancia-Ancho de Banda (GBW)[cite: 15]} \\
+Dado el valor típico del LM741 $GBW = 1\,\text{MHz}$[cite: 15]. \\
+Para una ganancia no inversora $A_{CL} = 10$[cite: 15]:
+\begin{equation*}
+    f_{BW} \approx \frac{1\,\text{MHz}}{10} = 100\,\text{kHz} \text{[cite: 15]}
+\end{equation*}
+Para $A_{CL} = 100$:
+\begin{equation*}
+    f_{BW} \approx \frac{1\,\text{MHz}}{100} = 10\,\text{kHz} \text{[cite: 15]}
+\end{equation*}
+\textit{Conclusión:} Aumentar la ganancia por un factor de 10 reduce el ancho de banda aproximado por un factor de 10 (aproximación de polo dominante)[cite: 15].
+
+\vspace{0.3cm}
+\textbf{2. Slew Rate Requerido por una Onda Senoidal[cite: 15]} \\
+Para $v_o(t) = 5\sin(2\pi \cdot 10\,000 \cdot t)$[cite: 15]:
+\begin{align*}
+    V_p &= 5\,\text{V}, \quad f = 10\,\text{kHz} \text{[cite: 15]} \\
+    SR_{req} &= 2\pi f V_p = 2\pi(10 \times 10^3)(5) = 314159\,\text{V/s} \text{[cite: 15]}
+\end{align*}
+Convirtiendo a microsegundos:
+\begin{equation*}
+    \boxed{ SR_{req} \approx 0.314\,\text{V}/\mu\text{s} } \text{[cite: 15]}
+\end{equation*}
+
+\vspace{0.3cm}
+\textbf{3. Predicción del Límite de Slew Rate (LM741)[cite: 15]} \\
+Valor típico LM741: $SR = 0.5\,\text{V}/\mu\text{s} = 500\,000\,\text{V/s}$[cite: 15]. \\
+Para una amplitud deseada $V_p = 5\,\text{V}$[cite: 15]:
+\begin{align*}
+    f_{max,SR} &= \frac{SR}{2\pi V_p} \text{[cite: 15]} \\
+    f_{max,SR} &= \frac{500\,000}{2\pi(5)} = \frac{500\,000}{31.4159} \approx 15915\,\text{Hz} \text{[cite: 15]}
+\end{align*}
+\begin{equation*}
+    \boxed{ f_{max,SR} \approx 15.9\,\text{kHz} } \text{[cite: 15]}
+\end{equation*}
+\textit{Nota: Esta es una predicción usando una especificación típica, no un umbral medido garantizado[cite: 15].}
+
+\section*{II. Solución a Ejercicios Estudiantiles[cite: 15]}
+
+\textbf{Ejercicio 1: Estimación GBW[cite: 15]} \\
+Con $GBW = 2\,\text{MHz}$ y aplicando $f_{BW} \approx GBW / A_N$[cite: 15]:
+\begin{itemize}
+    \item $A_{CL} = 5 \implies f_{BW} \approx 400\,\text{kHz}$[cite: 15].
+    \item $A_{CL} = 20 \implies f_{BW} \approx 100\,\text{kHz}$[cite: 15].
+    \item $A_{CL} = 100 \implies f_{BW} \approx 20\,\text{kHz}$[cite: 15].
+\end{itemize}
+
+\textbf{Ejercicio 2: Ganancia de Ruido en Topología Inversora[cite: 15]} \\
+$R_f = 90\,\text{k}\Omega$, $R_{in} = 10\,\text{k}\Omega \implies A_v = -9$[cite: 15]. \\
+Ganancia de Ruido: $A_N = 1 + \frac{90}{10} = 10$[cite: 15]. \\
+Con $GBW = 1\,\text{MHz}$:
+\begin{equation*}
+    f_{BW} \approx \frac{1\,\text{MHz}}{10} = \boxed{100\,\text{kHz}} \text{[cite: 15]}
+\end{equation*}
+\textit{Explicación:} En configuraciones inversoras, el ancho de banda cerrado depende de la atenuación de la red de realimentación (que gobierna el ruido y la estabilidad), dictada por $A_N$. Usar $|A_v|=9$ sobreestimaría el ancho de banda disponible[cite: 15].
+
+\textbf{Ejercicio 3: Slew Rate Requerido[cite: 15]} \\
+$V_{pp} = 6\,\text{V} \implies V_p = 3\,\text{V}$[cite: 15]. Frecuencia $f = 50\,\text{kHz} = 50 \times 10^3\,\text{Hz}$[cite: 15].
+\begin{align*}
+    SR_{req} &= 2\pi f V_p \text{[cite: 15]} \\
+    SR_{req} &= 2\pi(50 \times 10^3)(3) = 942\,477\,\text{V/s} \text{[cite: 15]}
+\end{align*}
+\begin{equation*}
+    \boxed{SR_{req} \approx 0.942\,\text{V}/\mu\text{s}} \text{[cite: 15]}
+\end{equation*}
+
+\textbf{Ejercicio 4: Amplitud Máxima (Slew Limit)[cite: 15]} \\
+$SR = 0.5\,\text{V}/\mu\text{s} = 500\,000\,\text{V/s}$, $f = 20\,\text{kHz} = 20 \times 10^3\,\text{Hz}$[cite: 15].
+\begin{align*}
+    V_{p,max} &= \frac{SR}{2\pi f} \text{[cite: 15]} \\
+    V_{p,max} &= \frac{500\,000}{2\pi(20 \times 10^3)} = \frac{500\,000}{125\,663.7} \approx \boxed{3.98\,\text{V}} \text{[cite: 15]}
+\end{align*}
+$V_{pp,max} = 2 \times 3.98 = \boxed{7.96\,\text{V}}$ bajo la aproximación senoidal simplificada[cite: 15].
+
+\textbf{Ejercicio 5: Clasificación de Limitaciones[cite: 15]}
+\begin{enumerate}
+    \item Ganancia 100, baja amplitud, alta frecuencia $\implies$ \textbf{GBW}[cite: 15].
+    \item Ganancia 2, gran amplitud (5 V), frecuencia $20\,\text{kHz}$ con un LM741 ($SR_{req} \approx 0.63 > 0.5$) $\implies$ \textbf{Slew Rate}[cite: 15].
+    \item Alta ganancia, alta frecuencia, gran amplitud $\implies$ \textbf{Ambos}[cite: 15].
+    \item Baja ganancia, baja frecuencia, baja amplitud $\implies$ \textbf{Ninguno}[cite: 15].
+\end{enumerate}
+
+\section*{III. Notas Técnicas y Criterios de Cierre[cite: 15]}
+
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Inventario y Estrategia de Dispositivos (Lab 4)[cite: 15]}]
+    No asuma que las familias de Op-Amps son intercambiables pin-a-pin.
+    \begin{itemize}
+        \item \textbf{LM741 / UA741CN:} $GBW \approx 1\,\text{MHz}, SR \approx 0.5\,\text{V}/\mu\text{s}$. (Dispositivo lento de referencia)[cite: 15].
+        \item \textbf{LM358N:} $GBW \approx 0.7\,\text{MHz}, SR \approx 0.3\,\text{V}/\mu\text{s}$. (Op-Amp Dual)[cite: 15]. No es reemplazo directo del 741 para Lab 3 (diferente pinout, sin pines offset-null)[cite: 15].
+        \item \textbf{TL074:} $GBW \approx 3\,\text{MHz}, SR \approx 13\,\text{V}/\mu\text{s}$. (Dispositivo rápido comparativo). Es un Quad-OpAmp de 14 pines[cite: 15].
+    \end{itemize}
+    \textit{Importante (Missing Info):} El modelo exacto y fabricante de los CI físicos deben ser inspeccionados y confirmados en el laboratorio antes de asumir especificaciones del datasheet[cite: 15].
+\end{tcolorbox}
+
+\textbf{Criterios de Cierre para Lab 3[cite: 15]:} \\
+La mera participación física no constituye finalización de Lab 3[cite: 15]. La evidencia mínima válida requiere:
+\begin{enumerate}
+    \item Circuito físico claro y suministros verificados[cite: 15].
+    \item Entradas medidas y baseline teórico/físico registrado[cite: 15].
+    \item Discrepancia calculada y troubleshooting documentado[cite: 15].
+    \item Compensación documentada, re-medida y comparada cuantitativamente (Before/After)[cite: 15].
+\end{enumerate}
+
+\end{document}

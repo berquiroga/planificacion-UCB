@@ -1,0 +1,270 @@
+% IMT221_lab_report_template.tex
+% Plantilla de Informe de Laboratorio - Estilo IEEE
+% Curso: IMT-221 — Circuitos Electrónicos II
+% Ingeniería Mecatrónica - Universidad Católica Boliviana "San Pablo"
+
+\documentclass[conference]{IEEEtran}
+
+% =======================================================
+% PAQUETES RECOMENDADOS
+% =======================================================
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla, es-nodecimaldot]{babel} % Español, usa 'Tabla' en lugar de 'Cuadro'
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage[colorlinks=true, linkcolor=black, citecolor=black, urlcolor=black]{hyperref}
+
+% Configuración básica de siunitx para el español
+\sisetup{output-decimal-marker = {.}}
+
+\begin{document}
+
+% =======================================================
+% BLOQUE DE TÍTULO Y AUTORES
+% =======================================================
+% Reemplace los datos entre llaves con la información real.
+\title{Título del Laboratorio: Subtítulo Descriptivo y Específico}
+
+\author{
+    \IEEEauthorblockN{Nombre1 Apellido1, Nombre2 Apellido2, Nombre3 Apellido3}
+    \IEEEauthorblockA{
+        Ingeniería Mecatrónica \\
+        Universidad Católica Boliviana ``San Pablo''\\
+        Tarija, Bolivia \\
+        correo1@ucb.edu.bo, correo2@ucb.edu.bo, correo3@ucb.edu.bo
+    }
+}
+
+\maketitle
+
+% =======================================================
+% ABSTRACT (RESUMEN)
+% =======================================================
+\begin{abstract}
+% Describa aquí en un solo párrafo (100-180 palabras):
+% 1. El propósito del laboratorio.
+% 2. El circuito o dispositivo estudiado.
+% 3. El método utilizado.
+% 4. El resultado cuantitativo principal (ej. reducción de error de X a Y).
+% 5. La conclusión técnica más importante.
+% NO convierta el abstract en una introducción extensa ni use citas bibliográficas aquí.
+[Escriba su resumen aquí...]
+\end{abstract}
+
+% =======================================================
+% KEYWORDS (PALABRAS CLAVE)
+% =======================================================
+\begin{IEEEkeywords}
+% Incluya entre 3 y 5 términos en inglés o español.
+operational amplifier, differential amplifier, input offset voltage, slew rate, gain-bandwidth product.
+\end{IEEEkeywords}
+
+% =======================================================
+% I. INTRODUCCIÓN
+% =======================================================
+\section{Introducción}
+% Responda de forma concisa:
+% - ¿Qué fenómeno se estudia y por qué es relevante en ingeniería?
+% - ¿Qué pregunta experimental aborda el laboratorio?
+% - Termine la sección declarando claramente el objetivo del trabajo.
+% - NO incluya resultados completos en esta sección.
+
+[Escriba su introducción aquí...]
+
+% =======================================================
+% II. FUNDAMENTO TEÓRICO
+% =======================================================
+\section{Fundamento Teórico}
+% Incluya únicamente la teoría necesaria para interpretar el experimento.
+
+\subsection{Modelo del Circuito}
+% Describa la topología base. Defina las variables de entrada y salida (V1, V2, Vo).
+% Ejemplo de ecuación numerada y referenciada:
+% La relación de salida ideal está dada por \eqref{eq:salida_ideal}.
+%
+% \begin{equation}
+%     V_{o,\mathrm{ideal}} = k(V_2 - V_1)
+%     \label{eq:salida_ideal}
+% \end{equation}
+
+\subsection{Parámetros Reales del Amplificador Operacional}
+% Describa las no idealidades relevantes para su laboratorio (Ej. Lab 3: V_OS, I_B, I_OS, mismatch. Lab 4: GBW, SR).
+% Toda especificación de un componente real debe provenir de su datasheet y citarse correctamente.
+
+\subsection{Relaciones Dinámicas (Si aplica)}
+% Si realiza mediciones de frecuencia o de Slew Rate (Lab 4), puede incluir ecuaciones como:
+% \begin{equation}
+%     f_{\mathrm{BW}} \approx \frac{\mathrm{GBW}}{A_N}
+%     \label{eq:bw}
+% \end{equation}
+% \begin{equation}
+%     SR_{\mathrm{req}} = 2\pi f V_p
+%     \label{eq:sr}
+% \end{equation}
+
+% =======================================================
+% III. METODOLOGÍA
+% =======================================================
+\section{Metodología}
+% Permita que otra persona entienda exactamente cómo se realizó el experimento.
+
+\subsection{Componentes e Instrumentos}
+% Identifique los componentes físicos utilizados. No invente especificaciones.
+\begin{table}[htbp]
+    \centering
+    \caption{Componentes e Instrumentación Utilizada}
+    \label{tab:componentes}
+    \begin{tabular}{llcl}
+        \toprule
+        \textbf{Elemento} & \textbf{Modelo / Valor} & \textbf{Cant.} & \textbf{Observación} \\
+        \midrule
+        Op-Amp & LM741 / TL074 & - & [Fabricante] \\
+        Resistor & \SI{10}{\kilo\ohm} & - & Tolerancia $1\%$ \\
+        Resistor & \SI{100}{\kilo\ohm} & - & Tolerancia $1\%$ \\
+        Fuente DC & - & 1 & $\pm\SI{15}{\volt}$ / $\pm\SI{10}{\volt}$ \\
+        Osciloscopio & - & 1 & - \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Circuito Experimental}
+% Inserte el esquema eléctrico. Descomente las siguientes líneas cuando tenga su figura.
+% La plantilla compilará incluso si no incluye figuras inicialmente.
+%
+% \begin{figure}[htbp]
+%     \centering
+%     % \includegraphics[width=0.8\columnwidth]{figures/circuito.pdf}
+%     \caption{Esquema del circuito experimental implementado (Reemplace con su figura).}
+%     \label{fig:circuito}
+% \end{figure}
+
+\subsection{Procedimiento Experimental}
+% Describa la secuencia REAL que ejecutaron.
+% Ejemplo: 1) Verificación de pinout y medición de componentes, 2) Ajuste de alimentación, 3) Aplicación de señales, 4) Medición, 5) Troubleshooting, 6) Compensación.
+% ADVERTENCIA: NO copie textualmente la guía del laboratorio. Escriba en pasado y en pasiva (ej. "Se midieron los resistores...").
+
+\subsection{Simulación (Opcional o Complementaria)}
+% Si utilizó LTSpice, documéntelo aquí.
+% RECUERDE: Simulación NO es medición física. Indique el macromodelo utilizado.
+
+% =======================================================
+% IV. RESULTADOS
+% =======================================================
+\section{Resultados}
+% Presente evidencia (datos medidos), sin interpretarla extensamente todavía.
+% Reemplace los guiones (-) con sus mediciones. No fabrique datos.
+
+\subsection{Medición DC (Lab 3)}
+\begin{table}[htbp]
+    \centering
+    \caption{Comparación: Teoría vs Medición (Precisión DC)}
+    \label{tab:resultados_dc}
+    \begin{tabular}{ccccc}
+        \toprule
+        \textbf{Cond.} & \textbf{$V_{1}$} & \textbf{$V_{2}$} & \textbf{$V_{o,\mathrm{ideal}}$} & \textbf{$V_{o,\mathrm{meas}}$} \\
+        \midrule
+        T1 & \SI{0}{\volt} & \SI{0}{\volt} & \SI{0}{\volt} & - \\
+        T2 & \SI{0}{\volt} & \SI{50}{\milli\volt} & \SI{0.5}{\volt} & - \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Evaluación de Compensación}
+\begin{table}[htbp]
+    \centering
+    \caption{Efecto de la Compensación de Offset (T1)}
+    \label{tab:compensacion}
+    \begin{tabular}{lcc}
+        \toprule
+        \textbf{Variable} & \textbf{Antes (Before)} & \textbf{Después (After)} \\
+        \midrule
+        $V_{o}$ medido & - & - \\
+        Error absoluto ($|e|$) & - & - \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% \subsection{Mediciones Dinámicas (Para Lab 4)}
+% \begin{table}[htbp]
+%     \centering
+%     \caption{Respuesta en Frecuencia y Slew Rate}
+%     \label{tab:dinamico}
+%     \begin{tabular}{cccc}
+%         \toprule
+%         \textbf{Frecuencia} & \textbf{$V_{\mathrm{in}}$} & \textbf{$V_{\mathrm{out}}$} & \textbf{Distorsión obs.} \\
+%         \midrule
+%         - & - & - & - \\
+%         - & - & - & - \\
+%         \bottomrule
+%     \end{tabular}
+% \end{table}
+
+% =======================================================
+% V. DISCUSIÓN
+% =======================================================
+\section{Discusión}
+% ESTA ES LA SECCIÓN MÁS IMPORTANTE DEL INFORME.
+% No repita los datos de la sección IV; interprételos.
+% Responda:
+% 1. ¿Coincidió el experimento con la predicción ideal?
+% 2. ¿Qué discrepancia (error) apareció y qué mecanismos podrían explicarla?
+% 3. ¿Qué evidencia permite descartar o apoyar cada hipótesis? (Ej. "Tras aplicar offset-null, el error se redujo en X mV, lo que sugiere que...")
+% 4. ¿Qué diferencia hubo entre simulación y realidad?
+% 5. Identifique limitaciones de sus mediciones.
+%
+% REGLA: Observación (Hecho) != Interpretación (Hipótesis) != Conclusión.
+
+[Escriba su discusión aquí...]
+
+% =======================================================
+% VI. CONCLUSIONES
+% =======================================================
+\section{Conclusiones}
+% Responda directamente al objetivo técnico planteado en la Introducción.
+% Debe incluir el resultado cuantitativo principal y su significado técnico.
+% Identifique la limitación principal o el siguiente paso lógico.
+%
+% ADVERTENCIA: NO escriba simplemente "El laboratorio fue exitoso" o "Aprendimos mucho".
+% Ejemplo aceptable: "La compensación redujo el error DC de salida de X mV a Y mV. Sin embargo, persistió un error atribuible a las tolerancias resistivas..."
+
+[Escriba sus conclusiones aquí...]
+
+% =======================================================
+% REFERENCIAS
+% =======================================================
+\begin{thebibliography}{00}
+% Use el formato IEEE para citar. Sustituya estos ejemplos con sus fuentes reales.
+% Los Datasheets SON fuentes primarias obligatorias.
+
+\bibitem{ti_lm741}
+Texas Instruments, ``LM741 Operational Amplifier,'' Datasheet, Oct. 2015. [Online]. Available: \url{http://www.ti.com}
+
+\bibitem{ti_tl082}
+Texas Instruments, ``TL08x JFET-Input Operational Amplifiers,'' Datasheet, May 2015. [Online]. Available: \url{http://www.ti.com}
+
+\bibitem{textbook}
+S. Franco, \emph{Design with Operational Amplifiers and Analog Integrated Circuits}, 4th ed. New York, NY, USA: McGraw-Hill, 2014.
+
+\end{thebibliography}
+
+% =======================================================
+% APÉNDICE (OPCIONAL)
+% =======================================================
+% Descomente si necesita añadir datos crudos, cálculos muy extensos, 
+% esquemas secundarios de LTSpice o código fuente auxiliar.
+% 
+% \appendices
+% \section{Datos Crudos de Laboratorio}
+% [Tablas extensas o configuraciones específicas...]
+% 
+% \section{Derivación Adicional}
+% [Cálculos largos que interrumpirían la lectura del informe principal...]
+
+\end{document}

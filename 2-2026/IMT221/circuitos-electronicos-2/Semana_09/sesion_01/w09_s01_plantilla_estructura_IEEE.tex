@@ -1,0 +1,73 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multicol}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Estructura Base: Informe IEEE}
+\rhead{Circuitos Electrónicos II}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Estructura de Informe de Laboratorio — Tipo IEEE}}[cite: 17]
+\end{center}
+
+\textit{Nota: Esta plantilla adapta la estructura de un artículo IEEE a un informe académico. La maquetación final debe realizarse usando la plantilla IEEE oficial en Word o LaTeX[cite: 17].}
+
+\section*{Título, Autores, Abstract y Keywords[cite: 17]}
+\textbf{Título:} Específico y descriptivo. \textit{Ej: Caracterización DC y Compensación de Offset de un Amplificador Diferencial con LM741[cite: 17].} \\
+\textbf{Abstract (100–180 palabras):} Resuma en un solo párrafo qué problema se estudió, el circuito usado, el procedimiento, el resultado cuantitativo principal y la conclusión técnica[cite: 17]. No lo convierta en una introducción[cite: 17]. \\
+\textbf{Keywords:} 3 a 5 términos clave (ej. \textit{operational amplifier, differential amplifier, slew rate})[cite: 17].
+
+\section*{I. Introduction[cite: 17]}
+Responda: ¿Qué fenómeno se estudia y por qué importa en circuitos reales?[cite: 17] ¿Qué pregunta experimental aborda el laboratorio?[cite: 17] Finalice con un objetivo técnico claro, sin incluir los resultados completos[cite: 17].
+
+\section*{II. Theoretical Background[cite: 17]}
+Incluya \textbf{únicamente} la teoría necesaria para interpretar el experimento[cite: 17].
+\begin{itemize}
+    \item \textbf{A. Circuit Model:} Defina $V_1, V_2, V_o$ y escriba la ecuación de transferencia del circuito bajo prueba[cite: 17].
+    \item \textbf{B. Real Device Effects:} Conceptos relevantes (ej. $V_{OS}$, $I_B$, mismatch resistivo, GBW, SR)[cite: 17]. Toda especificación real debe provenir de un datasheet[cite: 17].
+\end{itemize}
+
+\section*{III. Methodology[cite: 17]}
+\begin{itemize}
+    \item \textbf{A. Components and Instruments:} Use una tabla detallando modelo, valor y cantidad[cite: 17].
+    \item \textbf{B. Circuit:} Esquema eléctrico con nombres de nodos, valores, alimentación, y referencias[cite: 17].
+    \item \textbf{C. Experimental Procedure:} Describa la secuencia \textbf{real} ejecutada (ej. verificación de pinout, medición de rieles, troubleshooting, compensación). No copie la guía del docente[cite: 17].
+\end{itemize}
+
+\section*{IV. Results[cite: 17]}
+\begin{itemize}
+    \item \textbf{A. Measurements:} Tabule condiciones de prueba, voltajes ideales, medidos y errores absolutos[cite: 17].
+    \item \textbf{B. Before / After Compensation:} Tabule la variación de $V_o$ y el error absoluto[cite: 17].
+    \item \textbf{C. Figures:} Inserte capturas de osciloscopio, Bode plots o gráficas comparativas. Toda figura debe estar numerada, tener un título, estar referenciada en el texto y poseer unidades[cite: 17].
+\end{itemize}
+
+\section*{V. Discussion[cite: 17]}
+\textbf{Sección crítica del informe.[cite: 17]} No repita resultados, interprételos[cite: 17]. Responda: ¿Coincidió el experimento con la predicción?[cite: 17] ¿Qué discrepancia apareció y qué mecanismos la explican?[cite: 17] ¿Qué evidencia apoya cada hipótesis?[cite: 17] ¿Qué cambió tras la corrección y qué error permaneció?[cite: 17] Distinga entre observación, interpretación y conclusión[cite: 17].
+
+\section*{VI. Conclusion \& References[cite: 17]}
+\textbf{Conclusion:} Responda al objetivo. Incluya el resultado técnico, evidencia cuantitativa y significado[cite: 17]. Evite "el laboratorio fue exitoso"[cite: 17]. \\
+\textbf{References:} Numeradas por orden de aparición[cite: 17]. Cite datasheets correctamente y evite webs genéricas[cite: 17].
+
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Comparación Recomendada para el Informe[cite: 17]}]
+    \centering $\boxed{ \text{teoría} \leftrightarrow \text{simulación} \leftrightarrow \text{experimento} }$[cite: 17]
+\end{tcolorbox}
+
+\end{document}

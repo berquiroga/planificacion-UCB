@@ -1,0 +1,75 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Guía de Redacción: Informes IEEE}
+\rhead{Circuitos Electrónicos II}
+\lfoot{Documento Estudiantil}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Guía de Redacción: Informes de Laboratorio (Estructura IEEE)}}[cite: 16]
+\end{center}
+
+\begin{tcolorbox}[colback=yellow!5, colframe=ucbblue, title=\textbf{El Formato IEEE en este Curso}]
+    La plantilla IEEE es un \textbf{formato de comunicación}, no un sustituto del contenido técnico[cite: 16]. El informe debe demostrar la reconstrucción del siguiente ciclo experimental[cite: 16]:
+    \begin{equation*}
+        \boxed{ \text{predicción} \rightarrow \text{implementación} \rightarrow \text{medición} \rightarrow \text{comparación} \rightarrow \text{diagnóstico} \rightarrow \text{corrección} \rightarrow \text{validación} } \text{[cite: 16]}
+    \end{equation*}
+\end{tcolorbox}
+
+\section*{1. Relación entre Laboratorio e Informe[cite: 16]}
+\textbf{Para el Lab 3:} El informe debe mostrar como mínimo el circuito implementado, la relación ideal, mediciones DC, discrepancia, diagnóstico, compensación/corrección, comparación before/after e interpretación[cite: 16]. \\
+\textbf{Para el Lab 4:} Deberá mostrar configuración, ganancia, datasheets, GBW, Slew Rate, estimación de ancho de banda, $SR_{req}$, simulación, evidencia física, comparación de dispositivos y discusión de la limitación observada[cite: 16].
+
+\section*{2. Resultados y Discusión[cite: 16]}
+\textbf{Resultados (Responder: ¿Qué ocurrió?)[cite: 16]} \\
+Presente evidencia cruda y tratada. Ejemplo: $V_{o,ideal} = 0.500\,\text{V}$, $V_{o,meas} = 0.522\,\text{V}$, $e = 22\,\text{mV}$[cite: 16].
+
+\textbf{Discusión (Responder: ¿Por qué ocurrió y qué evidencia lo respalda?)[cite: 16]} \\
+La discusión debe separar hechos, interpretación, evidencia y conclusiones calificadas[cite: 16]:
+\begin{itemize}
+    \item \textit{Hecho:} Se midieron $0.522\,\text{V}$[cite: 16].
+    \item \textit{Interpretación:} El error de $22\,\text{mV}$ podría contener contribuciones de offset y mismatch[cite: 16].
+    \item \textit{Evidencia:} Después de la compensación la salida cambió a $0.505\,\text{V}$[cite: 16].
+    \item \textit{Conclusión calificada:} La compensación redujo una componente del error, pero no demuestra que todo el error inicial proviniera de $V_{OS}$[cite: 16].
+\end{itemize}
+
+\section*{3. Presentación de Ecuaciones y Figuras[cite: 16]}
+\textbf{Ecuaciones:} Cada ecuación importante debe aparecer después de introducirse, usar símbolos definidos, indicar unidades y conectarse con el experimento[cite: 16]. 
+\begin{equation*}
+    SR_{req} = 2\pi f V_p = 2\pi(20\,000)(5) = 0.628\,\text{V}/\mu\text{s} \text{[cite: 16]}
+\end{equation*}
+\textbf{Figuras:} Una figura debe responder una pregunta técnica (ej. ¿dónde aparece la distorsión?, ¿qué cambió antes/después?)[cite: 16]. No use imágenes como simple decoración[cite: 16].
+
+\section*{4. Uso de Datasheets[cite: 16]}
+No escriba simplemente "el LM741 tiene SR de $0.5\,\text{V}/\mu\text{s}$"[cite: 16]. Registre el fabricante, referencia exacta, valor, si es \textit{typical/min/max}, y las condiciones de prueba[cite: 16]. Distinga siempre entre $\text{valor de datasheet} \neq \text{valor exacto del dispositivo físico}$[cite: 16].
+
+\section*{5. Prácticas a Evitar (Qué NO hacer)[cite: 16]}
+\begin{itemize}
+    \item Copiar la guía de laboratorio como metodología[cite: 16].
+    \item Presentar teoría extensa que no se usa o resultados sin unidades[cite: 16].
+    \item Concluir "funcionó correctamente" sin criterios o atribuir toda discrepancia al Op-Amp[cite: 16].
+    \item Presentar LTSpice como un experimento físico[cite: 16].
+    \item Ocultar mediciones que no coinciden con la teoría. \textit{Una discrepancia bien diagnosticada es más valiosa que una medición "perfecta"[cite: 16].}
+\end{itemize}
+
+\end{document}

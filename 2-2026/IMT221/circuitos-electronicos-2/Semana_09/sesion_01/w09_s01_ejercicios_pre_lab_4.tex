@@ -1,0 +1,106 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multicol}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Circuitos Electrónicos II (IMT-221)}
+\rhead{Semana 9 - Sesión 1}
+\lfoot{Ejercicios y Pre-Lab 4}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Ejercicios Dinámicos y Preparación Lab 4}}[cite: 15]
+\end{center}
+
+\section*{Bloque A: Ejercicios Conceptuales[cite: 15]}
+
+\textbf{1. Compensación de Ancho de Banda (GBW)[cite: 15]} \\
+Un amplificador no inversor emplea un Op-Amp con $GBW = 2\,\text{MHz}$[cite: 15]. Estime el ancho de banda cerrado ($f_{BW}$) para ganancias configuradas de 5, 20 y 100[cite: 15].
+
+\vspace{1cm}
+\textbf{2. Ganancia de Ruido en Topología Inversora[cite: 15]} \\
+Para un inversor con $R_f = 90\,\text{k}\Omega$ y $R_{in} = 10\,\text{k}\Omega$, la ganancia de señal es $A_v = -9$[cite: 15]. Sin embargo, la ganancia de ruido (que rige la estabilidad y el ancho de banda) es $A_N = 1 + 90/10 = 10$[cite: 15]. Si el $GBW = 1\,\text{MHz}$, calcule $f_{BW}$[cite: 15]. ¿Por qué usar $|A_v|=9$ para el cálculo introduciría un error de aproximación?[cite: 15]
+
+\vspace{1cm}
+\textbf{3. Cálculo de Slew Rate Requerido[cite: 15]} \\
+Una aplicación requiere a la salida una onda senoidal de $V_{pp} = 6\,\text{V}$ (voltaje pico a pico) a una frecuencia $f = 50\,\text{kHz}$[cite: 15]. Calcule el Slew Rate mínimo requerido ($SR_{req}$) en $\text{V}/\mu\text{s}$ para no presentar distorsión visible[cite: 15].
+
+\vspace{1.5cm}
+\textbf{4. Amplitud Máxima Limitada por SR[cite: 15]} \\
+Dado un Op-Amp con $SR = 0.5\,\text{V}/\mu\text{s}$ operando a $f = 20\,\text{kHz}$, calcule la amplitud máxima de salida ($V_{p,max}$ y $V_{pp,max}$) antes de que la onda comience a triangularizarse (Slew-limit)[cite: 15].
+
+\vspace{1.5cm}
+\textbf{5. Clasificación de Limitaciones[cite: 15]} \\
+Clasifique cuál sería la principal preocupación dinámica (GBW, SR, Ambos, Ninguno) para los siguientes escenarios[cite: 15]:
+\begin{enumerate}
+    \item Ganancia 100, baja amplitud, frecuencia muy alta. $\rightarrow$ \rule{3cm}{0.4pt}[cite: 15]
+    \item Ganancia 2, gran amplitud (5 V), frecuencia $20\,\text{kHz}$ con un LM741. $\rightarrow$ \rule{3cm}{0.4pt}[cite: 15]
+    \item Alta ganancia (100), alta frecuencia, gran amplitud. $\rightarrow$ \rule{3cm}{0.4pt}[cite: 15]
+    \item Baja ganancia, baja frecuencia ($100\,\text{Hz}$), baja amplitud. $\rightarrow$ \rule{3cm}{0.4pt}[cite: 15]
+\end{enumerate}
+
+\newpage
+\section*{Bloque B: Hoja de Pre-Análisis Lab 4[cite: 15]}
+\textit{Complete esta predicción antes de simular o implementar en hardware el Lab 4.[cite: 15]}
+
+\vspace{0.3cm}
+\textbf{Dispositivo evaluado:} \rule{5cm}{0.4pt} \textbf{Configuración:} \rule{4cm}{0.4pt}[cite: 15] \\
+\textbf{Ganancia cerrada señal ($A_v$):} \rule{3cm}{0.4pt} \textbf{Ganancia ruido ($A_N$):} \rule{3cm}{0.4pt}[cite: 15] \\
+\textbf{Alimentación:} \rule{5cm}{0.4pt} \textbf{Amplitud de entrada ($V_{in,p}$):} \rule{2cm}{0.4pt}[cite: 15] \\
+\textbf{Amplitud esperada ($V_p$):} \rule{3.2cm}{0.4pt} \textbf{Frecuencia de prueba ($f$):} \rule{2cm}{0.4pt}[cite: 15] \\
+\textbf{Datasheet GBW:} \rule{4.5cm}{0.4pt} \textbf{Datasheet SR:} \rule{3.7cm}{0.4pt}[cite: 15]
+
+\vspace{0.4cm}
+\textbf{Parte A: Salida Ideal en Baja Frecuencia[cite: 15]} \\
+Calcule $V_{o,\mathrm{ideal}}$ asumiendo un Op-Amp perfecto: \rule{6cm}{0.4pt}[cite: 15]
+
+\vspace{0.4cm}
+\textbf{Parte B: Estimación de Ancho de Banda (GBW)[cite: 15]} \\
+$f_{BW} \approx \frac{GBW}{A_N} = \rule{4cm}{0.4pt}$[cite: 15] \quad Razón de operación $\frac{f}{f_{BW}} = \rule{3cm}{0.4pt}$[cite: 15] \\
+\textbf{Riesgo esperado por GBW:} $\square$ Bajo \quad $\square$ Cercano al límite \quad $\square$ Excede límite teórico[cite: 15]
+
+\vspace{0.4cm}
+\textbf{Parte C: Estimación de Slew Rate (SR)[cite: 15]} \\
+$SR_{req} = 2\pi f V_p = \rule{4cm}{0.4pt}$[cite: 15] \quad Comparativa: $SR_{req} \quad \text{vs} \quad SR_{device}$[cite: 15] \\
+\textbf{Riesgo esperado por SR:} $\square$ Bajo \quad $\square$ Cercano al límite \quad $\square$ Probable distorsión SR[cite: 15]
+
+\vspace{0.4cm}
+\textbf{Parte D: Predicción Final del Mecanismo Limitante[cite: 15]} \\
+$\square$ GBW/Bandwidth \quad $\square$ Slew Rate \quad $\square$ Ambos \quad $\square$ Ninguno \quad $\square$ Info insuficiente[cite: 15]
+
+\vspace{0.4cm}
+\textbf{Parte E: Hipótesis de Comparación de Dispositivos (Ej. LM741 vs TL074)[cite: 15]} \\
+Bajo la misma ganancia, frecuencia y requerimiento de amplitud de salida, ¿qué dispositivo predice que se alejará primero del comportamiento ideal y qué parámetro del datasheet respalda esto?[cite: 15] \\
+\rule{\textwidth}{0.4pt} \\
+\rule{\textwidth}{0.4pt} \\
+\rule{\textwidth}{0.4pt}
+
+\section*{Bloque C: Protocolo de Simulación LTSpice[cite: 15]}
+Si el tiempo lo permite, simule la configuración elegida \textbf{antes} de ensamblar el hardware[cite: 15].
+\begin{enumerate}
+    \setlength{\itemsep}{0pt}
+    \item Construya el circuito con el modelo exacto disponible[cite: 15].
+    \item Configure alimentación nominal idéntica a la que usará físicamente[cite: 15].
+    \item Ejecute un análisis AC para estimar el ancho de banda cerrado a $-3\,\text{dB}$ y compárelo con $f_{BW} \approx GBW/A_N$[cite: 15].
+    \item Ejecute un análisis transitorio (\texttt{.tran}) para combinaciones amplitud/frecuencia clave[cite: 15].
+    \item Analice la forma de onda: ¿El macromodelo de LTSpice simula correctamente la limitación por Slew Rate (triangularización) o asume un SR infinito?[cite: 15]
+\end{enumerate}
+
+\end{document}

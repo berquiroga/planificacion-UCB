@@ -1,0 +1,60 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Instrumento de Cierre: Lab 3 (Precisión DC)}}[cite: 15]
+\end{center}
+
+\textbf{Grupo:} \rule{4cm}{0.4pt} \hfill \textbf{Fecha:} \rule{3cm}{0.4pt}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Instrucción Oficial[cite: 15]}]
+    No se reinicia Lab 3 desde cero[cite: 15]. Identifique la etapa exacta en la que se detuvo su grupo, determine la evidencia faltante y complete \textbf{únicamente} las acciones necesarias para cerrar el laboratorio[cite: 15]. La participación física no equivale a finalización sin la evidencia analítica correspondiente[cite: 15].
+\end{tcolorbox}
+
+\section*{Matriz de Evidencia de Laboratorio[cite: 15]}
+\begin{table}[h!]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{|c|>{\raggedright\arraybackslash}p{3cm}|c|X|X|c|}
+    \hline
+    \textbf{Etapa} & \textbf{Evidencia Requerida} & \textbf{¿Listo?} & \textbf{Ref. de Evidencia (Link/Foto/Doc)} & \textbf{Acción Faltante} & \textbf{Firma Docente} \\ \hline
+    1. Circuito & Montaje + pinout + alimentación & $\square$ & & & \\ \hline
+    2. Predicción & Ecuación y valor numérico esperado & $\square$ & & & \\ \hline
+    3. Baseline & $V_{in}, V_{out}$ medidos válidos & $\square$ & & & \\ \hline
+    4. Discrepancia & $e = V_{o,meas} - V_{o,ideal}$ calculado & $\square$ & & & \\ \hline
+    5. Diagnóstico & Registro de Troubleshooting & $\square$ & & & \\ \hline
+    6. Hipótesis & Causa probable vinculada a la evidencia & $\square$ & & & \\ \hline
+    7. Compensación & Método y justificación de ajuste & $\square$ & & & \\ \hline
+    8. Re-medición & Before/After en la misma condición & $\square$ & & & \\ \hline
+    9. Interpretación & Conclusión técnica + Evidencia guardada & $\square$ & & & \\ \hline
+    \end{tabularx}
+\end{table}
+
+\section*{Clasificación del Grupo y Plan de Acción Inmediato[cite: 15]}
+Marque la condición de su grupo[cite: 15]:
+\begin{itemize}
+    \item[$\square$] \textbf{Clase A (Evidencia suficiente):} Toda la evidencia mínima analítica y física está presente. Pasa a Lab 4[cite: 15].
+    \item[$\square$] \textbf{Clase B (Cierre menor requerido):} Circuito y mediciones base existen. Falta documentar compensación, re-medición o interpretación. Terminar hoy[cite: 15].
+    \item[$\square$] \textbf{Clase C (Trabajo sustancial pendiente):} El circuito no es válido, falta el baseline o el debugging impide interpretar. Continuar trabajo de banco hoy[cite: 15].
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{1. ¿Cuál es el primer ítem faltante?} \rule{10cm}{0.4pt} \\
+\textbf{2. ¿Cuál es la siguiente acción medible?} \rule{9cm}{0.4pt} \\
+\textbf{3. ¿Qué evidencia probará que se completó?} \rule{8cm}{0.4pt}[cite: 15]
+
+\end{document}

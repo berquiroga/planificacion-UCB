@@ -1,0 +1,146 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[aspectratio=169]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+
+\title[Limitaciones Dinámicas]{De la Precisión DC a las Limitaciones Dinámicas (GBW y SR)}
+\subtitle{Circuitos Electrónicos II (IMT-221) - Semana 9, Sesión 1}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Consolidación: La Lógica de Lab 3}
+    \textbf{Escenario Analítico[cite: 15]:} Suponga un amplificador donde $V_{o,\mathrm{ideal}} = 0.500\,\text{V}$[cite: 15]. \\
+    Se mide $V_{o,\mathrm{before}} = 0.522\,\text{V} \implies e_{before} = 22\,\text{mV}$[cite: 15]. \\
+    \textit{¿Es culpa del $V_{OS}$ del Op-Amp? No necesariamente. Podría ser Mismatch, $I_B$, error de instrumentación o ruido[cite: 15].}
+    
+    \vspace{0.2cm}
+    \textbf{Acción[cite: 15]:} Se verifica externamente y se aplica compensación offset-null (solo si el componente es familia 741)[cite: 15]. \\
+    Se vuelve a medir bajo las \textbf{mismas} condiciones: $V_{o,\mathrm{after}} = 0.505\,\text{V}$[cite: 15].
+    \begin{equation*}
+        e_{after} = 5\,\text{mV} \implies \Delta|e| = 22\,\text{mV} - 5\,\text{mV} = 17\,\text{mV} \text{[cite: 15]}
+    \end{equation*}
+
+    \vspace{0.1cm}
+    \begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Interpretación Físicamente Válida}]
+        La evidencia demuestra que la corrección redujo el error DC bajo esa condición[cite: 15]. \textbf{NO} demuestra que los $22\,\text{mV}$ originales provenían exclusivamente de $V_{OS}$[cite: 15].
+    \end{tcolorbox}
+\end{frame}
+
+\begin{frame}{Transición a Lab 4: El Problema Dinámico}
+    \begin{center}
+        \Large $\boxed{\text{Precisión DC (Lab 3)} \rightarrow \text{Limitaciones Dinámicas (Lab 4)}}$[cite: 15]
+    \end{center}
+    
+    \vspace{0.4cm}
+    \textbf{Pregunta Fundamental de Lab 4[cite: 15]:} \\
+    Aun después de calibrar el offset en DC, ¿puede un Op-Amp real reproducir \textit{cualquier} señal, con \textit{cualquier} ganancia, frecuencia y amplitud?[cite: 15]
+    
+    \vspace{0.3cm}
+    \textbf{Respuesta: NO. Dos mecanismos físicos lo impiden[cite: 15]:}
+    \begin{enumerate}
+        \item \textbf{Limitación de pequeña señal:} Ancho de banda finito (Producto Ganancia-Ancho de Banda, \textbf{GBW})[cite: 15].
+        \item \textbf{Limitación de gran señal:} Rapidez máxima de salida (\textbf{Slew Rate, SR})[cite: 15].
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{1. Gain-Bandwidth Product (GBW)}
+    Un Op-Amp real tiene una ganancia de lazo abierto ($A_{OL}$) que disminuye con la frecuencia (aprox. $-20\,\text{dB/década}$ después del polo dominante)[cite: 15].
+    
+    \textbf{Aproximación de un polo para Lazo Cerrado[cite: 15]:}
+    \begin{equation*}
+        \boxed{ f_{BW} \approx \frac{GBW}{A_N} } \text{[cite: 15]}
+    \end{equation*}
+    Donde $A_N$ es la ganancia de ruido ($A_N = 1 + R_f/R_{in}$ para topologías básicas)[cite: 15].
+    
+    \vspace{0.2cm}
+    \textbf{Ejemplo (LM741, GBW $\approx 1\,\text{MHz}$)[cite: 15]:}
+    \begin{itemize}
+        \item Si $A_{CL} = 10 \implies f_{BW} \approx 100\,\text{kHz}$[cite: 15].
+        \item Si $A_{CL} = 100 \implies f_{BW} \approx 10\,\text{kHz}$[cite: 15].
+    \end{itemize}
+    \textit{Trade-off: Mayor ganancia cerrada implica menor ancho de banda disponible[cite: 15].}
+\end{frame}
+
+\begin{frame}{2. Slew Rate (SR): Límite de Gran Señal}
+    El Slew Rate es la tasa máxima a la que el voltaje de salida puede cambiar físicamente[cite: 15].
+    \begin{equation*}
+        \boxed{ SR = \max\left|\frac{dV_o}{dt}\right| } \quad \text{Unidad típica: } \text{V}/\mu\text{s} \text{[cite: 15]}
+    \end{equation*}
+    
+    \textbf{Derivación para una señal sinusoidal[cite: 15]:} \\
+    Sea $v_o(t) = V_p \sin(2\pi f t)$[cite: 15]. Derivamos respecto al tiempo[cite: 15]:
+    \begin{equation*}
+        \frac{dv_o}{dt} = 2\pi f V_p \cos(2\pi f t) \text{[cite: 15]}
+    \end{equation*}
+    La tasa máxima de cambio ocurre en el cruce por cero ($\cos=1$)[cite: 15]:
+    \begin{equation*}
+        \boxed{ SR_{req} = 2\pi f V_p } \implies \boxed{ f_{max,SR} = \frac{SR}{2\pi V_p} } \text{[cite: 15]}
+    \end{equation*}
+    \textit{Conclusión: El SR requerido escala con la amplitud ($V_p$) y la frecuencia ($f$)[cite: 15].}
+\end{frame}
+
+\begin{frame}{Comparación Diagnóstica: GBW vs SR}
+    \begin{table}[]
+        \centering
+        \footnotesize
+        \renewcommand{\arraystretch}{1.5}
+        \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash\hsize=0.6\hsize}X >{\raggedright\arraybackslash\hsize=1.2\hsize}X >{\raggedright\arraybackslash\hsize=1.2\hsize}X}
+        \toprule
+        \rowcolor[HTML]{EFEFEF}
+        \textbf{Aspecto} & \textbf{Ancho de Banda (GBW)} & \textbf{Slew Rate (SR)} \\ \midrule
+        Dominio & Pequeña señal / Frecuencia[cite: 15] & Gran señal / Tiempo[cite: 15] \\
+        Dependencia & Ganancia cerrada ($A_N$) y frecuencia[cite: 15] & Amplitud ($V_p$) y frecuencia[cite: 15] \\
+        Modelo predictivo & $f_{BW} \approx GBW / A_N$[cite: 15] & $SR_{req} = 2\pi f V_p$[cite: 15] \\
+        Efecto medible & Caída de ganancia y cambio de fase[cite: 15] & Distorsión de forma (ondas triangulares)[cite: 15] \\
+        \bottomrule
+        \end{tabularx}
+    \end{table}
+
+    \textbf{Pregunta rápida de clasificación[cite: 15]:} Alta ganancia (100), baja amplitud ($0.1\,\text{V}$), $f=20\,\text{kHz}$ usando un Op-Amp de $1\,\text{MHz}$[cite: 15]. ¿Qué mecanismo limita primero?[cite: 15]
+    \textit{Respuesta: GBW ($f_{BW} \approx 10\,\text{kHz}$ mientras que el $SR_{req}$ es minúsculo)[cite: 15].}
+\end{frame}
+
+\begin{frame}{Comparación de Dispositivos (Datasheet)}
+    Las especificaciones no se asumen, se extraen del Datasheet del componente físico[cite: 15].
+    
+    \vspace{0.2cm}
+    \textbf{Referencias Típicas de Texas Instruments[cite: 15]:}
+    \begin{itemize}
+        \item \textbf{LM741:} $GBW \approx 1\,\text{MHz}$, $SR \approx 0.5\,\text{V}/\mu\text{s}$ (Dispositivo de referencia lento)[cite: 15].
+        \item \textbf{LM358N:} $GBW \approx 0.7\,\text{MHz}$, $SR \approx 0.3\,\text{V}/\mu\text{s}$ (Op-Amp dual, no pin-compatible)[cite: 15].
+        \item \textbf{TL074:} $GBW \approx 3\,\text{MHz}$, $SR \approx 13\,\text{V}/\mu\text{s}$ (Quad FET, dinámicamente rápido)[cite: 15].
+    \end{itemize}
+
+    \begin{alertblock}{Regla de Reemplazo (Pre-Power Rule)}
+        ¡Estos dispositivos \textbf{NO} son intercambiables pin-a-pin! Antes de cambiar de CI en Lab 4, debe verificar el pinout, rango de alimentación y re-cablear la protoboard[cite: 15].
+    \end{alertblock}
+\end{frame}
+
+\end{document}
