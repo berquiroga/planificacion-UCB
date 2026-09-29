@@ -1,0 +1,56 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342}}
+\chead{Handoff de Contenido: Dinámica}
+\rhead{Preparación para W09-S02}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Handoff Técnico para W09-S02 (Dinámica)}}\\[0.2cm]
+\end{center}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Objetivo Principal de W09-S02[cite: 13]}]
+    Introducir la \textbf{estructura dinámica mínima y rigurosa} necesaria para que el estudiante defienda el EC2 y conecte el Hito 2. NO se debe intentar realizar una derivación simbólica de los 6 grados de libertad del robot IRB120, a menos que se suministre explícitamente información geométrica inercial del fabricante.
+\end{tcolorbox}
+
+\section*{1. Ecuación Central de Diseño[cite: 13]}
+La próxima sesión debe explicar e interpretar la formulación:
+\begin{equation*}
+    \tau = M(\mathbf{q})\ddot{\mathbf{q}} + C(\mathbf{q}, \dot{\mathbf{q}})\dot{\mathbf{q}} + g(\mathbf{q})
+\end{equation*}
+
+\section*{2. Requerimientos de Comprensión del Estudiante[cite: 13]}
+El estudiante debe comprender y nombrar el aporte de cada término:
+\begin{itemize}
+    \item $M(\mathbf{q})\ddot{\mathbf{q}}$: Contribución inercial.
+    \item $C(\mathbf{q}, \dot{\mathbf{q}})\dot{\mathbf{q}}$: Efectos de Coriolis y centrífugos dependientes de la velocidad.
+    \item $g(\mathbf{q})$: Contribución de compensación de gravedad.
+    \item $\tau$: Vector de torque final requerido de los actuadores.
+\end{itemize}
+
+\section*{3. Alcance de la Derivación[cite: 13]}
+Desarrolle una derivación analítica \textbf{manejable}, por ejemplo, un péndulo de 1R o un brazo planar de 2R. El enfoque es procedimental.
+
+\section*{4. Conexión Obligatoria con el Hito 2 (Trayectoria)[cite: 13]}
+Conecte explícitamente la dinámica con W09-S01: Utilice $q(t), \dot{q}(t), \ddot{q}(t)$ generados por el perfil LSPB para inyectarlos en la ecuación de $\tau$.
+
+\section*{5. Salida Computacional Esperada[cite: 13]}
+En Python, el estudiante deberá evaluar $\tau(t)$ a lo largo de toda la trayectoria e interpretar los picos de esfuerzo mecánico relativos a las tres fases del LSPB (aceleración, crucero, desaceleración).
+
+\end{document}

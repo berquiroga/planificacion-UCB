@@ -1,0 +1,39 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342}}
+\chead{Práctica Autónoma: IK / Pieper}
+\rhead{W09-S01}
+
+\begin{document}
+
+\section*{Práctica Autónoma: Mantenimiento de Pieper[cite: 13]}
+
+\textbf{1. Reconstrucción del Centro de Muñeca:}[cite: 13] \\
+Dado un objetivo $T_0^{6,d} = \begin{bmatrix} R_d & p_d \\ 0 & 1 \end{bmatrix}$ y $p_d = [0.5, 0.2, 0.6]^T$. Si el vector de eje final deseado es extraído como $z_6^d = R_d [0, 0, 1]^T = [1, 0, 0]^T$, demuestre analíticamente que $p_W = [0.5-d_6, 0.2, 0.6]^T$. ¿Por qué la orientación deseada modifica el punto central de la muñeca?
+\vspace{3cm}
+
+\textbf{2. Reconstrucción de Ramas:}[cite: 13] \\
+Si al resolver un subproblema de brazo obtiene $c_3 = 0 \implies s_3 = \pm 1$. Explique físicamente por qué estos dos signos matemáticos representan verdaderas ramas geométricas (como codo arriba/abajo) y no simples artificios de duplicación algebraica.
+\vspace{3cm}
+
+\textbf{3. Justificación $\operatorname{atan2}$:}[cite: 13] \\
+Utilice $q_3 = \operatorname{atan2}(s_3, c_3)$ para calcular los ángulos de la pregunta 2. Argumente por qué esta función computacional es estrictamente necesaria para preservar los cuadrantes frente a la función matemática $\tan^{-1}$.
+\vspace{3cm}
+
+\textbf{4. Criterio de Verificación FK:}[cite: 13] \\
+Explique la lógica matemática detrás de evaluar $T_0^6(\mathbf{q}^{(k)}) \stackrel{?}{\approx} T_0^{6,d}$ para validar los candidatos obtenidos de la cinemática inversa.
+\vspace{3cm}
+
+\end{document}

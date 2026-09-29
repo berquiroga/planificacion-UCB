@@ -1,0 +1,49 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Hoja de Ruta de Evaluaciones}
+\rhead{Hacia EC2 e Hito 2}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Roadmap de Evaluaciones (Provisional)}}\\[0.2cm]
+\end{center}
+
+\textit{Nota: Las fechas presentadas aquí son de carácter provisional y están sujetas a la verificación (Readiness Gate) de los temas de Singularidad y Dinámica[cite: 13].}
+
+\vspace{0.4cm}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|l|l|X|l|}
+\hline
+\rowcolor{ucbblue!20} \textbf{Fecha} & \textbf{Actividad} & \textbf{Propósito Pedagógico} & \textbf{Estado} \\ \hline
+Mar 29 Sep & Singularidades + LSPB & Cerrar brechas conceptuales del Jacobiano y abrir perfil temporal. & \textit{Programado} \\ \hline
+Jue 1 Oct & Dinámica e Integración H2 & Bloque final de instrucción masiva (Ecuación Torque). & \textit{Provisional} \\ \hline
+\textbf{Mar 6 Oct} & \textbf{Evaluación EC2 (Individual)} & ¿Puede el estudiante resolver la matemática de base solo? & \textit{Provisional} \\ \hline
+\textbf{Jue 8 Oct} & \textbf{Defensa Hito 2 (Grupal)} & ¿Puede el grupo integrar todo en un pipeline de ingeniería coherente? & \textit{Provisional} \\ \hline
+\end{tabularx}
+
+\vspace{0.8cm}
+\textbf{Naturaleza de la Evaluación[cite: 13]:}
+\begin{itemize}
+    \item \textbf{EC2:} Enfoque analítico cerrado en lápiz y papel.
+    \item \textbf{Hito 2:} Enfoque algorítmico, resolución computacional y defensa de la integración cinemática y dinámica en Python (Notebook).
+\end{itemize}
+
+\end{document}

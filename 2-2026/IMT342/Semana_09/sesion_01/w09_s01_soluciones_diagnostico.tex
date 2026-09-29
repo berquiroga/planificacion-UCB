@@ -1,0 +1,60 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+
+\usepackage{amsmath, amssymb, bm}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Solucionario y Diagnóstico Docente}
+\rhead{W09-S01}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{red!80!black}{SOLUCIONARIO Y DIAGNÓSTICO DOCENTE}}\\[0.2cm]
+\end{center}
+
+\section*{Solucionario: Singularidades[cite: 13]}
+\textbf{E1:} a) $\dot{\mathbf{x}} = J[1,0]^T = [0,2]^T$. b) Representa la velocidad generada en el efector final al mover la primera junta a unidad de velocidad con el resto fijas.\\
+\textbf{E2:} $\operatorname{rank} A = 2$ (Regular). $\operatorname{rank} B = 1$ (Singular, columnas dependientes).\\
+\textbf{E3:} Universal: $\operatorname{rank}J < \min(m,n)$. El determinante requiere que la matriz sea cuadrada; para robots con redundancia (ej. $6 \times 7$), el determinante no existe matemáticamente.\\
+\textbf{E4:} Singular: $q_2=0$. Las columnas del Jacobiano $2 \times 2$ son proporcionales (paralelas en $+Y$). Se pierde la dirección de movimiento local en $+X$ (dirección radial).\\
+\textbf{E5:} $\dot{\mathbf{q}} = J^{-1}\dot{\mathbf{x}}_d = \begin{bmatrix} 1 & 0 \\ 0 & 20 \end{bmatrix} \begin{bmatrix} 0 \\ 0.5 \end{bmatrix} = \begin{bmatrix} 0 \\ 10 \end{bmatrix}$ rad/s. Amplificación: estar muy cerca a la singularidad demanda velocidades articulares enormes para rastrear una velocidad cartesiana normal.
+
+\section*{Solucionario: LSPB[cite: 13]}
+\textbf{A1:} $|\ddot{q}_c|_{\min} = \frac{4(2)}{9} = 0.88$ rad/s$^2$. Como $1 > 0.88$, el perfil es factible.\\
+\textbf{A2:} $t_c = 1.5 - 0.5\sqrt{9 - 4(2)/1} = 1.5 - 0.5(1) = 1$ s.\\
+\textbf{A3:} $\dot{q}_c = (1)(1) = 1$ rad/s.\\
+\textbf{B2:} La posición y la velocidad son continuas. La aceleración ideal es constante por tramos y presenta saltos. Esto es aceptable teóricamente, aunque en la práctica los motores tienen un límite de \textit{jerk} (derivada de aceleración) que redondea estos saltos.
+
+\vspace{0.5cm}
+
+\section*{Guía de Intervención Diagnóstica[cite: 13]}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\textwidth}{|>{\hsize=0.9\hsize}X|>{\hsize=0.9\hsize}X|>{\hsize=1.2\hsize}X|}
+\hline
+\rowcolor{gray!20} \textbf{Observación} & \textbf{Concepto Probable} & \textbf{Micro-remediación} \\ \hline
+Trata al determinante como criterio universal. & Jerarquía Rango/Determinante débil. & Pregunte si existe $\det$ para un Jacobiano $6 \times 7$. \\ \hline
+Afirma que en singularidad "el robot se congela". & Movilidad local no comprendida. & Pida que identifique qué direcciones tangenciales siguen operativas en el dibujo. \\ \hline
+No puede identificar la dirección perdida. & Desvincula la geometría del rango matricial. & Dibuje los vectores de velocidad (columnas de J). \\ \hline
+Usa $J^{-1}$ como IK Global. & Confusión Local vs Global. & Compare las ecuaciones lado a lado: $\dot{\mathbf{x}} \to \dot{\mathbf{q}}$ versus $T_d \to \mathbf{q}$. \\ \hline
+Cree que el perfil "Trapezoidal" es para posición. & Confusión de perfiles. & Muestre gráficas alineadas; el trapecio se forma en $\dot{q}(t)$. \\ \hline
+Ve el Hito 2 como scripts separados. & Falta de integración. & Dibuje el pipeline completo en pizarra (IK $\to$ LSPB $\to$ Dinámica). \\ \hline
+\end{tabularx}
+
+\end{document}

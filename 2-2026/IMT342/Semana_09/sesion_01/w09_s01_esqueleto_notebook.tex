@@ -1,0 +1,68 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor} % Fuente monoespaciada robusta
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[table, xcdraw]{xcolor} % Soluciona los errores de \color no definido
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{listings}
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    backgroundcolor=\color{gray!5},
+    frame=single,
+    rulecolor=\color{gray!40},
+    commentstyle=\color{green!60!black},
+    showstringspaces=false,
+    breaklines=true,          % Soluciona desbordamientos horizontales
+    breakatwhitespace=true,
+    columns=flexible
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342}}
+\chead{Notebook Skeleton Hito 2}
+\rhead{Semana 9}
+
+\begin{document}
+
+\section*{Esqueleto Oficial de Jupyter Notebook (Hito 2)[cite: 13]}
+Estructure su entrega computacional siguiendo esta jerarquía de celdas Markdown y Code.
+
+\begin{lstlisting}
+# 1. Planteamiento del Problema y Modelo del Robot
+# [Descripcion del modelo, tabla D-H, convenciones]
+
+# 2. Cinematica Inversa Analitica (Metodo de Pieper)
+# [Calculo del centro de muneca y orientacion residual]
+
+# 3. Verificacion FK
+# [Funcion que evalua candidatos: T_0^6(q) approx T_d]
+
+# 4. Jacobiano Geometrico
+# [Derivacion de columnas e implementacion en codigo]
+
+# 5. Analisis de Singularidades
+# [Calculo de rangos, determinantes y experimento]
+
+# 6. Generacion de Trayectoria (LSPB)
+# [Funciones q(t), qdot(t), qddot(t) y limites]
+
+# 7. Dinamica / Analisis de Torque
+# [PLACEHOLDER: A desarrollar despues de W09-S02]
+
+# 8. Graficas y Discusion
+# [Visualizacion del perfil LSPB y torques]
+
+# 9. Validacion y Conclusiones
+# [Argumentacion sobre la validez del algoritmo]
+\end{lstlisting}
+
+\end{document}

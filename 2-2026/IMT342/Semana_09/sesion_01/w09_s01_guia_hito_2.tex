@@ -1,0 +1,62 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Guía de Desarrollo: Hito 2}
+\rhead{Semana 9 - Sesión 1}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Guía de Requerimientos y Desarrollo: Hito 2}}\\[0.2cm]
+\end{center}
+
+\begin{tcolorbox}[colback=yellow!10, colframe=black, title=\textbf{Declaración de Arquitectura de Evaluación}]
+    El Hito 2 evalúa la integración de la cinemática analítica, evaluación local y generación de trayectorias, hacia la dinámica. Es el núcleo de la ingeniería de manipuladores[cite: 13].
+\end{tcolorbox}
+
+\section*{1. Evidencia Final Requerida por Componente[cite: 13]}
+\begin{itemize}
+    \item \textbf{IK Analítica (Pieper):} 8 ramas analíticas; lógica de filtrado de ramas; validación obligatoria a través de Cinemática Directa (FK).
+    \item \textbf{Jacobiano:} Implementación matemática; al menos un caso de validación manual; interpretación física de la matriz.
+    \item \textbf{Singularidades:} Experimento seleccionado documentado; evidencia de rango/determinante donde aplique; interpretación de la movilidad perdida; trazado cerca a singularidad.
+    \item \textbf{Generación LSPB:} Ecuaciones de la trayectoria de tiempo $q(t), \dot{q}(t), \ddot{q}(t)$; justificación de parámetros; comprobaciones de continuidad y límites.
+    \item \textbf{Dinámica (Pendiente W09-S02):} Modelo dinámico; cálculo de torque $\tau(t)$ a lo largo de la trayectoria generada; interpretación.
+    \item \textbf{Notebook:} Ecuaciones, código limpio, manejo explícito de unidades, trazado de gráficas (plots), discusión y conclusiones.
+\end{itemize}
+
+\section*{2. ¿Qué puede comenzar AHORA?[cite: 13]}
+No espere a la sesión de Dinámica para avanzar. Puede implementar ya mismo:
+\begin{itemize}
+    \item Esqueleto estructural del Notebook.
+    \item Implementación completa del algoritmo de Pieper y verificación FK.
+    \item Implementación del Jacobiano.
+    \item Esqueleto (Scaffold) del análisis de singularidad.
+    \item Funciones de trayectoria LSPB.
+    \item Utilidades para graficar (Matplotlib).
+\end{itemize}
+
+\section*{3. ¿Qué debe esperar a W09-S02?[cite: 13]}
+\begin{itemize}
+    \item La matriz de Inercia, Coriolis y Gravedad.
+    \item La inyección de $\ddot{q}(t)$ y $\dot{q}(t)$ al modelo para obtener torque.
+    \item Discusión integrada final.
+\end{itemize}
+
+\end{document}

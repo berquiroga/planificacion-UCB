@@ -1,0 +1,354 @@
+\documentclass[aspectratio=169, xcolor={table,xcdraw}]{beamer}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\renewcommand{\tablename}{Tabla}
+
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+
+\title[Singularidades y LSPB]{Transición a Singularidades y Generación de Trayectorias (LSPB)}
+\subtitle{De la Velocidad Local al Movimiento Continuo}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}
+\date{Semana 9 - Sesión 1}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Diagnóstico: Lectura del Jacobiano[cite: 13]}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \small
+            Brazo 2R planar ($a_1=a_2=1$), evaluado en $q_1=0, q_2=\pi/2$. Jacobiano[cite: 13]:
+            {\footnotesize
+            \begin{equation*}
+                J = \begin{bmatrix} -1 & -1 \\ 1 & 0 \\ 0 & 0 \\ 0 & 0 \\ 0 & 0 \\ 1 & 1 \end{bmatrix}, \quad J_p = \begin{bmatrix} -1 & -1 \\ 1 & 0 \end{bmatrix} \text{[cite: 13]}
+            \end{equation*}
+            }
+            
+            \textbf{Mapeo:} Si $\dot{\mathbf{q}} = [1, -1]^T$[cite: 13]:
+            \begin{center}
+                $\mathbf{v}_e = J\dot{\mathbf{q}} = [0 \;\; 1 \;\; 0 \;\; 0 \;\; 0 \;\; 0]^T$ \text{[cite: 13]}
+            \end{center}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{tcolorbox}[colback=white, colframe=ucbblue, title=Interpretación Física{[cite: 13]}, boxsep=0mm, top=1mm, bottom=1mm, left=1mm, right=1mm]
+                \footnotesize
+                \begin{itemize}
+                    \item \textbf{Columna $J_i$:} Contribución de velocidad en el efector por velocidad unitaria en la junta $i$[cite: 13].
+                    \item \textbf{Resultado $\mathbf{v}_e$:} $\mathbf{v}_L = [0,1,0]^T$, $\boldsymbol{\omega} = [0,0,0]^T$[cite: 13].
+                    \item Movimientos articulares opuestos cancelan la velocidad angular $\implies$ \textbf{traslación instantánea pura} en $+y$[cite: 13].
+                \end{itemize}
+            \end{tcolorbox}
+            \begin{alertblock}{No confundir}
+                \footnotesize ¡La matriz $J$ NO es una transformación homogénea y $J\dot{\mathbf{q}}$ NO es una posición![cite: 13]
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Rango Matricial y Movilidad Instantánea[cite: 13]}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            El \textbf{rango} mide el número de direcciones de velocidad independientes en el espacio de la tarea[cite: 13].
+            
+            Para $J \in \mathbb{R}^{m \times n}$, el rango máximo es[cite: 13]:
+            \begin{equation*}
+                \operatorname{rank}_{\max} = \min(m,n) \text{[cite: 13]}
+            \end{equation*}
+            
+            \textbf{Ejemplo Rango Completo[cite: 13]:}
+            \begin{equation*}
+                J_A = \begin{bmatrix} -1 & -1 \\ 1 & 0 \end{bmatrix} \implies \operatorname{rank} J_A = 2
+            \end{equation*}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{Ejemplo Rango Deficiente[cite: 13]:}
+            \begin{equation*}
+                J_B = \begin{bmatrix} 0 & 0 \\ 2 & 1 \end{bmatrix} \text{[cite: 13]}
+            \end{equation*}
+            Las columnas son proporcionales, por tanto[cite: 13]:
+            \begin{equation*}
+                \operatorname{rank} J_B = 1 \text{[cite: 13]}
+            \end{equation*}
+            
+            \begin{tcolorbox}[colback=yellow!10, colframe=orange, title=Significado Físico, boxsep=0mm, top=1mm, bottom=1mm, left=1mm, right=1mm]
+                \small La pérdida de rango \textbf{no} significa que el robot esté globalmente congelado, sino que se ha perdido una dirección de movimiento local independiente[cite: 13].
+            \end{tcolorbox}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Singularidad Cinemática: Definición Universal vs. Especial[cite: 13]}
+    \begin{tcolorbox}[colback=white, colframe=ucbblue, title=Definición Universal{[cite: 13]}, boxsep=0mm, top=1mm, bottom=1mm, left=1mm, right=1mm]
+        Una singularidad cinemática es una configuración donde el Jacobiano pierde rango[cite: 13]:
+        \begin{center}
+            $\boxed{\operatorname{rank}J(\mathbf{q}) < \operatorname{rank}_{\max}}$ \text{[cite: 13]}
+        \end{center}
+    \end{tcolorbox}
+    
+    \vspace{0.3cm}
+    \textbf{Caso Especial (Matrices Cuadradas)[cite: 13]:} \\
+    \small Si $J$ es cuadrada (ej. $6 \times 6$ o el $J_p$ $2 \times 2$), una prueba equivalente es[cite: 13]:
+    \begin{center}
+        $\boxed{\det J(\mathbf{q}) = 0}$ \text{[cite: 13]}
+    \end{center}
+    
+    \vspace{0.3cm}
+    \begin{alertblock}{Precaución[cite: 13]}
+        \footnotesize $\det J=0$ \textbf{no es una definición universal}. Para robots redundantes con Jacobianos no cuadrados (ej. $6 \times 7$), el determinante no existe, debiendo analizarse el rango directamente[cite: 13].
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Visualización de la Singularidad: Brazo Planar 2R[cite: 13]}
+    \small El determinante del brazo 2R es $\det J_p = a_1 a_2 \sin q_2$[cite: 13]. Si $q_2 = 0$, $\det J_p = 0$.
+    \vspace{0.2cm}
+    
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \centering
+            \textbf{Regular ($q_1=0, q_2=\pi/2$)[cite: 13]}
+            \vspace{0.1cm}
+            
+            \begin{tikzpicture}[scale=0.85, thick]
+                \draw[->, gray] (0,0) -- (1.5,0);
+                \draw[->, gray] (0,0) -- (0,1.5);
+                
+                \draw[ucbblue, line width=2pt] (0,0) -- (1,0) -- (1,1);
+                \filldraw[black] (0,0) circle (1pt); \filldraw[black] (1,0) circle (1pt); \filldraw[red] (1,1) circle (1pt);
+                
+                \draw[-Stealth, red!70!black, line width=1.5pt] (1,1) -- ++(-0.5, 0.5) node[above]{$J_{1}$};
+                \draw[-Stealth, orange, line width=1.5pt] (1,1) -- ++(-0.5, 0) node[left]{$J_{2}$};
+            \end{tikzpicture}
+            
+            \footnotesize Columnas independientes.
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \centering
+            \textbf{Singular ($q_1=0, q_2=0$)[cite: 13]}
+            \vspace{0.1cm}
+            
+            \begin{tikzpicture}[scale=0.85, thick]
+                \draw[->, gray] (0,0) -- (2.5,0);
+                \draw[->, gray] (0,0) -- (0,1);
+                
+                \draw[ucbblue, line width=2pt] (0,0) -- (1,0) -- (2,0);
+                \filldraw[black] (0,0) circle (1pt); \filldraw[black] (1,0) circle (1pt); \filldraw[red] (2,0) circle (1pt);
+                
+                \draw[-Stealth, red!70!black, line width=1.5pt] (2,0) -- ++(0, 1) node[right]{$J_{1}$};
+                \draw[-Stealth, orange, line width=1.5pt] (2,0) -- ++(0, 0.5) node[left]{$J_{2}$};
+            \end{tikzpicture}
+            
+            \footnotesize Columnas paralelas (en $+y$). \\
+            \textbf{Pérdida de dirección radial ($x$)[cite: 13]}.
+            
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.2cm}
+    \footnotesize \textit{Conexión IK Global: La misma postura marca la frontera del espacio de trabajo (no puede alcanzar $x > a_1+a_2$)[cite: 13].}
+\end{frame}
+
+\begin{frame}{Cinemática Inversa Diferencial cerca de Singularidades[cite: 13]}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            Para un Jacobiano cuadrado no singular, la IK diferencial es[cite: 13]:
+            \begin{equation*}
+                \boxed{\dot{\mathbf{q}} = J^{-1}(\mathbf{q})\dot{\mathbf{x}}_d} \text{[cite: 13]}
+            \end{equation*}
+            
+            ¿Qué ocurre al aproximarse a una singularidad? Sea el modelo ilustrativo[cite: 13]:
+            \begin{equation*}
+                J_\varepsilon = \begin{bmatrix} 1 & 0 \\ 0 & \varepsilon \end{bmatrix} \implies J_\varepsilon^{-1} = \begin{bmatrix} 1 & 0 \\ 0 & 1/\varepsilon \end{bmatrix} \text{[cite: 13]}
+            \end{equation*}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            Si deseamos una velocidad unitaria $\dot{\mathbf{x}}_d = [0, 1]^T$[cite: 13]:
+            \begin{equation*}
+                \dot{\mathbf{q}} = \begin{bmatrix} 0 \\ 1/\varepsilon \end{bmatrix} \text{[cite: 13]}
+            \end{equation*}
+            
+            \begin{center}
+                \small
+                \begin{tabular}{r | l}
+                $\varepsilon$ & Velocidad requerida $\dot{q}_2$ \\ \hline
+                1 & 1 \\
+                0.1 & 10 \\
+                0.01 & 100
+                \end{tabular}
+            \end{center}
+            \begin{tcolorbox}[colback=yellow!10, colframe=orange, title=Significado Físico, boxsep=0mm, top=1mm, bottom=1mm, left=1mm, right=1mm]
+                \small Conclusión: Cerca de la singularidad, mantener una velocidad cartesiana finita demanda velocidades articulares inalcanzables[cite: 13].
+            \end{tcolorbox}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{De Puntos a Trayectorias (Planificación)[cite: 13]}
+    Hasta ahora la IK nos daba la configuración de destino. Pero dos puntos ($q_A, q_B$) no definen una ley de movimiento[cite: 13].
+    
+    \vfill
+    \begin{center}
+    \begin{tikzpicture}[scale=1, thick]
+        \node[draw, rounded corners, fill=ucbblue!10, text width=3cm, align=center] (C) at (0,0) {\textbf{Configuración}\\Solo los puntos extremos.};
+        \node[draw, rounded corners, fill=ucbblue!10, text width=3cm, align=center] (P) at (4.5,0) {\textbf{Camino (Path)}\\Curva geométrica sin temporización.};
+        \node[draw, rounded corners, fill=green!10, text width=4cm, align=center] (T) at (9.5,0) {\textbf{Trayectoria}\\Parametrizada en el tiempo: $q(t), \dot{q}(t), \ddot{q}(t)$.};
+        
+        \draw[->] (C) -- (P);
+        \draw[->] (P) -- (T);
+    \end{tikzpicture}
+    \end{center}
+    
+    \vfill
+    \textbf{¿Por qué es vital el tiempo?}[cite: 13] \\
+    Los extremos por sí solos no determinan la velocidad, la aceleración requerida ni, en última instancia, el esfuerzo del motor ($\tau$)[cite: 13].
+\end{frame}
+
+\begin{frame}{Generación de Trayectorias: Perfil LSPB (1/2)[cite: 13]}
+    \small 
+    \textbf{LSPB} (Linear Segment with Parabolic Blends) genera un perfil de velocidad \textbf{trapezoidal} para un movimiento punto a punto de una junta[cite: 13].
+    
+    \textbf{Suposiciones y Fases[cite: 13]:} Posiciones $q_i, q_f$; tiempo final $t_f$; reposo en extremos $\dot{q}(0)=\dot{q}(t_f)=0$; aceleración constante $\ddot{q}_c$[cite: 13].
+    
+    \vspace{0.4cm}
+    \begin{columns}[T]
+        \begin{column}{0.33\textwidth}
+            \footnotesize
+            \textbf{1. Aceleración} ($0 \le t \le t_c$)\\
+            $q(t) = q_i + \tfrac{1}{2}\ddot{q}_c t^2$ \\
+            $\dot{q}(t) = \ddot{q}_c t$ \\
+            $\ddot{q}(t) = \ddot{q}_c$
+        \end{column}
+        \begin{column}{0.34\textwidth}
+            \footnotesize
+            \textbf{2. V. Constante} ($t_c < t \le t_f - t_c$)\\
+            $q(t) = q_i + \dot{q}_c (t - \tfrac{t_c}{2})$ \\
+            $\dot{q}(t) = \ddot{q}_c t_c$ \\
+            $\ddot{q}(t) = 0$
+        \end{column}
+        \begin{column}{0.33\textwidth}
+            \footnotesize
+            \textbf{3. Desaceleración} ($t_f - t_c < t \le t_f$)\\
+            $q(t) = q_f - \tfrac{1}{2}\ddot{q}_c(t_f - t)^2$ \\
+            $\dot{q}(t) = \ddot{q}_c(t_f - t)$ \\
+            $\ddot{q}(t) = -\ddot{q}_c$
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Generación de Trayectorias: Perfil LSPB (2/2)[cite: 13]}
+    \textbf{Relación de Tiempo de Mezcla ($t_c$)[cite: 13]:}
+    \begin{center}
+        $\boxed{ t_c = \frac{t_f}{2} - \frac{1}{2}\sqrt{t_f^2 - \frac{4(q_f - q_i)}{\ddot{q}_c}} }$ \text{[cite: 13]}
+    \end{center}
+    
+    \vfill
+    \textbf{Restricción Física (Aceleración Mínima)[cite: 13]:}
+    Para que el movimiento sea factible en el tiempo estipulado, el motor debe cumplir[cite: 13]:
+    \begin{center}
+        $\boxed{ |\ddot{q}_c| \ge \frac{4|q_f - q_i|}{t_f^2} }$ \text{[cite: 13]}
+    \end{center}
+    \vfill
+    \textit{Si se usa la igualdad, el segmento de velocidad constante desaparece y el perfil de velocidad se vuelve puramente triangular[cite: 13].}
+\end{frame}
+
+\begin{frame}{Ejemplo Guiado: LSPB[cite: 13]}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Datos[cite: 13]:}
+            $q_i=0$, $q_f=2$ rad, $t_f=3$ s, $\ddot{q}_c=1$ rad/s$^2$.
+            
+            \vspace{0.2cm}
+            \textbf{1. Viabilidad[cite: 13]:}
+            $|\ddot{q}_c|_{\min} = \frac{4(2)}{3^2} = \frac{8}{9}$. Como $1 > 8/9$, es factible.
+            
+            \vspace{0.2cm}
+            \textbf{2. Tiempos y Velocidad[cite: 13]:}
+            $t_c = \frac{3}{2} - \frac{1}{2}\sqrt{9-8} = 1$ s. \\
+            $\dot{q}_c = \ddot{q}_c t_c = 1$ rad/s.
+            
+            \vspace{0.2cm}
+            \textbf{3. Ecuaciones por tramos[cite: 13]:}
+            \begin{align*}
+                \dot{q}(t) &= \begin{cases} t & 0 \le t \le 1 \\ 1 & 1 < t \le 2 \\ 3-t & 2 < t \le 3 \end{cases}
+            \end{align*}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \centering
+            \begin{tikzpicture}[scale=0.85]
+                \begin{axis}[
+                    width=7cm, height=4.5cm,
+                    xlabel={$t$ [s]}, ylabel={$\dot{q}(t)$ [rad/s]},
+                    xmin=0, xmax=3, ymin=0, ymax=1.2,
+                    xtick={0,1,2,3}, ytick={0,1},
+                    grid=both,
+                    title={Perfil de Velocidad Trapezoidal}
+                ]
+                \addplot[ucbblue, thick, domain=0:1] {x};
+                \addplot[ucbblue, thick, domain=1:2] {1};
+                \addplot[ucbblue, thick, domain=2:3] {3-x};
+                
+                \draw[dashed, red] (axis cs:1,0) -- (axis cs:1,1);
+                \draw[dashed, red] (axis cs:2,0) -- (axis cs:2,1);
+                \end{axis}
+            \end{tikzpicture}
+            
+            \footnotesize $q(t)$ y $\dot{q}(t)$ son continuas. $\ddot{q}(t)$ presenta saltos en los límites de fase[cite: 13].
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Arquitectura Integrada del Hito 2 (Pipeline)[cite: 13]}
+    \begin{center}
+    \begin{tikzpicture}[
+        node distance=0.4cm and 0.5cm,
+        box/.style={rectangle, draw=ucbblue, thick, fill=ucbblue!5, text width=2.4cm, align=center, rounded corners, font=\scriptsize},
+        arrow/.style={-Stealth, thick, ucbblue}
+    ]
+        \node[box] (ik) {\textbf{Pieper (IK)}\\$T_d \to \mathbf{q}$};
+        \node[box, right=of ik] (fk) {\textbf{Validación}\\Selección + FK};
+        \node[box, right=of fk] (lspb) {\textbf{LSPB}\\$q(t), \dot{q}(t), \ddot{q}(t)$};
+        \node[box, below=of lspb] (jac) {\textbf{Jacobiano}\\$J(q(t))$};
+        \node[box, left=of jac] (sing) {\textbf{Singularidades}\\Evaluación Local};
+        \node[box, fill=yellow!20, left=of sing] (dyn) {\textbf{Dinámica}\\(Pendiente W09-S02)};
+        \node[box, fill=green!10, below=of dyn] (tau) {\textbf{Torque}\\$\tau(t)$};
+        
+        \draw[arrow] (ik) -- (fk);
+        \draw[arrow] (fk) -- (lspb);
+        \draw[arrow] (lspb) -- (jac);
+        \draw[arrow] (jac) -- (sing);
+        \draw[arrow] (sing) -- (dyn);
+        \draw[arrow] (dyn) -- (tau);
+    \end{tikzpicture}
+    \end{center}
+    
+    \vspace{0.2cm}
+    \textbf{Preparación para W09-S02 (Dinámica)[cite: 13]:} \\
+    W09-S01 nos entrega $q(t), \dot{q}(t), \ddot{q}(t)$. La próxima sesión ingresará esos datos a[cite: 13]:
+    \begin{center}
+        $\boxed{\tau = M(q)\ddot{q} + C(q, \dot{q})\dot{q} + g(q)}$ \text{[cite: 13]}
+    \end{center}
+\end{frame}
+
+\end{document}

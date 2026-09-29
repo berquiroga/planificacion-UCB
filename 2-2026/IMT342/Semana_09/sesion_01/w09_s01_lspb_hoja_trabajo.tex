@@ -1,0 +1,113 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+
+\usepackage{amsmath, amssymb}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Worksheet: Trayectorias LSPB}
+\rhead{Semana 9 - Sesión 1}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Hoja de Trabajo: Segmentos Lineales con Mezclas Parabólicas (LSPB)}}\\[0.2cm]
+\end{center}
+
+\vspace{0.2cm}
+
+\section*{A. Análisis del Problema Guiado[cite: 13]}
+Se desea planificar un movimiento articular con los siguientes parámetros[cite: 13]:
+\begin{equation*}
+    q_i = 0, \quad q_f = 2\text{ rad}, \quad t_f = 3\text{ s}, \quad \ddot{q}_c = 1\text{ rad/s}^2
+\end{equation*}
+
+\textbf{1. Factibilidad:} Calcule la aceleración mínima requerida $|\ddot{q}_c|_{\min} = \frac{4|q_f - q_i|}{t_f^2}$ y justifique si es factible construir un perfil trapezoidal con la $\ddot{q}_c$ dada.
+\vspace{2cm}
+
+\textbf{2. Tiempo de Mezcla:} Calcule el tiempo de aceleración $t_c$ usando:
+\begin{equation*}
+    t_c = \frac{t_f}{2} - \frac{1}{2}\sqrt{t_f^2 - \frac{4(q_f - q_i)}{\ddot{q}_c}} \text{[cite: 13]}
+\end{equation*}
+\vspace{2cm}
+
+\textbf{3. Velocidad de Crucero:} Calcule $\dot{q}_c = \ddot{q}_c t_c$.
+\vspace{1.5cm}
+
+\section*{B. Gráficos Alineados y Continuidad[cite: 13]}
+Los siguientes gráficos muestran los perfiles de posición, velocidad y aceleración para el problema anterior.
+\vspace{0.4cm}
+
+\begin{center}
+\begin{tikzpicture}
+    \begin{axis}[
+        width=10cm, height=4cm,
+        ylabel={$q(t)$ [rad]},
+        xmin=0, xmax=3, ymin=0, ymax=2,
+        xtick=\empty,
+        grid=major
+    ]
+    \addplot[ucbblue, thick, domain=0:1] {0.5*x^2};
+    \addplot[ucbblue, thick, domain=1:2] {x-0.5};
+    \addplot[ucbblue, thick, domain=2:3] {2 - 0.5*(3-x)^2};
+    \draw[dashed, red] (axis cs:1,0) -- (axis cs:1,2);
+    \draw[dashed, red] (axis cs:2,0) -- (axis cs:2,2);
+    \end{axis}
+\end{tikzpicture}
+
+\begin{tikzpicture}
+    \begin{axis}[
+        width=10cm, height=4cm,
+        ylabel={$\dot{q}(t)$ [rad/s]},
+        xmin=0, xmax=3, ymin=0, ymax=1.2,
+        xtick=\empty,
+        grid=major
+    ]
+    \addplot[ucbblue, thick, domain=0:1] {x};
+    \addplot[ucbblue, thick, domain=1:2] {1};
+    \addplot[ucbblue, thick, domain=2:3] {3-x};
+    \draw[dashed, red] (axis cs:1,0) -- (axis cs:1,1.2);
+    \draw[dashed, red] (axis cs:2,0) -- (axis cs:2,1.2);
+    \end{axis}
+\end{tikzpicture}
+
+\begin{tikzpicture}
+    \begin{axis}[
+        width=10cm, height=4cm,
+        xlabel={$t$ [s]}, ylabel={$\ddot{q}(t)$ [rad/s$^2$]},
+        xmin=0, xmax=3, ymin=-1.2, ymax=1.2,
+        xtick={0,1,2,3},
+        grid=major
+    ]
+    \addplot[ucbblue, thick, domain=0:0.99] {1};
+    \addplot[ucbblue, thick, domain=1.01:1.99] {0};
+    \addplot[ucbblue, thick, domain=2.01:3] {-1};
+    \draw[dashed, red] (axis cs:1,-1.2) -- (axis cs:1,1.2);
+    \draw[dashed, red] (axis cs:2,-1.2) -- (axis cs:2,1.2);
+    \end{axis}
+\end{tikzpicture}
+\end{center}
+
+\textbf{1.} Identifique y marque en los gráficos las zonas correspondientes a las fases de \textit{aceleración}, \textit{velocidad constante} y \textit{desaceleración}[cite: 13]. \\
+\textbf{2.} Analice la continuidad: ¿Existen saltos instantáneos (discontinuidades) en la gráfica de $\dot{q}(t)$? ¿Y en la gráfica de $\ddot{q}(t)$? ¿Por qué es físicamente aceptable (en modelos básicos) un salto en la aceleración pero no en la velocidad?[cite: 13]
+\vspace{2cm}
+
+\end{document}
