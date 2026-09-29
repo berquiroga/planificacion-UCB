@@ -1,0 +1,59 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Cierre Acotado de Laboratorio}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Auditoría: Cierre Acotado de Laboratorio Hito 2}]
+    \textbf{Un grupo, un objetivo acotado[cite: 7].} La prioridad NO es forzar el final del laboratorio a ciegas, sino producir evidencia consistente hasta el punto validado[cite: 7].
+\end{tcolorbox}
+
+\vspace{0.5cm}
+
+\noindent\textbf{Grupo:} \hrulefill \\[0.4cm]
+\noindent\textbf{1. Starting Checkpoint (Estado al inicio de la sesión):} \hrulefill \\[0.4cm]
+\noindent\textbf{2. Un único Checkpoint Objetivo para HOY (Marque uno)[cite: 7]:} 
+\begin{itemize}
+    \item[$\square$] Validar Espejo ($I_T$)
+    \item[$\square$] Validar Par Balanceado (Punto Q)
+    \item[$\square$] Shunt y $v_d$
+    \item[$\square$] Respuesta Diferencial ($A_d$)
+    \item[$\square$] Respuesta Common-Mode ($A_c$)
+    \item[$\square$] CMRR
+\end{itemize}
+
+\vspace{0.2cm}
+\noindent\textbf{3. Evidencia Esperada (Ecuación/Variable):} \hrulefill \\[0.4cm]
+\noindent\textbf{4. Evidencia Real Obtenida:} \hrulefill \\[0.4cm]
+\noindent\textbf{5. Bloqueador Principal (Blocker):} \hrulefill \\[0.4cm]
+\noindent\textbf{6. Hipótesis de Falla (Fault Hypothesis):} \hrulefill \\[0.4cm]
+\noindent\textbf{7. Siguiente paso de diagnóstico físico:} \hrulefill \\[0.4cm]
+\noindent\textbf{8. ¿Evidencia recopilada hasta ahora suficiente para el Reporte? (SÍ/NO):} \rule{2cm}{0.15mm}
+
+\vspace{1cm}
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Regla de Parada Oficial (Stop Rule)[cite: 7]}]
+    Si el \textit{debugging} o las fallas de hardware consumen el tiempo y amenazan los bloques protegidos de teoría y práctica individual tipo examen:
+    \begin{center}
+        \Large \textbf{FREEZE EVIDENCE AND STOP} \quad \text{[cite: 7]}
+    \end{center}
+    Detenga el trabajo físico, documente el estado de falla e inicie el trabajo analítico para el reporte grupal[cite: 7].
+\end{tcolorbox}
+
+\end{document}

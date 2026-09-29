@@ -1,0 +1,71 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Solucionario Instructor W09S01}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Material Reservado Docente: Soluciones Explícitas Práctica Individual}]
+    Incluye cálculos completos, suposiciones y vías de diagnóstico esperadas en los estudiantes[cite: 7].
+\end{tcolorbox}
+
+\section*{Solucionario: Round 1[cite: 7]}
+
+\textbf{Problema A: Q-point[cite: 7]}
+\begin{align*}
+    I_C &= \frac{V_{CC} - v_C}{R_C} = \frac{9.0 - 6.55}{4700} \approx \mathbf{0.521\,\text{mA}} \quad \text{[cite: 7]} \\
+    V_{CE} &= v_C - v_E = 6.55 - (-0.70) = \mathbf{7.25\,\text{V}} \quad \text{[cite: 7]}
+\end{align*}
+\textit{Interpretación:} Región activa directa confirmada ($V_{CE} \gg 0.3\,\text{V}$ y $V_{BC} < 0$). Totalmente compatible con el bias nominal de Hito 2 ($\sim 0.5\,\text{mA}$)[cite: 7].
+
+\vspace{0.2cm}
+\textbf{Problema B: Current Mirror[cite: 7]}
+\begin{equation*}
+    I_{REF} = \frac{0\,\text{V} - (-9\,\text{V} + 0.7\,\text{V})}{8.2\,\text{k}\Omega} = \frac{8.3}{8.2} \approx \mathbf{1.01\,\text{mA}} \quad \text{[cite: 7]}
+\end{equation*}
+\textit{Discrepancia y causas:} $1.01\,\text{mA} - 0.88\,\text{mA} = 0.13\,\text{mA}$ de error. Causas: Corrientes de base (efecto de $\beta$ finito: $I_T = I_{REF}/(1+2/\beta)$), desviación del $V_{BE}$ real, tolerancia de la resistencia $R_{REF}$ o Efecto Early[cite: 7]. No demuestra fallo catastrófico, es una desviación esperable[cite: 7].
+
+\vspace{0.2cm}
+\textbf{Problema C: Differential Pair[cite: 7]}
+\begin{align*}
+    g_m &= \frac{I_C}{V_T} = \frac{0.48\,\text{mA}}{25.85\,\text{mV}} \approx \mathbf{18.57\,\text{mS}} \quad \text{[cite: 7]} \\
+    A_{d,se2} &= +\frac{g_m R_C}{2} = \frac{(18.57\,\text{mS})(4.7\,\text{k}\Omega)}{2} \approx \mathbf{+43.6} \quad \text{[cite: 7]} \\
+    v_{C2,ac} &= A_{d,se2} \cdot v_d = (43.6)(5\,\text{mV}) = \mathbf{218\,\text{mV}} \quad \text{[cite: 7]}
+\end{align*}
+\textit{Signo:} Positivo. El Colector 2 está en fase con $v_d$ asumiendo $v_d = v_1 - v_2$ y que $v_1$ domina[cite: 7].
+
+\section*{Solucionario: Round 2[cite: 7]}
+
+\textbf{Problema D: Descomposición[cite: 7]}
+\begin{align*}
+    v_d &= v_1 - v_2 = 1.020 - 0.980 = \mathbf{40\,\text{mV}} \quad \text{[cite: 7]} \\
+    v_{cm} &= \frac{1.020 + 0.980}{2} = \mathbf{1.000\,\text{V}} \quad \text{[cite: 7]}
+\end{align*}
+\textit{Reconstrucción:} $v_1 = v_{cm} + v_d/2 = 1.000 + 0.020 = 1.020\,\text{V}$. $v_2 = v_{cm} - v_d/2 = 1.000 - 0.020 = 0.980\,\text{V}$[cite: 7].
+
+\vspace{0.2cm}
+\textbf{Problema E: CMRR Validity Gate[cite: 7]} \\
+\textit{Caso 1:} \textbf{Válido}. Mismo nodo físico. $CMRR = |40 / 0.04| = 1000 \implies CMRR_{dB} = \mathbf{60\,\text{dB}}$[cite: 7]. \\
+\textit{Caso 2:} \textbf{Inválido}. Salidas diferentes ($A_{d,diff}$ usa ambos colectores, $A_{c,se}$ uno solo). No calcular[cite: 7].
+
+\vspace{0.2cm}
+\textbf{Problema F: Measurement Interpretation[cite: 7]} \\
+\textit{Respuesta:} \textbf{NO}[cite: 7]. Las convenciones de amplitud están mezcladas. $v_{cm}$ está en RMS mientras el resto está en Pico-Pico[cite: 7]. Es un error metodológico dividir amplitudes en dominios diferentes[cite: 7].
+
+\end{document}

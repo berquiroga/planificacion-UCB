@@ -1,0 +1,158 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[aspectratio=169]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+\title[Cierre Hito 2]{Cierre Conceptual Hito 2: Modo Común, CMRR e Integración}
+\subtitle{IMT-221 Circuitos Electrónicos III — Semana 9, Sesión 1}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}
+\date{Semana 9}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{La Cadena de Razonamiento Integrada}
+    \begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{El Núcleo Conceptual del Hito 2}]
+        La evaluación no medirá memorización de fórmulas aisladas, sino la capacidad de leer datos, escoger el modelo, justificar supuestos y diagnosticar a través de toda la cadena.
+    \end{tcolorbox}
+    
+    \vspace{0.5cm}
+    \begin{center}
+    \resizebox{0.95\textwidth}{!}{
+    \begin{tikzpicture}[auto, thick]
+        \node[draw, fill=blue!10, rounded corners, align=center] (dc) {Bias DC};
+        \node[draw, fill=blue!10, rounded corners, align=center, right=0.4cm of dc] (q) {Punto Q};
+        \node[draw, fill=green!10, rounded corners, align=center, right=0.4cm of q] (gm) {$g_m$};
+        \node[draw, fill=green!10, rounded corners, align=center, right=0.4cm of gm] (ad) {$A_{d}$};
+        \node[draw, fill=orange!10, rounded corners, align=center, right=0.4cm of ad] (vd) {$v_d / v_{cm}$};
+        \node[draw, fill=orange!10, rounded corners, align=center, right=0.4cm of vd] (ac) {$A_{c}$};
+        \node[draw, fill=red!10, rounded corners, align=center, right=0.4cm of ac] (cmrr) {CMRR};
+        \node[draw, fill=red!20, rounded corners, align=center, right=0.4cm of cmrr] (int) {Interpretación};
+        
+        \draw[->] (dc) -- (q); \draw[->] (q) -- (gm); \draw[->] (gm) -- (ad);
+        \draw[->] (ad) -- (vd); \draw[->] (vd) -- (ac); \draw[->] (ac) -- (cmrr); \draw[->] (cmrr) -- (int);
+    \end{tikzpicture}
+    }
+    \end{center}
+\end{frame}
+
+\begin{frame}{Descomposición Diferencial y Modo Común}
+    Cualquier par de entradas ($v_1, v_2$) puede separarse matemáticamente[cite: 7]:
+    \begin{align*}
+        \mathbf{v_d} &= \mathbf{v_1 - v_2} \quad \text{(Separación entre entradas)} \quad \text{[cite: 7]} \\
+        \mathbf{v_{cm}} &= \mathbf{\frac{v_1 + v_2}{2}} \quad \text{(Nivel compartido por ambas)} \quad \text{[cite: 7]}
+    \end{align*}
+    
+    \vspace{0.1cm}
+    \begin{columns}[c]
+        \begin{column}{0.48\textwidth}
+            \textbf{Ejemplo: Entrada Mixta[cite: 7]} \\
+            $v_1 = 106\,\text{mV}, \quad v_2 = 94\,\text{mV}$ \\
+            $\implies v_d = 12\,\text{mV}$ \\
+            $\implies v_{cm} = 100\,\text{mV}$
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{tcolorbox}[colback=yellow!10, colframe=orange, title=Nota Conceptual]
+                $v_1 = v_2 \neq 0$ \textbf{no} significa ausencia de señal, significa Modo Común puro[cite: 7]. El modo común no es automáticamente "ruido"[cite: 7].
+            \end{tcolorbox}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Comportamiento Físico bajo Modo Común ($v_1 = v_2 = v_{cm}$)}
+    \begin{columns}[c]
+        \begin{column}{0.4\textwidth}
+            \centering
+            \begin{circuitikz}[scale=0.75, transform shape, thick]
+                \draw (0,0) node[npn](Q1){}; \node[left] at (Q1.B) {$v_{cm}$};
+                \draw (3,0) node[npn, xscale=-1](Q2){}; \node[right] at (Q2.B) {$v_{cm}$};
+                \draw (Q1.C) to[R, l=$R_C$] (0,2) -- (3,2) to[R, l_=$R_C$] (Q2.C);
+                \draw (1.5,2) -- (1.5,2.5) node[above]{$+V_{CC}$};
+                \draw (Q1.E) -- (0,-1) -- (3,-1) -- (Q2.E);
+                \draw (1.5,-1) to[R, l_=$R_T$] (1.5,-3) node[below]{$-V_{EE}$};
+                \draw[->, red] (1.7, -1.2) -- (1.7, -2.8) node[midway, right]{$I_T$};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.55\textwidth}
+            \textbf{¿Por qué hay ganancia $A_c$?[cite: 7]}
+            \begin{itemize}
+                \item \textbf{Fuente Ideal ($R_T \to \infty$):} $I_T$ es constante. Las corrientes de rama no cambian. Rechazo perfecto[cite: 7].
+                \item \textbf{Fuente Real ($R_T < \infty$):} El movimiento de los emisores varía la caída sobre $R_T$[cite: 7]. \\
+                La corriente total fluctúa: $\Delta I_T \neq 0$[cite: 7].
+            \end{itemize}
+            
+            \vspace{0.2cm}
+            Esta fluctuación se divide simétricamente:
+            \begin{equation*}
+                \Delta i_{C1} \approx \Delta i_{C2} \implies \Delta v_{C1} \approx \Delta v_{C2} \quad \text{[cite: 7]}
+            \end{equation*}
+            \textit{Ambos colectores se mueven juntos. La salida Single-Ended observa este error[cite: 7].}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Ganancia de Modo Común Single-Ended ($A_{c,se}$)}
+    Para la convención oficial $\mathbf{v_o = v_{C2}}$[cite: 7]:
+    
+    Analizamos un \textbf{medio circuito} de modo común con resistencia de emisor equivalente a $2R_T$ (dado que la cola soporta $2i_e$)[cite: 7].
+    Por LVK en la malla de entrada (Modelo T):
+    \begin{equation*}
+        v_{cm} = i_e r_e + 2 i_e R_T = i_e (r_e + 2R_T) \implies \mathbf{i_e = \frac{v_{cm}}{r_e + 2R_T}} \quad \text{[cite: 7]}
+    \end{equation*}
+    
+    Como $v_o = -i_c R_C$ e $i_c \approx \alpha i_e$[cite: 7]:
+    \begin{equation*}
+        \mathbf{A_{c,se} = \frac{v_{C2}}{v_{cm}} \approx -\frac{\alpha R_C}{r_e + 2R_T}} \quad \text{[cite: 7]}
+    \end{equation*}
+    
+    Si $R_T \gg r_e$ y $\alpha \approx 1$:
+    \begin{equation*}
+        \mathbf{A_{c,se} \approx -\frac{R_C}{2R_T}} \implies \text{A mayor } R_T \text{, menor } |A_c| \text{ y mejor CMRR[cite: 7].}
+    \end{equation*}
+\end{frame}
+
+\begin{frame}{CMRR y la Puerta de Consistencia (Validity Gate)}
+    \begin{alertblock}{Definición Oficial Hito 2}
+        \begin{center}
+            $\displaystyle \mathbf{CMRR = \left|\frac{A_{d,se}}{A_{c,se}}\right|} \qquad \mathbf{CMRR_{dB} = 20\log_{10}(CMRR)}$ \quad \text{[cite: 7]}
+        \end{center}
+    \end{alertblock}
+    
+    \vspace{0.2cm}
+    \textbf{Validity Gate (Para validar la medición empírica)[cite: 7]:}
+    \begin{itemize}
+        \item ¿Mismo nodo físico de salida ($v_{C2}$) para $A_d$ y $A_c$?[cite: 7]
+        \item ¿Misma convención de amplitud en osciloscopio?[cite: 7]
+    \end{itemize}
+    
+    \textbf{Ejemplo de Inconsistencia (No Válido)[cite: 7]:}
+    Usar $A_{d,diff} = 80$ (midiendo entre los dos colectores) y $A_{c,se} = 0.04$ (midiendo un solo colector). ¡Las salidas no coinciden![cite: 7]
+\end{frame}
+
+\end{document}

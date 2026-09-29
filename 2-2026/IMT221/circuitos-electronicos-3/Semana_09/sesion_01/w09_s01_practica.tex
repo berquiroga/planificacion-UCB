@@ -1,0 +1,72 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Práctica Individual W09S01}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Práctica Individual Tipo Examen: Consolidación Hito 2}]
+    Resuelva individualmente detallando sus pasos y suposiciones. \textbf{No use derivaciones largas memorizadas}, aplique las leyes de circuitos directamente[cite: 7].
+\end{tcolorbox}
+
+\textbf{Nombre Estudiante:} \hrulefill \quad \textbf{Fecha:} \hrulefill
+
+\vspace{0.3cm}
+\section*{Round 1: Preparación (DC y Ganancia Diferencial)[cite: 7]}
+
+\noindent \textbf{Problema A — Q-point[cite: 7]} \\
+Dado $V_{CC}=9.0\,\text{V}$, $R_C=4.7\,\text{k}\Omega$, $v_C=6.55\,\text{V}$ y $v_E=-0.70\,\text{V}$[cite: 7]. 
+Calcule explícitamente $I_C$ y $V_{CE}$[cite: 7]. Determine la región de operación y evalúe la compatibilidad con el bias nominal de Hito 2[cite: 7].
+\vspace{3cm}
+
+\noindent \textbf{Problema B — Current Mirror[cite: 7]} \\
+Dado $R_{REF}=8.2\,\text{k}\Omega$, $V_{EE}=-9\,\text{V}$ y $V_{BE}\approx0.7\,\text{V}$[cite: 7]. 
+Estime analíticamente $I_{REF}$[cite: 7]. Si en hardware se mide una corriente de cola $I_T=0.88\,\text{mA}$, cuantifique la discrepancia, liste causas físicas y juzgue si esto, por sí solo, demuestra una falla catastrófica del circuito[cite: 7].
+\vspace{3cm}
+
+\noindent \textbf{Problema C — Differential Pair ($g_m$ y $A_d$)[cite: 7]} \\
+Considerando un punto de reposo validado con $I_C=0.48\,\text{mA}$, y $R_C=4.7\,\text{k}\Omega$[cite: 7].
+Calcule $g_m$ (use $V_T=25.85\,\text{mV}$)[cite: 7]. Calcule la ganancia Single-Ended $A_{d,se}$[cite: 7]. Para un $v_d = 5\,\text{mV}$, calcule la amplitud esperada $v_{C2,ac}$ e indique su signo o fase relativa respecto a $v_d$[cite: 7].
+\vspace{3.5cm}
+
+\newpage
+\section*{Round 2: Cierre (Modo Común, CMRR y Diagnóstico)[cite: 7]}
+
+\noindent \textbf{Problema D — Descomposición Diferencial/Common Mode[cite: 7]} \\
+Usted inyecta voltajes asimétricos: $v_1=1.020\,\text{V}$ y $v_2=0.980\,\text{V}$[cite: 7]. 
+Calcule analíticamente $v_d$ y $v_{cm}$, clasifique la naturaleza de la excitación y demuestre matemáticamente la reconstrucción de $v_1$ y $v_2$[cite: 7].
+\vspace{3cm}
+
+\noindent \textbf{Problema E — CMRR Validity Gate[cite: 7]} \\
+Un grupo reporta el \textbf{Caso 1}: $A_{d,se}=40$, $A_{c,se}=0.04$, ambos medidos en $v_{C2}$[cite: 7]. 
+Otro grupo reporta el \textbf{Caso 2}: $A_{d,diff}=80$ (entre colectores), $A_{c,se}=0.04$ (en un colector)[cite: 7]. 
+Determine rigurosamente la validez del CMRR para cada caso y calcúlelo en dB solo si el método es válido[cite: 7].
+\vspace{3cm}
+
+\noindent \textbf{Problema F — Measurement Interpretation[cite: 7]} \\
+Un grupo registra la siguiente tabla de datos[cite: 7]:
+\begin{itemize}
+    \item $v_d$ inyectado = $5.0\,\text{mV}_{pp}$
+    \item Salida $v_{C2}$ diferencial = $200\,\text{mV}_{pp}$
+    \item $v_{cm}$ inyectado = $200\,\text{mV}_{rms}$
+    \item Salida $v_{C2}$ común = $5\,\text{mV}_{pp}$
+\end{itemize}
+¿Se puede calcular el CMRR directamente operando estos números? Justifique su respuesta detallando el error metodológico[cite: 7].
+\vspace{2.5cm}
+
+\end{document}

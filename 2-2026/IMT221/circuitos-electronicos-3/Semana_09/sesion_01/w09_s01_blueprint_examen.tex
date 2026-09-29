@@ -1,0 +1,67 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Exam Blueprint W09S02}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Documento Docente Reservado: Blueprint Examen W09S02}]
+    Mapeo de dominios y demanda cognitiva para la construcción del examen individual oficial que evaluará Hito 2[cite: 7].
+\end{tcolorbox}
+
+\section*{1. Demanda Cognitiva Esperada[cite: 7]}
+El examen \textbf{evitará} derivaciones largas memorizadas de libros[cite: 7]. El énfasis estará en la lógica de ingeniería: cálculo a partir de datos medidos, interpretación de circuitos, elección de modelos, diagnóstico de fallas (troubleshooting) y auditoría de consistencia[cite: 7]. No debe requerir hardware físico durante el examen[cite: 7].
+
+\section*{2. Dominios Evaluables[cite: 7]}
+Se exige evaluar conocimiento en los siguientes dominios[cite: 7]:
+
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|c|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!20}
+\textbf{ID} & \textbf{Dominio de Conocimiento} \\ \hline
+1 & BJT DC / Q-Point (Cálculo y diagnóstico de región) \\ \hline
+2 & Current Mirror / Tail Source (LVK y $\beta$ finito) \\ \hline
+3 & Parámetros de pequeña señal ($g_m = I_C/V_T$) \\ \hline
+4 & Interpretación topológica (CE / CC / CB) \\ \hline
+5 & Par Diferencial DC balanceado \\ \hline
+6 & Cálculo de $g_m$ empírico \\ \hline
+7 & Ganancia Diferencial ($A_d$ Double-Ended y Single-Ended) \\ \hline
+8 & Descomposición de entradas asimétricas ($v_d / v_{cm}$) \\ \hline
+9 & Ganancia de Modo Común ($A_c$) \\ \hline
+10 & Definición y cálculo de CMRR (Consistencia de nodos) \\ \hline
+11 & Interpretación de datos experimentales medidos \\ \hline
+12 & Troubleshooting y diagnóstico de hardware \\ \hline
+\end{tabularx}
+
+\section*{3. Sugerencia de Estructura de Preguntas[cite: 7]}
+Se recomienda construir el examen utilizando los siguientes formatos[cite: 7]:
+\begin{itemize}
+    \item \textbf{Problema Numérico Integrado:} De $V_{CC}$ a $A_d$ en cadena.
+    \item \textbf{Tabla de Datos Medidos:} El estudiante debe detectar un "intruso" o medición físicamente imposible.
+    \item \textbf{Caso de Validez CMRR:} Un escenario donde se mezclan convenciones de salida o amplitudes.
+    \item \textbf{Ítem de Troubleshooting:} Dado un síntoma ($I_T \approx 0$), proponer el paso correctivo inmediato.
+\end{itemize}
+
+\vspace{0.5cm}
+\begin{tcolorbox}[colback=yellow!10, colframe=orange, title=\textbf{Decisión Pendiente: Formulario y Supuestos}]
+    El instructor debe decidir y documentar si proveerá un formulario o dejará que el estudiante dependa de las leyes básicas de Kirchhoff/Ohm y modelos fundamentales del BJT[cite: 7]. Este Blueprint no establece la política[cite: 7].
+\end{tcolorbox}
+
+\end{document}
