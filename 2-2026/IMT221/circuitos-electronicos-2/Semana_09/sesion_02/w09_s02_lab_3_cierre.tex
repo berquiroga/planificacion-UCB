@@ -1,0 +1,64 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Auditoría de Cierre: Lab 3 (Precisión DC)}}[cite: 12]
+\end{center}
+
+\textbf{Grupo:} \rule{4cm}{0.4pt} \hfill \textbf{Fecha:} \rule{3cm}{0.4pt}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Instrucción Oficial[cite: 12]}]
+    El Laboratorio 3 se cierra por \textbf{evidencia física y analítica}, no por tiempo de asistencia o simple montaje[cite: 12]. Identifique qué evidencia posee y complete únicamente la acción faltante[cite: 12]. \textit{La participación física no equivale a la finalización[cite: 12].}
+\end{tcolorbox}
+
+\section*{Matriz de Evidencia Mínima Significativa[cite: 12]}
+\begin{table}[h!]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{4cm}|c|c|X|X|}
+    \hline
+    \textbf{Evidencia Requerida} & \textbf{Sí} & \textbf{No} & \textbf{Evidencia / Referencia} & \textbf{Acción Pendiente} \\ \hline
+    Circuito físico construido y verificado & $\square$ & $\square$ & & \\ \hline
+    Predicción ideal registrada & $\square$ & $\square$ & & \\ \hline
+    Medición \textit{baseline} válida & $\square$ & $\square$ & & \\ \hline
+    Discrepancia cuantificada & $\square$ & $\square$ & & \\ \hline
+    Troubleshooting documentado & $\square$ & $\square$ & & \\ \hline
+    Diagnóstico razonado & $\square$ & $\square$ & & \\ \hline
+    Compensación/corrección aplicada & $\square$ & $\square$ & & \\ \hline
+    Medición \textit{before/after} & $\square$ & $\square$ & & \\ \hline
+    Interpretación técnica & $\square$ & $\square$ & & \\ \hline
+    \end{tabularx}
+\end{table}
+
+\section*{Clasificación del Grupo y Plan de Acción[cite: 12]}
+\begin{itemize}
+    \item[$\square$] \textbf{Clase A (Evidencia suficiente):} No requiere más tiempo de Lab 3 en clase[cite: 12].
+    \item[$\square$] \textbf{Clase B (Evidencia menor pendiente):} Solo debe completar la evidencia faltante listada arriba[cite: 12].
+    \item[$\square$] \textbf{Clase C (Seguimiento físico requerido):} Necesita trabajo de banco específico fuera del bloque central de SR/GBW[cite: 12].
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{1. ¿Cuál es el primer ítem faltante?} \rule{10cm}{0.4pt}[cite: 12] \\
+\textbf{2. ¿Cuál es la siguiente acción medible?} \rule{9cm}{0.4pt}[cite: 12] \\
+\textbf{3. ¿Qué evidencia probará que se completó?} \rule{8cm}{0.4pt}[cite: 12]
+
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Nota de Interpretación Conceptual[cite: 12]}]
+    Si una compensación de offset redujo el error de $22\,\text{mV}$ a $5\,\text{mV}$ bajo la misma condición, la evidencia demuestra \textbf{únicamente} que la corrección redujo el error medido. \textbf{No} demuestra automáticamente que todo el error inicial era causado por $V_{OS}$ (podrían permanecer contribuciones de mismatch, $I_B$, error de fuente, instrumentación, etc.)[cite: 12].
+\end{tcolorbox}
+
+\end{document}

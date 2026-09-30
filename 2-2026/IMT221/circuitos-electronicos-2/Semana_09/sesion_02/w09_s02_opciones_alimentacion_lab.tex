@@ -1,0 +1,121 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multicol}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2cm]{geometry}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+% Instructor note:
+% The two-battery option is intentionally supported so students
+% can complete practical work outside the university laboratory.
+% Do not penalize battery-powered implementation if actual rails
+% are documented and device limits are respected.
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Suplemento de Guía: Opciones de Fuente de Alimentación}}
+\end{center}
+
+\begin{tcolorbox}[colback=yellow!5, colframe=ucbblue, title=\textbf{Opciones de Fuente de Alimentación}]
+    Este laboratorio puede realizarse utilizando una \textbf{fuente dual de banco} o \textbf{dos baterías de $9\,\text{V}$} conectadas en serie. Ambas son opciones de implementación legítimas. En ambos casos, el circuito debe proveer un riel positivo ($V_+$), una referencia común ($0\,\text{V}$) y un riel negativo ($V_-$).
+\end{tcolorbox}
+
+\section*{1. Configuración de la Fuente de Alimentación}
+
+\subsection*{Opción A: Fuente Dual de Banco}
+Si dispone de equipo de laboratorio, configure la fuente dual para entregar nominalmente:
+\begin{equation*}
+    \boxed{+10\,\text{V}, \quad 0\,\text{V}, \quad -10\,\text{V}} \quad \text{o} \quad \boxed{+9\,\text{V}, \quad 0\,\text{V}, \quad -9\,\text{V}} \text{}
+\end{equation*}
+(Siempre verifique primero que el Op-Amp soporte estos voltajes según su datasheet).
+
+\subsection*{Opción B: Dos Baterías de 9 V en Serie (Uso Portátil/Casa)}
+\begin{minipage}{0.5\textwidth}
+    Utilice dos baterías independientes de $9\,\text{V}$. El punto de unión entre ambas forma la referencia del circuito ($0\,\text{V}$).
+    
+    \vspace{0.3cm}
+    \textbf{Conexión:}
+    \begin{itemize}
+        \item Batería 1 (+): Conectar a riel $V_+$.
+        \item Batería 1 (-): Conectar a la unión central ($0\,\text{V}$).
+        \item Batería 2 (+): Conectar a la unión central ($0\,\text{V}$).
+        \item Batería 2 (-): Conectar a riel $V_-$.
+    \end{itemize}
+    \begin{tcolorbox}[colback=red!5, colframe=red!70!black]
+        \textbf{Nota Crítica:} El punto medio es la referencia $0\,\text{V}$. \textbf{NO} trate el terminal negativo de la batería inferior como "tierra".
+    \end{tcolorbox}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\textwidth}
+    \begin{center}
+        \begin{circuitikz}[scale=0.9, transform shape, thick]
+            % Bateria 1 (Superior)
+            \draw (0,3) to[battery2, l=$9\,\text{V}$ (Bat 1)] (0,1);
+            \draw (0,3) to[short, *-o] (2,3) node[right]{$V_+ \approx +9\,\text{V}$};
+            
+            % Union central y tierra
+            \draw (-1,1) to (0,1) to [short, *-o] (2,1) node[right]{$0\,\text{V}$ (Midpoint)};
+            \draw (-1,1) node[ground]{};
+            
+            % Bateria 2 (Inferior)
+            \draw (0,1) to[battery2, l=$9\,\text{V}$ (Bat 2)] (0,-1);
+            \draw (0,-1) to[short, *-o] (2,-1) node[right]{$V_- \approx -9\,\text{V}$};
+        \end{circuitikz}
+    \end{center}
+\end{minipage}
+
+\section*{2. Realidad de las Baterías y Medición Obligatoria}
+Una batería nueva puede medir más de $9\,\text{V}$, y su voltaje caerá con el uso. Es común que ambas baterías tengan voltajes distintos, resultando en rieles \textbf{asimétricos} (ej. $V_+ = +9.2\,\text{V}$, $V_- = -8.7\,\text{V}$). \textbf{Debe medir y registrar los voltajes reales; no asuma valores nominales exactos.} En LTSpice, si desea alta fidelidad, actualice las fuentes con estos valores medidos.
+
+\section*{3. Reglas de Compatibilidad y Seguridad}
+\begin{itemize}
+    \item \textbf{Desacoplo Obligatorio:} Las baterías \textbf{no} eliminan la necesidad de usar capacitores de desacoplo ($100\,\text{nF}$) cerca de los pines del Op-Amp hacia $0\,\text{V}$.
+    \item \textbf{Verificación del Datasheet:} No todos los Op-Amps operan igual a $\pm9\,\text{V}$. Identifique la familia exacta (LM741, UA741CN, LM358N, TL074), verifique el rango de alimentación, el \textit{output swing} y el \textbf{pinout}. ¡No son compatibles pin-a-pin!
+    \item \textbf{Seguridad Casera:} Desconecte las baterías cuando no use el circuito, evite cortocircuitos, y verifique la polaridad antes de insertar el CI.
+\end{itemize}
+
+\section*{4. Adaptación Dinámica Crítica para Lab 4 (Slew Rate)}
+Para la prueba de gran señal, el objetivo es $V_p = 4\,\text{V}$ ($8\,\text{V}_{pp}$). Siga esta lógica de decisión obligatoria para evitar confundir saturación con Slew Rate:
+\begin{enumerate}
+    \setlength{\itemsep}{0pt}
+    \item Mida los rieles reales (banco o baterías).
+    \item A baja frecuencia ($1\,\text{kHz}$), intente ajustar la salida a $V_{out} \approx 8\,\text{V}_{pp}$.
+    \item \textbf{Revise recortes (Clipping):} ¿La onda se aplasta arriba o abajo? Si los rieles (ej. baterías descargadas) o el \textit{output swing} del Op-Amp no permiten $8\,\text{V}_{pp}$ limpios, \textbf{reduzca la amplitud de salida}.
+    \item Si debió reducir la amplitud, registre el nuevo $V_p$ \textbf{real} alcanzado sin distorsión y \textbf{recalcule} sus predicciones teóricas:
+    \begin{equation*}
+        SR_{\mathrm{req}} = 2\pi f V_{p,\mathrm{nuevo}} \quad \text{y} \quad f_{\max,SR} = \frac{SR_{\mathrm{datasheet}}}{2\pi V_{p,\mathrm{nuevo}}} \text{}
+    \end{equation*}
+    \item \textbf{Solo entonces} comience a subir la frecuencia para observar la verdadera distorsión por Slew Rate (triangularización de la onda).
+\end{enumerate}
+
+\section*{5. Tabla de Registro de Fuente (Para Informe IEEE)}
+\textit{Añada esta información a su informe IEEE. Especifique qué fuente utilizó en su sección de metodología.}
+
+\begin{table}[h!]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{0.8\textwidth}{|>{\hsize=1.2\hsize}X|>{\hsize=0.8\hsize}X|}
+    \hline
+    \textbf{Variable de Alimentación} & \textbf{Valor Medido Real} \\ \hline
+    Fuente utilizada & [Banco / $2 \times$ Bat. $9\,\text{V}$] \\ \hline
+    Voltaje Batería 1 ($V_{B1}$) [Si aplica] & \rule{3cm}{0.4pt} \\ \hline
+    Voltaje Batería 2 ($V_{B2}$) [Si aplica] & \rule{3cm}{0.4pt} \\ \hline
+    Riel Positivo medido ($V_+$) & \rule{3cm}{0.4pt} \\ \hline
+    Riel Negativo medido ($V_-$) & \rule{3cm}{0.4pt} \\ \hline
+    Alimentación Total ($V_{TOTAL} = V_+ - V_-$) & \rule{3cm}{0.4pt} \\ \hline
+    \end{tabularx}
+\end{table}
+
+\end{document}

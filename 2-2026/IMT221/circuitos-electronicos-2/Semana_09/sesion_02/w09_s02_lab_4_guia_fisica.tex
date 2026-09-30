@@ -1,0 +1,164 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multicol}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2cm]{geometry}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Guía Física Lab 4: Limitaciones Dinámicas (GBW y SR)}}
+\end{center}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Pregunta Experimental Central}]
+    ¿Bajo qué combinaciones de ganancia cerrada, frecuencia y amplitud de salida un Op-Amp real se aparta de la respuesta ideal, y pueden las especificaciones de GBW y Slew Rate predecir esa desviación?
+\end{tcolorbox}
+
+\section*{1. Identificación Exacta del Dispositivo y Pre-Power Checklist}
+\begin{sloppypar}
+\textbf{Advertencia de Seguridad:} LM741, LM358N y TL074 \textbf{NO} comparten la misma configuración de pines. No intercambie dispositivos sin reconstruir el cableado.
+\end{sloppypar}
+
+\vspace{0.2cm}
+\textbf{Dispositivo evaluado:} \rule{4cm}{0.4pt} \textbf{Fabricante exacto:} \rule{4cm}{0.4pt} \\
+\textbf{Encapsulado:} \rule{3cm}{0.4pt} \textbf{Datasheet verificado:} Sí / No
+
+\begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \item[$\square$] Rieles de alimentación de la protoboard verificados sin el CI insertado.
+    \item[$\square$] $+10\,\text{V}$ medido respecto a la referencia común ($0\,\text{V}$).
+    \item[$\square$] $-10\,\text{V}$ medido respecto a la referencia común ($0\,\text{V}$).
+    \item[$\square$] Red de desacoplo instalada ($100\,\text{nF}$ desde cada riel hacia $0\,\text{V}$).
+\end{itemize}
+
+\section*{2. Experimento A: Ancho de Banda de Pequeña Señal (GBW)}
+\textbf{Objetivo:} Evaluar la caída de ganancia debida al ancho de banda finito, reduciendo la demanda de Slew Rate mediante el uso de pequeña amplitud.
+
+\vspace{0.3cm}
+\begin{minipage}{0.45\textwidth}
+    \raggedright
+    \textbf{Configuración:} Amplificador No Inversor.
+    \begin{align*}
+        R_g &= 10\,\text{k}\Omega, \quad R_f = 90\,\text{k}\Omega \text{} \\
+        A_v &= 1 + \frac{R_f}{R_g} = 10 \text{} \\
+        A_N &= 10 \text{ (Ganancia de Ruido)}
+    \end{align*}
+    \textbf{Entrada:} $V_{in} = 100\,\text{mV}_{pp}$ centrada en $0\,\text{V}$. \\
+    \textbf{Salida Esperada (Baja Frec.):} $1.0\,\text{V}_{pp}$.
+\end{minipage}
+\hfill
+\begin{minipage}{0.5\textwidth}
+    \begin{center}
+        \begin{circuitikz}[scale=0.8, transform shape, thick]
+            \draw (0,0) node[op amp, noinv input up] (opamp) {};
+            \draw (opamp.+) to[short, -o] ++(-1,0) node[left]{$V_{in}$};
+            \draw (opamp.-) -- ++(0,-1.5) coordinate(fb);
+            % Se protegen las etiquetas con llaves {} para evitar errores de pgfkeys
+            \draw (fb) to[R, l={$R_g=10\,\text{k}\Omega$}] ++(0,-2) node[ground]{};
+            \draw (fb) to[R, l_={$R_f=90\,\text{k}\Omega$}] (fb -| opamp.out) -- (opamp.out);
+            \draw (opamp.out) to[short, *-o] ++(1,0) node[right]{$V_{out}$};
+            \draw (opamp.up) -- ++(0,0.5) node[above]{$+10\,\text{V}$};
+            \draw (opamp.down) -- ++(0,-0.5) node[below]{$-10\,\text{V}$};
+        \end{circuitikz}
+    \end{center}
+\end{minipage}
+
+\vspace{0.4cm}
+Ajuste el generador a $f = 1\,\text{kHz}$, verifique $V_{in,pp}$ y mida $V_{out,LF}$. Aumente la frecuencia y encuentre el punto donde $V_{out} \approx 0.707 \cdot V_{out,LF}$ (Criterio $-3\,\text{dB}$).
+
+\begin{table}[h!]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|>{\hsize=1.2\hsize}X|c|c|c|c|c|>{\hsize=0.8\hsize}X|}
+    \hline
+    \textbf{Dispositivo} & \textbf{$f$} & \textbf{$V_{in,pp}$} & \textbf{$V_{out,pp}$} & \textbf{Ganancia ($|A_v|$)} & \textbf{Ganancia Relativa} & \textbf{Observación} \\ \hline
+    & $1\,\text{kHz}$ & & & & $1.00$ & Baseline \\ \hline
+    & $10\,\text{kHz}$ & & & & & \\ \hline
+    & $30\,\text{kHz}$ & & & & & \\ \hline
+    & $100\,\text{kHz}$ & & & & & \\ \hline
+    & $300\,\text{kHz}$ & & & & & \\ \hline
+    & $1\,\text{MHz}$ & & & & & \\ \hline
+    \end{tabularx}
+\end{table}
+
+\newpage
+\section*{3. Experimento B: Slew Rate (SR) y Gran Señal}
+\textbf{Objetivo:} Reducir la dominancia del GBW y aumentar intencionalmente la demanda de Slew Rate usando gran amplitud.
+
+\vspace{0.3cm}
+\begin{minipage}{0.45\textwidth}
+    \raggedright
+    \textbf{Configuración:} Cambiar a Ganancia 2.
+    \begin{equation*}
+        R_g = 10\,\text{k}\Omega, \quad R_f = 10\,\text{k}\Omega \implies A_v = 2 \text{}
+    \end{equation*}
+    \textbf{Derivación Matemática de la Demanda de SR:}
+    Para una onda senoidal $v_o(t) = V_p \sin(2\pi f t)$, la tasa de cambio (derivada) es:
+    \begin{equation*}
+        \frac{dv_o}{dt} = 2\pi f V_p \cos(2\pi f t) \text{}
+    \end{equation*}
+    La pendiente máxima ocurre en los cruces por cero ($|\cos(\cdot)| = 1$), por lo tanto:
+    \begin{equation*}
+        \boxed{ SR_{\mathrm{req}} = 2\pi f V_p } \text{}
+    \end{equation*}
+\end{minipage}
+\hfill
+\begin{minipage}{0.5\textwidth}
+    \raggedright
+    \textbf{Salida Deseada:} $V_{out} = 8\,\text{V}_{pp} \implies V_p = 4\,\text{V}$. \\
+    Para $A_v=2$, ajuste el generador hasta obtener $V_{out} \approx 8\,\text{V}_{pp}$ a $1\,\text{kHz}$ (idealmente $V_{in} \approx 4\,\text{V}_{pp}$). \\
+    Verifique visualmente que no hay recorte por voltaje de alimentación (\textit{clipping}) antes de barrer frecuencia.
+    
+    \vspace{0.2cm}
+    Para $V_p = 4\,\text{V}$, los requerimientos son:
+    \begin{itemize}
+        \item $10\,\text{kHz}: SR_{\mathrm{req}} \approx 0.251\,\text{V}/\mu\text{s}$
+        \item $20\,\text{kHz}: SR_{\mathrm{req}} \approx 0.503\,\text{V}/\mu\text{s}$
+        \item $50\,\text{kHz}: SR_{\mathrm{req}} \approx 1.257\,\text{V}/\mu\text{s}$
+    \end{itemize}
+\end{minipage}
+
+\vspace{0.4cm}
+\begin{table}[h!]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|>{\hsize=0.8\hsize}X|c|c|c|c|X|X|}
+    \hline
+    \textbf{Dispositivo} & \textbf{$f$} & \textbf{$V_{out,pp}$} & \textbf{$V_p$} & \textbf{$SR_{\mathrm{req}}$} & \textbf{Forma de Onda (Shape)} & \textbf{Pendiente Medida ($\Delta V/\Delta t$)} \\ \hline
+    & $1\,\text{kHz}$ & & & & & \\ \hline
+    & $5\,\text{kHz}$ & & & & & \\ \hline
+    & $10\,\text{kHz}$ & & & & & \\ \hline
+    & $20\,\text{kHz}$ & & & & & \\ \hline
+    & $50\,\text{kHz}$ & & & & & \\ \hline
+    & $100\,\text{kHz}$ & & & & & \\ \hline
+    \end{tabularx}
+\end{table}
+
+\section*{4. Cuestionario de Interpretación y Cierre}
+\textit{No asuma que observar distorsión significa automáticamente limitación por SR. Responda basándose en evidencia.}
+\begin{enumerate}
+    \setlength{\itemsep}{0pt}
+    \item ¿El ancho de banda medido (Exp. A) está en el mismo orden de magnitud que la predicción $GBW/A_N$?
+    \item ¿Qué diferencia existe entre la predicción típica del datasheet y el dispositivo físico real?
+    \item En el Exp. B, ¿qué ocurrió primero: la caída de ganancia o la distorsión por pendiente (triangularización)?
+    \item Si se reemplazó el dispositivo (ej. LM741 a TL074), ¿coincidió el comportamiento con la hipótesis de Pre-Lab?
+\end{enumerate}
+
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Secuencia de Troubleshooting Frecuencial}]
+    Si observa anomalías, verifique en orden: 1) Rieles $\pm10\,\text{V}$, 2) Pinout exacto, 3) Referencia de tierra común entre fuentes y osciloscopio, 4) Ganancia correcta a $1\,\text{kHz}$, 5) Amplitud de entrada \textit{realmente medida}, 6) ¿Hay recorte (clipping) a baja frecuencia por amplitud excesiva?, 7) ¿Limitación del generador o punta del osciloscopio atenuada? \textbf{Solo después de esto, interprete GBW o SR.}
+\end{tcolorbox}
+
+\end{document}

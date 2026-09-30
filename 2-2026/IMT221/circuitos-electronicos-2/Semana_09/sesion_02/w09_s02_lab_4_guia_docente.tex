@@ -1,0 +1,88 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Documento Docente}
+\chead{Notas Técnicas: Lab 4}
+\rhead{Circuitos Electrónicos II}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Guía Técnica Docente: Lab 4 (GBW y Slew Rate)}}[cite: 12]
+\end{center}
+
+\begin{tcolorbox}[colback=yellow!5, colframe=ucbblue, title=\textbf{Estrategia de Dispositivos y Advertencia[cite: 12]}]
+    La comparación preferida es entre una familia 741 (LM741 o UA741CN) y el TL074[cite: 12]. Alternativa: LM358N vs TL074[cite: 12]. \textbf{Estos CI NO son compatibles pin-a-pin ni eléctricamente idénticos}. Obligue a los estudiantes a extraer las especificaciones y el pinout del datasheet exacto del fabricante del dispositivo físico que tienen en sus manos antes de energizar la protoboard[cite: 12].
+\end{tcolorbox}
+
+\section*{1. Predicciones Teóricas de Desempeño (Valores Típicos)[cite: 12]}
+Estas son predicciones teóricas basadas en datos típicos para planeación, \textbf{no resultados físicos garantizados}[cite: 12].
+
+\subsection*{A. Predicción de Ancho de Banda (Ganancia No Inversora $A_v=10, A_N=10$)[cite: 12]}
+Derivación general: $f_{BW} \approx \frac{GBW}{A_N}$[cite: 12].
+\begin{itemize}
+    \item \textbf{Familia 741 / UA741CN:} $GBW_{\mathrm{typ}} \approx 1\,\text{MHz}$[cite: 12]. \\
+    $f_{BW, \mathrm{pred}} \approx \frac{1\,\text{MHz}}{10} = \boxed{100\,\text{kHz}}$[cite: 12].
+    \item \textbf{TL074 (Quad JFET):} $GBW_{\mathrm{typ}} \approx 3\,\text{MHz}$[cite: 12]. \\
+    $f_{BW, \mathrm{pred}} \approx \frac{3\,\text{MHz}}{10} = \boxed{300\,\text{kHz}}$[cite: 12].
+    \item \textbf{TI LM358 (Estándar):} $GBW_{\mathrm{typ}} \approx 0.7\,\text{MHz}$[cite: 12]. \\
+    $f_{BW, \mathrm{pred}} \approx \frac{0.7\,\text{MHz}}{10} = \boxed{70\,\text{kHz}}$[cite: 12].
+\end{itemize}
+
+\subsection*{B. Predicción de Límite Slew Rate (Amplitud Deseada $V_p=4\,\text{V}$)[cite: 12]}
+Derivación general: De la derivada de $V_p\sin(2\pi f t)$, se obtiene la pendiente máxima $SR_{\mathrm{req}} = 2\pi f V_p$[cite: 12]. Despejando frecuencia máxima libre de Slew-limiting: $f_{\max,SR} = \frac{SR}{2\pi V_p}$[cite: 12].
+\begin{itemize}
+    \item \textbf{Familia 741 / UA741CN:} $SR_{\mathrm{typ}} \approx 0.5\,\text{V}/\mu\text{s} = 500\,000\,\text{V/s}$[cite: 12]. \\
+    $f_{\max,SR} = \frac{500\,000}{2\pi(4)} \approx \boxed{19.9\,\text{kHz}}$[cite: 12].
+    \item \textbf{TL074 (Quad JFET):} $SR_{\mathrm{typ}} \approx 13\,\text{V}/\mu\text{s} = 13\,000\,000\,\text{V/s}$[cite: 12]. \\
+    $f_{\max,SR} = \frac{13\,000\,000}{2\pi(4)} \approx \boxed{517\,\text{kHz}}$[cite: 12].
+    \item \textbf{TI LM358 (Estándar):} $SR_{\mathrm{typ}} \approx 0.3\,\text{V}/\mu\text{s} = 300\,000\,\text{V/s}$[cite: 12]. \\
+    $f_{\max,SR} = \frac{300\,000}{2\pi(4)} \approx \boxed{11.9\,\text{kHz}}$[cite: 12].
+\end{itemize}
+
+\section*{2. Errores Comunes de Laboratorio y Procedimiento[cite: 12]}
+
+\textbf{Errores de Montaje (Wiring)[cite: 12]:}
+\begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \item Asumir ciegamente que el LM358 o el TL074 (DIP-14) tienen el mismo pinout que el LM741 (DIP-8)[cite: 12].
+    \item Omitir el capacitor de desacoplo ($100\,\text{nF}$) en los rieles, causando oscilaciones de alta frecuencia[cite: 12].
+    \item Invertir las entradas inversora y no inversora al cambiar de encapsulado[cite: 12].
+\end{itemize}
+
+\textbf{Errores de Medición[cite: 12]:}
+\begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \item Confiar en la amplitud mostrada en el display del generador de funciones sin medir físicamente $V_{in}$ con el osciloscopio (la amplitud cambia con la impedancia de carga/terminación)[cite: 12].
+    \item Confundir Amplitud Pico ($V_p$) con Amplitud Pico a Pico ($V_{pp}$) al calcular el $SR_{\mathrm{req}}$[cite: 12].
+    \item Medir saturación por voltajes de alimentación (\textit{clipping} horizontal) y diagnosticarlo erróneamente como distorsión por Slew Rate (triangularización)[cite: 12].
+\end{itemize}
+
+\section*{3. Preguntas de Verificación Oral (Para el Instructor)[cite: 12]}
+Use estas preguntas para evaluar grupos en banco:
+\begin{enumerate}
+    \setlength{\itemsep}{0pt}
+    \item ¿Por qué utilizamos una amplitud de entrada tan pequeña para el experimento de ancho de banda (Exp A)?[cite: 12]
+    \item ¿Por qué redujimos la ganancia a 2 para el experimento de Slew Rate (Exp B)?[cite: 12]
+    \item ¿Qué significa exactamente $-3\,\text{dB}$ en términos de la relación de voltajes medidos?[cite: 12]
+    \item ¿Por qué es importante la Ganancia de Ruido ($A_N$) en la predicción de GBW?[cite: 12]
+    \item El datasheet presenta un valor típico de SR. ¿Es esto una garantía absoluta para este chip específico?[cite: 12]
+    \item ¿Qué medición del osciloscopio contradiría su hipótesis inicial?[cite: 12]
+\end{enumerate}
+
+\end{document}
