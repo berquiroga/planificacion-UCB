@@ -1,0 +1,109 @@
+% python-torque.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage[most]{tcolorbox}
+\usepackage{listings}
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    backgroundcolor=\color{gray!5},
+    frame=single,
+    rulecolor=\color{gray!40},
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{red!70!black},
+    commentstyle=\color{green!60!black},
+    showstringspaces=false,
+    breaklines=true,
+    breakatwhitespace=true,
+    columns=flexible
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Código: Torque y Trayectoria 1R}
+\rhead{Opcional W09-S02}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Verificación Computacional: Perfil de Torque LSPB}}\\[0.2cm]
+\end{center}
+
+Este script conecta la trayectoria LSPB de la sesión anterior con la evaluación dinámica de torque a lo largo del tiempo, aislándolo por contribuciones físicas[cite: 14].
+
+\begin{lstlisting}
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Modelo 1R Ilustrativo y Pedagogico
+J = 0.25
+m = 1.0
+lc = 0.5
+g = 9.81
+
+# Parametros LSPB
+qi = 0.0
+qf = 2.0
+tf = 3.0
+acc = 1.0
+tc = 1.0
+
+t = np.linspace(0.0, tf, 601)
+
+q = np.zeros_like(t)
+qd = np.zeros_like(t)
+qdd = np.zeros_like(t)
+
+# Generacion del Perfil Cinetico
+for k, tk in enumerate(t):
+    if tk <= tc:
+        q[k] = qi + 0.5 * acc * tk**2
+        qd[k] = acc * tk
+        qdd[k] = acc
+    elif tk <= tf - tc:
+        q[k] = qi + acc * tc * (tk - tc/2)
+        qd[k] = acc * tc
+        qdd[k] = 0.0
+    else:
+        q[k] = qf - 0.5 * acc * (tf - tk)**2
+        qd[k] = acc * (tf - tk)
+        qdd[k] = -acc
+
+# Computo del Esfuerzo Dinamico (Torques)
+tau_inertia = J * qdd
+tau_velocity = np.zeros_like(t) # C=0 para 1R escalar
+tau_gravity = m * g * lc * np.sin(q)
+tau_total = tau_inertia + tau_velocity + tau_gravity
+
+print("Pico absoluto |tau|:", np.max(np.abs(tau_total)))
+
+# NOTA: Los estudiantes deberan requerir graficas de:
+# 1. q(t), qdot(t), qddot(t)
+# 2. tau_inertia vs t
+# 3. tau_gravity vs t
+# 4. tau_total vs t
+\end{lstlisting}
+
+\begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{Interpretación Obligatoria}]
+Al graficar los datos calculados, el estudiante debe notar que:
+\begin{itemize}
+    \item El torque inercial (\texttt{tau\_inertia}) es un reflejo exacto del perfil discontinuo de aceleración $\ddot{q}$[cite: 14].
+    \item El torque de gravedad (\texttt{tau\_gravity}) evoluciona suavemente como el seno de la posición[cite: 14].
+    \item El torque total no alcanza necesariamente su pico durante la máxima aceleración, ya que la contribución gravitacional puede sumarse o restarse dependiendo de la configuración espacial del robot en ese instante[cite: 14].
+\end{itemize}
+\end{tcolorbox}
+
+\end{document}

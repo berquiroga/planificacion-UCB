@@ -1,0 +1,59 @@
+% pre-ec2.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342}}
+\chead{Práctica Integradora Pre-EC2}
+\rhead{Independiente}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Especificación de Ejercicio Integrador: Simulación de EC2}}\\[0.2cm]
+\end{center}
+
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Objetivo Evaluativo[cite: 14]}]
+    \small Esta práctica verifica si usted puede ejecutar de manera \textbf{independiente} los análisis matemáticos clave antes de someterse al examen EC2. Coleccione su evidencia individual antes de debatir con sus compañeros.
+\end{tcolorbox}
+
+\section*{A. IK y Pieper (Desacoplamiento)[cite: 14]}
+Dada una pose deseada $T_d = \begin{bmatrix} R_d & p_d \\ 0 & 1 \end{bmatrix}$, con $p_d = [0.8, 0, 0.4]^T$ y orientación tal que $z_6^d = [1, 0, 0]^T$. Para un offset final de $d_6 = 0.1$:
+\begin{enumerate}
+    \item Calcule el centro de muñeca $p_W$.
+    \item Si una resolución parcial del brazo nos lleva a $c_2 = 0.5 \implies s_2 = \pm\sqrt{0.75}$. Construya la expresión rigurosa de recuperación de ángulo utilizando $\operatorname{atan2}$.
+\end{enumerate}
+
+\section*{B. Jacobiano[cite: 14]}
+Evalúe la siguiente construcción hipotética en $q = [0, \pi/2]^T$. Ejes $Z$ coinciden con el vector global $Z_0$:
+\begin{equation*}
+    J = \begin{bmatrix} \dots & -0.5 \\ \dots & 0 \\ 0 & 0 \\ 0 & 0 \\ 0 & 0 \\ 1 & 1 \end{bmatrix}, \quad \text{si se requiere } \dot{q} = \begin{bmatrix} 0 \\ 2 \end{bmatrix} \implies \text{Calcule } \mathbf{v}_e.
+\end{equation*}
+
+\section*{C. Singularidades[cite: 14]}
+Para un sub-jacobiano $J_p = \begin{bmatrix} -2s_{12}-s_1 & -2s_{12} \\ 2c_{12}+c_1 & 2c_{12} \end{bmatrix}$. 
+Demuestre analíticamente si la configuración $q_2 = \pi$ produce una pérdida de rango. Identifique la dirección de movimiento cartesiano que se pierde.
+
+\section*{D. Trayectoria LSPB[cite: 14]}
+Debe moverse de $q_i=0$ a $q_f=4$ en $t_f=4$ s. ¿Es factible configurar un perfil trapezoidal con $\ddot{q}_c=1$ rad/s$^2$? De ser así, determine el tiempo de mezcla de aceleración $t_c$ e interprete las fases del movimiento.
+
+\section*{E. Dinámica de 1R[cite: 14]}
+Evaluando un eslabón 1R en el momento pico de la fase de aceleración calculada en LSPB, considerando $J_{\text{eq}}=0.5$, $\ell_c=0.5, m=2$. Calcule el torque requerido en la configuración instantánea de $q=0.5$ rad. Identifique la contribución inercial y la gravitacional.
+
+\section*{F. Razonamiento Físico Integrado[cite: 14]}
+Dado el estado instantáneo calculado en la sección E, justifique simultáneamente: ¿Por qué hay alto riesgo dinámico pero bajo riesgo de singularidad en ese punto de la trayectoria?
+
+\end{document}

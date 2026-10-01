@@ -1,0 +1,77 @@
+% solutions.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+
+\usepackage{amsmath, amssymb, bm}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Solucionario y Diagnóstico (W09-S02)}
+\rhead{Uso Docente}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{red!80!black}{SOLUCIONARIO Y GUÍA DE DIAGNÓSTICO DOCENTE}}\\[0.2cm]
+\end{center}
+
+\section*{Solucionario de la Hoja de Trabajo[cite: 14]}
+
+\textbf{Ejercicio 1:} Gravedad $\to$ D; Inercial $\to$ C; Torque Actuador $\to$ B; Coriolis $\to$ A.
+
+\textbf{Ejercicio 2:} 
+$L = T - V = \frac{1}{2}J\dot{q}^2 - mg\ell_c(1 - \cos q)$. \\
+$\frac{\partial L}{\partial \dot{q}} = J\dot{q} \implies \frac{d}{dt} = J\ddot{q}$. \\
+$\frac{\partial L}{\partial q} = -mg\ell_c\sin q$. \\
+Sustituyendo: $J\ddot{q} - (-mg\ell_c\sin q) = \tau \implies \tau = J\ddot{q} + mg\ell_c\sin q$.
+
+\textbf{Ejercicio 3:} La ecuación estática es $\tau = mg\ell_c\sin q = 2(9.81)(0.4)\sin q = 7.848 \sin q$.
+\begin{enumerate}
+    \item $q = 0 \implies \tau = 0$ N$\cdot$m.
+    \item $q = \frac{\pi}{6} \implies \tau = 7.848(0.5) = 3.924$ N$\cdot$m.
+    \item $q = \frac{\pi}{2} \implies \tau = 7.848(1) = 7.848$ N$\cdot$m.
+\end{enumerate}
+
+\textbf{Ejercicio 4:} $\tau_I = M(q)\ddot{q} = J\ddot{q} = (0.4)(3) = 1.2$ N$\cdot$m.
+
+\textbf{Ejercicio 5:} No. Aunque la aceleración sea cero ($\ddot{q}=0 \implies \tau_I = 0$), el robot sigue sometido a las fuerzas gravitacionales $g(\mathbf{q})$ (dependientes de la posición) y a los posibles términos centrífugos/Coriolis de $C(\mathbf{q}, \dot{\mathbf{q}})$ por estar en movimiento constante.
+
+\textbf{Ejercicio 6:} Reducir el tiempo de $6s$ a $2s$ implica alcanzar mayores velocidades punta y, especialmente, mayores picos de aceleración. Como el término inercial en la dinámica depende de $\ddot{\mathbf{q}}$ y los términos de Coriolis de $\dot{\mathbf{q}}^2$, el esfuerzo total demandado $\tau(t)$ crecerá sustancialmente en la ejecución de $2s$.
+
+\textbf{Ejercicio 7:} Falso. La demanda alta de torque puede deberse simplemente a grandes cargas de gravedad o alta aceleración. Una singularidad cinemática se define estrictamente por la pérdida de rango del Jacobiano (movilidad espacial), no por las magnitudes de esfuerzo dinámico.
+
+\vspace{0.5cm}
+\section*{Guía de Intervención Diagnóstica para el Aula[cite: 14]}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\textwidth}{|>{\hsize=0.85\hsize}X|>{\hsize=0.9\hsize}X|>{\hsize=1.25\hsize}X|}
+\hline
+\rowcolor{gray!20} \textbf{Error Observado} & \textbf{Concepto Probablemente Débil} & \textbf{Micro-remediación Inmediata} \\ \hline
+Asume que Dinámica entrega posiciones. & Confusión de rol del modelo. & Recuerde: Cinemática $\to$ Dónde está. Dinámica $\to$ Cuánta fuerza cuesta. \\ \hline
+Dificultad en $T$ o $V$ inicial. & Base de energía ausente. & Mapee la energía al movimiento ($T \propto \dot{q}^2$) y a la configuración ($V \propto h$). \\ \hline
+Error de signo en gravedad. & Ignora convención de coordenadas. & Redibuje el diagrama; muestre el ángulo midiendo desde el reposo. \\ \hline
+Asume que el torque gravitacional es constante. & Concepto de brazo de palanca débil. & Contraste la postura vertical vs horizontal ($0$ vs $\pi/2$). \\ \hline
+Asume que $C(q,\dot{q})=0$ aplica a todos los robots. & Sobregeneralización del modelo 1R. & Aclare que este es el único caso sin acoplamiento multijunta en 3D. \\ \hline
+Afirma que en "Vel. de Crucero", el torque cae a cero. & Confunde aceleración con Torque Total. & Aísle la gráfica o ecuación de $g(q)$; la carga pesa aunque no acelere. \\ \hline
+Correlaciona Singularidad con Torques Altos automáticamente. & Combina IK diferencial con Dinámica. & Contraste las definiciones matemáticas explícitas de $\operatorname{rank}(J)$ vs $\tau$. \\ \hline
+\end{tabularx}
+
+\end{document}

@@ -1,0 +1,73 @@
+% hito2-guide.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Guía de Integración Hito 2}
+\rhead{Semana 9}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Guía de Integración Técnica: Hito 2 (Final)}}\\[0.2cm]
+\end{center}
+
+\begin{tcolorbox}[colback=yellow!10, colframe=black, title=\textbf{Flujo Operativo Integrado[cite: 14]}]
+    El Hito 2 une todas las herramientas de la Unidad II. Cada módulo responde a una pregunta de ingeniería crucial y provee datos al siguiente bloque en el \textit{pipeline}.
+\end{tcolorbox}
+
+\section*{Módulos Requeridos en su Notebook (Jupyter/Python)[cite: 14]}
+
+\textbf{1. IK Analítica (Pieper)}
+\begin{itemize}
+    \item \textit{¿Qué hace?} Encuentra qué configuraciones articulares logran la pose dada.
+    \item \textit{Evidencia:} Computo de las ramas analíticas. Lógica de selección.
+\end{itemize}
+
+\textbf{2. Verificación FK}
+\begin{itemize}
+    \item \textit{¿Qué hace?} Asegura que el candidato de Pieper realmente devuelve la pose deseada.
+    \item \textit{Evidencia:} Código de validación $T_0^6(q) \approx T_d$.
+\end{itemize}
+
+\textbf{3. Generación de Trayectoria (LSPB)}
+\begin{itemize}
+    \item \textit{¿Qué hace?} Dicta cómo el robot evolucionará en el tiempo entre dos poses.
+    \item \textit{Evidencia:} Cálculo de $t_c$, y arreglos para $q(t), \dot{q}(t), \ddot{q}(t)$. Chequeos de continuidad.
+\end{itemize}
+
+\textbf{4. Jacobiano y Análisis de Singularidad}
+\begin{itemize}
+    \item \textit{¿Qué hace?} Identifica la pérdida de movilidad espacial a lo largo de la trayectoria.
+    \item \textit{Evidencia:} Implementación del $J(q(t))$. Experimento evaluando el Rango $\operatorname{rank}$ o determinante a lo largo del tiempo.
+\end{itemize}
+
+\textbf{5. Dinámica y Evaluación de Torque}
+\begin{itemize}
+    \item \textit{¿Qué hace?} Predice qué esfuerzo deberán hacer los motores para seguir la trayectoria LSPB.
+    \item \textit{Evidencia:} Formulación del torque $\tau(t)$. Aislamiento de las contribuciones Inerciales, de Coriolis (si aplica) y Gravitacionales.
+\end{itemize}
+
+\textbf{6. Discusión, Gráficas y Cuaderno}
+\begin{itemize}
+    \item \textit{¿Qué hace?} Sistematiza los resultados en un formato profesional de ingeniería.
+    \item \textit{Evidencia:} Ecuaciones, código limpio, manejo explícito de unidades y gráficas consolidadas de las fases.
+\end{itemize}
+
+\end{document}
+

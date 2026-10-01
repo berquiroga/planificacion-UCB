@@ -1,0 +1,78 @@
+% exercises.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Robótica (IMT-342) - Worksheet}
+\rhead{Semana 9 - Sesión 2}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Hoja de Trabajo: Dinámica Básica y Pipeline H2}}\\[0.2cm]
+\end{center}
+
+\vspace{0.4cm}
+
+\section*{Ejercicio 1: Identificación de Términos Dinámicos[cite: 14]}
+Empareje lógicamente cada término de la ecuación general de manipuladores con su significado físico. Escriba la letra en el paréntesis:
+\begin{itemize}
+    \item[ ] ( \quad ) Efectos de gravedad. \hfill \textbf{A.} $C(\mathbf{q}, \dot{\mathbf{q}})\dot{\mathbf{q}}$
+    \item[ ] ( \quad ) Contribución inercial. \hfill \textbf{B.} $\tau$
+    \item[ ] ( \quad ) Torque de actuadores requerido. \hfill \textbf{C.} $M(\mathbf{q})\ddot{\mathbf{q}}$
+    \item[ ] ( \quad ) Efectos de Coriolis y centrífugos. \hfill \textbf{D.} $\mathbf{g}(\mathbf{q})$
+\end{itemize}
+
+\section*{Ejercicio 2: Completar la Derivación 1R[cite: 14]}
+Partiendo de las energías dadas para el modelo 1R: $T = \frac{1}{2}J\dot{q}^2$ y $V = mg\ell_c(1-\cos q)$.
+Demuestre paso a paso la obtención de la ecuación de torque $\tau$ aplicando el formalismo de Euler-Lagrange: $\frac{d}{dt}\left(\frac{\partial L}{\partial \dot{q}}\right) - \frac{\partial L}{\partial q} = \tau$.
+\vspace{4.5cm}
+
+\section*{Ejercicio 3: Gravedad Estática[cite: 14]}
+Para un eslabón 1R con parámetros: $m = 2$ kg, $\ell_c = 0.4$ m, y $g = 9.81$ m/s$^2$. \\
+Asumiendo que el robot está en reposo estático ($\dot{q} = 0, \ddot{q} = 0$), calcule el torque requerido para sostenerlo en las configuraciones angulares:
+\begin{enumerate}
+    \item $q = 0$ rad: \underline{\hspace{4cm}} N$\cdot$m.
+    \item $q = \frac{\pi}{6}$ rad: \underline{\hspace{4cm}} N$\cdot$m.
+    \item $q = \frac{\pi}{2}$ rad: \underline{\hspace{4cm}} N$\cdot$m.
+\end{enumerate}
+
+\section*{Ejercicio 4: Contribución Inercial[cite: 14]}
+En un instante de tiempo, el brazo de un robot tiene una inercia de $J = 0.4$ kg$\cdot$m$^2$ y debe acelerar a $\ddot{q} = 3$ rad/s$^2$. Suponiendo compensación gravitatoria perfecta en ese instante, calcule la contribución de torque puramente inercial $\tau_I$.
+\vspace{2cm}
+
+\section*{Ejercicio 5: Razonamiento sobre Fases LSPB[cite: 14]}
+En la fase de "Velocidad de Crucero" del perfil LSPB ($\ddot{q} = 0$), ¿debería el torque del actuador caer a cero inmediatamente? Justifique su respuesta basándose en los términos de la ecuación dinámica.
+\vspace{2.5cm}
+
+\section*{Ejercicio 6: Misma Ruta, Diferente Tiempo[cite: 14]}
+Explique técnicamente por qué mover el robot desde el punto $A$ hasta el punto $B$ a lo largo del mismo camino geométrico en $2$ segundos puede demandar un esfuerzo pico (torque) mucho mayor en el actuador en comparación con ejecutar la misma tarea en $6$ segundos.
+\vspace{3cm}
+
+\section*{Ejercicio 7: Singularidad vs. Dinámica[cite: 14]}
+Evalúe la siguiente afirmación como Verdadera o Falsa y explique su razonamiento: \textit{"Si un robot exige un torque muy alto para moverse, significa matemáticamente que está entrando en una singularidad cinemática."}
+\vspace{3cm}
+
+\end{document}
