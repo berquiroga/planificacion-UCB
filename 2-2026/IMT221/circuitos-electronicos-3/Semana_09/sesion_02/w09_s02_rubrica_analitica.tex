@@ -1,0 +1,43 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Rúbrica Analítica de Calificación}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Rúbrica Analítica de Evaluación — EC2 (BJT / Par Diferencial)}]
+    Evalúe el razonamiento del estudiante en base a 5 dimensiones transversales, sin basar la puntuación únicamente en el resultado aritmético final[cite: 8].
+\end{tcolorbox}
+
+\renewcommand{\arraystretch}{1.8}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!20}
+\textbf{Dimensión} & \textbf{Strong (Sólido)[cite: 8]} & \textbf{Developing (En desarrollo)[cite: 8]} & \textbf{Weak (Débil)[cite: 8]} \\ \hline
+\textbf{1. Selección del Modelo} & Elige el modelo correcto (ej. LVK de colector, Espejo ideal/$\beta$ finito) justificando sus supuestos teóricos explícitamente. & Usa el modelo mayormente correcto pero con justificaciones débiles o incompletas de las condiciones frontera. & Uso mecánico de fórmulas desvinculadas de la topología real del circuito evaluado. \\ \hline
+\textbf{2. Ejecución Analítica} & Las ecuaciones, despejes, el manejo de unidades y la aritmética final son coherentes y libres de errores. & Demuestra el camino analítico correcto pero comete errores menores (de signo o conversión de mV a V). & El camino central de la derivación analítica o la relación matemática básica es incorrecto. \\ \hline
+\textbf{3. Interpretación Física} & Logra explicar el significado físico de sus resultados numéricos (ej. por qué el $\beta$ no explica toda la caída de $I_T$). & Proporciona interpretaciones parciales o repite definiciones genéricas que no calzan exacto con sus números. & Proveé una respuesta numérica final en vacío, sin capacidad de conectar el número a la física del circuito. \\ \hline
+\textbf{4. Consistencia de Convención} & Mantiene rigurosamente la convención exigida (Ej. $v_o=v_{C2}$) a lo largo de los cálculos de $A_d, A_c$ y CMRR. & Mezcla temporalmente nomenclaturas pero nota la inconsistencia tras una leve revisión procedimental. & Mezcla convenciones (Ej. Divide \textit{diff} entre \textit{single-ended}) sin ser consciente del error metodológico. \\ \hline
+\textbf{5. Diagnosis \& Troubleshooting} & Propone mediciones específicas que prueban directa y lógicamente una hipótesis de falla de hardware plausible. & La medición propuesta es relevante pero está débilmente conectada con la causa raíz hipotética. & Propone respuestas arbitrarias, adivinanzas o "cambiar componentes al azar" sin usar instrumentación. \\ \hline
+\end{tabularx}
+
+\vspace{0.5cm}
+\textit{Nota al Docente: Según las directrices actuales, no se imponen ponderaciones numéricas formales en este artefacto; debe ajustarlas acorde al sistema de la universidad[cite: 8].}
+
+\end{document}

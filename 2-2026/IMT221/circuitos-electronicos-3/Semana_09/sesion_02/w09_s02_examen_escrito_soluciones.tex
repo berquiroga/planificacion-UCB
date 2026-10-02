@@ -1,0 +1,91 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Instructor Answer Key EC2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Material Reservado Docente: Solucionario de Evaluación EC2}]
+    Este solucionario incluye las derivaciones explícitas completas y las expectativas de diagnóstico (Troubleshooting) para la corrección[cite: 8].
+\end{tcolorbox}
+
+\section*{Solución Problema 1: DC / Punto Q}
+\textbf{1. Corriente de colector ($I_C$)[cite: 8]:} \\
+Se aplica Ley de Ohm sobre la resistencia de carga $R_C$:
+\begin{equation*}
+    I_C = \frac{V_{CC} - V_C}{R_C} = \frac{9.0\,\text{V} - 6.40\,\text{V}}{4700\,\Omega} = \frac{2.60\,\text{V}}{4700\,\Omega} \approx \mathbf{0.553\,\text{mA}} \quad \text{[cite: 8]}
+\end{equation*}
+\textbf{2. Voltaje $V_{CE}$[cite: 8]:}
+\begin{equation*}
+    V_{CE} = V_C - V_E = 6.40\,\text{V} - (-0.69\,\text{V}) = \mathbf{7.09\,\text{V}} \quad \text{[cite: 8]}
+\end{equation*}
+\textbf{3. Verificación de región forward-active[cite: 8]:} \\
+La unión Base-Emisor está en directa ($V_B - V_E = 0 - (-0.69) = 0.69\,\text{V}$). La unión Base-Colector está inversamente polarizada ($V_B - V_C = 0 - 6.40 = -6.40\,\text{V}$). La región \textbf{forward-active es completamente consistente}[cite: 8]. \\
+\textbf{4. Interpretación vs $0.5\,\text{mA}$[cite: 8]:} \\
+Un valor de $0.553\,\text{mA}$ representa un exceso del $\sim 10\%$. Es tolerable pero sugiere que la fuente de cola está enviando un $I_T > 1\,\text{mA}$ o hay mismatch en el par[cite: 8]. \\
+\textbf{5. Siguiente medición diagnóstica[cite: 8]:} \\
+Medir la corriente de cola total $I_T$ en el emisor o medir la rama opuesta $V_{C2}$ para verificar simetría[cite: 8].
+
+\section*{Solución Problema 2: Current Mirror}
+\textbf{1. Estimación $I_{REF}$[cite: 8]:}
+El nodo de base $V_B$ del espejo está en $V_{EE} + V_{BE} = -9\,\text{V} + 0.70\,\text{V} = -8.30\,\text{V}$.
+\begin{equation*}
+    I_{REF} = \frac{0\,\text{V} - (-8.30\,\text{V})}{8.2\,\text{k}\Omega} = \frac{8.30\,\text{V}}{8200\,\Omega} \approx \mathbf{1.012\,\text{mA}} \quad \text{[cite: 8]}
+\end{equation*}
+\textbf{2. Estimación de $I_T$ por $\beta$ finito[cite: 8]:}
+\begin{equation*}
+    I_T \approx \frac{I_{REF}}{1 + 2/\beta} = \frac{1.012\,\text{mA}}{1 + 2/200} = \frac{1.012\,\text{mA}}{1.01} \approx \mathbf{1.002\,\text{mA}} \quad \text{[cite: 8]}
+\end{equation*}
+\textbf{3. Juicio matemático sobre la caída a $0.88\,\text{mA}$[cite: 8]:} \\
+La reducción inducida solo por el $\beta$ arroja $\sim 1.002\,\text{mA}$. Una caída a $0.88\,\text{mA}$ representa casi un $13\%$ de desviación. \textbf{NO se explica únicamente por el $\beta$ finito}[cite: 8]. \\
+\textbf{4. Razones Físicas Plausibles[cite: 8]:} \\
+Desviación térmica (\textit{thermal drift}) que altera el $V_{BE}$ con el calentamiento, Efecto Early debido a diferencias entre el $V_{CE3}$ y $V_{CE4}$, o tolerancia de $R_{REF}$ por temperatura[cite: 8]. \\
+\textbf{5. Medición Discriminatoria[cite: 8]:} \\
+Medir el $V_{BE}$ directamente con el multímetro (debe haber cambiado de $0.70\,\text{V}$ si se calentó) o medir el voltaje a través de $R_{REF}$ para ver si $I_{REF}$ disminuyó en el tiempo[cite: 8].
+
+\section*{Solución Problema 3: Small Signal + Topology}
+\textbf{1. $g_m$[cite: 8]:} \quad $\displaystyle g_m = \frac{I_C}{V_T} = \frac{0.46\,\text{mA}}{25.85\,\text{mV}} \approx \mathbf{17.79\,\text{mS}}$ \\
+\textbf{2. $r_\pi$[cite: 8]:} \quad $\displaystyle r_\pi = \frac{\beta}{g_m} = \frac{220}{17.79\,\text{mS}} \approx \mathbf{12.36\,\text{k}\Omega}$ \\
+\textbf{3. Fase en Emisor Común (CE)[cite: 8]:} Invertida (desfase de 180°)[cite: 8]. \\
+\textbf{4. Selección Topológica[cite: 8]:} Colector Común (CC)[cite: 8]. \\
+\textbf{5. Explicación $r_\pi$ vs $g_m$[cite: 8]:} $g_m$ es puramente función de $I_C$ y $V_T$, parámetros que son impuestos por la red de polarización DC. Sin embargo, $r_\pi = \beta / g_m$, por lo tanto, variaciones de fabricación en $\beta$ afectan lineal y directamente a la resistencia de entrada sin alterar la transconductancia[cite: 8].
+
+\section*{Solución Problema 4: Par Diferencial y $A_d$}
+\textbf{1. $g_m$[cite: 8]:} \quad $\displaystyle g_m = \frac{0.47\,\text{mA}}{25.85\,\text{mV}} \approx \mathbf{18.18\,\text{mS}}$ \\
+\textbf{2. $A_{d,se}$[cite: 8]:} \quad $\displaystyle A_{d,se} \approx +\frac{g_m R_C}{2} = \frac{(18.18\,\text{mS})(4.7\,\text{k}\Omega)}{2} \approx \mathbf{+42.7\,\text{V/V}}$ \\
+\textbf{3. Salida $|v_o|$[cite: 8]:} \quad $\displaystyle |v_o| = |A_{d,se}| \cdot v_d = (42.7)(4.0\,\text{mV}) = \mathbf{170.8\,\text{mV}}$ \\
+\textbf{4. Signo de salida[cite: 8]:} Si $v_d > 0$, entonces $v_1 > v_2$. Esto genera una elevación de $i_{C1}$ ($\uparrow$) y una caída en $i_{C2}$ ($\downarrow$). Al caer la corriente por $R_{C2}$, la caída de voltaje en $R_{C2}$ es menor, por lo que $v_{C2}$ **sube** ($\uparrow$). Por tanto, la salida es **positiva** (en fase)[cite: 8]. \\
+\textbf{5. Current Steering[cite: 8]:} El voltaje diferencial direcciona la corriente constante $I_T$ de la cola hacia la rama con el mayor potencial en base (Q1 roba corriente a Q2)[cite: 8].
+
+\section*{Solución Problema 5: $v_d, v_{cm}$, CMRR y Validación}
+\textbf{1. Cálculo de $v_d$ y $v_{cm}$[cite: 8]:}
+\begin{align*}
+    v_d &= v_1 - v_2 = 0.515\,\text{V} - 0.485\,\text{V} = \mathbf{30\,\text{mV}} \quad \text{[cite: 8]} \\
+    v_{cm} &= \frac{v_1 + v_2}{2} = \frac{0.515\,\text{V} + 0.485\,\text{V}}{2} = \mathbf{0.500\,\text{V}} \quad \text{[cite: 8]}
+\end{align*}
+\textbf{2. Clasificación[cite: 8]:} Excitación **Mixta** (Posee tanto componente diferencial como de modo común)[cite: 8]. \\
+\textbf{3. CMRR[cite: 8]:}
+\begin{align*}
+    CMRR &= \left| \frac{A_{d,se}}{A_{c,se}} \right| = \frac{40}{0.025} = \mathbf{1600} \quad \text{[cite: 8]} \\
+    CMRR_{dB} &= 20 \log_{10}(1600) \approx \mathbf{64.08\,\text{dB}} \quad \text{[cite: 8]}
+\end{align*}
+\textbf{4. Comparación[cite: 8]:} Supera el objetivo de diseño establecido de 60 dB[cite: 8]. \\
+\textbf{5. Validez del método mezclado[cite: 8]:} Metodológicamente es **INVÁLIDO**[cite: 8]. Calcular el CMRR dividiendo un $A_d$ con convención \textit{Double-Ended} (dos colectores) entre un $A_c$ con convención \textit{Single-Ended} (un colector) rompe el significado físico del rechazo en el nodo de interés[cite: 8].
+
+\end{document}

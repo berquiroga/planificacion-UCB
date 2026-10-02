@@ -1,0 +1,99 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Evaluación Escrita Individual EC2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Instrucciones para el Estudiante}]
+    \begin{itemize}
+        \item Evaluación \textbf{individual}. Duración sugerida: 65–70 min[cite: 8].
+        \item No se permite formulario adicional ni acceso a internet/celulares[cite: 8].
+        \item Se permite calculadora científica convencional como apoyo aritmético[cite: 8].
+        \item Se evalúa el procedimiento, la elección del modelo, las unidades, la convención de signos y la interpretación física, no solo el resultado numérico final[cite: 8].
+    \end{itemize}
+\end{tcolorbox}
+
+\begin{center}
+\begin{circuitikz}[scale=0.7, transform shape, thick]
+    \draw (0,0) node[npn](Q1){}; \node[left=0.1cm] at (Q1.B) {$v_1$}; \node[right=0.1cm] at (Q1.C) {$v_{C1}$};
+    \draw (4,0) node[npn, xscale=-1](Q2){}; \node[right=0.1cm] at (Q2.B) {$v_2$}; \node[left=0.1cm] at (Q2.C) {$v_{C2} = v_o$};
+    \draw (Q1.C) to[R, l=$R_C$] (0,2) -- (4,2) to[R, l_=$R_C$] (Q2.C);
+    \draw (2,2) -- (2,2.5) node[above]{$+V_{CC}$};
+    \draw (Q1.E) -- (0,-1.5) -- (4,-1.5) -- (Q2.E);
+    \draw (2,-1.5) node[circle,fill,inner sep=1.5pt]{} node[above]{$v_E$} to[I, l=$I_T$] (2,-3) node[below]{Fuente de Cola ($V_{EE}$)};
+    \draw (Q1.B) to[short, -o] (-1,0); \draw (Q2.B) to[short, -o] (5,0);
+\end{circuitikz}
+\end{center}
+
+\vspace{0.3cm}
+\noindent \textbf{Problema 1 — DC / Punto Q y Diagnóstico[cite: 8]} \\
+En una rama del Par Diferencial, se tienen los siguientes datos de diseño: $V_{CC}=9.0\,\text{V}$ y $R_C=4.7\,\text{k}\Omega$[cite: 8]. Al medir físicamente en el laboratorio, usted registra: $V_C=6.40\,\text{V}$, $V_E=-0.69\,\text{V}$ y $V_B=0.00\,\text{V}$[cite: 8].
+\textbf{Tareas:}
+1. Calcule la corriente de colector $I_C$[cite: 8].
+2. Calcule el voltaje $V_{CE}$[cite: 8].
+3. Determine si el estado \textit{forward-active} es consistente con las mediciones[cite: 8].
+4. Interprete este resultado frente a un objetivo de polarización nominal de $0.5\,\text{mA}$[cite: 8].
+5. Proponga una medición de diagnóstico para el siguiente paso si hubiera discrepancia[cite: 8].
+
+\vspace{0.3cm}
+\noindent \textbf{Problema 2 — Current Mirror / Efecto de $\beta$ y Análisis Térmico[cite: 8]} \\
+Dado un espejo de corriente simple con $V_{EE}=-9.0\,\text{V}$ y un resistor de referencia $R_{REF}=8.2\,\text{k}\Omega$[cite: 8]. Asuma $V_{BE}=0.70\,\text{V}$ y $\beta=200$[cite: 8]. Al encender el circuito se mide $I_T=0.97\,\text{mA}$, pero tras varios minutos decae a $I_T=0.88\,\text{mA}$[cite: 8].
+\textbf{Tareas:}
+1. Estime la corriente $I_{REF}$ teórica[cite: 8].
+2. Estime $I_T$ teórica considerando únicamente el efecto de $\beta$ finito[cite: 8].
+3. Juzgue matemáticamente si la caída a $0.88\,\text{mA}$ se explica únicamente por el $\beta$ finito[cite: 8].
+4. Provea dos razones físicas plausibles para este decaimiento en el tiempo[cite: 8].
+5. Mencione una medición discriminatoria para comprobar sus hipótesis[cite: 8].
+
+\vspace{0.3cm}
+\noindent \textbf{Problema 3 — Parámetros de Pequeña Señal y Topología[cite: 8]} \\
+Una rama del par opera a $I_C=0.46\,\text{mA}$ y tiene un $\beta=220$[cite: 8]. Utilice el voltaje térmico $V_T=25.85\,\text{mV}$[cite: 8].
+\textbf{Tareas:}
+1. Calcule la transconductancia $g_m$[cite: 8].
+2. Calcule la resistencia de entrada $r_\pi$[cite: 8].
+3. Indique la fase de la señal de salida en configuración Emisor Común (CE)[cite: 8].
+4. Seleccione qué topología (CE, CC, CB) utilizaría si necesitara alta resistencia de entrada y ganancia de voltaje cercana a la unidad[cite: 8].
+5. Explique analíticamente por qué variaciones de fabricación en $\beta$ afectan más directamente a $r_\pi$ que a $g_m$ cuando $I_C$ está fija[cite: 8].
+
+\vspace{0.3cm}
+\noindent \textbf{Problema 4 — Par Diferencial y Ganancia $A_d$[cite: 8]} \\
+Un par balanceado tiene $R_C=4.7\,\text{k}\Omega$, $I_C=0.47\,\text{mA}$ por rama, y $V_T=25.85\,\text{mV}$[cite: 8]. Se define la salida como $v_o=v_{C2}$[cite: 8]. Se inyecta una señal diferencial pura de $v_d=4.0\,\text{mV}$[cite: 8].
+\textbf{Tareas:}
+1. Calcule $g_m$[cite: 8].
+2. Estime analíticamente la ganancia single-ended $A_{d,se}$[cite: 8].
+3. Prediga la magnitud del voltaje AC en la salida ($v_o$)[cite: 8].
+4. Determine el signo (o dirección) del voltaje de salida $v_{C2}$ para un $v_d$ positivo[cite: 8].
+5. Explique el concepto de \textit{current steering} en este escenario[cite: 8].
+
+\vspace{0.3cm}
+\noindent \textbf{Problema 5 — $v_d, v_{cm}, A_c$, CMRR y Validez[cite: 8]} \\
+Se registran las siguientes entradas simultáneas: $v_1=0.515\,\text{V}$ y $v_2=0.485\,\text{V}$[cite: 8].
+Se ha medido por separado una ganancia $A_{d,se}=40$ y $A_{c,se}=0.025$, ambas en el nodo de salida $v_o=v_{C2}$[cite: 8].
+\textbf{Tareas:}
+1. Calcule $v_d$ y $v_{cm}$[cite: 8].
+2. Clasifique la naturaleza de la excitación inyectada[cite: 8].
+3. Calcule el CMRR absoluto y en decibelios (dB)[cite: 8].
+4. Compare su resultado contra un objetivo de diseño de 60 dB[cite: 8].
+5. Juzgue si sería válido metodológicamente calcular el CMRR usando una medición de $A_{d,diff}=80$ (tomada entre los dos colectores) junto con el $A_{c,se}=0.025$ actual[cite: 8].
+
+\end{document}

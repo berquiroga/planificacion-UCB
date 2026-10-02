@@ -45,15 +45,15 @@
         \begin{column}{0.5\textwidth}
             \textbf{Definiciones Clave[cite: 5]:}
             \begin{align*}
-                \mathbf{v_d} &= \mathbf{v_1 - v_2} \\
-                \mathbf{v_{cm}} &= \mathbf{\frac{v_1 + v_2}{2}}
+                \bm{v_d} &= \bm{v_1 - v_2} \\
+                \bm{v_{cm}} &= \bm{\frac{v_1 + v_2}{2}}
             \end{align*}
             
             \vspace{0.2cm}
             \textbf{Reconstrucción (Superposición)[cite: 5]:}
             \begin{align*}
-                \mathbf{v_1} &= \mathbf{v_{cm} + \frac{v_d}{2}} \\
-                \mathbf{v_2} &= \mathbf{v_{cm} - \frac{v_d}{2}}
+                \bm{v_1} &= \bm{v_{cm} + \frac{v_d}{2}} \\
+                \bm{v_2} &= \bm{v_{cm} - \frac{v_d}{2}}
             \end{align*}
         \end{column}
         \begin{column}{0.45\textwidth}
@@ -77,13 +77,13 @@
 \begin{frame}{2. Ejemplos de Descomposición}
     \textbf{Ejemplo 1: Diferencial Puro[cite: 5]}
     \begin{equation*}
-        v_1 = +5\,\text{mV}, \quad v_2 = -5\,\text{mV} \implies \mathbf{v_d = 10\,\text{mV}}, \quad \mathbf{v_{cm} = 0\,\text{mV}}
+        \bm{v_1 = +5\,\text{mV}, \quad v_2 = -5\,\text{mV} \implies \mathbf{v_d = 10\,\text{mV}}, \quad \mathbf{v_{cm} = 0\,\text{mV}}}
     \end{equation*}
     
     \vspace{0.2cm}
     \textbf{Ejemplo 2: Modo Común Puro[cite: 5]}
     \begin{equation*}
-        v_1 = 200\,\text{mV}, \quad v_2 = 200\,\text{mV} \implies \mathbf{v_d = 0\,\text{mV}}, \quad \mathbf{v_{cm} = 200\,\text{mV}}
+        \bm{v_1 = 200\,\text{mV}, \quad v_2 = 200\,\text{mV} \implies \mathbf{v_d = 0\,\text{mV}}, \quad \mathbf{v_{cm} = 200\,\text{mV}}}
     \end{equation*}
     
     \vspace{0.2cm}
@@ -136,7 +136,7 @@
             \vspace{0.3cm}
             Factorizando y despejando la corriente incremental de emisor ($i_e$)[cite: 5]:
             \begin{equation*}
-                \mathbf{i_e = \frac{v_{cm}}{r_e + 2R_T}} \quad \text{[cite: 5]}
+                \bm{i_e = \frac{v_{cm}}{r_e + 2R_T}} \quad \text{[cite: 5]}
             \end{equation*}
         \end{column}
     \end{columns}
@@ -149,18 +149,18 @@
     \textbf{Voltaje de Salida (Ley de Ohm)[cite: 5]:} \\
     Sabiendo que $i_c \approx \alpha i_e$, la caída en la resistencia de colector produce la salida:
     \begin{equation*}
-        v_o = -i_c R_C = -\alpha \left(\frac{v_{cm}}{r_e + 2R_T}\right) R_C \quad \text{[cite: 5]}
+        \bm{v_o = -i_c R_C = -\alpha \left(\frac{v_{cm}}{r_e + 2R_T}\right) R_C} \quad \text{[cite: 5]}
     \end{equation*}
     
     \vspace{0.3cm}
     \textbf{Ganancia Común Single-Ended ($A_{c,se} = v_o / v_{cm}$)[cite: 5]:}
     \begin{equation*}
-        \mathbf{A_{c,se} \approx -\frac{\alpha R_C}{r_e + 2R_T}} \quad \text{[cite: 5]}
+        \bm{A_{c,se} \approx -\frac{\alpha R_C}{r_e + 2R_T}} \quad \text{[cite: 5]}
     \end{equation*}
     
     Si $R_T \gg r_e$ y $\alpha \approx 1$, la expresión se simplifica a:
     \begin{equation*}
-        \mathbf{A_{c,se} \approx -\frac{R_C}{2 R_T}} \quad \text{[cite: 5]}
+        \bm{A_{c,se} \approx -\frac{R_C}{2 R_T}} \quad \text{[cite: 5]}
     \end{equation*}
 \end{frame}
 
@@ -177,7 +177,7 @@
     \end{align*}
     Sustituyendo $i_c$[cite: 5]:
     \begin{equation*}
-        \mathbf{A_{c,diff} \approx -\frac{\alpha \Delta R_C}{r_e + 2R_T} \approx -\frac{\Delta R_C}{2 R_T}} \quad \text{[cite: 5]}
+        \bm{A_{c,diff} \approx -\frac{\alpha \Delta R_C}{r_e + 2R_T} \approx -\frac{\Delta R_C}{2 R_T}} \quad \text{[cite: 5]}
     \end{equation*}
 \end{frame}
 

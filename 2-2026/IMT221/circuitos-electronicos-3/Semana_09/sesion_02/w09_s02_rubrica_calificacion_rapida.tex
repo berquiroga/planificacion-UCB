@@ -1,0 +1,57 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Rapid Grading Sheet W09S02}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+% Columnas ajustadas para no desbordar
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Hoja de Calificación Rápida — Mapeo de Competencias EC2}]
+    Utilice los códigos cualitativos recomendados[cite: 8]: \textbf{D} = Demostrado (Demonstrated), \textbf{P} = Parcial (Partial), \textbf{N} = No Demostrado (Not demonstrated)[cite: 8].
+\end{tcolorbox}
+
+\renewcommand{\arraystretch}{2}
+\begin{tabularx}{\textwidth}{|p{4cm}|C|C|C|C|p{1.5cm}|C|p{2cm}|C|C|C|}
+\hline
+\rowcolor{ucbblue!20}
+\textbf{Estudiante} & \textbf{Q/DC} & \textbf{Mirror} & \textbf{Small Signal} & \textbf{Diff Mode} & \textbf{Common Mode} & \textbf{CMRR} & \textbf{Interpre-tation} & \textbf{EC2 Status} & \textbf{Recovery} & \textbf{Micro-defensa} \\ \hline
+ & & & & & & & & & & \\ \hline
+ & & & & & & & & & & \\ \hline
+ & & & & & & & & & & \\ \hline
+ & & & & & & & & & & \\ \hline
+ & & & & & & & & & & \\ \hline
+ & & & & & & & & & & \\ \hline
+ & & & & & & & & & & \\ \hline
+ & & & & & & & & & & \\ \hline
+ & & & & & & & & & & \\ \hline
+ & & & & & & & & & & \\ \hline
+ & & & & & & & & & & \\ \hline
+ & & & & & & & & & & \\ \hline
+\end{tabularx}
+
+\vspace{0.5cm}
+\textbf{Mapeo de Dominios:}
+\begin{itemize}
+    \item \textbf{EC2 Status:} Calificación sumativa global de la evaluación individual.
+    \item \textbf{Micro-defensa:} Marcar si se gatillará una defensa condicional cruzando los resultados de este examen analítico con el Reporte Grupal de Hito 2 (en caso de inconsistencia grave)[cite: 8].
+\end{itemize}
+
+\end{document}
