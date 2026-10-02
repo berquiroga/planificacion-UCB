@@ -1,0 +1,94 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Auditoría de Reporte Hito 2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Checklist de Revisión: Informe Técnico Grupal Hito 2}]
+    Utilice esta lista para auditar la evidencia de su reporte. No incluya notas individuales del examen aquí[cite: 9].
+\end{tcolorbox}
+
+\begin{minipage}[t]{0.48\textwidth}
+    \textbf{1. Análisis Analítico[cite: 9]}
+    \begin{itemize}
+        \item[$\square$] Topología declarada explícitamente.
+        \item[$\square$] Suposiciones documentadas ($V_{BE}$, etc).
+        \item[$\square$] Predicción de bias DC.
+        \item[$\square$] Predicción de pequeña señal ($g_m, A_d, A_c$).
+    \end{itemize}
+    
+    \textbf{2. Simulación (LTspice)[cite: 9]}
+    \begin{itemize}
+        \item[$\square$] Modelo BJT claramente identificado.
+        \item[$\square$] Evidencia de Punto de Operación (.op).
+        \item[$\square$] Ganancia $A_d$ simulada.
+        \item[$\square$] Ganancia $A_c$ y CMRR simulados.
+    \end{itemize}
+    
+    \textbf{3. Implementación Física[cite: 9]}
+    \begin{itemize}
+        \item[$\square$] Espejo / Fuente de cola montada.
+        \item[$\square$] Par Diferencial documentado en fotos.
+        \item[$\square$] Método de inyección de señal documentado.
+        \item[$\square$] Conexión de instrumentos (Grounds) clara.
+    \end{itemize}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\textwidth}
+    \textbf{4. Mediciones (Evidencia Cruda)[cite: 9]}
+    \begin{itemize}
+        \item[$\square$] $I_T$ registrado.
+        \item[$\square$] Punto Q (Voltajes Nodales).
+        \item[$\square$] Offset estático.
+        \item[$\square$] $A_{d,se}$ medido.
+        \item[$\square$] $A_{c,se}$ medido.
+        \item[$\square$] CMRR calculado desde mediciones.
+    \end{itemize}
+    
+    \textbf{5. Validez Metodológica[cite: 9]}
+    \begin{itemize}
+        \item[$\square$] Mismo nodo usado para $A_d$ y $A_c$.
+        \item[$\square$] Convención de amplitud constante.
+        \item[$\square$] Ningún clipping observado.
+        \item[$\square$] Inyección de Modo Común verificada ($v_1 \approx v_2$).
+        \item[$\square$] Limitaciones de instrumentación discutidas.
+    \end{itemize}
+\end{minipage}
+
+\vspace{0.3cm}
+\textbf{6. Debugging y Discusión de No Idealidades[cite: 9]}
+\begin{itemize}
+    \item[$\square$] Mismatch y variación de $\beta$ discutidos.
+    \item[$\square$] Comportamiento térmico reportado si alteró los resultados experimentales.
+\end{itemize}
+
+\textbf{7. Comparación Tripartita[cite: 9]}
+\begin{itemize}
+    \item[$\square$] Teoría $\leftrightarrow$ Simulación $\leftrightarrow$ Hardware. Diferencias justificadas físicamente.
+\end{itemize}
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Veredicto del Reporte}]
+    \noindent \textbf{Estado General:} $\square$ Completo \quad $\square$ Parcial \quad $\square$ Inconsistente \quad $\square$ Faltan Evidencias[cite: 9] \\[0.2cm]
+    \noindent Evidencia más importante faltante: \hrulefill \\[0.2cm]
+    \noindent Inconsistencia más crítica a resolver: \hrulefill \\[0.2cm]
+    \noindent Revisión Requerida antes de entrega: \hrulefill
+\end{tcolorbox}
+
+\end{document}

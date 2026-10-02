@@ -1,0 +1,73 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Solucionario Ponderado W09S02}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Suplemento de Solucionario Técnico: Mapa de Puntaje EC2}]
+    Esta guía superpone una escala de \textbf{100 puntos brutos} sobre las soluciones técnicas. Esta escala interna no redefine el peso oficial de EC2 en la asignatura.
+\end{tcolorbox}
+
+\section*{Problema 1: DC / Punto Q y Diagnóstico (15 puntos)}
+\textbf{P1.1 — $I_C$ (3 pts):} $$ I_C = \frac{9.0 - 6.40}{4.7\,\text{k}\Omega} \approx 0.553\,\text{mA} $$
+\textit{Anclajes:} \textbf{3:} Completo y correcto. \textbf{2:} Planteamiento correcto, error aritmético menor. \textbf{1:} Falla en caída (Ej. $V_C/R_C$). \textbf{0:} Inválido.
+
+\noindent\textbf{P1.2 — $V_{CE}$ (3 pts)[cite: 9]:} $$ V_{CE} = V_C - V_E = 6.40 - (-0.69) = 7.09\,\text{V} $$
+\textit{Anclajes:} \textbf{3:} Completo. \textbf{2:} Fórmula correcta, error aritmético. \textbf{1:} Error conceptual de signo. \textbf{0:} Omitido.
+
+\noindent\textbf{P1.3 — Consistencia Forward-Active (4 pts)[cite: 9]:} 
+Unión B-E en directa ($0.69\,\text{V}$), B-C en inversa ($-6.40\,\text{V}$)[cite: 9].
+\textit{Anclajes:} \textbf{4:} Explica ambas uniones. \textbf{3:} Conclusión correcta, una verificación clara. \textbf{2:} Solo una verificación. \textbf{1:} Afirma "Active" sin justificar.
+
+\noindent\textbf{P1.4 — Interpretación respecto a $0.5\,\text{mA}$ (3 pts)[cite: 9]:} Exceso del $\sim 10\%$; sugiere $I_T$ mayor, mismatch o tolerancia, no falla catastrófica[cite: 9]. (\textbf{3:} Completo. \textbf{2:} Nota diferencia sin causa. \textbf{1:} Solo dice si es mayor/menor).
+
+\noindent\textbf{P1.5 — Siguiente medición diagnóstica (2 pts)[cite: 9]:} Ej. medir $I_T$ o $V_{C2}$ para ver simetría[cite: 9]. (\textbf{2:} Medición discriminante + justificación. \textbf{1:} Relevante sin justificar).
+
+\section*{Problema 2: Espejo de Corriente (20 puntos)[cite: 9]}
+\textbf{P2.1 — $I_{REF}$ (4 pts)[cite: 9]:} $$ I_{REF} = \frac{0 - (-8.30)}{8.2\,\text{k}\Omega} \approx 1.012\,\text{mA} $$
+\textbf{P2.2 — $I_T$ con $\beta$ finito (4 pts)[cite: 9]:} $$ I_T \approx \frac{1.012}{1 + 2/200} = 1.002\,\text{mA} $$
+\textbf{P2.3 — Juicio sobre $0.88\,\text{mA}$ (4 pts)[cite: 9]:} $\beta$ finito predice $1.002\,\text{mA}$. La caída a $0.88\,\text{mA}$ no se explica solo por $\beta$[cite: 9].
+\textbf{P2.4 — Dos causas físicas (4 pts)[cite: 9]:} Drift térmico en $V_{BE}$, Efecto Early, tolerancia de resistencias[cite: 9].
+\textbf{P2.5 — Medición (4 pts)[cite: 9]:} Medir $V_{BE}$ caliente/frío, o medir voltaje en $R_{REF}$ en el tiempo[cite: 9].
+
+\section*{Problema 3: Parámetros Pequeña Señal y Topología (15 puntos)[cite: 9]}
+\textbf{P3.1 — $g_m$ (4 pts)[cite: 9]:} $$ g_m = \frac{0.46\,\text{mA}}{25.85\,\text{mV}} \approx 17.79\,\text{mS} $$
+\textbf{P3.2 — $r_\pi$ (4 pts)[cite: 9]:} $$ r_\pi = \frac{220}{17.79\,\text{mS}} \approx 12.36\,\text{k}\Omega $$
+\textbf{P3.3 — Fase CE (2 pts)[cite: 9]:} Invertida ($180^\circ$)[cite: 9]. \\
+\textbf{P3.4 — Selección (2 pts)[cite: 9]:} CC (Colector Común)[cite: 9]. \\
+\textbf{P3.5 — Efecto $\beta$ (3 pts)[cite: 9]:} $g_m$ depende de $I_C$. $r_\pi = \beta/g_m$, el $\beta$ entra directamente afectando $r_\pi$[cite: 9].
+
+\section*{Problema 4: Par Diferencial / $A_d$ (20 puntos)[cite: 9]}
+\textbf{P4.1 — $g_m$ (3 pts)[cite: 9]:} $g_m \approx 18.18\,\text{mS}$[cite: 9]. \\
+\textbf{P4.2 — $A_{d,se}$ (5 pts)[cite: 9]:} $$ A_{d,se} \approx +\frac{g_m R_C}{2} \approx +42.7\,\text{V/V} $$
+\textbf{P4.3 — Magnitud $|v_o|$ (4 pts)[cite: 9]:} $$ |v_o| = 42.7 \times 4.0\,\text{mV} \approx 170.8\,\text{mV} $$
+\textbf{P4.4 — Signo/dirección (4 pts)[cite: 9]:} Positivo; $i_{C2}$ baja, $v_{C2}$ sube[cite: 9]. \\
+\textbf{P4.5 — Current Steering (4 pts)[cite: 9]:} $+v_d$ roba corriente de cola hacia Q1[cite: 9].
+
+\section*{Problema 5: $v_d, v_{cm}$, CMRR y Validez (30 puntos)[cite: 9]}
+\textbf{P5.1 — $v_d$ (4 pts)[cite: 9]:} $v_d = 0.515 - 0.485 = 30\,\text{mV}$[cite: 9]. \\
+\textbf{P5.2 — $v_{cm}$ (4 pts)[cite: 9]:} $v_{cm} = (0.515 + 0.485)/2 = 0.500\,\text{V}$[cite: 9]. \\
+\textbf{P5.3 — Clasificación (3 pts)[cite: 9]:} Excitación Mixta[cite: 9]. \\
+\textbf{P5.4 — CMRR Absoluto (5 pts)[cite: 9]:} $CMRR = |40 / 0.025| = 1600$[cite: 9]. \\
+\textbf{P5.5 — CMRR en dB (5 pts)[cite: 9]:} $CMRR_{dB} = 20\log_{10}(1600) \approx 64.08\,\text{dB}$[cite: 9]. \\
+\textbf{P5.6 — Comparación (3 pts)[cite: 9]:} $64.08\,\text{dB} > 60\,\text{dB}$ (supera el objetivo)[cite: 9]. \\
+\textbf{P5.7 — Validez output mixto (6 pts)[cite: 9]:} Inválido. Numerador (diff) y denominador (se) usan distintas salidas físicas[cite: 9].
+
+\end{document}

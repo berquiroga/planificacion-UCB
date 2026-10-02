@@ -1,0 +1,59 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Rúbrica Analítica Docente EC2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Marco de Crédito Parcial (Partial-Credit Framework)[cite: 9]}]
+    Reglas oficiales para clasificar errores y evitar penalizaciones duplicadas. El objetivo es validar la capacidad de ingeniería del estudiante por encima de resbalones aritméticos[cite: 9].
+\end{tcolorbox}
+
+\section*{1. Reglas Generales de Corrección[cite: 9]}
+
+\begin{itemize}
+    \item \textbf{Modelo Correcto + Error Aritmético:} Preserve la mayor parte del crédito asociado a la selección del modelo, planteamiento e interpretación[cite: 9]. Penalice levemente la respuesta numérica.
+    \item \textbf{Regla del Error Propagado (Dependent-Error):} Si un error aritmético temprano (Ej. calcular mal $I_C$) se propaga a subpartes posteriores (Ej. $g_m = I_C/V_T$), y el modelo posterior es lógicamente correcto basado en su propio número erróneo, \textbf{no penalice repetidamente}[cite: 9]. La subparte dependiente retiene el crédito metodológico.
+    \item \textbf{Modelo Incorrecto + Aritmética Limpia:} Una solución matemáticamente impecable sobre un modelo físico incorrecto recibe poco crédito analítico[cite: 9].
+    \item \textbf{Resultado Correcto sin Justificación:} Si se solicitó interpretación, el número "mágico" correcto sin trazabilidad no recibe puntaje completo[cite: 9].
+    \item \textbf{Método Válido Alternativo:} Conceda crédito completo si la derivación es correcta, los supuestos explícitos y la física consistente, aunque no sea el método idéntico al solucionario[cite: 9].
+\end{itemize}
+
+\section*{2. Casos de Estudio (Worked Examples)[cite: 9]}
+
+\textbf{Ejemplo 1 — Error aritmético propagado[cite: 9]:} \\
+Un estudiante anota $I_C = 0.503\,\text{mA}$ en vez de $0.553\,\text{mA}$ por un mal tipeo en calculadora. Luego usa su $I_C$ para hallar un $V_{CE}$ coherente y justifica correctamente la región activa[cite: 9]. \\
+\textit{Puntuación:} Penalice P1.1 (Crédito Parcial). Otorgue P1.2 y P1.3 \textbf{Completos} si su lógica interna es consistente[cite: 9].
+
+\vspace{0.2cm}
+\textbf{Ejemplo 2 — Modelo incorrecto, aritmética correcta[cite: 9]:} \\
+Calcula la corriente del espejo de cola asumiendo la relación errónea $I_T = \beta I_{REF}$. La multiplicación es exacta, pero el modelo físico es absurdo para esa topología[cite: 9]. \\
+\textit{Puntuación:} Error Tipo M (Modelo). Crédito analítico mínimo o nulo[cite: 9].
+
+\vspace{0.2cm}
+\textbf{Ejemplo 3 — Número CMRR correcto con convenciones inválidas[cite: 9]:} \\
+El estudiante usa la magnitud $A_{d,diff} = 80$ y la divide entre $A_{c,se} = 0.025$, obteniendo $3200$ (y $\approx 70.1\,\text{dB}$)[cite: 9]. \\
+\textit{Puntuación:} Penalice severamente. El número está aritméticamente bien, pero el concepto es inválido como CMRR en el Hito 2 por la asimetría de convenciones de salida[cite: 9].
+
+\vspace{0.2cm}
+\textbf{Ejemplo 4 — Propagación en $g_m$[cite: 9]:} \\
+Calcula $I_C$ ligeramente mal. Luego hace $g_m = I_C/V_T$ con su valor erróneo. \\
+\textit{Puntuación:} Conserve todo el crédito del método de $g_m$ para evitar doble penalización[cite: 9].
+
+\end{document}

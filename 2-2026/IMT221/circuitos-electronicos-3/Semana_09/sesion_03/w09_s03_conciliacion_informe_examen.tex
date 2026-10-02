@@ -1,0 +1,68 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Reconciliación y Microdefensa}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Documento Docente: Reconciliación de Evidencias (Triage)}]
+    La microdefensa NO es automática ni es un examen de recuperación rutinario. Solo se gatilla ante incongruencias insalvables entre la demostración individual y la grupal[cite: 9].
+\end{tcolorbox}
+
+\begin{center}
+\resizebox{0.85\textwidth}{!}{
+\begin{tikzpicture}[auto, thick, node distance=2cm and 1.5cm]
+    \node[draw, fill=blue!10, rounded corners, align=center] (exam) {Examen EC2 \\ (Evidencia Individual)};
+    \node[draw, fill=blue!10, rounded corners, align=center, right=of exam] (report) {Reporte Hito 2 \\ (Evidencia Práctica Grupal)};
+    
+    \node[draw, fill=yellow!20, rounded corners, align=center, below right=1cm and -1.5cm of exam] (compare) {Comparación de Trazabilidad};
+    
+    \node[draw, fill=green!10, rounded corners, align=center, below left=1cm and -2cm of compare] (cong) {Congruente / Parcial};
+    \node[draw, fill=red!10, rounded corners, align=center, below right=1cm and -2cm of compare] (incong) {Incongruente \\ (Contradicción real)};
+    
+    \node[draw, fill=orange!20, rounded corners, align=center, below=1cm of incong] (micro) {Microdefensa \\ Condicional};
+    
+    \draw[->] (exam) -- (compare);
+    \draw[->] (report) -- (compare);
+    \draw[->] (compare) -- (cong);
+    \draw[->] (compare) -- (incong);
+    \draw[->] (incong) -- (micro);
+\end{tikzpicture}
+}
+\end{center}
+
+\section*{Criterios de Gatillo de Microdefensa (Triggers)[cite: 9]}
+\textbf{SÍ es candidato a Microdefensa:} Evidencia grupal muy sólida contrastada con evidencia individual pésima en el mismo dominio. Autoría incierta. Resultados reportados físicamente inverosímiles (fabricados)[cite: 9]. \\
+\textbf{NO es candidato a Microdefensa:} Puntuación baja en examen por sí sola (va a Recuperatorio directo). Reporte incompleto. Errores aritméticos menores. Estudiante pidiendo "una oportunidad oral"[cite: 9].
+
+\section*{Registro Oficial de Decisión Docente[cite: 9]}
+\textbf{Estudiante:} \hrulefill \\[0.2cm]
+\textbf{Puntaje Examen Oficial EC2:} \rule{2cm}{0.15mm} \quad \textbf{Puntaje Autoevaluado:} \rule{2cm}{0.15mm} \\[0.2cm]
+\textbf{Dominio Analítico más Débil:} \hrulefill \\[0.2cm]
+\textbf{Estatus del Reporte Grupal:} $\square$ Fuerte \quad $\square$ Débil \quad $\square$ Incompleto \quad $\square$ Inverosímil \\[0.2cm]
+\textbf{Relación de Evidencias:} $\square$ Congruente \quad $\square$ Parcial \quad $\square$ Incongruente\\[0.4cm]
+\textbf{¿Microdefensa Requerida?}\quad $\square$ SÍ \quad $\square$ NO \\[0.2cm]
+\textbf{Razón detallada para Microdefensa:} \hrulefill \\[0.2cm]
+\textbf{Conflicto de evidencia específico a resolver oralmente:} \hrulefill \\[0.4cm]
+\textbf{¿Recuperación (Recovery) Requerida en Semana 10?}\quad $\square$ SÍ \quad $\square$ NO \\[0.2cm]
+\textbf{Dominios obligatorios de Recuperación:} \hrulefill
+
+\end{document}
