@@ -1,0 +1,119 @@
+\documentclass[aspectratio=169, xcolor={table,xcdraw}]{beamer}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\renewcommand{\tablename}{Tabla}
+
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array} % Requerido para raggedright en tablas p{}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+
+\title[Integración Unidad II]{Sesión de Integración y Diagnóstico (Pre-EC2)}
+\subtitle{De la Pose Deseada a la Dinámica del Actuador}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}
+\date{Semana 10 - Sesión 1}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Objetivo de la Sesión: Diagnóstico y Preparación EC2[cite: 15]}
+    \begin{tcolorbox}[colback=white, colframe=ucbblue, title=Alineación Curricular{[cite: 15]}, boxsep=1mm]
+        \small
+        El objetivo de hoy no es introducir nuevas fórmulas, sino \textbf{evaluar y consolidar su capacidad de ejecución independiente} sobre las competencias clave de la Unidad II antes del EC2[cite: 15].
+    \end{tcolorbox}
+    
+    \vfill
+    \textbf{Pipeline de la Unidad II (El flujo completo)[cite: 15]:}
+    \begin{center}
+    \begin{tikzpicture}[
+        node distance=0.4cm and 0.5cm,
+        box/.style={rectangle, draw=ucbblue, thick, fill=ucbblue!5, text width=2.1cm, align=center, rounded corners, font=\scriptsize},
+        arrow/.style={-Stealth, thick, ucbblue}
+    ]
+        \node[box] (ik) {\textbf{Pieper}\\$T_d \to \mathbf{q}_f$};
+        \node[box, right=of ik] (lspb) {\textbf{LSPB}\\$q(t), \dot{q}(t), \ddot{q}(t)$};
+        
+        \node[box, right=of lspb] (jac) {\textbf{Jacobiano}\\$J(\mathbf{q})$ $\to$ $\dot{\mathbf{x}}(t)$};
+        \node[box, below=0.4cm of jac] (sing) {\textbf{Singularidad}\\Rango y $\det$};
+        \node[box, left=of sing] (dyn) {\textbf{Dinámica}\\$M, C, g \to \tau(t)$};
+        
+        \draw[arrow] (ik) -- (lspb);
+        \draw[arrow] (lspb) -- (jac);
+        \draw[arrow] (jac) -- (sing);
+        \draw[arrow] (lspb) -- (dyn);
+    \end{tikzpicture}
+    \end{center}
+    \vfill
+    \footnotesize \textit{Temas de control de espacio nulo, redundancia y matriz pseudoinversa se mantienen como material diferido para las siguientes etapas[cite: 15].}
+\end{frame}
+
+\begin{frame}{Selección de Herramientas de Ingeniería[cite: 15]}
+    \begin{center}
+        \renewcommand{\arraystretch}{1.5}
+        \footnotesize
+        \begin{tabular}{|>{\raggedright\arraybackslash}p{7cm}|>{\raggedright\arraybackslash}p{6cm}|}
+        \hline
+        \rowcolor{ucbblue!20} \textbf{Pregunta de Ingeniería} & \textbf{Herramienta / Modelo Principal} \\ \hline
+        ¿Qué configuraciones articulares logran una pose deseada? & Cinemática Inversa Analítica (Pieper)[cite: 15] \\ \hline
+        ¿El candidato matemático realmente reproduce la pose? & Cinemática Directa (FK)[cite: 15] \\ \hline
+        ¿Qué velocidad cartesiana resulta de la velocidad articular? & Jacobiano Geométrico[cite: 15] \\ \hline
+        ¿Dónde pierde el robot movilidad instantánea? & Rango del Jacobiano (Singularidad)[cite: 15] \\ \hline
+        ¿Cómo deben moverse las juntas continuamente en el tiempo? & Generación de Trayectorias (LSPB)[cite: 15] \\ \hline
+        ¿Qué torque es requerido para lograr $q, \dot{q}, \ddot{q}$? & Dinámica (Euler-Lagrange)[cite: 15] \\ \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Dinámica de Trabajo de Hoy[cite: 15]}
+    Seguiremos el ciclo diagnóstico formal[cite: 15]:
+    \begin{center}
+    \begin{tikzpicture}[
+        node distance=0.4cm,
+        box/.style={rectangle, draw=red!80!black, thick, fill=red!5, text width=1.9cm, align=center, rounded corners, font=\scriptsize},
+        arrow/.style={-Stealth, thick, red!80!black}
+    ]
+        \node[box] (att) {\textbf{1. Intento}\\Independiente};
+        \node[box, right=of att] (diag) {\textbf{2. Diagnóstico}\\de Errores};
+        \node[box, right=of diag] (corr) {\textbf{3. Corrección}\\Focalizada};
+        \node[box, right=of corr] (app) {\textbf{4. Segunda}\\Aplicación};
+        \node[box, fill=green!10, right=of app] (read) {\textbf{5. Juicio}\\de Readiness};
+        
+        \draw[arrow] (att) -- (diag);
+        \draw[arrow] (diag) -- (corr);
+        \draw[arrow] (corr) -- (app);
+        \draw[arrow] (app) -- (read);
+    \end{tikzpicture}
+    \end{center}
+    
+    \vspace{0.4cm}
+    \textbf{Tienen 5 tareas que resolver en su hoja de ejercicios[cite: 15]:}
+    \begin{enumerate}
+        \item Cinemática Inversa (Pieper).
+        \item Jacobiano y Singularidades.
+        \item Generación de Trayectoria LSPB.
+        \item Dinámica Euler-Lagrange.
+        \item Integración Sistémica.
+    \end{enumerate}
+    \textit{Trabajen el primer intento individualmente y sin apuntes para medir su nivel real.}
+\end{frame}
+
+\end{document}

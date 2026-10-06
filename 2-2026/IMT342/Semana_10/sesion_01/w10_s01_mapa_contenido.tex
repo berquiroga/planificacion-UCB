@@ -1,0 +1,65 @@
+\documentclass[11pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{Mapa de Referencia Compacto - Unidad II}
+\rhead{Semana 10}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Mapa de Transiciones Conceptuales de la Unidad II}}\\[0.2cm]
+    \normalsize \textit{Nota: Este es un mapa conceptual relacional, no un formulario para el examen EC2[cite: 15].}
+\end{center}
+
+\vspace{1cm}
+\begin{center}
+\begin{tikzpicture}[
+    node distance=1.5cm and 1cm,
+    box/.style={rectangle, draw=ucbblue, thick, fill=white, text width=6cm, align=center, rounded corners, minimum height=1.2cm},
+    arrow/.style={-Stealth, thick, ucbblue, line width=1.5pt},
+    question/.style={text width=6cm, align=center, font=\itshape\small}
+]
+
+    % Nodos
+    \node[box] (ik) {$\displaystyle T_d \xrightarrow{\quad \textbf{IK / Pieper} \quad} \mathbf{q}$};
+    \node[question, right=of ik] (qik) {¿Qué configuración articular alcanza físicamente la pose deseada?[cite: 15]};
+    
+    \node[box, below=0.8cm of ik] (lspb) {$\displaystyle q_i, q_f, \text{timing} \xrightarrow{\quad \textbf{LSPB} \quad} q, \dot{q}, \ddot{q}$};
+    \node[question, right=of lspb] (qlspb) {¿Cómo se mueve la articulación progresivamente a lo largo del tiempo?[cite: 15]};
+    
+    \node[box, below=0.8cm of lspb] (jac) {$\displaystyle q, \dot{q} \xrightarrow{\quad J(\mathbf{q}) \quad} \dot{\mathbf{x}}$};
+    \node[question, right=of jac] (qjac) {¿Qué velocidad cartesiana instantánea se genera en el efector final?[cite: 15]};
+    
+    \node[box, below=0.8cm of jac] (sing) {$\displaystyle J \xrightarrow{\quad \operatorname{rank}(J) \quad} \text{Singularidad}$};
+    \node[question, right=of sing] (qsing) {¿Qué capacidad de movimiento local (direcciones) se pierde temporalmente?[cite: 15]};
+    
+    \node[box, below=0.8cm of sing] (dyn) {$\displaystyle q, \dot{q}, \ddot{q} \xrightarrow{\quad M, C, g \quad} \tau$};
+    \node[question, right=of dyn] (qdyn) {¿Qué esfuerzo (torque) se exige a los actuadores para este perfil dinámico?[cite: 15]};
+
+    % Conexiones verticales invisibles para alinear
+    \draw[arrow] (ik) -- (lspb);
+    \draw[arrow] (lspb) -- (jac);
+    \draw[arrow] (jac) -- (sing);
+    \draw[arrow] (sing) -- (dyn);
+
+\end{tikzpicture}
+\end{center}
+
+\end{document}

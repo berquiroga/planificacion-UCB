@@ -1,0 +1,81 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
+
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT342}}
+\chead{Práctica Pre-EC2}
+\rhead{Semana 10 - Sesión 1}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Hoja Práctica Integrada: Diagnóstico Unidad II}}\\[0.2cm]
+\end{center}
+
+\begin{tcolorbox}[colback=gray!5, colframe=gray!50, title=\textbf{Instrucciones{[cite: 15]}}]
+    Esta es una sesión de diagnóstico práctico, no el EC2 oficial. Realice el primer intento de manera \textbf{independiente}. Muestre explícitamente su razonamiento, los pasos intermedios y provea las interpretaciones físicas solicitadas.
+\end{tcolorbox}
+
+\section*{Tarea 1 — IK / Metodología de Pieper[cite: 15]}
+Un manipulador 6R genérico con muñeca esférica posee los siguientes datos objetivo y geométricos:
+\begin{equation*}
+    {}^0p_6^d = \begin{bmatrix} 2 \\ 1 \\ 1 \end{bmatrix}, \qquad {}^0z_6^d = \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}, \qquad d_6 = \frac{1}{2}
+\end{equation*}
+\textbf{A.} Calcule analíticamente el vector de posición del centro de la muñeca ${}^0p_W$.\\
+\textbf{B.} Asumiendo una proyección estándar sobre el plano $XY$, escriba una expresión natural candidata para recuperar el ángulo base $q_1$.\\
+\textbf{C.} Suponga que la resolución del subproblema del brazo produce $c_3 = 0$. Encuentre las ramas principales de $q_3$ utilizando la función $\operatorname{atan2}$ y explique su significado geométrico.\\
+\textbf{D.} Tras seleccionar un trío $(q_1, q_2, q_3)$, indique qué matriz debe calcularse antes de resolver la muñeca ($q_4, q_5, q_6$).\\
+\textbf{E.} Declare el criterio matemático estricto para la verificación (FK) del candidato final $\mathbf{q}^{(k)}$.
+
+\section*{Tarea 2 — Jacobiano y Singularidades[cite: 15]}
+Un manipulador planar 2R tiene longitudes $a_1=a_2=1$. Evalúe en la configuración $q_1=0, q_2=\pi/2$. 
+\begin{equation*}
+    \mathbf{o}_0 = \begin{bmatrix} 0 \\ 0 \\ 0 \end{bmatrix}, \quad \mathbf{o}_1 = \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix}, \quad \mathbf{o}_2 = \begin{bmatrix} 1 \\ 1 \\ 0 \end{bmatrix}, \quad \mathbf{z}_0 = \mathbf{z}_1 = \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}
+\end{equation*}
+\textbf{A.} Construya analíticamente las columnas $J_1$, $J_2$ y ensamble el Jacobiano geométrico completo.\\
+\textbf{B.} Dadas las velocidades articulares $\dot{\mathbf{q}} = [1, -1]^T$ rad/s, calcule $\mathbf{v}_e = J\dot{\mathbf{q}}$ e interprete físicamente el resultado lineal y angular.\\
+\textbf{C.} Si el brazo se estira completamente ($q_1=0, q_2=0$), su sub-Jacobiano de traslación es $J_p = \begin{bmatrix} 0 & 0 \\ 2 & 1 \end{bmatrix}$. Determine: 1) Su Rango matricial, 2) Estado (Regular/Singular), 3) Dirección cartesiana instantánea perdida.\\
+\textbf{D.} Explique por qué argumentar que "$det(J) = 0$" no es una explicación física completa de la singularidad.
+
+\section*{Tarea 3 — Generación de Trayectoria LSPB[cite: 15]}
+Mueva una articulación desde $q_i=0$ rad hasta $q_f=2$ rad en $t_f=3$ s, con $\dot{q}(0)=\dot{q}(3)=0$ y aceleración de magnitud simétrica $\ddot{q}_c = 1$ rad/s$^2$. \\
+\textbf{A.} Determine analíticamente la magnitud de aceleración mínima factible.\\
+\textbf{B.} Calcule el tiempo de mezcla de aceleración $t_c$.\\
+\textbf{C.} Calcule la velocidad de crucero constante.\\
+\textbf{D.} Escriba las funciones definidas a trozos para $q(t), \dot{q}(t)$ y $\ddot{q}(t)$.\\
+\textbf{E.} Evalúe numéricamente $q, \dot{q}, \ddot{q}$ exactamente en $t = 2.5$ s.
+
+\section*{Tarea 4 — Dinámica de Euler-Lagrange y Torque[cite: 15]}
+Para el modelo de 1R (medido desde la vertical inferior), sabemos que $J = I_c + m\ell_c^2$, con $T = \frac{1}{2}J\dot{q}^2$ y $V = mg\ell_c(1-\cos q)$.\\
+\textbf{A.} Construya la función Lagrangiana $L = T - V$.\\
+\textbf{B.} Desarrolle las tres derivadas de la ecuación de Euler-Lagrange: $\frac{\partial L}{\partial \dot{q}}$, $\frac{d}{dt}\left( \frac{\partial L}{\partial \dot{q}} \right)$, y $\frac{\partial L}{\partial q}$.\\
+\textbf{C.} Obtenga la ecuación final de movimiento e identifique los términos inercial y de gravedad.\\
+\textbf{D.} Utilizando el estado instantáneo de la Tarea 3 ($t=2.5$ s), calcule el torque de actuador asumiendo los valores pedagógicos: $J=0.25$ kg m$^2$, $m=1$ kg, $\ell_c=0.5$ m, $g=9.81$ m/s$^2$. Explique el \textit{signo} de su contribución inercial.
+
+\section*{Tarea 5 — Selección de Herramienta Integrada[cite: 15]}
+Vincule las herramientas (\textit{Pieper, Verificación FK, LSPB, Jacobiano, Rango/Singularidad, Euler-Lagrange}) con el paso del pipeline necesario para que un 6R cumpla su tarea industrial. Construya la cadena lógica que conecta todos los bloques.
+
+\end{document}

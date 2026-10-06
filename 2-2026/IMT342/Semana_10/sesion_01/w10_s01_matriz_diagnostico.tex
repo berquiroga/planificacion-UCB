@@ -1,0 +1,68 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT342}}
+\chead{Matriz Diagnóstica y Readiness EC2}
+\rhead{Uso Docente - W10-S01}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Matriz Diagnóstica y Readiness Gate (Pre-EC2)}}\\[0.2cm]
+\end{center}
+
+\section*{1. Guía de Errores e Intervenciones Micro-Remediales[cite: 15]}
+
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\textwidth}{|>{\hsize=0.85\hsize}X|>{\hsize=0.85\hsize}X|>{\hsize=1.3\hsize}X|}
+\hline
+\rowcolor{gray!20} \textbf{Error Observado} & \textbf{Brecha Conceptual} & \textbf{Intervención Limitada} \\ \hline
+Centro de muñeca incorrecto. & Geometría de IK. & Reconstruya $p_W = p_6 - d_6 z_6$ en la pizarra. \\ \hline
+Se descarta una rama analítica. & Razonamiento de ramas. & Bosqueje las alternativas (ej. codo arriba/abajo). \\ \hline
+Cuadrante incorrecto. & \texttt{atan2}. & Compare $\tan^{-1}$ en cuadrantes simétricos. \\ \hline
+Omite verificación de FK. & Disciplina de validación. & Requiera demostración: $T(\mathbf{q}) \approx T_d$. \\ \hline
+Marcos del Jacobiano mixtos. & Geometría del Jacobiano. & Exija superíndices de marcos antes de cualquier álgebra. \\ \hline
+Determinante como única singularidad. & Significado físico ausente. & Pregunte sobre la pérdida de dirección lineal y rango. \\ \hline
+Singularidad = "no se mueve". & Movilidad local. & Muestre las direcciones espaciales que \textit{sí} persisten. \\ \hline
+Límites de fase LSPB erróneos. & Procedimiento LSPB. & Requiera resolver rigurosamente $t_c$ primero. \\ \hline
+Llama "trapezoidal" a la posición. & Confusión de perfiles. & Alinee los gráficos de $q, \dot{q}, \ddot{q}$ verticalmente. \\ \hline
+Se salta la derivación $T, V, L$. & Procedimiento dinámico. & Requiera los pasos formales de energía primero. \\ \hline
+Gravedad constante. & Interpretación dinámica. & Compare el efecto dinámico en varias posturas extremas. \\ \hline
+\end{tabularx}
+
+\section*{2. Matriz de Preparación EC2 (Readiness Matrix)[cite: 15]}
+Clasifique la evidencia de los estudiantes utilizando: \textbf{I} (Independent), \textbf{S} (Supported/Partial), \textbf{N} (Not yet demonstrated)[cite: 15].
+
+\vspace{0.3cm}
+\begin{tabularx}{\textwidth}{|X|c|c|c|c|c|c|c|}
+\hline
+\rowcolor{ucbblue!10} \textbf{Estudiante} & \textbf{Pieper} & \textbf{Jacobiano} & \textbf{Singular.} & \textbf{LSPB} & \textbf{Dinámica} & \textbf{Integración} & \textbf{Notas} \\ \hline
+ & I / S / N & I / S / N & I / S / N & I / S / N & I / S / N & I / S / N & \\ \hline
+ & I / S / N & I / S / N & I / S / N & I / S / N & I / S / N & I / S / N & \\ \hline
+ & I / S / N & I / S / N & I / S / N & I / S / N & I / S / N & I / S / N & \\ \hline
+ & I / S / N & I / S / N & I / S / N & I / S / N & I / S / N & I / S / N & \\ \hline
+\end{tabularx}
+
+\section*{3. Clasificación y Decisión del Nivel de Clase[cite: 15]}
+\begin{itemize}
+    \item \textbf{A — EC2 Ready:} Problemas representativos pueden iniciarse y ejecutarse independientemente en casi todos los dominios; los errores remanentes son puramente computacionales.
+    \item \textbf{B — Ready After Bounded Practice:} Un dominio principal permanece débil, pero la arquitectura general se comprende y es operable.
+    \item \textbf{C — Not Yet Ready:} Múltiples procedimientos nucleares no son independientes. \textit{Decisión: Mueva la fecha del EC2 en lugar de reducir artificialmente la competencia esperada del examen[cite: 15].}
+\end{itemize}
+
+\end{document}

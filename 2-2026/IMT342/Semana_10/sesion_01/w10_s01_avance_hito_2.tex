@@ -1,0 +1,57 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array} % Requerido para \raggedright en tabularx
+\usepackage[most]{tcolorbox} % Soluciona el error de "Environment tcolorbox undefined"
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{amssymb}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342}} % Soluciona el solapamiento en el encabezado
+\chead{Recordatorio de Progreso Hito 2}
+\rhead{Semana 10}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Seguimiento de Implementación: Proyecto Hito 2}}\\[0.2cm]
+\end{center}
+
+\begin{tcolorbox}[colback=yellow!10, colframe=black, title=\textbf{Gestión de Proyecto}]
+    Utilice esta lista de control de estado para identificar explícitamente sus cuellos de botella de implementación antes de la defensa técnica. No marque ningún componente como validado si solo conoce la fórmula pero no su ejecución en código.
+\end{tcolorbox}
+
+\vspace{0.4cm}
+\renewcommand{\arraystretch}{1.8}
+% Uso de \raggedright para evitar Overfull/Underfull \hbox en celdas estrechas
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}X|c|c|c|>{\raggedright\arraybackslash}p{4cm}|}
+\hline
+\rowcolor{ucbblue!10} \textbf{Componente Computacional} & \textbf{No Inic.} & \textbf{En Prog.} & \textbf{Valid.} & \textbf{Problema Remanente (Si aplica)} \\ \hline
+Implementación de algoritmo Pieper (Ramas) & $\square$ & $\square$ & $\square$ & \\ \hline
+Validación Cruzada (FK) & $\square$ & $\square$ & $\square$ & \\ \hline
+Perfiles de Trayectoria LSPB & $\square$ & $\square$ & $\square$ & \\ \hline
+Generación de Matriz Jacobiana & $\square$ & $\square$ & $\square$ & \\ \hline
+Evidencia Computacional de Singularidad & $\square$ & $\square$ & $\square$ & \\ \hline
+Cálculo Numérico de Torque (Dinámica) & $\square$ & $\square$ & $\square$ & \\ \hline
+Integración de Gráficos en el Notebook & $\square$ & $\square$ & $\square$ & \\ \hline
+\end{tabularx}
+
+\vspace{1cm}
+\textbf{Acción Concreta de Mitigación:}\\[0.3cm]
+\textbf{Problema de Bloqueo Principal (Blocking issue):} \rule{8.5cm}{0.15mm} \\[0.5cm]
+\textbf{Próxima acción técnica concreta:} \rule{9.5cm}{0.15mm} \\[0.5cm]
+\textbf{Siguiente evidencia demostrable a producir:} \rule{8.5cm}{0.15mm}
+
+\end{document}
