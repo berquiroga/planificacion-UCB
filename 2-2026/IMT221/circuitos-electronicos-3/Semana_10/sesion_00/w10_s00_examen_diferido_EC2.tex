@@ -1,0 +1,114 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Evaluación Diferida EC2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{Evaluación Diferida Individual — EC2}} \\[0.2cm]
+    {\large \textbf{Unidad 2 — BJT y Par Diferencial Discreto}} \\[0.2cm]
+    \textbf{Duración sugerida:} 65–70 min \quad | \quad \textbf{Puntaje bruto:} 100 puntos[cite: 11]
+\end{center}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Instrucciones para el Estudiante[cite: 11]}]
+    \begin{itemize}
+        \setlength\itemsep{0.1em}
+        \item Evaluación individual. No se permite formulario adicional, celulares, computadoras, CAS ni internet[cite: 11].
+        \item Se permite calculadora científica convencional como apoyo aritmético[cite: 11].
+        \item Los datos y constantes no destinados a memorización se proporcionan en cada problema[cite: 11].
+        \item Se evalúa el procedimiento, la elección del modelo, las unidades, la convención de signos y la interpretación física; no únicamente el resultado numérico final[cite: 11].
+        \item Cuando una respuesta requiera interpretación o diagnóstico, justifique brevemente[cite: 11].
+        \item \textbf{Convención obligatoria:} Para los problemas de par diferencial use, salvo indicación contraria, la salida \textbf{$v_o = v_{C2}$}[cite: 11].
+    \end{itemize}
+\end{tcolorbox}
+
+\begin{center}
+\begin{circuitikz}[scale=0.7, transform shape, thick]
+    \draw (0,0) node[npn](Q1){}; \node[left=0.1cm] at (Q1.B) {$v_1$}; \node[right=0.1cm] at (Q1.C) {$v_{C1}$};
+    \draw (4,0) node[npn, xscale=-1](Q2){}; \node[right=0.1cm] at (Q2.B) {$v_2$}; \node[left=0.1cm] at (Q2.C) {$v_{C2} = v_o$};
+    \draw (Q1.C) to[R, l=$R_C$] (0,2) -- (4,2) to[R, l_=$R_C$] (Q2.C);
+    \draw (2,2) -- (2,2.5) node[above]{$+V_{CC}$};
+    \draw (Q1.E) -- (0,-1.5) -- (4,-1.5) -- (Q2.E);
+    \draw (2,-1.5) node[circle,fill,inner sep=1.5pt]{} node[above]{$v_E$} to[I, l=$I_T$] (2,-3) node[below]{Fuente de Cola ($V_{EE}$)};
+    \draw (Q1.B) to[short, -o] (-1,0); \draw (Q2.B) to[short, -o] (5,0);
+\end{circuitikz}
+\end{center}
+
+\vspace{0.3cm}
+\noindent \textbf{Problema 1 — Polarización DC, Punto Q y Diagnóstico (15 puntos)[cite: 11]} \\
+En una rama de un par diferencial se tiene: $V_{CC}=9.0\,\text{V}$, $R_C=4.7\,\text{k}\Omega$[cite: 11]. Durante una medición se registran: $V_C=6.78\,\text{V}$, $V_E=-0.66\,\text{V}$ y $V_B=0.02\,\text{V}$[cite: 11]. \\
+\textbf{Tareas:}
+1. Calcule la corriente de colector $I_C$ (3 pts)[cite: 11].
+2. Calcule $V_{CE}$ (3 pts)[cite: 11].
+3. Determine si el transistor es compatible con operación \textit{forward-active}. Justifique mediante las uniones B-E y B-C (4 pts)[cite: 11].
+4. Compare el resultado con una corriente nominal de aprox. $0.50\,\text{mA}$ por rama e interprete la diferencia (3 pts)[cite: 11].
+5. Si la otra rama presenta $V_{C2}=7.35\,\text{V}$, proponga una medición adicional que ayude a distinguir entre desbalance del par y problema de la fuente de cola (2 pts)[cite: 11].
+
+\noindent \textbf{Problema 2 — Espejo de Corriente, Beta, Disipación y Temperatura (20 puntos)[cite: 11]} \\
+El espejo de corriente usa: $V_{EE}=-9.0\,\text{V}$, $R_{REF}=8.2\,\text{k}\Omega$[cite: 11]. Use: $V_{BE}=0.68\,\text{V}$, $\beta=250$[cite: 11]. El transistor de salida del espejo presenta: $V_{CE4}=8.1\,\text{V}$ y, luego de varios minutos: $I_T=0.86\,\text{mA}$[cite: 11]. \\
+\textbf{Tareas:}
+1. Estime $I_{REF}$ (4 pts)[cite: 11].
+2. Estime $I_T \approx I_{REF} / (1 + 2/\beta)$ (4 pts)[cite: 11].
+3. Juzgue si $0.86\,\text{mA}$ puede explicarse solamente por $\beta$ finito (4 pts)[cite: 11].
+4. Estime la disipación de potencia $P_{Q4} \approx V_{CE4} I_T$. Explique si este cálculo ayuda a diagnosticar el calentamiento (4 pts)[cite: 11].
+5. Indique una medición que permita distinguir deriva térmica de un error de montaje o de valor de componente (4 pts)[cite: 11].
+
+\newpage
+\noindent \textbf{Problema 3 — Parámetros de Pequeña Señal y Topología (15 puntos)[cite: 11]} \\
+Un transistor BJT opera a: $I_C=0.52\,\text{mA}$, $\beta=180$[cite: 11]. Use $V_T=25.85\,\text{mV}$[cite: 11]. \\
+\textbf{Tareas:}
+1. Calcule $g_m$ (4 pts)[cite: 11].
+2. Calcule $r_\pi$ (4 pts)[cite: 11].
+3. Indique la relación de fase entre entrada y salida en configuración Emisor Común (CE) (2 pts)[cite: 11].
+4. Seleccione entre CE, CC y CB la topología más adecuada para un buffer de alta resistencia de entrada y ganancia próxima a la unidad (2 pts)[cite: 11].
+5. Si $\beta$ aumenta a 300 manteniendo $I_C$ prácticamente constante, explique qué ocurre con $g_m$ y $r_\pi$ (3 pts)[cite: 11].
+
+\noindent \textbf{Problema 4 — Par Diferencial, Ganancia y Current Steering (20 puntos)[cite: 11]} \\
+Un par diferencial balanceado utiliza: $R_C=5.1\,\text{k}\Omega$ y cada transistor opera a $I_C=0.45\,\text{mA}$[cite: 11]. Use $V_T=25.85\,\text{mV}$[cite: 11]. La salida se define como $v_o=v_{C2}$ y se aplica $v_d = v_1 - v_2 = -6.0\,\text{mV}$[cite: 11]. \\
+\textbf{Tareas:}
+1. Calcule $g_m$ (3 pts)[cite: 11].
+2. Estime $A_{d,se} \approx +g_m R_C / 2$ (5 pts)[cite: 11].
+3. Prediga la magnitud del voltaje AC en $v_{C2}$ (4 pts)[cite: 11].
+4. Determine el signo o dirección de la variación de $v_{C2}$ para $v_d < 0$ (4 pts)[cite: 11].
+5. Explique cómo se redistribuye la corriente entre Q1 y Q2 (4 pts)[cite: 11].
+
+\noindent \textbf{Problema 5 — $v_d, v_{cm}, A_c$, CMRR y Validez Experimental (30 puntos)[cite: 11]} \\
+Durante un ensayo se registran: $v_1=0.620\,\text{V}$, $v_2=0.580\,\text{V}$[cite: 11]. Usando $v_o=v_{C2}$, se obtiene $A_{d,se}=38$ y en una prueba common-mode independiente $A_{c,se}=0.015$[cite: 11]. \\
+\textbf{Tareas:}
+1. Calcule $v_d$ (4 pts)[cite: 11].
+2. Calcule $v_{cm}$ (4 pts)[cite: 11].
+3. Clasifique la excitación. Justifique (3 pts)[cite: 11].
+4. Calcule el CMRR absoluto (5 pts)[cite: 11].
+5. Convierta el resultado a dB (5 pts)[cite: 11].
+6. Compare con un objetivo de 60 dB (3 pts)[cite: 11].
+7. Otro estudiante usa $A_{d,diff}=76$ entre ambos colectores junto con $A_{c,se}=0.015$. Determine si el procedimiento es metodológicamente válido y explique por qué (6 pts)[cite: 11].
+
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Checklist Final del Estudiante}]
+    $\square$ Todas las magnitudes tienen unidades[cite: 11]. \\
+    $\square$ Se muestran pasos intermedios[cite: 11]. \\
+    $\square$ Se respetó la convención $v_o = v_{C2}$[cite: 11]. \\
+    $\square$ Se justificaron las respuestas conceptuales[cite: 11]. \\
+    $\square$ Se revisaron signos y órdenes de magnitud[cite: 11].
+\end{tcolorbox}
+
+\end{document}

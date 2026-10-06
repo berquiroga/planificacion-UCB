@@ -1,0 +1,102 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Solucionario Diferido EC2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Material Reservado Docente: Solucionario Evaluación Diferida EC2}]
+    Los valores numéricos, condiciones y sentidos de razonamiento fueron modificados respecto a la evaluación ordinaria para mantener la integridad de la prueba, evaluando las mismas familias de evidencia.
+\end{tcolorbox}
+
+\section*{Problema 1: DC / Punto Q y Diagnóstico (15 pts)[cite: 10]}
+\textbf{1 y 2. $I_C$ y $V_{CE}$[cite: 10]:}
+\begin{align*}
+    I_C &= \frac{9.0\,\text{V} - 6.78\,\text{V}}{4.7\,\text{k}\Omega} = \frac{2.22\,\text{V}}{4700\,\Omega} \approx \mathbf{0.472\,\text{mA}} \quad \text{[cite: 10]} \\
+    V_{CE} &= V_C - V_E = 6.78\,\text{V} - (-0.66\,\text{V}) = \mathbf{7.44\,\text{V}} \quad \text{[cite: 10]}
+\end{align*}
+\textbf{3. Verificación Forward-Active[cite: 10]:}
+\begin{align*}
+    V_{BE} &= V_B - V_E = 0.02\,\text{V} - (-0.66\,\text{V}) = \mathbf{0.68\,\text{V}} \quad \text{(Directa)[cite: 10]} \\
+    V_{BC} &= V_B - V_C = 0.02\,\text{V} - 6.78\,\text{V} = \mathbf{-6.76\,\text{V}} \quad \text{(Inversa)[cite: 10]}
+\end{align*}
+El estado forward-active es consistente[cite: 10]. \\
+\textbf{4. Comparación con $0.50\,\text{mA}$[cite: 10]:} Error relativo: $\frac{0.500 - 0.472}{0.500} \times 100 \approx \mathbf{5.6\%}$[cite: 10]. Es razonablemente cercana al objetivo; no indica por sí sola una falla crítica[cite: 10]. \\
+\textbf{5. Diagnóstico Fuerte[cite: 10]:} Si $V_{C2}=7.35\,\text{V}$ (muy distinto a $6.78\,\text{V}$), medir la corriente total de cola $I_T$, o comparar $V_{BE1}$ y $V_{BE2}$ para aislar si es un desbalance de componentes (mismatch) o falla común de la cola[cite: 10].
+
+\section*{Problema 2: Espejo, Beta y Temperatura (20 pts)[cite: 10]}
+\textbf{1. Cálculo de $I_{REF}$[cite: 10]:}
+El nodo de base del espejo: $V_B = -9.0\,\text{V} + 0.68\,\text{V} = \mathbf{-8.32\,\text{V}}$[cite: 10].
+\begin{equation*}
+    I_{REF} = \frac{0\,\text{V} - (-8.32\,\text{V})}{8.2\,\text{k}\Omega} = \frac{8.32\,\text{V}}{8200\,\Omega} \approx \mathbf{1.015\,\text{mA}} \quad \text{[cite: 10]}
+\end{equation*}
+\textbf{2. Cálculo de $I_T$ con $\beta$ finito[cite: 10]:}
+\begin{equation*}
+    I_T \approx \frac{1.015\,\text{mA}}{1 + 2/250} = \frac{1.015\,\text{mA}}{1.008} \approx \mathbf{1.007\,\text{mA}} \quad \text{[cite: 10]}
+\end{equation*}
+\textbf{3. Juicio sobre $0.86\,\text{mA}$[cite: 10]:} Por tanto, $0.86\,\text{mA}$ **no se explica** solo por el $\beta$ finito[cite: 10]. \\
+\textbf{4. Potencia en Q4[cite: 10]:} $P_{Q4} \approx (8.1\,\text{V})(0.86\,\text{mA}) \approx \mathbf{6.97\,\text{mW}}$[cite: 10]. Q4 disipa más que el transistor de referencia por su mayor $V_{CE}$[cite: 10]. Si se percibe calentamiento muy fuerte, debe comprobarse corriente real, pinout y componentes[cite: 10]. \\
+\textbf{5. Medición Discriminatoria[cite: 10]:} Medir en frío y caliente $V_{BE3}$, $V_{BE4}$, $I_{REF}$ e $I_T$[cite: 10]. Una deriva gradual apoya la hipótesis térmica; un error grande desde el encendido apunta a montaje o componente dañado[cite: 10].
+
+\section*{Problema 3: Pequeña Señal y Topología (15 pts)[cite: 10]}
+\textbf{1. $g_m$[cite: 10]:} $\displaystyle g_m = \frac{0.52\,\text{mA}}{25.85\,\text{mV}} \approx \mathbf{20.12\,\text{mS}}$[cite: 10]. \\
+\textbf{2. $r_\pi$[cite: 10]:} $\displaystyle r_\pi = \frac{180}{20.12\,\text{mS}} \approx \mathbf{8.95\,\text{k}\Omega}$[cite: 10]. \\
+\textbf{3. Fase en CE[cite: 10]:} Salida invertida (aproximadamente $180^\circ$)[cite: 10]. \\
+\textbf{4. Topología Buffer[cite: 10]:} CC (Colector Común / Emitter Follower)[cite: 10]. \\
+\textbf{5. Efecto de aumento de $\beta$ a 300[cite: 10]:} Al mantener $I_C$ fijo, $g_m \approx 20.12\,\text{mS}$ \textbf{permanece igual}[cite: 10]. Sin embargo, $r_\pi = 300 / 20.12\,\text{mS} \approx \mathbf{14.91\,\text{k}\Omega}$, por lo que \textbf{aumenta}[cite: 10].
+
+\section*{Problema 4: Par Diferencial y $A_d$ (20 pts)[cite: 10]}
+\textbf{1. $g_m$[cite: 10]:} $\displaystyle g_m = \frac{0.45\,\text{mA}}{25.85\,\text{mV}} \approx \mathbf{17.41\,\text{mS}}$[cite: 10]. \\
+\textbf{2. $A_{d,se}$[cite: 10]:} $\displaystyle A_{d,se} \approx \frac{(17.41\,\text{mS})(5.1\,\text{k}\Omega)}{2} \approx \mathbf{44.4\,\text{V/V}}$[cite: 10]. \\
+\textbf{3. Magnitud de salida[cite: 10]:} $|v_o| \approx (44.4)(6.0\,\text{mV}) \approx \mathbf{266\,\text{mV}}$[cite: 10]. \\
+\textbf{4. Signo / Dirección[cite: 10]:} Como $v_d < 0$, entonces $v_2 > v_1$. Esto produce $i_{C2} \uparrow$ e $i_{C1} \downarrow$[cite: 10]. Al aumentar la corriente, aumenta la caída en $R_{C2}$, por lo que **$v_{C2} \downarrow$ (la variación es negativa)**[cite: 10]. \\
+\textbf{5. Redistribución (Steering)[cite: 10]:} Ver punto anterior. La corriente constante de cola se direcciona hacia la rama con el mayor potencial de base (Q2 en este caso)[cite: 10].
+
+\section*{Problema 5: CMRR y Validez (30 pts)[cite: 10]}
+\textbf{1 y 2. Descomposición[cite: 10]:}
+\begin{align*}
+    v_d &= 0.620\,\text{V} - 0.580\,\text{V} = \mathbf{0.040\,\text{V}} = \mathbf{40\,\text{mV}} \quad \text{[cite: 10]} \\
+    v_{cm} &= \frac{0.620\,\text{V} + 0.580\,\text{V}}{2} = \mathbf{0.600\,\text{V}} \quad \text{[cite: 10]}
+\end{align*}
+\textbf{3. Clasificación[cite: 10]:} Excitación \textbf{Mixta}, ya que ambos ($v_d$ y $v_{cm}$) son distintos de cero[cite: 10]. \\
+\textbf{4 y 5. CMRR[cite: 10]:}
+\begin{align*}
+    CMRR &= \left| \frac{38}{0.015} \right| \approx \mathbf{2533.3} \quad \text{[cite: 10]} \\
+    CMRR_{dB} &= 20 \log_{10}(2533.3) \approx \mathbf{68.1\,\text{dB}} \quad \text{[cite: 10]}
+\end{align*}
+\textbf{6. Comparación[cite: 10]:} $68.1\,\text{dB} > 60\,\text{dB}$. Supera el objetivo, siempre que la metodología sea válida[cite: 10]. \\
+\textbf{7. Validez[cite: 10]:} El procedimiento propuesto es \textbf{inválido} para el CMRR adoptado[cite: 10]. Las ganancias corresponden a salidas físicas diferentes ($A_{d,diff}$ mide dos colectores, $A_{c,se}$ mide uno)[cite: 10]. Debe mantenerse la misma convención física de salida para numerador y denominador[cite: 10].
+
+\vspace{0.5cm}
+\begin{tcolorbox}[colback=yellow!10, colframe=orange, title=\textbf{Resumen Numérico de Referencia[cite: 10]}]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{0.9\textwidth}{|c|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{orange!20}
+\textbf{Problema} & \textbf{Resultado Principal[cite: 10]} \\ \hline
+1 & $I_C \approx 0.472\,\text{mA}$, $V_{CE} = 7.44\,\text{V}$ \\ \hline
+2 & $I_{REF} \approx 1.015\,\text{mA}$, $I_T \approx 1.007\,\text{mA}$, $P_{Q4} \approx 6.97\,\text{mW}$ \\ \hline
+3 & $g_m \approx 20.12\,\text{mS}$, $r_\pi \approx 8.95\,\text{k}\Omega$ \\ \hline
+4 & $g_m \approx 17.41\,\text{mS}$, $A_{d,se} \approx 44.4$, $|v_o| \approx 266\,\text{mV}$ \\ \hline
+5 & $v_d = 40\,\text{mV}$, $v_{cm} = 0.600\,\text{V}$, CMRR $\approx 2533$ ($68.1\,\text{dB}$) \\ \hline
+\end{tabularx}
+\end{tcolorbox}
+
+\end{document}

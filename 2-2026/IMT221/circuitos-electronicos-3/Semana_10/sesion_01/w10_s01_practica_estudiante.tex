@@ -1,0 +1,77 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Práctica Asíncrona U1+U2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Práctica Asíncrona Ampliada (Recuperatorio U1 + U2)[cite: 12]}]
+    \textbf{Objetivo:} Disponer de un banco de problemas alineado con la evidencia evaluada en EC1 y EC2[cite: 12]. \\
+    \textbf{Recomendación de uso[cite: 12]:}
+    1. Resuelva sin mirar el solucionario.
+    2. Marque: \textbf{A} = Autónomo; \textbf{B} = Con dudas; \textbf{C} = No sé qué modelo usar.
+    3. Revise el solucionario y rehaga únicamente B y C.
+\end{tcolorbox}
+
+\section*{PARTE I — U1 / EC1 (Redes de Protección y Validación)[cite: 12]}
+
+\textbf{Ejercicio U1-1: Resistencia serie y Zener (Básico-Medio)[cite: 12]} \\
+$V_{in}=10\,\text{V}$, $R_S=220\,\Omega$, $V_Z=5.1\,\text{V}$, $R_L=10\,\text{k}\Omega$. Suponga Zener en ruptura ($5.1\,\text{V}$)[cite: 12].
+1) Calcule $I_{RS}$. 2) Calcule $I_L$. 3) Calcule $I_Z$. 4) Calcule $P_Z$. 5) Explique la condición para que "Zener en ruptura" sea consistente. 6) ¿Qué cambia si $R_L$ disminuye?[cite: 12]
+
+\vspace{0.2cm}
+\textbf{Ejercicio U1-2: Peor caso de corriente (Medio)[cite: 12]} \\
+Misma topología: $V_{in} \in [0, 12]\,\text{V}$, $R_L \in [1\,\text{k}\Omega, 10\,\text{k}\Omega]$, $R_S=330\,\Omega$, $V_Z=5.1\,\text{V}$[cite: 12].
+1) Identifique qué combinación produce la mayor $I_Z$. 2) Calcule dicha $I_Z$. 3) Calcule $P_Z$ en ese caso. 4) Explique por qué el peor caso no coincide con la condición nominal. 5) Si $V_{in}$ sube 20\%, prediga antes de calcular si $I_Z$ sube o baja[cite: 12].
+
+\vspace{0.2cm}
+\textbf{Ejercicio U1-3: Predicción Python/LTspice (Medio)[cite: 12]} \\
+Caso base: $V_{in}=10\,\text{V}, V_{out}=5.1\,\text{V}, R_S=220\,\Omega, I_L=0.5\,\text{mA}$.
+1) Sin código, prediga qué ocurre con $I_Z$ si $R_S$ aumenta 50\%. 2) Si $I_L$ se duplica. 3) Si $V_{in}$ aumenta 20\%. 4) Escriba pseudocódigo para calcular $I_Z$ y verificar ruptura ($I_Z > 0$)[cite: 12].
+
+\vspace{0.2cm}
+\textbf{Ejercicio U1-4: Analítico vs LTspice (Medio-Alto)[cite: 12]} \\
+El modelo analítico usa $V_Z=5.1\,\text{V}$ ideal. LTspice predice $V_{out}=5.24\,\text{V}$[cite: 12].
+1) ¿LTspice está mal? 2) Dé 3 causas físicas/modelísticas de la diferencia. 3) ¿Qué dato experimental decide el modelo correcto? 4) Utilidad del modelo PWL. 5) ¿Por qué decir solo "LTspice es más exacto" es incorrecto?[cite: 12]
+
+\vspace{0.2cm}
+\textbf{Ejercicio U1-5 a U1-8: Validación RMSE y Flyback[cite: 12]} \\
+*(Consulte el documento completo para los enunciados de alineación RMSE, cálculo de energía $E_L = \frac{1}{2} L I^2$, reducción de picos transitorios y defensa de casos)*[cite: 12].
+
+\section*{PARTE II — U2 / EC2 (BJT, Par Diferencial y CMRR)[cite: 12]}
+
+\textbf{Ejercicio U2-1: Punto Q y Región[cite: 12]} \\
+$V_{CC}=9.0\,\text{V}, R_C=4.7\,\text{k}\Omega, V_C=6.55\,\text{V}, V_E=-0.69\,\text{V}, V_B=0.01\,\text{V}$[cite: 12].
+1) Calcule $I_C, V_{CE}, V_{BE}$. 2) Verifique forward-active. 3) Compare con $0.5\,\text{mA}$[cite: 12].
+
+\vspace{0.2cm}
+\textbf{Ejercicio U2-2: Espejo, Beta y Calentamiento[cite: 12]} \\
+$V_{EE}=-9\,\text{V}, R_{REF}=8.2\,\text{k}\Omega, V_{BE}=0.70\,\text{V}, \beta=220$[cite: 12].
+1) Calcule $I_{REF}$. 2) Estime $I_T$ con $\beta$ finito. 3) Si $I_T=0.84\,\text{mA}$, ¿$\beta$ lo explica todo? 4) Si $V_{CE4}=8.0\,\text{V}$, calcule $P_{Q4}$. 5) Dé 3 verificaciones antes de culpar al transistor[cite: 12].
+
+\vspace{0.2cm}
+\textbf{Ejercicio U2-5: Par Diferencial[cite: 12]} \\
+$I_T=1.0\,\text{mA}, R_C=4.7\,\text{k}\Omega, v_o=v_{C2}$. Suponga ramas simétricas a $0.5\,\text{mA}$[cite: 12].
+1) Calcule $g_m$. 2) Estime $A_{d,se}$. 3) Para $v_d=-5\,\text{mV}$, halle $v_o$ AC. 4) Explique la polaridad y current steering[cite: 12].
+
+\vspace{0.2cm}
+\textbf{Ejercicio U2-7 y U2-8: CMRR y Diagnóstico[cite: 12]} \\
+*(Consulte el documento de práctica para los enunciados de cálculo de CMRR, validez metodológica y diagnóstico de tabla de datos)*[cite: 12].
+
+\end{document}

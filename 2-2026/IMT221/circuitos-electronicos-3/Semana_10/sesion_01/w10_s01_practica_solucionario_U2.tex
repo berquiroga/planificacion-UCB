@@ -1,0 +1,66 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Solucionario U2 (EC2)}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Solucionario Detallado: PARTE II — Unidad 2 (Par Diferencial)[cite: 13]}]
+    Desarrollo analítico de $g_m$, ganancias y validación del CMRR.
+\end{tcolorbox}
+
+\section*{Solución U2-1: Punto Q y Región[cite: 13]}
+\begin{align*}
+    I_C &= \frac{V_{CC} - V_C}{R_C} = \frac{9.0\,\text{V} - 6.55\,\text{V}}{4.7\,\text{k}\Omega} \approx \mathbf{0.521\,\text{mA}} \quad \text{[cite: 13]} \\
+    V_{CE} &= V_C - V_E = 6.55\,\text{V} - (-0.69\,\text{V}) = \mathbf{7.24\,\text{V}} \quad \text{[cite: 13]} \\
+    V_{BE} &= V_B - V_E = 0.01\,\text{V} - (-0.69\,\text{V}) = \mathbf{0.70\,\text{V}} \quad \text{[cite: 13]}
+\end{align*}
+\textbf{Verificación:} B-E está en directa ($0.70\,\text{V}$). B-C está en inversa ya que $V_C > V_B$ ($6.55\,\text{V} > 0.01\,\text{V}$). Estado \textbf{forward-active} consistente[cite: 13]. La corriente excede por $\sim 4.2\%$ el objetivo de $0.5\,\text{mA}$, lo cual es aceptable[cite: 13].
+
+\section*{Solución U2-2: Espejo y Calentamiento[cite: 13]}
+\begin{align*}
+    I_{REF} &= \frac{V_{GND} - V_B}{R_{REF}} = \frac{0\,\text{V} - (-9.0\,\text{V} + 0.70\,\text{V})}{8.2\,\text{k}\Omega} = \frac{8.3\,\text{V}}{8.2\,\text{k}\Omega} \approx \mathbf{1.012\,\text{mA}} \quad \text{[cite: 13]} \\
+    I_T &\approx \frac{I_{REF}}{1 + 2/\beta} = \frac{1.012\,\text{mA}}{1 + 2/220} \approx \mathbf{1.003\,\text{mA}} \quad \text{[cite: 13]}
+\end{align*}
+Si se mide $0.84\,\text{mA}$, \textbf{el $\beta$ no explica la caída}[cite: 13]. La potencia en la cola es $P_{Q4} = V_{CE4} I_T = 8.0\,\text{V} \cdot 0.84\,\text{mA} \approx \mathbf{6.72\,\text{mW}}$[cite: 13]. Antes de culpar al componente revise: $R_{REF}$, $V_{BE}$, $V_{CE}$, rieles o deriva térmica[cite: 13].
+
+\section*{Solución U2-3: Pequeña Señal[cite: 13]}
+Para $I_C = 0.48\,\text{mA}$:
+\begin{align*}
+    g_m &= \frac{I_C}{V_T} = \frac{0.48\,\text{mA}}{25.85\,\text{mV}} \approx \mathbf{18.57\,\text{mS}} \quad \text{[cite: 13]} \\
+    r_e &\approx \frac{V_T}{I_E} \approx \frac{25.85\,\text{mV}}{0.48\,\text{mA}} \approx \mathbf{53.9\,\Omega} \quad \text{[cite: 13]} \\
+    r_\pi &= \frac{\beta}{g_m} = \frac{200}{18.57\,\text{mS}} \approx \mathbf{10.77\,\text{k}\Omega} \quad \text{[cite: 13]}
+\end{align*}
+Si $\beta=300$ con $I_C$ fijo, $g_m$ \textbf{no cambia}, pero $r_\pi$ sube a $\sim 16.16\,\text{k}\Omega$, afectando directamente el \textit{loading} de entrada[cite: 13].
+
+\section*{Solución U2-5: Ganancia y Current Steering[cite: 13]}
+\begin{align*}
+    g_m &= \frac{0.5\,\text{mA}}{25.85\,\text{mV}} \approx \mathbf{19.34\,\text{mS}} \quad \implies \quad A_{d,se} = \frac{g_m R_C}{2} = \frac{(19.34\,\text{mS})(4.7\,\text{k}\Omega)}{2} \approx \mathbf{45.45} \quad \text{[cite: 13]} \\
+    v_o &= A_{d,se} v_d \approx (45.45)(-5\,\text{mV}) \approx \mathbf{-227\,\text{mV}} \quad \text{[cite: 13]}
+\end{align*}
+Como $v_d = -5\,\text{mV} < 0$, entonces $v_2 > v_1$[cite: 13]. Q2 conduce más ($i_{C2} \uparrow, i_{C1} \downarrow$). Al aumentar la corriente por $R_{C2}$, la caída resistiva es mayor, empujando a $v_{C2}$ hacia abajo ($v_{C2} \downarrow$). El signo acompaña a $v_d$[cite: 13].
+
+\section*{Solución U2-6 y U2-7: Modos y CMRR[cite: 13]}
+\textbf{Descomposición (U2-6):} $v_d = 0.525 - 0.475 = \mathbf{50\,\text{mV}}$. $v_{cm} = \frac{0.525 + 0.475}{2} = \mathbf{0.500\,\text{V}}$[cite: 13]. Excitación mixta. \\
+\textbf{CMRR (U2-7):} $CMRR = \frac{41}{0.018} \approx \mathbf{2278} \implies CMRR_{dB} = 20\log_{10}(2278) \approx \mathbf{67.15\,\text{dB}}$[cite: 13]. \\
+Usar $A_{d,diff} = 82$ con $A_{c,se}=0.018$ es \textbf{inválido} por mezcla de convenciones de salida[cite: 13].
+
+\end{document}

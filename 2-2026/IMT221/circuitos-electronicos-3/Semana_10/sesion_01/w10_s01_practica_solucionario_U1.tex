@@ -1,0 +1,78 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Solucionario U1 (EC1)}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Solucionario Detallado: PARTE I — Unidad 1 (Protección y Validación)[cite: 13]}]
+    Desarrollo matemático paso a paso con esquemas referenciales.
+\end{tcolorbox}
+
+\section*{Solución U1-1: Resistencia Serie y Zener[cite: 13]}
+\begin{minipage}{0.4\textwidth}
+    \begin{center}
+    \begin{circuitikz}[scale=0.8, transform shape, thick]
+        \draw (0,0) to[V, l=$V_{in}$, invert] (0,2);
+        \draw (0,2) to[R, l=$R_S$, i_=$I_{RS}$] (2,2);
+        \draw (2,2) to[zzDo, l_=$V_Z$, i=$I_Z$] (2,0);
+        \draw (2,2) -- (4,2) to[R, l_=$R_L$, i=$I_L$] (4,0);
+        \draw (0,0) -- (4,0) node[ground]{};
+        \node[circle,fill,inner sep=1pt] at (2,2) {};
+        \node[above] at (2,2.5) {$V_{out} = V_Z$};
+    \end{circuitikz}
+    \end{center}
+\end{minipage}
+\begin{minipage}{0.55\textwidth}
+    Aplicando LCK en el nodo de salida: $I_{RS} = I_Z + I_L \implies I_Z = I_{RS} - I_L$[cite: 13].
+    \begin{align*}
+        \mathbf{1)}\; I_{RS} &= \frac{V_{in} - V_Z}{R_S} = \frac{10\,\text{V} - 5.1\,\text{V}}{220\,\Omega} \approx \mathbf{22.27\,\text{mA}} \quad \text{[cite: 13]} \\
+        \mathbf{2)}\; I_L &= \frac{V_Z}{R_L} = \frac{5.1\,\text{V}}{10\,\text{k}\Omega} = \mathbf{0.51\,\text{mA}} \quad \text{[cite: 13]} \\
+        \mathbf{3)}\; I_Z &= 22.27\,\text{mA} - 0.51\,\text{mA} = \mathbf{21.76\,\text{mA}} \quad \text{[cite: 13]} \\
+        \mathbf{4)}\; P_Z &= V_Z \cdot I_Z = 5.1\,\text{V} \cdot 21.76\,\text{mA} \approx \mathbf{111\,\text{mW}} \quad \text{[cite: 13]}
+    \end{align*}
+\end{minipage}
+
+\vspace{0.2cm}
+\textbf{5) Condición de consistencia:} Debe cumplirse $I_Z > 0$; físicamente debe existir corriente suficiente para mantener al dispositivo en regulación[cite: 13]. \\
+\textbf{6) Disminución de $R_L$:} Provoca que $I_L \uparrow$. Como $I_{RS}$ es fijo, entonces por LCK, $I_Z \downarrow$[cite: 13].
+
+\section*{Solución U1-2: Peor Caso de Corriente[cite: 13]}
+Para maximizar $I_Z$, analizamos la ecuación: $\displaystyle I_Z = \frac{V_{in} - V_Z}{R_S} - \frac{V_Z}{R_L}$[cite: 13].
+El peor caso (mayor $I_Z$) ocurre cuando la fuente entrega el máximo ($V_{in} = 12\,\text{V}$) y la carga consume el mínimo (carga ligera, $R_L = 10\,\text{k}\Omega$)[cite: 13].
+\begin{align*}
+    I_{RS} &= \frac{12\,\text{V} - 5.1\,\text{V}}{330\,\Omega} = \mathbf{20.91\,\text{mA}} \quad \text{y} \quad I_L = \frac{5.1\,\text{V}}{10\,\text{k}\Omega} = \mathbf{0.51\,\text{mA}} \quad \text{[cite: 13]} \\
+    I_Z &= 20.91\,\text{mA} - 0.51\,\text{mA} \approx \mathbf{20.40\,\text{mA}} \implies P_Z = (5.1)(20.40\,\text{mA}) \approx \mathbf{104\,\text{mW}} \quad \text{[cite: 13]}
+\end{align*}
+Si $V_{in}$ aumenta 20\%, la corriente disponible $I_{RS}$ sube ($I_{RS}\uparrow$), por tanto $I_Z$ sube ($I_Z\uparrow$)[cite: 13].
+
+\section*{Solución U1-5: Validación Experimental RMSE[cite: 13]}
+Calcular el RMSE directamente sobre señales no alineadas temporalmente es engañoso porque \textbf{mezcla el error temporal con el error de amplitud}[cite: 13].
+\textbf{Procedimiento:} 1) Identificar evento común. 2) Alinear temporalmente. 3) Interpolar bases. 4) Recortar. 5) Calcular RMSE[cite: 13]. \\
+\textbf{Interpretación:} Un $RMSE = 0.18\,\text{V}$ en un rango de $10\,\text{V}$ representa un error de $\sim 1.8\%$, razonablemente pequeño[cite: 13].
+
+\section*{Solución U1-6: Inductor y Flyback[cite: 13]}
+Por la inercia de la corriente del inductor, $I_L(0^+) = I_L(0^-) = \mathbf{0.35\,\text{A}}$[cite: 13]. 
+Como $v_L = L \frac{di}{dt}$, una caída abrupta de corriente genera un $dt \approx 0$, induciendo un voltaje masivo[cite: 13].
+El diodo Flyback conduce porque la polaridad del inductor se invierte para mantener la dirección de $I_L$, creando un lazo local de recirculación[cite: 13].
+$$ E_L = \frac{1}{2} L I^2 = \frac{1}{2} (0.150\,\text{H}) (0.35\,\text{A})^2 \approx \mathbf{9.19\,\text{mJ}} \quad \text{[cite: 13]} $$
+
+\end{document}

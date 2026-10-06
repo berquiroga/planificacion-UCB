@@ -1,0 +1,80 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Plan de Estudio y Fórmulas}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{PARTE III — Plan de Trabajo Autónomo de Recuperación[cite: 12]}]
+    Siga esta estructura para maximizar la eficiencia de su tiempo de estudio, atacando los ejercicios nucleares primero según la unidad a recuperar[cite: 12].
+\end{tcolorbox}
+
+\section*{Rutas de Estudio Recomendadas[cite: 12]}
+\textbf{Si recupera SOLO la Unidad 1 (Protecciones y Validación):}
+\begin{itemize}
+    \item \textbf{Prioridad Alta:} U1-1 (Zener DC), U1-2 (Peor caso), U1-3 (Predicción lógica), U1-6 (Flyback), U1-8 (Defensa)[cite: 12].
+    \item \textbf{Secundario:} U1-4 (Simulación vs analítico), U1-5 (RMSE), U1-7 (Transitorios)[cite: 12].
+\end{itemize}
+
+\textbf{Si recupera SOLO la Unidad 2 (BJT, Par Diferencial y CMRR):}
+\begin{itemize}
+    \item \textbf{Prioridad Alta:} U2-1 (Punto Q), U2-2 (Espejo), U2-3 (Parámetros AC), U2-5 (Steering), U2-7 (CMRR)[cite: 12].
+    \item \textbf{Secundario:} U2-4 (Topologías), U2-6 (Descomposición), U2-8 (Diagnóstico cruzado)[cite: 12].
+\end{itemize}
+
+\textbf{Si recupera AMBAS Unidades (Plan de 3 días)[cite: 12]:}
+\begin{itemize}
+    \item \textbf{Día 1:} U1-1, U1-3, U1-6 / U2-1, U2-3[cite: 12].
+    \item \textbf{Día 2:} U1-2, U1-4 / U2-2, U2-5[cite: 12].
+    \item \textbf{Día 3:} U1-5, U1-8 / U2-7, U2-8[cite: 12].
+\end{itemize}
+
+\vspace{0.5cm}
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Registro Personal de Errores (Autoevaluación)[cite: 12]}]
+    \textbf{Mi error más frecuente es:[cite: 12]} \\
+    $\square$ Selección de Modelo \quad $\square$ Aritmética \quad $\square$ Convención de Signos \quad $\square$ Unidades \\
+    $\square$ Interpretación Física \quad $\square$ Diagnóstico \quad $\square$ Convención de Salida (Single vs Diff) \\[0.3cm]
+    \textbf{Pregunta concreta para la próxima sesión con el Docente:[cite: 12]} \hrulefill
+\end{tcolorbox}
+
+\section*{Resumen de Fórmulas Críticas (Para memorización y fluidez)[cite: 13]}
+Durante el examen no se entrega este formulario. Debe conocer o poder deducir estas relaciones[cite: 13].
+
+\begin{minipage}[t]{0.45\textwidth}
+    \textbf{Unidad 1[cite: 13]:}
+    \begin{align*}
+        I_{RS} &= \frac{V_{in} - V_{out}}{R_S} \\
+        I_Z &= I_{RS} - I_L \\
+        P_Z &= V_Z I_Z \\
+        v_L &= L \frac{di}{dt} \\
+        E_L &= \frac{1}{2} L I^2
+    \end{align*}
+\end{minipage}
+\begin{minipage}[t]{0.5\textwidth}
+    \textbf{Unidad 2[cite: 13]:}
+    \begin{align*}
+        I_C &= \frac{V_{CC} - V_C}{R_C} \quad \Big| \quad g_m = \frac{I_C}{V_T} \\
+        r_e &\approx \frac{V_T}{I_E} \quad \Big| \quad r_\pi = \frac{\beta}{g_m} \\
+        v_d &= v_1 - v_2 \quad \Big| \quad v_{cm} = \frac{v_1 + v_2}{2} \\
+        A_{d,se} &\approx \frac{g_m R_C}{2} \\
+        CMRR &= \left| \frac{A_d}{A_c} \right| \quad \Big| \quad CMRR_{dB} = 20\log_{10}(CMRR)
+    \end{align*}
+\end{minipage}
+
+\end{document}
