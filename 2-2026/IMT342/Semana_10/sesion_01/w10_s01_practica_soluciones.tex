@@ -1,0 +1,98 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342}}
+\chead{Solucionario: Práctica Integrada W10-S01}
+\rhead{Uso Docente}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{red!80!black}{SOLUCIONARIO Y DESARROLLO MATEMÁTICO}}\\[0.2cm]
+\end{center}
+
+\section*{Tarea 1 — IK / Metodología de Pieper[cite: 15]}
+\textbf{A.} ${}^0p_W = {}^0p_6^d - d_6\,{}^0z_6^d = \begin{bmatrix} 2 \\ 1 \\ 1 \end{bmatrix} - 0.5 \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix} = \begin{bmatrix} 2 \\ 1 \\ 0.5 \end{bmatrix}$.\\
+\textbf{B.} Proyectando en el plano base: $q_1 = \operatorname{atan2}(y_W, x_W) \implies q_1 = \operatorname{atan2}(1, 2)$.\\
+\textbf{C.} Si $c_3 = 0 \implies \cos^2 q_3 = 0 \implies \sin^2 q_3 = 1 \implies s_3 = \pm 1$. Por tanto:
+\begin{align*}
+    q_3^{(1)} &= \operatorname{atan2}(1, 0) = \frac{\pi}{2} \\
+    q_3^{(2)} &= \operatorname{atan2}(-1, 0) = -\frac{\pi}{2}
+\end{align*}
+\textit{Significado:} Representan ramas geométricas distintas y físicamente reales del manipulador (ej. codo arriba y codo abajo).\\
+\textbf{D.} Se debe calcular la matriz de rotación residual para la muñeca: ${}^3R_6 = ({}^0R_3)^T {}^0R_6^d$.\\
+\textbf{E.} El criterio estricto es que la FK evaluada en el candidato reproduzca la pose original: ${}^0T_6(\mathbf{q}^{(k)}) \approx {}^0T_6^d$.
+
+\section*{Tarea 2 — Jacobiano y Singularidades[cite: 15]}
+\textbf{A.} Construcción del Jacobiano:
+\begin{align*}
+    J_{v1} &= \mathbf{z}_0 \times (\mathbf{o}_2 - \mathbf{o}_0) = \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix} \times \begin{bmatrix} 1 \\ 1 \\ 0 \end{bmatrix} = \begin{bmatrix} -1 \\ 1 \\ 0 \end{bmatrix} \implies J_1 = \begin{bmatrix} -1 \\ 1 \\ 0 \\ 0 \\ 0 \\ 1 \end{bmatrix} \\
+    J_{v2} &= \mathbf{z}_1 \times (\mathbf{o}_2 - \mathbf{o}_1) = \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix} \times \begin{bmatrix} 0 \\ 1 \\ 0 \end{bmatrix} = \begin{bmatrix} -1 \\ 0 \\ 0 \end{bmatrix} \implies J_2 = \begin{bmatrix} -1 \\ 0 \\ 0 \\ 0 \\ 0 \\ 1 \end{bmatrix} \\
+    \implies J &= \begin{bmatrix} -1 & -1 \\ 1 & 0 \\ 0 & 0 \\ 0 & 0 \\ 0 & 0 \\ 1 & 1 \end{bmatrix}
+\end{align*}
+\textbf{B.} $\mathbf{v}_e = J \begin{bmatrix} 1 \\ -1 \end{bmatrix} = \begin{bmatrix} 0 \\ 1 \\ 0 \\ 0 \\ 0 \\ 0 \end{bmatrix}$. \textit{Interpretación:} Traslación instantánea pura en la dirección $+y$. Las contribuciones angulares de ambas juntas se cancelan matemáticamente ($1-1=0$).\\
+\textbf{C.} Para la postura estirada: 1) $\operatorname{rank}(J_p) = 1$ (columnas dependientes). 2) Es una postura \textbf{Singular}. 3) Se pierde movilidad independiente radial en la dirección de $+x$.\\
+\textbf{D.} El determinante está definido solo para matrices cuadradas. En la robótica general (robots redundantes), el determinante no existe. La explicación física subyacente de la singularidad es la \textbf{pérdida de rango}, que se traduce en una merma de las direcciones operacionales.
+
+\section*{Tarea 3 — Generación de Trayectoria LSPB[cite: 15]}
+\textbf{A.} $|\ddot{q}_c|_{\min} = \frac{4|q_f - q_i|}{t_f^2} = \frac{4(2)}{3^2} = \frac{8}{9}$ rad/s$^2$. Como la aceleración elegida es $1 \ge 8/9$, el perfil es factible.\\
+\textbf{B.} Tiempo de mezcla: $t_c = \frac{t_f}{2} - \frac{1}{2}\sqrt{t_f^2 - \frac{4(q_f - q_i)}{\ddot{q}_c}} = \frac{3}{2} - \frac{1}{2}\sqrt{9 - \frac{4(2)}{1}} = 1.5 - 0.5 = 1$ s.\\
+\textbf{C.} Velocidad de crucero: $\dot{q}_c = \ddot{q}_c t_c = (1)(1) = 1$ rad/s.\\
+\textbf{D.} Ecuaciones por tramos:
+\begin{equation*}
+    q(t) = \begin{cases} \frac{1}{2}t^2 & 0 \le t \le 1 \\ t - 0.5 & 1 < t \le 2 \\ 2 - \frac{1}{2}(3-t)^2 & 2 < t \le 3 \end{cases}, \quad
+    \dot{q}(t) = \begin{cases} t & 0 \le t \le 1 \\ 1 & 1 < t \le 2 \\ 3-t & 2 < t \le 3 \end{cases}, \quad
+    \ddot{q}(t) = \begin{cases} 1 & 0 \le t < 1 \\ 0 & 1 < t < 2 \\ -1 & 2 < t \le 3 \end{cases}
+\end{equation*}
+\textbf{E.} Evaluación en $t=2.5$ s (fase de desaceleración):
+\begin{align*}
+    q(2.5) &= 2 - 0.5(3 - 2.5)^2 = 2 - 0.5(0.25) = 1.875 \text{ rad} \\
+    \dot{q}(2.5) &= 3 - 2.5 = 0.5 \text{ rad/s} \\
+    \ddot{q}(2.5) &= -1 \text{ rad/s}^2
+\end{align*}
+
+\section*{Tarea 4 — Dinámica de Euler-Lagrange y Torque[cite: 15]}
+\textbf{A.} Lagrangiano: $L = \frac{1}{2}J\dot{q}^2 - mg\ell_c(1-\cos q)$.\\
+\textbf{B.} Derivadas:
+\begin{equation*}
+    \frac{\partial L}{\partial \dot{q}} = J\dot{q}, \qquad \frac{d}{dt}\left(\frac{\partial L}{\partial \dot{q}}\right) = J\ddot{q}, \qquad \frac{\partial L}{\partial q} = -mg\ell_c\sin q
+\end{equation*}
+\textbf{C.} Ecuación de movimiento: $\tau = J\ddot{q} + mg\ell_c\sin q$. (Término Inercial: $J\ddot{q}$; Término de Gravedad: $mg\ell_c\sin q$).\\
+\textbf{D.} Sustituyendo los datos en $t=2.5$ s:
+\begin{align*}
+    \tau &= (0.25)(-1) + (1)(9.81)(0.5)\sin(1.875) \\
+    \tau &= -0.25 + 4.905\sin(1.875)
+\end{align*}
+Conociendo que $\sin(1.875\text{ rad}) \approx 0.954$:
+\begin{equation*}
+    \tau \approx -0.25 + 4.679 = 4.429 \text{ N}\cdot\text{m}
+\end{equation*}
+\textit{Interpretación del signo:} La contribución inercial es negativa ($-0.25$ N$\cdot$m) porque el robot está \textbf{desacelerando} su movimiento en sentido positivo. El par dinámico requerido es dominado completamente por la demanda gravitacional.
+
+\section*{Tarea 5 — Selección de Herramienta Integrada[cite: 15]}
+\begin{center}
+    Pose Deseada $T_d \xrightarrow{\text{Pieper}}$ $q_i, q_f$ \\
+    Candidato $\mathbf{q} \xrightarrow{\text{FK Verificación}}$ Reproduce Pose? \\
+    $q_i \to q_f \xrightarrow{\text{LSPB}}$ Perfiles de tiempo $q(t), \dot{q}(t), \ddot{q}(t)$ \\
+    Velocidad Articular $\dot{q} \xrightarrow{\text{Jacobiano}}$ Velocidad Cartesiana $\dot{\mathbf{x}}$ \\
+    Matriz $J \xrightarrow{\text{Rango / Singularidad}}$ Evaluación de pérdida de movilidad \\
+    $q(t), \dot{q}(t), \ddot{q}(t) \xrightarrow{\text{Euler-Lagrange}}$ Torque de Actuador $\tau(t)$
+\end{center}
+
+\end{document}

@@ -1,0 +1,148 @@
+% practica_asincrona_ec2.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342} | Robótica}
+\chead{Práctica Asíncrona de Preparación EC2}
+\rhead{Trabajo Individual}
+\lfoot{Material de Estudio}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Práctica Asíncrona de Preparación para EC2}}\\[0.2cm]
+\end{center}
+
+\begin{tcolorbox}[colback=yellow!10, colframe=black, title=\textbf{Propósito y Metodología}[cite: 10]]
+    Trabajo individual y autónomo para preparar el examen escrito EC2[cite: 10]. No es Hito 2 y no requiere ROS, Jupyter ni programación[cite: 10].
+    
+    \textbf{Primera vuelta:} resolver sin soluciones, IA ni apuntes[cite: 10]. Marcar cada ejercicio como:
+    \begin{itemize}
+        \item \textbf{A} — autónomo[cite: 10];
+        \item \textbf{D} — dudoso[cite: 10];
+        \item \textbf{B} — bloqueado[cite: 10].
+    \end{itemize}
+    \textit{Después, revisar apuntes, corregir y repetir solo D/B[cite: 10].}
+\end{tcolorbox}
+
+\section*{1. Selección de Método[cite: 10]}
+Asigne la herramienta principal correcta para cada tarea. Opciones: \textit{Pieper, FK, Jacobiano, Rango/Singularidad, LSPB, Lagrange–Euler}[cite: 10].
+\begin{enumerate}
+    \item[a)] Pose deseada $\to$ configuraciones articulares: \underline{\hspace{4cm}}
+    \item[b)] $q, \dot{q} \to$ velocidad del efector: \underline{\hspace{4cm}}
+    \item[c)] Pérdida de movilidad instantánea: \underline{\hspace{4cm}}
+    \item[d)] Movimiento continuo entre $q_i, q_f$: \underline{\hspace{4cm}}
+    \item[e)] $q, \dot{q}, \ddot{q} \to$ torque: \underline{\hspace{4cm}}
+    \item[f)] Comprobar una solución de IK: \underline{\hspace{4cm}}
+\end{enumerate}
+
+\section*{2. Pieper — Centro de Muñeca[cite: 10]}
+Dados los parámetros $p_6^d=[1.8, 0.6, 1.2]^T, \quad z_6^d=[0, 0, 1]^T, \quad d_6=0.20$[cite: 10].\\
+Calcule $p_W = p_6^d - d_6 z_6^d$ y explique qué representa físicamente $p_W$[cite: 10].
+\vspace{2cm}
+
+\section*{3. Pieper — Ramas y \texttt{atan2}[cite: 10]}
+Sabiendo que $c_3 = -\frac{\sqrt{2}}{2}$[cite: 10]:
+\begin{enumerate}
+    \item[a)] Obtenga los dos $s_3$[cite: 10].
+    \item[b)] Obtenga los dos $q_3 = \operatorname{atan2}(s_3, c_3)$[cite: 10].
+    \item[c)] Explique el significado geométrico de las dos ramas[cite: 10].
+\end{enumerate}
+\vspace{2.5cm}
+
+\section*{4. Pieper — Orden Lógico[cite: 10]}
+Ordene los siguientes pasos del 1 al 6: calcular $R_3^6$; obtener $q_1, q_2, q_3$; verificar con FK; calcular centro de muñeca; obtener $q_4, q_5, q_6$; partir de $T_d$[cite: 10]. \\
+Adicionalmente, escriba la ecuación de orientación residual: $R_3^6 = (R_0^3)^T R_0^{6,d}$[cite: 10].
+\vspace{1.5cm}
+
+\section*{5. Jacobiano — Una Columna[cite: 10]}
+Vectores dados: $z_{i-1}=[0,0,1]^T, \quad o_{i-1}=[1,1,0]^T, \quad o_n=[3,2,0]^T$[cite: 10].
+Calcule la columna e interprete físicamente el resultado[cite: 10]:
+\begin{equation*}
+    J_i = \begin{bmatrix} z_{i-1} \times (o_n - o_{i-1}) \\ z_{i-1} \end{bmatrix} \text{[cite: 10]}
+\end{equation*}
+\vspace{2cm}
+
+\section*{6. Jacobiano — Velocidad[cite: 10]}
+Dada la matriz y velocidades articulares:
+\begin{equation*}
+    J = \begin{bmatrix} -1 & -1 \\ 1 & 0 \\ 0 & 0 \\ 0 & 0 \\ 0 & 0 \\ 1 & 1 \end{bmatrix}, \quad \dot{q} = \begin{bmatrix} 2 \\ -1 \end{bmatrix} \text{[cite: 10]}
+\end{equation*}
+Calcule $v_e = J\dot{q}$ e interprete $v_L$ y $\omega$[cite: 10].
+\vspace{2cm}
+
+\section*{7. Singularidad — Rango[cite: 10]}
+Analice el sub-Jacobiano de traslación $J_p = \begin{bmatrix} 0 & 0 \\ 3 & 1 \end{bmatrix}$[cite: 10].
+Responda: a) Rango; b) Singular o regular para una tarea planar 2D; c) Significado físico; d) Por qué “$\det J=0$” no es explicación suficiente[cite: 10].
+\vspace{2cm}
+
+\section*{8. Singularidad — 2R[cite: 10]}
+Dado $\det J_p = a_1 a_2 \sin q_2$ con $a_1, a_2 \neq 0$[cite: 10].
+a) Configuraciones singulares principales; b) Interpretación geométrica; c) Qué puede ocurrir con la IK diferencial cerca de ellas[cite: 10].
+\vspace{2cm}
+
+\section*{9. LSPB — Construcción Completa[cite: 10]}
+Parámetros: $q_i=0, \quad q_f=1.5 \text{ rad}, \quad t_f=3 \text{ s}, \quad \ddot{q}_c=0.75 \text{ rad/s}^2$[cite: 10].
+Calcule secuencialmente: 1. $|\ddot{q}_c|_{\min}$; 2. Factibilidad; 3. $t_c$; 4. Velocidad de crucero; 5. $q(t), \dot{q}(t), \ddot{q}(t)$ en las tres fases; 6. $q, \dot{q}, \ddot{q}$ en $t=1.5$ s[cite: 10].
+\vspace{4.5cm}
+
+\section*{10. LSPB — Interpretación[cite: 10]}
+Explique las razones fundamentales de: a) por qué $q(t)$ debe ser continuo; b) por qué $\dot{q}(t)$ es continuo; c) por qué $\ddot{q}(t)$ puede saltar en las fronteras; d) por qué “trapezoidal” describe $\dot{q}(t)$, no $q(t)$[cite: 10].
+\vspace{2.5cm}
+
+\section*{11. Dinámica — Euler–Lagrange[cite: 10]}
+Dados $T = \frac{1}{2}J\dot{q}^2$ y $V = mg\ell_c(1 - \cos q)$[cite: 10]. 
+Derive $L = T - V$ y los tres términos $\frac{\partial L}{\partial \dot{q}}, \frac{d}{dt}\left(\frac{\partial L}{\partial \dot{q}}\right), \frac{\partial L}{\partial q}$. Obtenga la ecuación de movimiento e identifique inercia y gravedad[cite: 10].
+\vspace{3cm}
+
+\section*{12. Dinámica — Torque Numérico[cite: 10]}
+Parámetros: $J=0.30, m=1.5, \ell_c=0.4, g=9.81$. Estado: $q=\frac{\pi}{3}, \dot{q}=0.8, \ddot{q}=-1.2$[cite: 10]. \\
+Usando $\tau = J\ddot{q} + mg\ell_c\sin q$, calcule torque inercial, gravitacional y total. Explique por qué $\dot{q}$ no aparece en este modelo 1R[cite: 10].
+\vspace{2.5cm}
+
+\section*{13. Integración tipo EC2[cite: 10]}
+Un robot debe: 1) alcanzar $T_d$; 2) elegir solución válida; 3) moverse en tiempo finito; 4) conocer velocidad cartesiana; 5) diagnosticar singularidad; 6) estimar torque[cite: 10]. Indique herramienta, entradas, salidas, y validación por etapa. Dibuje el flujo completo[cite: 10].
+\vspace{3cm}
+
+\newpage
+\section*{Autoevaluación: Diagnóstico Final[cite: 10]}
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{0.8\textwidth}{|X|c|c|c|>{\raggedright\arraybackslash}p{4cm}|}
+\hline
+\rowcolor{ucbblue!10} \textbf{Competencia} & \textbf{A} & \textbf{D} & \textbf{B} & \textbf{Qué repasar} \\ \hline
+Pieper / ramas[cite: 10] & $\square$ & $\square$ & $\square$ & \\ \hline
+\texttt{atan2}[cite: 10] & $\square$ & $\square$ & $\square$ & \\ \hline
+FK como validación[cite: 10] & $\square$ & $\square$ & $\square$ & \\ \hline
+Jacobiano[cite: 10] & $\square$ & $\square$ & $\square$ & \\ \hline
+Singularidad[cite: 10] & $\square$ & $\square$ & $\square$ & \\ \hline
+LSPB[cite: 10] & $\square$ & $\square$ & $\square$ & \\ \hline
+Euler–Lagrange[cite: 10] & $\square$ & $\square$ & $\square$ & \\ \hline
+Torque[cite: 10] & $\square$ & $\square$ & $\square$ & \\ \hline
+Integración[cite: 10] & $\square$ & $\square$ & $\square$ & \\ \hline
+\end{tabularx}
+\end{center}
+
+\end{document}

@@ -1,0 +1,190 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{amsmath, amssymb, bm}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342}}
+\chead{Solucionario: Práctica Asíncrona EC2}
+\rhead{Robótica}
+\lfoot{Material de Estudio y Preparación}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{red!80!black}{Solucionario — Práctica Asíncrona EC2}}\\[0.2cm]
+\end{center}
+
+\section*{1. Selección de Método[cite: 9]}
+a) Pieper[cite: 9]. \quad
+b) Jacobiano[cite: 9]. \quad
+c) Rango/singularidad[cite: 9]. \quad
+d) LSPB[cite: 9]. \quad
+e) Dinámica[cite: 9]. \quad
+f) FK[cite: 9].
+
+\section*{2. Pieper — Centro de Muñeca[cite: 9]}
+El cálculo del centro resulta en:
+\begin{equation*}
+    p_W = [1.8,\ 0.6,\ 1.0]^T \text{[cite: 9]}
+\end{equation*}
+\textbf{Significado:} Es el centro de muñeca usado para desacoplar el problema de posición del brazo y la orientación de la muñeca[cite: 9].
+
+\section*{3. Pieper — Ramas y \texttt{atan2}[cite: 9]}
+a) Resolviendo trigonométricamente: $s_3 = \pm\frac{\sqrt{2}}{2}$[cite: 9]. \\
+b) Los dos ángulos recuperados son:
+\begin{equation*}
+    q_3^{(1)} = \frac{3\pi}{4}, \qquad q_3^{(2)} = -\frac{3\pi}{4} \text{[cite: 9]}
+\end{equation*}
+c) \textbf{Significado:} Son dos ramas geométricas distintas (físicamente alcanzables) del manipulador[cite: 9].
+
+\section*{4. Pieper — Orden Lógico[cite: 9]}
+El flujo de resolución estructurado es[cite: 9]:
+\begin{center}
+\begin{tikzpicture}[
+    node distance=0.5cm and 0.6cm,
+    box/.style={rectangle, draw=ucbblue, thick, fill=ucbblue!5, align=center, rounded corners, font=\small, minimum height=0.8cm},
+    arrow/.style={-Stealth, thick, ucbblue}
+]
+    \node[box] (n1) {$T_d$};
+    \node[box, right=of n1] (n2) {$p_W$};
+    \node[box, right=of n2] (n3) {$(q_1, q_2, q_3)$};
+    \node[box, right=of n3] (n4) {$R_3^6$};
+    \node[box, right=of n4] (n5) {$(q_4, q_5, q_6)$};
+    \node[box, right=of n5, fill=green!10] (n6) {FK};
+
+    \draw[arrow] (n1) -- (n2);
+    \draw[arrow] (n2) -- (n3);
+    \draw[arrow] (n3) -- (n4);
+    \draw[arrow] (n4) -- (n5);
+    \draw[arrow] (n5) -- (n6);
+\end{tikzpicture}
+\end{center}
+Y la orientación residual requerida se calcula como: $\boxed{ R_3^6 = (R_0^3)^T R_0^{6,d} } \text{[cite: 9]}$
+
+\section*{5. Jacobiano — Una Columna[cite: 9]}
+Calculando el vector de posición: $o_n - o_{i-1} = [2, 1, 0]^T$[cite: 9]. \\
+Calculando el producto cruz: $z \times r = [-1, 2, 0]^T$[cite: 9]. \\
+Ensamblando la columna completa:
+\begin{equation*}
+    \boxed{ J_i = [-1, 2, 0, 0, 0, 1]^T } \text{[cite: 9]}
+\end{equation*}
+\textbf{Significado:} Representa la velocidad completa del efector producida por una velocidad articular unitaria exclusivamente de esa junta[cite: 9].
+
+\section*{6. Jacobiano — Velocidad[cite: 9]}
+El vector de velocidad cartesiana resultante es $v_e = [-1, 2, 0, 0, 0, 1]^T$[cite: 9]. \\
+Desglosando en sus componentes lineal y angular:
+\begin{equation*}
+    v_L = [-1, 2, 0]^T, \qquad \omega = [0, 0, 1]^T \text{[cite: 9]}
+\end{equation*}
+
+\section*{7. Singularidad — Rango[cite: 9]}
+Tenemos que $\operatorname{rank}J_p = 1$[cite: 9]. \\
+La matriz es singular para una tarea planar 2D porque solo queda una dirección independiente de velocidad instantánea[cite: 9]. El determinante es solo un test especial para matrices cuadradas y no explica, por sí mismo, la pérdida física de movilidad[cite: 9].
+
+\section*{8. Singularidad — 2R[cite: 9]}
+Las configuraciones singulares ocurren en $q_2 = 0, \pi$ (mod $2\pi$)[cite: 9]. \\
+En una configuración físicamente alineada, las columnas translacionales pierden independencia[cite: 9]. Cerca de la singularidad, ciertas demandas cartesianas pueden requerir velocidades articulares muy grandes mediante la cinemática inversa diferencial[cite: 9].
+
+\section*{9. LSPB — Construcción Completa[cite: 9]}
+\begin{itemize}
+    \item Aceleración mínima factible: $|\ddot{q}_c|_{\min} = \frac{4(1.5)}{9} = \frac{2}{3}$ rad/s$^2$. Como $0.75 > 2/3$, el perfil es factible[cite: 9].
+    \item Tiempo de mezcla: $t_c = \frac{3}{2} - \frac{1}{2}\sqrt{9 - \frac{6}{0.75}} = 1$ s[cite: 9].
+    \item Velocidad de crucero: $\dot{q}_c = 0.75$ rad/s[cite: 9].
+\end{itemize}
+Funciones por tramos[cite: 9]:
+\begin{align*}
+    \text{Fase 1 } (0 \le t \le 1):\quad & q=0.375t^2, \quad \dot{q}=0.75t, \quad \ddot{q}=0.75 \text{[cite: 9]}\\
+    \text{Fase 2 } (1 < t \le 2):\quad & q=0.75(t-0.5), \quad \dot{q}=0.75, \quad \ddot{q}=0 \text{[cite: 9]}\\
+    \text{Fase 3 } (2 < t \le 3):\quad & q=1.5 - 0.375(3-t)^2, \quad \dot{q}=0.75(3-t), \quad \ddot{q}=-0.75 \text{[cite: 9]}
+\end{align*}
+En $t=1.5$ s: $q = 0.75$ rad, $\dot{q} = 0.75$ rad/s, $\ddot{q} = 0$ rad/s$^2$[cite: 9].
+
+\section*{10. LSPB — Interpretación[cite: 9]}
+La continuidad en $q$ evita saltos de posición (teletransportación)[cite: 9]. La continuidad en $\dot{q}$ evita saltos instantáneos de velocidad que exigirían fuerza infinita[cite: 9]. El LSPB ideal permite que la aceleración sea definida por tramos con cambios bruscos (saltos)[cite: 9]. El término "trapecio" corresponde exclusivamente al perfil trazado por la velocidad $\dot{q}(t)$[cite: 9].
+
+\section*{11. Dinámica — Euler–Lagrange[cite: 9]}
+Lagrangiano: $L = \frac{1}{2}J\dot{q}^2 - mg\ell_c(1 - \cos q)$[cite: 9]. \\
+Desarrollo de derivadas[cite: 9]:
+\begin{equation*}
+    \frac{\partial L}{\partial \dot{q}} = J\dot{q}, \qquad \frac{d}{dt}\left(\frac{\partial L}{\partial \dot{q}}\right) = J\ddot{q}, \qquad \frac{\partial L}{\partial q} = -mg\ell_c\sin q \text{[cite: 9]}
+\end{equation*}
+Ecuación de esfuerzo: $\boxed{\tau = J\ddot{q} + mg\ell_c\sin q}$[cite: 9].
+
+\section*{12. Dinámica — Torque Numérico[cite: 9]}
+Torque inercial: $\tau_I = 0.30(-1.2) = -0.36$ N$\cdot$m[cite: 9]. \\
+Torque de gravedad: $\tau_g = (1.5)(9.81)(0.4)\sin(\pi/3) \approx 5.10$ N$\cdot$m[cite: 9]. \\
+Torque Total: $\boxed{ \tau \approx 4.74 \text{ N}\cdot\text{m} }$[cite: 9]. \\
+\textbf{Nota sobre Coriolis:} $\dot{q}$ no aparece porque este modelo 1R específico tiene inercia constante y no genera un término Coriolis/centrífugo independiente[cite: 9].
+
+\section*{13. Integración tipo EC2[cite: 9]}
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{0.9\textwidth}{|l|>{\raggedright\arraybackslash}X|l|l|}
+\hline
+\rowcolor{ucbblue!10} \textbf{Etapa} & \textbf{Herramienta} & \textbf{Entrada} & \textbf{Salida} \\ \hline
+Alcanzar pose & Pieper & $T_d$ & $q^{(k)}$[cite: 9]\\ \hline
+Validar & Cinemática Directa (FK) & $q^{(k)}$ & $T(q^{(k)})$[cite: 9]\\ \hline
+Trayectoria & LSPB & $q_i, q_f, t_f$ & $q, \dot{q}, \ddot{q}$[cite: 9]\\ \hline
+Velocidad & Jacobiano & $q, \dot{q}$ & $\dot{x}$[cite: 9]\\ \hline
+Singularidad & Rango de $J$ & $J(q)$ & Movilidad local[cite: 9]\\ \hline
+Torque & Dinámica (Lagrange-Euler) & $q, \dot{q}, \ddot{q}$ & $\tau$[cite: 9]\\ \hline
+\end{tabularx}
+\end{center}
+
+\vspace{0.4cm}
+\textbf{Flujo Integrado[cite: 9]:}
+\begin{center}
+\begin{tikzpicture}[
+    node distance=0.4cm and 0.5cm,
+    box/.style={rectangle, draw=ucbblue, thick, fill=white, align=center, rounded corners, font=\small, minimum height=0.6cm, inner sep=1.5mm},
+    arrow/.style={-Stealth, thick, ucbblue}
+]
+    % Fila superior
+    \node[box] (t1) {$T_d$};
+    \node[box, right=of t1] (t2) {Pieper};
+    \node[box, right=of t2] (t3) {$q$};
+    \node[box, right=of t3] (t4) {FK};
+    \node[box, right=of t4] (t5) {LSPB};
+    \node[box, right=of t5] (t6) {$(q, \dot{q}, \ddot{q})$};
+
+    % Fila inferior
+    \node[box, below=0.6cm of t6] (b1) {$J$ / Singularidad};
+    \node[box, left=0.6cm of b1] (b2) {Dinámica};
+    \node[box, left=0.6cm of b2, fill=green!10] (b3) {$\tau$};
+
+    % Conexiones
+    \draw[arrow] (t1) -- (t2);
+    \draw[arrow] (t2) -- (t3);
+    \draw[arrow] (t3) -- (t4);
+    \draw[arrow] (t4) -- (t5);
+    \draw[arrow] (t5) -- (t6);
+    \draw[arrow] (t6) -- (b1);
+    \draw[arrow] (t6) |- (b2);
+    \draw[arrow] (b2) -- (b3);
+
+\end{tikzpicture}
+\end{center}
+
+\end{document}
