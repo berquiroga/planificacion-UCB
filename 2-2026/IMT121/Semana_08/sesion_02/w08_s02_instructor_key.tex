@@ -1,0 +1,74 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage[american]{circuitikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Solucionario S08-02}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Clave Docente: Solucionario y Rúbrica de Diagnóstico}]
+    \centering \textbf{Sesión de Consolidación S08-02}
+\end{tcolorbox}
+
+\section*{Problema 1: Superposición}
+\textbf{Solución Analítica:}
+\begin{enumerate}
+    \item \textbf{Solo fuente de 12V ($V_2 = 0 \rightarrow$ Cortocircuito a tierra):} La resistencia de $6\,\text{k}\Omega$ queda en paralelo con la de $3\,\text{k}\Omega$. \\
+    $R_{\text{eq}} = 6\text{k} \parallel 3\text{k} = 2\,\text{k}\Omega$. Aplicando divisor de tensión: $V_a^{(1)} = 12 \left( \frac{2}{2 + 2} \right) = \mathbf{6\,\text{V}}$.
+    \item \textbf{Solo fuente de 6V ($V_1 = 0 \rightarrow$ Cortocircuito a tierra):} La resistencia de $2\,\text{k}\Omega$ queda en paralelo con la de $3\,\text{k}\Omega$. \\
+    $R_{\text{eq}} = 2\text{k} \parallel 3\text{k} = 1.2\,\text{k}\Omega$. Aplicando divisor de tensión: $V_a^{(2)} = 6 \left( \frac{1.2}{6 + 1.2} \right) = \mathbf{1\,\text{V}}$.
+    \item \textbf{Total:} $V_a = 6 + 1 = \mathbf{7\,\text{V}}$ (referenciado respecto al nodo de tierra).
+\end{enumerate}
+\textbf{Diagnóstico (High-Value Evidence):} Evaluar si el estudiante sabe que "apagar" una fuente de voltaje implica reemplazarla por un cable a tierra, y no simplemente "abrir" la rama.
+
+\section*{Problema 2: Equivalencia de Puerto}
+\textbf{Solución Analítica:}
+\begin{enumerate}
+    \item \textbf{$V_{th}$:} Con la carga retirada, $V_a$ se determina por el divisor de tensión formado por $R_1$ y $R_2$. \\
+    $V_{th} = 12 \left( \frac{4\text{k}}{4\text{k} + 4\text{k}} \right) = \mathbf{6\,\text{V}}$.
+    \item \textbf{$R_{th}$:} Apagando la fuente de $12\,\text{V}$ (corto), $R_1$ y $R_2$ quedan en paralelo vistas desde el puerto $a-b$. \\
+    $R_{th} = 4\text{k} \parallel 4\text{k} = \mathbf{2\,\text{k}\Omega}$.
+    \item \textbf{Norton:} $I_N = \frac{V_{th}}{R_{th}} = \frac{6}{2\text{k}} = \mathbf{3\,\text{mA}}$.
+\end{enumerate}
+\textbf{Diagnóstico:} Confirmar que el estudiante siempre evalúa la resistencia equivalente \textit{mirando hacia adentro} desde el puerto abierto.
+
+\section*{Problema 3: Máxima Transferencia}
+\textbf{Cálculos ($V_{th} = 6\,\text{V}, R_{th} = 2\,\text{k}\Omega$):}
+\begin{itemize}
+    \item $R_L = 1\,\text{k}\Omega \rightarrow I_L = 2\,\text{mA}, V_L = 2\,\text{V}, \mathbf{P_L = 4\,\text{mW}}$.
+    \item $R_L = 2\,\text{k}\Omega \rightarrow I_L = 1.5\,\text{mA}, V_L = 3\,\text{V}, \mathbf{P_L = 4.5\,\text{mW}}$.
+    \item $R_L = 4\,\text{k}\Omega \rightarrow I_L = 1\,\text{mA}, V_L = 4\,\text{V}, \mathbf{P_L = 4\,\text{mW}}$.
+\end{itemize}
+\textbf{Interpretación:}
+\begin{itemize}
+    \item \textit{Mayor Corriente:} Carga más pequeña ($1\,\text{k}\Omega$).
+    \item \textit{Mayor Voltaje:} Carga más grande ($4\,\text{k}\Omega$).
+    \item \textit{Mayor Potencia:} Carga igual a $R_{th}$ ($2\,\text{k}\Omega$). No coinciden porque la potencia es producto del compromiso entre la caída de corriente y el aumento de voltaje al subir la resistencia.
+\end{itemize}
+
+\section*{Problema 4: Interpretación de Datos (Loading Effect)}
+\textbf{Análisis Esperado:}
+El máximo medido de potencia ocurre en $R_L = 5\,\text{k}\Omega$ ($8.45\,\text{mW}$), pero está extremadamente cerca del valor en $4\,\text{k}\Omega$ ($8.41\,\text{mW}$). Esta diferencia ($\Delta R = 1\,\text{k}\Omega$) \textbf{no invalida la teoría}. Una hipótesis técnica sólida es que la resistencia interna real del circuito equivalente no es exactamente $4\,\text{k}\Omega$ debido a la suma de las tolerancias de los resistores individuales en el montaje físico. Para comprobarlo, el estudiante debería proponer apagar el circuito y medir $R_{th}$ físicamente con un óhmetro.
+
+\end{document}

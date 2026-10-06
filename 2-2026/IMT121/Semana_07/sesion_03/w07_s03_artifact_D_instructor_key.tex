@@ -1,0 +1,68 @@
+\documentclass[journal, a4paper]{IEEEtran}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{ragged2e}
+\usepackage[most]{tcolorbox}
+
+\renewcommand{\tablename}{Tabla}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\title{Variante del Instructor: Criterios de Evaluación para Reportes IEEE (EC2)}
+\author{IMT-121 --- Circuitos Electrónicos I}
+
+\maketitle
+
+\begin{tcolorbox}[colback=red!5!white, colframe=red!70!black, title=\textbf{Nota Exclusiva para el Docente}]
+Este documento mapea la estructura esperada en los reportes estudiantiles contra las evidencias obligatorias de la unidad EC2. No distribuya este documento a los estudiantes. Su propósito es guiar la evaluación formativa o sumativa del Hito 2.
+\end{tcolorbox}
+
+\section{Mapeo Estructural y Trazabilidad (EC2)}
+
+La estructura del reporte preserva la evidencia de la cadena de recuperación integrada:
+\begin{itemize}
+    \item \textbf{Superposición:} Verificado en Modelo + Resultados + Discusión.
+    \item \textbf{$\bm{V_{oc} / V_{th}}$:} Verificado en Modelo + Resultados.
+    \item \textbf{$\bm{R_{th}}$:} Verificado en Modelo + Resultados.
+    \item \textbf{Equivalencia en Carga:} Verificado en Resultados + Discusión.
+    \item \textbf{Curva de Potencia y Máx. Transferencia:} Práctica B (Resultados + Gráfica).
+\end{itemize}
+
+\section{Criterios de Inspección Técnica}
+
+\subsection{I. Introducción y Objetivo}
+\textbf{Evidencia Esperada:} El estudiante debe poder distinguir explícitamente entre el propósito de la \textit{Experiencia A} (demostrar equivalencia de puertos y el principio de superposición lineal) y la \textit{Experiencia B} (evaluación de la maximización del trade-off de transferencia de energía). Se penalizan introducciones que sean meros "copia y pega" de libros de texto.
+
+\subsection{II. Modelo del Circuito}
+\textbf{Evidencia Esperada:} 
+\begin{itemize}
+    \item Topología claramente documentada en el reporte.
+    \item Nodos de referencia (Tierra común) y definición del puerto explícitos. Esto es crítico para validar cómo desactivaron las fuentes.
+    \item Para la \textit{Experiencia B}, se exige la predicción teórica de la potencia máxima ($P_{L,\text{max}} = V_{th}^2 / 4R_{th}$).
+\end{itemize}
+
+\subsection{III. Metodología}
+\textbf{Criterio de Seguridad y Restricción Técnica:} Revise estrictamente cómo reportan la obtención de $I_N$. Deben declarar explícitamente que la obtuvieron por la relación $V_{th}/R_{th}$ o mediante simulación, \textbf{no} mediante un corto físico del multímetro en el banco, a menos que el instructor lo haya validado y autorizado explícitamente en sala.
+
+\subsection{IV. Resultados (Tablas y Gráficas)}
+\textbf{Evidencia Esperada:}
+\begin{itemize}
+    \item \textbf{Experiencia A:} La tabla debe contener columnas separadas y alineadas para Teoría, SPICE y Medición. El error relativo ($\varepsilon_r$) debe estar matemáticamente bien calculado.
+    \item \textbf{Experiencia B:} La gráfica de $P_L$ vs $R_L$ debe mostrar obligatoriamente la curva teórica o simulada y superponer sobre ella los puntos físicos discretos medidos en el banco. Debe presentar forma de campana asimétrica.
+\end{itemize}
+
+\subsection{V. Discusión (El Núcleo del Reporte)}
+Aquí reside la justificación ingenieril del Hito 2. Los estudiantes deben aplicar el modelo deductivo: \textit{Observación $\rightarrow$ Hipótesis $\rightarrow$ Evidencia}.
+\begin{itemize}
+    \item \textbf{Discrepancias Inaceptables:} No se debe aceptar justificar una desviación importante (ej. > 5\%) afirmando simplemente "error experimental o humano". Deben cuantificar problemas físicos: resistencia de contacto de la protoboard, tolerancia real de los resistores (frente al nominal), o masas flotantes.
+    \item \textbf{Verificación (Experiencia B):} Deben contrastar explícitamente en texto que el pico de la gráfica de potencia ocurrió precisamente cuando la resistencia de carga se aproximó al valor medido de $R_{th}$ derivado previamente en la Experiencia A.
+\end{itemize}
+
+\end{document}

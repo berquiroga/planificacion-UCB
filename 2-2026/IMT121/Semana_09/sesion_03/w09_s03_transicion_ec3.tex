@@ -1,0 +1,92 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Puente a EC3}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Transición de Estado Estacionario a Régimen Transitorio}]
+    \centering \textbf{Puente Conceptual: De EC2 a EC3}
+\end{tcolorbox}
+
+\section*{1. Los Límites de las Redes Resistivas}
+Hasta ahora hemos estudiado circuitos bajo el régimen \textbf{DC Estático}. Si alteramos un voltaje, todo el circuito responde de forma instantánea gobernado puramente por álgebra ($V = IR$).
+
+¿Qué ocurre físicamente cuando conmutamos un interruptor? ¿La tensión o la corriente cambian en cero segundos?
+\begin{itemize}
+    \item Los circuitos puramente resistivos \textbf{no almacenan energía}.
+    \item \textbf{Los Capacitores ($C$) y los Inductores ($L$)} sí la almacenan. Su presencia introduce \textbf{el Tiempo ($t$)} en el circuito.
+\end{itemize}
+
+\section*{2. Relaciones Constitutivas y Continuidad (La Inercia Eléctrica)}
+
+\vspace{0.2cm}
+\noindent
+\begin{minipage}[t]{0.48\textwidth}
+    \textbf{\textcolor{ucbblue}{El Capacitor ($C$):}}
+    \begin{itemize}
+        \item Relación: $i_C(t) = C \frac{dv_C}{dt}$
+        \item \textbf{Inercia de Tensión:} El voltaje a través de un capacitor ideal no puede cambiar instantáneamente.
+        \item Regla: $\mathbf{v_C(0^+) = v_C(0^-)}$
+    \end{itemize}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.48\textwidth}
+    \textbf{\textcolor{ucbblue}{El Inductor ($L$):}}
+    \begin{itemize}
+        \item Relación: $v_L(t) = L \frac{di_L}{dt}$
+        \item \textbf{Inercia de Corriente:} La corriente a través de un inductor ideal no puede cambiar instantáneamente.
+        \item Regla: $\mathbf{i_L(0^+) = i_L(0^-)}$
+    \end{itemize}
+\end{minipage}
+
+\vspace{0.4cm}
+\section*{3. Evolución Temporal Cualitativa (Circuitos RC y RL)}
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+    % RC
+    \draw[thick, ->] (0,0) -- (4,0) node[anchor=north] {$t$};
+    \draw[thick, ->] (0,0) -- (0,2.5) node[anchor=east] {$v_C(t)$};
+    \draw[blue, thick] (0,0) .. controls (0.5,2) and (1.5,2) .. (3.5,2);
+    \draw[dashed] (0,2) node[left] {$V_f$} -- (3.5,2);
+    \node[anchor=north] at (1.5,-0.5) {\textbf{Carga Capacitor}};
+    
+    % RL
+    \draw[thick, ->] (6,0) -- (10,0) node[anchor=north] {$t$};
+    \draw[thick, ->] (6,0) -- (6,2.5) node[anchor=east] {$i_L(t)$};
+    \draw[red, thick] (6,0) .. controls (6.5,2) and (7.5,2) .. (9.5,2);
+    \draw[dashed] (6,2) node[left] {$I_f$} -- (9.5,2);
+    \node[anchor=north] at (7.5,-0.5) {\textbf{Carga Inductor}};
+\end{tikzpicture}
+\end{center}
+
+Observe que desde $t = 0^+$ hasta alcanzar el estado final, la variable experimenta un \textbf{transitorio} gradual dictado por una escala de tiempo $\tau$ (tau).
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=gray!5, colframe=gray!50, title=\textbf{Reflexión Inicial EC3}]
+Si las leyes de KVL y KCL ahora incluyen ecuaciones que contienen derivadas temporales ($\frac{d}{dt}$), ¿qué tipo de ecuaciones matemáticas gobernarán los circuitos a partir de hoy?
+\end{tcolorbox}
+
+\end{document}

@@ -1,0 +1,102 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Rúbrica Reportes IEEE}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{warnred}{RGB}{200, 0, 0}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Instrumento de Calificación Docente: Reportes Técnicos IEEE (Hito 2)}]
+    \centering \textbf{Evaluación de Experiencias Integradas A y B}
+\end{tcolorbox}
+
+\noindent \textit{Uso Exclusivo del Instructor. Este instrumento evalúa estrictamente el \textbf{documento técnico} entregado por el equipo (30\% de la nota del Hito 2). El desempeño práctico en banco (20\%) se califica por separado. Se evalúa sobre 100 puntos por reporte.}
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=warnred!5!white, colframe=warnred, title=\textbf{Advertencia Crítica sobre Valores de Referencia}]
+No utilice los valores analíticos obsoletos presentes en la primera versión de la guía del instructor de la Exp. A ($6.03\,\text{V}$ y $2.78\,\text{mA}$). Para el circuito oficial validado, los valores correctos de calificación son: \textbf{$V_{th} = 5.714\,\text{V}$}, \textbf{$R_{th} = 2.175\,\text{k}\Omega$} y \textbf{$I_N = 2.628\,\text{mA}$}.
+\end{tcolorbox}
+
+\section*{Parte I: Experiencia Integrada A (Superposición y Equivalentes)}
+\textbf{Equipo:} \hrulefill \quad \textbf{Puntaje Reporte A:} \rule{2cm}{0.4pt} / 100
+
+\vspace{0.3cm}
+\renewcommand{\arraystretch}{1.5}
+\noindent
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight}p{4cm} >{\RaggedRight\arraybackslash}X >{\centering\arraybackslash}p{1.5cm}}
+\toprule
+\textbf{Criterio Evaluado} & \textbf{Evidencia Requerida / Expectativas} & \textbf{Puntaje} \\ 
+\midrule
+A1. Abstract y Objetivos \newline \textit{(10 pts)} & Define claramente el propósito, separa la superposición de Thévenin/Norton y anticipa la validación a realizar. Sin "relleno" teórico copiado. & \rule{1cm}{0.4pt} \\ \addlinespace
+A2. Modelo y Predicción \newline \textit{(20 pts)} & Topología, puerto $a-b$ y nodo de referencia (tierra) explícitos. Muestra cálculo analítico de subcircuitos ($V_a^{(V1)}, V_a^{(V2)}$), $V_{th}, R_{th}$ e $I_N$. & \rule{1cm}{0.4pt} \\ \addlinespace
+A3. Metodología y Seguridad \newline \textit{(15 pts)} & Explica el montaje y la desactivación física. \textbf{Crítico:} Penalice severamente si documentan medir $I_N$ con un corto directo del multímetro sin su autorización. & \rule{1cm}{0.4pt} \\ \addlinespace
+A4. Resultados Cuantitativos \newline \textit{(25 pts)} & Tabla de comparación Teoría/SPICE/Banco completa. Unidades correctas. Error relativo bien calculado. Evidencia de respuesta bajo carga. & \rule{1cm}{0.4pt} \\ \addlinespace
+A5. Discusión Técnica \newline \textit{(20 pts)} & Sigue el modelo: Observación $\rightarrow$ Hipótesis $\rightarrow$ Evidencia. Analiza discrepancias de forma ingenieril (no genérica como "error humano"). & \rule{1cm}{0.4pt} \\ \addlinespace
+A6. Conclusiones y Formato \newline \textit{(10 pts)} & Conclusiones atadas a sus propios datos numéricos. Figuras y tablas debidamente numeradas y referenciadas en el texto IEEE. & \rule{1cm}{0.4pt} \\ 
+\bottomrule
+\end{tabularx}
+
+\newpage
+% =======================================================
+\section*{Parte II: Experiencia Integrada B (Máxima Transferencia y Efecto Carga)}
+\textbf{Equipo:} \hrulefill \quad \textbf{Puntaje Reporte B:} \rule{2cm}{0.4pt} / 100
+
+\vspace{0.3cm}
+\renewcommand{\arraystretch}{1.5}
+\noindent
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight}p{4cm} >{\RaggedRight\arraybackslash}X >{\centering\arraybackslash}p{1.5cm}}
+\toprule
+\textbf{Criterio Evaluado} & \textbf{Evidencia Requerida / Expectativas} & \textbf{Puntaje} \\ 
+\midrule
+B1. Abstract y Objetivos \newline \textit{(8 pts)} & Conecta la práctica con el equivalente de Thévenin caracterizado previamente. Declara la variación de $R_L$ como método principal. & \rule{1cm}{0.4pt} \\ \addlinespace
+B2. Modelo Analítico \newline \textit{(17 pts)} & Declara $I_L$ y $P_L$ en función de $R_L$. Deduce analíticamente que $R_{L,\text{max}} = R_{th}$. Predice la potencia máxima teórica ($P_{L,\text{max}} \approx 3.75\,\text{mW}$). & \rule{1cm}{0.4pt} \\ \addlinespace
+B3. Metodología de Barrido \newline \textit{(15 pts)} & El rango seleccionado cubre valores por debajo, cercanos y por encima de $R_{th}$. Documenta el uso del barrido paramétrico (\texttt{.step param}) en SPICE. & \rule{1cm}{0.4pt} \\ \addlinespace
+B4. Resultados y Gráfica \newline \textit{(30 pts)} & Tabla de $R_L, V_L, I_L, P_L$ (Teoría vs. SPICE vs. Medido) completa. \textbf{Crítico:} La gráfica debe superponer los puntos medidos discretos sobre la curva de SPICE. & \rule{1cm}{0.4pt} \\ \addlinespace
+B5. Discusión y Efecto Carga \newline \textit{(20 pts)} & Distingue que el máximo experimental discreto ($\sim 2.2\,\text{k}\Omega$) difiere del teórico por limitación de valores comerciales. Discute el efecto de carga en $V_L$. & \rule{1cm}{0.4pt} \\ \addlinespace
+B6. Conclusiones y Formato \newline \textit{(10 pts)} & Distingue entre máxima transferencia de potencia y máxima transferencia de tensión/eficiencia. Formato riguroso IEEE. & \rule{1cm}{0.4pt} \\ 
+\bottomrule
+\end{tabularx}
+
+\vspace{0.8cm}
+\section*{Parte III: Consolidación (Score del Componente Reporte)}
+El Reporte Técnico (A+B) equivale globalmente al \textbf{30\%} del Hito 2. Si no ha establecido reglas internas distintas, aplique promedio simple.
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=gray!5, colframe=gray!50, title=\textbf{Cálculo de Aportación}]
+\textbf{1. Promedio Reportes (Base 100):} $\frac{\text{Reporte A } (\rule{1cm}{0.4pt}) + \text{Reporte B } (\rule{1cm}{0.4pt})}{2} = \mathbf{\rule{1.5cm}{0.4pt}}$ \\
+
+\vspace{0.2cm}
+\textbf{2. Aportación Ponderada Final:} Promedio (Base 100) $\times \ 0.30 = \mathbf{\rule{1.5cm}{0.4pt}} \ / \ 30\%$
+\end{tcolorbox}
+
+\vspace{0.5cm}
+\section*{Banderas Diagnósticas de Evidencia (Triggers)}
+\textit{Marque si aplica para asistir en la decisión de requerir una Microdefensa:}
+\begin{itemize}\setlength\itemsep{0.2em}
+    \item[$\square$] \texttt{SAFETY\_PROCEDURE\_REVIEW}: Midieron $I_{sc}$ directamente sin documentar supervisión/protección.
+    \item[$\square$] \textbf{\texttt{EXPERIMENTAL\_TRACEABILITY\_ISSUE}:} Los errores relativos son de $0.00\%$ contra simulaciones con decimales complejos. Fuerte indicio de falsificación de mediciones físicas.
+    \item[$\square$] \texttt{DISCUSSION\_TOO\_GENERIC}: Conclusiones irrelevantes sin conexión con los datos.
+\end{itemize}
+
+\end{document}

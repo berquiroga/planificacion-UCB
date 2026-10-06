@@ -1,0 +1,59 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Actividad Autónoma EC3}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Actividad Autónoma Formativa: Puente a Transitorios (EC3)}]
+    \centering \textbf{Preparación Conceptual para la Unidad 3 (Para alumnos regulares)}
+\end{tcolorbox}
+
+\noindent\textit{Instrucciones: Esta actividad no es calificada y está diseñada para los alumnos que no han sido convocados a la evaluación sustitutiva. Lea el material introductorio sobre la física del almacenamiento de energía en circuitos y responda las preguntas cualitativas a continuación.}
+
+\section*{1. Lectura: Inercia Eléctrica y Almacenamiento de Energía}
+A diferencia de un resistor (que disipa energía como calor inmediatamente), un \textbf{Capacitor} acumula carga en un campo eléctrico y un \textbf{Inductor} acumula energía en un campo magnético. 
+
+La física de estos componentes obliga a que el circuito no pueda reaccionar en cero segundos. 
+\begin{itemize}
+    \item Un capacitor se opone a cambios bruscos de \textbf{tensión}. Si usted cierra un switch sobre un capacitor descargado, la tensión $v_c$ arrancará en 0V y subirá lentamente (Régimen Transitorio) hasta alcanzar un Estado Estacionario.
+    \item Un inductor se opone a cambios bruscos de \textbf{corriente}. Si se corta abruptamente un cable con corriente circulante en un inductor, este reaccionará violentamente para mantenerla, creando arcos de plasma (chispas).
+\end{itemize}
+
+\section*{2. Predicción Cualitativa (Cuestionario)}
+Responda lógicamente basándose en las premisas de lectura:
+
+\begin{enumerate}
+    \item ¿Puede el voltaje almacenado en un capacitor ideal saltar instantáneamente (ej. de 0V a 12V en $t=0$) bajo una fuente DC ordinaria si cerramos un interruptor? Explique.
+    \vspace{2cm}
+    \item ¿Puede la corriente en un circuito inductivo saltar de la nada instantáneamente?
+    \vspace{2cm}
+    \item En la Unidad EC2 usábamos la Ley de Ohm ($V = IR$, ecuaciones algebraicas simples). En EC3, la inercia implica que la corriente de un capacitor es proporcional a la "velocidad de cambio" (derivada temporal) de su voltaje: $i_C(t) = C \frac{dv_C}{dt}$. \\
+    Si aplicamos la Ley de Kirchhoff de Corrientes (LKC) en un nodo con capacitores y resistores, ¿Qué tipo de ecuaciones matemáticas inevitablemente aparecerán y tendremos que resolver?
+    \vspace{2cm}
+    \item En su cuaderno, intente bosquejar un gráfico $(x, y)$ donde el eje X sea el tiempo ($t$) y el eje Y sea el voltaje del capacitor $v_c(t)$ desde el momento $t=0$ en el que conectamos una batería hasta mucho tiempo después ($t \to \infty$).
+\end{enumerate}
+
+\end{document}

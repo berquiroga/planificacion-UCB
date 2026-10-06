@@ -1,0 +1,66 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Checklist Final Lab}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Checklist de Integración: Cierre Total de Laboratorio (A+B)}]
+    \centering \textbf{Preparación de Evidencia para Reporte IEEE}
+\end{tcolorbox}
+
+\noindent \textit{Instrucción: Cada equipo debe asegurar que la evidencia primaria listada a continuación esté completamente registrada en sus bitácoras u hojas de datos ANTES de comenzar la redacción del reporte IEEE. Un faltante impedirá completar técnicamente el informe.}
+
+\vspace{0.3cm}
+\textbf{Equipo:} \hrulefill \quad \textbf{Validado por:} \hrulefill
+
+\section*{1. Experiencia Integrada A}
+\begin{itemize}\setlength\itemsep{0.1em}
+    \item[$\square$] Evidencia de \textbf{Superposición} completa (Teoría, SPICE, Banco).
+    \item[$\square$] Medición física explícita de $V_{oc}$.
+    \item[$\square$] Determinación segura (red desenergizada) de $R_{th}$.
+    \item[$\square$] Parámetros completos de equivalentes Thévenin y Norton ($I_N$).
+    \item[$\square$] Comparación directa SPICE - Medición con cálculo de Error Relativo.
+    \item[$\square$] Identificación y documentación de \textbf{al menos una discrepancia técnica}.
+\end{itemize}
+
+\section*{2. Experiencia Integrada B}
+\begin{itemize}\setlength\itemsep{0.1em}
+    \item[$\square$] Barrido paramétrico sobre múltiples valores de $R_L$.
+    \item[$\square$] Registro de $V_L$ e $I_L$ para cada caso en la tabla.
+    \item[$\square$] Cálculo consistente de $P_L$.
+    \item[$\square$] Trazo o representación gráfica de la \textbf{Curva de Potencia} (campana).
+    \item[$\square$] Identificación explícita de la resistencia $R_L$ donde ocurrió el \textbf{máximo numérico}.
+    \item[$\square$] Comparación de dicho máximo experimental contra el valor de $R_{th}$.
+    \item[$\square$] Análisis del Efecto de Carga (Loading Effect) documentado.
+    \item[$\square$] Incorporación de la comparación Teoría-SPICE-Medición para el análisis de potencia.
+\end{itemize}
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=red!5!white, colframe=red!70!black, title=\textbf{Pregunta Final de Control de Calidad}]
+¿Qué \textbf{único} elemento faltante, cálculo omitido o discrepancia no explicada en esta lista podría impedir que su reporte IEEE esté técnicamente completo y defendible?
+\vspace{1cm}
+\end{tcolorbox}
+
+\end{document}

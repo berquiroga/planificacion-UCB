@@ -1,0 +1,66 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Guía Microdefensa}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Protocolo de Activación Condicional: Microdefensa Oral}]
+    \centering \textbf{Resolución de Inconsistencias (Para Uso Exclusivo del Instructor)}
+\end{tcolorbox}
+
+\section*{1. Naturaleza de la Microdefensa}
+\begin{itemize}
+    \item \textbf{NO ES} una evaluación oral universal ni un tercer bloque de calificación.
+    \item \textbf{NO ES} una repetición del examen ni un castigo automático por notas bajas.
+    \item \textbf{SÍ ES} una auditoría selectiva, breve y acotada (2-4 minutos) diseñada para \textbf{resolver incertidumbres} en la evidencia generada por el estudiante.
+\end{itemize}
+
+\section*{2. Detonantes de Activación (Triggers)}
+Active este protocolo \textbf{únicamente} si identifica alguna de las siguientes anomalías:
+\begin{itemize}
+    \item \textbf{Disparidad cognitiva:} Un reporte de laboratorio IEEE sobresaliente contrastado con un examen individual deficiente o nulo en los mismos conceptos (ej. no sabe hallar $R_{th}$ en el examen, pero el reporte lo explica a nivel experto).
+    \item \textbf{Asimetría de equipo:} Evidencia sustancial de que un miembro del grupo comprendió y operó el laboratorio, mientras que el otro carece de conocimiento funcional sobre los datos que reportan.
+    \item \textbf{Falsificación de datos o Autoría dudosa:} Tablas de "mediciones físicas" que replican matemáticamente a la perfección la simulación SPICE (error de 0.00\%), sugiriendo que el circuito jamás se armó, o uso de lenguaje no atribuible al estudiante.
+\end{itemize}
+
+\section*{3. Protocolo de Ejecución}
+La entrevista debe ser al grano, técnica y enfocada exclusivamente en la anomalía detectada.
+
+\begin{enumerate}
+    \item \textbf{Identificar la incertidumbre:} Tenga en mano el examen y el reporte del estudiante. Señale el problema (ej. "Su reporte detalla un análisis de error relativo, pero en el examen usted invirtió la Ley de Ohm").
+    \item \textbf{Preguntas directas (2 a 4 máximo):} 
+    \begin{itemize}
+        \item "¿En su reporte, cómo lograron obtener $R_{th}$ en la mesa de laboratorio? Descríbame el procedimiento manual con las fuentes."
+        \item "¿Por qué en el circuito B la potencia cayó abruptamente a pesar de que el voltaje siguió subiendo?"
+    \end{itemize}
+    \item \textbf{Cierre y Resolución:}
+    \begin{itemize}
+        \item \textbf{Confirmada:} El estudiante demostró dominio del proceso reportado (nerviosismo durante el examen).
+        \item \textbf{Clarificada:} La confusión conceptual se acotó a un malentendido aislado.
+        \item \textbf{No resuelta (Evidencia Rechazada):} El estudiante es incapaz de explicar los números o las conclusiones que llevan su nombre en el documento entregado. El porcentaje asignado al reporte en el componente práctico será invalidado o modificado conforme a la penalidad establecida en el syllabus.
+    \end{itemize}
+\end{enumerate}
+
+\end{document}

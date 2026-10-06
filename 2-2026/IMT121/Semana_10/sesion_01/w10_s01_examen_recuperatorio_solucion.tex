@@ -1,0 +1,74 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Solucionario Recuperatorio EC2}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Clave Docente y Guía de Calificación (Recuperatorio EC2)}]
+\end{tcolorbox}
+
+\section*{Políticas de Calificación}
+\begin{itemize}
+    \item \textbf{Aritmética vs. Método:} La evaluación no debe concentrar la puntuación en el resultado numérico final. Otorgue crédito parcial si el estudiante demostró desactivación correcta, pero cometió un error aritmético.
+    \item \textbf{Regla de Propagación:} Si un error aritmético ocurre temprano pero el paso final de suma/despeje se realiza respetando rígidamente la física del circuito, no penalice dos veces.
+\end{itemize}
+
+\section*{Solucionario de Referencia}
+
+\subsection*{Parte A: Superposición (25 pts)}
+\begin{itemize}
+    \item \textbf{Fuente de +9V:} $V_2 = 0$ (Cortocircuito a tierra). $R_2 \parallel R_3 = 6\text{k} \parallel 6\text{k} = 3\,\text{k}\Omega$. \\
+    Divisor: $V_a^{(1)} = 9 \cdot \left(\frac{3\text{k}}{3\text{k} + 3\text{k}}\right) = \mathbf{+4.5\,\text{V}}$.
+    \item \textbf{Fuente de -6V:} $V_1 = 0$ (Corto a tierra). $R_1 \parallel R_3 = 3\text{k} \parallel 6\text{k} = 2\,\text{k}\Omega$. \\
+    Divisor (nodo negativo): $V_a^{(2)} = -6 \cdot \left(\frac{2\text{k}}{6\text{k} + 2\text{k}}\right) = \mathbf{-1.5\,\text{V}}$.
+    \item \textbf{Total:} $V_a = 4.5 + (-1.5) = \mathbf{3.0\,\text{V}}$.
+    \item \textbf{Interpretación:} El signo negativo implica que, bajo la convención elegida (positivo respecto a tierra), la fuente de $-6\,\text{V}$ arrastra/drena la tensión del nodo en la dirección opuesta.
+\end{itemize}
+
+\subsection*{Parte B: Equivalencias de Puerto (35 pts)}
+\begin{itemize}
+    \item \textbf{Puerto y $R_L$:} $a-b$. La carga \textbf{debe retirarse} (abrir el puerto) para evaluar la red interna pasiva.
+    \item $\mathbf{V_{th}}$: Divisor: $18 \cdot \left(\frac{3\text{k}}{6\text{k}+3\text{k}}\right) = \mathbf{6\,\text{V}}$.
+    \item $\mathbf{R_{th}}$: Fuente de 18V $\rightarrow$ Corto. $R_{th} = 6\text{k} \parallel 3\text{k} = \mathbf{2\,\text{k}\Omega}$.
+    \item \textbf{Norton:} $I_N = \frac{6}{2\text{k}} = \mathbf{3\,\text{mA}}$.
+    \item \textbf{Carga (4k$\Omega$):} $I_L = \frac{6}{2\text{k} + 4\text{k}} = \mathbf{1\,\text{mA}}$. \quad $V_L = 1\,\text{mA} \cdot 4\,\text{k}\Omega = \mathbf{4\,\text{V}}$.
+\end{itemize}
+
+\subsection*{Parte C: Efecto Carga e Interpretación (40 pts)}
+\textbf{C1 Analítico:}
+\begin{itemize}
+    \item $R_L = 1\,\text{k}\Omega \rightarrow I_L = \mathbf{3\,\text{mA}}; V_L = \mathbf{3\,\text{V}}; P_L = \mathbf{9\,\text{mW}}$ \quad \textit{(Mayor Corriente)}
+    \item $R_L = 3\,\text{k}\Omega \rightarrow I_L = \mathbf{2\,\text{mA}}; V_L = \mathbf{6\,\text{V}}; P_L = \mathbf{12\,\text{mW}}$ \quad \textit{(Máx. Potencia)}
+    \item $R_L = 9\,\text{k}\Omega \rightarrow I_L = \mathbf{1\,\text{mA}}; V_L = \mathbf{9\,\text{V}}; P_L = \mathbf{9\,\text{mW}}$ \quad \textit{(Mayor Tensión)}
+\end{itemize}
+
+\textbf{C2 Interpretación Experimental:}
+\begin{itemize}
+    \item El máximo discreto medido aparece en $\mathbf{3.3\,\text{k}\Omega}$, difiriendo en $0.3\,\text{k}\Omega$ de la predicción ideal de $3.0\,\text{k}\Omega$.
+    \item \textbf{No invalida la teoría.} Hipótesis técnicas válidas: los resistores físicos sufren tolerancias y sus valores nominales no coinciden con los reales; la fuente de poder real tiene una impedancia interna pequeña en serie; las conexiones/protoboard añaden resistencias de contacto parasíticas. Se requeriría medir $R_{th}$ físicamente con el óhmetro para corroborarlo.
+    \item \textbf{Eficiencia:} Falso. Adaptar impedancias ($R_L = R_{th}$) solo garantiza máxima transferencia de \textit{potencia}, pero a un \textbf{50\% de eficiencia} térmica (se desperdicia la mitad del calor internamente en la fuente). La máxima eficiencia se alcanza cuando $R_L \to \infty$.
+\end{itemize}
+
+\end{document}

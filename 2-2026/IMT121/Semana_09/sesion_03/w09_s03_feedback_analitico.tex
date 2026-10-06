@@ -1,0 +1,63 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | EC2 Feedback}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Feedback Analítico Agregado: Unidad EC2}]
+    \centering \textbf{Síntesis de Patrones de Razonamiento de la Cohorte}
+\end{tcolorbox}
+
+\noindent \textit{Instrucciones: Este documento resume los patrones técnicos observados durante el examen individual y la redacción de los reportes IEEE. Su propósito es formativo, identificando áreas de mejora antes de avanzar a transitorios.}
+
+\vspace{0.4cm}
+\section*{1. Mapa General de Patrones (Cohorte)}
+
+\renewcommand{\arraystretch}{1.5}
+\noindent
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight}p{2.5cm} >{\RaggedRight\arraybackslash}X >{\RaggedRight\arraybackslash}X}
+\toprule
+\textbf{Categoría} & \textbf{Patrón Dominante Observado} & \textbf{Acción Correctiva Sugerida} \\ 
+\midrule
+Conceptual & \textit{[Ej. Asumir que la máxima corriente coincide con la máxima transferencia de potencia]} & Recordar que $P_L = V_L \cdot I_L$; el máximo es un compromiso. \\ \addlinespace
+Procedural & \textit{[Ej. Calcular $R_{th}$ manteniendo activas las fuentes de tensión]} & Desactivar fuentes independientes ($V \rightarrow$ corto, $I \rightarrow$ abierto) antes de mirar desde el puerto. \\ \addlinespace
+Signos y Ref. & \textit{[Ej. Sumar magnitudes absolutas en lugar de suma algebraica en superposición]} & Fijar siempre un nodo de tierra y respetar la polaridad de las contribuciones. \\ \addlinespace
+Interpretación & \textit{[Ej. Atribuir diferencias al "error humano" sin justificar hipótesis]} & Cuantificar el error y relacionarlo con componentes reales (tolerancia, resistencia de contacto). \\
+\bottomrule
+\end{tabularx}
+
+\vspace{0.4cm}
+\section*{2. Reflexión Individual}
+Identifique su debilidad principal en EC2 y documéntela para evitarla en futuros diseños:
+
+\vspace{0.2cm}
+\noindent \textbf{El error que más debo vigilar en mi propio trabajo es:} \\
+\rule{\textwidth}{0.4pt}
+\vspace{0.2cm}
+
+\noindent \textbf{Lo detectaré a tiempo implementando esta verificación:} \\
+\rule{\textwidth}{0.4pt}
+
+\end{document}

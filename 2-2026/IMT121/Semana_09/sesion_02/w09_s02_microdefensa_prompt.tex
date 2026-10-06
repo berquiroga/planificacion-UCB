@@ -1,0 +1,67 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Prompt Microdefensa}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Registro Selectivo de Microdefensa (Path B)}]
+    \centering \textbf{Resolución de Inconsistencia de Evidencias}
+\end{tcolorbox}
+
+\textbf{Estudiante:} \rule{5cm}{0.4pt} \quad \textbf{Fecha:} \rule{4cm}{0.4pt}
+
+\vspace{0.4cm}
+\noindent\textbf{Conflicto de Evidencia (Trigger):} \\
+\textit{[Ej. El estudiante determinó $R_{th}$ perfectamente en el reporte de la Exp. A, pero en el examen calculó $R_{th}$ sin apagar la fuente de tensión].} \\
+\rule{\textwidth}{0.4pt} \\
+\rule{\textwidth}{0.4pt}
+
+\vspace{0.4cm}
+\noindent\textbf{Pregunta 1 (Targeted Question):} \\
+\textit{[Ej. Muéstreme en su diagrama del examen qué sucede físicamente con la fuente de 12V al hallar $R_{th}$ y por qué.]} \\
+\rule{\textwidth}{0.4pt}
+
+\vspace{0.2cm}
+\noindent\textbf{Evidencia Esperada:} \textit{[Desactivación correcta $\rightarrow$ cortocircuito, perspectiva desde el puerto].}
+
+\vspace{0.4cm}
+\noindent\textbf{Pregunta 2 (Si es necesaria):} \\
+\rule{\textwidth}{0.4pt}
+
+\vspace{0.6cm}
+\begin{tcolorbox}[colback=gray!5, colframe=gray!50, title=\textbf{Resolución (Outcome)}]
+Marque la opción que corresponda tras la entrevista (Máx. 3-5 minutos):
+\begin{itemize}
+    \item[$\square$] \textbf{CLARIFIED:} El estudiante domina el concepto; el error en el examen fue un lapsus aislado. La evidencia del reporte se sostiene.
+    \item[$\square$] \textbf{STILL\_INCONSISTENT:} El estudiante no comprende el concepto básico que afirma haber desarrollado en su reporte.
+    \item[$\square$] \textbf{REQUIRES\_FOLLOW\_UP:} Posible problema de asimetría de equipo grave o sospecha de plagio en el reporte.
+\end{itemize}
+\end{tcolorbox}
+
+\noindent\textbf{Notas del Instructor:} \\
+\rule{\textwidth}{0.4pt} \\
+\rule{\textwidth}{0.4pt}
+
+\end{document}

@@ -1,0 +1,104 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage[american]{circuitikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | S08-02}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Consolidación Práctica Previa al Examen (Hito 2)}]
+    \centering \textbf{Superposición, Thévenin, Norton y Máxima Transferencia}
+\end{tcolorbox}
+
+\noindent \textit{Instrucciones: Trabaje primero de forma individual. Justifique sus referencias, la desactivación de fuentes y su método. La respuesta numérica sin procedimiento no constituye evidencia de comprensión. Los cálculos están diseñados para resolverse sin calculadora.}
+
+\vspace{0.4cm}
+\section*{Problema 1: Superposición y Referencias}
+Dado el siguiente circuito lineal, se desea conocer el voltaje $V_a$ utilizando el principio de superposición.
+
+\begin{center}
+\begin{circuitikz}[scale=1, transform shape]
+    \draw (0,0) to[V, l=$12\,\text{V}$, invert] (0,2) to[R, l=$2\,\text{k}\Omega$] (3,2);
+    \draw (6,0) to[V, l_=$6\,\text{V}$, invert] (6,2) to[R, l_=$6\,\text{k}\Omega$] (3,2);
+    \draw (3,2) to[short, *-o] (3,3) node[above]{$a$};
+    \draw (3,2) to[R, l=$3\,\text{k}\Omega$] (3,0);
+    \draw (0,0) -- (6,0);
+    \draw (3,0) node[ground]{};
+\end{circuitikz}
+\end{center}
+
+\begin{enumerate}
+    \item Dibuje el circuito equivalente dejando activa \textbf{solamente} la fuente de $12\,\text{V}$ y calcule la contribución $V_a^{(1)}$.
+    \item Dibuje el circuito equivalente dejando activa \textbf{solamente} la fuente de $6\,\text{V}$ y calcule la contribución $V_a^{(2)}$.
+    \item Obtenga el voltaje total $V_a$. Indique explícitamente la referencia respecto a la cual está medido.
+    \item \textbf{Análisis:} ¿Qué significaría físicamente si una de las contribuciones resultara tener signo negativo?
+\end{enumerate}
+
+\section*{Problema 2: Equivalencia de Puerto (Thévenin y Norton)}
+Se tiene una red de alimentación conectada a una resistencia de carga $R_L$ en el puerto $a-b$ (siendo $b$ el nodo de tierra). La red interna consiste en una fuente ideal de $12\,\text{V}$ en serie con una resistencia $R_1 = 4\,\text{k}\Omega$ conectada al nodo $a$, y una resistencia $R_2 = 4\,\text{k}\Omega$ en paralelo entre el nodo $a$ y tierra.
+
+\begin{enumerate}
+    \item Retire conceptualmente la carga $R_L$ y calcule el voltaje de circuito abierto ($V_{th}$).
+    \item Redibuje la red con las fuentes desactivadas correctamente y determine $R_{th}$ mirando desde el puerto $a-b$.
+    \item Dibuje el equivalente de Thévenin resultante.
+    \item Calcule $I_N$ y dibuje el equivalente de Norton.
+\end{enumerate}
+
+\section*{Problema 3: Máxima Transferencia y Efecto de Carga}
+Considerando el equivalente de Thévenin obtenido en el Problema 2 ($V_{th} = 6\,\text{V}$, $R_{th} = 2\,\text{k}\Omega$), evalúe el comportamiento del circuito al conectar sucesivamente las siguientes cargas: $1\,\text{k}\Omega$, $2\,\text{k}\Omega$ y $4\,\text{k}\Omega$.
+\begin{enumerate}
+    \item Calcule $I_L$, $V_L$ y $P_L$ para cada una de las tres cargas.
+    \item Responda sin realizar cálculos adicionales:
+    \begin{itemize}
+        \item ¿Qué carga produce la mayor corriente?
+        \item ¿Qué carga produce el mayor voltaje en terminales?
+        \item ¿Cuál produce la mayor potencia útil? ¿Por qué no coinciden las tres respuestas?
+    \end{itemize}
+\end{enumerate}
+
+\section*{Problema 4: Interpretación de Datos Experimentales}
+Un equipo reporta la siguiente tabla de mediciones (datos simulados) obtenida de una red cuyo modelo teórico indica $R_{th} = 4\,\text{k}\Omega$.
+
+\vspace{0.2cm}
+\noindent
+\begin{tabularx}{\textwidth}{*{4}{>{\centering\arraybackslash}X}}
+\toprule
+\textbf{$R_L$ (k$\Omega$)} & \textbf{$V_L$ medido (V)} & \textbf{$I_L$ medido (mA)} & \textbf{$P_L$ medido (mW)} \\
+\midrule
+$2$ & $3.9$ & $1.95$ & $7.60$ \\ \addlinespace
+$3$ & $5.0$ & $1.67$ & $8.35$ \\ \addlinespace
+$4$ & $5.8$ & $1.45$ & $8.41$ \\ \addlinespace
+$5$ & $6.5$ & $1.30$ & $8.45$ \\ \addlinespace
+$8$ & $7.8$ & $0.98$ & $7.64$ \\
+\bottomrule
+\end{tabularx}
+\vspace{0.2cm}
+
+\begin{enumerate}
+    \item Según los datos de la tabla, ¿en qué rango se encuentra el máximo experimental de potencia?
+    \item ¿Cómo se compara este hallazgo con el $R_{th}$ teórico de $4\,\text{k}\Omega$?
+    \item ¿Esta ligera desviación invalida la teoría analítica? Proponga \textbf{una hipótesis técnica plausible} que justifique la diferencia observada y sugiera qué medición adicional le permitiría comprobar dicha hipótesis.
+\end{enumerate}
+
+\end{document}

@@ -1,0 +1,74 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Síntesis y Puente EC3}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Síntesis de Circuitos DC (EC2) y el Puente hacia Transitorios (EC3)}]
+\end{tcolorbox}
+
+\section*{1. Lo que EC2 nos entregó (El Modelo Mental Estático)}
+A lo largo de esta unidad hemos demostrado que cualquier red resistiva lineal, sin importar su complejidad interna, puede ser abstraída y validada mediante la siguiente cadena de razonamiento:
+\begin{center}
+    \textbf{Red $\rightarrow$ Superposición $\rightarrow$ Puerto $\rightarrow$ Equivalente (Thévenin/Norton) $\rightarrow$ Carga $\rightarrow$ Máx. Potencia $\rightarrow$ Validación}
+\end{center}
+En este modelo (DC Estático), las relaciones son puramente \textbf{algebraicas} ($V = I \cdot R$). Si cambiamos un interruptor, el voltaje y la corriente cambian instantáneamente en el mismo instante $t$.
+
+\section*{2. El Límite de EC2: Lo que aún no podemos describir}
+¿Qué ocurre físicamente en un circuito en el instante exacto en que accionamos un interruptor para encender una máquina? ¿El voltaje y la corriente llegan a su valor final en cero segundos?
+\begin{itemize}
+    \item Los circuitos resistivos \textbf{no almacenan energía}.
+    \item Los \textbf{Capacitores} y los \textbf{Inductores} sí lo hacen. Esto introduce una variable que hasta ahora ignorábamos: \textbf{El Tiempo ($t$)}.
+\end{itemize}
+
+\section*{3. Principios de Continuidad (Preview EC3)}
+En la próxima unidad estudiaremos cómo los circuitos evolucionan desde una condición inicial hacia un estado final (Transitorio). Existen dos reglas de oro inviolables en la física de circuitos:
+
+\vspace{0.2cm}
+\noindent\begin{minipage}{0.48\textwidth}
+    \textbf{El Capacitor ($C$): Inercia de Voltaje} \\
+    El voltaje en los terminales de un capacitor ideal \textbf{no puede cambiar instantáneamente}.
+    \begin{equation*}
+        v_C(0^+) = v_C(0^-)
+    \end{equation*}
+    La corriente depende de la \textit{derivada} del voltaje temporal: $i_C = C \frac{dv_C}{dt}$.
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+    \textbf{El Inductor ($L$): Inercia de Corriente} \\
+    La corriente que atraviesa un inductor ideal \textbf{no puede cambiar instantáneamente}.
+    \begin{equation*}
+        i_L(0^+) = i_L(0^-)
+    \end{equation*}
+    El voltaje depende de la \textit{derivada} de la corriente temporal: $v_L = L \frac{di_L}{dt}$.
+\end{minipage}
+
+\vspace{0.5cm}
+\begin{tcolorbox}[colback=gray!5, colframe=gray!50, title=\textbf{Reflexión Conceptual}]
+\textbf{Pregunta Clave:} Si las relaciones constitutivas de $C$ y $L$ involucran derivadas respecto al tiempo ($\frac{d}{dt}$), ¿qué tipo de ecuaciones matemáticas creen que tendremos que resolver para encontrar $v(t)$ e $i(t)$ a partir de la próxima semana, abandonando el álgebra simple de las resistencias?
+\end{tcolorbox}
+
+\end{document}

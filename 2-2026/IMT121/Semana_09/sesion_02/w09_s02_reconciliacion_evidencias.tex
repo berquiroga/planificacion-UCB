@@ -1,0 +1,76 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Reconciliación Hito 2}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Matriz de Reconciliación de Evidencias (EC2)}]
+    \centering \textbf{Consolidación de Calificaciones y Rutas de Acción}
+\end{tcolorbox}
+
+\noindent \textit{Uso Exclusivo Docente. Ponderación oficial aprobada: Examen Individual (50\%), Componente Práctico (50\% - integra trabajo en clase y Reporte IEEE A+B).}
+
+\vspace{0.3cm}
+\renewcommand{\arraystretch}{2} % Aumentado para que los renglones sean cómodos al escribir a mano
+\noindent
+% Ajuste proporcional exacto de las 8 columnas para evitar desbordamientos.
+% La suma de los \hsize (2.0 + 0.6 + 0.8 + 0.8 + 0.7 + 0.9 + 1.5 + 0.7) es exactamente 8.
+\begin{tabularx}{\textwidth}{
+  >{\RaggedRight\arraybackslash\hsize=2.0\hsize}X 
+  >{\centering\arraybackslash\hsize=0.6\hsize}X 
+  >{\centering\arraybackslash\hsize=0.8\hsize}X 
+  >{\centering\arraybackslash\hsize=0.8\hsize}X 
+  >{\centering\arraybackslash\hsize=0.7\hsize}X 
+  >{\centering\arraybackslash\hsize=0.9\hsize}X 
+  >{\RaggedRight\arraybackslash\hsize=1.5\hsize}X 
+  >{\centering\arraybackslash\hsize=0.7\hsize}X}
+\toprule
+\textbf{Estudiante} & \textbf{Grupo} & \textbf{Examen (50\%)} & \textbf{Lab. (50\%)} & \textbf{Total Prov.} & \textbf{Estado Evid.} & \textbf{Acción Req.} & \textbf{Ruta} \\ 
+\midrule
+ & & & & & & & \\ \midrule
+ & & & & & & & \\ \midrule
+ & & & & & & & \\ \midrule
+ & & & & & & & \\ \midrule
+ & & & & & & & \\ \midrule
+ & & & & & & & \\ \midrule
+ & & & & & & & \\ 
+\bottomrule
+\end{tabularx}
+
+\vspace{0.5cm}
+\textbf{Claves de Estado de Evidencia:}
+\begin{itemize}
+    \item \textbf{CONSISTENTE:} Examen, reporte y desempeño en banco guardan relación lógica. (Ruta A).
+    \item \textbf{DISCREPANTE:} Diferencia masiva entre el desempeño individual (examen) y el trabajo entregado por el equipo (reporte). Activa Microdefensa (Ruta B).
+\end{itemize}
+
+\textbf{Definición de Ruta de la Sesión:}
+\begin{itemize}
+    \item \textbf{PATH A (Mayoría Consistente):} Síntesis final EC2 y puente conceptual a transitorios (EC3).
+    \item \textbf{PATH B (Inconsistencias Selectivas):} Asignación de tarea de corrección al grupo mientras se ejecutan microdefensas 1-a-1.
+    \item \textbf{PATH C (Dificultad Generalizada):} La cohorte falló un mismo núcleo (ej. Thévenin). Se activa remediación inmediata acotada (Artefacto 5).
+\end{itemize}
+
+\end{document}

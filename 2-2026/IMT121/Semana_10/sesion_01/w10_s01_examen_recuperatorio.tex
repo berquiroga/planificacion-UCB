@@ -1,0 +1,147 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage[american]{circuitikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Recuperatorio EC2}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{warnred}{RGB}{200, 0, 0}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=warnred!5!white, colframe=warnred, title=\textbf{Evaluación Sustitutiva Individual: Hito 2 (Unidad EC2)}]
+    \centering \textbf{Teoremas de Redes y Simplificación Estática}
+\end{tcolorbox}
+
+\vspace{0.2cm}
+\textbf{Estudiante:} \hrulefill \quad \textbf{Fecha:} \hrulefill
+
+\vspace{0.2cm}
+\noindent\textit{Aviso Administrativo: Esta evaluación integral sustituye y reemplaza completamente la calificación previa obtenida en el Hito 2.}
+
+\vspace{0.1cm}
+\noindent\textit{Instrucciones: Duración 50--60 min. No se permite calculadora ni formulario. Muestre su procedimiento y justifique sus referencias; no se asigna puntaje por respuestas numéricas aisladas. (Para la Parte C, recuerde que $P_L = V_L \cdot I_L$ y $P_L(R_L) = V_{th}^2 \frac{R_L}{(R_{th}+R_L)^2}$).}
+
+\vspace{0.4cm}
+% =====================================
+% PARTE A
+% =====================================
+\section*{Parte A: Superposición y Referencias (25 pts)}
+Determine la tensión del nodo $a$ con respecto a tierra ($V_a$) utilizando el Teorema de Superposición.
+
+\begin{center}
+\begin{circuitikz}[scale=1, transform shape]
+    % Fuente izquierda (+9V)
+    \draw (0,0) to[V, l={$9\,\text{V}$}, invert] (0,2) to[R, l={$R_1=3\,\text{k}\Omega$}] (3,2);
+    \node[above] at (0,2) {$+9\,\text{V}$};
+    
+    % Rama central a tierra
+    \draw (3,2) to[short, *-o] (3,2) node[above]{$a$};
+    \draw (3,2) to[R, l={$R_3=6\,\text{k}\Omega$}] (3,0);
+    
+    % Fuente derecha (-6V). Invertida explícitamente para mayor rigor.
+    \draw (6,0) to[V, l_={$-6\,\text{V}$}, invert] (6,2) to[R, l_={$R_2=6\,\text{k}\Omega$}] (3,2);
+    \node[above] at (6,2) {$-6\,\text{V}$};
+    
+    % Tierra
+    \draw (0,0) -- (6,0);
+    \draw (3,0) node[ground]{};
+    
+    % Flecha indicativa de Va
+    \draw[->, thick, blue] (2.5, 1.8) -- (2.5, 0.2) node[midway, left]{$V_a$};
+\end{circuitikz}
+\end{center}
+
+\begin{enumerate}
+    \item Defina la referencia utilizada para $V_a$.
+    \item Dibuje (o describa) el circuito resultante al desactivar la fuente de $-6\,\text{V}$ y calcule la contribución $V_a^{(1)}$.
+    \item Dibuje (o describa) el circuito resultante al desactivar la fuente de $+9\,\text{V}$ y calcule la contribución $V_a^{(2)}$ respetando el signo.
+    \item Obtenga $V_a$ total y explique en una línea el significado físico de un signo negativo en la contribución $V_a^{(2)}$.
+\end{enumerate}
+
+% =====================================
+% PARTE B
+% =====================================
+\section*{Parte B: Equivalencias de Puerto (Thévenin y Norton) (35 pts)}
+Considere el siguiente circuito. Deseamos caracterizar su comportamiento desde la perspectiva de la resistencia extraíble $R_L$ conectada en el puerto $a-b$ (siendo $b$ tierra).
+
+\begin{center}
+\begin{circuitikz}[scale=1, transform shape]
+    \draw (0,0) to[V, l={$V_s=18\,\text{V}$}, invert] (0,3) to[R, l={$R_1=6\,\text{k}\Omega$}] (4,3);
+    \draw (4,3) to[R, l={$R_2=3\,\text{k}\Omega$}] (4,0);
+    \draw (4,3) to[short, *-o] (6,3) node[above]{$a$};
+    \draw (0,0) -- (6,0) node[below]{$b$} to[short, *-o] (6,0);
+    \draw (2,0) node[ground]{};
+    \draw[dashed, blue] (6,3) -- (7.5,3) to[R, l={$R_L$}] (7.5,0) -- (6,0);
+\end{circuitikz}
+\end{center}
+
+\begin{enumerate}
+    \item Identifique el puerto. ¿Qué debe ocurrir matemáticamente con $R_L$ antes de evaluar los parámetros del circuito equivalente?
+    \item Determine el voltaje de Thévenin ($V_{th}$).
+    \item Redibuje la red de forma adecuada para determinar $R_{th}$ y calcule su valor.
+    \item Dibuje el equivalente de Thévenin y detalle sus parámetros.
+    \item Determine $I_N$ y describa o dibuje el equivalente de Norton.
+    \item Conecte una carga \textbf{$R_L = 4\,\text{k}\Omega$} al equivalente y calcule la corriente ($I_L$) y el voltaje terminal ($V_L$).
+\end{enumerate}
+
+% =====================================
+% PARTE C
+% =====================================
+\section*{Parte C: Efecto de Carga, Máxima Transferencia e Interpretación (40 pts)}
+A partir de este punto, asuma un nuevo Modelo de Thévenin caracterizado por: $\mathbf{V_{th} = 12\,\text{V}}$ y $\mathbf{R_{th} = 3\,\text{k}\Omega}$. 
+
+\subsection*{C1. Evaluación Analítica (20 pts)}
+Se conectan sucesivamente tres resistencias de carga $R_L$: \textbf{$1\,\text{k}\Omega$, $3\,\text{k}\Omega$ y $9\,\text{k}\Omega$}.
+\begin{enumerate}
+    \item Calcule $I_L$, $V_L$ y $P_L$ para cada uno de los resistores. Muestre su procedimiento.
+    \item Identifique explícitamente:
+    \begin{itemize}
+        \item ¿Qué carga provoca la mayor corriente? \rule{3cm}{0.4pt}
+        \item ¿Qué carga provoca el mayor voltaje $V_L$? \rule{3cm}{0.4pt}
+        \item ¿Qué carga extrae la máxima potencia útil? \rule{3cm}{0.4pt}
+    \end{itemize}
+\end{enumerate}
+
+\subsection*{C2. Interpretación Física y Lógica Experimental (20 pts)}
+La siguiente tabla contiene datos sintéticos (tipo evaluación) representando la medición en banco de una red cuyo $R_{th}$ teórico es \textbf{$3\,\text{k}\Omega$}.
+
+\vspace{0.2cm}
+\noindent
+\begin{tabularx}{\textwidth}{*{4}{>{\centering\arraybackslash}X}}
+\toprule
+\textbf{$R_L$ medido (k$\Omega$)} & \textbf{$V_L$ medido (V)} & \textbf{$I_L$ medido (mA)} & \textbf{$P_L$ medido (mW)} \\
+\midrule
+$1.0$ & $3.0$ & $3.00$ & $9.0$ \\ \addlinespace
+$3.3$ & $6.2$ & $1.88$ & $11.7$ \\ \addlinespace
+$9.1$ & $9.0$ & $0.99$ & $8.9$ \\
+\bottomrule
+\end{tabularx}
+
+\begin{enumerate}
+    \item Identifique en qué resistencia medida ocurre el pico de potencia experimental y compárelo con el teórico ($3\,\text{k}\Omega$).
+    \item Describa la tendencia (Loading Effect) observada para $V_L$ y para $I_L$ conforme aumenta $R_L$.
+    \item ¿El hecho de que el máximo medido sea en $3.3\,\text{k}\Omega$ en lugar de $3.0\,\text{k}\Omega$ invalida el Teorema de Máxima Transferencia? Formule una hipótesis que justifique esta disparidad física e indique qué evidencia permitiría comprobarla.
+    \item ¿Operar el circuito con la carga que extrae máxima potencia implica que el sistema está operando con la \textbf{máxima eficiencia} posible? Explique.
+\end{enumerate}
+
+\end{document}
