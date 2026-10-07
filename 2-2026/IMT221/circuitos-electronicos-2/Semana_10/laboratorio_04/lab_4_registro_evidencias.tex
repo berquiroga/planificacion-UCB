@@ -1,0 +1,82 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Registro de Evidencia Experimental: Lab 4}}[cite: 11]
+\end{center}
+
+\textbf{Grupo:} \rule{4cm}{0.4pt} \hfill \textbf{Arquitectura de Fuente (A/B/C):} \rule{2cm}{0.4pt}[cite: 11] \\
+\textbf{Dispositivo A:} \rule{3cm}{0.4pt} (Fabricante: \rule{2cm}{0.4pt}) \textbf{Datasheet extraído:} Sí / No[cite: 11] \\
+\textbf{Dispositivo B:} \rule{3cm}{0.4pt} (Fabricante: \rule{2cm}{0.4pt}) \textbf{Datasheet extraído:} Sí / No[cite: 11] \\
+\textbf{Rieles Efectivos:} $V_{+,eff} = $ \rule{1.5cm}{0.4pt} $\,\text{V}$, $V_{-,eff} = $ \rule{1.5cm}{0.4pt} $\,\text{V}$. Referencia $0\,\text{V}$: \rule{2cm}{0.4pt}[cite: 11]
+
+\vspace{0.4cm}
+\noindent\textbf{1. Baseline (Validación Baja Frecuencia - $1\,\text{kHz}$)[cite: 11]}
+\begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \item $V_{in,pp} = $ \rule{2cm}{0.4pt} \quad $V_{out,pp} = $ \rule{2cm}{0.4pt} \quad Ganancia medida = \rule{2cm}{0.4pt}[cite: 11]
+    \item ¿Evidencia de Clipping? Sí / No. \quad Estabilidad de $V_{REF}$ (si aplica C): \hrulefill[cite: 11]
+\end{itemize}
+
+\vspace{0.2cm}
+\noindent\textbf{2. Experimento A (GBW) - Pequeña Señal ($V_{in} \approx 100\,\text{mV}_{pp}$)[cite: 11]}
+\begin{table}[h!]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\hsize=1.0\hsize}X|c|c|X|X|}
+    \hline
+    \textbf{Frecuencia Test} & \textbf{Ganancia Medida} & \textbf{Ganancia Relativa} & \textbf{Obs. Dispositivo A} & \textbf{Obs. Dispositivo B} \\ \hline
+    $10\,\text{kHz}$ & & & & \\ \hline
+    $30\,\text{kHz}$ & & & & \\ \hline
+    $100\,\text{kHz}$ & & & & \\ \hline
+    $300\,\text{kHz}$ & & & & \\ \hline
+    $1\,\text{MHz}$ & & & & \\ \hline
+    \multicolumn{3}{|l|}{\textbf{Punto aproximado a $-3\,\text{dB}$ ($f_{BW}$)}} & A: & B: \\ \hline
+    \end{tabularx}
+\end{table}
+
+\vspace{0.2cm}
+\noindent\textbf{3. Experimento B (Slew Rate) - Ganancia 2, Gran Señal ($V_p \approx 4\,\text{V}$)[cite: 11]}
+\begin{table}[h!]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\hsize=1.0\hsize}X|c|c|X|X|}
+    \hline
+    \textbf{Frec. Test} & \textbf{$V_{out,pp}$ (A)} & \textbf{$SR_{\mathrm{req}}$} & \textbf{Forma Onda / Pendiente (A)} & \textbf{Forma Onda / Pendiente (B)} \\ \hline
+    $10\,\text{kHz}$ & & & & \\ \hline
+    $20\,\text{kHz}$ & & & & \\ \hline
+    $50\,\text{kHz}$ & & & & \\ \hline
+    $100\,\text{kHz}$ & & & & \\ \hline
+    \end{tabularx}
+\end{table}
+
+\vspace{0.2cm}
+\noindent\textbf{4. Comparación e Interpretación Final[cite: 11]}
+\begin{itemize}
+    \setlength{\itemsep}{0.2cm}
+    \item ¿Qué dispositivo se apartó primero del comportamiento ideal?[cite: 11] \\ \rule{\linewidth}{0.4pt}
+    \item ¿Coincidió este ordenamiento observado con la hipótesis esperada según datasheet?[cite: 11] \\ \rule{\linewidth}{0.4pt}
+    \item Mecanismo dominante identificado por dispositivo[cite: 11]: \\ \rule{\linewidth}{0.4pt}
+    \item Problema o limitación no resuelta originada por la arquitectura[cite: 11]: \\ \rule{\linewidth}{0.4pt}
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Firma/Verificación de Docente:} \rule{6cm}{0.4pt}
+
+\end{document}

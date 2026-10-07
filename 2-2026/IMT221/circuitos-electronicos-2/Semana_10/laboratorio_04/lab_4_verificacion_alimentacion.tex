@@ -1,0 +1,54 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Hoja de Verificación: Energía, Referencia e Instrumentación}}[cite: 14]
+\end{center}
+
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Instrucciones}]
+    \raggedright
+    Esta hoja es de llenado obligatorio \textbf{antes} de iniciar los experimentos dinámicos del Lab 4. Una arquitectura de poder solo es válida si soporta la ganancia LF, tiene un rango de modo común adecuado, una referencia estable y un conexionado seguro a masa[cite: 14].
+\end{tcolorbox}
+
+\begin{table}[h!]
+    \centering
+    \renewcommand{\arraystretch}{1.8}
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\hsize=1.2\hsize}X|>{\raggedright\arraybackslash\hsize=0.8\hsize}X|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Parámetro de Configuración} & \textbf{Valor Medido / Estado} \\ \hline
+    Grupo y Fecha & \rule{5cm}{0.4pt} \\ \hline
+    Arquitectura Elegida (A/B/C)[cite: 14] & \\ \hline
+    Dispositivo A (Marking/Fabricante)[cite: 14] & \\ \hline
+    Dispositivo B (Marking/Fabricante)[cite: 14] & \\ \hline
+    \textbf{Fuente Física Total ($V_S$)[cite: 14]} & \rule{3cm}{0.4pt} $\,\text{V}$ \\ \hline
+    \textbf{Referencia del Circuito ($0\,\text{V}$)[cite: 14]} & [ Ej: GND, Punto medio, Buffer $V_{REF}$ ] \\ \hline
+    $V_{+,eff}$ efectivo respecto a la referencia[cite: 14] & \rule{3cm}{0.4pt} $\,\text{V}$ \\ \hline
+    $V_{-,eff}$ efectivo respecto a la referencia[cite: 14] & \rule{3cm}{0.4pt} $\,\text{V}$ \\ \hline
+    \multicolumn{2}{|c|}{\textbf{Sección exclusiva para Arquitectura C (Buffer LM358N)}} \\ \hline
+    Punto medio divisor sin carga ($V_M$)[cite: 14] & \rule{3cm}{0.4pt} $\,\text{V}$ \\ \hline
+    $V_{REF}$ en la salida del buffer (sin carga principal)[cite: 14] & \rule{3cm}{0.4pt} $\,\text{V}$ \\ \hline
+    $V_{REF}$ en la salida del buffer (con circuito principal)[cite: 14] & \rule{3cm}{0.4pt} $\,\text{V}$ \\ \hline
+    \multicolumn{2}{|c|}{\textbf{Comprobación de Seguridad e Integridad}} \\ \hline
+    Masa de instrumentación evaluada y compatible[cite: 14] & $\square$ Sí \quad $\square$ No \\ \hline
+    Validación baseline de Ganancia en Baja Frecuencia[cite: 14] & $\square$ Aprobado \quad $\square$ Falló \\ \hline
+    Datasheets oficiales correspondientes extraídos[cite: 14] & $\square$ Sí \quad $\square$ No \\ \hline
+    \textbf{Aprobación Docente para proceder (Firma)[cite: 14]} & \\ \hline
+    \end{tabularx}
+\end{table}
+
+\end{document}

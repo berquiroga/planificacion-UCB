@@ -1,0 +1,46 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Registro Selectivo de Cierre de Lab 3 (Documento Interno Docente)}}[cite: 13]
+\end{center}
+
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Objetivo Administrativo}]
+    Control y seguimiento focalizado de los grupos que aún adeudan evidencia analítica o física del Lab 3, sin frenar la progresión del curso hacia el Lab 4[cite: 13]. No re-entregar esta guía a los estudiantes[cite: 13].
+\end{tcolorbox}
+
+\begin{table}[h!]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \footnotesize
+    % La suma de los factores de hsize (0.8 + 1.2 + 1.0) es exactamente 3, igual al número de columnas X.
+    % \raggedright elimina los Underfull y Overfull \hbox.
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\hsize=0.8\hsize}X|>{\raggedright\arraybackslash\hsize=1.2\hsize}X|>{\raggedright\arraybackslash\hsize=1.0\hsize}X|c|c|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Identificación del Grupo[cite: 13]} & \textbf{Evidencia Exacta Faltante[cite: 13]} & \textbf{Acción Asignada[cite: 13]} & \textbf{Req. Físico[cite: 13]} & \textbf{Ok[cite: 13]} \\ \hline
+    & & & $\square$ Sí \quad $\square$ No & $\square$ \\ \hline
+    & & & $\square$ Sí \quad $\square$ No & $\square$ \\ \hline
+    & & & $\square$ Sí \quad $\square$ No & $\square$ \\ \hline
+    & & & $\square$ Sí \quad $\square$ No & $\square$ \\ \hline
+    & & & $\square$ Sí \quad $\square$ No & $\square$ \\ \hline
+    & & & $\square$ Sí \quad $\square$ No & $\square$ \\ \hline
+    & & & $\square$ Sí \quad $\square$ No & $\square$ \\ \hline
+    \end{tabularx}
+\end{table}
+
+\end{document}

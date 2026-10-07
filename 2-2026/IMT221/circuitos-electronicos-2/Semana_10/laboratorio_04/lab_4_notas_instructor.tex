@@ -1,0 +1,76 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Notas Actualizadas para el Instructor: Ejecución Lab 4}}[cite: 11]
+\end{center}
+
+\section*{1. Criterios de Evaluación y Rechazo de Configuración[cite: 11]}
+Para validar una arquitectura (A, B o C), el instructor debe evaluar las condiciones de contorno[cite: 11]:
+\begin{itemize}
+    \item \textbf{Arquitectura A (Banco):} Verificar magnitud de rieles, tierra común y límites del dispositivo[cite: 11].
+    \item \textbf{Arquitectura B (Baterías):} Verificar asimetría (ej. desgaste irregular), punto medio correcto ($0\,\text{V}$) y evitar que asuman el pin negativo como tierra[cite: 11].
+    \item \textbf{Arquitectura C (Referencia Virtual Buffered):}
+    \begin{itemize}
+        \item \textbf{Criterio de Rechazo:} Rechace o reconfigure el setup si la ganancia de baja frecuencia no puede validarse, si $V_{REF}$ es visiblemente inestable perturbando la interpretación dinámica, o si la conexión de masa del osciloscopio introduce un cortocircuito o redefinición de la referencia[cite: 11].
+        \item Verifique que el LM358N operando como buffer no alcance sus propios límites de \textit{output current} o \textit{swing}[cite: 11].
+    \end{itemize}
+\end{itemize}
+
+\section*{2. Diagnóstico de Dispositivos y Precauciones[cite: 11]}
+\textbf{Estrategia de Comparación Justa:} Solo pueden compararse dispositivos bajo la misma topología, ganancia nominal, arquitectura de poder, y amplitud real de entrada[cite: 11].
+\begin{itemize}
+    \item Si el Dispositivo A produce $8\,\text{V}_{pp}$ limpios, pero el B satura (clip) a esa amplitud, \textbf{NO} compare ciegamente sus valores de SR[cite: 11]. Indique a los estudiantes que reduzcan a una amplitud común válida, o registren la no-equivalencia y traten el \textit{output swing} como el factor limitante principal[cite: 11].
+\end{itemize}
+\textbf{Información Faltante en Laboratorio:} El comportamiento exacto de aislamiento y conexión a tierra del osciloscopio y el generador de funciones \textbf{no está confirmado} en la documentación actual. El docente debe consultar el manual del equipo en el sitio[cite: 11].
+
+\section*{3. Predicciones Teóricas (Referencias Típicas de Fabricante)[cite: 11]}
+\textbf{Comparación Principal Sugerida:} Familia 741 (LM741 o UA741CN) vs TL074[cite: 11]. Si hay restricciones de inventario: LM358N vs TL074[cite: 11]. ¡Debe verificarse el fabricante exacto del stock antes de asignar el datasheet![cite: 11]
+
+% Se cambia a [htbp] para solucionar el warning del float specifier
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|l|c|c|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+    \hline
+    \textbf{Dispositivo / Familia} & \textbf{$GBW_{\mathrm{typ}}$} & \textbf{$SR_{\mathrm{typ}}$} & \textbf{Exp A: $f_{BW}$ ($A_N=10$)} & \textbf{Exp B: Umbral SR ($V_p=4\,\text{V}$)} \\ \hline
+    Familia 741 (LM/UA)[cite: 11] & $\approx 1\,\text{MHz}$ & $\approx 0.5\,\text{V}/\mu\text{s}$ & $\approx 100\,\text{kHz}$ & $\approx 19.9\,\text{kHz}$ \\ \hline
+    TI LM358 (Estándar)[cite: 11] & $\approx 0.7\,\text{MHz}$ & $\approx 0.3\,\text{V}/\mu\text{s}$ & $\approx 70\,\text{kHz}$ & $\approx 11.9\,\text{kHz}$ \\ \hline
+    TI TL074 (Quad FET)[cite: 11] & $\approx 3\,\text{MHz}$ & $\approx 13\,\text{V}/\mu\text{s}$ & $\approx 300\,\text{kHz}$ & $\approx 517\,\text{kHz}$ \\ \hline
+    \end{tabularx}
+\end{table}
+
+\section*{4. Matriz Diagnóstica para Estudiantes[cite: 11]}
+Guíe a los estudiantes con las siguientes preguntas cuando vean distorsión dinámica[cite: 11]:
+
+% Se cambia a [htbp] para solucionar el warning del float specifier
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\hsize=0.8\hsize}X|>{\raggedright\arraybackslash\hsize=0.8\hsize}X|>{\raggedright\arraybackslash\hsize=1.4\hsize}X|>{\raggedright\arraybackslash\hsize=1.0\hsize}X|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Mecanismo} & \textbf{Causa Principal} & \textbf{Evidencia Típica} & \textbf{Prueba Clave} \\ \hline
+    \textbf{Clipping}[cite: 11] & \textit{Swing} insuficiente de salida[cite: 11] & Picos achatados, limitación contra rieles[cite: 11] & Comparar pico con riel efectivo[cite: 11] \\ \hline
+    \textbf{GBW}[cite: 11] & Respuesta espectral lazo cerrado finita[cite: 11] & Atenuación suave de ganancia, onda senoidal, desfase[cite: 11] & Comparar $f$ vs $f_{BW,pred}$[cite: 11] \\ \hline
+    \textbf{Slew Rate}[cite: 11] & Límite de pendiente de salida[cite: 11] & Rampas linealizadas, triangularización[cite: 11] & Comparar $SR_{\mathrm{req}}$ vs Datasheet[cite: 11] \\ \hline
+    \end{tabularx}
+\end{table}
+
+\end{document}

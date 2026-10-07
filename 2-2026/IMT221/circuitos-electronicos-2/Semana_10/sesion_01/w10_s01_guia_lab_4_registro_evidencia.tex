@@ -1,0 +1,54 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Registro de Evidencia Física: Lab 4 (Limitaciones Dinámicas)}}[cite: 13]
+\end{center}
+
+\textbf{Grupo:} \rule{10cm}{0.4pt} \\
+
+\begin{table}[h!]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{6cm}|X|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Campo de Evidencia} & \textbf{Registro de Grupo} \\ \hline
+    Dispositivo A evaluado (Marking/Fabricante)[cite: 13] & \\ \hline
+    Dispositivo B evaluado (Marking/Fabricante)[cite: 13] & \\ \hline
+    Datasheet primario verificado[cite: 13] & $\square$ Sí \quad $\square$ No \\ \hline
+    Fuente de poder física utilizada[cite: 13] & $\square$ Banco dual \quad $\square$ Baterías $2\times 9\,\text{V}$ \\ \hline
+    Rieles medidos $V_+$ y $V_-$ (respecto a $0\,\text{V}$)[cite: 13] & $V_+ = \rule{3cm}{0.4pt} \quad V_- = \rule{3cm}{0.4pt}$ \\ \hline
+    Ganancia de Baja Frecuencia validada ($1\,\text{kHz}$)[cite: 13] & $\square$ Sí \quad $\square$ No \\ \hline
+    Exp A: Medición GBW completada[cite: 13] & $\square$ Sí \quad $\square$ No \\ \hline
+    Exp A: $f_{BW}$ medido aprox. a $-3\,\text{dB}$[cite: 13] & \\ \hline
+    Exp B: Medición Slew Rate completada[cite: 13] & $\square$ Sí \quad $\square$ No \\ \hline
+    Exp B: Comprobación visual de recorte (\textit{clipping})[cite: 13] & $\square$ Observado \quad $\square$ Descartado \\ \hline
+    Exp B: Condición aprox. del límite SR (Freq)[cite: 13] & \\ \hline
+    Comparación de dispositivos ejecutada[cite: 13] & $\square$ Sí \quad $\square$ No \\ \hline
+    Hipótesis de Pre-Lab ¿soportada o refutada?[cite: 13] & $\square$ Soportada \quad $\square$ Refutada \\ \hline
+    Limitación dominante interpretada de la evidencia[cite: 13] & \\ \hline
+    Problemas no resueltos (Unresolved issue)[cite: 13] & \\ \hline
+    \textbf{Firma/Verificación de Instructor[cite: 13]} & \\ \hline
+    \end{tabularx}
+\end{table}
+
+\begin{tcolorbox}[colback=yellow!5, colframe=black, title=\textbf{Criterio de Finalización}]
+    El Lab 4 no se completa observando que "la onda se deforma"[cite: 13]. Se completa cuando los dispositivos exactos están identificados, los rieles medidos, la baseline LF validada, el clipping descartado y la discrepancia teórica interpretada correctamente en base a GBW y SR[cite: 13].
+\end{tcolorbox}
+
+\end{document}
