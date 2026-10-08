@@ -1,0 +1,261 @@
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage{booktabs} % CRITICO PARA \toprule, \midrule, \bottomrule
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[american]{circuitikz}
+
+\title[Transitorios RC y RL]{Unidad EC3: Respuesta Transitoria en el Dominio del Tiempo}
+\subtitle{De Redes Estáticas a Circuitos Dinámicos de Primer Orden (RC/RL)}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}
+\date{Semana 10}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{De Circuito Estático a Circuito Dinámico}
+    \textbf{¿Qué nos entregó la Unidad EC2?}
+    \begin{itemize}
+        \item Análisis puramente resistivo en Estado Estacionario.
+        \item Relaciones \textbf{algebraicas} ($V = I \cdot R$). Si una fuente cambia, el circuito responde de forma instantánea.
+    \end{itemize}
+    \vspace{0.3cm}
+    \textbf{El Salto hacia EC3}
+    \begin{itemize}
+        \item Agregamos elementos que \textbf{almacenan energía}.
+        \item Ya no basta con conocer el presente del circuito; importa su \textbf{condición inicial} (estado previo).
+        \item Aparece una nueva variable explícita: \textbf{El Tiempo ($t$)}.
+    \end{itemize}
+    \vspace{0.3cm}
+    \begin{center}
+        \textbf{Línea Temporal de Conmutación:}\\
+        $0^-$ (Antes) \quad $\rightarrow$ \quad $0^+$ (Inmediatamente después) \quad $\rightarrow$ \quad Transitorio \quad $\rightarrow$ \quad $\infty$ (Estado Final)
+    \end{center}
+\end{frame}
+
+\begin{frame}{Elementos de Almacenamiento y Leyes Constitutivas}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \begin{center}
+            \textbf{El Capacitor ($C$)}\\
+            Almacena energía en un campo eléctrico.\\
+            $w_C = \frac{1}{2} C v_C^2$
+            \vspace{0.2cm}
+            
+            \begin{circuitikz}[scale=0.8, transform shape]
+                \draw (0,0) to[C, l={$C$}, v={$v_C$}, i={$i_C$}] (2,0);
+            \end{circuitikz}
+            \vspace{0.2cm}
+            
+            $$i_C(t) = C \frac{dv_C(t)}{dt}$$
+            \small \textit{La corriente depende de qué tan rápido cambie el voltaje en el tiempo.}
+        \end{center}
+
+        \column{0.5\textwidth}
+        \begin{center}
+            \textbf{El Inductor ($L$)}\\
+            Almacena energía en un campo magnético.\\
+            $w_L = \frac{1}{2} L i_L^2$
+            \vspace{0.2cm}
+            
+            \begin{circuitikz}[scale=0.8, transform shape]
+                \draw (0,0) to[L, l={$L$}, v={$v_L$}, i={$i_L$}] (2,0);
+            \end{circuitikz}
+            \vspace{0.2cm}
+            
+            $$v_L(t) = L \frac{di_L(t)}{dt}$$
+            \small \textit{El voltaje depende de qué tan rápido cambie la corriente en el tiempo.}
+        \end{center}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Continuidad: La Inercia Eléctrica}
+    Bajo condiciones ordinarias de circuitos (fuentes de energía finitas), la energía no se puede "teletransportar" ni cambiar en cero segundos. Esto impone reglas fundamentales:
+    \vspace{0.3cm}
+    
+    \begin{block}{Regla de Continuidad del Capacitor (Inercia de Tensión)}
+        El voltaje a través de un capacitor ideal no puede cambiar instantáneamente.
+        $$v_C(0^+) = v_C(0^-)$$
+    \end{block}
+    
+    \begin{block}{Regla de Continuidad del Inductor (Inercia de Corriente)}
+        La corriente a través de un inductor ideal no puede cambiar instantáneamente.
+        $$i_L(0^+) = i_L(0^-)$$
+    \end{block}
+    
+    \vspace{0.2cm}
+    \small \textbf{Nota de Cuidado:} No asuma que en $t=0^+$ el capacitor "siempre vale 0V". Eso \textbf{solo} es cierto si antes de conmutar ($0^-$) estaba completamente descargado.
+\end{frame}
+
+\begin{frame}{Circuito RC Serie: Del Esquema a la Ecuación Diferencial}
+    Supongamos un capacitor \textbf{inicialmente descargado} ($v_C(0^-) = 0\,\text{V}$). En $t=0$, cerramos el interruptor.
+    
+    \begin{columns}[T] % Alineación superior para evitar desbordes
+        \column{0.45\textwidth}
+        \begin{center}
+            % Escala reducida a 0.75 para evitar Overfull \hbox
+            \begin{circuitikz}[scale=0.75, transform shape]
+                \draw (0,0) to[V, l={$V_s=10\,\text{V}$}] (0,3) 
+                      to[closing switch, l={$t=0$}] (2,3) 
+                      to[R, l={$R=2\,\text{k}\Omega$}, v={$v_R$}] (4,3) 
+                      to[C, l={$C=100\,\mu\text{F}$}, v={$v_C$}, i={$i_C$}] (4,0) -- (0,0);
+            \end{circuitikz}
+        \end{center}
+        
+        \column{0.55\textwidth}
+        \small % Fuente reducida para evitar Overfull \vbox
+        Aplicamos Ley de Voltajes de Kirchhoff (KVL):
+        $$V_s - v_R - v_C = 0$$
+        
+        Sustituimos Ley de Ohm ($v_R = R \cdot i_C$):
+        $$V_s - R \cdot i_C - v_C = 0$$
+        
+        Ley Constitutiva del Capacitor ($i_C = C \frac{dv_C}{dt}$):
+        $$V_s - R \left( C \frac{dv_C}{dt} \right) - v_C = 0$$
+        
+        Reordenando, obtenemos la \textbf{EDO}:
+        \begin{alertblock}{EDO de Primer Orden}
+            \centering
+            $RC \frac{dv_C}{dt} + v_C = V_s$
+        \end{alertblock}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Condiciones de Frontera y la Constante de Tiempo ($\tau$)}
+    Para resolver la EDO: $0.2 \frac{dv_C}{dt} + v_C = 10$, necesitamos tres ingredientes clave:
+    \vspace{0.2cm}
+    
+    \begin{enumerate}
+        \item \textbf{Condición Inicial:} Por continuidad, sabemos que: \\
+        $v_C(0^+) = v_C(0^-) = \mathbf{0\,\text{V}}$.
+        
+        \item \textbf{Condición Final (Estado Estacionario, $t \to \infty$):} \\ 
+        Mucho tiempo después, el capacitor se carga y su voltaje deja de cambiar ($\frac{dv_C}{dt} \to 0$). Evaluando la EDO en $\infty$: \\
+        $RC (0) + v_C(\infty) = 10 \implies v_C(\infty) = \mathbf{10\,\text{V}}$.
+        
+        \item \textbf{Constante de Tiempo ($\tau$):} \\
+        Determina la escala de rapidez con la que reacciona el sistema: $\tau = R_{eq} C$. \\
+        $\tau = (2\,\text{k}\Omega)(100\,\mu\text{F}) = \mathbf{0.2\,\text{s}}$.
+    \end{enumerate}
+    
+    \vspace{0.2cm}
+    \textit{Nota: $R_{eq}$ es la resistencia de la red pasiva (fuentes apagadas) vista desde el capacitor.}
+\end{frame}
+
+\begin{frame}{Forma General de la Respuesta Exponencial}
+    Una vez obtenidos esos tres valores, no necesitamos resolver la EDO desde cero cada vez. Todo circuito de primer orden (con fuentes DC) tiene como solución:
+    
+    \begin{block}{Ecuación Universal de Primer Orden}
+        $$x(t) = x(\infty) + \left[ x(0^+) - x(\infty) \right] e^{-t/\tau}$$
+    \end{block}
+    
+    Lectura conceptual:
+    $$\text{Respuesta}(t) = \text{Valor Final} + (\text{Desviación Inicial}) \cdot \text{Decaimiento Exponencial}$$
+    
+    Para nuestro ejemplo RC particular:
+    $$v_C(t) = 10 + [0 - 10] e^{-t/0.2}$$
+    $$v_C(t) = 10 (1 - e^{-5t}) \, \text{V}$$
+\end{frame}
+
+\begin{frame}{Lectura de la Curva y la Regla Práctica de los $5\tau$}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \begin{tikzpicture}
+            \begin{axis}[
+                width=\textwidth, height=5.5cm,
+                xlabel={$t$ (s)}, ylabel={$v_C(t)$ (V)},
+                xmin=0, xmax=1.2, ymin=0, ymax=11,
+                grid=major,
+                domain=0:1.2, samples=100,
+                xtick={0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2},
+                xticklabels={0, $1\tau$, $2\tau$, $3\tau$, $4\tau$, $5\tau$, $6\tau$}
+            ]
+            \addplot[blue, thick] {10*(1-exp(-x/0.2))};
+            \addplot[dashed, red, thick] coordinates {(0,10) (1.2,10)};
+            \addplot[mark=*, black] coordinates {(0.2, 6.32)} node[below right] {63.2\%};
+            \addplot[mark=*, black] coordinates {(1.0, 9.93)} node[below right] {99.3\%};
+            \end{axis}
+        \end{tikzpicture}
+        
+        \column{0.5\textwidth}
+        \textbf{Hitos de la Constante de Tiempo:}
+        \begin{itemize}
+            \item En $t = 1\tau$: La variable ha completado el $\approx 63.2\%$ de su transición total. ($e^{-1} \approx 0.368$ restante).
+            \item En $t = 5\tau$: El error respecto al valor final es menor al $1\%$ ($e^{-5} \approx 0.0067$).
+        \end{itemize}
+        
+        \vspace{0.3cm}
+        \textbf{Convención de Tiempo de Asentamiento ($t_s$):}
+        En ingeniería práctica, asumimos que el transitorio termina en:
+        $$t_s \approx 5\tau$$
+        (Para nuestro ejemplo: $1.0\,\text{s}$).
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Transferencia Conceptual: Del Circuito RC al RL}
+    La misma arquitectura matemática rige a los inductores, pero la variable inercial es la corriente.
+    \vspace{0.3cm}
+    
+    \begin{table}
+        \centering
+        \renewcommand{\arraystretch}{1.4}
+        \resizebox{\textwidth}{!}{% Previene desbordamiento horizontal
+        \begin{tabular}{lcc}
+        \toprule
+        \textbf{Característica} & \textbf{Circuito RC} & \textbf{Circuito RL} \\
+        \midrule
+        Variable de Estado Continua & $v_C(t)$ & $i_L(t)$ \\
+        Relación Constitutiva & $i_C = C \frac{dv_C}{dt}$ & $v_L = L \frac{di_L}{dt}$ \\
+        Condición de Continuidad & $v_C(0^+) = v_C(0^-)$ & $i_L(0^+) = i_L(0^-)$ \\
+        Constante de Tiempo ($\tau$) & $R_{eq} \cdot C$ & $L / R_{eq}$ \\
+        Estado Estacionario DC ($t \to \infty$) & $i_C \to 0$ (Circuito Abierto) & $v_L \to 0$ (Cortocircuito) \\
+        \bottomrule
+        \end{tabular}%
+        }
+    \end{table}
+    \textit{Si aumentamos la resistencia en un RC, se vuelve más \textbf{lento}. Si aumentamos la resistencia en un RL, se vuelve más \textbf{rápido} ($\tau = L/R$).}
+\end{frame}
+
+\begin{frame}{Validación Próxima: Hacia la Herramienta Computacional}
+    En la próxima fase, conectaremos el modelo analítico (matemático) con el modelo computacional (SPICE) y la medición física real.
+    \vspace{0.4cm}
+    
+    \begin{center}
+        \textbf{Modelo Analítico (EDO)} $\xrightarrow{\text{Compara}}$ \textbf{Simulación (}\texttt{.tran}\textbf{)} $\xrightarrow{\text{Compara}}$ \textbf{Osciloscopio}
+    \end{center}
+    
+    \vspace{0.4cm}
+    \textbf{Contrastes Esperados:}
+    \begin{enumerate}
+        \item ¿La curva física arranca en la condición inicial correcta de voltaje/corriente?
+        \item ¿Se estabiliza en la asíntota ($t \to \infty$) calculada?
+        \item ¿Tarda efectivamente $\sim 5\tau$ en asentarse en el osciloscopio?
+    \end{enumerate}
+\end{frame}
+
+\end{document}

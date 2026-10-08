@@ -1,0 +1,57 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Referencia Transitorios}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Tabla de Referencia Analítica: Transitorios de Primer Orden (RC y RL)}]
+    \centering \textbf{Síntesis de Variables de Estado y Leyes Constitutivas}
+\end{tcolorbox}
+
+\vspace{0.4cm}
+\renewcommand{\arraystretch}{2}
+\noindent
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight}p{4cm} >{\centering\arraybackslash}X >{\centering\arraybackslash}X}
+\toprule
+\textbf{Característica Analítica} & \textbf{Circuito RC} & \textbf{Circuito RL} \\ 
+\midrule
+\textbf{Variable de Estado (Continua)} & $v_C(t)$ (Voltaje) & $i_L(t)$ (Corriente) \\ 
+\textbf{Ley Constitutiva} & $i_C = C \frac{dv_C}{dt}$ & $v_L = L \frac{di_L}{dt}$ \\ 
+\textbf{Energía Almacenada} & $w_C = \frac{1}{2} C v_C^2$ & $w_L = \frac{1}{2} L i_L^2$ \\ 
+\textbf{Principio de Continuidad} & $v_C(0^+) = v_C(0^-)$ & $i_L(0^+) = i_L(0^-)$ \\ 
+\textbf{Constante de Tiempo ($\tau$)} & $R_{eq} \cdot C$ & $\frac{L}{R_{eq}}$ \\ 
+\textbf{Forma General (1er Orden)} & $v_C(t) = v_C(\infty) + [v_C(0^+) - v_C(\infty)]e^{-t/\tau}$ & $i_L(t) = i_L(\infty) + [i_L(0^+) - i_L(\infty)]e^{-t/\tau}$ \\ 
+\textbf{Estado Estacionario DC ($t \to \infty$)} & $\frac{dv_C}{dt} \to 0 \implies i_C \to 0$ (C. Abierto) & $\frac{di_L}{dt} \to 0 \implies v_L \to 0$ (Corto) \\ 
+\bottomrule
+\end{tabularx}
+
+\vspace{0.8cm}
+\begin{tcolorbox}[colback=red!5!white, colframe=red!70!black, title=\textbf{Precaución Crítica de Análisis}]
+\textbf{NO MEMORICE como regla general} que "el capacitor es siempre un circuito abierto" ni que "el inductor es siempre un cortocircuito". 
+
+Estas abstracciones topológicas son válidas \textbf{únicamente} en el estado estacionario DC (cuando $t \to \infty$, mucho tiempo después de cualquier conmutación). Durante el régimen transitorio ($0 < t < 5\tau$), el elemento reactivo atraviesa infinitos estados gobernados por su Ecuación Diferencial Ordinaria. \textbf{Determine siempre la condición inicial real evaluando el circuito en $0^-$} antes de realizar suposiciones ideales en $0^+$.
+\end{tcolorbox}
+
+\end{document}

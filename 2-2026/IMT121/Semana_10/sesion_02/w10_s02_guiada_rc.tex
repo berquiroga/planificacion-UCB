@@ -1,0 +1,82 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage[american]{circuitikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Guía RC}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Hoja de Derivación Guiada: Respuesta de un Circuito RC de Primer Orden}]
+    \centering \textbf{Modelado de la Ecuación Diferencial Ordinaria}
+\end{tcolorbox}
+
+\noindent\textbf{Circuito Dado:} Considere un circuito serie formado por una fuente DC $V_s=10\,\text{V}$, una resistencia $R=2\,\text{k}\Omega$, un capacitor $C=100\,\mu\text{F}$ y un interruptor que se cierra en el instante $t=0$. El capacitor se encuentra \textbf{inicialmente descargado} en $t=0^-$.
+
+\vspace{0.4cm}
+\section*{Paso 1: Antes de la conmutación ($t=0^-$) e Inmediatamente Después ($t=0^+$)}
+El capacitor almacena energía en su campo eléctrico. Por el Principio de Continuidad, su voltaje no puede saltar de un valor a otro en cero segundos.
+\begin{itemize}
+    \item Condición inicial antes de accionar el interruptor: $v_C(0^-) = \mathbf{0\,\text{V}}$
+    \item Por continuidad de la tensión: $v_C(0^+) =$ \rule{3cm}{0.4pt}
+\end{itemize}
+
+\section*{Paso 2: Ecuación del Circuito Transitorio ($t > 0$)}
+Una vez cerrado el interruptor, la fuente alimenta el circuito. Aplicando la Ley de Voltajes de Kirchhoff (KVL) alrededor de la malla:
+\begin{equation}
+    V_s - \rule{2cm}{0.4pt} - \rule{2cm}{0.4pt} = 0
+\end{equation}
+
+Sustituyendo la Ley de Ohm para la resistencia ($v_R = \rule{2cm}{0.4pt}$) y la Ley Constitutiva para la corriente del capacitor ($i = i_C = \rule{3cm}{0.4pt}$):
+\begin{equation}
+    \rule{3cm}{0.4pt} \frac{dv_C}{dt} + v_C = \rule{2cm}{0.4pt}
+\end{equation}
+
+\section*{Paso 3: Condición de Estado Estacionario (Largo plazo, $t \to \infty$)}
+Mucho tiempo después de la conmutación, el capacitor termina de cargarse. El voltaje deja de variar, lo que significa que la derivada temporal $\frac{dv_C}{dt} \to \rule{2cm}{0.4pt}$.
+Sustituyendo esto en la EDO obtenida en el Paso 2:
+\begin{equation}
+    v_C(\infty) = \rule{3cm}{0.4pt}
+\end{equation}
+
+\section*{Paso 4: Constante de Tiempo ($\tau$) y Forma General}
+La constante de tiempo $\tau$ define la escala de rapidez (inercia) del transitorio: $\tau = R_{eq}C$.
+\begin{itemize}
+    \item Expresión de $\tau =$ \rule{4cm}{0.4pt}
+    \item Valor Numérico $\tau =$ \rule{4cm}{0.4pt} (segundos)
+\end{itemize}
+
+Tomando la forma general de la respuesta exponencial:
+$$v_C(t) = v_C(\infty) + \left[ \rule{2cm}{0.4pt} - \rule{2cm}{0.4pt} \right] e^{-t/\tau}$$
+
+Sustituyendo nuestros valores ($v_C(0^+)$, $v_C(\infty)$ y $\tau$):
+$$v_C(t) = \rule{8cm}{0.4pt} \quad \text{para } t \ge 0$$
+
+\section*{Paso 5: Predicción e Interpretación Física}
+\begin{itemize}
+    \item ¿Qué valor de voltaje tendrá el capacitor exactamente en $t = \tau$? \rule{4cm}{0.4pt}
+    \item Según la convención práctica ($5\tau$), ¿cuánto tiempo ($t_s$) tardará el circuito en alcanzar efectivamente su estado estacionario? $t_s \approx 5\tau = $ \rule{3cm}{0.4pt}
+    \item Si decidimos duplicar la resistencia ($R=4\,\text{k}\Omega$), ¿el capacitor se cargará más rápido o más lento? \rule{4cm}{0.4pt}
+\end{itemize}
+
+\end{document}

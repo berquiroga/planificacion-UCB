@@ -1,0 +1,66 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Solucionario EC3 S10-02}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Clave Docente: Introducción a Circuitos Dinámicos (EC3)}]
+    \centering \textbf{Solucionario y Precauciones Didácticas}
+\end{tcolorbox}
+
+\section*{1. Soluciones del Diagnóstico Inicial (Entry Diagnostic)}
+\begin{itemize}
+    \item \textbf{¿Qué almacena C y L?} El capacitor almacena energía en su campo eléctrico ($\frac{1}{2}Cv_c^2$). El inductor en su campo magnético ($\frac{1}{2}Li_L^2$).
+    \item \textbf{Estacionario vs. Transitorio:} Transitorio es el periodo de evolución en el tiempo donde las derivadas no son nulas. Estacionario es la asíntota final donde las variables se asientan ($\frac{d}{dt} \to 0$).
+    \item \textbf{Significado de $0^+$:} El instante matemáticamente posterior a la conmutación del switch, sujeto a las leyes de inercia eléctrica.
+    \item \textbf{Continuidad en Excitaciones Finitas:} Sí, $v_C$ e $i_L$ son continuas. No pueden saltar instantáneamente.
+\end{itemize}
+
+\section*{2. Solucionario: Derivación Guiada RC}
+\begin{itemize}
+    \item \textbf{Paso 1:} $v_C(0^+) = \mathbf{0\,\text{V}}$ (por continuidad desde $0^-$).
+    \item \textbf{Paso 2:} KVL: $V_s - \mathbf{v_R} - \mathbf{v_C} = 0$. Leyes: $v_R = \mathbf{R \cdot i_C}$ e $i_C = \mathbf{C \frac{dv_C}{dt}}$. \\ Sustituyendo: $\mathbf{RC} \frac{dv_C}{dt} + v_C = \mathbf{V_s}$.
+    \item \textbf{Paso 3:} Estacionario: $\frac{dv_C}{dt} \to \mathbf{0}$. Despejando: $v_C(\infty) = \mathbf{10\,\text{V}}$.
+    \item \textbf{Paso 4:} Expresión $\tau = \mathbf{R_{eq}C}$. Numérico $\tau = 2\text{k}\Omega \cdot 100\mu\text{F} = \mathbf{0.2\,\text{s}}$. \\ 
+    Solución General: $v_C(t) = v_C(\infty) + [\mathbf{v_C(0^+)} - \mathbf{v_C(\infty)}]e^{-t/\tau}$. \\
+    Reemplazo: $v_C(t) = \mathbf{10 + [0 - 10]e^{-t/0.2} = 10(1 - e^{-5t})\,\text{V}}$.
+    \item \textbf{Paso 5:} En $t=\tau \implies v_C(0.2) \approx \mathbf{6.32\,\text{V}}$ (63.2\%). Tiempo de asentamiento $t_s \approx 5\tau = \mathbf{1.0\,\text{s}}$. Si se duplica la resistencia, el circuito cargará \textbf{más lento} (el $\tau$ será $0.4\,\text{s}$).
+\end{itemize}
+
+\section*{3. Transferencia Conceptual a RL (Clave Docente)}
+Si los estudiantes preguntan por la equivalencia en RL. Dado un circuito serie con $V_s = 10\,\text{V}$, $R = 5\,\Omega$, $L = 10\,\text{mH}$ e $i_L(0^-)=0$:
+\begin{itemize}
+    \item Continuidad: $i_L(0^+) = \mathbf{0\,\text{A}}$.
+    \item Estacionario ($t \to \infty$): $v_L \to 0$ (Corto). Luego $i_L(\infty) = V_s/R = \mathbf{2\,\text{A}}$.
+    \item Constante: $\tau = L/R_{eq} = 10\,\text{mH} / 5\,\Omega = \mathbf{2\,\text{ms}}$.
+    \item Respuesta General: $i_L(t) = 2(1 - e^{-t / 0.002}) = \mathbf{2(1 - e^{-500t})\,\text{A}}$.
+\end{itemize}
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=red!5!white, colframe=red!70!black, title=\textbf{Precauciones Didácticas para el Instructor}]
+Enfatice que $R_{eq}$ es la resistencia vista desde las terminales del elemento almacenador de energía luego de haber \textbf{apagado} las fuentes independientes (cortocircuito para $V$, circuito abierto para $I$). La convención $5\tau$ es una aproximación ingenieril ($99.3\%$ asentado), no un límite matemático estricto.
+\end{tcolorbox}
+
+\end{document}
