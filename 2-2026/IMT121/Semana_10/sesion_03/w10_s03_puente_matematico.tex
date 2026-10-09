@@ -1,0 +1,59 @@
+% bridge-handout.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage[most]{tcolorbox}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{Solucionario y Apoyo EC3: Puente Matemático[cite: 4]}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera[cite: 1, 3]}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Artefacto 2: Mini-Puente Matemático para Circuitos}]
+    Este documento asiste en la interpretación física de la derivada antes de resolver EDOs formales[cite: 4].
+\end{tcolorbox}
+
+\section*{Sección A: Tasa de Cambio[cite: 4]}
+Complete el significado físico:
+\begin{itemize}
+    \item $\frac{dx}{dt} > 0$ significa que la variable está \underline{\hspace{4cm}}.[cite: 4]
+    \item $\frac{dx}{dt} = 0$ significa que la variable es \underline{\hspace{4cm}}.[cite: 4]
+    \item $\frac{dx}{dt} < 0$ significa que la variable está \underline{\hspace{4cm}}.[cite: 4]
+\end{itemize}
+
+\section*{Sección B: Cambio Promedio[cite: 4]}
+Dado que $x(1\,\text{s}) = 2$ y $x(3\,\text{s}) = 8$[cite: 4].\\
+Encuentre la tasa promedio $\frac{\Delta x}{\Delta t}$: \underline{\hspace{4cm}}[cite: 4].
+
+\section*{Sección C: Traducción Eléctrica[cite: 4]}
+Interprete en palabras el significado de los siguientes valores instantáneos:
+\begin{itemize}
+    \item $\frac{dv_C}{dt} = +5\,\text{V/s}$: \underline{\hspace{8cm}}[cite: 4].
+    \item $\frac{dv_C}{dt} = 0$: \underline{\hspace{8cm}}[cite: 4].
+    \item $\frac{di_L}{dt} = -2\,\text{A/s}$: \underline{\hspace{8cm}}[cite: 4].
+\end{itemize}
+
+\section*{Sección D: Significado de la EDO[cite: 4]}
+Dada la ecuación diferencial generada por KVL en un circuito RC:
+$$RC \frac{dv_C}{dt} + v_C = V_s$$[cite: 4]
+
+Identifique y etiquete:
+\begin{itemize}
+    \item La variable de estado actual: \underline{\hspace{4cm}}[cite: 4].
+    \item El término que representa la tasa de cambio: \underline{\hspace{4cm}}[cite: 4].
+    \item La excitación (entrada) del sistema: \underline{\hspace{4cm}}[cite: 4].
+\end{itemize}
+
+\end{document}

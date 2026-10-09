@@ -1,0 +1,66 @@
+% rc-worksheet.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{circuitikz}
+\usepackage[most]{tcolorbox}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{Hoja de Trabajo: Modelado Guiado RC[cite: 4]}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera[cite: 1, 3]}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Artefacto 3: Modelado Guiado RC}]
+\end{tcolorbox}
+
+\textbf{Circuito Dado:} Circuito serie simple con fuente $V_s$, resistor $R$ y capacitor $C$, cerrado en $t=0$[cite: 4].
+\begin{center}
+    \begin{circuitikz}
+        \draw (0,0) to[V, l={$V_s$}] (0,2) to[closing switch] (2,2) to[R, l={$R$}] (4,2) to[C, l={$C$}] (4,0) -- (0,0);
+    \end{circuitikz}
+\end{center}
+
+\vspace{0.5cm}
+\textbf{Parte 1 - Ley del Circuito (KVL):}[cite: 4]\\
+$V_s - \underline{\hspace{2cm}} - \underline{\hspace{2cm}} = 0$[cite: 4]
+
+\vspace{0.5cm}
+\textbf{Parte 2 - Ley del Resistor (Ohm):}[cite: 4]\\
+$v_R = \underline{\hspace{4cm}}$[cite: 4]
+
+\vspace{0.5cm}
+\textbf{Parte 3 - Ley del Capacitor:}[cite: 4]\\
+$i = \underline{\hspace{4cm}}$[cite: 4]
+
+\vspace{0.5cm}
+\textbf{Parte 4 - Sustitución:}[cite: 4]\\
+$R \left( \underline{\hspace{4cm}} \right) + v_C = V_s$[cite: 4]
+
+\vspace{0.5cm}
+\textbf{Parte 5 - Modelo Final:}[cite: 4]\\
+$\underline{\hspace{2cm}} \frac{dv_C}{dt} + v_C = \underline{\hspace{2cm}}$[cite: 4]
+
+\vspace{0.5cm}
+\textbf{Parte 6 - Explicación Conceptual:}[cite: 4]\\
+El término $\frac{dv_C}{dt}$ representa \underline{\hspace{8cm}}.[cite: 4] \\
+La ecuación es de primer orden porque \underline{\hspace{8cm}}.[cite: 4] \\
+La ecuación describe cómo \underline{\hspace{4cm}} evoluciona debido a \underline{\hspace{4cm}}.[cite: 4]
+
+\vspace{0.5cm}
+\textbf{Parte 7 - Condiciones Iniciales y Finales:}[cite: 4]\\
+Si $v_C(0^-) = \underline{\hspace{2cm}}$, entonces por continuidad $v_C(0^+) = \underline{\hspace{2cm}}$.[cite: 4]\\
+En estado estacionario final de DC, $\frac{dv_C}{dt} = \underline{\hspace{2cm}}$. Por ende inferimos que $v_C(\infty) = \underline{\hspace{2cm}}$.[cite: 4]
+
+\end{document}
