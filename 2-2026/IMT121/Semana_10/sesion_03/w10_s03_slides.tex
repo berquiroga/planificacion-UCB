@@ -1,0 +1,296 @@
+% lecture.tex
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage{booktabs} 
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[american]{circuitikz}
+
+\title[Fundamentos EC3]{Unidad EC3: Refuerzo Fundacional de Circuitos Dinámicos[cite: 4]}
+\subtitle{De Redes Estáticas a Dinámica de Primer Orden[cite: 4]}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera[cite: 1]}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija[cite: 1]}
+\date{Semana 10, Sesión 3[cite: 4]}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Fenómeno Físico: El Almacenamiento de Energía}
+    \textbf{Caso A: Red Resistiva}[cite: 4]
+    \begin{itemize}
+        \item Un resistor ideal disipa energía[cite: 4].
+        \item La relación es algebraica ($v_R = R \cdot i_R$); el circuito responde instantáneamente[cite: 4].
+    \end{itemize}
+    \vspace{0.3cm}
+    \textbf{Caso B: Red con Capacitores o Inductores}[cite: 4]
+    \begin{itemize}
+        \item Estos elementos almacenan energía, por lo que el estado previo del circuito importa[cite: 4].
+        \item Existe una evolución temporal; no pueden cambiar de estado de forma instantánea bajo condiciones ordinarias[cite: 4].
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Energía y Variable de Estado}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \begin{center}
+            \textbf{El Capacitor ($C$)}\\
+            Almacena energía en un campo eléctrico[cite: 4].\\
+            \vspace{0.2cm}
+            \begin{circuitikz}[scale=0.8, transform shape]
+                \draw (0,0) to[C, l={$C$}, v={$v_C$}, i={$i_C$}] (2,0);
+            \end{circuitikz}
+            \vspace{0.2cm}\\
+            $w_C = \frac{1}{2} C v_C^2$[cite: 4]\\
+            \vspace{0.2cm}
+            \small \textbf{Variable de estado: $v_C$}[cite: 4]
+        \end{center}
+
+        \column{0.5\textwidth}
+        \begin{center}
+            \textbf{El Inductor ($L$)}\\
+            Almacena energía en un campo magnético[cite: 4].\\
+            \vspace{0.2cm}
+            \begin{circuitikz}[scale=0.8, transform shape]
+                \draw (0,0) to[L, l={$L$}, v={$v_L$}, i={$i_L$}] (2,0);
+            \end{circuitikz}
+            \vspace{0.2cm}\\
+            $w_L = \frac{1}{2} L i_L^2$[cite: 4]\\
+            \vspace{0.2cm}
+            \small \textbf{Variable de estado: $i_L$}[cite: 4]
+        \end{center}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Línea de Tiempo de Conmutación}
+    Para analizar circuitos dinámicos, debemos distinguir tres momentos temporales clave[cite: 4]:
+    
+    \vspace{0.5cm}
+    \begin{center}
+        \Large $0^-$ \quad \vrule width 1pt height 15pt \quad $0^+$ \quad $\xrightarrow{\text{Transitorio}}$ \quad $\infty$[cite: 4]
+    \end{center}
+    \vspace{0.5cm}
+    
+    \begin{itemize}
+        \item \textbf{$0^-$:} Instante inmediatamente antes de la conmutación[cite: 4].
+        \item \textbf{$0^+$:} Instante inmediatamente después de la conmutación[cite: 4].
+        \item \textbf{$\infty$:} Condición de estado estacionario a largo plazo, asumiendo un estado final estable[cite: 4].
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{La Derivada como Tasa de Cambio}
+    Físicamente, la derivada $\frac{dx}{dt}$ indica qué tan rápido cambia la variable $x$ en un instante dado[cite: 4].
+    
+    \begin{columns}
+        \column{0.4\textwidth}
+        \begin{tikzpicture}[scale=0.75]
+            \begin{axis}[
+                axis lines=left,
+                xlabel={$t$}, ylabel={$x(t)$},
+                xmin=0, xmax=4, ymin=0, ymax=4,
+                ticks=none
+            ]
+            \addplot[domain=0:4, samples=50, thick, blue] {3*sin(deg(x)) + 1};
+            % Pendiente positiva
+            \draw[dashed, red, thick] (0.2, 1.1) -- (1.2, 3.8);
+            \node at (0.3, 3.5) {$\frac{dx}{dt} > 0$};
+            % Pendiente cero
+            \draw[dashed, red, thick] (1.0, 4) -- (2.0, 4);
+            \node at (2.2, 4.2) {$\frac{dx}{dt} = 0$};
+            % Pendiente negativa
+            \draw[dashed, red, thick] (2.2, 3.2) -- (3.2, 0.4);
+            \node at (3.5, 2.5) {$\frac{dx}{dt} < 0$};
+            \end{axis}
+        \end{tikzpicture}
+        \column{0.6\textwidth}
+        \textbf{Traducción Eléctrica:}[cite: 4]
+        \begin{itemize}
+            \item $\frac{dv_C}{dt} > 0 \implies$ El voltaje del capacitor está aumentando[cite: 4].
+            \item $\frac{di_L}{dt} = 0 \implies$ La corriente del inductor es momentáneamente constante[cite: 4].
+            \item $\frac{dv_C}{dt} < 0 \implies$ El voltaje del capacitor está cayendo[cite: 4].
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Ley Constitutiva del Capacitor}
+    La corriente en un capacitor es proporcional a la tasa de cambio de su voltaje[cite: 4].
+    
+    \begin{block}{Ecuación Diferencial del Elemento}
+        $$i_C = C \frac{dv_C}{dt} \quad \implies \quad \frac{dv_C}{dt} = \frac{i_C}{C}$$
+[cite: 4]
+    \end{block}
+    
+    \textbf{Interpretación Física:}
+    \begin{itemize}
+        \item La corriente a través del capacitor produce un cambio en su voltaje[cite: 4].
+        \item Para una corriente dada, un capacitor más pequeño ($C$) resulta en un cambio de voltaje más rápido ($\frac{dv_C}{dt}$ mayor)[cite: 4].
+        \item Si el voltaje es constante ($\frac{dv_C}{dt}=0$), la corriente ideal es cero[cite: 4].
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Ley Constitutiva del Inductor}
+    El voltaje en un inductor es proporcional a la tasa de cambio de su corriente[cite: 4].
+    
+    \begin{block}{Ecuación Diferencial del Elemento}
+        $$v_L = L \frac{di_L}{dt} \quad \implies \quad \frac{di_L}{dt} = \frac{v_L}{L}$$
+[cite: 4]
+    \end{block}
+    
+    \textbf{Interpretación Física:}
+    \begin{itemize}
+        \item El voltaje aplicado a un inductor produce un cambio en su corriente[cite: 4].
+        \item Para un voltaje dado, un inductor más pequeño ($L$) resulta en un cambio de corriente más rápido ($\frac{di_L}{dt}$ mayor)[cite: 4].
+        \item Si la corriente es constante ($\frac{di_L}{dt}=0$), el voltaje ideal es cero[cite: 4].
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Reglas de Continuidad}
+    Bajo condiciones ordinarias de conmutación (fuentes finitas):
+    \vspace{0.2cm}
+    
+    \begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Continuidad en el Capacitor}]
+        Si $v_C$ cambiara en cero segundos, $\frac{dv_C}{dt} \to \infty$, requiriendo una corriente infinita[cite: 4]. Por lo tanto:
+        $$v_C(0^+) = v_C(0^-)$$
+[cite: 4]
+    \end{tcolorbox}
+    
+    \begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Continuidad en el Inductor}]
+        Si $i_L$ cambiara en cero segundos, $\frac{di_L}{dt} \to \infty$, requiriendo un voltaje infinito[cite: 4]. Por lo tanto:
+        $$i_L(0^+) = i_L(0^-)$$
+[cite: 4]
+    \end{tcolorbox}
+\end{frame}
+
+\begin{frame}{De KVL a la EDO RC (Modelado Guiado)}
+    \begin{columns}
+        \column{0.45\textwidth}
+        \begin{center}
+            \begin{circuitikz}[scale=0.8, transform shape]
+                \draw (0,0) to[V, l={$V_s$}] (0,3) 
+                      to[closing switch, l={$t=0$}] (2,3) 
+                      to[R, l={$R$}, v={$v_R$}] (4,3) 
+                      to[C, l={$C$}, v={$v_C$}, i={$i(t)$}] (4,0) -- (0,0);
+            \end{circuitikz}
+        \end{center}
+        
+        \column{0.55\textwidth}
+        \small
+        \textbf{Paso 1 - KVL:}[cite: 4]\\
+        $V_s - v_R - v_C = 0$[cite: 4]
+        \vspace{0.2cm}
+        
+        \textbf{Paso 2 - Ley de Ohm:}[cite: 4]\\
+        $v_R = R \cdot i$[cite: 4] \\
+        $\implies R \cdot i + v_C = V_s$[cite: 4]
+        \vspace{0.2cm}
+        
+        \textbf{Paso 3 - Ley del Capacitor:}[cite: 4]\\
+        $i = C \frac{dv_C}{dt}$[cite: 4]
+        \vspace{0.2cm}
+        
+        \begin{alertblock}{Modelo de Primer Orden}
+            $$RC \frac{dv_C}{dt} + v_C = V_s$$
+[cite: 4]
+        \end{alertblock}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Condición Inicial y Condición Final}
+    El modelo diferencial por sí solo no describe una trayectoria única; las condiciones de frontera seleccionan la ruta real[cite: 4].
+    
+    \vspace{0.3cm}
+    \begin{enumerate}
+        \item \textbf{Estado Inicial ($0^+$):}\\
+        Se obtiene por continuidad desde $0^-$. Ejemplo: Si estaba descargado, $v_C(0^+) = 0\,\text{V}$[cite: 4].
+        
+        \item \textbf{Estado Final ($\infty$):}\\
+        En el estado estacionario DC, las derivadas se anulan ($\frac{dv_C}{dt} \to 0$)[cite: 4].\\
+        Evaluando la EDO: $RC (0) + v_C(\infty) = V_s \implies v_C(\infty) = V_s$[cite: 4].
+    \end{enumerate}
+    
+    \vspace{0.3cm}
+    \textit{Conclusión: El transitorio debe conectar matemáticamente el estado de $0\,\text{V}$ con el estado de $V_s$[cite: 4].}
+\end{frame}
+
+\begin{frame}{Punto de Control (Readiness Gate)}
+    \begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Verificación Formativa}]
+        \begin{enumerate}
+            \item Físicamente, ¿qué significa $\frac{dv_C}{dt}$?[cite: 4]
+            \item ¿Por qué afirmamos que $v_C(0^+) = v_C(0^-)$?[cite: 4]
+            \item En la ecuación $RC \frac{dv_C}{dt} + v_C = V_s$, ¿de dónde proviene cada término?[cite: 4]
+            \item Si $v_C < V_s$ en el circuito RC simple, ¿el voltaje $v_C$ debería estar subiendo o bajando en este instante?[cite: 4]
+        \end{enumerate}
+    \end{tcolorbox}
+\end{frame}
+
+\begin{frame}{[Condicional] La Constante de Tiempo ($\tau$)}
+    La constante $\tau$ representa la escala de tiempo característica del circuito[cite: 4].
+    
+    \begin{block}{Definición Matemática}
+        $$\tau = R_{eq} \cdot C$$
+[cite: 4]
+    \end{block}
+    
+    \textbf{Interpretación:}
+    \begin{itemize}
+        \item Un $\tau$ \textbf{mayor} implica una evolución temporal \textbf{más lenta}[cite: 4].
+        \item Un $\tau$ \textbf{menor} implica una evolución temporal \textbf{más rápida}[cite: 4].
+        \item $\tau$ no es el tiempo exacto de asentamiento, sino una medida de inercia del sistema[cite: 4].
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{[Condicional] Anatomía de la Respuesta Exponencial}
+    \begin{columns}
+        \column{0.5\textwidth}
+        Forma general de primer orden:
+        $$x(t) = x(\infty) + \left[ x(0^+) - x(\infty) \right] e^{-t/\tau}$$
+[cite: 4]
+        
+        \vspace{0.2cm}
+        \textbf{Estructura:}[cite: 4]
+        \begin{itemize}
+            \item $x(\infty)$: Destino final[cite: 4].
+            \item $\left[ x(0^+) - x(\infty) \right]$: Desviación inicial[cite: 4].
+            \item $e^{-t/\tau}$: Fracción remanente de decaimiento[cite: 4].
+        \end{itemize}
+        
+        \column{0.5\textwidth}
+        \begin{tikzpicture}
+            \begin{axis}[
+                width=\textwidth, height=5cm,
+                xlabel={$t$}, ylabel={$x(t)$},
+                xmin=0, xmax=5, ymin=0, ymax=1.2,
+                ticks=none
+            ]
+            \addplot[blue, thick, domain=0:5, samples=50] {1 - exp(-x)};
+            \addplot[dashed, red] coordinates {(0,1) (5,1)} node[pos=0.5, above] {$x(\infty)$};
+            \node at (0.5, 0.2) {$x(0^+)$};
+            \end{axis}
+        \end{tikzpicture}
+    \end{columns}
+\end{frame}
+
+\end{document}
