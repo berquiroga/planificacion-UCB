@@ -1,0 +1,55 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2cm]{geometry}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Guía de Reporte Técnico: Mini-Artículos IEEE (Lab 3 y Lab 4)}}[cite: 12]
+\end{center}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Propósito del Informe[cite: 12]}]
+    El informe debe comunicar un argumento de ingeniería, no una cronología de actividades[cite: 12]. Su objetivo es transformar: \textit{Problema $\rightarrow$ Modelo $\rightarrow$ Método $\rightarrow$ Evidencia $\rightarrow$ Comparación $\rightarrow$ Diagnóstico $\rightarrow$ Conclusión}[cite: 12]. Extensión orientativa: \textbf{3 a 4 páginas estilo IEEE}[cite: 12].
+\end{tcolorbox}
+
+\section*{1. Etiquetas de Evidencia Obligatorias[cite: 12]}
+Toda evidencia (gráficas, tablas, valores numéricos) debe estar explícitamente etiquetada para distinguir su origen[cite: 12]:
+\begin{itemize}
+    \item \texttt{THEORETICAL}: Predicciones calculadas analíticamente[cite: 12].
+    \item \texttt{SIMULATED}: Resultados de SPICE/LTSpice[cite: 12].
+    \item \texttt{DATASHEET}: Valores extraídos de especificaciones del fabricante[cite: 12].
+    \item \texttt{MEASURED}: Datos extraídos del hardware físico en el laboratorio[cite: 12].
+\end{itemize}
+\textit{Nota:} Si una medición no existe, escriba \texttt{Measurement not obtained}. \textbf{NO} sustituya silenciosamente una medición por una simulación[cite: 12].
+
+\section*{2. Asignación: Reporte de Laboratorio 3 (Precisión DC)[cite: 12]}
+\textbf{Título sugerido:} Caracterización de errores en CC y compensación de un amplificador diferencial con Op-Amp real[cite: 12]. \\
+\textbf{Fecha de entrega:} 18 de octubre de 2026 — 23:59[cite: 12].
+\begin{itemize}
+    \item \textbf{Análisis Analítico (Sec. II):} Derive $V_o = k(V_2 - V_1)$ y defina la métrica de error $e = V_{o,\mathrm{meas}} - V_{o,\mathrm{ideal}}$[cite: 12].
+    \item \textbf{Resultados Mínimos:} Tabla comparativa de $V_{o,\mathrm{ideal}}$, $V_{o,\mathrm{meas}}$ y el error absoluto \textit{antes} y \textit{después} de la corrección[cite: 12].
+    \item \textbf{Discusión:} Solo cuando la evidencia lo soporte, discuta: $V_{OS}, I_B, I_{OS}$, mismatch de resistores o problemas de instrumentación[cite: 12].
+\end{itemize}
+
+\section*{3. Asignación: Reporte de Laboratorio 4 (Limitaciones Dinámicas)[cite: 12]}
+\textbf{Título sugerido:} Caracterización experimental del ancho de banda y Slew Rate en amplificadores operacionales reales[cite: 12]. \\
+\textbf{Fecha de entrega:} 25 de octubre de 2026 — 23:59[cite: 12].
+\begin{itemize}
+    \item \textbf{Análisis Analítico (Sec. II):} Presente los modelos $f_{BW} \approx GBW/A_N$ y $SR_{\mathrm{req}} = 2\pi f V_p$[cite: 12].
+    \item \textbf{Métricas Cuantitativas:} Calcule los ratios de desempeño[cite: 12]:
+    \begin{equation*}
+        r_{BW} = \frac{f_{BW,\mathrm{meas}}}{f_{BW,\mathrm{pred}}} \quad \text{y} \quad r_{SR} = \frac{SR_{\mathrm{req}}}{SR_{\mathrm{datasheet}}} \text{[cite: 12]}
+    \end{equation*}
+    \item \textbf{Discusión:} Es imperativo distinguir explícitamente entre \textbf{GBW} (atenuación suave), \textbf{Slew Rate} (triangularización), y \textbf{Clipping} (recorte por rieles)[cite: 12].
+\end{itemize}
+
+\end{document}

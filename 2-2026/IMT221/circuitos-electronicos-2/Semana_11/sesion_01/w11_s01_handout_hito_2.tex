@@ -1,0 +1,49 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Hito 2: Front-End Activo de Instrumentación y Acondicionamiento}}[cite: 12]
+\end{center}
+
+\begin{tcolorbox}[colback=yellow!5, colframe=ucbblue, title=\textbf{Definición del Problema}]
+    El Hito 1 produjo un front-end pasivo (Puente $\rightarrow$ Filtro) cuya cascada de bloques modifica la señal original debido a la interacción de impedancias (Loading)[cite: 12]. \\
+    \textbf{Misión Hito 2:} Diseñar una etapa activa que solucione este problema, demostrando una \textbf{mejora sistémica cuantificable} respecto del Hito 1[cite: 12].
+\end{tcolorbox}
+
+\section*{1. Arquitecturas Candidatas[cite: 12]}
+Ustedes deben proponer, justificar y simular la ubicación de la nueva etapa (In-Amp):
+\begin{itemize}
+    \item \textbf{Opción A:} Puente $\rightarrow$ \textbf{In-Amp} $\rightarrow$ Twin-T $\rightarrow$ Salida[cite: 12]. (Alta impedancia al inicio, salva el puente, pero el ruido amplificado puede saturar el circuito antes de filtrarse)[cite: 12].
+    \item \textbf{Opción B:} Puente $\rightarrow$ Twin-T $\rightarrow$ \textbf{In-Amp} $\rightarrow$ Salida[cite: 12]. (Filtra antes de amplificar, pero el filtro pasivo sigue cargando el puente)[cite: 12].
+\end{itemize}
+
+\section*{2. Métricas de Mejora Cuantificable[cite: 12]}
+Para aprobar la defensa, su diseño debe mejorar al menos uno de los siguientes parámetros sin destruir los demás:
+\begin{enumerate}
+    \item \textbf{Carga (Loading):} Factor $K_L$ documentado en Hito 1[cite: 12].
+    \item \textbf{Ganancia Diferencial ($A_d$)} de la señal útil del sensor ($V_o / V_d$)[cite: 12].
+    \item \textbf{Rechazo de Modo Común (CMRR)} medido en dB[cite: 12].
+    \item \textbf{Relación Señal/Interferencia (SIR)} si el ruido de 50 Hz fue medido[cite: 12].
+\end{enumerate}
+
+\section*{3. Validación Cruzada (Evidencia Requerida)[cite: 12]}
+Su diseño debe someterse al flujo clásico de ingeniería[cite: 12]:
+\begin{equation*}
+    \boxed{\text{Modelo Analítico}} \leftrightarrow \boxed{\text{Simulación LTSpice}} \leftrightarrow \boxed{\text{Medición Física}} \text{[cite: 12]}
+\end{equation*}
+\textbf{Condición de Defensa:} Al menos una discrepancia seria (Ej. Predicción $\neq$ Medición) debe ser identificada y explicada utilizando los conceptos de Lab 3 (Mismatch, Offset) o Lab 4 (GBW, SR, Clipping)[cite: 12].
+
+\end{document}

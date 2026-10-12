@@ -1,0 +1,58 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{xcolor} % Soluciona los errores de \definecolor y \textcolor
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+% Soluciona el warning de fancyhdr ajustando la altura de la cabecera
+\setlength{\headheight}{16pt} 
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Ejercicios: In-Amp y CMRR}
+\rhead{Semana 11}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Hoja de Ejercicios: Amplificador de Instrumentación}}[cite: 10]
+\end{center}
+
+\textbf{Ejercicio 1 — Descomposición Diferencial y Modo Común[cite: 10]} \\
+Dadas las tensiones de entrada $v_1 = 1.97\,\text{V}$ y $v_2 = 2.03\,\text{V}$[cite: 10].
+Calcule la componente diferencial ($v_d$) y de modo común ($v_{cm}$)[cite: 10]. Demuestre la reconstrucción inversa de $v_1, v_2$[cite: 10].
+
+\vspace{2.5cm}
+\textbf{Ejercicio 2 — Ganancia de In-Amp[cite: 10]} \\
+Un amplificador de instrumentación clásico (3 Op-Amps) utiliza $R = 22\,\text{k}\Omega$, $R_G = 4.7\,\text{k}\Omega$ y una etapa diferencial final con $k=1$[cite: 10].
+\begin{enumerate}
+    \item Calcule la ganancia diferencial ideal $A_d$[cite: 10].
+    \item Si se aplica $v_d = 20\,\text{mV}$, calcule la salida ideal $v_o$[cite: 10].
+    \item Identifique una condición de dispositivo real (ej. de Lab 4) que deba verificarse antes de asumir que esta salida es alcanzable[cite: 10].
+\end{enumerate}
+
+\vspace{3.5cm}
+\textbf{Ejercicio 3 — Cálculo de CMRR[cite: 10]} \\
+Un circuito medido posee una ganancia diferencial $A_d = 25$[cite: 10]. Al aplicar una señal idéntica en ambas entradas de $v_{cm} = 0.50\,\text{V}$, la salida registra $v_o = 2\,\text{mV}$[cite: 10]. Calcule la ganancia en modo común ($A_c$), el $CMRR$ lineal y el $CMRR$ en decibelios ($CMRR_{dB}$)[cite: 10].
+
+\vspace{3cm}
+\textbf{Ejercicio 4 — Efecto de Tolerancias (Mismatch)[cite: 10]} \\
+Una etapa diferencial se diseña para $R_2/R_1 = R_4/R_3 = 10$[cite: 10], pero debido a tolerancias físicas, uno de los ratios resulta ser 10.1[cite: 10].
+Responda: 1) ¿La ganancia $A_c$ será cero?[cite: 10] 2) ¿Qué sucederá con el CMRR general?[cite: 10] 3) ¿Qué concepto estudiado en Lab 3 fundamenta esta sensibilidad?[cite: 10]
+
+\vspace{2cm}
+\textbf{Ejercicio 5 — Diseño de Sistema (Hito 2)[cite: 10]} \\
+En el Hito 1, la cascada pasiva redujo severamente la amplitud útil debido al efecto de carga (loading)[cite: 10].
+Proponga: 1) Dónde ubicaría la etapa activa de alta impedancia[cite: 10]. 2) Qué métrica matemática emplearía para probar la "mejora"[cite: 10]. 3) Una razón por la que su propuesta podría fallar físicamente[cite: 10]. 4) Un parámetro del Op-Amp (visto en Lab 4) a verificar antes de implementarlo[cite: 10].
+
+\end{document}

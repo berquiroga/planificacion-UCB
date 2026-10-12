@@ -1,0 +1,63 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{xcolor} % Soluciona los errores de \definecolor y \textcolor
+\usepackage[margin=2.5cm]{geometry}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Solucionario Docente: In-Amp y CMRR}}[cite: 10]
+\end{center}
+
+\textbf{Ejercicio 1[cite: 10]} \\
+Datos: $v_1 = 1.97\,\text{V}$, $v_2 = 2.03\,\text{V}$[cite: 10].
+\begin{align*}
+    v_d &= v_2 - v_1 = 2.03 - 1.97 = \boxed{0.06\,\text{V} \ (60\,\text{mV})} \text{[cite: 10]} \\
+    v_{cm} &= \frac{v_1 + v_2}{2} = \frac{1.97 + 2.03}{2} = \boxed{2.00\,\text{V}} \text{[cite: 10]}
+\end{align*}
+Reconstrucción[cite: 10]:
+\begin{align*}
+    v_1 &= v_{cm} - \frac{v_d}{2} = 2.00 - 0.03 = 1.97\,\text{V} \text{[cite: 10]} \\
+    v_2 &= v_{cm} + \frac{v_d}{2} = 2.00 + 0.03 = 2.03\,\text{V} \text{[cite: 10]}
+\end{align*}
+
+\textbf{Ejercicio 2[cite: 10]} \\
+Datos: $R = 22\,\text{k}\Omega$, $R_G = 4.7\,\text{k}\Omega$, $k=1$, $v_d = 20\,\text{mV}$[cite: 10].
+1) Ganancia diferencial:
+\begin{equation*}
+    A_d = k \left(1 + \frac{2R}{R_G}\right) = 1 \left(1 + \frac{44}{4.7}\right) = 1 + 9.3617 = \boxed{10.36} \text{[cite: 10]}
+\end{equation*}
+2) Salida ideal:
+\begin{equation*}
+    v_o = A_d \cdot v_d = 10.36 \cdot 20\,\text{mV} \approx \boxed{207.2\,\text{mV}} \text{[cite: 10]}
+\end{equation*}
+3) Condición física a revisar: \textbf{Output Swing (Saturación), GBW y Slew Rate}[cite: 10]. Además, el voltaje de modo común ($v_{cm}$) del puente no debe exceder el rango de entrada permitido por el Op-Amp.
+
+\textbf{Ejercicio 3[cite: 10]} \\
+Datos: $A_d = 25$, $v_{cm} = 0.50\,\text{V}$, salida parasitaria $v_o = 2\,\text{mV} = 0.002\,\text{V}$[cite: 10].
+\begin{equation*}
+    A_c = \frac{v_o}{v_{cm}} = \frac{0.002\,\text{V}}{0.50\,\text{V}} = \boxed{0.004} \text{[cite: 10]}
+\end{equation*}
+\begin{align*}
+    CMRR &= \left|\frac{A_d}{A_c}\right| = \frac{25}{0.004} = \boxed{6250} \text{[cite: 10]} \\
+    CMRR_{dB} &= 20 \log_{10}(6250) \approx 20(3.795) \approx \boxed{75.9\,\text{dB}} \text{[cite: 10]}
+\end{align*}
+
+\textbf{Ejercicio 4[cite: 10]} \\
+1) No, $A_c \neq 0$ debido al desbalance[cite: 10]. 2) El CMRR disminuirá drásticamente porque la señal común ya no se resta perfectamente[cite: 10]. 3) Efecto de \textbf{Mismatch de resistores} comprobado en el Lab 3[cite: 10].
+
+\textbf{Ejercicio 5 (Interpretación Docente Esperada)[cite: 10]} \\
+1) Al frente de la cadena (\text{Puente} $\rightarrow$ \textbf{In-Amp}), para asegurar $Z_{in} \to \infty$ reduciendo la carga sobre el sensor[cite: 10].
+2) Factor $K_L$ (transferencia cargado vs sin carga), CMRR, o ganancia útil vs interferencia[cite: 10].
+3) Fallo posible: El In-Amp podría amplificar la interferencia de $50\,\text{Hz}$, saturando los rieles antes de que el Twin-T pueda filtrarlo[cite: 10].
+4) GBW, SR o Rango de Modo Común (Input Common-Mode Range)[cite: 10].
+
+\end{document}

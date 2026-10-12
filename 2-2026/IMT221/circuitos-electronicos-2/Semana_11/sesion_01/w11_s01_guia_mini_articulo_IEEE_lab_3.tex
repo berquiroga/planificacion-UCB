@@ -1,0 +1,53 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Asignación de Reporte: Lab 3 (Precisión DC)}}[cite: 12]
+\end{center}
+
+\textbf{Fecha Límite de Entrega:} \textbf{18 Octubre 2026 — 23:59}[cite: 12] \\
+\textbf{Título Sugerido:} Caracterización de errores en CC y compensación de un amplificador diferencial con Op-Amp real[cite: 12]. \\
+\textbf{Narrativa Técnica:} Predicción DC $\rightarrow$ Comportamiento real $\rightarrow$ Discrepancia $\rightarrow$ Diagnóstico $\rightarrow$ Compensación $\rightarrow$ Validación[cite: 12].
+
+\section*{1. Contenido Analítico Mínimo (Sección II)[cite: 12]}
+El modelo analítico debe incluir la derivación de la resta ideal. Para un diferencial:
+\begin{equation}
+    V_o = \left(1+\frac{R_2}{R_1}\right)\frac{R_4}{R_3+R_4}V_2 - \frac{R_2}{R_1}V_1 \text{[cite: 12]}
+\end{equation}
+Si $\frac{R_2}{R_1} = \frac{R_4}{R_3} = k$, entonces la relación ideal es $\boxed{V_o = k(V_2 - V_1)}$[cite: 12]. \\
+Cuantifique el error: $\boxed{e = V_{o,\mathrm{meas}} - V_{o,\mathrm{ideal}}}$. Para error relativo (si $V_{o,\mathrm{ideal}} \neq 0$): $e_{\%} = \frac{|V_{o,\mathrm{meas}} - V_{o,\mathrm{ideal}}|}{|V_{o,\mathrm{ideal}}|} \times 100\%$[cite: 12].
+
+\section*{2. Resultados Mínimos Esperados (Sección IV)[cite: 12]}
+\begin{table}[h!]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\hsize=1.0\hsize}X|c|c|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Magnitud} & \textbf{Antes de corrección} & \textbf{Después de corrección} \\ \hline
+    $V_{o,\mathrm{ideal}}$[cite: 12] & & \\ \hline
+    $V_{o,\mathrm{meas}}$[cite: 12] & & \\ \hline
+    Error absoluto ($|e|$)[cite: 12] & & \\ \hline
+    Corrección aplicada[cite: 12] & --- & \\ \hline
+    \end{tabularx}
+\end{table}
+
+\section*{3. Tópicos de Discusión (Sección V)[cite: 12]}
+Discuta \textbf{solo} si la evidencia lo soporta: impacto de $V_{OS}$, $I_B$, $I_{OS}$, mismatch de resistores, cableado/referencia, y efectividad real de la compensación[cite: 12].
+
+\end{document}

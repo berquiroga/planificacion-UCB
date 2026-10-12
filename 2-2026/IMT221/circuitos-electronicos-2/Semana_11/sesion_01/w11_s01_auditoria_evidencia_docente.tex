@@ -1,0 +1,73 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{tabularx}
+\usepackage{amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Auditoría de Evidencia Experimental: Lab 3 y Lab 4}}[cite: 12]
+\end{center}
+
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Objetivo Docente[cite: 12]}]
+    \raggedright
+    Cerrar los laboratorios sin repetir experimentos ya válidos y reservar el acceso al banco de pruebas para mediciones estrictamente indispensables[cite: 12]. No use instrucciones ambiguas como "terminen Lab 4"; asigne mediciones concretas y acotadas[cite: 12].
+\end{tcolorbox}
+
+\section*{Checklist de Evidencia Mínima Requerida[cite: 12]}
+\begin{minipage}[t]{0.48\textwidth}
+    \textbf{Lab 3 (Precisión DC)[cite: 12]}
+    \begin{itemize}
+        \item[$\square$] Predicción ideal[cite: 12]
+        \item[$\square$] Circuito/condición identificada[cite: 12]
+        \item[$\square$] Baseline físico[cite: 12]
+        \item[$\square$] Discrepancia cuantificada[cite: 12]
+        \item[$\square$] Diagnóstico[cite: 12]
+        \item[$\square$] Compensación/corrección[cite: 12]
+        \item[$\square$] Medición before/after[cite: 12]
+        \item[$\square$] Interpretación[cite: 12]
+    \end{itemize}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.48\textwidth}
+    \textbf{Lab 4 (Limitaciones Dinámicas)[cite: 12]}
+    \begin{itemize}
+        \item[$\square$] Arquitectura fuente/referencia documentada[cite: 12]
+        \item[$\square$] Low-frequency baseline[cite: 12]
+        \item[$\square$] Datos de Experimento A y \textit{approx.} $-3\,\text{dB}$[cite: 12]
+        \item[$\square$] Datos de Experimento B y $SR_{\mathrm{req}}$ real[cite: 12]
+        \item[$\square$] Evidencia de forma de onda[cite: 12]
+        \item[$\square$] Comparación de dispositivos y datasheets[cite: 12]
+        \item[$\square$] Interpretación clipping / GBW / SR[cite: 12]
+    \end{itemize}
+\end{minipage}
+
+\vspace{0.5cm}
+\section*{Registro y Clasificación de Grupos[cite: 12]}
+\textit{Categoría A (Completo): Pasa a reporte. Categoría B (Menor): Medición acotada. Categoría C (Mayor): Seguimiento dirigido[cite: 12].}
+
+\begin{table}[h!]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{|c|>{\raggedright\arraybackslash\hsize=0.8\hsize}X|>{\raggedright\arraybackslash\hsize=0.8\hsize}X|c|>{\raggedright\arraybackslash\hsize=1.4\hsize}X|c|c|}
+    \hline
+    \rowcolor[HTML]{EFEFEF}
+    \textbf{Grupo} & \textbf{Status Lab 3} & \textbf{Status Lab 4} & \textbf{Solo Reporte} & \textbf{Acción Faltante Asignada} & \textbf{Límite} & \textbf{OK} \\ \hline
+    & & & $\square$ Sí $\square$ No & & & $\square$ \\ \hline
+    & & & $\square$ Sí $\square$ No & & & $\square$ \\ \hline
+    & & & $\square$ Sí $\square$ No & & & $\square$ \\ \hline
+    & & & $\square$ Sí $\square$ No & & & $\square$ \\ \hline
+    \end{tabularx}
+\end{table}
+
+\end{document}

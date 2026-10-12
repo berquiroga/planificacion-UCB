@@ -1,0 +1,62 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{tabularx}
+\usepackage{amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2cm]{geometry}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Hito 2: Front-End Activo de Instrumentación y Acondicionamiento}}[cite: 12]
+\end{center}
+
+\begin{tcolorbox}[colback=yellow!5, colframe=ucbblue, title=\textbf{Definición del Problema Sistémico[cite: 12]}]
+    \raggedright
+    El Hito 1 produjo un puente de Wheatstone y un filtro Twin-T pasivos. Al conectarlos en cascada, la interacción de impedancias ($|Z_L| \not\gg |Z_S|$) atenuó y modificó la señal útil[cite: 12].
+    \textbf{La Directriz Central del Hito 2 es demostrar una mejora sistémica cuantificable respecto de las limitaciones del Hito 1 mediante la integración de una etapa activa.[cite: 12]}
+\end{tcolorbox}
+
+\section*{1. Alternativas de Arquitectura y Diseño[cite: 12]}
+El ordenamiento de las etapas es una decisión de diseño de su grupo. Debe ser justificada técnicamente[cite: 12].
+\begin{itemize}
+    \item \textbf{Candidato A:} Bridge $\rightarrow$ In-Amp $\rightarrow$ Twin-T $\rightarrow$ Salida Calibrada. (\textit{Aísla primero el puente, pero amplifica ruido que podría saturar la etapa antes de filtrar})[cite: 12].
+    \item \textbf{Candidato B:} Bridge $\rightarrow$ Twin-T $\rightarrow$ In-Amp $\rightarrow$ Salida Calibrada. (\textit{Filtra primero, pero podría mantener el problema original de loading pasivo})[cite: 12].
+\end{itemize}
+
+\section*{2. PFI Roadmap: Puertas de Dependencia (Gates)[cite: 12]}
+La progresión del proyecto exige superar puntos de control obligatorios[cite: 12]:
+\begin{itemize}
+    \item \textbf{Gate A (Antes de Construcción):} Diagrama de bloques, cálculo de ganancia, validación en LTSpice, elección de Op-Amp justificada en datasheet y BOM inicial[cite: 12].
+    \item \textbf{Gate B (Antes de Integración Sistémica):} Etapa activa operando aislada, ganancia física validada, fuente de poder verificada, sin \textit{clipping} visual[cite: 12].
+    \item \textbf{Gate C (Antes de la Defensa - 28 Oct.):} Integración de Hito 1 superada, prueba de loading, test diferencial, test de modo común, CMRR verificado, test de interferencia y discrepancias SPICE/Hardware explicadas[cite: 12].
+\end{itemize}
+
+\section*{3. Guía de Diseño y Pre-Lab (Para Gate A)[cite: 12]}
+Antes de montar componentes en protoboard, el grupo debe consolidar un reporte que contenga[cite: 12]:
+\begin{enumerate}
+    \item \textbf{Baseline Hito 1:} Métrica limitante explícita (ej. parámetro \texttt{KL} debidamente referenciado del artefacto de H1)[cite: 12].
+    \item \textbf{Declaración del Problema:} Un párrafo claro respondiendo \textit{¿qué estamos tratando de mejorar exactamente?}[cite: 12]
+    \item \textbf{Diseño Analítico del In-Amp:} Esquema completo, ganancia objetivo $A_d$ derivada paso a paso, selección de resistores y rango esperado de salida[cite: 12].
+    \item \textbf{Justificación CMRR:} Estrategia de tolerancias/mismatch de resistores y predicción del $A_c$ ideal frente al real[cite: 12].
+    \item \textbf{Selección de Componentes:} Modelo exacto de Op-Amp validado usando la evidencia de Precisión DC (Lab 3) y Límites Dinámicos (GBW, SR y Swing del Lab 4)[cite: 12].
+\end{enumerate}
+
+\section*{4. Criterios Candidatos para Defensa / Rúbrica (Evaluación H2)[cite: 12]}
+La defensa exigirá evidencia explícita (\texttt{SIMULATED}, \texttt{THEORETICAL}, \texttt{MEASURED}) en las siguientes dimensiones (pesos por confirmar)[cite: 12]:
+\begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \item Continuidad lógica del baseline del Hito 1[cite: 12].
+    \item Correspondencia entre Diseño Analítico, Simulación y Físico[cite: 12].
+    \item Cuantificación de la mejora de \textit{Loading} y Rechazo de Modo Común (CMRR)[cite: 12].
+    \item Calidad de la interpretación técnica de las discrepancias ineludibles[cite: 12].
+\end{itemize}
+
+\end{document}

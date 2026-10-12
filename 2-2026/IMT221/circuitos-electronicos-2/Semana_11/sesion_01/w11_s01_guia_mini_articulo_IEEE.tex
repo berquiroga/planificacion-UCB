@@ -1,0 +1,44 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2cm]{geometry}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Guía Estructural: Mini-Artículo IEEE de Laboratorio}}[cite: 12]
+\end{center}
+
+\begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{Propósito del Informe[cite: 12]}]
+    Comunicar un argumento de ingeniería coherente, transformando: Problema $\rightarrow$ Modelo $\rightarrow$ Método $\rightarrow$ Evidencia $\rightarrow$ Comparación $\rightarrow$ Diagnóstico $\rightarrow$ Conclusión[cite: 12]. \\
+    \textbf{Extensión objetivo:} 3 a 4 páginas estilo IEEE por laboratorio[cite: 12].
+\end{tcolorbox}
+
+\section*{1. Estructura Requerida[cite: 12]}
+\begin{enumerate}
+    \setlength{\itemsep}{0pt}
+    \item \textbf{Title / Abstract:} 100-150 palabras con problema, método, resultado cuantitativo y conclusión[cite: 12]. Sin teoría extensa ni resultados inventados[cite: 12].
+    \item \textbf{Index Terms / Keywords}[cite: 12].
+    \item \textbf{I. Introduction:} ¿Qué problema de ingeniería se investiga y por qué importa? (Fenómeno, objetivo, pregunta experimental)[cite: 12].
+    \item \textbf{II. Theoretical Background:} Solo la teoría necesaria con símbolos definidos, ecuaciones numeradas, unidades y valores reales sustituidos[cite: 12].
+    \item \textbf{III. Experimental Methodology:} Circuito, valores, Op-Amp exacto, fabricante, instrumentos, alimentación, variables y secuencia. La simulación va en subsección separada[cite: 12].
+    \item \textbf{IV. Results:} Tablas, gráficos y métricas. Use etiquetas de evidencia: \texttt{THEORETICAL}, \texttt{SIMULATED}, \texttt{DATASHEET}, \texttt{MEASURED}[cite: 12].
+    \item \textbf{V. Discussion:} Compare teoría $\leftrightarrow$ simulación $\leftrightarrow$ datasheet $\leftrightarrow$ medición[cite: 12]. Responda: ¿Coincidió? ¿Causa física plausible? ¿Explicaciones alternativas? ¿Limitaciones?[cite: 12]
+    \item \textbf{VI. Conclusions:} 3-5 conclusiones concisas derivadas de la evidencia, con valor cuantitativo[cite: 12].
+    \item \textbf{References:} Datasheets (prioridad 1), fuentes académicas, manuales de instrumentos[cite: 12].
+\end{enumerate}
+
+\section*{2. Política de Evidencia Faltante[cite: 12]}
+Si una medición no existe, escriba explícitamente: \texttt{Measurement not obtained}[cite: 12]. \textbf{NUNCA} sustituya silenciosamente una medición por una simulación o un valor inventado[cite: 12].
+
+\end{document}

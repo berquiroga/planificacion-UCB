@@ -1,0 +1,173 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[aspectratio=169]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{circuitikz}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+
+\title[In-Amp y CMRR]{El Amplificador de Instrumentación y el Rechazo de Modo Común (CMRR)}
+\subtitle{Hito 2: Acondicionamiento Activo Front-End}
+\author[IMT-221]{Circuitos Electrónicos II}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo''}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Recall Técnico: El Problema del Hito 1}
+    El Hito 1 nos dejó una cascada pasiva funcional pero con interacción de impedancias (Loading)[cite: 10]:
+    \begin{center}
+        \textbf{Sensor/NTC $\rightarrow$ Puente CA $\rightarrow$ Twin-T 50 Hz $\rightarrow$ Salida}
+    \end{center}
+    
+    \textbf{Análisis de Carga (Thevenin)[cite: 10]:}
+    Si la fuente tiene $(V_{TH}, Z_S)$ y la carga es $Z_L$, la tensión transferida es:
+    \begin{equation*}
+        V_L = V_{TH}\frac{Z_L}{Z_S + Z_L} \text{[cite: 10]}
+    \end{equation*}
+    Si $Z_L$ no es mucho mayor que $Z_S$, la señal sufre atenuación indeseada[cite: 10].
+    
+    \vspace{0.2cm}
+    \begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue]
+        \textbf{Pregunta Abierta:} ¿Cómo recibir la señal del sensor con menor carga, proporcionar ganancia diferencial controlada, rechazar interferencias y preservar la funcionalidad del Hito 1?[cite: 10]
+    \end{tcolorbox}
+\end{frame}
+
+\begin{frame}{Descomposición Diferencial y Modo Común}
+    Dos tensiones de entrada ($v_1, v_2$) pueden descomponerse matemáticamente[cite: 10]:
+    \begin{align*}
+        v_d &= v_2 - v_1 \quad \text{(Componente Diferencial - Información)} \text{[cite: 10]} \\
+        v_{cm} &= \frac{v_1 + v_2}{2} \quad \text{(Componente Modo Común - Interferencias/Offset)} \text{[cite: 10]}
+    \end{align*}
+    
+    \textbf{Reconstrucción Inversa[cite: 10]:}
+    \begin{equation*}
+        v_1 = v_{cm} - \frac{v_d}{2}, \qquad v_2 = v_{cm} + \frac{v_d}{2} \text{[cite: 10]}
+    \end{equation*}
+    
+    \textit{Mito:} "Modo común" no significa solo DC. Una perturbación senoidal inducida en ambos cables es modo común[cite: 10]. Un front-end ideal responde fuerte a $v_d$ y débil a $v_{cm}$[cite: 10].
+\end{frame}
+
+\begin{frame}{Arquitectura del In-Amp Clásico (3 Op-Amps)}
+    \begin{center}
+        \begin{circuitikz}[scale=0.7, transform shape, thick]
+            % Primera Etapa
+            % A1 configurado para que la entrada inversora (-) mire hacia abajo
+            \draw (0,2.5) node[op amp, noinv input up] (A1) {$A_1$};
+            % A2 configurado para que la entrada inversora (-) mire hacia arriba
+            \draw (0,-2.5) node[op amp, noinv input down] (A2) {$A_2$};
+            
+            \draw (A1.+) to[short, -o] ++(-1,0) node[left] {$v_1$};
+            \draw (A2.+) to[short, -o] ++(-1,0) node[left] {$v_2$};
+            
+            % R_G conectada limpiamente en el centro
+            \draw (A1.-) -- ++(0,-1) coordinate(n1);
+            \draw (A2.-) -- ++(0,1) coordinate(n2);
+            \draw (n1) to[R, l=$R_G$] (n2);
+            
+            % Resistencias de realimentación (esquivando los Op-Amps)
+            \draw (n1) to[R, l=$R$] (n1 -| A1.out) -- (A1.out);
+            \draw (n2) to[R, l_=$R$] (n2 -| A2.out) -- (A2.out);
+            
+            \draw (A1.out) to[short, *-] ++(1.5,0) coordinate(vo1) node[above] {$v_{o1}$};
+            \draw (A2.out) to[short, *-] ++(1.5,0) coordinate(vo2) node[below] {$v_{o2}$};
+            
+            % Segunda Etapa (Restador) posicionado más a la derecha
+            \draw (7.5,0) node[op amp] (A3) {$A_3$};
+            
+            % Enrutamiento ortogonal (|- ) para evitar líneas diagonales
+            \draw (vo1) -- (vo1 |- A3.-) to[R, l=$R_1$] (A3.-);
+            \draw (vo2) -- (vo2 |- A3.+) to[R, l=$R_3$] (A3.+);
+            
+            \draw (A3.-) -- ++(0,1.5) coordinate(f3) to[R, l=$R_2$] (f3 -| A3.out) -- (A3.out);
+            \draw (A3.+) to[R, l=$R_4$] ++(0,-1.5) node[ground]{};
+            \draw (A3.out) to[short, *-o] ++(1,0) node[right] {$v_o$};
+        \end{circuitikz}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Derivación Matemática: Primera Etapa (Buffers + Ganancia)}
+    Asumiendo Op-Amps ideales ($v_{+1} = v_{-1} = v_1$ y $v_{+2} = v_{-2} = v_2$)[cite: 10]:
+    
+    LKC en el nodo inversor de $A_1$[cite: 10]:
+    \begin{equation*}
+        \frac{v_{o1} - v_1}{R} = \frac{v_1 - v_2}{R_G} \implies v_{o1} = v_1 + \frac{R}{R_G}(v_1 - v_2) \text{[cite: 10]}
+    \end{equation*}
+    
+    LKC en el nodo inversor de $A_2$[cite: 10]:
+    \begin{equation*}
+        \frac{v_{o2} - v_2}{R} = \frac{v_2 - v_1}{R_G} \implies v_{o2} = v_2 + \frac{R}{R_G}(v_2 - v_1) \text{[cite: 10]}
+    \end{equation*}
+    
+    Restando las salidas de la primera etapa[cite: 10]:
+    \begin{equation*}
+        v_{o2} - v_{o1} = (v_2 - v_1) + \frac{2R}{R_G}(v_2 - v_1) = \boxed{ \left(1 + \frac{2R}{R_G}\right)(v_2 - v_1) } \text{[cite: 10]}
+    \end{equation*}
+\end{frame}
+
+\begin{frame}{Derivación Matemática: Etapa Final y CMRR}
+    La segunda etapa es un restador clásico. Si $\frac{R_2}{R_1} = \frac{R_4}{R_3} = k$[cite: 10]:
+    \begin{equation*}
+        v_o = k(v_{o2} - v_{o1}) = k \left(1 + \frac{2R}{R_G}\right)(v_2 - v_1) \implies \boxed{A_d = k \left(1 + \frac{2R}{R_G}\right)} \text{[cite: 10]}
+    \end{equation*}
+    
+    \textbf{Common-Mode Rejection Ratio (CMRR)[cite: 10]:} \\
+    El modelo de salida lineal general es $v_o = A_d v_d + A_c v_{cm}$[cite: 10].
+    \begin{equation*}
+        CMRR = \left| \frac{A_d}{A_c} \right| \implies \boxed{ CMRR_{dB} = 20\log_{10} \left| \frac{A_d}{A_c} \right| } \text{[cite: 10]}
+    \end{equation*}
+    \textit{Importante: ¡Alta ganancia diferencial ($A_d$) no implica automáticamente alto CMRR! Si $A_c$ es grande por un mal diseño, el ruido pasará a la salida[cite: 10].}
+\end{frame}
+
+\begin{frame}{El Rol del Emparejamiento de Resistencias (Mismatch)}
+    ¿Qué sucede si las resistencias de la etapa final no están perfectamente igualadas?[cite: 10] \\
+    La ganancia de modo común $A_c$ teórica se define como[cite: 10]:
+    \begin{equation*}
+        A_c = \left(1+\frac{R_2}{R_1}\right)\frac{R_4}{R_3+R_4} - \frac{R_2}{R_1} \text{[cite: 10]}
+    \end{equation*}
+    \begin{itemize}
+        \item Si los ratios son exactos, $A_c = 0$ y CMRR $\to \infty$[cite: 10].
+        \item Si $R_2/R_1 = 10$ pero $R_4/R_3 = 10.1$, evaluando la fórmula da $A_c \approx 0.009$[cite: 10].
+        \item Con $A_d = 10$, $CMRR = 10/0.009 = 1111 \implies CMRR_{dB} \approx 60.9\,\text{dB}$[cite: 10].
+    \end{itemize}
+    \textbf{Conclusión de Ingeniería:} El Mismatch de componentes (Lab 3) degrada directamente la capacidad del In-Amp para rechazar ruido común[cite: 10].
+\end{frame}
+
+\begin{frame}{Opciones de Arquitectura para el Hito 2}
+    ¿Dónde insertar la nueva etapa activa para resolver la carga del Hito 1?[cite: 10]
+    
+    \vspace{0.3cm}
+    \textbf{Candidato A (Línea base hipotética)[cite: 10]:}
+    \begin{equation*}
+        \boxed{\text{Puente}} \rightarrow \boxed{\textbf{In-Amp}} \rightarrow \boxed{\text{Twin-T}} \rightarrow \text{Salida}
+    \end{equation*}
+    \textit{Pro:} Alta impedancia al inicio reduce la carga en el puente. \textit{Contra:} La interferencia se amplifica antes del filtro y podría saturar (clipping) el In-Amp[cite: 10].
+    
+    \vspace{0.3cm}
+    \textbf{Candidato B[cite: 10]:}
+    \begin{equation*}
+        \boxed{\text{Puente}} \rightarrow \boxed{\text{Twin-T}} \rightarrow \boxed{\textbf{In-Amp}} \rightarrow \text{Salida}
+    \end{equation*}
+    \textit{Pro:} Se filtra antes de amplificar. \textit{Contra:} El Twin-T pasivo sigue "cargando" al puente original, no resolviendo el problema raíz[cite: 10].
+\end{frame}
+
+\end{document}

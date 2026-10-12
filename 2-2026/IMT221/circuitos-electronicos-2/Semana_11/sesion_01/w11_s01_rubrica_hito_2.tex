@@ -1,0 +1,44 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2cm]{geometry}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Dimensiones de Rúbrica de Defensa: Hito 2}}[cite: 12]
+\end{center}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Aviso Docente[cite: 12]}]
+    Los pesos exactos (scoring) se definirán tras la aprobación del instructor. El enfoque se centra en la mejora cuantificable y la justificación ingenieril[cite: 12].
+\end{tcolorbox}
+
+\begin{table}[h!]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{|>{\hsize=0.6\hsize}X|>{\hsize=1.4\hsize}X|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Dimensión a Evaluar} & \textbf{Criterio Fundamental de Observación} \\ \hline
+    \textbf{Continuidad Hito 1}[cite: 12] & Identifica con precisión matemática el problema base (Ej. $K_L$)[cite: 12]. \\ \hline
+    \textbf{Diseño Analítico}[cite: 12] & Justifica $A_d$ y ecuaciones de In-Amp sin memorización ciega[cite: 12]. \\ \hline
+    \textbf{Simulación}[cite: 12] & Contrasta modelo ideal con modelo SPICE del Op-Amp[cite: 12]. \\ \hline
+    \textbf{Implementación Fís.}[cite: 12] & Circuito robusto, fuente documentada, límites respetados[cite: 12]. \\ \hline
+    \textbf{Mejora de Loading}[cite: 12] & Demostración empírica de menor atenuación al acoplar etapas[cite: 12]. \\ \hline
+    \textbf{Rechazo (CMRR)}[cite: 12] & Manejo real de Modo Común e interferencia de $50\,\text{Hz}$[cite: 12]. \\ \hline
+    \textbf{Interpretación Técnica}[cite: 12] & Explica discrepancias basado en Offset, GBW, SR o Mismatch[cite: 12]. \\ \hline
+    \textbf{Calidad de Evidencia}[cite: 12] & Datos tabulados, unidades, gráficos osciloscopio nítidos[cite: 12]. \\ \hline
+    \textbf{Defensa Individual}[cite: 12] & Dominio de conceptos, fluidez al responder contingencias físicas[cite: 12]. \\ \hline
+    \end{tabularx}
+\end{table}
+
+\end{document}

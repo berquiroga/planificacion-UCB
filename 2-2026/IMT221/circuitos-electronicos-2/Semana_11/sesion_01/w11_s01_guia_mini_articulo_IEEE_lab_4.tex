@@ -1,0 +1,48 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Asignación de Reporte: Lab 4 (Límites Dinámicos)}}[cite: 12]
+\end{center}
+
+\textbf{Fecha Límite de Entrega:} \textbf{25 Octubre 2026 — 23:59}[cite: 12] \\
+\textbf{Título Sugerido:} Caracterización experimental del ancho de banda y Slew Rate en amplificadores operacionales reales[cite: 12]. \\
+\textbf{Narrativa Técnica:} Predicción dinámica $\rightarrow$ Datasheet $\rightarrow$ Test físico $\rightarrow$ Evidencia GBW/SR $\rightarrow$ Comparación de dispositivos $\rightarrow$ Interpretación[cite: 12].
+
+\section*{1. Contenido Analítico Mínimo (Sección II)[cite: 12]}
+Incluya y justifique las siguientes relaciones[cite: 12]:
+\begin{align}
+    f_{BW} &\approx \frac{GBW}{A_N} \text{[cite: 12]} \\
+    v_o(t) &= V_p\sin(2\pi f t) \implies \frac{dv_o}{dt} = 2\pi f V_p \cos(2\pi f t) \text{[cite: 12]} \\
+    SR_{\mathrm{req}} &= 2\pi f V_p \text{[cite: 12]}
+\end{align}
+
+\section*{2. Métricas de Comparación Cuantitativa[cite: 12]}
+Use indicadores de desviación (solo cuando sean físicamente significativos)[cite: 12]:
+\begin{equation}
+    r_{BW} = \frac{f_{BW,\mathrm{meas}}}{f_{BW,\mathrm{pred}}}, \qquad \varepsilon_{BW} = \frac{|f_{BW,\mathrm{meas}} - f_{BW,\mathrm{pred}}|}{f_{BW,\mathrm{pred}}} \times 100\% \text{[cite: 12]}
+\end{equation}
+\begin{equation}
+    r_{SR} = \frac{SR_{\mathrm{req}}}{SR_{\mathrm{datasheet}}} \text{[cite: 12]}
+\end{equation}
+\textit{Interpretación:} Si $r_{SR} \ll 1$, SR no limita. Si $r_{SR} \approx 1$, cerca del umbral. Si $r_{SR} > 1$, la limitación por SR es altamente plausible[cite: 12].
+
+\section*{3. Evidencia y Discusión Requerida[cite: 12]}
+\textbf{Resultados:} Ganancia LF, $f_{BW}$ predicho y medido, respuesta en frecuencia, amplitud real, $SR_{\mathrm{req}}$, onda dinámica seleccionada, comparación Disp. A vs B, y condiciones reales de fuente[cite: 12]. \\
+\textbf{Discusión:} Distinga de forma explícita entre limitación por GBW, Slew Rate, Clipping, comportamiento de la fuente y límites de instrumentación[cite: 12].
+
+\end{document}
