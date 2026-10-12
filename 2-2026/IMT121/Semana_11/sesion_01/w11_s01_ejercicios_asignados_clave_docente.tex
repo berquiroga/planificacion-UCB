@@ -1,0 +1,63 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Clave Diagnóstico}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Herramienta Docente: Clave de Revisión Diagnóstica de Tareas (EC3)}]
+    \centering \textbf{Registro de Revisión de Tareas de Repositorio - Circuito RC}
+\end{tcolorbox}
+
+\noindent\textit{\textbf{NOTA DE LIMITACIÓN:} Los enunciados específicos de los problemas del repositorio oficial no se encuentran disponibles en este paquete. Utilice esta plantilla en clase para documentar las deficiencias conceptuales durante la revisión de pizarra.}
+
+\vspace{0.4cm}
+\section*{1. Estructura Lógica Esperada (Plantilla de Evaluación Rápida)}
+Para cada ejercicio del repositorio revisado en clase, audite los siguientes componentes estructurales del razonamiento del estudiante:
+
+\vspace{0.2cm}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight}p{4cm} >{\RaggedRight\arraybackslash}X}
+\toprule
+\textbf{Ítem a Auditar} & \textbf{Criterio de Evidencia (Expected)} \\ 
+\midrule
+Determinación $v_C(0^-)$ & Identifica el estado estable pre-conmutación. Reemplaza $C$ por circuito abierto si el circuito ha estado en DC mucho tiempo. \\ \addlinespace
+Paso de Continuidad & Aplica explícitamente $v_C(0^+) = v_C(0^-)$. No impone $0\,\text{V}$ por defecto. \\ \addlinespace
+Estado Estacionario $v_C(\infty)$ & Analiza el circuito post-conmutación. Vuelve a tratar a $C$ como abierto (pues $dv_C/dt \to 0$). \\ \addlinespace
+Resistencia Equivalente $R_{eq}$ & Cortocircuita fuentes de voltaje ideales y abre fuentes de corriente ideales \textbf{en la red post-conmutación}. Mira desde los bornes de $C$. \\ \addlinespace
+Constante de Tiempo $\tau$ & Calcula $\tau = R_{eq}C$. Confirma que tiene unidades de segundos. \\ \addlinespace
+Sanity Check Exponencial & Valida la fórmula final reemplazando $t=0$ y $t \to \infty$. Confirma que el voltaje se dirige en el sentido físico correcto (sube o baja). \\ 
+\bottomrule
+\end{tabularx}
+
+\section*{2. Categorías Diagnósticas (Para Registro del Instructor)}
+Si detecta errores durante las presentaciones orales o en el trabajo de pizarra, clasifíquelos en:
+\begin{itemize}
+    \item \texttt{CONTINUITY\_ERROR:} Falla en comprender que el condensador no puede cambiar de voltaje instantáneamente. (Error crítico de EC3).
+    \item \texttt{MODEL\_ERROR:} Calcula $R_{eq}$ sin apagar las fuentes o tomando una malla incorrecta. (Error arrastrado de EC2 - Thévenin).
+    \item \texttt{ALGEBRA\_ONLY\_ERROR:} Se equivocó en un divisor de tensión o en una multiplicación aritmética simple. (Progreso aceptado; el concepto transitorio se entiende).
+    \item \texttt{STRUCTURAL\_REINFORCEMENT\_NEEDED:} El estudiante no logra hilar la secuencia $0^- \to 0^+ \to \infty \to R_{eq}$.
+\end{itemize}
+
+\end{document}

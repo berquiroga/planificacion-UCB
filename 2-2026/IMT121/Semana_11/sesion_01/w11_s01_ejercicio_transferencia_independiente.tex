@@ -1,0 +1,112 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage[american]{circuitikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Ejercicio de Transferencia}
+\lfoot{Prof: M.Sc. Ing. Bernardo Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Ejercicio de Transferencia Independiente (Versión Estudiante)}]
+    \centering \textbf{Demostración de Autonomía en Redes de Primer Orden}
+\end{tcolorbox}
+
+\vspace{0.2cm}
+\textbf{Estudiante:} \hrulefill \quad \textbf{Fecha:} \hrulefill
+
+\vspace{0.4cm}
+\noindent \textbf{Problema:} En el circuito mostrado a continuación, el interruptor se cierra en el instante $t=0$. Se conoce por mediciones previas que el capacitor se encontraba completamente descargado antes de accionar el mecanismo ($v_C(0^-) = 0\,\text{V}$). La tensión $v_C$ se mide en el nodo $a$ respecto a la referencia común (tierra).
+
+\begin{center}
+\begin{circuitikz}[scale=1.2, transform shape]
+    % Fuente de voltaje: de (0,3) a (0,0) usando l_ para que la etiqueta quede a la izquierda
+    % Esto asegura que la polaridad positiva (+) quede arriba de forma natural, sin usar 'invert'
+    \draw (0,3) to[V, l_={$V_s=9\,\text{V}$}] (0,0);
+    
+    % Interruptor
+    \draw (0,3) to[closing switch, l={$t=0$}] (2,3);
+    
+    % Resistencias y Capacitor
+    \draw (2,3) to[R, l={$R_1=3\,\text{k}\Omega$}] (4,3);
+    \draw (4,3) to[short, *-o] (5.5,3) node[above]{$a$};
+    \draw (4,3) to[R, l_={$R_2=6\,\text{k}\Omega$}] (4,0);
+    \draw (5.5,3) to[C, l={$C=100\,\mu\text{F}$}, v={$v_C$}] (5.5,0);
+    
+    % Tierra
+    \draw (0,0) -- (5.5,0);
+    \draw (4,0) node[ground]{};
+\end{circuitikz}
+\end{center}
+
+\section*{Determinaciones Requeridas}
+Sin asistencia docente, complete detalladamente el siguiente flujo de análisis justificando su procedimiento:
+
+\begin{enumerate}\setlength\itemsep{1.3cm}
+    \item Especifique el valor inicial exacto post-conmutación $v_C(0^+)$ y justifique por qué puede asegurar ese número.
+    \item Calcule el valor de estado estacionario final $v_C(\infty)$ asumiendo que ha pasado mucho tiempo desde que el switch se cerró. (Muestre el modelo circuital).
+    \item Determine la resistencia equivalente $R_{eq}$ vista por el capacitor para extraer la inercia del sistema.
+    \item Calcule numéricamente la constante de tiempo $\tau$ indicando sus unidades.
+    \item Construya la función matemática completa $v_C(t)$ para $t \ge 0$.
+    \item Realice un bosquejo cualitativo de la gráfica de la respuesta, indicando los valores en $t=0$, la asíntota en infinito y el tiempo aproximado en el cual asume que el transitorio prácticamente ha finalizado.
+\end{enumerate}
+
+\newpage
+%=====================================================
+% CLAVE DOCENTE
+%=====================================================
+\begin{tcolorbox}[colback=gray!10, colframe=black, title=\textbf{Clave Docente - Solucionario Exclusivo}]
+    \centering \textbf{Valores y Rúbrica de Expectativas}
+\end{tcolorbox}
+
+\subsection*{Solución Analítica del Ejercicio}
+\begin{enumerate}
+    \item \textbf{Condición Inicial:} \\
+    Por el principio de continuidad de voltaje en el capacitor: \\
+    $v_C(0^+) = v_C(0^-) = \mathbf{0\,\text{V}}$.
+    
+    \item \textbf{Condición Final:} \\
+    En DC estacionario ($t \to \infty$), $C$ actúa como un circuito abierto. La red válida es un divisor de tensión formado por $R_1$ y $R_2$. \\
+    $v_C(\infty) = V_s \cdot \left( \frac{R_2}{R_1 + R_2} \right) = 9 \cdot \left( \frac{6\text{k}}{3\text{k} + 6\text{k}} \right) = 9 \cdot \frac{6}{9} = \mathbf{6\,\text{V}}$.
+    
+    \item \textbf{Resistencia Equivalente:} \\
+    Apagando la fuente $V_s$ (cortocircuito a tierra), si miramos desde el puerto del capacitor ($a$ y tierra), vemos que $R_1$ y $R_2$ están en paralelo. \\
+    $R_{eq} = 3\text{k} \parallel 6\text{k} = \frac{3 \cdot 6}{3 + 6} = \mathbf{2\,\text{k}\Omega}$.
+    
+    \item \textbf{Constante de Tiempo:} \\
+    $\tau = R_{eq} C = (2 \cdot 10^3\,\Omega) \cdot (100 \cdot 10^{-6}\,\text{F}) = \mathbf{0.2\,\text{s}}$.
+    
+    \item \textbf{Respuesta General ($v_C(t)$):} \\
+    Sustituyendo en $x(t) = x(\infty) + [x(0^+) - x(\infty)]e^{-t/\tau}$: \\
+    $v_C(t) = 6 + [0 - 6]e^{-t/0.2}$ \\
+    $\mathbf{v_C(t) = 6 \left(1 - e^{-5t}\right) \,\text{V}} \quad \text{para } t \ge 0$
+    
+    \item \textbf{Bosquejo y Sanity Checks:} \\
+    \begin{itemize}
+        \item En $t=0 \implies v_C(0) = 6(1-1) = 0\,\text{V}$.
+        \item En $t \to \infty \implies v_C(\infty) = 6(1-0) = 6\,\text{V}$.
+        \item Tiempo de asentamiento práctico (estabilización): $t_s \approx 5\tau = \mathbf{1.0\,\text{s}}$.
+        \item La curva arranca en el origen (0) y crece monótonamente en forma exponencial asintótica hacia $6\,\text{V}$.
+    \end{itemize}
+\end{enumerate}
+
+\end{document}

@@ -1,0 +1,65 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Readiness Checklist}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Checklist Formativo de Progreso Docente (Readiness Gate)}]
+    \centering \textbf{Decisión de Transición Hacia Simulación Computacional (.tran)}
+\end{tcolorbox}
+
+\noindent \textit{Instrucciones: Evalúe el desempeño macro de la cohorte durante la sesión de consolidación en base al Ejercicio de Transferencia Independiente. El paso al análisis transitorio simulado se condiciona a la robustez de este marco conceptual.}
+
+\vspace{0.4cm}
+\renewcommand{\arraystretch}{1.6}
+\noindent
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}X >{\centering\arraybackslash}p{2cm} >{\centering\arraybackslash}p{2cm} >{\centering\arraybackslash}p{2cm}}
+\toprule
+\textbf{Indicador de Evidencia Conceptual} & \textbf{Sí} & \textbf{Parcial} & \textbf{No} \\ 
+\midrule
+Interpreta físicamente $\frac{dv_C}{dt}$ (Tasa de cambio) & $\square$ & $\square$ & $\square$ \\ \addlinespace
+Aplica correctamente la ley constitutiva $i_C = C \frac{dv_C}{dt}$ & $\square$ & $\square$ & $\square$ \\ \addlinespace
+Usa el principio de continuidad de voltaje adecuadamente & $\square$ & $\square$ & $\square$ \\ \addlinespace
+Distingue claramente los instantes $0^-, 0^+$ y $\infty$ & $\square$ & $\square$ & $\square$ \\ \addlinespace
+Encuentra el valor DC final abriendo el capacitor ($t \to \infty$) & $\square$ & $\square$ & $\square$ \\ \addlinespace
+Determina $R_{eq}$ mirando estrictamente desde el puerto del capacitor & $\square$ & $\square$ & $\square$ \\ \addlinespace
+Calcula $\tau$ de manera matemáticamente y dimensionalmente correcta & $\square$ & $\square$ & $\square$ \\ \addlinespace
+Ensambla la fórmula de respuesta general exponencial & $\square$ & $\square$ & $\square$ \\ \addlinespace
+Verifica matemáticamente los límites en $t=0^+$ y $t \to \infty$ & $\square$ & $\square$ & $\square$ \\ \addlinespace
+Bosqueja la tendencia cualitativa correcta (Sube/Baja) & $\square$ & $\square$ & $\square$ \\ 
+\bottomrule
+\end{tabularx}
+
+\vspace{0.8cm}
+\begin{tcolorbox}[colback=gray!5, colframe=gray!50, title=\textbf{Fallo Final (Status de Transición)}]
+Marque la directiva a ejecutar en la próxima sesión en base a la concentración de marcas (Checkmarks) de la tabla superior:
+\begin{itemize}
+    \item[$\square$] \textbf{\texttt{READY\_FOR\_TRANSIENT\_SIMULATION}}: Base fundacional sólida. Autorizado a enlazar analítica con LTSpice.
+    \item[$\square$] \textbf{\texttt{NEEDS\_RC\_REINFORCEMENT}}: Deficiencias estructurales en KVL, continuidad o $R_{eq}$. Posponer la PC y repetir topologías RC guiadas.
+    \item[$\square$] \textbf{\texttt{INDIVIDUAL\_FOLLOW\_UP}}: Mayoría competente. Intervenciones quirúrgicas en horario de oficina o laboratorio.
+\end{itemize}
+\end{tcolorbox}
+
+\end{document}

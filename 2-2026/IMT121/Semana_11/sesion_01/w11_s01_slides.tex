@@ -1,0 +1,264 @@
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[american]{circuitikz}
+
+\title[Consolidación RC]{Unidad EC3: Consolidación de Circuitos RC de Primer Orden}
+\subtitle{De las Leyes Constitutivas a la Respuesta Exponencial}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' --- Sede Tarija}
+\date{Semana 11}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Revisión Diagnóstica: ¿Dónde estamos?}
+    \textbf{El Modelo de Trabajo EC3}
+    \begin{itemize}
+        \item Un error numérico al final \textbf{NO} significa necesariamente un modelo conceptual incorrecto.
+        \item Identificaremos estructuralmente si el fallo ocurre en:
+        \begin{enumerate}
+            \item Continuidad en la conmutación ($0^-$ vs $0^+$).
+            \item Interpretación de la derivada y leyes constitutivas ($i_C = C \frac{dv_C}{dt}$).
+            \item Modelado del circuito (Ley de Kirchhoff + Ohm).
+            \item Álgebra o sustitución final.
+        \end{enumerate}
+    \end{itemize}
+    \vspace{0.4cm}
+    \begin{tcolorbox}[colback=white, colframe=ucbblue, title=Reflexión sobre Ejercicios Asignados]
+        ¿Puedes explicar de dónde sale la ecuación diferencial de tu ejercicio sin mirar la respuesta final? ¿Comprendes físicamente por qué $v_C$ no puede dar un salto instantáneo?
+    \end{tcolorbox}
+\end{frame}
+
+\begin{frame}{Condición Inicial: $v_C(0^-)$ y $v_C(0^+)$}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \textbf{El Principio de Continuidad}
+        \begin{itemize}
+            \item Por la relación $i_C = C \frac{dv_C}{dt}$, un salto instantáneo en el voltaje requeriría una corriente infinita.
+            \item Bajo condiciones ordinarias de conmutación:
+            \begin{alertblock}{}
+                $$v_C(0^+) = v_C(0^-)$$
+            \end{alertblock}
+        \end{itemize}
+        
+        \column{0.5\textwidth}
+        \textbf{Procedimiento Físico}
+        \begin{enumerate}
+            \item Analizar el circuito para $t < 0$.
+            \item Si estuvo conectado mucho tiempo, asumir estado estacionario DC.
+            \item Obtener $v_C(0^-)$ respetando una polaridad.
+            \item Heredar ese mismo valor en $t=0^+$, incluso si la topología cambió drásticamente.
+        \end{enumerate}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Condición Final: $v_C(\infty)$}
+    \textbf{¿Hacia dónde va el circuito?}
+    \begin{itemize}
+        \item El valor final está determinado EXCLUSIVAMENTE por el \textbf{circuito post-conmutación} ($t > 0$) en estado estacionario DC.
+        \item Mucho tiempo después del transitorio ($t \to \infty$), el voltaje se estabiliza.
+        \item Matemáticamente: $\frac{dv_C}{dt} \to 0$.
+        \item Por ley constitutiva: $i_C \to 0$. El capacitor se comporta como una \textbf{rama abierta}.
+    \end{itemize}
+    \vspace{0.3cm}
+    \begin{tcolorbox}[colback=gray!10, colframe=ucbblue, title=Precaución]
+    El voltaje final $v_C(\infty)$ \textbf{no} siempre es igual al voltaje de la fuente. Depende de la topología final del circuito (ej. un divisor de tensión paralelo al capacitor).
+    \end{tcolorbox}
+\end{frame}
+
+\begin{frame}{Resistencia Equivalente $R_{eq}$ vista por el Capacitor}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \textbf{La Perspectiva del Capacitor}
+        \begin{itemize}
+            \item Para determinar qué tan rápido reacciona el circuito, necesitamos $R_{eq}$.
+            \item \textbf{Procedimiento:}
+            \begin{enumerate}
+                \item Utilizar la red post-conmutación ($t > 0$).
+                \item Retirar conceptualmente el capacitor.
+                \item Desactivar fuentes independientes ($V \to$ corto, $I \to$ abierto).
+                \item Calcular resistencia vista desde los terminales del capacitor.
+            \end{enumerate}
+        \end{itemize}
+        
+        \column{0.5\textwidth}
+        \textbf{Interpretación Física}
+        \begin{itemize}
+            \item $R_{eq}$ controla con qué fuerza la red resistiva circundante permite que la carga fluya hacia o desde el capacitor.
+            \item Para el mismo valor de $C$:
+            \begin{itemize}
+                \item $R_{eq}$ menor $\implies$ respuesta rápida.
+                \item $R_{eq}$ mayor $\implies$ respuesta lenta.
+            \end{itemize}
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{La Constante de Tiempo ($\tau$)}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \textbf{Definición y Unidades}
+        \begin{block}{}
+            $$\tau = R_{eq} \cdot C$$
+        \end{block}
+        \begin{itemize}
+            \item Análisis dimensional: $[\Omega] \cdot [\text{F}] = [\text{s}]$.
+            \item $\tau$ representa la inercia temporal o "escala de tiempo característica" del sistema.
+        \end{itemize}
+
+        \column{0.5\textwidth}
+        \textbf{Interpretación Dinámica}
+        \begin{itemize}
+            \item En $t = 1\tau$, el circuito ha completado aproximadamente el $\mathbf{63.2\%}$ de su transición.
+            \item Es incorrecto pensar que en $1\tau$ el circuito termina de cargarse/descargarse.
+            \item Para fines prácticos de ingeniería, consideramos que el transitorio finaliza tras \textbf{$5\tau$} (error remanente $< 1\%$).
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Forma General de la Respuesta Exponencial}
+    Una vez que tenemos los 3 parámetros de diseño ($v_C(0^+), v_C(\infty), \tau$), armamos la solución.
+    
+    \vspace{0.2cm}
+    \begin{tcolorbox}[colback=white, colframe=ucbblue, boxrule=0.5pt, arc=1mm]
+        $$v_C(t) = v_C(\infty) + \left[ v_C(0^+) - v_C(\infty) \right] e^{-t/\tau} \quad \text{para } t \ge 0$$
+    \end{tcolorbox}
+    
+    \vspace{0.2cm}
+    \textbf{Interpretación Término a Término:}
+    \begin{itemize}
+        \item $v_C(\infty)$: El \textbf{Destino} u objetivo asintótico.
+        \item $\left[ v_C(0^+) - v_C(\infty) \right]$: La \textbf{Desviación Inicial} respecto al objetivo.
+        \item $e^{-t/\tau}$: La \textbf{Fracción} de esa desviación que aún queda por extinguirse.
+    \end{itemize}
+    \vspace{0.2cm}
+    \textit{Sanity Check:} Evalúe $t=0$ ($e^0=1 \implies v_C(0^+)$) y $t \to \infty$ ($e^{-\infty}=0 \implies v_C(\infty)$).
+\end{frame}
+
+\begin{frame}{Ejemplo Guiado Completo: RC con Divisor}
+    \textbf{Condición Previa:} El capacitor estuvo conectado mucho tiempo a una fuente separada de $4\,\text{V}$. Por ende, $v_C(0^-) = 4\,\text{V}$. En $t=0$ el switch lo conecta a esta nueva red:
+    
+    \begin{columns}[T]
+        \column{0.45\textwidth}
+        \vspace{0.2cm}
+        \begin{center}
+        \begin{circuitikz}[scale=0.8, transform shape]
+            \draw (0,3) to[V, l_={$12\,\text{V}$}] (0,0);
+            \draw (0,3) to[R, l={$R_1=2\,\text{k}\Omega$}] (3,3);
+            \draw (3,3) to[short, *-o] (4.5,3) node[above]{$a$};
+            \draw (3,3) to[R, l_={$R_2=4\,\text{k}\Omega$}] (3,0);
+            \draw (4.5,3) to[C, l={$C=150\,\mu\text{F}$}, v={$v_C$}] (4.5,0);
+            \draw (0,0) -- (4.5,0) node[ground]{};
+        \end{circuitikz}
+        \end{center}
+        
+        \column{0.55\textwidth}
+        \begin{enumerate}
+            \item \textbf{Inicial:} $v_C(0^+) = v_C(0^-) = \mathbf{4\,\text{V}}$.
+            \item \textbf{Final ($t \to \infty$):} $C$ es circuito abierto. \\
+            $v_C(\infty) = 12 \left( \frac{4\text{k}}{2\text{k} + 4\text{k}} \right) = \mathbf{8\,\text{V}}$.
+            \item \textbf{Resistencia Equivalente:} Apagamos la fuente de $12\,\text{V}$ (corto). Miramos desde $C$: \\
+            $R_{eq} = 2\text{k} \parallel 4\text{k} = \mathbf{1.333\,\text{k}\Omega}$.
+            \item \textbf{Constante ($\tau$):} \\
+            $\tau = 1.333\,\text{k}\Omega \cdot 150\,\mu\text{F} = \mathbf{0.200\,\text{s}}$.
+        \end{enumerate}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Ejemplo Guiado Completo: La Curva de Respuesta}
+    Ensamblamos la respuesta general:
+    $$v_C(t) = 8 + [4 - 8] e^{-t/0.2} = \mathbf{8 - 4 e^{-t/0.2} \,\text{V}}$$
+    \vspace{-0.2cm}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \begin{center}
+        \begin{tikzpicture}
+            \begin{axis}[
+                width=\textwidth, height=5.5cm,
+                xlabel={$t$ (s)}, ylabel={$v_C(t)$ (V)},
+                xmin=0, xmax=1.2, ymin=0, ymax=9,
+                grid=major,
+                domain=0:1.2, samples=100,
+                xtick={0, 0.2, 0.4, 0.6, 1.0},
+                xticklabels={0, $\tau$, $2\tau$, $3\tau$, $5\tau$}
+            ]
+            \addplot[blue, thick] {8 - 4*exp(-x/0.2)};
+            \addplot[dashed, red, thick] coordinates {(0,8) (1.2,8)};
+            \addplot[mark=*, black] coordinates {(0.2, 6.53)} node[below right] {6.53V};
+            \addplot[mark=*, black] coordinates {(0, 4)} node[right] {4V};
+            \end{axis}
+        \end{tikzpicture}
+        \end{center}
+        \column{0.5\textwidth}
+        \vspace{0.5cm}
+        \textbf{Verificaciones Físicas:}
+        \begin{itemize}
+            \item ¿Sube o baja? Sube de 4V a 8V. Correcto.
+            \item En $t=0$: $8 - 4 = 4\,\text{V}$. Correcto.
+            \item En $t \to \infty$: $8 - 0 = 8\,\text{V}$. Correcto.
+            \item En $t=\tau$: $v_C(0.2) = 8 - 4e^{-1} \approx \mathbf{6.53\,\text{V}}$.
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Puente de Validación hacia SPICE (\texttt{.tran})}
+    \begin{center}
+        \textbf{Modelo Analítico (EDO)} $\xrightarrow{\text{Compara}}$ \textbf{Simulación (}\texttt{.tran}\textbf{)} $\xrightarrow{\text{Compara}}$ \textbf{Osciloscopio}
+    \end{center}
+    
+    \vspace{0.4cm}
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{p{4.5cm} p{8cm}}
+    \toprule
+    \textbf{Predicción Analítica} & \textbf{Validación Futura Computacional} \\ 
+    \midrule
+    $v_C(0^+)$ (Condición inicial) & Valor inicial exacto del trazo de la señal en $t=0$. \\ 
+    $v_C(\infty)$ (Condición final) & Asíntota u offset DC al final de la simulación. \\ 
+    Constante de tiempo $\tau$ & La rapidez visible. Asentamiento alrededor de $5\tau$. \\ 
+    Tendencia de la exponencial & Sube o baja suavemente sin cambios abruptos en voltaje. \\ 
+    \bottomrule
+    \end{tabular}
+    
+    \vspace{0.4cm}
+    \textit{La simulación no reemplaza el entendimiento; confirma que nuestro modelo mental de la inercia del sistema es correcto.}
+\end{frame}
+
+\begin{frame}{Exit Checkpoint}
+    \textbf{Preguntas de Reflexión Rápida:}
+    \vspace{0.3cm}
+    \begin{enumerate}
+        \item ¿Qué significa físicamente el término $\frac{dv_C}{dt}$ en nuestra ecuación diferencial?
+        \item ¿Por qué afirmamos que $v_C(0^+) = v_C(0^-)$ bajo condiciones ordinarias?
+        \item ¿Cuál es la diferencia conceptual entre evaluar en $0^+$ y evaluar en $\infty$?
+        \item Si duplicamos el valor del capacitor $C$, ¿qué le sucederá físicamente a la constante de tiempo $\tau$ y qué impacto tendrá visualmente en la gráfica del voltaje?
+    \end{enumerate}
+\end{frame}
+
+\end{document}

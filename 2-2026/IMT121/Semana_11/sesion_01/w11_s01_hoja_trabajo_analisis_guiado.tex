@@ -1,0 +1,81 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage[american]{circuitikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Análisis RC Guiado}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Hoja de Análisis Guiado: Transitorios de Primer Orden RC}]
+    \centering \textbf{Sistematización de Cálculos y Gráficas}
+\end{tcolorbox}
+
+\noindent\textbf{Instrucciones:} Dado un circuito serie RC genérico sometido a una conmutación en $t=0$, proceda paso a paso para construir y validar la respuesta del sistema.
+
+\vspace{0.4cm}
+\section*{Parte 1: Análisis Dinámico y Continuidad}
+\begin{enumerate}
+    \item Basado en el análisis de la red en estado estacionario pre-conmutación ($t<0$), determine el voltaje inicial del capacitor:\\
+    $v_C(0^-) =$ \rule{4cm}{0.4pt}
+    
+    \item Aplicando el principio físico de continuidad (el capacitor se opone a cambios bruscos de tensión por su inercia de campo eléctrico):\\
+    $v_C(0^+) =$ \rule{4cm}{0.4pt}
+\end{enumerate}
+
+\section*{Parte 2: Análisis Estacionario Final}
+\begin{enumerate}
+    \item Conecte la red post-conmutación. Asuma que transcurrió mucho tiempo ($t \to \infty$) y el capacitor está completamente adaptado. En ese caso, la derivada temporal $\frac{dv_C}{dt} = $ \rule{2cm}{0.4pt}.
+    \item Por tanto, el capacitor se modela topológicamente como un \rule{4cm}{0.4pt}.
+    \item El voltaje de estado estable en el capacitor será:\\
+    $v_C(\infty) =$ \rule{4cm}{0.4pt}
+\end{enumerate}
+
+\section*{Parte 3: Modelo Dinámico e Inercia}
+\begin{enumerate}
+    \item Apague todas las fuentes independientes de la red post-conmutación. Determine la resistencia equivalente vista desde los bornes del capacitor:\\
+    $R_{eq} =$ \rule{4cm}{0.4pt}
+    
+    \item Calcule la constante de tiempo:\\
+    $\tau = R_{eq}C =$ \rule{4cm}{0.4pt} (segundos)
+\end{enumerate}
+
+\section*{Parte 4: Construcción y Verificación de Respuesta}
+Sustituya en la forma canónica: $v_C(t) = v_C(\infty) + [v_C(0^+) - v_C(\infty)]e^{-t/\tau}$
+\begin{equation}
+    v_C(t) = \rule{8cm}{0.4pt}
+\end{equation}
+
+\textbf{Comprobación de Extremos (Sanity Check):}
+\begin{itemize}
+    \item Evaluar en $t=0$: ¿Coincide con $v_C(0^+)$? \rule{3cm}{0.4pt}
+    \item Evaluar en $t \to \infty$: ¿Coincide con $v_C(\infty)$? \rule{3cm}{0.4pt}
+\end{itemize}
+
+\textbf{Interpretación Física:}
+\begin{itemize}
+    \item El término $\frac{dv_C}{dt}$ en la EDO representa \rule{8cm}{0.4pt}.
+    \item Conforme la ecuación, el voltaje del capacitor \textbf{[Sube / Baja]} progresivamente desde \rule{2cm}{0.4pt} V hacia \rule{2cm}{0.4pt} V.
+\end{itemize}
+
+\end{document}
