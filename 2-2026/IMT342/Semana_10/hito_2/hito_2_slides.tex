@@ -1,0 +1,151 @@
+\documentclass[aspectratio=169, xcolor={table,xcdraw}]{beamer}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\renewcommand{\tablename}{Tabla}
+
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+
+\title[Hito 2]{Proyecto Computacional Integrado: Hito 2}
+\subtitle{Implementación y Validación de la Unidad II}
+\author[IMT-342]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}
+\date{Unidad II}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Naturaleza y Ponderación del Proyecto[cite: 8]}
+    El Hito 2 es un \textbf{proyecto computacional integrado} que conecta, valida e interpreta todos los modelos matemáticos de la Unidad II[cite: 8].
+    
+    \vspace{0.3cm}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Ponderación del EC2[cite: 8]:}
+            \begin{equation*}
+                \boxed{ 50\% \text{ EC2 Escrito} + 50\% \text{ Hito 2} } \text{[cite: 8]}
+            \end{equation*}
+            \begin{itemize}
+                \item \textbf{EC2 Escrito:} Mide competencia matemática individual[cite: 8].
+                \item \textbf{Hito 2:} Mide implementación en código y defensa técnica[cite: 8].
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{Entregables Centrales[cite: 8]:}
+            \begin{enumerate}
+                \item Jupyter Notebook (\texttt{.ipynb}) reproducible y ejecutable[cite: 8].
+                \item Informe en formato IEEE (\texttt{.pdf}) generado desde LaTeX[cite: 8].
+                \item Defensa técnica grupal con evaluación \textbf{individual}[cite: 8].
+            \end{enumerate}
+            \vspace{0.2cm}
+            \footnotesize \textit{Herramientas: Python, NumPy, Matplotlib. No se requiere ROS, RViz ni Gazebo[cite: 8].}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Arquitectura de Integración Obligatoria (Pipeline)[cite: 8]}
+    \begin{center}
+    \begin{tikzpicture}[
+        node distance=0.4cm and 0.5cm,
+        box/.style={rectangle, draw=ucbblue, thick, fill=ucbblue!5, text width=2.1cm, align=center, rounded corners, font=\scriptsize},
+        arrow/.style={-Stealth, thick, ucbblue}
+    ]
+        \node[box] (ik) {\textbf{IK / Pieper}\\$T_d \to \mathbf{q}$};
+        \node[box, right=of ik] (fk) {\textbf{Validación FK}\\$T(\mathbf{q}) \approx T_d$};
+        \node[box, right=of fk] (lspb) {\textbf{Trayectoria}\\LSPB: $q, \dot{q}, \ddot{q}$};
+        
+        \node[box, below=0.6cm of lspb] (dyn) {\textbf{Dinámica 1R}\\$\tau(t)$};
+        \node[box, left=of dyn] (jac) {\textbf{Jacobiano}\\$\dot{x} = J(q)\dot{q}$};
+        \node[box, left=of jac] (sing) {\textbf{Singularidad}\\Rango matricial};
+        
+        \draw[arrow] (ik) -- (fk);
+        \draw[arrow] (fk) -- (lspb);
+        \draw[arrow] (lspb) -- (jac);
+        \draw[arrow] (jac) -- (sing);
+        \draw[arrow] (lspb) -- (dyn);
+    \end{tikzpicture}
+    \end{center}
+    
+    \vfill
+    \begin{alertblock}{Restricciones del Robot[cite: 8]}
+        \footnotesize Todo el bloque cinemático utilizará el \textbf{ABB IRB120}. Está estrictamente prohibido inventar dimensiones, límites articulares, masas o inercias no autorizadas[cite: 8].
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Requerimientos Técnicos: Parte I[cite: 8]}
+    \begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{Cinemática Inversa y Selección} {(15\% + 10\% FK)[cite: 8]}, boxsep=0mm, top=1mm, bottom=1mm, left=1mm, right=1mm]
+        \footnotesize
+        \begin{itemize}
+            \item Procesar \textbf{múltiples poses objetivo} ($T_d^{(1)}, T_d^{(2)}, \dots$) dadas por el docente[cite: 8].
+            \item Implementar Pieper analítico, enumerando ramas (hasta 8) y usando \texttt{atan2}[cite: 8].
+            \item Verificar obligatoriamente los candidatos: $T(\mathbf{q}^{(k)}) \approx T_d$[cite: 8].
+            \item Justificar la selección de configuración para la etapa de trayectoria[cite: 8].
+        \end{itemize}
+    \end{tcolorbox}
+    
+    \vspace{0.2cm}
+    \begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{Trayectoria LSPB} {(15\%)[cite: 8]}, boxsep=0mm, top=1mm, bottom=1mm, left=1mm, right=1mm]
+        \footnotesize
+        \begin{itemize}
+            \item Generar perfiles $q(t), \dot{q}(t), \ddot{q}(t)$ con aceleraciones factibles y tiempos de mezcla ($t_c$)[cite: 8].
+            \item Graficar y validar condiciones de frontera (reposo inicial/final)[cite: 8].
+        \end{itemize}
+    \end{tcolorbox}
+\end{frame}
+
+\begin{frame}{Requerimientos Técnicos: Parte II[cite: 8]}
+    \begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{Jacobiano y Singularidades} {(20\%)[cite: 8]}, boxsep=0mm, top=1mm, bottom=1mm, left=1mm, right=1mm]
+        \footnotesize
+        \begin{itemize}
+            \item Implementar el Jacobiano geométrico $\dot{\mathbf{x}} = J(\mathbf{q})\dot{\mathbf{q}}$ y validar manualmente un caso[cite: 8].
+            \item Realizar un \textbf{experimento independiente} aproximando una secuencia de poses hacia una singularidad ($\operatorname{rank}J(\mathbf{q}) < \operatorname{rank}_{\max}$)[cite: 8].
+            \item Explicar físicamente la pérdida de movilidad y la amplificación de velocidad articular[cite: 8].
+        \end{itemize}
+    \end{tcolorbox}
+    
+    \vspace{0.2cm}
+    \begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{Dinámica y Torque} {(15\%)[cite: 8]}, boxsep=0mm, top=1mm, bottom=1mm, left=1mm, right=1mm]
+        \footnotesize
+        \begin{itemize}
+            \item Evaluar el \textbf{modelo reducido 1R} ($\tau = J\ddot{q} + mg\ell_c\sin q$) usando la trayectoria LSPB[cite: 8].
+            \item Graficar $\tau(t)$ e interpretar los picos de esfuerzo, el efecto gravitacional y probar por qué velocidad constante no implica torque cero[cite: 8].
+        \end{itemize}
+    \end{tcolorbox}
+\end{frame}
+
+\begin{frame}{Reglas de Defensa y Aprobación Individual[cite: 8]}
+    \small Equipos de hasta 4 estudiantes. El 5\% restante califica integración y reproducibilidad (Notebook y PDF IEEE)[cite: 8].
+    \vfill
+    \textbf{Ponderación Interna del Hito 2[cite: 8]:}
+    \begin{equation*}
+        \boxed{ 80\% \text{ Producto Grupal} + 20\% \text{ Defensa Individual} } \text{[cite: 8]}
+    \end{equation*}
+    
+    \vfill
+    \begin{alertblock}{Regla de Desempeño Individual Mínimo[cite: 8]}
+        \footnotesize
+        La defensa combinará explicación grupal y preguntas técnicas individuales transversales. \textbf{No se permite dividir el proyecto} ("yo solo hice Pieper"). Cada estudiante debe demostrar comprensión del pipeline, validación matemática y transferencia. La incapacidad para explicar una sección puede afectar severamente su evaluación individual, aun si el código grupal funciona[cite: 8].
+    \end{alertblock}
+\end{frame}
+
+\end{document}

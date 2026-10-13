@@ -1,0 +1,131 @@
+\documentclass[11pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{amsmath, amssymb}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342}}
+\chead{Rúbrica Oficial — Hito 2}
+\rhead{Robótica}
+\lfoot{Documento de Evaluación}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Rúbrica Oficial de Evaluación: Hito 2}}\\[0.2cm]
+\end{center}
+
+\section*{1. Ponderación Estructural[cite: 9]}
+La calificación de la Unidad II se compone de: $\text{EC2} = 50\%$ y $\text{Hito 2} = 50\%$[cite: 9].
+
+Dentro del Hito 2, la nota se subdivide en:
+\begin{equation*}
+    \boxed{ 80\% \text{ Producto Grupal} + 20\% \text{ Defensa Individual} } \text{[cite: 9]}
+\end{equation*}
+
+\section*{2. Criterios de Evaluación por Componente (80\% Grupal)[cite: 9]}
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{|>{\hsize=0.7\hsize\raggedright\arraybackslash}X|>{\hsize=1.1\hsize\raggedright\arraybackslash}X|>{\hsize=1.1\hsize\raggedright\arraybackslash}X|>{\hsize=1.1\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!10} \textbf{Dimensión (Peso)} & \textbf{Excelente} & \textbf{Parcial} & \textbf{Insuficiente} \\ \hline
+
+\textbf{A. IK / Pieper (15\%)}[cite: 9] & 
+Implementa la estructura analítica prevista; maneja correctamente ramas; usa \texttt{atan2} apropiadamente; procesa todas las poses asignadas; distingue candidatos reales/admisibles; puede explicar la geometría de las ramas[cite: 9]. & 
+Obtiene resultados útiles pero existen errores menores, ramas omitidas o explicación incompleta[cite: 9]. & 
+Usa un solver numérico como sustituto de la derivación; solo obtiene una solución sin justificar; no puede explicar la arquitectura de Pieper[cite: 9]. \\ \hline
+
+\textbf{B. Validación por FK (10\%)}[cite: 9] & 
+Verifica sistemáticamente candidatos; compara posición y orientación; documenta error o criterio de aceptación; identifica inconsistencias[cite: 9]. & 
+Verifica solo algunos candidatos o la comparación no está bien documentada[cite: 9]. & 
+Acepta soluciones de IK sin validación[cite: 9]. \\ \hline
+
+\textbf{C. Trayectoria LSPB (15\%)}[cite: 9] & 
+Construye el perfil con parámetros justificados; obtiene $q, \dot{q}, \ddot{q}$; satisface condiciones de frontera; grafica e interpreta correctamente; código y ecuaciones consistentes[cite: 9]. & 
+Perfil funcional pero con validación o documentación incompleta[cite: 9]. & 
+Perfil incorrecto, discontinuo o tratado como una función de biblioteca sin comprensión[cite: 9]. \\ \hline
+
+\textbf{D. Jacobiano y Singularidades (20\%)}[cite: 9] & 
+Jacobiano implementado consistentemente con al menos una validación e interpreta columnas. Usa rango como criterio central (determinante solo cuando corresponde). Desarrolla experimento de singularidad explicando la movilidad que se pierde y la amplificación de velocidades (sin confundirla con torque infinito)[cite: 9]. & 
+Detección numérica correcta con interpretación física incompleta[cite: 9]. & 
+Declara singularidad únicamente por observación; utiliza mal el determinante; no relaciona el resultado con la pérdida de movilidad local[cite: 9]. \\ \hline
+
+\textbf{E. Dinámica y Torque (15\%)}[cite: 9] & 
+Utiliza el modelo 1R trabajado; documenta supuestos y parámetros; calcula torque a partir de $q, \dot{q}, \ddot{q}$; separa e interpreta contribuciones; presenta $\tau(t)$; relaciona el comportamiento con la trayectoria[cite: 9]. & 
+Cálculos correctos pero con poca interpretación o validación[cite: 9]. & 
+Torque obtenido sin modelo claro; parámetros sin procedencia; confusión entre singularidad y torque[cite: 9]. \\ \hline
+
+\textbf{F. Integración y Reproducibilidad (5\%)}[cite: 9] & 
+El \texttt{.ipynb} ejecuta de inicio a fin; módulos comparten datos coherentemente; código legible; unidades/convenciones declaradas; informe IEEE sintetiza correctamente; resultados reproducibles[cite: 9]. & 
+Integración funcional con algunas dependencias manuales o documentación insuficiente[cite: 9]. & 
+Scripts aislados; notebook no reproducible; resultados no pueden reconstruirse[cite: 9]. \\ \hline
+
+\end{tabularx}
+\end{center}
+
+\newpage
+
+\section*{3. Criterios de Defensa Individual (20\%)[cite: 9]}
+La evaluación individual durante la defensa se desglosa en cuatro subdimensiones equitativas:
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|>{\hsize=0.45\hsize\raggedright\arraybackslash}X|c|>{\hsize=1.55\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{gray!20} \textbf{Subdimensión} & \textbf{Peso} & \textbf{Requisito Demostrable} \\ \hline
+\textbf{G1. Pipeline}[cite: 9] & $5\%$ & Explica claramente cómo se conectan los componentes lógicos del proyecto[cite: 9]. \\ \hline
+\textbf{G2. Matemática}[cite: 9] & $5\%$ & Reconstruye o explica al menos una ecuación relevante del modelo[cite: 9]. \\ \hline
+\textbf{G3. Validación / Interpretación}[cite: 9] & $5\%$ & Explica cómo sabe que un resultado numérico es correcto y qué significa físicamente en el contexto del robot[cite: 9]. \\ \hline
+\textbf{G4. Transferencia}[cite: 9] & $5\%$ & Responde exitosamente sobre una parte distinta del pipeline a la de su contribución principal de programación[cite: 9]. \\ \hline
+\end{tabularx}
+\end{center}
+
+\vspace{0.5cm}
+\noindent
+\begin{minipage}[t]{0.48\textwidth}
+    \begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Regla Individual Mínima}, left=1mm, right=1mm, top=1mm, bottom=1mm]
+        \small
+        La evaluación individual es \textbf{obligatoria}[cite: 9]. 
+
+        Un estudiante que no pueda demostrar una comprensión mínima del trabajo presentado podrá recibir una reducción individual directa en la nota de su Hito 2, \textbf{aun cuando el producto grupal sea técnicamente correcto}[cite: 9]. 
+
+        La defensa está diseñada para verificar comprensión transversal, no memoria literal[cite: 9].
+    \end{tcolorbox}
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.48\textwidth}
+    \begin{tcolorbox}[colback=yellow!10, colframe=orange, title=\textbf{Políticas de Uso de IA}, left=1mm, right=1mm, top=1mm, bottom=1mm]
+        \small
+        El uso de Inteligencia Artificial está \textbf{permitido}[cite: 9]. Sin embargo, la evaluación recaerá estrictamente sobre la capacidad del estudiante para:
+        \begin{itemize}
+            \item Verificar y razonar los resultados[cite: 9].
+            \item Garantizar la reproducibilidad[cite: 9].
+            \item Explicar y diagnosticar el trabajo[cite: 9].
+        \end{itemize}
+        La respuesta pasiva \textit{“lo generó la IA”} no constituye en ningún caso una justificación técnica válida ante el tribunal[cite: 9].
+    \end{tcolorbox}
+\end{minipage}
+
+\end{document}

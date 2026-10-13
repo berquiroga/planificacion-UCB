@@ -1,0 +1,81 @@
+\documentclass[conference]{IEEEtran}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage{cite}
+
+\begin{document}
+
+\title{Integración de Modelos Cinemáticos, Diferenciales y Dinámicos para Manipuladores (Hito 2)[cite: 8]}
+
+\author{
+    \IEEEauthorblockN{1\textsuperscript{er} Autor}
+    \IEEEauthorblockA{\textit{Ingeniería Mecatrónica} \\
+    \textit{Universidad Católica Boliviana}\\
+    Tarija, Bolivia \\
+    email@ucb.edu.bo}
+    \and
+    \IEEEauthorblockN{2\textsuperscript{do} Autor}
+    \IEEEauthorblockA{\textit{Ingeniería Mecatrónica} \\
+    \textit{Universidad Católica Boliviana}\\
+    Tarija, Bolivia \\
+    email@ucb.edu.bo}
+    \and
+    \IEEEauthorblockN{3\textsuperscript{er} Autor}
+    \IEEEauthorblockA{\textit{Ingeniería Mecatrónica} \\
+    \textit{Universidad Católica Boliviana}\\
+    Tarija, Bolivia \\
+    email@ucb.edu.bo}
+    \and
+    \IEEEauthorblockN{4\textsuperscript{to} Autor}
+    \IEEEauthorblockA{\textit{Ingeniería Mecatrónica} \\
+    \textit{Universidad Católica Boliviana}\\
+    Tarija, Bolivia \\
+    email@ucb.edu.bo}
+}
+
+\maketitle
+
+\begin{abstract}
+Este documento técnico sintetiza la implementación y validación computacional de un pipeline robótico completo, desde requerimientos espaciales hasta esfuerzos dinámicos[cite: 8]. Utilizando el modelo del ABB IRB120, se abordó la cinemática inversa mediante la metodología de Pieper, la generación temporal usando perfiles LSPB, el análisis de pérdida de movilidad mediante el Jacobiano geométrico, y una aproximación del esfuerzo de actuadores mediante dinámica 1R[cite: 8]. Los resultados demuestran la viabilidad de enlazar modelos locales y globales para planificación de trayectorias.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Cinemática Inversa, Jacobiano, LSPB, Dinámica de Manipuladores, Singularidades, Robótica[cite: 8].
+\end{IEEEkeywords}
+
+\section{Introducción}
+El control efectivo de un manipulador industrial exige comprender la interacción entre el espacio de la tarea y el espacio articular, incorporando la variable temporal para la predicción de fuerzas[cite: 8]. El propósito de este proyecto es construir un flujo de ingeniería robusto que permita transitar desde una pose objetivo arbitraria hasta las demandas de torque en los motores, validando cada etapa de transición matemática[cite: 8].
+
+\section{Metodología[cite: 8]}
+
+\subsection{Cinemática Inversa y Validación Analítica}
+Se evaluaron múltiples poses espaciales objetivo. La resolución se abordó aislando el centro geométrico de la muñeca para el modelo IRB120. Las ramas resultantes se extrajeron garantizando los cuadrantes matemáticos mediante la función \texttt{atan2}, y la admisibilidad de las soluciones se corroboró reinyectando los vectores articulares $\mathbf{q}^{(k)}$ en el modelo de cinemática directa (FK)[cite: 8].
+
+\subsection{Planificación de Trayectoria LSPB}
+Para garantizar un movimiento suave y factible para los actuadores, la transición entre la configuración inicial y final seleccionada se parametrizó usando Segmentos Lineales con Mezclas Parabólicas (LSPB)[cite: 8]. Se definieron restricciones de aceleración para asegurar perfiles continuos de posición y velocidad articular.
+
+\subsection{Jacobiano y Detección de Singularidad}
+El mapeo de velocidades se caracterizó mediante el Jacobiano geométrico $\dot{\mathbf{x}} = J(\mathbf{q})\dot{\mathbf{q}}$. Se diseñó un experimento computacional aislado donde se aproximó al manipulador a una frontera del espacio de trabajo, monitoreando el decaimiento del rango matricial y documentando la dirección espacial inoperable[cite: 8].
+
+\subsection{Modelo Dinámico Reducido (1R)}
+El esfuerzo de los actuadores se calculó mediante un enfoque Euler-Lagrange simplificado a 1R: $\tau = J\ddot{q} + mg\ell_c\sin q$[cite: 8]. Las variables cinemáticas de tiempo $(q(t), \dot{q}(t), \ddot{q}(t))$ generadas por el bloque LSPB sirvieron como entradas de excitación para determinar el torque $\tau(t)$ resultante[cite: 8].
+
+\section{Resultados Clave[cite: 8]}
+\textit{[Instrucción para estudiantes: Inserte aquí tablas de resultados de validación FK, gráficos alineados del perfil LSPB y curvas de torque. NO copie bloques masivos de código en esta sección[cite: 8].]}
+
+\section{Discusión[cite: 8]}
+\textit{[Instrucción para estudiantes: Compare los efectos de las fases de aceleración y velocidad de crucero en las demandas de torque. Discuta la diferencia física entre entrar en una singularidad cinemática y tener un pico de torque alto[cite: 8].]}
+
+\section{Conclusiones}
+Se ha validado satisfactoriamente el pipeline de transformación de información en robótica, demostrando que la solución de posición es el requisito fundamental sobre el cual operan los análisis de sensibilidad diferencial y demandas energéticas en los motores[cite: 8].
+
+\begin{thebibliography}{00}
+\bibitem{b1} B. Siciliano, L. Sciavicco, L. Villani, and G. Oriolo, \textit{Robotics: Modelling, Planning and Control}. Springer, 2009.
+\bibitem{b2} Guía Oficial - Hito 2 IMT-342, Universidad Católica Boliviana, 2026.
+\end{thebibliography}
+
+\end{document}

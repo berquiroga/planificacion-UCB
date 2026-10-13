@@ -1,0 +1,94 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{amsmath, amssymb}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342}}
+\chead{Guía Oficial — Hito 2}
+\rhead{Robótica}
+\lfoot{Especificación del Proyecto}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Guía Oficial y Rúbrica de Evaluación: Hito 2}}\\[0.2cm]
+\end{center}
+
+\section{Naturaleza y Ponderación del Proyecto[cite: 8]}
+La calificación del Elemento de Competencia 2 (EC2) se divide equitativamente: $50\%$ examen escrito (competencia matemática) y $50\%$ Hito 2[cite: 8]. 
+
+El \textbf{Hito 2} es un proyecto computacional integrado que exige implementar, integrar, validar e interpretar los modelos de la Unidad II[cite: 8]. El producto central consistirá en:
+\begin{enumerate}
+    \item Un Jupyter Notebook (\texttt{.ipynb}) reproducible[cite: 8].
+    \item Un informe PDF generado en LaTeX con formato IEEE[cite: 8].
+    \item Una defensa técnica grupal con evaluación individual[cite: 8].
+\end{enumerate}
+\textit{Herramientas permitidas:} Python, NumPy, Matplotlib. \textbf{No requerido:} ROS, RViz o Gazebo[cite: 8].
+
+\section{Arquitectura Requerida e Integración Obligatoria[cite: 8]}
+El notebook no debe ser un conjunto de scripts aislados. Debe construir un pipeline de ingeniería continuo[cite: 8]:
+\begin{align*}
+    T_d &\to \text{Pieper} \to \mathbf{q} \to \text{LSPB} \to q(t), \dot{q}(t), \ddot{q}(t) \\
+    &\to J(\mathbf{q}) \to \text{Singularidades} \to \text{Dinámica 1R} \to \tau(t) \text{[cite: 8]}
+\end{align*}
+
+\subsection{Robot y Alcance (ABB IRB120)[cite: 8]}
+El bloque cinemático se desarrollará exclusivamente sobre el \textbf{ABB IRB120}. No se deben inventar dimensiones, límites, parámetros dinámicos ni inercias[cite: 8]. Todo dato no disponible debe justificarse explícitamente[cite: 8].
+
+\section{Requisitos Mínimos por Módulo[cite: 8]}
+
+\textbf{3.1. Poses Objetivo e IK (Pieper)}[cite: 8] \\
+Se deberán procesar múltiples poses dadas por el docente. Debe implementar la enumeración analítica de ramas (hasta 8), usar $\operatorname{atan2}$ para preservar cuadrantes y generar una tabla resumen de candidatos[cite: 8]. Toda solución debe ser verificada obligatoriamente: $\boxed{T(\mathbf{q}^{(k)}) \approx T_d}$[cite: 8]. Se debe justificar la configuración seleccionada para el movimiento[cite: 8].
+
+\textbf{3.2. Trayectoria LSPB}[cite: 8] \\
+Debe producir $q(t), \dot{q}(t), \ddot{q}(t)$ documentando la configuración inicial/final, tiempo total, aceleración y tiempos de mezcla. Es obligatorio graficar los tres perfiles cinemáticos y validar las condiciones de reposo en las fronteras[cite: 8].
+
+\textbf{3.3. Jacobiano y Singularidades}[cite: 8] \\
+Implementar $\dot{\mathbf{x}} = J(\mathbf{q})\dot{\mathbf{q}}$. El análisis de singularidad será un \textbf{experimento computacional independiente}, definiendo una secuencia de poses hacia una singularidad conocida[cite: 8]. Deberá registrar la pérdida de rango ($\operatorname{rank}J(\mathbf{q}) < \operatorname{rank}_{\max}$), graficar el comportamiento, interpretar la pérdida de movilidad y analizar la amplificación de velocidad requerida[cite: 8].
+
+\textbf{3.4. Dinámica y Torque}[cite: 8] \\
+Se utilizará el modelo reducido 1R estudiado en clase: $\tau = J\ddot{q} + mg\ell_c\sin q$[cite: 8]. Evaluará esta ecuación utilizando la trayectoria LSPB previamente calculada y graficará $\tau(t)$. Deberá interpretar las regiones de mayor esfuerzo y la diferencia entre degradación cinemática (singularidad) y comportamiento dinámico[cite: 8].
+
+\section{Defensa y Rúbrica de Evaluación[cite: 8]}
+Equipos de hasta 4 estudiantes. \textbf{El Hito 2 consta de $80\%$ producto grupal y $20\%$ defensa individual}[cite: 8].
+
+\vspace{0.3cm}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|>{\hsize=0.8\hsize\raggedright\arraybackslash}X|c|>{\hsize=1.2\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{gray!20} \textbf{Dimensión} & \textbf{Peso} & \textbf{Criterio de Excelencia} \\ \hline
+\textbf{A.} IK / Pieper & $15\%$ & Analítico, maneja ramas, usa \texttt{atan2}, procesa todas las poses[cite: 8]. \\ \hline
+\textbf{B.} Validación por FK & $10\%$ & Verifica sistemáticamente los candidatos comparando pose completa[cite: 8]. \\ \hline
+\textbf{C.} LSPB & $15\%$ & Perfil continuo, satisface límites, gráficas alineadas consistentes[cite: 8]. \\ \hline
+\textbf{D.} Jacobiano y Singular. & $20\%$ & Experimento de aproximación claro. Interpreta rango y movilidad perdida[cite: 8]. \\ \hline
+\textbf{E.} Dinámica y Torque & $15\%$ & Usa modelo 1R. Interpreta componentes de esfuerzo en $\tau(t)$ sobre el LSPB[cite: 8]. \\ \hline
+\textbf{F.} Integración/IEEE & $5\%$ & Notebook reproducible; código y ecuaciones limpias. PDF IEEE correcto[cite: 8]. \\ \hline
+\textbf{G.} Defensa Individual & $20\%$ & Explica pipeline, matemática y transferencia de conceptos transversalmente[cite: 8]. \\ \hline
+\end{tabularx}
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Regla de Desempeño Individual Mínimo[cite: 8]}]
+    Cada estudiante debe demostrar comprensión del pipeline, validación e interpretación física[cite: 8]. Un estudiante que no pueda explicar el trabajo enfrentará una reducción de su nota individual, sin importar que el código grupal sea perfecto[cite: 8]. No se aceptan divisiones estancas del proyecto[cite: 8].
+\end{tcolorbox}
+
+\end{document}
