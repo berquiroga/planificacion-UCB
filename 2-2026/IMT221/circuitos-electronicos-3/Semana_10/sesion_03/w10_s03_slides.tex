@@ -1,0 +1,378 @@
+\documentclass[aspectratio=169, table]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage[most]{tcolorbox}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+\title[Potencia y MOSFET]{Transición a Potencia: Clases de Salida y Fundamentos de MOSFET}
+\subtitle{IMT-221 Circuitos Electrónicos III — Semana 10, Sesión 3}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}
+\date{Semana 10}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Transición Curricular: De la Señal a la Actuación}
+    \begin{center}
+    \begin{tikzpicture}[node distance=2.2cm, auto, thick, >=Stealth]
+        \node[draw, rounded corners, fill=gray!20, align=center] (prot) {Protección\\(U1)};
+        \node[draw, rounded corners, fill=gray!20, right of=prot, xshift=0.5cm, align=center] (sense) {Sensing\\(U2)};
+        \node[draw, rounded corners, fill=gray!20, right of=sense, xshift=0.5cm, align=center] (ctrl) {Control\\(U3)};
+        \node[draw, rounded corners, fill=ucbblue!20, right of=ctrl, xshift=0.5cm, align=center] (pwr) {\textbf{Potencia}\\\textbf{(U3)}};
+        \node[draw, rounded corners, fill=red!10, right of=pwr, xshift=0.5cm, align=center] (load) {Carga};
+        
+        \draw[->] (prot) -- (sense);
+        \draw[->] (sense) -- (ctrl);
+        \draw[->] (ctrl) -- (pwr);
+        \draw[->] (pwr) -- (load);
+        
+        \draw[->, dashed] (load.south) -- ++(0,-0.5) -| node[pos=0.25, below] {Feedback (U4)} (ctrl.south);
+    \end{tikzpicture}
+    \end{center}
+    \vspace{0.5cm}
+    \begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=La Pregunta Técnica Central]
+        ¿Por qué la electrónica que mide una corriente no es necesariamente la misma electrónica que puede entregar potencia a una carga?
+    \end{tcolorbox}
+\end{frame}
+
+\begin{frame}{Sensing $\neq$ Actuation (Ejemplo 1)}
+    \begin{columns}
+        \begin{column}{0.48\textwidth}
+            \textbf{Etapa de Sensado (Ej. Shunt)} \\
+            Procesa señales pequeñas para mantener linealidad y no perturbar el sistema:
+            \begin{align*}
+                V_s &= 0.2\,\text{V} \\
+                I_s &= 2\,\text{mA} \\
+                P_s &= V_s I_s \\
+                P_s &= (0.2)(0.002) = \mathbf{0.4\,\text{mW}}
+            \end{align*}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{Etapa de Carga (Ej. Motor/Actuador)} \\
+            Demanda energía significativa para realizar trabajo físico:
+            \begin{align*}
+                V_L &= 12\,\text{V} \\
+                I_L &= 2\,\text{A} \\
+                P_L &= V_L I_L \\
+                P_L &= (12)(2) = \mathbf{24\,\text{W}}
+            \end{align*}
+        \end{column}
+    \end{columns}
+    \vspace{0.5cm}
+    \centering
+    \Large $\frac{P_L}{P_s} = 60,000 \implies$ \textbf{Prioridades de diseño radicalmente distintas.} \\
+    \normalsize Aparecen: Disipación, eficiencia, protección térmica.
+\end{frame}
+
+\begin{frame}{Puente Funcional: Clases Lineales (A, B, AB)}
+    \begin{table}[]
+        \centering
+        \begin{tabular}{@{}lccc@{}}
+        \toprule
+        \textbf{Aspecto} & \textbf{Clase A} & \textbf{Clase B} & \textbf{Clase AB} \\ \midrule
+        Conducción por BJT & Ciclo completo & $\sim$ Medio ciclo & $>$ Medio ciclo \\
+        Corriente de reposo ($I_Q$) & Alta & Idealmente cero & Pequeña/Moderada \\
+        Distorsión de cruce & No dominante & Relevante & Reducida \\
+        Disipación en reposo & Alta ($P_Q = V_Q I_Q$) & Baja & Mayor que B \\
+        \textbf{Rol Conceptual} & \textbf{Linealidad} & \textbf{Eficiencia} & \textbf{Compromiso} \\ \bottomrule
+        \end{tabular}
+    \end{table}
+\end{frame}
+
+\begin{frame}{Visualización: Crossover Distortion (Distorsión de Cruce)}
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=12cm, height=5cm,
+            axis lines=middle,
+            xmin=0, xmax=10, ymin=-1.5, ymax=1.5,
+            xlabel={$t$}, ylabel={$v_o(t)$},
+            xtick=\empty, ytick=\empty,
+            legend style={at={(0.5,-0.1)}, anchor=north, legend columns=3, draw=none}
+        ]
+        % Ideal (Entrada referenciada)
+        \addplot[thick, dashed, gray, domain=0:10, samples=100] {sin(deg(x))} ;
+        % Clase B (Dead zone)
+        \addplot[thick, red, domain=0:10, samples=200] {
+            sin(deg(x)) > 0.3 ? sin(deg(x))-0.3 : (sin(deg(x)) < -0.3 ? sin(deg(x))+0.3 : 0)
+        };
+        % Clase AB (Reducida)
+        \addplot[thick, blue, domain=0:10, samples=200] {
+            sin(deg(x)) > 0.05 ? sin(deg(x))-0.05 : (sin(deg(x)) < -0.05 ? sin(deg(x))+0.05 : 0)
+        };
+        
+        \legend{Entrada Ideal, Clase B (Notch severo), Clase AB (Notch reducido)}
+        \end{axis}
+    \end{tikzpicture}
+    
+    \vspace{0.2cm}
+    La Clase AB inyecta una \textbf{pequeña corriente de bias} para solapar la conducción de ambos dispositivos alrededor de $v_{in} = 0$.
+\end{frame}
+
+\begin{frame}{Del Push-Pull Lineal al Switching}
+    En una etapa \textbf{lineal}, el dispositivo pasa periodos largos con $v > 0$ e $i > 0$ simultáneamente.
+    \begin{equation*}
+        p(t) = v_{\text{disp}}(t) \cdot i_{\text{disp}}(t) \gg 0
+    \end{equation*}
+    
+    Para actuar sobre altas potencias sin quemar el dispositivo, operamos como \textbf{Interruptor (Switching)}:
+    \begin{columns}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Estado OFF (Abierto)}
+                $i_D \approx 0$ \\
+                $v_{DS} = V_{BUS}$ \\
+                $P_{OFF} \approx (V_{BUS})(0) = 0$
+            \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Estado ON (Cerrado)}
+                $v_{DS} \approx \text{pequeño}$ \\
+                $i_D = I_{CARGA}$ \\
+                $P_{ON} \approx (\text{pequeño})(I_{CARGA}) \approx 0$
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{NMOS de Enriquecimiento: Terminales y Control}
+    \begin{columns}
+        \begin{column}{0.45\textwidth}
+            \centering
+            \begin{circuitikz}[scale=1.3, transform shape]
+                \draw (0,0) node[nmos](M){};
+                \node[above] at (M.D) {Drain ($D$)};
+                \node[below] at (M.S) {Source ($S$)};
+                \node[left] at (M.G) {Gate ($G$)};
+                
+                \draw[->, red, thick] (-0.5, 0.2) to[bend right] node[left] {$V_{GS}$} (-0.2, -0.7);
+                \draw[->, blue, thick] (0.5, 0.6) to[bend left] node[right] {$V_{DS}$} (0.5, -0.6);
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Variable de Control Electrostática:}
+            \begin{equation*}
+                \boxed{V_{GS} = V_G - V_S}
+            \end{equation*}
+            \textit{Precaución:} Nunca hables de "voltaje de gate" sin referenciar a dónde está conectado el Source.
+            
+            \vspace{0.3cm}
+            \begin{itemize}
+                \item Gate está \textbf{aislada eléctricamente} en DC.
+                \item No requiere corriente continua para mantener conducción (como el BJT).
+                \item \textbf{PERO} presenta capacitancia: exige corriente dinámica $i_G = \frac{dq_G}{dt}$ durante la conmutación.
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Regiones de Operación (Modelo Ideal Long-Channel)}
+    \begin{columns}
+        \begin{column}{0.45\textwidth}
+            \textbf{1. Cutoff (Corte)}
+            \begin{equation*}
+                V_{GS} < V_{TH} \implies I_D \approx 0
+            \end{equation*}
+            \vspace{0.1cm}
+            
+            \textbf{2. Ohmic / Triode / Resistive} \\
+            Para encendido eficiente (Switch ON):
+            \begin{align*}
+                V_{GS} &> V_{TH} \\
+                0 \le V_{DS} &< V_{GS} - V_{TH}
+            \end{align*}
+            Se modela como resistencia ($R_{DS(on)}$).
+            
+            \vspace{0.3cm}
+            \textbf{3. Saturation}
+            \begin{align*}
+                V_{GS} &> V_{TH} \\
+                V_{DS} &\ge V_{GS} - V_{TH}
+            \end{align*}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \centering
+            \begin{tikzpicture}
+                \begin{axis}[
+                    width=7cm, height=6cm,
+                    xmin=0, xmax=5, ymin=0, ymax=6,
+                    xlabel={$V_{DS}$}, ylabel={$I_D$},
+                    xtick=\empty, ytick=\empty,
+                    axis lines=left,
+                    domain=0:5
+                ]
+                % Ohmic dividing line
+                \addplot[dashed, gray, domain=0:3] {x^2};
+                \node[gray, rotate=60] at (1.5, 2.5) {$V_{DS} = V_{GS}-V_{TH}$};
+                
+                % Curves
+                \addplot[thick, blue, domain=0:2] {2*(x - 0.5*x^2)};
+                \addplot[thick, blue, domain=2:5] {2};
+                
+                \addplot[thick, ucbblue, domain=0:3] {3*(x - 0.5*x^2)};
+                \addplot[thick, ucbblue, domain=3:5] {4.5};
+                
+                \node[align=center] at (1, 4.5) {\textbf{Ohmic}\\\textbf{(Switch ON)}};
+                \node[align=center] at (4, 2.25) {\textbf{Saturation}};
+                \end{axis}
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+    \vspace{0.2cm}
+    \begin{alertblock}{Distinción Crítica}
+        \centering $\text{MOSFET Saturation} \neq \text{BJT Saturation}$ \\
+        \small Para baja pérdida como switch, operamos en la región \textbf{Ohmic/Triode}, no en saturación.
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{La Trampa del Threshold ($V_{GS(th)}$)}
+    \begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=Error Común]
+        "El datasheet dice $V_{GS(th)} = 2\,\text{V}$. Si aplico $3.3\,\text{V}$ desde mi microcontrolador, el MOSFET estará totalmente encendido." $\implies$ \textbf{FALSO.}
+    \end{tcolorbox}
+    
+    $V_{GS(th)}$ se define para una corriente de drenaje minúscula (inicio de conducción). \textbf{No demuestra baja resistencia ($R_{DS(on)}$).}
+    
+    \vspace{0.2cm}
+    {\small
+    \textbf{Ejemplo Ilustrativo (Datasheet IRLZ44N, Infineon):}
+    \begin{itemize}
+        \item $V_{GS(th)}$ típico: $1\,\text{V}$ a $2\,\text{V}$
+        \item $R_{DS(on)}$ garantizada: $22\,\text{m}\Omega$ (@ $10\,\text{V}$), $25\,\text{m}\Omega$ (@ $5\,\text{V}$), $35\,\text{m}\Omega$ (@ $4\,\text{V}$)
+    \end{itemize}
+    }
+    
+    \vspace{0.2cm}
+    \textbf{Conclusión:} Para diseñar, busca las condiciones bajo las cuales se especifica $R_{DS(on)}$, NO $V_{GS(th)}$.
+\end{frame}
+
+\begin{frame}{Pérdida por Conducción ($P_{cond}$)}
+    Estando plenamente encendido (Región Ohmica), el MOSFET se modela como $R_{DS(on)}$.
+    \begin{align*}
+        V_{DS(on)} &\approx I_D \cdot R_{DS(on)} \\
+        P_{cond} &= V_{DS(on)} \cdot I_D \quad \implies \quad \boxed{P_{cond} \approx I_D^2 \cdot R_{DS(on)}}
+    \end{align*}
+    
+    \textbf{Ejemplo de Diseño (Evaluando opciones para $I_D = 4\,\text{A}$):}
+    \begin{itemize}
+        \item Candidato A: $R_{DS(on)} = 25\,\text{m}\Omega \implies P_A = (4)^2(0.025) = \mathbf{0.40\,\text{W}}$
+        \item Candidato B: $R_{DS(on)} = 60\,\text{m}\Omega \implies P_B = (4)^2(0.060) = \mathbf{0.96\,\text{W}}$
+    \end{itemize}
+    \textit{Menor $R_{DS(on)}$ reduce las pérdidas estáticas de conducción... pero no es el único factor en PWM.}
+\end{frame}
+
+\begin{frame}{Corriente Dinámica de Compuerta y Gate Charge ($Q_g$)}
+    La compuerta requiere carga para establecer el canal.
+    \begin{equation*}
+        Q_g = \int i_G(t) \,dt \quad \implies \quad I_{G,avg} \approx \frac{Q_g}{\Delta t}
+    \end{equation*}
+    
+    \begin{center}
+    \begin{tikzpicture}[node distance=2.5cm, auto, thick, >=Stealth]
+        \node[draw, rounded corners, fill=white] (qg) {$Q_g$ alta};
+        \node[draw, rounded corners, fill=white, right of=qg, xshift=1cm] (ig) {Requiere más $I_G$};
+        \node[draw, rounded corners, fill=white, right of=ig, xshift=1.5cm, align=center] (dt) {$\Delta t$ aumenta\\(si el driver es débil)};
+        
+        \draw[->] (qg) -- (ig);
+        \draw[->] (ig) -- (dt);
+    \end{tikzpicture}
+    \end{center}
+    
+    Transiciones lentas aumentan el solapamiento entre $v_{DS}$ e $i_D$, incrementando las \textbf{pérdidas de conmutación}.
+\end{frame}
+
+\begin{frame}{Intuición Visual: Pérdida de Conmutación ($E_{sw}$)}
+    Durante la transición ON $\to$ OFF o OFF $\to$ ON, ambos $v_{DS}$ e $i_D$ son no nulos simultáneamente.
+    \begin{equation*}
+        p(t) = v_{DS}(t) \cdot i_D(t) \quad \implies \quad E_{sw} = \int_{t_{sw}} p(t) \,dt
+    \end{equation*}
+    
+    \vspace{-0.2cm}
+    \begin{center}
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=10cm, height=4cm,
+            xmin=0, xmax=4, ymin=0, ymax=3,
+            axis lines=left,
+            xlabel={tiempo $t$}, ylabel={Magnitud},
+            xtick=\empty, ytick=\empty,
+            legend style={at={(0.5,1.2)}, anchor=south, legend columns=3, draw=none}
+        ]
+        % v_DS (cae)
+        \addplot[thick, blue, domain=0:4, samples=100] {2.5/(1+exp(5*(x-2))) + 0.1};
+        % i_D (sube)
+        \addplot[thick, red, domain=0:4, samples=100] {2.5/(1+exp(-5*(x-2))) + 0.1};
+        % p(t) (pulso)
+        \addplot[thick, black, fill=gray!30, domain=0:4, samples=100] { (2.5/(1+exp(5*(x-2)))) * (2.5/(1+exp(-5*(x-2)))) };
+        
+        \node[anchor=west] at (2.2, 1.5) {$E_{sw}$ (Área bajo la curva)};
+        \legend{$v_{DS}$ (Tensión), $i_D$ (Corriente), $p(t)$ (Potencia instantánea)}
+        \end{axis}
+    \end{tikzpicture}
+    \end{center}
+    \textit{Un MOSFET con muy baja $R_{DS(on)}$ pero altísima $Q_g$ puede calentar más a altas frecuencias (PWM) debido a este efecto.}
+\end{frame}
+
+\begin{frame}{Lectura Rigurosa de Datasheet (Datasheet Literacy)}
+    No basta con un solo número. Debes revisar:
+    
+    \vspace{-0.2cm}
+    \begin{table}[]
+        \centering
+        \resizebox{\textwidth}{!}{
+        \begin{tabular}{@{}ll@{}}
+        \toprule
+        \textbf{Parámetro} & \textbf{Lectura Correcta de Ingeniería} \\ \midrule
+        $V_{DSS}$ & Límite absoluto de tensión (Absolute Maximum Rating). \\
+        $I_D$ (Continuous) & Siempre condicionado térmica/pulsos. No es corriente "segura" automática. \\
+        $V_{GS(th)}$ & Inicio de conducción. \textbf{No} usar para diseño de encendido ON. \\
+        $R_{DS(on)}$ & Leer siempre condicionado al $V_{GS}$ y Temp de prueba. \\
+        $Q_g$ & Carga de compuerta; determina requerimientos del Gate Driver. \\
+        Thermal ($R_{\theta JC}, R_{\theta JA}$) & Puente para diseño de disipación térmica. \\
+        SOA (Safe Operating Area) & Frontera gráfica combinada de V, I y tiempo (pulsos). \\ \bottomrule
+        \end{tabular}
+        }
+    \end{table}
+\end{frame}
+
+\begin{frame}{Próximos Pasos en el Curso}
+    \begin{center}
+        \Large $\text{MOSFET Switch} \rightarrow \text{Gate Driver} \rightarrow \text{Carga Inductiva} \rightarrow \text{H-Bridge}$
+    \end{center}
+    
+    \vspace{0.5cm}
+    \textbf{Preguntas abiertas para la siguiente sesión:}
+    \begin{itemize}
+        \item ¿Puede mi microcontrolador cargar la Gate lo suficientemente rápido?
+        \item ¿Qué cambia drásticamente cuando la carga es \textit{inductiva} (ej. motor DC) en vez de resistiva?
+        \item ¿Cómo implementamos topologías \textit{High-Side}?
+        \item ¿Qué es el \textit{Shoot-Through} y cómo previene la destrucción del puente?
+    \end{itemize}
+\end{frame}
+
+\end{document}

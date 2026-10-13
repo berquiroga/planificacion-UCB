@@ -1,0 +1,68 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Worksheet MOSFET S10-3}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Hoja de Trabajo: Extracción Analítica de Datasheet MOSFET}]
+    Nunca se selecciona un componente por el "título" comercial. La ingeniería se basa en la validación de las fronteras de operación y las condiciones de prueba.
+\end{tcolorbox}
+
+\section*{1. Identificación General}
+Device: \rule{6cm}{0.4pt} \quad Manufacturer: \rule{5cm}{0.4pt} \\
+Application assumed (Condiciones del proyecto): \rule{9cm}{0.4pt}
+
+\section*{2. Absolute Maximum Ratings}
+$V_{DSS}$ (Tensión máxima de bloqueo): \rule{4cm}{0.4pt} \\
+¿En qué tabla del datasheet se encuentra?: \rule{8cm}{0.4pt} \\
+Continuous $I_D$: \rule{3cm}{0.4pt} \quad Condición térmica declarada: \rule{5cm}{0.4pt} \\
+Pulsed $I_D$: \rule{3.5cm}{0.4pt} \quad Límite de pulso: \rule{5cm}{0.4pt}
+
+\section*{3. Electrical Characteristics (The ON State)}
+$V_{GS(th)}$ (Tensión umbral): \rule{3cm}{0.4pt} \quad Test condition ($I_D, V_{DS}$): \rule{4cm}{0.4pt} \\
+\textit{¡Recuerda que esto solo indica el inicio de conducción, no el encendido de baja pérdida!}
+
+\vspace{0.3cm}
+$R_{DS(on)}$ evaluado en $V_{GS} = \rule{2cm}{0.4pt}$: \rule{3cm}{0.4pt} \\
+$R_{DS(on)}$ evaluado en $V_{GS} = \rule{2cm}{0.4pt}$: \rule{3cm}{0.4pt} \\
+Test current para $R_{DS(on)}$ ($I_D$): \rule{3cm}{0.4pt} \quad Temperatura: \rule{3cm}{0.4pt}
+
+\section*{4. Dynamic \& Thermal Parameters}
+$Q_g$ (Total Gate Charge): \rule{3cm}{0.4pt} \quad Condición de prueba ($V_{DS}, I_D, V_{GS}$): \rule{3.5cm}{0.4pt} \\
+$R_{\theta JC}$ (Thermal resistance, Junction-to-Case): \rule{4cm}{0.4pt} \\
+$R_{\theta JA}$ (Thermal resistance, Junction-to-Ambient): \rule{4cm}{0.4pt}
+
+\section*{5. SOA \& Body Diode}
+SOA (Safe Operating Area) Figure: $\square$ Presente \quad $\square$ No encontrada \\
+Body Diode (Parámetros relevantes de recuperación/corriente): \rule{6cm}{0.4pt}
+
+\section*{6. Síntesis de Diseño}
+¿Qué parámetro limitará esta aplicación primero (Ej. térmica, SOA, Gate Drive)? \rule{4.5cm}{0.4pt} \\
+¿Por qué? \rule{13.5cm}{0.4pt}
+
+\vfill
+\begin{tcolorbox}[colback=yellow!10, colframe=gray, title=Ejemplo Ilustrativo Guiado (IRLZ44N - Infineon)]
+    \small \textit{Nota: Este componente es meramente ilustrativo y NO es el MOSFET oficial seleccionado para el curso.} \\
+    \textbf{Device:} IRLZ44N | \textbf{VDSS:} 55 V | \textbf{ID:} 47 A @ $25^\circ$C (Condicionado a disipación ideal) \\
+    \textbf{VGS(th):} 1--2 V \\
+    \textbf{RDS(on):} 22 m$\Omega$ @ VGS=10 V | 25 m$\Omega$ @ VGS=5 V | 35 m$\Omega$ @ VGS=4 V. \\
+    \textbf{Qg:} $\sim$ 32 nC (typ). \\
+    \textbf{Conclusión rápida:} Aunque el umbral sea 1 V, para garantizar los 25 m$\Omega$ se debe suministrar un \textit{gate drive} duro de al menos 5 V.
+\end{tcolorbox}
+
+\end{document}

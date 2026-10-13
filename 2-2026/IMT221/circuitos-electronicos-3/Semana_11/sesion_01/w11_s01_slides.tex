@@ -1,0 +1,326 @@
+\documentclass[aspectratio=169, table]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage[most]{tcolorbox}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+\title[Potencia y MOSFET]{Formalización MOSFET: Desde la Señal hasta la Actuación de Potencia}
+\subtitle{IMT-221 Circuitos Electrónicos III — Semana 11, Sesión 1}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}
+\date{Semana 11}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Diagnóstico Inicial (Sin Apuntes)}
+    \begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=Verificación de Exposición Investigativa]
+        Responde individualmente a las siguientes 4 preguntas basándote en tu investigación previa[cite: 5]:
+    \end{tcolorbox}
+    \begin{enumerate}
+        \item ¿Qué significa $V_{GS(th)}$?[cite: 5]
+        \item Si la gate consume corriente DC idealmente despreciable, ¿por qué un microcontrolador puede tener dificultades para conmutar un MOSFET rápidamente?[cite: 5]
+        \item ¿De qué condiciones depende el valor útil de $R_{DS(on)}$?[cite: 5]
+        \item ¿Qué información aporta la SOA que no se obtiene simplemente de $V_{DSS}$ e $I_D$?[cite: 5]
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{Trayectoria de Ingeniería: Señal $\rightarrow$ Actuación}
+    \begin{center}
+    \makebox[\textwidth][c]{% Bloquea espacios espurios horizontales
+    \resizebox{0.95\textwidth}{!}{%
+    \begin{tikzpicture}[node distance=0.4cm, auto, thick, >=Stealth]
+        \tikzset{every node/.style={draw, rounded corners, align=center, font=\footnotesize, minimum height=0.8cm}}
+        
+        \node[fill=gray!20] (shunt) {Shunt};
+        \node[fill=gray!20, right=of shunt] (sense) {BJT\\Sensing};
+        \node[fill=gray!20, right=of sense] (ctrl) {Control};
+        \node[fill=ucbblue!20, right=of ctrl] (switch) {\textbf{MOSFET}\\\textbf{Switch}};
+        \node[fill=red!10, right=of switch] (act) {Actuator};
+        
+        \draw[->] (shunt) -- (sense);
+        \draw[->] (sense) -- (ctrl);
+        \draw[->] (ctrl) -- (switch);
+        \draw[->] (switch) -- (act);
+        
+        \draw[->, dashed] (act.south) -- ++(0,-0.4) -| node[draw=none, fill=none, pos=0.25, below] {Feedback} (ctrl.south);
+    \end{tikzpicture}%
+    }%
+    }
+    \end{center}
+    \vspace{0.3cm}
+    \begin{itemize}
+        \item El amplificador diferencial BJT pertenece al dominio de señal/sensado[cite: 5].
+        \item Una carga de potencia introduce nuevas restricciones: corriente, tensión, disipación, eficiencia, transitorios, térmica y protección[cite: 5].
+        \item Existe un conflicto de ingeniería entre linealidad $\leftrightarrow$ eficiencia $\leftrightarrow$ calor[cite: 5].
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Puente Funcional: Clases de Salida A, B y AB}
+    \begin{table}[]
+        \centering
+        \renewcommand{\arraystretch}{1.2}
+        % Escala automática al ancho del texto para evitar el Overfull \hbox
+        \resizebox{\textwidth}{!}{%
+        \begin{tabular}{@{}lccc@{}}
+        \toprule
+        \textbf{Aspecto} & \textbf{Clase A} & \textbf{Clase B} & \textbf{Clase AB} \\ \midrule
+        Conducción[cite: 5] & $360^\circ$[cite: 5] & $\sim 180^\circ$[cite: 5] & $> 180^\circ$[cite: 5] \\
+        $I_Q$[cite: 5] & Alta[cite: 5] & Idealmente muy baja[cite: 5] & Finita[cite: 5] \\
+        Eficiencia relativa[cite: 5] & Baja[cite: 5] & Mayor[cite: 5] & Intermedia[cite: 5] \\
+        Crossover[cite: 5] & No dominante[cite: 5] & Relevante[cite: 5] & Reducido[cite: 5] \\
+        Disipación reposo[cite: 5] & Alta[cite: 5] & Baja[cite: 5] & Mayor que B[cite: 5] \\
+        \textbf{Rol}[cite: 5] & \textbf{Linealidad}[cite: 5] & \textbf{Eficiencia}[cite: 5] & \textbf{Compromiso}[cite: 5] \\ \bottomrule
+        \end{tabular}%
+        }
+    \end{table}
+    
+    \vspace{-0.1cm}
+    \begin{center}
+        Disipación en reposo: $P_Q = V_Q I_Q$[cite: 5].
+    \end{center}
+\end{frame}
+
+\begin{frame}{Motivación de Switching}
+    \begin{columns}
+        \begin{column}{0.48\textwidth}
+            \textbf{Etapa Lineal} \\
+            $v(t) > 0$ e $i(t) > 0$ simultáneamente[cite: 5].
+            \begin{equation*}
+                p(t) = v(t)i(t) > 0
+            \end{equation*}
+            Genera altas pérdidas y calor[cite: 5].
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{Interruptor Ideal (Switching)} \\
+            \begin{itemize}
+                \item OFF ideal: $i \approx 0$[cite: 5].
+                \item ON ideal: $v \approx 0$[cite: 5].
+            \end{itemize}
+            El producto $p(t) \approx 0$ en los estados estáticos minimiza la disipación[cite: 5].
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{NMOS de Enriquecimiento: Terminales y Control}
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            \centering
+            \begin{circuitikz}[scale=1.3, transform shape]
+                \draw (0,0) node[nmos](M){};
+                \node[above] at (M.D) {Drain ($D$)};
+                \node[below] at (M.S) {Source ($S$)};
+                \node[left] at (M.G) {Gate ($G$)};
+                
+                \draw[->, red, thick] (-0.5, 0.2) to[bend right] node[left] {$V_{GS}$} (-0.2, -0.7);
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.55\textwidth}
+            \textbf{Variable de Control:}
+            \begin{equation*}
+                \boxed{V_{GS} = V_G - V_S} \text{[cite: 5]}
+            \end{equation*}
+            \begin{itemize}
+                \item No interpretar $V_G$ de forma absoluta[cite: 5].
+                \item Si $V_G = 12\,\text{V}$ y $V_S = 9\,\text{V} \implies V_{GS} = 3\,\text{V}$[cite: 5].
+            \end{itemize}
+            \vspace{0.2cm}
+            \textbf{Comparación con BJT:}
+            \begin{itemize}
+                \item Gate está aislada (no conduce unión en DC)[cite: 5].
+                \item BJT requiere $I_B$; MOSFET requiere $V_{GS}$[cite: 5].
+                \item BJT Saturation $\neq$ MOSFET Saturation[cite: 5].
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Regiones de Operación (Curvas Características)}
+    \begin{columns}[T] % Alineación superior obligatoria
+        \begin{column}{0.45\textwidth}
+            \footnotesize
+            \textbf{1. Corte (OFF):}\\
+            $V_{GS} < V_{TH} \implies I_D \approx 0$[cite: 5]
+            
+            \vspace{0.2cm}
+            \textbf{2. Óhmica / Triodo:}\\
+            $V_{GS} > V_{TH}$ y $V_{DS} < V_{GS} - V_{TH}$[cite: 5] \\
+            \textcolor{blue}{$\implies$ Estado útil para Switch ON.}
+            
+            \vspace{0.2cm}
+            \textbf{3. Saturación (Lineal):}\\
+            $V_{GS} > V_{TH}$ y $V_{DS} \ge V_{GS} - V_{TH}$[cite: 5] \\
+            \textcolor{red}{$\implies$ Alta disipación de potencia.} \\
+            \textbf{¡MOSFET Sat. $\neq$ BJT Sat.![cite: 5]}
+        \end{column}
+        \begin{column}{0.55\textwidth}
+            \centering
+            \vspace{-0.2cm}
+            \begin{tikzpicture}
+                \begin{axis}[
+                    width=7.8cm, height=5.2cm,
+                    xmin=0, xmax=5, ymin=0, ymax=9,
+                    xlabel={$V_{DS}$ (Tensión)}, ylabel={$I_D$ (Corriente)},
+                    xtick=\empty, ytick=\empty,
+                    axis lines=left,
+                    clip=false
+                ]
+                
+                % Zona Óhmica Sombreada
+                \fill[blue!10] (0,0) plot[domain=0:2.8] (\x, {\x^2}) -- (0, 7.84) -- cycle;
+                \node[blue, font=\scriptsize, align=center] at (0.9, 6.8) {\textbf{ZONA ÓHMICA}\\\textit{(Switch ON)}};
+                
+                % Frontera de Saturación
+                \addplot[thick, dashed, red, domain=0:2.9] {x^2};
+                \node[red, font=\scriptsize, rotate=50] at (1.75, 3.4) {Frontera $V_{DS} = V_{GS}-V_{TH}$};
+                
+                % Curvas VGS
+                \addplot[thick, black, domain=0:1.5] {2*1.5*x - x^2};
+                \addplot[thick, black, domain=1.5:5] {2.25} node[right, font=\scriptsize] {$V_{GS1}$};
+                
+                \addplot[thick, black, domain=0:2.2] {2*2.2*x - x^2};
+                \addplot[thick, black, domain=2.2:5] {4.84} node[right, font=\scriptsize] {$V_{GS2}$};
+                
+                \addplot[thick, black, domain=0:2.8] {2*2.8*x - x^2};
+                \addplot[thick, black, domain=2.8:5] {7.84} node[right, font=\scriptsize] {$V_{GS3}$};
+                
+                % Etiqueta Saturación
+                \node[black, font=\scriptsize, align=center] at (3.8, 2.5) {\textbf{SATURACIÓN}\\\textit{(Evitar)}};
+                \end{axis}
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{La Trampa del Threshold ($V_{GS(th)}$) vs $R_{DS(on)}$}
+    \begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=Regla Crítica]
+        $V_{GS} > V_{GS(th)}$ no implica un estado "low-loss ON" garantizado[cite: 5].
+    \end{tcolorbox}
+    
+    $V_{GS(th)}$ se define bajo una condición de baja corriente del fabricante (inicio de conducción)[cite: 5].
+    
+    \textbf{Ejemplo Ilustrativo (Infineon IRLZ44N)[cite: 5]:}
+    \begin{itemize}
+        \item $V_{DSS} = 55\,\text{V}$[cite: 5].
+        \item $V_{GS(th)} = 1.0\,\text{-}\,2.0\,\text{V}$[cite: 5].
+        \item $R_{DS(on),max} = 22\,\text{m}\Omega \quad @ \quad V_{GS}=10\,\text{V}, I_D=25\,\text{A}$[cite: 5].
+        \item $R_{DS(on),max} = 25\,\text{m}\Omega \quad @ \quad V_{GS}=5\,\text{V}, I_D=25\,\text{A}$[cite: 5].
+        \item $R_{DS(on),max} = 35\,\text{m}\Omega \quad @ \quad V_{GS}=4\,\text{V}, I_D=21\,\text{A}$[cite: 5].
+    \end{itemize}
+    Para juzgar conducción de baja pérdida se consulta $R_{DS(on)}$ junto con condiciones de $V_{GS}$, $I_D$ y temperatura[cite: 5].
+\end{frame}
+
+\begin{frame}{Gate Charge ($Q_g$) y Tiempos de Conmutación}
+    Aunque en DC ideal $I_G \approx 0$, dinámicamente la gate requiere transferencia de carga durante el switching[cite: 5].
+    \begin{equation*}
+        i_G = \frac{dq_G}{dt} \text{[cite: 5]} \quad \implies \quad Q_g = \int i_G(t) dt \text{[cite: 5]}
+    \end{equation*}
+    
+    \vspace{0.2cm}
+    \textbf{Cadena de Impacto Dinámico[cite: 5]:}
+    \begin{center}
+        $Q_g \rightarrow I_g \rightarrow t_{sw} \rightarrow \text{switching loss}$[cite: 5]
+    \end{center}
+    
+    \vspace{0.2cm}
+    \begin{itemize}
+        \item Preparación de primer orden: $t \sim \frac{Q_g}{I_g}$[cite: 5].
+        \item IRLZ44N reporta $Q_g$ típico $\sim 32\,\text{nC}$ bajo sus condiciones de prueba[cite: 5].
+        \item $Q_g$ no es una capacitancia constante; no diseñar driver desde una sola cifra[cite: 5].
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Estimación de Pérdidas: Conducción y Switching}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Pérdida por Conducción Estática} \\
+            En región Ohmic, el MOSFET presenta una resistencia $R_{DS(on)}$.
+            \begin{align*}
+                V_{DS(on)} &\approx I_D R_{DS(on)} \text{[cite: 5]} \\
+                P_{cond} &= V_{DS(on)} I_D \text{[cite: 5]} 
+            \end{align*}
+            \vspace{-0.4cm}
+            \begin{equation*}
+                \boxed{P_{cond} \approx I_D^2 R_{DS(on)}} \text{[cite: 5]}
+            \end{equation*}
+            Duplicar la corriente cuadruplica la pérdida bajo $R_{DS(on)}$ constante[cite: 5].
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{Pérdida de Switching} \\
+            Durante la transición, coexisten $v_{DS} > 0$ e $i_D > 0$, generando pérdida[cite: 5].
+            \begin{equation*}
+                \boxed{p(t) = v_{DS}(t) i_D(t)} \text{[cite: 5]}
+            \end{equation*}
+            Por ello, un menor $R_{DS(on)}$ no basta para escoger un MOSFET si $Q_g$ y la frecuencia de switching difieren drásticamente[cite: 5].
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Disciplina de Lectura de Datasheet}
+    Extracción formal requerida para ingeniería[cite: 5]:
+    
+    \vspace{0.1cm}
+    {\small
+    \renewcommand{\arraystretch}{1.1}
+    \begin{tabularx}{\textwidth}{@{}l>{\raggedright\arraybackslash}X@{}}
+    \toprule
+    \textbf{Parámetro} & \textbf{Relevancia / Condición de Prueba} \\ \midrule
+    $V_{DSS}$[cite: 5] & Límite absoluto. No garantiza operación de rutina sin margen[cite: 5]. \\
+    Continuous $I_D$[cite: 5] & Condicionado por térmica. No es corriente segura automática[cite: 5]. \\
+    $V_{GS(th)}$[cite: 5] & Rango de inicio de conducción, no diseño de ON[cite: 5]. \\
+    $R_{DS(on)}$[cite: 5] & Evaluar junto con $V_{GS}$, $I_D$ de prueba y Temperatura[cite: 5]. \\
+    $Q_g$[cite: 5] & Define requerimientos transitorios del Gate Driver[cite: 5]. \\
+    Thermal $R_{\theta}$[cite: 5] & Necesario para el derating térmico y diseño del disipador[cite: 5]. \\
+    SOA[cite: 5] & Combinaciones seguras de tensión, corriente, duración y térmica[cite: 5]. \\
+    Body Diode[cite: 5] & Relevante para conducir cargas inductivas (recuperación/Flyback)[cite: 5]. \\ \bottomrule
+    \end{tabularx}
+    }
+\end{frame}
+
+\begin{frame}{Próximos Pasos: Restricciones de Aplicación}
+    \begin{tcolorbox}[colback=white, colframe=ucbblue, title=Cadena de Ingeniería {[cite: 5]}]
+        \centering \small
+        App Requirements $\rightarrow$ Datasheet Constraints $\rightarrow$ Electrical Loss $\rightarrow$ Thermal Consequence[cite: 5]
+    \end{tcolorbox}
+    
+    \textbf{Requisitos previos a seleccionar un MOSFET final[cite: 5]:}
+    \begin{itemize}
+        \item Bus DC, Corriente continua y Corriente pico[cite: 5].
+        \item Frecuencia PWM y Nivel lógico/control[cite: 5].
+        \item Arquitectura del gate-driver y Tipo de carga[cite: 5].
+        \item Ambiente térmico y Límites de laboratorio[cite: 5].
+    \end{itemize}
+    
+    \begin{center}
+        \textit{No puede definirse el ``mejor MOSFET'' sin conocer la corriente de carga y la capacidad del gate drive disponible[cite: 5].}
+    \end{center}
+\end{frame}
+
+\end{document}

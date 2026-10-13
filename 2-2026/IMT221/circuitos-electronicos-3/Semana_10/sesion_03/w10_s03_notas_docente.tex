@@ -1,0 +1,59 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{M.Sc. Ing. Bernardo Quiroga Turdera}}
+\rhead{IMT-221 | Instructor Trajectory Note}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=black!5, colframe=black, title=\textbf{INTERNAL REGISTRY: EC3/EC4 Semester Trajectory Map}]
+    Estado operacional al W10S03 de acuerdo a content-spec.
+\end{tcolorbox}
+
+\section*{1. Estado Curricular Inmediato}
+\begin{itemize}
+    \item \textbf{ALREADY CLOSED:} Ciclos escritos de U1 y U2. Fases de evaluación y recuperación teórica completadas.
+    \item \textbf{PARALLEL CLOSURE:} Revisión de informes Hito 2, consolidación de calificaciones, reconciliación examen-reporte (cuando aplique) y microdefensas condicionales. \textbf{No deben consumir el bloque central en clase.}
+    \item \textbf{COMPRESSED CARRY-FORWARD:} Conceptos de etapas A/B/AB (puente analógico). Desarrollado conceptualmente. Las derivaciones extensas matemáticas de eficiencia y sesgo (bias network design) se mantienen comprimidas / asíncronas para priorizar W10S03.
+\end{itemize}
+
+\section*{2. Main Forward Track (Unidad 3: Electrónica de Potencia)}
+Trayectoria inamovible para las siguientes sesiones de clase (EC3):
+\begin{enumerate}
+    \item Modelo de conmutación MOSFET (Fundamentos entregados en W10S03).
+    \item Selección de dispositivo desde un datasheet real de curso (Pendiente de selección paramétrica oficial).
+    \item Dinámica de Gate Drive.
+    \item Comportamiento frente a cargas resistivas e inductivas (Diodos Flyback).
+    \item Evaluación térmica y modelo de pérdida de switching (Switching Loss).
+    \item Topologías Half-Bridge / H-Bridge y prevención de Shoot-Through.
+\end{enumerate}
+
+\section*{3. EC4 - Protected Time (Unidad 4: Estabilidad y Feedback)}
+\begin{tcolorbox}[colback=red!5, colframe=red!80!black, title=\textbf{RULE: TIMELINE PROTECTION}]
+    No se permite que el cierre administrativo del Hito 2 o el retraso asimilado en MOSFET consuman el tiempo técnico reservado para EC4. EC4 debe mantenerse intacto.
+\end{tcolorbox}
+Tópicos protegidos: Realimentación, Respuesta en frecuencia, FFT/CSV para hardware/software, diagramas de Bode, márgenes de estabilidad y compensación integrada.
+
+\section*{4. Next-Session Decision Gate (Action Items)}
+Antes de avanzar a W10S04/W11, se requiere la ejecución de las siguientes definiciones paramétricas técnicas:
+\begin{itemize}
+    \item[$\square$] \textbf{MOSFET device selection:} Seleccionar número de parte oficial en base a restricciones de laboratorio (Ej. Voltaje de bus, Corriente RMS de carga, driver existente). \textit{IRLZ44N es meramente referencial.}
+    \item[$\square$] \textbf{Gate-driver design constraints:} Definir tipo de control de disparo para el puente en laboratorio.
+    \item[$\square$] \textbf{Load profiling:} Mediciones planeadas para la conmutación (Equipamiento de laboratorio).
+\end{itemize}
+\textit{Aviso: No se asignan fechas exactas futuras en esta hoja hasta que el calendario institucional restante no se haya reconciliado oficialmente tras el proceso de recuperación del Hito 2.}
+
+\end{document}

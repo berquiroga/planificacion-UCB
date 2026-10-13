@@ -1,0 +1,147 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=1.8cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Recuperatorio U1 + U2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{RECUPERATORIO U1 + U2}} \\[0.2cm]
+    {\large \textbf{IMT-221 — Circuitos Electrónicos III}} \\[0.4cm]
+\end{center}
+
+\noindent\textbf{Nombre:} \hrulefill \quad \textbf{Fecha:} \rule{4cm}{0.15mm} \\[0.4cm]
+\textbf{Sección(es) asignada(s) por el docente[cite: 14]:} \\
+$\square$ \textbf{SECTION U1} — Recuperación EC1 \\
+$\square$ \textbf{SECTION U2} — Recuperación EC2 \\
+$\square$ \textbf{Ambas}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Instrucciones Generales[cite: 14]}]
+    \begin{itemize}
+        \setlength\itemsep{0.1em}
+        \item Responda \textbf{únicamente} la(s) sección(es) que el docente le haya indicado[cite: 14].
+        \item La calificación de U1 y U2 se realiza de forma independiente. Una unidad ya aprobada no se vuelve a evaluar[cite: 14].
+        \item La nota de recuperación reemplaza la nota de la unidad reprobada, con una nota máxima registrada de 60[cite: 14].
+        \item Evaluación individual. Calculadora científica convencional permitida. No se requiere hardware[cite: 14].
+        \item Muestre modelo, procedimiento y unidades. Una respuesta sin razonamiento puede recibir crédito parcial[cite: 14].
+        \item Si recupera ambas unidades, administre aprox. 35 min por sección y reserve el resto para revisión[cite: 14].
+    \end{itemize}
+\end{tcolorbox}
+
+\newpage
+\begin{center}
+    {\Large \textbf{SECTION U1 — Recuperación EC1}} \\[0.2cm]
+    \textit{Puntaje Bruto: 100 puntos}
+\end{center}
+
+\noindent \textbf{U1 Problem 1 — Red de protección, selección de modelo y diagnóstico (45 puntos)[cite: 14]} \\
+Una entrada sensible se protege mediante un resistor serie y un diodo Zener conectado entre el nodo protegido y tierra[cite: 14]. Durante una sobretensión se tienen: $V_{in}=9.0\,\text{V}$, $R_S=330\,\Omega$, $R_L=2.2\,\text{k}\Omega$[cite: 14]. Para este problema utilice un modelo PWL: $V_Z=5.1\,\text{V}$ cuando el Zener está en ruptura[cite: 14].
+
+\begin{center}
+\begin{circuitikz}[scale=0.8, transform shape, thick]
+    \draw (0,0) to[V, l=$V_{in}$, invert] (0,2) to[R, l=$R_S$, i>=$I_{RS}$] (3,2);
+    \draw (3,2) to[zzDo, l_=$V_Z$, i>=$I_Z$] (3,0);
+    \draw (3,2) -- (5,2) to[R, l=$R_L$, i>=$I_L$] (5,0);
+    \draw (0,0) -- (5,0) node[ground]{};
+    \node[circle,fill,inner sep=1pt] at (3,2) {};
+    \node[above] at (3,2.2) {$V_{out}$};
+\end{circuitikz}
+\end{center}
+
+\textbf{a)} Describa la trayectoria de corriente durante la limitación positiva e identifique $I_{RS}, I_L, I_Z$ (8 pts)[cite: 14]. \\
+\textbf{b)} Suponiendo inicialmente que el Zener regula a $5.1\,\text{V}$, calcule $I_{RS}$ (7 pts)[cite: 14]. \\
+\textbf{c)} Calcule $I_L$ y luego $I_Z = I_{RS} - I_L$. Decida si la hipótesis de "Zener en ruptura" es físicamente consistente (10 pts)[cite: 14]. \\
+\textbf{d)} Calcule $P_Z = V_Z I_Z$. Interprete qué representa esta potencia (6 pts)[cite: 14]. \\
+\textbf{e)} Sin recalcular todavía, indique qué ocurre con $I_Z$ si $R_L$ disminuye fuertemente. Explique la causa (6 pts)[cite: 14]. \\
+\textbf{f)} Un compañero usa $R_L=330\,\Omega$ pero conserva automáticamente $V_o=5.1\,\text{V}$. Verifique si esa hipótesis sigue siendo posible. Si no lo es, explique qué parte del modelo debe reconsiderarse (8 pts)[cite: 14].
+\vspace{2cm}
+
+\noindent \textbf{U1 Problem 2 — Apagado inductivo y Flyback (35 puntos)[cite: 14]} \\
+Una bobina alimentada en DC tiene $L=100\,\text{mH}$ y justo antes de abrir el interruptor conduce $I_L(0^-)=0.30\,\text{A}$[cite: 14]. Un diodo Flyback está conectado en inversa durante operación normal[cite: 14].
+\begin{center}
+\begin{circuitikz}[scale=0.8, transform shape, thick]
+    \draw (0,2) to[V, l=$V_{DC}$] (0,0) node[ground]{};
+    \draw (0,2) to[nos, l=Switch] (2,2);
+    \draw (2,2) to[L, l=$L$, i>=$I_L$] (2,0) node[ground]{};
+    \draw (2,2) -- (4,2) to[D, l=Flyback] (4,0) node[ground]{};
+\end{circuitikz}
+\end{center}
+\textbf{a)} Determine $I_L(0^+)$ y justifique físicamente (7 pts)[cite: 14]. \\
+\textbf{b)} Calcule $E_L = \frac{1}{2} L I^2$ (6 pts)[cite: 14]. \\
+\textbf{c)} Explique con $v_L = L \frac{di}{dt}$ por qué intentar llevar la corriente a cero muy rápidamente produce una tensión de gran magnitud (8 pts)[cite: 14]. \\
+\textbf{d)} Describa el sentido de la corriente inmediatamente después de abrir el interruptor y explique por qué el diodo entra en conducción (8 pts)[cite: 14]. \\
+\textbf{e)} En LTspice el pico sin Flyback es mucho mayor que con Flyback. Indique una medición experimental que permitiría verificar esa conclusión (6 pts)[cite: 14].
+\vspace{2cm}
+
+\noindent \textbf{U1 Problem 3 — Interpretación de evidencia y diagnóstico (20 puntos)[cite: 14]} \\
+Se obtienen dos resultados bajo la misma condición nominal: Modelo PWL $\to V_{out,max} = 5.10\,\text{V}$; Medición Experimental $\to V_{out,max} = 5.26\,\text{V}$[cite: 14]. \\
+\textbf{a)} ¿El modelo analítico deja de ser útil porque la medición no coincide exactamente con $5.10\,\text{V}$? Justifique (6 pts)[cite: 14]. \\
+\textbf{b)} Calcule el error porcentual experimental: $\% \text{error} = \frac{|V_{exp} - V_{PWL}|}{|V_{PWL}|} \times 100$ (5 pts)[cite: 14]. \\
+\textbf{c)} Indique dos razones físicas o instrumentales que podrían explicar la diferencia (5 pts)[cite: 14]. \\
+\textbf{d)} Proponga una verificación o medición adicional antes de concluir que el circuito está mal implementado (4 pts)[cite: 14].
+\vspace{1cm}
+
+\newpage
+\begin{center}
+    {\Large \textbf{SECTION U2 — Recuperación EC2}} \\[0.2cm]
+    \textit{Puntaje Bruto: 100 puntos} \\[0.2cm]
+    \textbf{Convención obligatoria:} Use $\mathbf{v_o = v_{C2}}$ para salida single-ended[cite: 14].
+\end{center}
+
+\begin{center}
+\begin{circuitikz}[scale=0.7, transform shape, thick]
+    \draw (0,0) node[npn](Q1){}; \node[left=0.1cm] at (Q1.B) {$v_1$}; \node[right=0.1cm] at (Q1.C) {$v_{C1}$};
+    \draw (4,0) node[npn, xscale=-1](Q2){}; \node[right=0.1cm] at (Q2.B) {$v_2$}; \node[left=0.1cm] at (Q2.C) {$v_{C2} = v_o$};
+    \draw (Q1.C) to[R, l=$R_{C1}$] (0,2) -- (4,2) to[R, l_=$R_{C2}$] (Q2.C);
+    \draw (2,2) -- (2,2.5) node[above]{$+V_{CC}$};
+    \draw (Q1.E) -- (0,-1.5) -- (4,-1.5) -- (Q2.E);
+    \draw (2,-1.5) node[circle,fill,inner sep=1.5pt]{} node[above right]{$v_E$} to[I, l=$I_T$] (2,-3) node[below]{Espejo ($V_{EE}$)};
+    \draw (Q1.B) to[short, -o] (-1,0); \draw (Q2.B) to[short, -o] (5,0);
+\end{circuitikz}
+\end{center}
+
+\noindent \textbf{U2 Problem 1 — DC, espejo de corriente y pequeña señal (40 puntos)[cite: 14]} \\
+Se tiene: $V_{CC}=+9.0\,\text{V}$, $V_{EE}=-9.0\,\text{V}$, $R_{C1}=R_{C2}=4.7\,\text{k}\Omega$[cite: 14]. En condición casi balanceada: $V_{C1}=6.72\,\text{V}$, $V_{C2}=6.67\,\text{V}$, $V_E=-0.68\,\text{V}$, $V_{B1}=V_{B2}=0.00\,\text{V}$[cite: 14]. El espejo usa $R_{REF}=8.2\,\text{k}\Omega$[cite: 14]. Use $V_{BE}=0.70\,\text{V}$, $\beta=200$, $V_T=25.85\,\text{mV}$[cite: 14]. \\
+\textbf{a)} Calcule $I_{C1}$ e $I_{C2}$ (8 pts)[cite: 14]. \\
+\textbf{b)} Calcule $V_{CE1}, V_{CE2}$ y verifique forward-active mediante las uniones B-E y B-C (7 pts)[cite: 14]. \\
+\textbf{c)} Calcule $I_{REF}$ y estime $I_T \approx I_{REF} / (1 + 2/\beta)$. Compare con $I_{C1} + I_{C2}$ (10 pts)[cite: 14]. \\
+\textbf{d)} Use $I_{C,avg} = (I_{C1} + I_{C2})/2$ para calcular $g_m$ y $r_\pi$ (10 pts)[cite: 14]. \\
+\textbf{e)} Si $I_T$ medido fuera mucho menor que lo calculado, proponga una primera medición diagnóstica y explique qué hipótesis comprobaría (5 pts)[cite: 14].
+\vspace{2.5cm}
+
+\noindent \textbf{U2 Problem 2 — Par diferencial, ganancia y current steering (30 puntos)[cite: 14]} \\
+Use el $g_m$ calculado en U2-P1. $v_o=v_{C2}$ y $v_d = v_1 - v_2 = -4.0\,\text{mV}_{peak}$[cite: 14]. \\
+\textbf{a)} Calcule $A_{d,se} \approx +g_m R_C / 2$ (10 pts)[cite: 14]. \\
+\textbf{b)} Estime $v_{C2,ac} = A_{d,se} v_d$ e indique signo y magnitud (10 pts)[cite: 14]. \\
+\textbf{c)} Explique qué ocurre con $i_{C1}, i_{C2}$ y $v_{C2}$ cuando $v_d < 0$ (10 pts)[cite: 14].
+\vspace{2.5cm}
+
+\noindent \textbf{U2 Problem 3 — $v_d, v_{cm}$, modo común y CMRR (30 puntos)[cite: 14]} \\
+Se tienen: $v_1=0.512\,\text{V}$ y $v_2=0.488\,\text{V}$[cite: 14]. Usando $v_o=v_{C2}$, se obtiene en pruebas independientes: $A_{d,se}=44$, $A_{c,se}=0.022$[cite: 14]. \\
+\textbf{a)} Calcule $v_d, v_{cm}$ y clasifique la entrada (6 pts)[cite: 14]. \\
+\textbf{b)} Calcule CMRR absoluto y en dB (8 pts)[cite: 14]. \\
+\textbf{c)} Compare con el objetivo de 60 dB (4 pts)[cite: 14]. \\
+\textbf{d)} Otro estudiante propone usar $A_{d,diff}=88$ junto con $A_{c,se}=0.022$. Determine si el CMRR es válido (6 pts)[cite: 14]. \\
+\textbf{e)} Durante common-mode se miden: $v_{1,pp}=100\,\text{mV}$, $v_{2,pp}=94\,\text{mV}$. Explique el problema y el primer paso de diagnóstico (6 pts)[cite: 14].
+\vspace{2.5cm}
+
+\end{document}

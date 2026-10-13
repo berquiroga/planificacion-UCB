@@ -1,0 +1,57 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Ejercicios S10-3}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Hoja de Ejercicios: Estimación de Pérdidas de Primer Orden (MOSFET)}]
+    Aproximación de conducción térmica DC. Asume comportamiento resistivo ideal $R_{DS(on)}$ en el estado ON.
+\end{tcolorbox}
+
+\section*{Ejercicio 1: Clasificación de Regiones}
+Dado un MOSFET hipotético con $V_{TH} = 2.5\,\text{V}$, operando con $V_{GS} = 7\,\text{V}$.
+Calcula el límite de comportamiento óhmico ($V_{GS} - V_{TH}$) e identifica en qué región (según el modelo ideal long-channel) opera para los siguientes voltajes de drenaje:
+\begin{enumerate}
+    \item $V_{DS} = 2\,\text{V}$
+    \item $V_{DS} = 8\,\text{V}$
+\end{enumerate}
+
+\section*{Ejercicio 2: Referencia Eléctrica}
+Un circuito presenta $V_G = 12\,\text{V}$ referenciado a la tierra global del chasis, y $V_S = 9\,\text{V}$ en el mismo nodo global. ¿Cuál es el voltaje electrostático real que controla el canal? ¿Puedes concluir si el transistor está plenamente encendido sin consultar el datasheet?
+
+\section*{Ejercicio 3: Pérdida por Conducción Comparativa}
+Tienes dos candidatos MOSFET para operar como interruptores estáticos con una corriente continua $I_D$.
+\begin{itemize}
+    \item Candidato A: $R_{DS(on),A} = 30\,\text{m}\Omega$
+    \item Candidato B: $R_{DS(on),B} = 80\,\text{m}\Omega$
+\end{itemize}
+\begin{enumerate}
+    \item Calcula la disipación de potencia ON ($P_{cond} \approx I_D^2 R_{DS(on)}$) para cada candidato asumiendo una corriente $I_D = 2\,\text{A}$.
+    \item Recalcula la disipación para una carga pesada de $I_D = 5\,\text{A}$.
+    \item \textbf{Pregunta crítica:} ¿Por qué esta matemática básica \textit{no} predice la pérdida total de calor si la aplicación es un PWM de alta frecuencia (ej. 100 kHz)?
+\end{enumerate}
+
+\section*{Ejercicio 4: El Tradeoff de Conmutación vs Conducción}
+Al revisar el datasheet, notas lo siguiente:
+\begin{itemize}
+    \item Candidato A tiene un $R_{DS(on)}$ muy bajo, pero su carga total de compuerta ($Q_g$) es excepcionalmente alta (ej. 120 nC).
+    \item Candidato B tiene un $R_{DS(on)}$ moderado, pero su carga de compuerta ($Q_g$) es extremadamente baja (ej. 15 nC).
+\end{itemize}
+\textbf{Análisis:} ¿Puede la pérdida de conducción decidir por sí sola cuál es más eficiente en un convertidor PWM rápido? Desarrolla tu razonamiento relacionando $Q_g$, tiempo de transición, solapamiento $v(t)i(t)$ y los requerimientos del driver.
+
+\end{document}

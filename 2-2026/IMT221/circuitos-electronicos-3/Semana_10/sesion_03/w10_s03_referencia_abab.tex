@@ -1,0 +1,74 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Referencia A/B/AB S10-3}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Concepto Puente: Tradeoff de Etapas Lineales y Motivación de Switching}]
+    Las etapas de salida lineales enfrentan un compromiso ineludible entre linealidad de la señal, disipación de potencia en reposo, y eficiencia bajo carga.
+\end{tcolorbox}
+
+\section*{1. Dinámica de Conducción}
+
+\begin{itemize}
+    \item \textbf{Clase A:} El dispositivo conduce durante los $360^\circ$ de la señal. Posee alta corriente de reposo ($I_Q$) y elevada disipación constante ($P_Q > 0$). Excelente linealidad teórica, eficiencia extremadamente pobre.
+    \item \textbf{Clase B:} En arreglo push-pull, cada dispositivo conduce idealmente medio ciclo ($180^\circ$). Mejora radicalmente la eficiencia al anular $I_Q$, pero los transistores requieren cruzar $V_{BE(on)}$ o $V_{GS(th)}$, introduciendo una severa \textit{distorsión de cruce} (Crossover distortion).
+    \item \textbf{Clase AB:} Se inyecta una pequeña polarización (bias) para que ambos dispositivos conduzcan simultáneamente un poco más de medio ciclo ($>180^\circ$). Esto elimina el corte abrupto cerca de cero, reduciendo drásticamente la distorsión, a costa de volver a introducir una pequeña disipación de reposo.
+\end{itemize}
+
+\begin{center}
+\begin{tikzpicture}
+    \begin{axis}[
+        width=10cm, height=5cm,
+        axis lines=middle,
+        xmin=0, xmax=6.28, ymin=-1.5, ymax=1.5,
+        xlabel={$t$}, ylabel={$v_o$},
+        xtick=\empty, ytick=\empty,
+        legend style={at={(1.05, 0.5)}, anchor=west, draw=none}
+    ]
+    % Ideal
+    \addplot[thick, dashed, gray, domain=0:6.28, samples=100] {sin(deg(x))} ;
+    % Clase B
+    \addplot[thick, red, domain=0:6.28, samples=200] {
+        sin(deg(x)) > 0.3 ? sin(deg(x))-0.3 : (sin(deg(x)) < -0.3 ? sin(deg(x))+0.3 : 0)
+    };
+    % Clase AB
+    \addplot[thick, blue, domain=0:6.28, samples=200] {
+        sin(deg(x)) > 0.05 ? sin(deg(x))-0.05 : (sin(deg(x)) < -0.05 ? sin(deg(x))+0.05 : 0)
+    };
+    \legend{Ideal, Clase B, Clase AB}
+    \end{axis}
+\end{tikzpicture}
+\end{center}
+
+\section*{2. Transición hacia Switching}
+En una etapa lineal, $p(t) = v(t)i(t)$ puede ser alta porque el dispositivo opera con tensión y corriente simultáneas. Este tradeoff ($\text{linealidad} \leftrightarrow \text{calor}$) motiva las etapas de \textbf{Potencia Switching}, donde el dispositivo opera como un interruptor: idealmente con $v\approx0$ (ON) o $i\approx0$ (OFF).
+\[
+\text{Linear stage tradeoff} \longrightarrow \text{Switching motivation}
+\]
+
+\section*{3. Pregunta Conceptual Rápida}
+\textbf{P:} Un amplificador push-pull presenta muy baja disipación de reposo pero se observa una deformación notable de la señal cuando $v_o$ se acerca a 0 V. ¿Qué clase de operación describe esto y qué cambio conceptual introduce el esquema AB para solucionarlo?
+
+\vspace{0.2cm}
+\textbf{Respuesta Esperada:} 
+Describe la \textbf{Clase B}. El esquema AB introduce una pequeña polarización previa (bias network) de manera que ambos dispositivos tengan un ligero solapamiento en conducción cerca de cero, suavizando la transición (reduce el crossover) pero a costa de volver a introducir una corriente de reposo permanente.
+
+\end{document}

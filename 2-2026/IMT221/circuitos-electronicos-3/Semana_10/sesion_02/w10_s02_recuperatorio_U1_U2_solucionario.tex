@@ -1,0 +1,84 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Solucionario Recuperatorio U1+U2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Material Reservado Docente: Solucionario de Evaluación Diferida U1+U2[cite: 14]}]
+    \textbf{Nota de Corrección:} Penalice el error aritmético levemente si el modelo es correcto. Aplique la regla de error dependiente para no doble-penalizar propagaciones[cite: 14].
+\end{tcolorbox}
+
+\section*{Sección U1 — Recuperación EC1[cite: 14]}
+\textbf{U1 Problem 1: Red de Protección[cite: 14]}
+\begin{align*}
+    \textbf{b)} \quad I_{RS} &= \frac{9.0\,\text{V} - 5.1\,\text{V}}{330\,\Omega} = \frac{3.9\,\text{V}}{330\,\Omega} \approx \mathbf{11.82\,\text{mA}} \quad \text{[cite: 14]} \\
+    \textbf{c)} \quad I_L &= \frac{5.1\,\text{V}}{2.2\,\text{k}\Omega} \approx \mathbf{2.32\,\text{mA}} \implies I_Z = 11.82\,\text{mA} - 2.32\,\text{mA} = \mathbf{9.50\,\text{mA}} \quad \text{[cite: 14]}
+\end{align*}
+Como $I_Z > 0$, la hipótesis de "Zener en ruptura" es físicamente consistente[cite: 14]. \\
+\textbf{d)} $P_Z = (5.1\,\text{V})(9.50\,\text{mA}) \approx \mathbf{48.5\,\text{mW}}$[cite: 14]. Representa la potencia disipada por el componente, limitando el máximo esfuerzo térmico[cite: 14]. \\
+\textbf{e)} Si $R_L \downarrow$, $I_L \uparrow$. Como $I_{RS}$ está fijada por $V_{in}$ y $V_Z$, el aumento de corriente a la carga se roba del diodo, por lo que $I_Z \downarrow$[cite: 14]. \\
+\textbf{f)} Si $R_L = 330\,\Omega$, $I_L = 5.1\,\text{V} / 330\,\Omega \approx 15.45\,\text{mA}$[cite: 14]. Pero $I_{RS} \approx 11.82\,\text{mA}$. Esto da $I_Z = 11.82 - 15.45 = \mathbf{-3.63\,\text{mA}}$[cite: 14]. Físicamente inconsistente. El Zener ya no regula y $V_o < 5.1\,\text{V}$[cite: 14].
+
+\vspace{0.2cm}
+\textbf{U1 Problem 2: Inductor y Flyback[cite: 14]} \\
+\textbf{a)} $I_L(0^+) = I_L(0^-) = \mathbf{0.30\,\text{A}}$. La corriente en un inductor no puede cambiar instantáneamente[cite: 14]. \\
+\textbf{b)} $E_L = \frac{1}{2} (0.100\,\text{H}) (0.30\,\text{A})^2 = \mathbf{4.5\,\text{mJ}}$[cite: 14]. \\
+\textbf{c)} $v_L = L \frac{di}{dt}$. Al intentar cortar la corriente a cero en $dt \to 0$, $|di/dt|$ es gigante, generando un pico de tensión destructivo[cite: 14]. \\
+\textbf{d)} El inductor invierte su polaridad para mantener la corriente fluyendo en el mismo sentido, lo que polariza directamente al Flyback, creando una ruta de recirculación local[cite: 14]. \\
+\textbf{e)} Medir con osciloscopio en el nodo de conmutación con y sin diodo, comparando el pico de voltaje máximo y el tiempo de extinción[cite: 14].
+
+\vspace{0.2cm}
+\textbf{U1 Problem 3: Interpretación de Evidencia[cite: 14]} \\
+\textbf{a)} No. El modelo PWL es una simplificación matemática deliberada. Conserva utilidad predictiva aunque no sea milimétricamente exacto[cite: 14]. \\
+\textbf{b)} Error $\%$ $= \frac{|5.26 - 5.10|}{5.10} \times 100 \approx \mathbf{3.14\%}$[cite: 14]. \\
+\textbf{c)} Tolerancia del Zener, resistencia dinámica interna, resistencia de las pistas, o resolución del instrumento[cite: 14]. \\
+\textbf{d)} Repetir la medición asegurando condiciones, o medir la curva V-I real del Zener[cite: 14].
+
+\section*{Sección U2 — Recuperación EC2[cite: 14]}
+\textbf{U2 Problem 1: DC, Espejo y Señal[cite: 14]}
+\begin{align*}
+    \textbf{a)} \quad I_{C1} &= \frac{9.0 - 6.72}{4.7\,\text{k}\Omega} \approx \mathbf{0.485\,\text{mA}} \quad \text{y} \quad I_{C2} = \frac{9.0 - 6.67}{4.7\,\text{k}\Omega} \approx \mathbf{0.496\,\text{mA}} \quad \text{[cite: 14]} \\
+    \textbf{b)} \quad V_{CE1} &= 6.72 - (-0.68) = \mathbf{7.40\,\text{V}} \quad \text{y} \quad V_{CE2} = 6.67 - (-0.68) = \mathbf{7.35\,\text{V}} \quad \text{[cite: 14]} \\
+    \quad V_{BE} &= 0.68\,\text{V} \text{ (Directa) e inversa en B-C porque } V_C > V_B \text{. Es Forward-Active[cite: 14].} \\
+    \textbf{c)} \quad I_{REF} &= \frac{0 - (-9.0 + 0.70)}{8.2\,\text{k}\Omega} = \frac{8.3}{8.2} \approx \mathbf{1.012\,\text{mA}} \quad \text{[cite: 14]} \\
+    \quad I_T &= \frac{1.012\,\text{mA}}{1 + 2/200} \approx \mathbf{1.002\,\text{mA}}. \quad \text{Coincide casi exacto con } I_{C1} + I_{C2} \approx \mathbf{0.981\,\text{mA}} \quad \text{[cite: 14]} \\
+    \textbf{d)} \quad I_{C,avg} &= \frac{0.485 + 0.496}{2} \approx \mathbf{0.4905\,\text{mA}} \implies g_m = \frac{0.4905}{25.85} \approx \mathbf{18.97\,\text{mS}} \quad \text{[cite: 14]} \\
+    \quad r_\pi &= \frac{200}{18.97\,\text{mS}} \approx \mathbf{10.54\,\text{k}\Omega} \quad \text{[cite: 14]}
+\end{align*}
+\textbf{e)} Si $I_T$ es baja, medir caída en $R_{REF}$ o verificar polaridad del espejo para probar fallo de componentes vs conexiones[cite: 14].
+
+\vspace{0.2cm}
+\textbf{U2 Problem 2: Par Diferencial y Ganancia[cite: 14]}
+\begin{align*}
+    \textbf{a)} \quad A_{d,se} &\approx +\frac{g_m R_C}{2} = \frac{(18.97\,\text{mS})(4.7\,\text{k}\Omega)}{2} \approx \mathbf{44.58\,\text{V/V}} \quad \text{[cite: 14]} \\
+    \textbf{b)} \quad v_{C2,ac} &= A_{d,se} v_d = (44.58)(-4.0\,\text{mV}) \approx \mathbf{-178\,\text{mV}_{peak}} \quad \text{[cite: 14]}
+\end{align*}
+\textbf{c)} Al ser $v_d < 0$, $v_2 > v_1$. La corriente se roba hacia Q2 ($i_{C2} \uparrow$, $i_{C1} \downarrow$). La mayor caída en $R_{C2}$ hace que $v_{C2}$ baje ($\downarrow$)[cite: 14].
+
+\vspace{0.2cm}
+\textbf{U2 Problem 3: Modo Común y CMRR[cite: 14]}
+\begin{align*}
+    \textbf{a)} \quad v_d &= 0.512 - 0.488 = \mathbf{24\,\text{mV}}. \quad v_{cm} = \frac{0.512 + 0.488}{2} = \mathbf{0.500\,\text{V}}. \quad \text{Entrada \textbf{Mixta}[cite: 14].} \\
+    \textbf{b)} \quad CMRR &= \frac{44}{0.022} = \mathbf{2000} \implies CMRR_{dB} = 20\log_{10}(2000) \approx \mathbf{66.02\,\text{dB}} \quad \text{[cite: 14]}
+\end{align*}
+\textbf{c)} Supera el objetivo de 60 dB[cite: 14]. \textbf{d)} Es \textbf{inválido} mezclar $A_{d,diff}$ (dos salidas) con $A_{c,se}$ (una salida)[cite: 14]. \\
+\textbf{e)} Hay contaminación diferencial ($v_{1,pp} \neq v_{2,pp}$ da un residual $v_d = 6\,\text{mV}$). El diagnóstico es revisar la inyección y cortocircuitar correctamente las bases[cite: 14].
+
+\end{document}

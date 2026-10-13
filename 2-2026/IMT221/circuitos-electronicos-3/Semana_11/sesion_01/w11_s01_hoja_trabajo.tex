@@ -1,0 +1,63 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Hoja de Trabajo Datasheet S11-1}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Hoja de Trabajo: Extracción Disciplinada de Datasheet[cite: 5]}]
+    Toda cifra de ingeniería debe incluir valor, unidad, condición de prueba y relevancia[cite: 5].
+\end{tcolorbox}
+
+\section*{1. Identificación y Requerimientos}
+\textbf{Dispositivo:} \rule{4.5cm}{0.4pt} \textbf{Fabricante:} \rule{4.5cm}{0.4pt}[cite: 5] \\
+\textbf{Aplicación:} \rule{12.2cm}{0.4pt}[cite: 5]
+
+\section*{2. Parámetros de Extracción}
+\begin{itemize}
+    \item \textbf{$V_{DSS}$:} valor \rule{1.5cm}{0.4pt} / condición \rule{2.2cm}{0.4pt} / relevancia \rule{3.2cm}{0.4pt}[cite: 5]
+    \item \textbf{$I_D$ continuo:} valor \rule{1.5cm}{0.4pt} / térmica \rule{2.2cm}{0.4pt} / relevancia \rule{3.2cm}{0.4pt}[cite: 5]
+    \item \textbf{$I_D$ pulsado:} valor \rule{2cm}{0.4pt} / cond. de pulso \rule{5.2cm}{0.4pt}[cite: 5]
+    \item \textbf{$V_{GS(th)}$:} rango \rule{2cm}{0.4pt} / cond. de prueba \rule{5.2cm}{0.4pt}[cite: 5]
+    \item \textbf{$R_{DS(on)}$:} valor \rule{1.5cm}{0.4pt} / $V_{GS}$ \rule{1.2cm}{0.4pt} / $I_D$ \rule{1.2cm}{0.4pt} / temp. \rule{2.1cm}{0.4pt}[cite: 5]
+    \item \textbf{$Q_g$:} valor \rule{2cm}{0.4pt} / cond. de prueba \rule{6.2cm}{0.4pt}[cite: 5]
+    \item \textbf{$R_{\theta JC}$:} \rule{3.5cm}{0.4pt} \quad \textbf{$R_{\theta JA}$:} \rule{3.5cm}{0.4pt}[cite: 5]
+    \item \textbf{SOA:} ¿Presente? $\square$ SÍ $\square$ NO \quad figura/página \rule{4.5cm}{0.4pt}[cite: 5]
+    \item \textbf{Body diode:} $I_S$ \rule{1.5cm}{0.4pt} / $V_{SD}$ \rule{1.5cm}{0.4pt} / recuperación \rule{3cm}{0.4pt}[cite: 5]
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{¿Qué parámetro es más fácil usar incorrectamente? ¿Por qué?}[cite: 5] \\
+\rule{\textwidth}{0.4pt} \\
+\rule{\textwidth}{0.4pt}
+
+\vfill
+\begin{tcolorbox}[colback=yellow!10, colframe=gray, title=\textbf{Datasheet de Demostración (Solo Ilustrativo)[cite: 5]}]
+    \textbf{IRLZ44N — Infineon[cite: 5]}
+    \begin{itemize}
+        \item $V_{DSS} = 55\,\text{V}$[cite: 5].
+        \item $I_D$ max @ $25^\circ\text{C}$: $47\,\text{A}$ en la ficha de producto, condicionado por térmica[cite: 5].
+        \item $V_{GS(th)} = 1\text{-}2\,\text{V}$[cite: 5].
+        \item $R_{DS(on)}$ depende de $V_{GS}$ y corriente de prueba[cite: 5] ($22\,\text{m}\Omega @ 10\,\text{V}$, $25\,\text{m}\Omega @ 5\,\text{V}$, $35\,\text{m}\Omega @ 4\,\text{V}$)[cite: 5].
+        \item $Q_G$ typ $\sim 32\,\text{nC}$[cite: 5].
+        \item $R_{\theta JC}$ max $1.8\,\text{K/W}$[cite: 5].
+        \item SOA disponible[cite: 5].
+        \item Body diode con ratings propios[cite: 5].
+    \end{itemize}
+\end{tcolorbox}
+
+\end{document}

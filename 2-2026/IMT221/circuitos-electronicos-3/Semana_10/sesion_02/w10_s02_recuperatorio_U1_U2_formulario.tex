@@ -1,0 +1,198 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Formulario Oficial Recuperatorio}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Formulario Autorizado — Recuperatorio U1 + U2[cite: 15]}]
+    \textbf{Uso permitido durante el recuperatorio:} este formulario + calculadora científica convencional[cite: 15]. \\
+    \textbf{Prohibido:} Python, LTspice, internet, celulares o material adicional[cite: 15].
+\end{tcolorbox}
+
+\section*{Convenciones Generales[cite: 15]}
+\noindent\begin{minipage}[t]{0.48\textwidth}
+    \begin{itemize}
+        \item \textbf{Ley de Ohm:} $V = I R$[cite: 15]
+        \item \textbf{Potencia:} $P = V I = I^2 R = \frac{V^2}{R}$[cite: 15]
+    \end{itemize}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\textwidth}
+    \begin{itemize}
+        \item \textbf{Leyes de Kirchhoff:} $\sum I_{\text{entra}} = \sum I_{\text{sale}}$ (KCL)[cite: 15] \quad $\sum V = 0$ (KVL)[cite: 15]
+        \item \textbf{Error Porcentual:} $\%\text{error} = \frac{|x_{\text{med}} - x_{\text{ref}}|}{|x_{\text{ref}}|} \times 100$[cite: 15]
+    \end{itemize}
+\end{minipage}
+
+\vspace{0.3cm}
+\hrule
+\vspace{0.3cm}
+
+\section*{U1 — Diodos, Zener, Protección y Transitorios Inductivos[cite: 15]}
+
+\noindent\begin{minipage}[t]{0.62\textwidth}
+    \textbf{Diodo / Zener — Modelo PWL[cite: 15]}\\
+    Cuando el Zener está en ruptura: $V_D \approx V_Z$[cite: 15]. La corriente debe obtenerse del resto del circuito (No asumir ruptura si $I_Z < 0$)[cite: 15].
+    \begin{align*}
+        I_{R_S} &= \frac{V_{\text{fuente}} - V_{\text{nodo}}}{R_S} \quad \text{[cite: 15]} \\
+        I_{R_S} &= I_L + I_Z \quad \text{(LCK en el nodo)[cite: 15]} \\
+        P_Z &= V_Z I_Z \quad \text{y} \quad P_R = I^2 R \quad \text{[cite: 15]}
+    \end{align*}
+    
+    \textbf{Inductor y Flyback[cite: 15]}\\
+    \textbf{Tensión:} $v_L = L \frac{di_L}{dt}$ \quad | \quad \textbf{Energía:} $E_L = \frac{1}{2} L i_L^2$[cite: 15]. \\
+    \textbf{Continuidad:} $\mathbf{i_L(0^-) = i_L(0^+)}$[cite: 15]. \\
+    \textit{Física de desconexión:} $|\Delta t| \downarrow \implies |di/dt| \uparrow \implies |v_L| \uparrow$[cite: 15]. \\
+    Con Flyback, la corriente conserva inicialmente su sentido y halla una trayectoria de recirculación local[cite: 15].
+\end{minipage}\hfill
+\begin{minipage}[t]{0.35\textwidth}
+    \centering
+    \vspace{-0.5cm}
+    \begin{circuitikz}[scale=0.65, transform shape, thick]
+        % Zener Circuit
+        \draw (0,2) to[R, l=$R_S$, i=$I_{R_S}$] (3,2);
+        \draw (3,2) to[zzDo, l_=$V_Z$, i=$I_Z$] (3,0);
+        \draw (3,2) -- (4.5,2) to[R, l=$R_L$, i=$I_L$] (4.5,0);
+        \draw (0,0) -- (4.5,0) node[ground]{};
+        \node[above] at (3,2) {$V_{\text{nodo}}$};
+        \node[circle,fill,inner sep=1.5pt] at (3,2) {};
+    \end{circuitikz}
+    
+    \vspace{0.4cm}
+    \begin{circuitikz}[scale=0.65, transform shape, thick]
+        % Inductor Circuit
+        \draw (0,2) to[L, l=$L$, v=$v_L$, i>_=$i_L$] (0,0);
+        \draw (0,2) -- (2,2) to[D, l=Flyback] (2,0) -- (0,0);
+    \end{circuitikz}
+\end{minipage}
+
+\vspace{0.3cm}
+\hrule
+\vspace{0.3cm}
+
+\section*{U2 — BJT, Espejo de Corriente y Par Diferencial[cite: 15]}
+
+\noindent\begin{minipage}[t]{0.62\textwidth}
+    \textbf{Polarización DC (NPN)[cite: 15]}\\
+    \begin{align*}
+        I_C &= \frac{V_{CC} - V_C}{R_C} \quad \text{[cite: 15]} \\
+        V_{CE} &= V_C - V_E \quad \text{y} \quad V_{BE} = V_B - V_E \quad \text{[cite: 15]} \\
+        V_{BC} &= V_B - V_C \quad \text{[cite: 15]}
+    \end{align*}
+    Para NPN en \textit{forward-active}: $\mathbf{V_{BE} > 0}$ y $\mathbf{V_{BC} < 0}$[cite: 15].
+
+    \vspace{0.3cm}
+    \textbf{Espejo de Corriente BJT[cite: 15]}\\
+    Con emisores a $V_{EE} < 0$ y Q3 diode-connected:
+    \begin{align*}
+        V_{B3} &\approx V_{EE} + V_{BE} \implies I_{REF} = \frac{0\,\text{V} - V_{B3}}{R_{REF}} \quad \text{[cite: 15]} \\
+        \mathbf{I_T} &\approx \mathbf{\frac{I_{REF}}{1 + 2/\beta}} \implies I_{C1} \approx I_{C2} \approx \frac{I_T}{2} \quad \text{[cite: 15]}
+    \end{align*}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.35\textwidth}
+    \centering
+    \begin{circuitikz}[scale=0.65, transform shape, thick]
+        % BJT Node voltages
+        \draw (0,0) node[npn](Q){}; 
+        \node[left] at (Q.B) {$V_B$};
+        \node[above] at (Q.C) {$V_C$};
+        \node[below] at (Q.E) {$V_E$};
+        \draw[->, red] (Q.B) ++(-0.2,0.5) node[above]{$V_{BC}<0$} -- ++(0.5,0);
+        \draw[->, green!60!black] (Q.B) ++(-0.2,-0.5) node[below]{$V_{BE}>0$} -- ++(0.5,0);
+    \end{circuitikz}
+    
+    \vspace{0.2cm}
+    \begin{circuitikz}[scale=0.65, transform shape, thick]
+        \draw (0,0) node[npn, xscale=-1](Q4){}; \node[left] at (Q4.C) {$I_T$};
+        \draw (2,0) node[npn](Q3){}; \node[right] at (Q3.C) {$I_{REF}$};
+        \draw (Q4.E) -- (0,-1) -- (2,-1) -- (Q3.E);
+        \node[below] at (1,-1) {$V_{EE}$};
+        \draw (Q4.B) -- (Q3.B);
+        \draw (Q3.C) node[circle,fill,inner sep=1.5pt]{} -| (1,0) node[circle,fill,inner sep=1.5pt]{};
+        \node[above] at (1,0) {$V_{B3}$};
+    \end{circuitikz}
+\end{minipage}
+
+\vspace{0.3cm}
+\noindent\begin{minipage}[t]{0.48\textwidth}
+    \textbf{Parámetros de Pequeña Señal[cite: 15]}\\
+    Usar $V_T$ proporcionado en el problema[cite: 15].
+    \begin{equation*}
+        g_m = \frac{I_C}{V_T} \qquad r_e \approx \frac{1}{g_m} \qquad r_\pi = \frac{\beta}{g_m} \quad \text{[cite: 15]}
+    \end{equation*}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\textwidth}
+    \textbf{Descomposición de Modos[cite: 15]}\\
+    \begin{align*}
+        v_d &= v_1 - v_2 \quad \text{y} \quad v_{cm} = \frac{v_1 + v_2}{2} \quad \text{[cite: 15]} \\
+        v_1 &= v_{cm} + \frac{v_d}{2} \quad \text{y} \quad v_2 = v_{cm} - \frac{v_d}{2} \quad \text{[cite: 15]}
+    \end{align*}
+\end{minipage}
+
+\vspace{0.2cm}
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Par Diferencial (Ganancias y CMRR)[cite: 15]}]
+    \noindent\begin{minipage}[c]{0.58\linewidth}
+        \textbf{Ganancia Diferencial Single-Ended[cite: 15]:}
+        \begin{equation*}
+            \mathbf{v_o = v_{C2}} \implies \mathbf{A_{d,se} \approx +\frac{g_m R_C}{2}} \implies v_{C2,ac} = A_{d,se} \, v_d \quad \text{[cite: 15]}
+        \end{equation*}
+        \textit{Current Steering:} Si $v_d < 0 \implies v_2 > v_1 \implies i_{C2} \uparrow, i_{C1} \downarrow \implies v_{C2} \downarrow$[cite: 15].
+        
+        \vspace{0.3cm}
+        \textbf{Rechazo de Modo Común (CMRR)[cite: 15]:}
+        \begin{equation*}
+            A_{c,se} = \frac{v_{C2,ac}}{v_{cm}} \implies \mathbf{CMRR = \left| \frac{A_{d,se}}{A_{c,se}} \right|} \quad \text{[cite: 15]}
+        \end{equation*}
+        \begin{equation*}
+            \mathbf{CMRR_{dB} = 20\log_{10}(CMRR)} \quad \text{[cite: 15]}
+        \end{equation*}
+        \textit{Referencia útil:} $60\,\text{dB} \iff CMRR = 1000$[cite: 15].
+    \end{minipage}\hfill
+    \begin{minipage}[c]{0.38\linewidth}
+        \centering
+        \begin{circuitikz}[scale=0.6, transform shape, thick]
+            \draw (0,0) node[npn](Q1){}; \node[left] at (Q1.B) {$v_1$};
+            \draw (3,0) node[npn, xscale=-1](Q2){}; \node[right] at (Q2.B) {$v_2$};
+            \draw (Q1.C) to[R] (0,2) -- (3,2) to[R] (Q2.C);
+            \draw (Q1.E) -- (1.5,-1) -- (Q2.E);
+            \draw (1.5,-1) to[I] (1.5,-2);
+            \draw[red, thick] (Q2.C) to[short, *-o] (4,1) node[right]{$v_o = v_{C2}$};
+        \end{circuitikz}
+    \end{minipage}
+    
+    \vspace{0.2cm}
+    \textbf{Regla de Validez Metodológica:} $A_d$ y $A_c$ deben corresponder al \textbf{mismo nodo físico de salida} ($v_{C2}$)[cite: 15]. Está prohibido mezclar $A_{d,diff}$ (entre ambos colectores) con $A_{c,se}$ (en un solo colector)[cite: 15].
+\end{tcolorbox}
+
+\section*{Checklist antes de entregar el examen[cite: 15]}
+\begin{itemize}
+    \setlength\itemsep{0em}
+    \item[$\square$] ¿Usé unidades en todas mis respuestas finales?[cite: 15]
+    \item[$\square$] ¿Mostré el modelo o ecuación base utilizada antes de reemplazar números?[cite: 15]
+    \item[$\square$] ¿Revisé los signos lógicos y los órdenes de magnitud (ej. $\text{mA}, \text{k}\Omega, \text{mV}$)?[cite: 15]
+    \item[$\square$] ¿Verifiqué si la región / modelo supuesto es físicamente consistente ($I_Z > 0$, Active)?[cite: 15]
+    \item[$\square$] En la Unidad 2, ¿respeté la salida oficial $v_o = v_{C2}$?[cite: 15]
+    \item[$\square$] En el cálculo de CMRR, ¿usé la misma convención de salida física para $A_d$ y $A_c$?[cite: 15]
+    \item[$\square$] En los ítems de diagnóstico, ¿propuse una medición o acción concreta verificable?[cite: 15]
+\end{itemize}
+
+\end{document}

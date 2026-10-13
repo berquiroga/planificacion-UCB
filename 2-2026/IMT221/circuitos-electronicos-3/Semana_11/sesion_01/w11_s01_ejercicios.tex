@@ -1,0 +1,94 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Ejercicios MOSFET S11-1}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Hoja de Ejercicios y Solucionario Docente (W11S01)[cite: 5]}]
+    Desarrollo matemático paso a paso sobre fundamentos, terminales y pérdidas de primer orden del MOSFET[cite: 5].
+\end{tcolorbox}
+
+\section*{Exercise 2 — $V_{GS}$ reference[cite: 5]}
+\textbf{Problema:} Se mide un voltaje $V_G = 12\,\text{V}$ y un voltaje $V_S = 9\,\text{V}$ respecto a tierra. Calcule $V_{GS}$ y determine si se puede concluir que el MOSFET operará en estado "low-loss ON".[cite: 5]
+
+\vspace{0.2cm}
+\textbf{Solución del Instructor:}
+\begin{enumerate}
+    \item Aplicamos la definición de la variable de control electrostática:
+    \begin{align*}
+        V_{GS} &= V_G - V_S \text{[cite: 5]} \\
+        V_{GS} &= 12\,\text{V} - 9\,\text{V} \text{[cite: 5]} \\
+        \implies \boxed{V_{GS} = 3\,\text{V}} \text{[cite: 5]}
+    \end{align*}
+    \item \textbf{Conclusión:} No se puede concluir "low-loss ON" sin revisar el datasheet[cite: 5]. Un valor de $3\,\text{V}$ podría superar el $V_{GS(th)}$, pero no hay evidencia de que la resistencia $R_{DS(on)}$ garantizada aplique a esta tensión, limitando la eficiencia de conmutación[cite: 5].
+\end{enumerate}
+
+\section*{Exercise 3 — Region classification[cite: 5]}
+\textbf{Problema:} Un NMOS tiene un umbral $V_{TH} = 2.5\,\text{V}$ y está polarizado con $V_{GS} = 7\,\text{V}$. Clasifique la región operativa para (a) $V_{DS} = 2\,\text{V}$ y (b) $V_{DS} = 8\,\text{V}$.[cite: 5]
+
+\vspace{0.2cm}
+\textbf{Solución del Instructor:}
+\begin{enumerate}
+    \item Primero calculamos la tensión de sobremarcha (overdrive):
+    \begin{equation*}
+        V_{GS} - V_{TH} = 7\,\text{V} - 2.5\,\text{V} = 4.5\,\text{V} \text{[cite: 5]}
+    \end{equation*}
+    \item \textbf{Caso (a) $V_{DS} = 2\,\text{V}$:} Evaluamos la frontera. Como $2\,\text{V} < 4.5\,\text{V}$, el dispositivo opera en la región \textbf{ohmic/triode}[cite: 5].
+    \item \textbf{Caso (b) $V_{DS} = 8\,\text{V}$:} Evaluamos la frontera. Como $8\,\text{V} \ge 4.5\,\text{V}$, el dispositivo opera en \textbf{saturation} (según el modelo ideal long-channel)[cite: 5].
+\end{enumerate}
+
+\section*{Exercise 4 — Threshold trap[cite: 5]}
+\textbf{Problema:} Un datasheet indica $V_{GS(th)} = 1.5\text{-}2.5\,\text{V}$. Un estudiante afirma: ``Con $3.3\,\text{V}$ de mi microcontrolador estará fully ON.'' ¿Es correcto?[cite: 5]
+
+\vspace{0.2cm}
+\textbf{Solución del Instructor:}
+\textbf{No.} La tensión de umbral solo indica el inicio de conducción (onset) para una corriente de prueba baja. Para confirmar un estado fully ON de bajas pérdidas, debe buscarse especificación de $R_{DS(on)}$ o curvas $I_D$-$V_{DS}$ caracterizadas explícitamente a $3.3\,\text{V}$[cite: 5].
+
+\section*{Exercise 5 — Conduction-loss comparison[cite: 5]}
+\textbf{Problema:} Compare dos opciones para un interruptor ON estático: $R_{DS(on),A} = 30\,\text{m}\Omega$ y $R_{DS(on),B} = 80\,\text{m}\Omega$. Calcule las pérdidas de conducción $P_{cond}$ para $I_D = 2\,\text{A}$ y para $I_D = 5\,\text{A}$.[cite: 5]
+
+\vspace{0.2cm}
+\textbf{Solución del Instructor:}
+Utilizamos la relación de primer orden $P_{cond} \approx I_D^2 R_{DS(on)}$[cite: 5].
+\begin{itemize}
+    \item Para $I_D = 2\,\text{A}$:
+    \begin{align*}
+        P_A &= (2)^2 (0.030) = 4 \times 0.030 = \mathbf{0.12\,\text{W}} \text{[cite: 5]} \\
+        P_B &= (2)^2 (0.080) = 4 \times 0.080 = \mathbf{0.32\,\text{W}} \text{[cite: 5]}
+    \end{align*}
+    \item Para $I_D = 5\,\text{A}$:
+    \begin{align*}
+        P_A &= (5)^2 (0.030) = 25 \times 0.030 = \mathbf{0.75\,\text{W}} \text{[cite: 5]} \\
+        P_B &= (5)^2 (0.080) = 25 \times 0.080 = \mathbf{2.00\,\text{W}} \text{[cite: 5]}
+    \end{align*}
+\end{itemize}
+\textit{Nota de ingeniería:} Duplicar la corriente cuadruplica la pérdida bajo $R_{DS(on)}$ constante[cite: 5].
+
+\section*{Exercise 6 — $R_{DS(on)}$ vs $Q_g$[cite: 5]}
+\textbf{Problema:} El Candidato A tiene menor $R_{DS(on)}$ pero mayor $Q_g$. El Candidato B tiene mayor $R_{DS(on)}$ pero menor $Q_g$. Discuta la conducción, las necesidades del driver y la frecuencia de conmutación.[cite: 5]
+
+\vspace{0.2cm}
+\textbf{Solución del Instructor:}
+Menor $R_{DS(on)}$ no siempre gana[cite: 5]. 
+\begin{itemize}
+    \item \textbf{Conducción:} El Candidato A genera menos calor estático mientras conduce.
+    \item \textbf{Driver y $Q_g$:} El Candidato A demanda más corriente ($I_g$) transitoria del driver para cargar su gran $Q_g$. Si el driver es débil, el tiempo de transición ($t \sim Q_g / I_g$) será elevado[cite: 5].
+    \item \textbf{Switching Frequency:} A altas frecuencias, el solapamiento $v(t)i(t)$ prolongado de A generaría excesivas pérdidas dinámicas, volviendo a B potencialmente más eficiente globalmente[cite: 5]. Sin frecuencia y capacidades térmicas/del driver, no puede elegirse un ganador[cite: 5].
+\end{itemize}
+
+\end{document}

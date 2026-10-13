@@ -1,0 +1,76 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Rúbrica Recuperatorio U1+U2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Rúbrica de Corrección Independiente — Recuperatorio EC1 y EC2}]
+    El reemplazo oficial se calcula como $\mathbf{\min(\text{recovery-equivalent score}, 60)}$ de forma independiente por unidad[cite: 14].
+\end{tcolorbox}
+
+\section*{Reglas de Crédito Parcial[cite: 14]}
+\begin{itemize}
+    \setlength\itemsep{0.2em}
+    \item \textbf{Modelo Correcto + Error Aritmético:} Conserve la mayor parte del crédito analítico[cite: 14].
+    \item \textbf{Error Temprano Propagado:} Si un error se propaga pero la física posterior es coherente, no penalice repetidamente el mismo error[cite: 14].
+    \item \textbf{Modelo Incorrecto + Aritmética Correcta:} Crédito analítico bajo (Ej. seguir asumiendo Zener en $5.1\,\text{V}$ si se calculó un $I_Z < 0$)[cite: 14].
+    \item \textbf{Resultado sin Justificación:} Recibe crédito parcial si el ítem requería interpretación de la convención de salida[cite: 14].
+\end{itemize}
+
+\section*{U1 Raw Scoring Rubric (100 pts)[cite: 14]}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}X|c|}
+\hline
+\rowcolor{ucbblue!20}
+\textbf{Dimensión de Evaluación (SECTION U1)} & \textbf{Puntos} \\ \hline
+Selección de Modelo / Razonamiento de región (Zener y mallas) & 20 \\ \hline
+Ejecución Analítica (Leyes de Kirchhoff, cálculo de P, LCK) & 30 \\ \hline
+Interpretación Física (Potencia, $v_L$, Flyback path) & 25 \\ \hline
+Interpretación de Evidencia / Diagnóstico (RMSE, error \%, mitigación) & 25 \\ \hline
+\rowcolor{gray!10}
+\textbf{U1 Raw Score Total} & \textbf{100} \\ \hline
+\end{tabularx}
+
+\vspace{0.3cm}
+\begin{tcolorbox}[colback=white, colframe=black, arc=0mm, title=\textbf{Decisión de Reemplazo U1[cite: 14]}]
+    U1 raw score: \rule{2cm}{0.15mm} / 100 \quad $\implies$ U1 recovery-equivalent score: \rule{2cm}{0.15mm} \\
+    \textbf{Registered U1 replacement: $\min(\text{recovery-equivalent}, 60) = $} \rule{2cm}{0.15mm}
+\end{tcolorbox}
+
+\section*{U2 Raw Scoring Rubric (100 pts)[cite: 14]}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}X|c|}
+\hline
+\rowcolor{ucbblue!20}
+\textbf{Dimensión de Evaluación (SECTION U2)} & \textbf{Puntos} \\ \hline
+DC / Selección de Modelo / Punto Q / Mirror & 30 \\ \hline
+Análisis de Pequeña Señal / Diferencial ($g_m, A_d$) & 25 \\ \hline
+Common-mode / CMRR / Convención Single-Ended & 25 \\ \hline
+Interpretación / Troubleshooting y Current Steering & 20 \\ \hline
+\rowcolor{gray!10}
+\textbf{U2 Raw Score Total} & \textbf{100} \\ \hline
+\end{tabularx}
+
+\vspace{0.3cm}
+\begin{tcolorbox}[colback=white, colframe=black, arc=0mm, title=\textbf{Decisión de Reemplazo U2[cite: 14]}]
+    U2 raw score: \rule{2cm}{0.15mm} / 100 \quad $\implies$ U2 recovery-equivalent score: \rule{2cm}{0.15mm} \\
+    \textbf{Registered U2 replacement: $\min(\text{recovery-equivalent}, 60) = $} \rule{2cm}{0.15mm}
+\end{tcolorbox}
+
+\end{document}

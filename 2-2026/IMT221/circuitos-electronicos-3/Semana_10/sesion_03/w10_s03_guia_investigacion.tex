@@ -1,0 +1,114 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Cuestionario de Investigación S10-3}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{objgray}{RGB}{100, 100, 100}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Guía de Investigación: Lectura Crítica de Datasheet y Fundamentos MOSFET}]
+    \textbf{Instrucciones:} Responde las siguientes preguntas utilizando datasheets reales de fabricantes (ej. Infineon, onsemi, Vishay). No te limites a la definición teórica; fundamenta tus respuestas con parámetros, gráficos y condiciones de prueba extraídas directamente de las hojas de datos.
+\end{tcolorbox}
+
+\vspace{0.3cm}
+\begin{center}
+\begin{tikzpicture}[node distance=2.2cm, auto, thick, >=Stealth, 
+    box/.style={draw, rounded corners, fill=white, text width=2.8cm, align=center, minimum height=1cm, font=\footnotesize}]
+    
+    \node[box, fill=gray!10] (req) {Requerimientos\\de Aplicación};
+    \node[box, right=0.6cm of req] (soa) {Límites Absolutos\\($V_{DSS}, I_D$, SOA)};
+    \node[box, right=0.6cm of soa] (on) {Estado Estático\\($R_{DS(on)}$)};
+    \node[box, right=0.6cm of on] (dyn) {Estado Dinámico\\($Q_g$, Tiempos)};
+    \node[box, fill=red!10, below=0.6cm of on] (therm) {Validación Térmica\\($R_{\theta}$, Derating)};
+    
+    \draw[->] (req) -- (soa);
+    \draw[->] (soa) -- (on);
+    \draw[->] (on) -- (dyn);
+    \draw[->] (dyn) |- (therm);
+    \draw[->] (on) -- (therm);
+\end{tikzpicture}
+\end{center}
+\vspace{0.3cm}
+
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=*, itemsep=12pt]
+
+    \item \textbf{¿Qué diferencia existe entre $V_{GS(th)}$ y el $V_{GS}$ necesario para obtener un $R_{DS(on)}$ bajo?}\\
+    Busca en un datasheet una evidencia concreta que demuestre la diferencia.
+    \par\vspace{2pt}\textcolor{objgray}{\small $\hookrightarrow$ \textbf{Objetivo:} No confundir la tensión de umbral (threshold) con el estado plenamente encendido (fully ON).}
+
+    \item \textbf{¿En qué condiciones se especifica $R_{DS(on)}$?}\\
+    Identifica al menos $V_{GS}$, $I_D$ y temperatura o condición asociada. ¿Por qué no tiene sentido citar $R_{DS(on)}$ sin esas condiciones?
+    \par\vspace{2pt}\textcolor{objgray}{\small $\hookrightarrow$ \textbf{Objetivo:} Desarrollar la disciplina de leer especificaciones completas.}
+
+    \item \textbf{Busca el valor de corriente continua $I_D$ del MOSFET.}\\
+    Luego investiga qué condiciones acompañan ese valor. ¿Significa esa cifra que el MOSFET puede conducir esa corriente indefinidamente en cualquier montaje? Justifica con la fuente.
+    \par\vspace{2pt}\textcolor{objgray}{\small $\hookrightarrow$ \textbf{Objetivo:} Cuestionar los "Absolute Maximum Ratings" de la primera página.}
+
+    \item \textbf{¿Qué es $Q_g$ y qué relación tiene con la corriente que debe entregar un gate driver?}\\
+    Localiza una curva o tabla de gate charge y explica qué información aporta.
+    \par\vspace{2pt}\textcolor{objgray}{\small $\hookrightarrow$ \textbf{Objetivo:} Preparar el terreno técnico para el diseño de gate drivers.}
+
+    \item \textbf{Si el gate de un MOSFET ideal no consume corriente DC significativa, ¿por qué un microcontrolador puede tener dificultades para conmutarlo rápidamente?}\\
+    Construye la explicación usando capacitancia/gate charge.
+    \par\vspace{2pt}\textcolor{objgray}{\small $\hookrightarrow$ \textbf{Objetivo:} Superar el mito de ``gate current = 0''.}
+
+    \item \textbf{¿Qué regiones de operación aparecen en las curvas $I_D$-$V_{DS}$?}\\
+    Explica por qué ``saturation'' en MOSFET no significa lo mismo que ``saturation'' en BJT.
+    \par\vspace{2pt}\textcolor{objgray}{\small $\hookrightarrow$ \textbf{Objetivo:} Conectar con la clase anterior y evitar traslados erróneos de vocabulario.}
+
+    \item \textbf{Cuando un MOSFET funciona como interruptor ON, ¿qué parámetro del datasheet ayuda a estimar la pérdida por conducción?}\\
+    Escribe la relación de primer orden y explica sus supuestos.
+    \par\vspace{2pt}\textcolor{objgray}{\small $\hookrightarrow$ \textbf{Objetivo:} Establecer la métrica de eficiencia estática ($P_{cond} \approx I_D^2 R_{DS(on)}$).}
+
+    \item \textbf{¿Por qué las pérdidas de conducción no bastan para predecir la disipación total de un MOSFET operando con PWM?}\\
+    Identifica qué sucede durante el turn-on y el turn-off.
+    \par\vspace{2pt}\textcolor{objgray}{\small $\hookrightarrow$ \textbf{Objetivo:} Introducir conceptualmente las pérdidas de conmutación (switching loss).}
+
+    \item \textbf{Busca las curvas o datos que muestran cómo cambia $R_{DS(on)}$ con la temperatura.}\\
+    ¿Qué consecuencia tendría ignorar esta dependencia en un diseño térmico?
+    \par\vspace{2pt}\textcolor{objgray}{\small $\hookrightarrow$ \textbf{Objetivo:} Relacionar el comportamiento eléctrico con la realidad térmica.}
+
+    \item \textbf{¿Qué es la Safe Operating Area (SOA)?}\\
+    ¿Qué información contiene que no puede deducirse simplemente de leer $V_{DSS}$ e $I_D$ de forma aislada?
+    \par\vspace{2pt}\textcolor{objgray}{\small $\hookrightarrow$ \textbf{Objetivo:} Fomentar la lectura crítica y gráfica de los límites del dispositivo.}
+
+    \item \textbf{Localiza la información del body diode del MOSFET.}\\
+    ¿Por qué puede ser relevante cuando la carga es inductiva? Relaciónalo con lo aprendido sobre el diodo Flyback en la Unidad 1.
+    \par\vspace{2pt}\textcolor{objgray}{\small $\hookrightarrow$ \textbf{Objetivo:} Recuperar el conocimiento previo de protección y conectarlo con puentes H.}
+
+    \item \textbf{Si el controlador entrega 3.3 V al gate, ¿cómo determinarías si un MOSFET concreto puede utilizarse con bajas pérdidas?}\\
+    Describe el procedimiento de investigación en el datasheet, no solo el resultado final.
+    \par\vspace{2pt}\textcolor{objgray}{\small $\hookrightarrow$ \textbf{Objetivo:} Sistematizar un método de selección basado en restricciones de control.}
+
+    \item \textbf{Compara dos MOSFETs disponibles en las fuentes. Uno tiene menor $R_{DS(on)}$ pero mayor $Q_g$. ¿Cuál es ``mejor''?}\\
+    Explica por qué la pregunta no puede responderse sin conocer la aplicación específica.
+    \par\vspace{2pt}\textcolor{objgray}{\small $\hookrightarrow$ \textbf{Objetivo:} Desarrollar el pensamiento de ingeniería basado en tradeoffs.}
+
+    \item \textbf{¿Qué información de la aplicación debes conocer antes de seleccionar un MOSFET?}\\
+    Construye una lista mínima y explica por qué cada dato cambia la selección del componente.
+    \par\vspace{2pt}\textcolor{objgray}{\small $\hookrightarrow$ \textbf{Objetivo:} Enseñar a investigar partiendo desde los requerimientos del sistema.}
+
+    \item \textbf{A partir de las fuentes, construye la siguiente cadena causal:}\\
+    $V_{GS}$ $\rightarrow$ gate charge $\rightarrow$ tiempo de transición $\rightarrow$ pérdidas $\rightarrow$ temperatura. Indica qué enlaces están directamente respaldados por las fuentes y cuáles son inferencias tuyas.
+    \par\vspace{2pt}\textcolor{objgray}{\small $\hookrightarrow$ \textbf{Objetivo:} Promover la síntesis de conceptos y la trazabilidad de la información.}
+
+\end{enumerate}
+
+\end{document}
