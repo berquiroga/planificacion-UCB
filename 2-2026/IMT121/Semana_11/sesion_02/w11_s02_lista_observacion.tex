@@ -1,0 +1,71 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Observation Checklist}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Lista de Observación: Validaciones en Simulación Transitoria}]
+    \centering \textbf{Registro de Desempeño Operativo en el Laboratorio Computacional}
+\end{tcolorbox}
+
+\noindent \textit{Instrucciones para el Instructor: Marque objetivamente la capacidad del estudiante / equipo para transicionar de la predicción analítica a la ejecución e interpretación computacional de LTspice.}
+
+\vspace{0.4cm}
+\textbf{Estudiante / Grupo Evaluado:} \hrulefill \quad \textbf{Fecha:} \hrulefill
+
+\vspace{0.4cm}
+\renewcommand{\arraystretch}{1.6}
+\noindent
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}X >{\centering\arraybackslash}p{1.2cm} >{\centering\arraybackslash}p{1.8cm} >{\centering\arraybackslash}p{1.2cm} >{\RaggedRight\arraybackslash}p{3cm}}
+\toprule
+\textbf{Evidencia Observable} & \textbf{Sí} & \textbf{Con Apoyo} & \textbf{No} & \textbf{Nota Descriptiva} \\ 
+\midrule
+Predijo analíticamente $v_C(t_s^+)$ ANTES de ejecutar el simulador & $\square$ & $\square$ & $\square$ & \\ \addlinespace
+Calculó la asíntota DC $v_C(\infty)$ aislando el puerto & $\square$ & $\square$ & $\square$ & \\ \addlinespace
+Halló $R_{eq}$ apagando debidamente la fuente $V_s$ & $\square$ & $\square$ & $\square$ & \\ \addlinespace
+Calculó e interpretó físicamente la escala $\tau$ & $\square$ & $\square$ & $\square$ & \\ \addlinespace
+Identificó correctamente el flanco en la fuente \texttt{PULSE} & $\square$ & $\square$ & $\square$ & \\ \addlinespace
+Configuró una directiva de simulación \texttt{.tran} coherente & $\square$ & $\square$ & $\square$ & \\ \addlinespace
+Ejecutó o reprodujo el software de manera verificable & $\square$ & $\square$ & $\square$ & \\ \addlinespace
+Graficó \texttt{V(a)} distinguiendo superposición de \texttt{V(in)} & $\square$ & $\square$ & $\square$ & \\ \addlinespace
+Pudo leer el curso en $t_s + \tau$ en vez de $t=\tau$ & $\square$ & $\square$ & $\square$ & \\ \addlinespace
+Justificó analíticamente si observó una ligera discrepancia & $\square$ & $\square$ & $\square$ & \\ \addlinespace
+Predijo correctamente el efecto temporal de duplicar $C$ & $\square$ & $\square$ & $\square$ & \\ 
+\bottomrule
+\end{tabularx}
+
+\vspace{0.6cm}
+\begin{tcolorbox}[colback=gray!5, colframe=gray!50, title=\textbf{Clasificación Formativa de Estado Operativo (Sin Valor Sumativo)}]
+Marque la etiqueta que mejor describa el estado general del estudiante tras la sesión:
+\begin{itemize}\setlength\itemsep{0.2em}
+    \item[$\square$] \texttt{ANALYTIC\_PREDICTION\_READY}: El modelo analítico es sólido, pero la parte de uso del software falló o quedó incompleta.
+    \item[$\square$] \texttt{TRANS\_CONFIGURATION\_SUPPORTED}: Necesita asistencia para comprender qué significan los parámetros del bloque \texttt{PULSE} o del \texttt{.tran}.
+    \item[$\square$] \texttt{INDEPENDENT\_EXECUTION\_VERIFIED}: Capaz de cerrar el bucle Teoría-SPICE por sí mismo.
+    \item[$\square$] \texttt{INTERPRETATION\_READY}: Las gráficas están, pero requiere refuerzo para aprender a extraer datos y conclusiones usando cursores.
+    \item[$\square$] \texttt{ACCESS\_FOLLOW\_UP}: El equipo o software limitó/impidió la ejecución y debe programarse un seguimiento posterior.
+\end{itemize}
+\end{tcolorbox}
+
+\end{document}

@@ -1,0 +1,87 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Predicción y Contraste}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Hoja Individual: Predicción Analítica y Contraste Computacional}]
+    \centering \textbf{Validación de Autonomía antes y después de LTspice}
+\end{tcolorbox}
+
+\textbf{Estudiante:} \hrulefill \quad \textbf{Fecha:} \hrulefill
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=gray!5, colframe=gray!50, title=\textbf{Modalidad de Evidencia Tecnológica}]
+\textit{Seleccione su escenario actual de acceso al software de simulación:} 
+
+\vspace{0.2cm}
+{[$\square$]} Ejecuté la simulación individualmente \quad {[$\square$]} Ejecutamos la simulación por pareja \\[0.2cm]
+{[$\square$]} Observé demostración proyectada por el docente \quad {[$\square$]} Requiere acceso posterior (sin equipo).
+\end{tcolorbox}
+
+\vspace{0.2cm}
+\section*{PARTE A: Modelo Teórico (Completar ANTES de abrir el software)}
+A partir del circuito base asignado en clase ($9\,\text{V}$ PULSE, $R_1=3\,\text{k}\Omega$, $R_2=6\,\text{k}\Omega$, $C=100\,\mu\text{F}$), y sabiendo que el pulso de voltaje arranca en el instante de tiempo $t_s = 10\,\text{ms}$, deduzca:
+
+\vspace{0.3cm}
+\renewcommand{\arraystretch}{1.5}
+\noindent
+\begin{tabularx}{\textwidth}{p{3.5cm} >{\centering\arraybackslash}X >{\RaggedRight\arraybackslash}X}
+\toprule
+\textbf{Parámetro} & \textbf{Su Predicción Numérica} & \textbf{Justificación Física/Analítica} \\ 
+\midrule
+$v_C(t_s^+)$ & \rule{3cm}{0.4pt} V & \\[0.6cm] 
+$v_C(\infty)$ & \rule{3cm}{0.4pt} V & \\[0.6cm] 
+$R_{eq}$ vista por C & \rule{3cm}{0.4pt} k$\Omega$ & \\[0.6cm] 
+Constante $\tau$ & \rule{3cm}{0.4pt} s & \\[0.6cm] 
+Voltaje en un $\tau$ & $\approx$ \rule{2.5cm}{0.4pt} V & Evalúe: $v_C(t_s + \tau)$ \\[0.6cm] 
+Tendencia / Bosquejo & \rule{3cm}{0.4pt} & Especifique si la curva asciende o decae. \\[0.2cm] 
+\bottomrule
+\end{tabularx}
+
+\vspace{0.5cm}
+\section*{PARTE B: Contraste Visual (Completar DESPUÉS de ver la gráfica)}
+Utilizando la herramienta de cursores en LTspice, ubíquese en los instantes de tiempo \textbf{absoluto} requeridos y compare la lectura del software con su predicción teórica.
+
+\vspace{0.3cm}
+\renewcommand{\arraystretch}{1.5}
+\noindent
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}X >{\centering\arraybackslash}p{2.5cm} >{\centering\arraybackslash}p{2.5cm} >{\RaggedRight\arraybackslash}X}
+\toprule
+\textbf{Variable o Instante Evaluado} & \textbf{Valor Predicho} & \textbf{Lectura \texttt{.tran}} & \textbf{Explicación (Si hay divergencia)} \\ 
+\midrule
+Flanco de excitación en \texttt{V(in)} & $10\,\text{ms}$ & & \\[0.6cm] 
+Voltaje previo \texttt{V(a)} (antes de $t_s$) & $0\,\text{V}$ & & \\[0.6cm] 
+\texttt{V(a)} cercano a $1\tau$ ($t \approx 210\,\text{ms}$) & $\approx 3.793\,\text{V}$ & & \\[0.6cm] 
+\texttt{V(a)} cercano a $5\tau$ ($t \approx 1.010\,\text{s}$) & $\approx 5.960\,\text{V}$ & & \\[0.6cm] 
+Tendencia final visual ($t \to \infty$) & $6\,\text{V}$ (asíntota) & & \\[0.2cm] 
+\bottomrule
+\end{tabularx}
+
+\vspace{0.5cm}
+\textbf{Transferencia Conceptual Rápida:} Si editamos el modelo en LTspice y duplicamos el capacitor a $C=200\,\mu\text{F}$, ¿Qué le sucederá a $\tau$? ¿La nueva curva visualizada tardaría más o menos en alcanzar su asíntota de 6V respecto a la anterior?
+\vspace{1.5cm}
+
+\end{document}

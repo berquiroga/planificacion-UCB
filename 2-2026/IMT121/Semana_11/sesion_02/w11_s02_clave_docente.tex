@@ -1,0 +1,79 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Solucionario W11S2}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Clave Docente: Simulación Transitoria RC de Primer Orden}]
+    \centering \textbf{Fundamentación de Valores Referenciales y Procedimientos SPICE}
+\end{tcolorbox}
+
+\section*{1. Derivación Analítica del Caso Estándar}
+\textbf{Topología:} Fuente conectada a serie con $R_1=3\,\text{k}\Omega$, nodo $a$, con $R_2=6\,\text{k}\Omega$ y $C=100\,\mu\text{F}$ en paralelo a tierra. El pulso \texttt{V1} conmuta de $0\,\text{V}$ a $9\,\text{V}$ en el tiempo de simulación absoluto $t_s = 10\,\text{ms}$.
+
+\begin{itemize}
+    \item \textbf{Antes de conmutar ($t < t_s$):} La fuente es $0\,\text{V}$. Al inicializar LTspice por \texttt{.op}, halla el sistema en reposo: $\mathbf{v_C(t_s^-) = 0\,\text{V}}$.
+    \item \textbf{Condición de Arranque:} Por inercia de continuidad del capacitor ideal: $\mathbf{v_C(t_s^+) = 0\,\text{V}}$.
+    \item \textbf{Condición Final DC ($t \to \infty$):} La fuente queda en $9\,\text{V}$ permanente. El capacitor se abre. El nodo $a$ queda regido por el divisor de tensión de las dos resistencias. \\
+    $v_C(\infty) = 9\,\text{V} \cdot \left(\frac{6\text{k}\Omega}{3\text{k}\Omega + 6\text{k}\Omega}\right) = \mathbf{6\,\text{V}}$.
+    \item \textbf{Resistencia vista ($R_{eq}$):} Cortocircuitando pasivamente la fuente ($0\,\text{V}$), $R_1$ y $R_2$ quedan en paralelo si se miran desde los terminales del capacitor. \\
+    $R_{eq} = 3\text{k}\Omega \parallel 6\text{k}\Omega = \mathbf{2\,\text{k}\Omega}$.
+    \item \textbf{Constante de Tiempo ($\tau$):} $\tau = R_{eq} C = (2000) \cdot (100 \times 10^{-6}) = \mathbf{0.200\,\text{s}}$.
+    \item \textbf{Modelo EDO (KCL en nodo a para $t>t_s$):} \\
+    $\frac{9 - v_C}{3000} = \frac{v_C}{6000} + C \frac{dv_C}{dt} \implies \mathbf{0.2 \frac{dv_C}{dt} + v_C = 6}$
+    \item \textbf{Respuesta Temporal del modelo ($s = t - t_s \ge 0$):} \\
+    $v_C(s) = 6(1 - e^{-s/0.2})\,\text{V}$.
+\end{itemize}
+
+\section*{2. Parámetros de Software (LTspice y \texttt{.tran})}
+\textbf{Netlist de Control:}
+\begin{verbatim}
+* W11S2 - RC transitorio; entrada cambia de 0 V a 9 V a los 10 ms
+V1 in 0 PULSE(0 9 10m 100u 100u 2 4)
+R1 in a 3k
+R2 a 0 6k
+C1 a 0 100u
+.tran 0 1.1 0 1m
+.end
+\end{verbatim}
+
+\textbf{Justificación Pedagógica de Configuración:}
+Se prefiere la fuente \texttt{PULSE} con retardo ($10\,\text{ms}$) frente al uso forzado de las directivas \texttt{uic} (Use Initial Conditions) o \texttt{.ic V(a)=0}. Al dejar que el software halle el equilibrio inicial de la red (\texttt{.op} pasivo), validamos que la física de "arranque desde reposo" se deba a la topología y excitación, y no a una sobre-imposición del usuario.
+
+\section*{3. Valores Relativos a Tiempo Absoluto del Visor}
+\begin{itemize}
+    \item $t_s$ (Inicio transición): $\approx \mathbf{0.010\,\text{s}}$.
+    \item A un $\tau$ después del flanco ($t \approx 0.210\,\text{s}$): $v_C = 6(1 - e^{-1}) \approx \mathbf{3.793\,\text{V}}$.
+    \item A cinco $\tau$ después del flanco ($t \approx 1.010\,\text{s}$): $v_C = 6(1 - e^{-5}) \approx \mathbf{5.960\,\text{V}}$.
+\end{itemize}
+\textit{Nota de clase: Prestar máxima atención a que los estudiantes no lean el valor ciego en $t=0.200\,\text{s}$, omitiendo restar los 10 ms iniciales del retardo de la excitación.}
+
+\vspace{0.5cm}
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Inserción Posterior de Evidencia Visual}]
+\textit{[Espacio reservado para incorporar las capturas de pantalla reales (plot y esquemático) generadas durante la clase por el docente, para integrarlas formalmente al repositorio en la siguiente edición del curso].}
+\vspace{4cm}
+\end{tcolorbox}
+
+\end{document}
