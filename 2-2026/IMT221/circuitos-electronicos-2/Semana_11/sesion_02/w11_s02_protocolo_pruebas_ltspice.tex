@@ -1,0 +1,60 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2cm]{geometry}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Protocolo de Simulación: LTSpice (Hito 2)}}[cite: 11]
+\end{center}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Advertencia de Macromodelos[cite: 11]}]
+    \raggedright
+    Un modelo SPICE genérico o del fabricante puede no reproducir con exactitud todas las no idealidades físicas (Offset, Swing, GBW o SR)[cite: 11]. Los resultados de simulación deben etiquetarse siempre como \texttt{SIMULATED} y nunca sustituyen a \texttt{MEASURED}[cite: 11]. \textbf{No adjunte capturas de pantalla decorativas sin interpretación cuantitativa[cite: 11].}
+\end{tcolorbox}
+
+\section*{1. Test A — Modo Diferencial[cite: 11]}
+\textbf{Configuración:} Elija $V_{cm}$ y $V_d$[cite: 11]. Configure las fuentes de tensión de entrada como:
+\begin{equation}
+    V_1 = V_{cm} - \frac{V_d}{2}, \qquad V_2 = V_{cm} + \frac{V_d}{2} \text{[cite: 11]}
+\end{equation}
+\textbf{Medición:} Mida $V_o$ y calcule la ganancia diferencial simulada: $A_{d,\mathrm{sim}} = \frac{V_o}{V_d}$[cite: 11]. Compárela con la ganancia analítica teórica[cite: 11].
+
+\section*{2. Test B — Modo Común[cite: 11]}
+\textbf{Configuración:} Ajuste ambas entradas iguales al nivel común:
+\begin{equation}
+    V_1 = V_2 = V_{cm} \implies V_d = 0 \text{[cite: 11]}
+\end{equation}
+\textbf{Medición:} Mida $V_{o,cm}$[cite: 11]. Idealmente debe ser 0. Calcule (si es significativo): $A_{c,\mathrm{sim}} = \frac{V_{o,cm}}{V_{cm}}$[cite: 11]. Identifique si el macromodelo del Op-Amp posee fuga de modo común o si su red resistiva induce desbalance[cite: 11].
+
+\section*{3. Test C — Señal Combinada (Opcional)[cite: 11]}
+\textbf{Configuración:} Simule la entrada con $V_1(t)$ y $V_2(t)$ que contengan tanto componente continua (o ruidosa) de modo común como señal diferencial $V_d(t)$[cite: 11]. \\
+\textbf{Validación:} Verifique visualmente y analíticamente que la componente diferencial útil permanece visible y amplificada en la salida sin saturación[cite: 11].
+
+\section*{4. Matriz de Evidencia de Simulación (Para Bitácora)[cite: 11]}
+\begin{table}[h!]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash\hsize=0.8\hsize}X|c|c|c|>{\raggedright\arraybackslash\hsize=1.2\hsize}X|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Prueba SPICE} & \textbf{Entrada ($V_1, V_2$)} & \textbf{Salida $V_o$ Simulada} & \textbf{Métrica ($A_d$ / $A_c$)} & \textbf{Interpretación / Diferencia[cite: 11]} \\ \hline
+    Test Diferencial[cite: 11] & & & & \\ \hline
+    Test Modo Común[cite: 11] & & & & \\ \hline
+    Check Headroom / Saturación[cite: 11] & & & & \\ \hline
+    \end{tabularx}
+\end{table}
+
+\end{document}

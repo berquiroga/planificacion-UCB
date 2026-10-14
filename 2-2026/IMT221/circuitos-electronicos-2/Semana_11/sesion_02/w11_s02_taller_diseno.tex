@@ -1,0 +1,126 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows.meta, positioning}
+\usepackage[american]{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Taller de Diseño Cuantitativo: In-Amp}
+\rhead{Semana 11 - Sesión 2}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Taller de Diseño: Amplificador de Instrumentación (Hito 2)}}[cite: 11]
+\end{center}
+
+\section*{A. El Problema de Carga (Loading) del Hito 1[cite: 11]}
+En el Hito 1, el puente de Wheatstone se conectó directamente al filtro Twin-T. Como la impedancia de entrada del filtro no era infinitamente mayor que la impedancia de salida del puente, la señal útil sufrió atenuación y modificación[cite: 11].
+
+\vspace{0.3cm}
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm, auto, >=stealth, thick]
+    \node[draw, rectangle, fill=red!10, minimum height=1cm, text width=2cm, align=center] (w) {Wheatstone};
+    \node[draw, rectangle, fill=yellow!20, minimum height=1cm, text width=2.5cm, align=center, right=1.5cm of w] (load) {Problema de \\ Carga ($Z_{in}$)};
+    \node[draw, rectangle, fill=ucbblue!10, minimum height=1cm, text width=2.5cm, align=center, right=1.5cm of load] (inamp) {Etapa Activa \\ (Alta $Z_{in}$)};
+    \node[draw, rectangle, fill=green!10, minimum height=1cm, text width=2cm, align=center, right=1.5cm of inamp] (twint) {Twin-T \\ (Rechazo 50 Hz)};
+    
+    \draw[->] (w) -- (load);
+    \draw[->] (load) -- (inamp);
+    \draw[->] (inamp) -- (twint);
+\end{tikzpicture}
+\end{center}
+\vspace{0.2cm}
+
+\section*{B. Descomposición Diferencial y Modo Común[cite: 11]}
+Las señales de entrada $V_1$ y $V_2$ se descomponen en[cite: 11]:
+\begin{equation}
+    V_d = V_2 - V_1 \quad \text{y} \quad V_{cm} = \frac{V_1 + V_2}{2} \text{[cite: 11]}
+\end{equation}
+Reconstrucción: $V_1 = V_{cm} - \frac{V_d}{2}$ y $V_2 = V_{cm} + \frac{V_d}{2}$[cite: 11].
+
+\section*{C. Derivación Guiada del In-Amp (3 Op-Amps)[cite: 11]}
+
+\begin{center}
+    \begin{circuitikz}[scale=0.8, transform shape, thick]
+        % Etapa de entrada
+        \draw (0,2.5) node[op amp, noinv input up] (A1) {$A_1$};
+        \draw (0,-2.5) node[op amp, noinv input down] (A2) {$A_2$};
+        \draw (A1.+) to[short, -o] ++(-1,0) node[left] {$V_1$};
+        \draw (A2.+) to[short, -o] ++(-1,0) node[left] {$V_2$};
+        \draw (A1.-) -- ++(0,-1) coordinate(n1);
+        \draw (A2.-) -- ++(0,1) coordinate(n2);
+        \draw (n1) to[R, l=$R_G$, i>=$I_G$] (n2);
+        \draw (n1) to[R, l=$R$] (n1 -| A1.out) -- (A1.out);
+        \draw (n2) to[R, l_=$R$] (n2 -| A2.out) -- (A2.out);
+        \draw (A1.out) to[short, *-] ++(1,0) coordinate(vo1) node[above] {$V_{o1}$};
+        \draw (A2.out) to[short, *-] ++(1,0) coordinate(vo2) node[below] {$V_{o2}$};
+        % Etapa final
+        \draw (6,0) node[op amp] (A3) {$A_3$};
+        \draw (vo1) -- (vo1 |- A3.-) to[R, l=$R_1$] (A3.-);
+        \draw (vo2) -- (vo2 |- A3.+) to[R, l=$R_3$] (A3.+);
+        \draw (A3.-) -- ++(0,1.5) coordinate(f3) to[R, l=$R_2$] (f3 -| A3.out) -- (A3.out);
+        \draw (A3.+) to[R, l=$R_4$] ++(0,-1.5) node[ground]{};
+        \draw (A3.out) to[short, *-o] ++(1,0) node[right] {$V_o$};
+    \end{circuitikz}
+\end{center}
+
+\textbf{Paso 1: Etapa de Entrada.} Asumiendo Op-Amps ideales ($V_{-1} = V_1$, $V_{-2} = V_2$), la corriente $I_G$ es[cite: 11]:
+\begin{equation}
+    I_G = \frac{V_1 - V_2}{R_G} \text{[cite: 11]}
+\end{equation}
+LKC en $A_1$: $V_{o1} = V_1 + I_G R = V_1 + \frac{R}{R_G}(V_1 - V_2)$[cite: 11]. \\
+LKC en $A_2$: $V_{o2} = V_2 - I_G R = V_2 - \frac{R}{R_G}(V_1 - V_2) = V_2 + \frac{R}{R_G}(V_2 - V_1)$[cite: 11]. \\
+Restando $V_{o2} - V_{o1}$ obtenemos la ganancia de la primera etapa ($A_{d1}$)[cite: 11]:
+\begin{equation}
+    V_{o2} - V_{o1} = (V_2 - V_1) + \frac{2R}{R_G}(V_2 - v_1) \implies V_{o2} - V_{o1} = \left(1 + \frac{2R}{R_G}\right)(V_2 - V_1) \text{[cite: 11]}
+\end{equation}
+
+\textbf{Paso 2: Etapa Final y Ganancia Total ($A_d$).} Si definimos $k = \frac{R_2}{R_1} = \frac{R_4}{R_3}$, la salida es $V_o = k(V_{o2} - V_{o1})$[cite: 11]:
+\begin{equation}
+    A_d = k\left(1 + \frac{2R}{R_G}\right) \text{[cite: 11]}
+\end{equation}
+
+\section*{D. Ecuación de Diseño de $R_G$[cite: 11]}
+Para un diseño donde $k=1$ y conocemos el objetivo $A_d^\star$, despejamos $R_G$[cite: 11]:
+\begin{equation}
+    A_d^\star = 1 + \frac{2R}{R_G} \implies \boxed{ R_G = \frac{2R}{A_d^\star - 1} } \text{[cite: 11]}
+\end{equation}
+\textit{Nota:} Debe usar un $R_G^\prime$ comercial disponible y recalcular la ganancia real $A_{d,\mathrm{nom}}$[cite: 11].
+
+\section*{E. Common-Mode Rejection Ratio (CMRR)[cite: 11]}
+El modelo lineal general es $V_o = A_d V_d + A_c V_{cm}$[cite: 11]. El CMRR mide la capacidad de rechazar $V_{cm}$[cite: 11]:
+\begin{equation}
+    CMRR = \left| \frac{A_d}{A_c} \right| \implies CMRR_{dB} = 20\log_{10} \left| \frac{A_d}{A_c} \right| \text{[cite: 11]}
+\end{equation}
+
+\section*{F. Tarea Grupal: Ejercicios de Diagnóstico y Diseño[cite: 11]}
+\begin{enumerate}
+    \setlength{\itemsep}{0pt}
+    \item \textbf{Cálculo base:} Si $V_1 = 2.91\,\text{V}$ y $V_2 = 3.09\,\text{V}$, halle $V_d$ y $V_{cm}$. Reconstruya $V_1, V_2$[cite: 11].
+    \item \textbf{Diseño In-Amp:} Para $A_d^\star = 15$, $R=10\,\text{k}\Omega$, $k=1$. Calcule $R_G$. Elija un valor comercial cercano e indique el nuevo $A_{d,\mathrm{nom}}$[cite: 11].
+    \item \textbf{CMRR Directo:} $A_d = 30$, $A_c = 0.003$. Calcule $CMRR$ lineal y $CMRR_{dB}$[cite: 11].
+    \item \textbf{CMRR Inverso:} $A_d = 50$, $CMRR_{dB} = 60\,\text{dB}$. Estime la ganancia de modo común $A_c$[cite: 11].
+    \item \textbf{Mismatch:} Explique matemáticamente por qué si $R_2/R_1 = 10$ y $R_4/R_3 = 10.1$, habrá fuga de modo común ($A_c \neq 0$)[cite: 11].
+    \item \textbf{Requisitos Hito 2:} Defina el rango $V_{d,\max}$ del Hito 1 para su grupo, proponga un $V_{o,\max}$ deseado y halle $A_d^\star$[cite: 11].
+\end{enumerate}
+
+\end{document}

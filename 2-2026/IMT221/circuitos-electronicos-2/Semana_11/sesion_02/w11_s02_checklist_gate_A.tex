@@ -1,0 +1,56 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amssymb}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2cm]{geometry}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Gate A — Design Readiness Checklist (Hito 2)}}[cite: 11]
+\end{center}
+
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Definición del Gate A[cite: 11]}]
+    \raggedright
+    Un grupo está listo para construir solamente cuando puede mostrar y defender su métrica de mejora, arquitectura, derivación matemática, simulación validada y datasheet del Op-Amp[cite: 11]. \textbf{La simulación es un gate previo al hardware, no un sustituto de la validación física[cite: 11].}
+\end{tcolorbox}
+
+\vspace{0.4cm}
+\begin{tabularx}{\textwidth}{X}
+    $\square$ Baseline de Hito 1 identificado (Datos medidos reales)[cite: 11] \\
+    $\square$ Objetivo de diseño y mejora explícitamente declarados[cite: 11] \\
+    $\square$ Métrica de mejora seleccionada (Ej. Factor de carga, Rechazo CMRR)[cite: 11] \\
+    $\square$ Arquitectura de etapas justificada (Ej. In-Amp antes o después del Twin-T)[cite: 11] \\
+    $\square$ Rango de entrada y target de salida definidos sin riesgo de clipping[cite: 11] \\
+    $\square$ Ganancia objetivo calculada y resistores seleccionados de inventario real[cite: 11] \\
+    $\square$ Ganancia práctica ($A_{d,\mathrm{nom}}$) recalculada con resistores comerciales[cite: 11] \\
+    $\square$ Diferencia conceptual entre $A_d$ y $A_c$ / CMRR correctamente explicada[cite: 11] \\
+    $\square$ Resistencias críticas de emparejamiento (\textit{Matching-critical}) identificadas[cite: 11] \\
+    $\square$ Prueba en modo diferencial completada en LTSpice[cite: 11] \\
+    $\square$ Prueba en modo común completada en LTSpice[cite: 11] \\
+    $\square$ Op-Amp físico seleccionado y validado mediante datasheet oficial[cite: 11] \\
+    $\square$ Arquitectura de fuente / referencia elegida y documentada[cite: 11] \\
+    $\square$ Límites dinámicos (GBW / SR) plausibles para la aplicación verificados[cite: 11] \\
+    $\square$ BOM (Lista de materiales) completa y alineada a componentes disponibles[cite: 11] \\
+    $\square$ Mediciones físicas esperadas claramente definidas[cite: 11] \\
+\end{tabularx}
+
+\vspace{0.8cm}
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Clasificación Docente (Status)[cite: 11]}]
+    \centering
+    $\square$ \textbf{READY} \qquad $\square$ \textbf{READY WITH MINOR CORRECTION} \qquad $\square$ \textbf{NOT READY}
+    
+    \vspace{0.3cm}
+    \raggedright
+    \textit{Nota: \texttt{READY} autoriza el inicio de la implementación física. No significa que el Hito 2 o EC2 estén completos[cite: 11].}
+\end{tcolorbox}
+
+\end{document}

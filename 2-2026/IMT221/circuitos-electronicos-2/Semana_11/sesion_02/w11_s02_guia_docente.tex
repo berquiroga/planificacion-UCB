@@ -1,0 +1,89 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | Documento Docente}
+\chead{Solucionario y Guía de Diseño}
+\rhead{Circuitos Electrónicos II}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Guía Docente: Diseño Cuantitativo In-Amp}}[cite: 11]
+\end{center}
+
+\begin{tcolorbox}[colback=yellow!5, colframe=ucbblue, title=\textbf{Nota Pedagógica}]
+    \raggedright
+    La sesión no debe volver a explicar desde cero qué es un In-Amp. Debe verificar si los estudiantes pueden diseñarlo y justificarlo para el Hito 2[cite: 11]. Todo diseño numérico aquí es: \texttt{ILLUSTRATIVE — NOT A HITO 2 REQUIREMENT}[cite: 11].
+\end{tcolorbox}
+
+\section*{1. Solucionario a Ejercicios de Diagnóstico y Diseño[cite: 11]}
+
+\textbf{Ejercicio 2 (Warm-Up):} Dados $V_1=2.91\,\text{V}$, $V_2=3.09\,\text{V}$[cite: 11].
+\begin{align*}
+    V_d &= V_2 - V_1 = 3.09 - 2.91 = \boxed{0.18\,\text{V}} \text{[cite: 11]} \\
+    V_{cm} &= \frac{V_1+V_2}{2} = \frac{2.91 + 3.09}{2} = \boxed{3.00\,\text{V}} \text{[cite: 11]}
+\end{align*}
+Reconstrucción: $V_1 = 3.00 - 0.09 = 2.91\,\text{V}$; $V_2 = 3.00 + 0.09 = 3.09\,\text{V}$[cite: 11].
+
+\textbf{Ejercicio 3 (In-Amp Design):} Dados $A_d^\star=15$, $R=10\,\text{k}\Omega$, $k=1$[cite: 11].
+\begin{equation*}
+    R_G = \frac{2R}{A_d^\star - 1} = \frac{20\,\text{k}\Omega}{15 - 1} = \frac{20}{14} \approx \boxed{1.43\,\text{k}\Omega} \text{[cite: 11]}
+\end{equation*}
+\textit{Diseño Práctico:} Si se elige $R_G^\prime = 1.5\,\text{k}\Omega$ (valor comercial disponible), la ganancia nominal recalculará a:
+\begin{equation*}
+    A_{d,\mathrm{nom}} = 1 + \frac{20}{1.5} = 1 + 13.33 = \boxed{14.33} \text{[cite: 11]}
+\end{equation*}
+
+\textbf{Ejercicio 4 (CMRR):} $A_d=30$, $A_c=0.003$[cite: 11].
+\begin{align*}
+    CMRR &= \left|\frac{30}{0.003}\right| = \boxed{10\,000} \text{[cite: 11]} \\
+    CMRR_{dB} &= 20\log_{10}(10000) = \boxed{80\,\text{dB}} \text{[cite: 11]}
+\end{align*}
+
+\textbf{Ejercicio 5 (Reverse CMRR):} $A_d=50$, $CMRR_{dB}=60\,\text{dB}$[cite: 11].
+\begin{align*}
+    CMRR &= 10^{60/20} = 10^3 = 1000 \text{[cite: 11]} \\
+    A_c &= \frac{A_d}{CMRR} = \frac{50}{1000} = \boxed{0.05} \text{[cite: 11]}
+\end{align*}
+
+\textbf{Ejercicio 6 (Matching):} $R_2/R_1 = 10$, $R_4/R_3 = 10.1$[cite: 11]. \\
+Usando el modelo $A_c = \left(1+\frac{R_2}{R_1}\right)\frac{R_4}{R_3+R_4} - \frac{R_2}{R_1}$[cite: 11]:
+\begin{equation*}
+    A_c = (1+10)\frac{10.1}{1+10.1} - 10 = 11\left(\frac{10.1}{11.1}\right) - 10 = 10.009 - 10 = \boxed{0.009 \neq 0} \text{[cite: 11]}
+\end{equation*}
+Incluso con resistencias "cercanas", la asimetría rompe el rechazo pasivo y fuga $V_{cm}$ a la salida[cite: 11].
+
+\section*{2. Ejemplo Trabajado Adicional: Chequeo de Feasibility (SR)[cite: 11]}
+\texttt{ILLUSTRATIVE — NOT A HITO 2 REQUIREMENT}[cite: 11] \\
+Suponga que la señal del sensor se excita a $f=5\,\text{kHz}$ y se diseña $V_{o,\max} = 2\,\text{V}_{pp} \implies V_p = 1\,\text{V}$[cite: 11].
+\begin{equation*}
+    SR_{\mathrm{req}} = 2\pi f V_p = 2\pi(5000)(1) \approx \boxed{0.0314\,\text{V}/\mu\text{s}} \text{[cite: 11]}
+\end{equation*}
+\textit{Interpretación docente:} Debe verificarse este $SR_{\mathrm{req}}$ contra el datasheet del Op-Amp físico seleccionado (ej. LM358 tiene $\approx 0.3\,\text{V}/\mu\text{s}$, sería suficiente)[cite: 11].
+
+\section*{3. Misconceptions a Detectar en Sesión[cite: 11]}
+\begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \item Creer que "Alta ganancia ($A_d$) = Alto CMRR"[cite: 11]. Falso.
+    \item Creer que el $R_G$ por sí solo determina el CMRR de todo el circuito[cite: 11].
+    \item Asumir que una simulación ideal valida la viabilidad física del circuito[cite: 11].
+\end{itemize}
+
+\end{document}
