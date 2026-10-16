@@ -1,0 +1,67 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Arquitectura PFI y Evidencias}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Arquitectura Funcional Provisional (PFI) {}}]
+    Diagrama funcional acumulativo (U1$\to$U2$\to$U3$\to$U4). No impone el orden eléctrico literal de los componentes de hardware reales.
+\end{tcolorbox}
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.8cm, auto, thick, >=Stealth]
+    \tikzset{every node/.style={draw, rounded corners, align=center, font=\small, minimum height=1cm, text width=6cm}}
+    
+    \node[fill=gray!20] (bus) {FUENTE / BUS DC};
+    \node[fill=red!10, below=of bus] (prot) {[PROTECCION U1]};
+    \node[draw=none, fill=none, right=1.5cm of prot, text width=4cm, font=\footnotesize\itshape] (trans) {Fallas, polaridad,\\transitorios};
+    \node[fill=yellow!20, below=of prot] (hbridge) {[PUENTE H MOSFET U3]};
+    \node[draw=none, fill=none, left=1cm of hbridge, text width=3cm, font=\bfseries] (carga) {[CARGA / ACTUADOR]};
+    \node[fill=ucbblue!20, below=of hbridge] (drivers) {[DRIVERS BJT U3]};
+    \node[fill=green!10, below=of drivers] (ctrl) {[CONTROL U4]};
+    \node[fill=purple!10, below=of ctrl] (cond) {[ACONDICIONAMIENTO / SENSADO U2]};
+    \node[draw=none, fill=none, left=1cm of cond, text width=4cm, font=\bfseries] (medida) {[MEDIDA DE CORRIENTE]};
+    
+    \draw[->] (bus) -- (prot);
+    \draw[->, dashed, draw=gray] (prot) -- (trans);
+    \draw[->] (prot) -- (hbridge);
+    \draw[->, ultra thick] (hbridge) -- (carga);
+    \draw[->] (drivers) -- (hbridge);
+    \draw[->] (ctrl) -- (drivers);
+    \draw[->] (cond) -- (ctrl);
+    \draw[->] (medida) -- (cond);
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.5cm}
+\section*{Distinción de Evidencias (Matriz Rigurosa)}
+\renewcommand{\arraystretch}{1.3}
+% Se añade alineación a la izquierda (\raggedright) en las columnas X para evitar Overfull \hbox
+\begin{tabularx}{\textwidth}{@{}l>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
+\toprule
+\textbf{Nivel} & \textbf{Evidencia Generada} & \textbf{Lo que NO demuestra automáticamente} \\ \midrule
+Diagnóstico & Razonamiento escrito & Montaje real \\
+Simulación & Archivos, parámetros, trazas & Seguridad física del circuito \\
+Cálculo & Corrientes, pérdidas, límites & Adecuación si se asumen modelos ideales sin parásitos térmicos o de conmutación \\ \bottomrule
+\end{tabularx}
+
+\end{document}

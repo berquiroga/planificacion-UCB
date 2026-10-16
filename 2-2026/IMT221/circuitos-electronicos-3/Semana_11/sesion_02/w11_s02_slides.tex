@@ -1,0 +1,206 @@
+\documentclass[aspectratio=169, table]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern} 
+\usepackage{tgpagella}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage[most]{tcolorbox}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+\title[A/B/AB y MOSFET]{Refuerzo Comparativo A/B/AB y Aplicación Práctica de MOSFET}
+\subtitle{IMT-221 Circuitos Electrónicos III — Semana 11, Sesión 2}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}
+\date{Semana 11}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Diagnóstico Individual (Sin Apuntes ni IA)}
+    \begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=Evaluación de Familiaridad vs. Comprensión {}]
+        Responda brevemente (1-2 min por pregunta):
+    \end{tcolorbox}
+    \begin{enumerate}
+        \item ¿Qué produce la distorsión de cruce en un push-pull clase B idealizado? ¿Dónde de la onda se ve?
+        \item Si $V_G = 12\,\text{V}$ y $V_S = 9\,\text{V}$ respecto de tierra, ¿cuánto es $V_{GS}$? ¿Qué voltaje controla el canal?
+        \item ¿Por qué $V_{GS(th)} = 2\,\text{V}$ no garantiza que con $V_G = 3.3\,\text{V}$ el MOSFET tenga bajas pérdidas?
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{Clases A, B y AB: Conducción y Compromiso}
+    \begin{itemize}
+        \item \textbf{Clase A:} Conduce $360^\circ$ alrededor del punto Q. Corriente de reposo y disipación apreciables.
+        \item \textbf{Clase B:} Push-pull complementario. Conducción $\sim 180^\circ$ por dispositivo. Baja corriente de reposo. Genera \textit{crossover distortion} cerca de entrada cero.
+        \item \textbf{Clase AB:} Bases prepolarizadas para solapar conducción $>180^\circ$. Reduce notch, introduce corriente de reposo y exige estabilidad térmica.
+    \end{itemize}
+    
+    \begin{tcolorbox}[colback=white, colframe=gray, title=Desarrollo de Potencia {}]
+        \vspace{-0.3cm}
+        \begin{align*}
+            P_{\mathrm{avg}} &= \frac{1}{T}\int_{t_0}^{t_0+T}v(t)i(t)\,dt \quad \implies \quad P_{\mathrm{load}} = \frac{1}{T}\int \frac{v_o^2(t)}{R_L}\,dt \text{} \\
+            P_{\mathrm{in}} &= -\left\langle V(+)I(VPOS) + V(-)I(VNEG) \right\rangle \text{}
+        \end{align*}
+    \end{tcolorbox}
+\end{frame}
+
+\begin{frame}{Topologías Push-Pull B y AB (LTspice)}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \centering
+            \textbf{Clase B (Sin Bias)} \\
+            \vspace{0.3cm}
+            \begin{circuitikz}[scale=0.85, transform shape]
+                \draw (0,0) node[npn](Q1){};
+                \draw (0,-3) node[pnp](Q2){};
+                \draw (Q1.E) -- (Q2.E);
+                \draw (Q1.C) -- (0,1.5) node[above]{$+12\,\text{V}$};
+                \draw (Q2.C) -- (0,-4.5) node[below]{$-12\,\text{V}$};
+                \draw (Q1.B) -- (-1.5, 0) -- (-1.5, -3) -- (Q2.B);
+                \draw (-1.5, -1.5) to[short, *-o] (-2.5, -1.5) node[left]{$v_{in}$};
+                \draw (0,-1.5) to[short, *-o] (1.5, -1.5) node[right]{$v_{out}$};
+            \end{circuitikz}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \centering
+            \textbf{Clase AB (Con Bias Hipotético)} \\
+            \vspace{0.3cm}
+            \begin{circuitikz}[scale=0.85, transform shape]
+                \draw (0,0) node[npn](Q1){};
+                \draw (0,-3) node[pnp](Q2){};
+                \draw (Q1.E) -- (Q2.E);
+                \draw (Q1.C) -- (0,1.5) node[above]{$+12\,\text{V}$};
+                \draw (Q2.C) -- (0,-4.5) node[below]{$-12\,\text{V}$};
+                
+                \draw (Q1.B) -- (-1, 0) to[V, l_={$0.67\,\text{V}$}] (-1,-1.5);
+                \draw (Q2.B) -- (-1, -3) to[V, l_={$0.67\,\text{V}$}, invert] (-1,-1.5);
+                \draw (-1, -1.5) to[short, *-o] (-2.5, -1.5) node[left]{$v_{in}$};
+                \draw (0,-1.5) to[short, *-o] (1.5, -1.5) node[right]{$v_{out}$};
+            \end{circuitikz}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Plan de Simulación y Advertencias (LTspice)}
+    \textbf{Mediciones extraídas mediante \texttt{.meas}:}
+    \begin{itemize}
+        \item \texttt{VOUT\_PP}, \texttt{PLOAD}, \texttt{PIN}, \texttt{EFF}, \texttt{IQPOS}, \texttt{IQNEG}.
+    \end{itemize}
+    
+    \begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=Limitaciones del Modelo Idealizado {}]
+        \begin{itemize}
+            \item Modelo universal genérico \texttt{.model} no implica un transistor comercial real.
+            \item Las fuentes de bias ideales no son una red térmicamente compensada.
+            \item La medida \texttt{PIN} evaluada solo en los rieles $\pm 12\,\text{V}$ \textbf{no} incluye la energía que intercambian las fuentes de bias ideales. Por tanto, \texttt{EFF} no debe presentarse como eficiencia física global certificada.
+        \end{itemize}
+    \end{tcolorbox}
+\end{frame}
+
+\begin{frame}{MOSFET Aplicado: Requisitos y Primer Orden}
+    \textbf{Modelo Low-Side NMOS Hipotético:} Alimentación DC $\rightarrow$ Carga $\rightarrow$ Drenador; Surtidor a GND.
+    
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{align*}
+                V_{GS} &= V_G - V_S \text{} \\
+                V_{DS(on)} &\approx I_D R_{DS(on)} \text{} \\
+                i_G &= \frac{dq_G}{dt} \text{}
+            \end{align*}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{Pérdida en conducción DC:}
+            \begin{equation*}
+                \boxed{P_{\mathrm{cond}} \approx I_D^2 R_{DS(on)}} \text{}
+            \end{equation*}
+            \textbf{Pérdida resistiva media en PWM:}
+            \begin{equation*}
+                \boxed{P_{\mathrm{cond,avg}} \approx D I_{\mathrm{ON}}^2 R_{DS(on)}} \text{}
+            \end{equation*}
+            \textit{(Solo para $I_{ON}$ constante y gate drive suficiente).}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Mapa de Integración EC3–Hito 3–PFI}
+    \begin{center}
+    % Escalar respecto a la altura disponible (0.8\textheight) en lugar del ancho
+    \resizebox{!}{0.8\textheight}{%
+    \begin{tikzpicture}[node distance=0.5cm, auto, thick, >=Stealth]
+        \tikzset{every node/.style={draw, rounded corners, align=center, font=\footnotesize, minimum height=0.7cm}}
+        
+        \node[fill=gray!20] (bus) {FUENTE / BUS DC};
+        \node[fill=red!10, below=of bus] (prot) {[PROTECCION U1]};
+        \node[fill=orange!10, right=1.2cm of prot] (trans) {Fallas, polaridad,\\transitorios};
+        \node[fill=yellow!20, below=of prot] (hbridge) {[PUENTE H MOSFET U3]};
+        \node[fill=gray!20, left=0.8cm of hbridge] (carga) {[CARGA / ACTUADOR]};
+        \node[fill=ucbblue!20, below=of hbridge] (drivers) {[DRIVERS BJT U3]};
+        \node[fill=green!10, below=of drivers] (ctrl) {[CONTROL U4]};
+        \node[fill=purple!10, below=of ctrl] (cond) {[ACONDICIONAMIENTO / SENSADO U2]};
+        \node[fill=purple!10, left=0.8cm of cond] (medida) {[MEDIDA DE CORRIENTE]};
+        
+        \draw[->] (bus) -- (prot);
+        \draw[->, dashed] (prot) -- (trans);
+        \draw[->] (prot) -- (hbridge);
+        \draw[->] (hbridge) -- (carga);
+        \draw[->] (drivers) -- (hbridge);
+        \draw[->] (ctrl) -- (drivers);
+        \draw[->] (cond) -- (ctrl);
+        \draw[->] (medida) -- (cond);
+    \end{tikzpicture}%
+    }
+    \end{center}
+\end{frame}
+
+\begin{frame}{Distinción de Evidencias y Estados}
+    {\small
+    \begin{table}[]
+        \centering
+        \renewcommand{\arraystretch}{1.1}
+        \begin{tabularx}{\textwidth}{@{}ll>{\raggedright\arraybackslash}X@{}}
+        \toprule
+        \textbf{Estado} & \textbf{Componente} & \textbf{Descripción} \\ \midrule
+        \textbf{OFICIAL} & EC3 & Gate drivers BJT, puente H MOSFET, minimizar shoot-through. \\
+        \textbf{OFICIAL} & Hito 3 & Placa física puente H; análisis de disipación documentado con Python. \\
+        \textbf{PROPUESTO} & Secuencia & Plantilla de informe, arquitectura de laboratorio, candidato MOSFET. \\
+        \textbf{PENDIENTE} & Confirmaciones & Alimentación, carga, instrumental, BOM, reglas de seguridad. \\ \bottomrule
+        \end{tabularx}
+    \end{table}
+    \vspace{0.2cm}
+    \textit{Simulación $\neq$ validación física. Un buen cálculo de $R_{DS(on)}$ no demuestra seguridad del puente H.}
+    }
+\end{frame}
+
+\begin{frame}{Ticket de Salida}
+    \begin{enumerate}
+        \item Explique dónde ocurre el crossover notch y qué cambia en la topología AB.
+        \item Para $V_G = 8\,\text{V}$ y $V_S = 6\,\text{V}$, calcule $V_{GS}$ e indique si esto basta para garantizar ON de baja pérdida.
+        \item Para $I_D = 2\,\text{A}$, $R_{DS(on)} = 50\,\text{m}\Omega$ (bajo condiciones pertinentes), calcule $P_{cond}$ en estado ON.
+        \item Indique dos requisitos aún faltantes para dimensionar un driver o elegir un MOSFET para el Hito 3.
+    \end{enumerate}
+\end{frame}
+
+\end{document}

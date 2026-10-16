@@ -1,0 +1,102 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Guía LTspice A/B/AB}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Paquete LTspice: Hipótesis Didácticas A/B/AB {[cite: 6]}}]
+    Los siguientes códigos representan simulaciones idealizadas para contrastar topologías bajo el mismo nivel de excitación. \textbf{No constituyen un diseño de laboratorio oficial}[cite: 6].
+\end{tcolorbox}
+
+\section*{1. Netlists Generados (.cir)}
+
+\subsection*{Clase A (\texttt{w11s02\_clase\_A.cir})[cite: 6]}
+\begin{verbatim}
+* IMT-221 Clase A Seguidor Hipotético
+VPOS VCC 0 12
+VNEG VEE 0 -12
+VIN IN 0 SINE(0.73 2 1k)
+Q1 VCC IN OUT NPN_GEN
+RE OUT VEE 1k
+RL OUT 0 1k
+.model NPN_GEN NPN(Is=1e-14 Bf=100)
+.tran 0 12m 2m 2u
+.meas TRAN PLOAD AVG V(OUT)*I(RL)
+.meas TRAN PIN_POS AVG -V(VCC)*I(VPOS)
+.meas TRAN PIN_NEG AVG -V(VEE)*I(VNEG)
+.meas TRAN VOUT_PP PP V(OUT)
+.end
+\end{verbatim}
+
+\subsection*{Clase B (\texttt{w11s02\_clase\_B.cir})[cite: 6]}
+\begin{verbatim}
+* IMT-221 Clase B Push-Pull Hipotético
+VPOS VCC 0 12
+VNEG VEE 0 -12
+VIN IN 0 SINE(0 2 1k)
+Q1 VCC IN OUT NPN_GEN
+Q2 VEE IN OUT PNP_GEN
+RL OUT 0 1k
+.model NPN_GEN NPN(Is=1e-14 Bf=100)
+.model PNP_GEN PNP(Is=1e-14 Bf=100)
+.tran 0 12m 2m 2u
+.meas TRAN PLOAD AVG V(OUT)*I(RL)
+.meas TRAN PIN AVG -(V(VCC)*I(VPOS) + V(VEE)*I(VNEG))
+.meas TRAN EFF PARAM PLOAD/PIN
+.meas TRAN IQPOS FIND I(VPOS) AT=10m
+.end
+\end{verbatim}
+
+\subsection*{Clase AB (\texttt{w11s02\_clase\_AB.cir})[cite: 6]}
+\begin{verbatim}
+* IMT-221 Clase AB Push-Pull con Bias Hipotético
+VPOS VCC 0 12
+VNEG VEE 0 -12
+VIN IN 0 SINE(0 2 1k)
+VBIAS1 B1 IN 0.67
+VBIAS2 IN B2 0.67
+Q1 VCC B1 OUT NPN_GEN
+Q2 VEE B2 OUT PNP_GEN
+RL OUT 0 1k
+.model NPN_GEN NPN(Is=1e-14 Bf=100)
+.model PNP_GEN PNP(Is=1e-14 Bf=100)
+.tran 0 12m 2m 2u
+.meas TRAN PLOAD AVG V(OUT)*I(RL)
+.meas TRAN PIN AVG -(V(VCC)*I(VPOS) + V(VEE)*I(VNEG))
+.meas TRAN EFF PARAM PLOAD/PIN
+.end
+\end{verbatim}
+
+\section*{2. Limitaciones de Metodología y \texttt{.meas}[cite: 6]}
+\begin{itemize}
+    \item \textbf{Cálculo de Eficiencia (\texttt{EFF}):} \texttt{PIN} asume que la potencia proviene exclusivamente de \texttt{VPOS} y \texttt{VNEG}. Al insertar \texttt{VBIAS1} y \texttt{VBIAS2} ideales, estas intercambian potencia. El \texttt{EFF} reportado por SPICE no es una eficiencia física global certificada si no se incluye el balance de las fuentes de bias[cite: 6].
+    \item \textbf{Corriente de Reposo ($I_Q$):} La directiva \texttt{FIND I(VPOS) AT=10m} captura una medición en estado dinámico. No sustituye un análisis \texttt{.op} para medir la verdadera corriente de reposo con entrada anulada[cite: 6].
+\end{itemize}
+
+\section*{3. Tabla de Interpretación y Predicción[cite: 6]}
+\begin{tabularx}{\textwidth}{@{}lXXX@{}}
+\toprule
+\textbf{Topología} & \textbf{Predicción de $I_Q$ / Forma de Onda} & \textbf{Observación en LTspice} & \textbf{Causa Física} \\ \midrule
+\textbf{Clase A} & $I_Q$ alto / Onda continua sin notch[cite: 6] & & \\
+\textbf{Clase B} & $I_Q \approx 0$ / Notch severo en cruce por $0\,\text{V}$[cite: 6] & & \\
+\textbf{Clase AB} & $I_Q$ moderado / Notch drásticamente reducido[cite: 6] & & \\ \bottomrule
+\end{tabularx}
+
+\end{document}

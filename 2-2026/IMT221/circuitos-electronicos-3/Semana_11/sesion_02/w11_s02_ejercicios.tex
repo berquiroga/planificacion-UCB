@@ -1,0 +1,67 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Ejercicios MOSFET S11-2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Hoja de Ejercicios: Selección Preliminar de MOSFET {[cite: 6]}}]
+    Evaluación de escenarios hipotéticos para vincular necesidad de carga, tensión de compuerta, $R_{DS(on)}$ y $Q_g$[cite: 6].
+\end{tcolorbox}
+
+\section*{Bloque 1: Diagnóstico (Clave Docente)[cite: 6]}
+\begin{enumerate}
+    \item \textbf{Distorsión en Clase B ideal:} Alrededor de cero, ambos dispositivos quedan sin conducción suficiente por la barrera base-emisor, originando un notch/dead zone (no confundir con clipping de picos)[cite: 6].
+    \item \textbf{Cálculo de variable de control:} $V_{GS} = V_G - V_S = 12 - 9 = 3\,\text{V}$[cite: 6]. El voltaje que controla el canal es la diferencia relativa, no el potencial absoluto[cite: 6].
+    \item \textbf{Trampa del Threshold:} $V_{GS(th)} = 2\,\text{V}$ indica solo el inicio de conducción a corriente minúscula[cite: 6]. No garantiza que con $3.3\,\text{V}$ se alcancen las bajas resistencias ON estipuladas en el datasheet[cite: 6].
+\end{enumerate}
+
+\section*{Bloque 2: Candidatos MOSFET Hipotéticos X vs Y[cite: 6]}
+\textbf{Condiciones de la Aplicación Hipotética[cite: 6]:}
+\begin{itemize}
+    \item Carga resistiva con fuente de $12\,\text{V}$ y corriente ON objetivo de $3\,\text{A}$[cite: 6].
+    \item Controlador entrega nivel alto de $3.3\,\text{V}$ respecto de ground[cite: 6]. Low-side source a ground[cite: 6].
+    \item \textbf{Candidato X:} $R_{DS(on)} = 25\,\text{m}\Omega$ @ $V_{GS} = 4.5\,\text{V}$, $Q_g = 60\,\text{nC}$[cite: 6].
+    \item \textbf{Candidato Y:} $R_{DS(on)} = 55\,\text{m}\Omega$ @ $V_{GS} = 2.5\,\text{V}$, $Q_g = 15\,\text{nC}$[cite: 6].
+\end{itemize}
+
+\textbf{Resolución y Justificación[cite: 6]:}
+\begin{enumerate}
+    \item \textbf{$V_{GS}$ disponible:} $V_{GS} = 3.3\,\text{V} - 0\,\text{V} = \mathbf{3.3\,\text{V}}$[cite: 6].
+    \item \textbf{¿Se justifica usar los $25\,\text{m}\Omega$ de X con drive de $3.3\,\text{V}$?} \textbf{No.} La resistencia del candidato X está condicionada a $4.5\,\text{V}$. No se puede interpolar ni asumir ese comportamiento con solo $3.3\,\text{V}$[cite: 6].
+    \item \textbf{Potencia $P_{cond}$ para Y (estimación bajo hipótesis):} Dado que $3.3\,\text{V} > 2.5\,\text{V}$, es admisible usar $55\,\text{m}\Omega$:
+    \begin{equation*}
+        P_Y = (3\,\text{A})^2 \times (0.055\,\Omega) = 9 \times 0.055 = \mathbf{0.495\,\text{W}} \text{[cite: 6]}
+    \end{equation*}
+    \item \textbf{Potencia para X (solo si hubiera drive $\ge 4.5\,\text{V}$):}
+    \begin{equation*}
+        P_X = (3\,\text{A})^2 \times (0.025\,\Omega) = 9 \times 0.025 = \mathbf{0.225\,\text{W}} \text{[cite: 6]}
+    \end{equation*}
+    \textit{Importante: Estos resultados no se pueden comparar como decisión final a 3.3 V[cite: 6].}
+    \item \textbf{Comparación de velocidad y $Q_g$:} $Q_{g,X} > Q_{g,Y}$. Para una misma corriente de driver, el MOSFET X requerirá mayor tiempo de transición ($t \approx Q_g/I_g$), aumentando posibles pérdidas dinámicas[cite: 6].
+    \item \textbf{Datos faltantes antes de diseño:} Perfil de carga real, irrupción, frecuencia PWM, tensión/corriente pico del driver, límites de la SOA y condiciones térmicas[cite: 6].
+\end{enumerate}
+
+\section*{Bloque 3: Ticket de Salida (Clave Docente)[cite: 6]}
+\begin{enumerate}
+    \item El crossover notch ocurre en la zona próxima a la entrada cero; el bias AB lo reduce aumentando $I_Q$[cite: 6].
+    \item $V_{GS} = 2\,\text{V}$. No basta para garantizar ON de baja pérdida sin observar el $R_{DS(on)}$ en el datasheet[cite: 6].
+    \item $P_{cond} = 2^2 \times 0.050 = 4 \times 0.050 = \mathbf{0.20\,\text{W}}$ (ignorando switching)[cite: 6].
+    \item Faltantes para Hito 3: Frecuencia PWM, carga, alimentación real del driver, límites térmicos[cite: 6].
+\end{enumerate}
+
+\end{document}
