@@ -1,0 +1,81 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Clave Lab RC}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Clave Docente: Laboratorio RC}]
+    \centering \textbf{Valores Teóricos de Referencia y Criterios Formativos}
+\end{tcolorbox}
+
+\section*{1. Valores Analíticos Ideales (Asumiendo $V_B = 9\,\text{V}$ ideal)}
+
+\renewcommand{\arraystretch}{1.5}
+\noindent
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3cm} >{\centering\arraybackslash}X >{\centering\arraybackslash}X}
+\toprule
+\textbf{Magnitud} & \textbf{Config. A ($10\,\text{k}\Omega$)} & \textbf{Config. B ($22\,\text{k}\Omega$)} \\ 
+\midrule
+Capacitor $C$ & $470\,\mu\text{F}$ & $470\,\mu\text{F}$ \\ \addlinespace
+$\tau = R \cdot C$ & $\mathbf{4.70\,\text{s}}$ & $\mathbf{10.34\,\text{s}}$ \\ \addlinespace
+$5\tau$ (Estabilización) & $\mathbf{23.50\,\text{s}}$ & $\mathbf{51.70\,\text{s}}$ \\ \addlinespace
+Voltaje en $1\tau$ (Carga) & $9(1-e^{-1}) \approx \mathbf{5.69\,\text{V}}$ & $9(1-e^{-1}) \approx \mathbf{5.69\,\text{V}}$ \\ \addlinespace
+Voltaje en $1\tau$ (Descarga) & $9(e^{-1}) \approx \mathbf{3.31\,\text{V}}$ & $9(e^{-1}) \approx \mathbf{3.31\,\text{V}}$ \\ 
+\bottomrule
+\end{tabularx}
+
+\section*{2. Visualización Conceptual de Curvas de Carga}
+\begin{center}
+\begin{tikzpicture}
+    \begin{axis}[
+        width=12cm, height=6cm,
+        xlabel={Tiempo transcurrido $t$ (s)}, ylabel={$v_C(t)$ (V)},
+        xmin=0, xmax=30, ymin=0, ymax=10,
+        grid=major,
+        legend pos=south east
+    ]
+    % Curva A: tau = 4.7
+    \addplot[blue, thick, domain=0:30, samples=100] {9*(1-exp(-x/4.7))};
+    \addlegendentry{Config. A ($10\,\text{k}\Omega$)}
+    
+    % Curva B: tau = 10.34
+    \addplot[red, thick, domain=0:30, samples=100] {9*(1-exp(-x/10.34))};
+    \addlegendentry{Config. B ($22\,\text{k}\Omega$)}
+    
+    \addplot[dashed, black] coordinates {(0,9) (30,9)};
+    \end{axis}
+\end{tikzpicture}
+\end{center}
+
+\section*{3. Criterios de Evaluación y Monitoreo en Mesa}
+\begin{itemize}
+    \item \textbf{El error de la "Pila Ideál":} Esté atento a que los estudiantes no fuercen el valor de $9\,\text{V}$ en sus cálculos si midieron que su batería entrega $8.2\,\text{V}$. Sus predicciones deben ajustarse a su $V_B$ real.
+    \item \textbf{Cálculo de $\tau$ desde el Osciloscopio:} Supervise que identifiquen correctamente el instante exacto de conmutación en la pantalla del osciloscopio (donde arranca el transitorio), no el inicio temporal ciego de la captura.
+    \item \textbf{Reflexión Formativa:} Deben poder responder por qué ambas configuraciones llegan al mismo voltaje final (las asíntotas no cambian), pero la resistencia mayor "estrangula" la corriente, tardando más del doble en llenarse.
+\end{itemize}
+
+\end{document}

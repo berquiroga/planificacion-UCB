@@ -1,0 +1,104 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage[american]{circuitikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Guía Lab RC}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{warnred}{RGB}{200, 0, 0}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Guía Experimental: Carga y Descarga de un Circuito RC}]
+    \centering \textbf{Registro Instrumental y Estimación de Constante de Tiempo}
+\end{tcolorbox}
+
+\section*{1. Propósito de la Experiencia}
+Contrastar la predicción analítica de un circuito RC de primer orden con la respuesta real observada mediante multímetro y osciloscopio, estimando experimentalmente la constante de tiempo $\tau$.
+
+\section*{2. Consideraciones de Seguridad (¡Leer antes de energizar!)}
+\begin{itemize}
+    \item \textbf{Polaridad del Capacitor:} Verifique estrictamente la franja negativa del capacitor electrolítico. Conectarlo al revés provocará su destrucción.
+    \item \textbf{Tensión Nominal:} Asegúrese de que el capacitor indique \textbf{mínimo 16V}.
+    \item \textbf{Descarga Controlada:} \textbf{NUNCA} cortocircuite directamente el capacitor con un cable para descargarlo. Utilice siempre el pulsador hacia la ruta resistiva de descarga ($R_D$) o posicione el conmutador a la referencia de tierra.
+\end{itemize}
+
+\section*{3. Circuito a Implementar}
+Se utilizará una batería nominal de $9\,\text{V}$ (mida su valor real). El conmutador principal permite alternar la entrada del circuito entre \textbf{Carga} (conectado a batería) y \textbf{Descarga} (conectado a tierra). Adicionalmente, se incluye un pulsador de seguridad para descargar el capacitor rápidamente antes de un nuevo ensayo.
+
+\vspace{0.6cm}
+\begin{center}
+\begin{circuitikz}[scale=0.85, transform shape, thick]
+    % Fuente de voltaje (Batería)
+    \draw (0,0) to[battery1, l_={\Large $V_B = 9\,\text{V}$}] (0,4);
+
+    % Terminales del Conmutador
+    \draw (0,4) to[short, -o] (2,4) node[above]{\textbf{Carga}};
+    \draw (0,0) -- (2,0) to[short, -o] (2,1.5) node[right]{\textbf{Descarga}};
+
+    % Brazo del Switch (SPDT ilustrado)
+    \draw[ultra thick, ucbblue] (3.5, 2.75) -- (2,4);
+    \draw[dashed, Stealth-Stealth, gray] (2.2, 3.8) arc (70:270:1.2);
+    \draw (3.5, 2.75) node[below]{\small Común} to[short, o-] (4.5, 2.75);
+
+    % Resistencia Principal R
+    \draw (4.5, 2.75) to[R, l={\Large $R$}] (8, 2.75);
+
+    % Nodo A y Capacitor
+    \draw (8, 2.75) node[circle, fill, inner sep=1.5pt, label=above left:{\large $a$}]{};
+    \draw (8, 2.75) to[C, l={\Large $C=470\,\mu\text{F}$}, v={$v_C$}] (8,0);
+
+    % Puntas del Osciloscopio (Azul)
+    \draw[ucbblue, thick] (8, 2.75) to[short, *-o] (10, 2.75) node[right]{\textbf{Osc. (+) / CH1}};
+    \draw[ucbblue, thick] (8, 0) to [short, *-o] (8,-1) to (10, -1) node[right]{\textbf{Osc. (-) / GND}};
+
+    % Malla de Descarga de Seguridad (Rojo, por fuera para no chocar con textos)
+    \draw[warnred, thick] (8, 2.75) -- (8, 5.5)
+          to[push button, l={Pulsador Reset}] (14, 5.5)
+          to[R, l={$R_D$}] (14, 0);
+
+    % Retorno de masa (GND)
+    \draw (0,0) -- (14,0);
+    \draw (5,0) node[ground]{};
+
+\end{circuitikz}
+\end{center}
+\vspace{0.6cm}
+
+\begin{tcolorbox}[colback=gray!5, colframe=gray!50, title=\textbf{Dinámica de Rotación (9 Grupos / 5 Osciloscopios)}]
+\textit{Mientras su grupo espera el acceso al osciloscopio:}
+\begin{enumerate}
+    \item Mida y anote los valores reales de sus resistencias y batería en la Hoja de Datos.
+    \item Realice todos los cálculos predictivos ($\tau$, voltaje al infinito).
+    \item Efectúe la \textbf{medición manual lenta} usando su multímetro y un cronómetro, anotando el voltaje del capacitor cada 5 segundos.
+\end{enumerate}
+\end{tcolorbox}
+
+\section*{4. Procedimiento en Osciloscopio}
+\begin{enumerate}
+    \item Asegúrese de que la pinza de masa (GND) del osciloscopio esté en el negativo común de la batería.
+    \item Ajuste la base de tiempo considerando que la gráfica completa durará $\approx 5\tau$.
+    \item Capture la curva de carga y anote: $t_{inicial}$ (instante de conmutación), voltaje inicial, y voltaje asintótico final.
+    \item Estime $\tau_{exp}$ buscando en la pantalla el tiempo en el cual el voltaje ha alcanzado el $\mathbf{63.2\%}$ de la transición total.
+\end{enumerate}
+
+\end{document}

@@ -1,0 +1,197 @@
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[american]{circuitikz}
+
+\title[Consolidación Guiada RC]{Unidad EC3: Consolidación Guiada de Transitorios RC}
+\subtitle{Revisión de Ejercicios y Verificación Analítica de Autonomía}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' --- Sede Tarija}
+\date{Semana 11}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Revisión Diagnóstica: Evidencia de Autonomía}
+    \textbf{Auditoría de Ejercicios Asignados}
+    \begin{itemize}
+        \item El objetivo no es tener la "respuesta correcta" copiada, sino demostrar el \textbf{flujo lógico}.
+        \item Un error numérico al final de la fórmula $\neq$ un fallo en la física del circuito.
+    \end{itemize}
+    \vspace{0.4cm}
+    \begin{tcolorbox}[colback=white, colframe=ucbblue, title=Preguntas Centrales de Revisión]
+        \begin{enumerate}
+            \item ¿Qué valor tiene $v_C(0^-)$?
+            \item ¿Por qué afirmamos que $v_C(0^+) = v_C(0^-)$?
+            \item ¿Cuál es la topología del circuito para $t>0$?
+            \item ¿Qué ley física introduce el término derivativo $\frac{dv_C}{dt}$?
+        \end{enumerate}
+    \end{tcolorbox}
+\end{frame}
+
+\begin{frame}{Paso 1: La Condición Inicial ($v_C(0^-)$ y $v_C(0^+)$)}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \textbf{Inercia Eléctrica}
+        \begin{itemize}
+            \item Bajo condiciones ordinarias, el voltaje en un capacitor ideal \textbf{no salta instantáneamente}.
+            \item Requeriría un pulso infinito de corriente: $i_C = C \frac{dv_C}{dt}$.
+        \end{itemize}
+        \begin{alertblock}{Principio de Continuidad}
+            $$v_C(0^+) = v_C(0^-)$$
+        \end{alertblock}
+
+        \column{0.5\textwidth}
+        \textbf{Metodología:}
+        \begin{enumerate}
+            \item Analizar el circuito en $t < 0$.
+            \item Determinar la tensión de equilibrio ($v_C(0^-)$).
+            \item \textbf{Heredar} ese valor exacto para el instante $t = 0^+$, sin importar cómo cambie el circuito después del interruptor.
+        \end{enumerate}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 2: La Condición Final ($v_C(\infty)$)}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \textbf{Estado Estacionario DC}
+        \begin{itemize}
+            \item Analizamos la red \textbf{después de la conmutación} ($t > 0$) cuando ha pasado mucho tiempo.
+            \item La carga termina, la tensión deja de variar: $\frac{dv_C}{dt} \to 0$.
+            \item Por lo tanto, $i_C \to 0$. El capacitor actúa como una \textbf{rama abierta}.
+        \end{itemize}
+        
+        \column{0.5\textwidth}
+        \textbf{Cálculo Práctico:}
+        \begin{center}
+        \begin{circuitikz}[scale=0.8, transform shape]
+            \draw (0,0) to[V, l={$12\,\text{V}$}] (0,3) to[R, l={$2\,\text{k}\Omega$}] (3,3);
+            \draw (3,3) to[short, *-o] (4.5,3) node[above]{$a$};
+            \draw (3,3) to[R, l={$4\,\text{k}\Omega$}] (3,0);
+            \draw (4.5,3) to[open, v={$v_C(\infty)$}] (4.5,0);
+            \draw (0,0) -- (4.5,0) node[ground]{};
+        \end{circuitikz}
+        \end{center}
+        \vspace{-0.3cm}
+        Divisor de Tensión:
+        $$v_C(\infty) = 12\,\text{V} \cdot \left( \frac{4\,\text{k}\Omega}{2\,\text{k}\Omega + 4\,\text{k}\Omega} \right) = \mathbf{8\,\text{V}}$$
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3: Resistencia Equivalente vista por el Capacitor ($R_{eq}$)}
+    \textbf{La Perspectiva del Almacenador}
+    \begin{itemize}
+        \item La rapidez con la que reacciona el circuito depende de la resistencia que ve el capacitor al mirar hacia la red ($t > 0$).
+        \item \textbf{Regla:} Retirar el capacitor y \textbf{desactivar} las fuentes independientes (cortocircuito para fuentes de voltaje, circuito abierto para fuentes de corriente).
+    \end{itemize}
+    
+    \begin{center}
+    \begin{circuitikz}[scale=0.8, transform shape]
+        \draw (0,3) to[short, -*] (3,3);
+        \draw (0,0) to[short] (0,3); % Cortocircuito de la fuente de 12V
+        \draw (3,3) to[R, l_={$2\,\text{k}\Omega$}] (0,3);
+        \draw (3,3) to[R, l_={$4\,\text{k}\Omega$}] (3,0);
+        \draw (3,3) -- (5,3) node[right]{$+$};
+        \draw (3,0) -- (5,0) node[right]{$-$};
+        \draw (0,0) -- (3,0) node[ground]{};
+        \node at (5.5, 1.5) {$R_{eq} = 2\,\text{k}\Omega \parallel 4\,\text{k}\Omega = 1.333\,\text{k}\Omega$};
+    \end{circuitikz}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Paso 4: Constante de Tiempo ($\tau$) y Forma Exponencial}
+    \begin{columns}[T]
+        \column{0.4\textwidth}
+        \textbf{Constante de Tiempo:}
+        \begin{block}{}
+            $$\tau = R_{eq} \cdot C$$
+        \end{block}
+        \begin{itemize}
+            \item Unidades: Segundos [s].
+            \item Mayor $\tau \implies$ Respuesta más lenta.
+        \end{itemize}
+        
+        \column{0.6\textwidth}
+        \textbf{Ecuación Universal (1er Orden):}
+        \begin{tcolorbox}[colback=white, colframe=ucbblue, boxrule=0.5pt, arc=1mm]
+            $$v_C(t) = v_C(\infty) + \left[ v_C(0^+) - v_C(\infty) \right] e^{-t/\tau}$$
+        \end{tcolorbox}
+        \begin{itemize}
+            \item $v_C(\infty)$: Destino (Asíntota).
+            \item $[v_C(0^+) - v_C(\infty)]$: Desviación inicial.
+            \item \textbf{Verificación:} Si $t=0 \implies e^0=1 \implies v_C(0^+)$. Si $t \to \infty \implies e^{-\infty}=0 \implies v_C(\infty)$.
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Ejemplo Guiado de Transferencia Analítica}
+    \begin{columns}[T]
+        \column{0.4\textwidth}
+        En $t=0$, el circuito entra en acción. Se sabe que $v_C(0^-) = 0\,\text{V}$.
+        \vspace{0.2cm}
+        \begin{center}
+        \begin{circuitikz}[scale=0.8, transform shape]
+            \draw (0,3) to[V, l_={$9\,\text{V}$}] (0,0);
+            \draw (0,3) to[closing switch, l={$t=0$}] (2,3) to[R, l={$3\,\text{k}\Omega$}] (4,3);
+            \draw (4,3) to[short, *-o] (5.5,3) node[above]{$a$};
+            \draw (4,3) to[R, l_={$6\,\text{k}\Omega$}] (4,0);
+            \draw (5.5,3) to[C, l={$100\,\mu\text{F}$}, v={$v_C$}] (5.5,0);
+            \draw (0,0) -- (5.5,0) node[ground]{};
+        \end{circuitikz}
+        \end{center}
+        
+        \column{0.6\textwidth}
+        \begin{enumerate}
+            \item \textbf{Inicial:} $v_C(0^+) = v_C(0^-) = \mathbf{0\,\text{V}}$.
+            \item \textbf{Final:} Divisor $9\,\text{V} \cdot \left( \frac{6\text{k}\Omega}{3\text{k}\Omega + 6\text{k}\Omega} \right) = \mathbf{6\,\text{V}}$.
+            \item \textbf{$\mathbf{R_{eq}}$:} $3\text{k}\Omega \parallel 6\text{k}\Omega = \mathbf{2\,\text{k}\Omega}$.
+            \item \textbf{$\tau$:} $(2000\,\Omega)(100\mu\text{F}) = \mathbf{0.2\,\text{s}}$.
+            \item \textbf{Ecuación:} $v_C(t) = 6 + [0 - 6]e^{-t/0.2}$ \\
+            $\mathbf{v_C(t) = 6(1 - e^{-5t})\,\text{V}}$
+        \end{enumerate}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Puente hacia la Simulación (\texttt{.tran}) - Próxima Sesión}
+    La simulación en SPICE no genera mágicamente resultados; confirma nuestra predicción analítica de cómo el circuito administra la inercia temporal.
+    
+    \vspace{0.4cm}
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{p{4.5cm} p{8cm}}
+    \toprule
+    \textbf{Predicción Analítica} & \textbf{Validación Futura Computacional} \\ 
+    \midrule
+    $v_C(0^+)$ (Condición inicial) & Valor inicial exacto del trazo de la señal en $t=0$. \\ 
+    $v_C(\infty)$ (Condición final) & Asíntota u offset DC al final de la simulación. \\ 
+    Constante de tiempo $\tau$ & La rapidez visible. Asentamiento de la curva $\sim 5\tau$. \\ 
+    Tendencia de la exponencial & Sube o baja suavemente, sin brincos instantáneos de voltaje. \\ 
+    \bottomrule
+    \end{tabular}
+\end{frame}
+
+\end{document}

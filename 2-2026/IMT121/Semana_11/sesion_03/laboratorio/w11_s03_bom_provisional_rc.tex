@@ -1,0 +1,68 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | BOM Lab RC}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{warnred}{RGB}{200, 0, 0}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=warnred!5!white, colframe=warnred, title=\textbf{BOM PROVISIONAL: Laboratorio de Transitorios RC}]
+    \centering \textbf{Sujeto a Confirmación de Inventario y Equipo Institucional}
+\end{tcolorbox}
+
+\section*{1. Esquema de Rotación Propuesto}
+Dado el inventario preliminar de \textbf{5 Osciloscopios} para aproximadamente \textbf{9 Grupos}:
+\begin{itemize}
+    \item \textbf{Rotación I:} Grupos 1 al 5 en estaciones de Osciloscopio. Grupos 6 al 9 en ensamblaje, medición manual con multímetro y cálculos teóricos.
+    \item \textbf{Rotación II:} Intercambio total de puestos.
+\end{itemize}
+
+\section*{2. Lista de Materiales (BOM) Candidata}
+
+\renewcommand{\arraystretch}{1.5}
+\noindent
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight}p{3cm} >{\centering\arraybackslash}p{2cm} >{\centering\arraybackslash}p{2cm} >{\RaggedRight\arraybackslash}X >{\centering\arraybackslash}p{2cm}}
+\toprule
+\textbf{Ítem} & \textbf{Cant. Grupo} & \textbf{Total (9 G)} & \textbf{Especificación Pendiente} & \textbf{Stock} \\ 
+\midrule
+Batería 9V & 1 & 9 & Tipo, conector y estado de carga real. & $\square$ Pendiente \\ \addlinespace
+Conmutador SPDT & 1 & 9 & Verificación de contacto para evitar corto. & $\square$ Pendiente \\ \addlinespace
+Resistor $10\,\text{k}\Omega$ & 1 & 9+ & Tolerancia, $1/4\,\text{W}$. & $\square$ Pendiente \\ \addlinespace
+Resistor $22\,\text{k}\Omega$ & 1 & 9+ & Tolerancia, $1/4\,\text{W}$. & $\square$ Pendiente \\ \addlinespace
+Capacitor Electrol. & 1 & 9+ & $470\,\mu\text{F}$. Voltaje máx $> 16\,\text{V}$. & $\square$ Pendiente \\ \addlinespace
+Osciloscopio & - & \textbf{5 máx} & Confirmar sondas funcionales y disparo. & $\square$ Pendiente \\ \addlinespace
+Multímetro Digital & 1 & 9 & Cables en buen estado. & $\square$ Pendiente \\ 
+\bottomrule
+\end{tabularx}
+
+\vspace{0.8cm}
+\begin{tcolorbox}[colback=gray!5, colframe=black, title=\textbf{Protocolo de Validación de Viabilidad}]
+La sesión física no se confirmará hasta auditar:
+\begin{enumerate}
+    \item Tasa de Muestreo: Que el osciloscopio disponible posea bases de tiempo lo suficientemente amplias (segundos/división) para observar una carga lenta de $\sim 25$ a $\sim 50$ segundos.
+    \item Aislamiento: Que la referencia de masa de las sondas no cortocircuite la alimentación del circuito RC.
+\end{enumerate}
+\end{tcolorbox}
+
+\end{document}

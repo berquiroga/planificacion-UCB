@@ -1,0 +1,88 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Ejercicios W11}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Ejercicios de Consolidación Formativa: Circuitos RC de Primer Orden}]
+    \centering \textbf{Conmutación, Predicción y Validación Transitoria}
+\end{tcolorbox}
+
+\noindent\textbf{Modalidad:} Trabajo individual analítico. \textit{No tiene calificación sumativa}. \\
+\textbf{Herramienta Analítica de Soporte:} Para $s$ (tiempo transcurrido desde la conmutación):
+\begin{equation*}
+    v_C(s) = v_C(\infty) + \left[ v_C(0^+) - v_C(\infty) \right]e^{-s/\tau}, \quad \tau = R_{eq} C
+\end{equation*}
+
+\vspace{0.3cm}
+\section*{Nivel 1: Consolidación (Obligatorio)}
+
+\textbf{Ejercicio 1: Antes, después y al final}\\
+Un capacitor de $100\,\mu\text{F}$ posee un voltaje medido previo de $v_C(0^-) = 3\,\text{V}$. En $t=0$ se conecta mediante $R = 2\,\text{k}\Omega$ a una fuente ideal de $9\,\text{V}$ (terminal negativo a tierra).
+\begin{enumerate}
+    \item Determine $v_C(0^+)$ y justifique físicamente su valor.
+    \item Determine $v_C(\infty)$ asumiendo estabilización DC a largo plazo.
+    \item Calcule $\tau$, arme la función temporal $v_C(t)$ y evalúe la tensión en $t = \tau$.
+\end{enumerate}
+
+\vspace{0.2cm}
+\textbf{Ejercicio 2: Descarga con condición inicial no nula}\\
+Un capacitor de $220\,\mu\text{F}$ está cargado a $8\,\text{V}$. Al conmutar en $t=0$, se desconectan todas las fuentes y queda conectado \textbf{únicamente} en paralelo a un resistor de $10\,\text{k}\Omega$ a tierra.
+\begin{enumerate}
+    \item Determine $v_C(0^+)$ y la asíntota final $v_C(\infty)$.
+    \item Escriba la ecuación temporal de voltaje y evalúela en $t = \tau$ y $t = 2\tau$.
+    \item Justifique físicamente: ¿Por qué la magnitud de la corriente de descarga no es constante en el tiempo?
+\end{enumerate}
+
+\vspace{0.2cm}
+\textbf{Ejercicio 3: Ingeniería inversa de un transitorio}\\
+Una gráfica experimental muestra que un transitorio RC inicia en $2\,\text{V}$ y se eleva monótonamente hacia $10\,\text{V}$. La constante de inercia es $\tau = 0.5\,\text{s}$. Exactamente a los $0.5\,\text{s}$, el cursor lee $\approx 7.06\,\text{V}$.
+\begin{enumerate}
+    \item Arme la función matemática $v_C(t)$ que modele esta curva.
+    \item Verifique analíticamente si el voltaje calculado en $t=0.5\,\text{s}$ coincide con la lectura del cursor.
+    \item Si se sabe que la red pasiva arroja una $R_{eq} = 5\,\text{k}\Omega$, determine el valor del capacitor $C$.
+\end{enumerate}
+
+\vspace{0.3cm}
+\section*{Nivel 2: Redes Resistivas acopladas a RC}
+
+\textbf{Ejercicio 4: Red con múltiples resistencias}\\
+Para $t \ge 0$, un circuito tiene una fuente de $12\,\text{V}$ a tierra. $R_1=4\,\text{k}\Omega$ conecta el positivo al nodo \textbf{a}. $R_2=12\,\text{k}\Omega$ conecta el nodo \textbf{a} a tierra. Un capacitor de $100\,\mu\text{F}$ conecta \textbf{a} a tierra y fue preconectado de forma que $v_C(0^-) = 3\,\text{V}$.
+\begin{enumerate}
+    \item Empleando el principio de inercia y divisores de tensión, determine $v_C(0^+)$ y $v_C(\infty)$.
+    \item Desactive la fuente de voltaje correctamente y obtenga la resistencia $R_{eq}$ mirada desde el puerto del capacitor.
+    \item Determine $\tau$ y construya la ecuación $v_C(t)$.
+    \item Describa qué error procedimental estaría cometiendo alguien que usara directamente $R_1$ para calcular la constante de tiempo.
+\end{enumerate}
+
+\vspace{0.2cm}
+\textbf{Ejercicio 5: Transferencia por cambio de reactancia}\\
+Considerando exactamente el mismo circuito y condiciones iniciales del Ejercicio 4, suponga que cambiamos el capacitor por uno de $200\,\mu\text{F}$. Sin necesidad de recalcular todo: 
+\begin{enumerate}
+    \item Indique explícitamente cuáles variables cambian y cuáles se mantienen idénticas.
+    \item Justifique por qué hacer un circuito "más lento" ($\tau$ mayor) no altera en absoluto la tensión límite que alcanzará en el infinito.
+\end{enumerate}
+
+\end{document}

@@ -1,0 +1,75 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage[american]{circuitikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Auditoría LTspice}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Guía de Auditoría Docente: Ejecución Transitoria en LTspice}]
+    \centering \textbf{Netlist de Referencia, Configuración y Troubleshooting}
+\end{tcolorbox}
+
+\section*{1. Netlist de Control (Referencia Base)}
+Este es el modelo exacto que los estudiantes deben representar esquemáticamente.
+\begin{verbatim}
+* RC W11S2/W11S3 — ejemplo docente, no ejecución acreditada
+V1 in 0 PULSE(0 9 10m 100u 100u 2 4)
+R1 in a 3k
+R2 a 0 6k
+C1 a 0 100u
+.tran 0 1.1 0 1m
+.end
+\end{verbatim}
+
+\section*{2. Parámetros Clave de Auditoría en Puesto}
+Al auditar la pantalla del estudiante, exija la visualización de ambas trazas: \texttt{V(in)} y \texttt{V(a)}.
+
+\begin{itemize}
+    \item \textbf{La decisión del PULSE vs. Interruptores ideales:} Pregunte al estudiante por qué la excitación retrasa la subida a $10\,\text{ms}$. El uso de \texttt{PULSE} evita forzar \texttt{uic} o \texttt{.ic}. El cálculo de punto de operación natural (\texttt{.op}) del software verá $0\,\text{V}$ antes del flanco, respetando la física de inercia real sin "trucos" del programa.
+    \item \textbf{Lectura de Tiempos con Cursores:} Audite estrictamente dónde lee el estudiante el $63.2\%$. Si lee en $t=200\,\text{ms}$, intervenga. Debe leer en $t \approx 210\,\text{ms}$ ($t_s + \tau$).
+\end{itemize}
+
+\section*{3. Tabla de Fallas Frecuentes (Troubleshooting)}
+
+\renewcommand{\arraystretch}{1.5}
+\noindent
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight}p{4cm} >{\RaggedRight\arraybackslash}X >{\RaggedRight\arraybackslash}p{3cm}}
+\toprule
+\textbf{Observación en Pantalla} & \textbf{Comprobación Sugerida} & \textbf{Causa Probable} \\ 
+\midrule
+\texttt{V(a)} arranca y es constante en 6V & Comprobar si V1 quedó configurada como DC 9V en lugar de \texttt{PULSE}. & Error de Config. \\ \addlinespace
+\texttt{V(a)} es 0V constante & Revisar nodos, conexiones a tierra, ejecución y parámetros del PULSE. & Error de Config. \\ \addlinespace
+Final se aproxima a 9V & Faltó R2, valor de R2 mal digitado, o se está graficando \texttt{V(in)}. & Error Topológico \\ \addlinespace
+$\tau$ aparente muy rápido/lento & Revisar multiplicadores (\texttt{k} vs \texttt{m}, \texttt{u}). Confirmar punto origen $t_s$. & Lectura/Modelo \\
+\bottomrule
+\end{tabularx}
+
+\vspace{0.8cm}
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Espacio para Inserción de Lecturas Reales}]
+\textit{[Deje este espacio en blanco para registrar las lecturas manuales obtenidas de LTspice generadas in-situ durante la sesión].}
+\vspace{3cm}
+\end{tcolorbox}
+
+\end{document}

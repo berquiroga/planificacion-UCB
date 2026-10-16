@@ -1,0 +1,90 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Hoja de Datos RC}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Hoja de Trabajo y Registro de Datos — Laboratorio RC}]
+    \centering \textbf{Completar por grupo - Datos Físicos}
+\end{tcolorbox}
+
+\textbf{Grupo:} \rule{2cm}{0.4pt} \quad \textbf{Estación Osc.:} \rule{2cm}{0.4pt} \quad \textbf{Integrantes:} \hrulefill
+
+\section*{1. Componentes Medidos (Realidad vs Nominal)}
+\renewcommand{\arraystretch}{1.4}
+\noindent
+\begin{tabularx}{\textwidth}{>{\bfseries}p{4cm} >{\centering\arraybackslash}p{3cm} >{\centering\arraybackslash}X}
+\toprule
+\textbf{Magnitud} & \textbf{Nominal} & \textbf{Valor Real Medido} \\ 
+\midrule
+Tensión Batería ($V_B$) & $9\,\text{V}$ & \rule{3cm}{0.4pt} V \\ \addlinespace
+Resistencia A ($R_A$) & $10\,\text{k}\Omega$ & \rule{3cm}{0.4pt} k$\Omega$ \\ \addlinespace
+Resistencia B ($R_B$) \textit{Ext.} & $22\,\text{k}\Omega$ & \rule{3cm}{0.4pt} k$\Omega$ \\ \addlinespace
+Capacitor ($C$) & $470\,\mu\text{F}$ & \textit{Asuma nominal} \\ 
+\bottomrule
+\end{tabularx}
+
+\section*{2. Predicción Analítica (Con Valores Reales)}
+\renewcommand{\arraystretch}{1.5}
+\noindent
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}p{2.5cm} >{\centering\arraybackslash}X >{\centering\arraybackslash}X >{\centering\arraybackslash}X >{\centering\arraybackslash}X >{\centering\arraybackslash}X}
+\toprule
+\textbf{Configuración} & \textbf{$v_C(0^-)$} & \textbf{$v_C(0^+)$} & \textbf{$v_C(\infty)$ (Carga)} & \textbf{$\tau$ esperado} & \textbf{$v_C(\tau)$ esperado} \\ 
+\midrule
+\textbf{Base ($R_A$)} & $0\,\text{V}$ & & & & \\ \addlinespace
+\textbf{Extensión ($R_B$)} & $0\,\text{V}$ & & & & \\
+\bottomrule
+\end{tabularx}
+
+\section*{3. Registro en Osciloscopio}
+\textit{Utilice cursores para obtener los tiempos exactos desde la pantalla.}
+
+\renewcommand{\arraystretch}{1.5}
+\noindent
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{5cm} >{\centering\arraybackslash}X >{\centering\arraybackslash}X}
+\toprule
+\textbf{Medición Directa en Pantalla} & \textbf{Configuración A} & \textbf{Configuración B} \\ 
+\midrule
+Voltaje final estabilizado ($V_f$) & & \\ \addlinespace
+Umbral del $63.2\%$ ($V_{63\%}$) & & \\ \addlinespace
+Instante de conmutación ($t_s$) & & \\ \addlinespace
+Tiempo absoluto en el umbral ($t_{63\%}$) & & \\ \addlinespace
+$\tau_{exp}$ medido ($t_{63\%} - t_s$) & & \\ 
+\midrule
+\textbf{Error Relativo (\%)} respecto a $\tau$ analítico & & \\
+\bottomrule
+\end{tabularx}
+
+\vspace{0.4cm}
+\section*{4. Preguntas Individuales (Verificación de Comprensión)}
+\textit{(Cada integrante debe responder y firmar su respuesta)} \\
+\textbf{Int. 1:} ¿Por qué una resistencia mayor modificó $\tau$ pero NO el voltaje final? \\
+\rule{\textwidth}{0.4pt} \\
+\textbf{Int. 2:} ¿Por qué su estimación $\tau_{exp}$ difiere del valor teórico nominal? Detalle una hipótesis técnica. \\
+\rule{\textwidth}{0.4pt} \\
+\textbf{Int. 3:} ¿Por qué fue crucial descontar el tiempo de conmutación ($t_s$) de su lectura temporal en pantalla? \\
+\rule{\textwidth}{0.4pt} 
+
+\end{document}

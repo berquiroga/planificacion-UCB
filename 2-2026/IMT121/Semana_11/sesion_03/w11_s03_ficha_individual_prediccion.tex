@@ -1,0 +1,95 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage[american]{circuitikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Predicción y Contraste RC}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Ficha Individual de Predicción y Contraste (Transitorios RC)}]
+    \centering \textbf{Registro de Evidencia de Autonomía Analítica y Simulación}
+\end{tcolorbox}
+
+\textbf{Estudiante:} \hrulefill \quad \textbf{Fecha:} \hrulefill
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=gray!5, colframe=gray!50, title=\textbf{Modalidad de Acceso al Simulador (LTspice)}]
+\textit{Marque la opción que describe su situación actual de acceso tecnológico en aula:} 
+
+\vspace{0.2cm}
+{[$\square$]} Ejecución individual confirmada \quad {[$\square$]} Compartido (Ejecuté) \quad {[$\square$]} Compartido (Observé) \\[0.2cm]
+{[$\square$]} Observación de demostración docente \quad {[$\square$]} Ejecución pendiente por falta de acceso
+\end{tcolorbox}
+
+\section*{Parte A: Predicción Analítica (COMPLETAR ANTES DE SIMULAR)}
+\noindent\textbf{Circuito:} Fuente de excitación $V_1$ (\texttt{PULSE} de $0\,\text{V}$ a $9\,\text{V}$ con inicio de flanco en $t_s = 10\,\text{ms}$). $R_1=3\,\text{k}\Omega$ desde $V_1$ al nodo $a$. $R_2=6\,\text{k}\Omega$ y $C=100\,\mu\text{F}$ conectados en paralelo entre el nodo $a$ y tierra.
+
+\vspace{0.3cm}
+\renewcommand{\arraystretch}{1.5}
+\noindent
+\begin{tabularx}{\textwidth}{p{3cm} >{\centering\arraybackslash}p{3.5cm} >{\RaggedRight\arraybackslash}X}
+\toprule
+\textbf{Parámetro} & \textbf{Predicción} & \textbf{Justificación Física} \\ 
+\midrule
+$v_C(t_s^-)$ & \rule{2.5cm}{0.4pt} V & \\[0.5cm] 
+$v_C(t_s^+)$ & \rule{2.5cm}{0.4pt} V & \\[0.5cm] 
+$v_C(\infty)$ & \rule{2.5cm}{0.4pt} V & \\[0.5cm] 
+$R_{eq}$ & \rule{2.5cm}{0.4pt} k$\Omega$ & \\[0.5cm] 
+$\tau$ & \rule{2.5cm}{0.4pt} s & \\[0.5cm] 
+$v_C(t_s + \tau)$ & $\approx$ \rule{2cm}{0.4pt} V & \\[0.5cm] 
+Ecuación $v_C(s)$ & \rule{3cm}{0.4pt} & ($s = t - t_s \ge 0$) \\[0.2cm] 
+\bottomrule
+\end{tabularx}
+
+\vspace{0.3cm}
+\textbf{Bosquejo Cualitativo:} Trace rápidamente la forma esperada de $v_C(t)$ mostrando el arranque, asíntota y dirección.
+
+\vspace{2.5cm}
+\section*{Parte B y C: Evidencia Visual de Simulación y Contraste}
+\textit{Utilice cursores en la gráfica LTspice generada para registrar las lecturas reales.}
+
+\vspace{0.3cm}
+\renewcommand{\arraystretch}{1.5}
+\noindent
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{4cm} >{\centering\arraybackslash}p{2.5cm} >{\centering\arraybackslash}p{2.5cm} >{\RaggedRight\arraybackslash}X}
+\toprule
+\textbf{Variable / Instante} & \textbf{Predicción} & \textbf{Lectura LTspice} & \textbf{Explicación (Si aplica)} \\ 
+\midrule
+Flanco en \texttt{V(in)} & $\approx 10\,\text{ms}$ & & \\[0.5cm] 
+Previo al flanco $v_C$ & $0\,\text{V}$ & & \\[0.5cm] 
+En $t \approx 210\,\text{ms}$ ($t_s + \tau$) & $\approx 3.793\,\text{V}$ & & \\[0.5cm] 
+A largo plazo ($t \to 1.1\,\text{s}$) & $\to 6\,\text{V}$ & & \\[0.2cm] 
+\bottomrule
+\end{tabularx}
+
+\vspace{0.4cm}
+\section*{Parte D: Transferencia de Conceptos}
+Si mantenemos todo el circuito igual pero duplicamos el capacitor ($C = 200\,\mu\text{F}$):
+\begin{itemize}
+    \item ¿Qué parámetro de su tabla analítica cambiaría? \rule{5cm}{0.4pt}
+    \item ¿Qué parámetro(s) NO cambiarían? \rule{6cm}{0.4pt}
+    \item ¿La gráfica observada ascendería más rápido o más lento? \rule{4cm}{0.4pt}
+\end{itemize}
+
+\end{document}

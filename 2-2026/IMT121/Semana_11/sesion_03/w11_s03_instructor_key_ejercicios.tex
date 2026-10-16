@@ -1,0 +1,90 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Clave Docente}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Clave Docente Exclusiva: Ejercicios de Fin de Semana (W11)}]
+    \centering \textbf{Resultados Analíticos Esperados y Criterios Formativos}
+\end{tcolorbox}
+
+\noindent\textit{Instrucciones para el Instructor: Estos resultados son \textbf{predicciones analíticas puras}, no ejecuciones de SPICE. Verifique que los estudiantes apliquen el marco de continuidad y leyes físicas antes de saltar a la fórmula final.}
+
+\vspace{0.3cm}
+\section*{Nivel 1: Consolidación RC}
+
+\textbf{Ejercicio 1:}
+\begin{itemize}\setlength\itemsep{0em}
+    \item \textbf{Inicial:} $v_C(0^+) = \mathbf{3\,\text{V}}$ (Continuidad de voltaje). Asumir $0\,\text{V}$ es un error conceptual crítico.
+    \item \textbf{Final:} $v_C(\infty) = \mathbf{9\,\text{V}}$ (Capacitor abierto, no circula corriente por $R=2\,\text{k}\Omega$, no hay caída de voltaje).
+    \item \textbf{Constante:} $R_{eq} = 2\,\text{k}\Omega \implies \tau = 2000 \cdot 100\mu\text{F} = \mathbf{0.2\,\text{s}}$.
+    \item \textbf{Respuesta:} $v_C(t) = 9 + (3 - 9)e^{-t/0.2} = \mathbf{9 - 6e^{-5t}\,\text{V}}$.
+    \item \textbf{A $\tau$:} $v_C(0.2) = 9 - 6e^{-1} \approx \mathbf{6.79\,\text{V}}$.
+\end{itemize}
+
+\textbf{Ejercicio 2 (Descarga Activa):}
+\begin{itemize}\setlength\itemsep{0em}
+    \item \textbf{Estados:} $v_C(0^+) = \mathbf{8\,\text{V}}$, $v_C(\infty) = \mathbf{0\,\text{V}}$ (Se descarga totalmente a través de R).
+    \item \textbf{Constante:} $\tau = 10000 \cdot 220\mu\text{F} = \mathbf{2.2\,\text{s}}$.
+    \item \textbf{Respuesta:} $v_C(t) = 0 + (8 - 0)e^{-t/2.2} = \mathbf{8e^{-t/2.2}\,\text{V}}$.
+    \item \textbf{Evaluaciones:} En $t=\tau \implies \approx \mathbf{2.94\,\text{V}}$. En $t=2\tau \implies \approx \mathbf{1.08\,\text{V}}$.
+    \item \textbf{Física:} $i_C = C \frac{dv_C}{dt}$. La derivada es negativa y pierde magnitud conforme el diferencial de tensión cae, frenando la corriente de descarga.
+\end{itemize}
+
+\textbf{Ejercicio 3 (Ingeniería Inversa):}
+\begin{itemize}\setlength\itemsep{0em}
+    \item $v_C(0^+) = \mathbf{2\,\text{V}}$, $v_C(\infty) = \mathbf{10\,\text{V}}$, $\tau = \mathbf{0.5\,\text{s}}$.
+    \item Ecuación compatible: $v_C(t) = 10 + (2 - 10)e^{-t/0.5} = \mathbf{10 - 8e^{-2t}\,\text{V}}$.
+    \item En $t=\tau \implies v_C(0.5) = 10 - 8e^{-1} \approx \mathbf{7.057\,\text{V}}$ (Concuerda con la lectura de $7.06\,\text{V}$).
+    \item Si $R_{eq} = 5\,\text{k}\Omega \implies C = \frac{0.5}{5000} = \mathbf{100\,\mu\text{F}}$.
+\end{itemize}
+
+\section*{Nivel 2: Redes RC}
+
+\textbf{Ejercicio 4:}
+\begin{itemize}\setlength\itemsep{0em}
+    \item $v_C(0^+) = \mathbf{3\,\text{V}}$.
+    \item Divisor final: $v_C(\infty) = 12 \cdot \left( \frac{12\text{k}}{4\text{k} + 12\text{k}} \right) = \mathbf{9\,\text{V}}$.
+    \item $R_{eq}$ (apagando fuente 12V): $R_{eq} = 4\text{k} \parallel 12\text{k} = \mathbf{3\,\text{k}\Omega}$. \textit{(Usar $4\text{k}\Omega$ es un error conceptual severo).}
+    \item $\tau = 3000 \cdot 100\mu\text{F} = \mathbf{0.3\,\text{s}}$. $\implies v_C(t) = \mathbf{9 - 6e^{-t/0.3}\,\text{V}}$.
+\end{itemize}
+
+\textbf{Ejercicio 5 (Transferencia):}
+\begin{itemize}\setlength\itemsep{0em}
+    \item Duplicar la capacitancia a $200\,\mu\text{F}$ \textbf{NO} altera las tensiones inicial ni final, ni $R_{eq}$.
+    \item Sólo duplica el tiempo de inercia: $\tau' = \mathbf{0.6\,\text{s}}$.
+    \item El circuito es el \textbf{doble de lento}. Ambas asintotan en $9\,\text{V}$, pero la nueva curva se eleva de manera mucho más plana/lenta.
+\end{itemize}
+
+\section*{Nivel 3 y Reto Opcional}
+
+\textbf{Ejercicio 6 y Reto (.op vs .tran):}
+\begin{itemize}\setlength\itemsep{0em}
+    \item La predicción asume el escalón en $s = t - 10\,\text{ms}$. Resultando en $v_C(s) = 6(1 - e^{-s/0.2})\,\text{V}$.
+    \item Un estudiante que en la gráfica absoluta lee el valor en $t=0.200\,\text{s}$ está fallando al no restarle los $10\,\text{ms}$ de retardo del pulso. El tiempo físico evaluativo de $\tau$ está en $\mathbf{t = 0.210\,\text{s}}$.
+    \item El punto de operación \texttt{.op} soluciona el circuito pasivo como si las fuentes fueran DC constantes desde $t = -\infty$. Si se simula con un \texttt{.op} forzado a una fuente de 9V, el capacitor arrancará ya cargado a $6\,\text{V}$.
+\end{itemize}
+
+\end{document}

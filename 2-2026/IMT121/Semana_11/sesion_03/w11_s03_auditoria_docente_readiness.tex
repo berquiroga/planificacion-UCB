@@ -1,0 +1,60 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Auditoría de Progreso}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Auditoría Docente de Evidencia Analítica RC (Readiness Gate)}]
+    \centering \textbf{Decisión de Transición hacia Entorno de Simulación}
+\end{tcolorbox}
+
+\noindent \textit{Instrucciones: Evalúe el desempeño oral/escrito del estudiante basado en los ejercicios del repositorio W11S1. Marque para identificar la raíz de la falla.}
+
+\vspace{0.4cm}
+\renewcommand{\arraystretch}{1.6}
+\noindent
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}X >{\centering\arraybackslash}p{2.5cm} >{\centering\arraybackslash}p{2cm} >{\centering\arraybackslash}p{2.5cm}}
+\toprule
+\textbf{Criterio Estructural Requerido} & \textbf{Demostrado} & \textbf{Parcial} & \textbf{No Logrado} \\ 
+\midrule
+Mantiene y justifica la continuidad de voltaje $v_C(0^+) = v_C(0^-)$ & $\square$ & $\square$ & $\square$ \\ \addlinespace
+Identifica la red en $t \to \infty$ asumiendo la rama del capacitor abierta & $\square$ & $\square$ & $\square$ \\ \addlinespace
+Obtiene $R_{eq}$ aislando el puerto y apagando fuentes energéticas & $\square$ & $\square$ & $\square$ \\ \addlinespace
+Arma la ecuación exponencial respetando dimensionalidad en $\tau$ & $\square$ & $\square$ & $\square$ \\ \addlinespace
+Verifica matemáticamente los límites $t=0^+$ y $t \to \infty$ en su fórmula & $\square$ & $\square$ & $\square$ \\ \addlinespace
+Distingue el tiempo absoluto ($t$) del tiempo relativo a la conmutación ($s$) & $\square$ & $\square$ & $\square$ \\ 
+\bottomrule
+\end{tabularx}
+
+\vspace{0.8cm}
+\begin{tcolorbox}[colback=gray!5, colframe=gray!50, title=\textbf{Toma de Decisión Docente}]
+En base al diagnóstico superior, categorice el estado del estudiante o del grupo:
+\begin{itemize}
+    \item[$\square$] \textbf{\texttt{READY\_FOR\_TRANSIENT\_SIMULATION}}: Errores menores o aritméticos que no afectan la comprensión física del RC de primer orden. Autorizado para proceder a verificación \texttt{.tran}.
+    \item[$\square$] \textbf{\texttt{NEEDS\_RC\_REINFORCEMENT}}: Confusiones graves persistentes en principios de inercia eléctrica, KVL o $R_{eq}$. Permanecer en lápiz y papel.
+\end{itemize}
+\end{tcolorbox}
+
+\end{document}
