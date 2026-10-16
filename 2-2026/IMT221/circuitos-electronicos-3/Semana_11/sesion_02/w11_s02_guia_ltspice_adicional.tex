@@ -1,0 +1,293 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage{listings}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Guía LTspice: A/B/AB (W11S02)}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{spicebg}{RGB}{245, 245, 245}
+
+\lstdefinestyle{spice}{
+    backgroundcolor=\color{spicebg},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    rulecolor=\color{gray!50},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!60!black}
+}
+
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{Guía Completa de LTspice: Esquemas de Conexión Clase A, B y AB\\[0.2cm]}}
+    {\large IMT-221 — Circuitos Electrónicos III (Semana 11, Sesión 2)[cite: 6]}
+\end{center}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{1. Alcance y Advertencia Pedagógica {[cite: 6]}}]
+    Este documento complementa el paquete de contenido de la sesión y permite la reconstrucción manual en LTspice de los circuitos de comparación Clase A, Clase B y Clase AB[cite: 6].
+    Los circuitos aquí descritos usan valores hipotéticos de simulación con fines didácticos[cite: 6]. Por tanto:
+    \begin{itemize}
+        \item No son todavía especificaciones del laboratorio físico[cite: 6].
+        \item No definen el diseño final de EC3/Hito 3[cite: 6].
+        \item No prueban seguridad física[cite: 6].
+        \item Sí sirven para observar diferencias funcionales entre clase A, B y AB, y para practicar mediciones con LTspice[cite: 6].
+    \end{itemize}
+\end{tcolorbox}
+
+\section*{2. Objetivos del Artefacto}
+Al usar esta guía, el estudiante debería poder:
+\begin{enumerate}
+    \item Crear un esquemático nuevo en LTspice[cite: 6].
+    \item Colocar componentes básicos: resistencias, fuentes, BJTs, tierra[cite: 6].
+    \item Conectar correctamente los nodos[cite: 6].
+    \item Etiquetar nodos relevantes (\texttt{in}, \texttt{out}, \texttt{pos}, \texttt{neg}, etc.)[cite: 6].
+    \item Insertar modelos simples BJT[cite: 6].
+    \item Configurar y ejecutar un análisis transitorio[cite: 6].
+    \item Medir señales de entrada y salida[cite: 6].
+    \item Observar distorsión de cruce[cite: 6].
+    \item Comparar corriente de reposo y disipación de manera básica[cite: 6].
+    \item Distinguir entre una simulación funcional y un diseño real validado[cite: 6].
+\end{enumerate}
+
+\section*{3. Convenciones de Diseño}
+\subsection*{3.1 Nombres de Nodos[cite: 6]}
+\begin{itemize}
+    \item \texttt{pos}: riel positivo de alimentación (+12 V)[cite: 6].
+    \item \texttt{neg}: riel negativo de alimentación ($-12$ V)[cite: 6].
+    \item \texttt{0}: tierra de LTspice[cite: 6].
+    \item \texttt{in}: entrada senoidal[cite: 6].
+    \item \texttt{out}: salida[cite: 6].
+    \item \texttt{base}, \texttt{bp}, \texttt{bn}: nodos de polarización de base según el caso[cite: 6].
+\end{itemize}
+
+\subsection*{3.2 Valores Comunes[cite: 6]}
+\begin{itemize}
+    \item Fuente positiva: $+12\,\text{V}$[cite: 6].
+    \item Fuente negativa: $-12\,\text{V}$[cite: 6].
+    \item Señal de entrada: seno de amplitud $2\,\text{V}$ y frecuencia $1\,\text{kHz}$[cite: 6].
+    \item Carga: $\text{RLOAD} = 1\,\text{k}\Omega$[cite: 6].
+    \item Análisis transitorio: \texttt{.tran 0 12m 2m 2u}[cite: 6].
+\end{itemize}
+
+\subsection*{3.3 Modelos BJT Simplificados[cite: 6]}
+Agregar la siguiente directiva SPICE (modelos genéricos para simulación ilustrativa)[cite: 6]:
+\begin{lstlisting}[style=spice]
+.model QN NPN(IS=1e-14 BF=150 VAF=100 CJE=20p CJC=10p TF=0.4n)
+.model QP PNP(IS=1e-14 BF=150 VAF=100 CJE=20p CJC=10p TF=0.4n)
+\end{lstlisting}
+
+\section*{4. Guía de Operación LTspice}
+\begin{itemize}
+    \item \textbf{Atajos:} Resistencia (\texttt{R}), Componente (\texttt{F2}), Cable (\texttt{F3}), Etiqueta (\texttt{F4}), Tierra (\texttt{G}), Rotar (\texttt{Ctrl+R}), Espejar (\texttt{Ctrl+E}), Borrar (\texttt{F5})[cite: 6].
+    \item \textbf{Fuente DC:} Colocar valor $12$. Para $-12\,\text{V}$, orientar la fuente apropiadamente respecto a tierra[cite: 6].
+    \item \textbf{Fuente Senoidal:} Advanced $\to$ SINE $\to$ Offset=\texttt{0}, Amplitude=\texttt{2}, Freq=\texttt{1k} $\implies$ \texttt{SINE(0 2 1k)}[cite: 6].
+    \item \textbf{Correr Simulación:} Asegurarse de la directiva \texttt{.tran} e ir a \textit{Simulate $\to$ Run}[cite: 6].
+\end{itemize}
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.5cm}
+
+\section*{5. Circuito 1 — Clase A[cite: 6]}
+\textbf{Intención:} Observar existencia de corriente de reposo, operación continua y establecer una referencia del compromiso linealidad–eficiencia[cite: 6]. El BJT trabaja como seguidor de emisor[cite: 6].
+
+\begin{center}
+\begin{circuitikz}[scale=1.1, transform shape]
+    % Transistor (Etiqueta externa para no solapar)
+    \draw (0,0) node[npn](Q1){};
+    \node[right=0.2cm] at (Q1.C) {Q1 (QN)};
+    
+    % Rieles de alimentación
+    \draw (Q1.C) -- (0,1) node[vcc]{+12V (pos)};
+    \draw (Q1.E) -- (0,-1) coordinate(E);
+    \draw (E) to[R, l=\texttt{RE}, a=$1\text{k}\Omega$] (0,-3.5) node[vee]{-12V (neg)};
+    
+    % Salida y Carga
+    \draw (E) to[short, *-] (2,-1) coordinate(out_node);
+    \draw (out_node) to[short, -o] (3,-1) node[right]{out};
+    \draw (out_node) to[R, l=\texttt{RLOAD}, a=$1\text{k}\Omega$, *-] (2,-3.5) node[ground]{};
+    
+    % Entrada y polarización DC
+    \draw (Q1.B) -- (-2,0) node[above]{base};
+    \draw (-2,0) to[V, l=\texttt{VBIAS}, a=$0.73\text{V}$] (-2,-2) coordinate(in_node);
+    \node[left] at (in_node) {in};
+    \draw (in_node) to[sV, l=\texttt{VIN}, a=\texttt{SINE}] (-2,-3.5) node[ground]{};
+\end{circuitikz}
+\end{center}
+
+\textbf{Netlist de Referencia[cite: 6]:}
+\begin{lstlisting}[style=spice]
+VPOS pos 0 12
+VNEG neg 0 -12
+VIN in 0 SINE(0 2 1k)
+VBIAS base in 0.73
+Q1 pos base out QN
+RE out neg 1k
+RLOAD out 0 1k
+.tran 0 12m 2m 2u
+\end{lstlisting}
+\textit{Observación: La salida sigue a la entrada, hay corriente de reposo y no presenta notch cerca de cero[cite: 6].}
+
+\newpage
+
+\section*{6. Circuito 2 — Clase B[cite: 6]}
+\textbf{Intención:} Mostrar un push-pull complementario sin polarización adicional, donde cada transistor conduce idealmente medio ciclo, generando distorsión de cruce[cite: 6].
+
+\begin{center}
+\begin{circuitikz}[scale=1.1, transform shape]
+    % Transistores (Etiquetas externas)
+    \draw (0,2) node[npn](Q1){};
+    \node[right=0.2cm] at (Q1.C) {Q1 (QN)};
+    \draw (0,-2) node[pnp](Q2){};
+    \node[right=0.2cm] at (Q2.C) {Q2 (QP)};
+    
+    % Rieles de alimentación
+    \draw (Q1.C) -- (0,3) node[vcc]{+12V (pos)};
+    \draw (Q2.C) -- (0,-3) node[vee]{-12V (neg)};
+    
+    % Unión de emisores, salida y carga
+    \draw (Q1.E) -- (Q2.E) coordinate[midway](out_mid);
+    \draw (out_mid) to[short, *-] (2,0) coordinate(out_node);
+    \draw (out_node) to[short, -o] (3,0) node[right]{out};
+    \draw (out_node) to[R, l=\texttt{RLOAD}, a=$1\text{k}\Omega$, *-] (2,-2.5) node[ground]{};
+    
+    % Conexión de bases y entrada compartida
+    \draw (Q1.B) -- (-2,2) -- (-2,-2) -- (Q2.B);
+    \draw (-2,0) to[short, *-] (-3.5,0) coordinate(in_node);
+    \node[above] at (in_node) {in};
+    \draw (in_node) to[sV, l=\texttt{VIN}, a=\texttt{SINE}] (-3.5,-2.5) node[ground]{};
+\end{circuitikz}
+\end{center}
+
+\textbf{Netlist de Referencia[cite: 6]:}
+\begin{lstlisting}[style=spice]
+VPOS pos 0 12
+VNEG neg 0 -12
+VIN in 0 SINE(0 2 1k)
+RLOAD out 0 1k
+Q1 pos in out QN
+Q2 neg in out QP
+.tran 0 12m 2m 2u
+\end{lstlisting}
+\textit{Observación: Cerca del cruce por cero aparece una muesca o región muerta (crossover distortion)[cite: 6].}
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.5cm}
+
+\section*{7. Circuito 3 — Clase AB[cite: 6]}
+\textbf{Intención:} Mostrar cómo una polarización adicional en las bases reduce la distorsión de cruce, a costa de mayor corriente de reposo[cite: 6]. Se agregan fuentes de bias ideales de $\pm 0.67\,\text{V}$[cite: 6].
+
+\begin{center}
+\begin{circuitikz}[scale=1.1, transform shape]
+    % Transistores (Etiquetas externas)
+    \draw (0,2.5) node[npn](Q1){};
+    \node[right=0.2cm] at (Q1.C) {Q1 (QN)};
+    \draw (0,-2.5) node[pnp](Q2){};
+    \node[right=0.2cm] at (Q2.C) {Q2 (QP)};
+    
+    % Rieles de alimentación
+    \draw (Q1.C) -- (0,3.5) node[vcc]{+12V (pos)};
+    \draw (Q2.C) -- (0,-3.5) node[vee]{-12V (neg)};
+    
+    % Unión de emisores, salida y carga
+    \draw (Q1.E) -- (Q2.E) coordinate[midway](out_mid);
+    \draw (out_mid) to[short, *-] (2,0) coordinate(out_node);
+    \draw (out_node) to[short, -o] (3,0) node[right]{out};
+    \draw (out_node) to[R, l=\texttt{RLOAD}, a=$1\text{k}\Omega$, *-] (2,-3) node[ground]{};
+    
+    % Red de polarización (Bias superior e inferior)
+    \draw (Q1.B) -- (-2,2.5) node[above]{bp};
+    \draw (-2,2.5) to[V, l=\texttt{VBIASP}, a=$0.67\text{V}$] (-2,0);
+    
+    \draw (Q2.B) -- (-2,-2.5) node[below]{bn};
+    \draw (-2,-2.5) to[V, l=\texttt{VBIASN}, a={$-0.67\text{V}$}, invert] (-2,0);
+    
+    % Entrada
+    \draw (-2,0) to[short, *-] (-4,0) coordinate(in_node);
+    \node[above] at (in_node) {in};
+    \draw (in_node) to[sV, l=\texttt{VIN}, a=\texttt{SINE}] (-4,-3) node[ground]{};
+\end{circuitikz}
+\end{center}
+\textit{Advertencia: Este esquema no es un circuito AB físicamente robusto de laboratorio; es una forma didáctica de introducir bias en simulación[cite: 6].}
+
+\textbf{Netlist de Referencia[cite: 6]:}
+\begin{lstlisting}[style=spice]
+VPOS pos 0 12
+VNEG neg 0 -12
+VIN in 0 SINE(0 2 1k)
+RLOAD out 0 1k
+VBIASP bp in 0.67
+VBIASN bn in -0.67
+Q1 pos bp out QN
+Q2 neg bn out QP
+.tran 0 12m 2m 2u
+\end{lstlisting}
+
+\newpage
+
+\section*{8. Mediciones e Interpretación en LTspice[cite: 6]}
+\subsection*{8.1 Señales Mínimas a Graficar[cite: 6]}
+\begin{itemize}
+    \item \texttt{V(in)} y \texttt{V(out)} (Usar misma escala de tiempo y voltaje para comparar)[cite: 6].
+    \item \texttt{I(VPOS)} e \texttt{I(VNEG)} para observar corriente de reposo y consumo dinámico[cite: 6].
+\end{itemize}
+
+\subsection*{8.2 Medidas Automáticas Sugeridas (\texttt{.meas})[cite: 6]}
+Agregar estas directivas si se desea realizar análisis de potencia[cite: 6]:
+\begin{lstlisting}[style=spice]
+.meas tran IQPOS FIND I(VPOS) AT=10m
+.meas tran IQNEG FIND I(VNEG) AT=10m
+.meas tran VOUT_PP PP V(out) FROM=8m TO=12m
+.meas tran PLOAD AVG (V(out)*V(out)/1000) FROM=8m TO=12m
+.meas tran PIN AVG (-V(pos)*I(VPOS)-V(neg)*I(VNEG)) FROM=8m TO=12m
+.meas tran EFF PARAM PLOAD/PIN
+\end{lstlisting}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Limitaciones de la Medición de Eficiencia {[cite: 6]}}]
+    \texttt{PIN} evaluada solo en los rieles principales no incluye la energía que intercambian las fuentes de bias ideales[cite: 6]. Por tanto, \texttt{EFF} no debe presentarse como eficiencia física global certificada[cite: 6].
+\end{tcolorbox}
+
+\section*{9. Procedimiento de Trabajo y Entregable[cite: 6]}
+\textbf{Fases del Flujo de Trabajo[cite: 6]:}
+\begin{enumerate}
+    \item \textbf{Dibujo:} Construir y simular Clase A, B y AB (duplicando y modificando)[cite: 6].
+    \item \textbf{Verificación:} Revisar tierra, modelo BJT, conexiones correctas y directiva \texttt{.tran}[cite: 6].
+    \item \textbf{Medición:} Graficar voltajes y hacer zoom sobre la región cercana al cruce por cero[cite: 6].
+    \item \textbf{Interpretación:} Completar matriz de resultados evaluando la presencia de \textit{notch} y reposo apreciable[cite: 6].
+\end{enumerate}
+
+\textbf{Entregable Sugerido[cite: 6]:}
+\begin{itemize}
+    \item Capturas de los tres esquemáticos[cite: 6].
+    \item Gráfica comparativa B vs AB ampliada en el cruce por cero[cite: 6].
+    \item Breve tabla de interpretación[cite: 6].
+\end{itemize}
+
+\vspace{0.5cm}
+\begin{tcolorbox}[colback=white, colframe=gray, title=\textbf{Relación Curricular (Transición a MOSFET) {[cite: 6]}}]
+    El objetivo de simular A/B/AB no es cambiar el foco del curso hacia amplificadores lineales, sino usar estas topologías para comprender compromisos de potencia (linealidad, calor, eficiencia)[cite: 6]. Esto prepara la discusión posterior sobre selección de MOSFET, $V_{GS}$, $R_{DS(on)}$, $Q_g$, pérdidas de conmutación y puentes H[cite: 6].
+\end{tcolorbox}
+
+\end{document}
