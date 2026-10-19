@@ -16,13 +16,14 @@
 \usepackage{fancyhdr}
 
 \setlength{\headheight}{16pt}
+\setlength{\emergencystretch}{2em}
 \definecolor{ucbblue}{RGB}{0, 51, 102}
 
 \pagestyle{fancy}
 \fancyhf{}
-\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\lhead{\textbf{IMT-221}}
 \chead{Checkpoint de Integración y Readiness: 21 de Octubre (Hito 2)}
-\rhead{Semana 12 - Sesión 1}
+\rhead{W12S01}
 \lfoot{Rumbo a Defensa Hito 2}
 \rfoot{Página \thepage}
 \renewcommand{\headrulewidth}{0.4pt}
@@ -39,26 +40,46 @@
 \textit{El Hito 2 exige demostrar una mejora de sistema bajo condiciones equivalentes, no simplemente mostrar que el amplificador tiene ganancia.}
 
 \begin{center}
-    \begin{tikzpicture}[node distance=1.4cm, >=Stealth, thick, scale=0.82, transform shape]
-        % Hito 1
-        \node[anchor=east] at (-0.3, 1.1) {\textbf{Baseline Hito 1 (Pasivo):}};
-        \node[draw, rectangle, fill=gray!15, minimum height=0.8cm, text width=2.8cm, align=center] (b1) at (1.5, 1.1) {Puente CA / NTC};
-        \node[circle, fill=red!80!black, inner sep=1.8pt, label=above:{\footnotesize Nodo $N_A$ ($V_{\mathrm{nodo,H1}}$)}] (na1) at (3.8, 1.1) {};
-        \node[draw, rectangle, fill=yellow!20, minimum height=0.8cm, text width=2.8cm, align=center] (t1) at (6.0, 1.1) {Twin-T $50\,\text{Hz}$ (Carga)};
-        \node[circle, fill=blue!80!black, inner sep=1.8pt, label=above:{\footnotesize Salida ($V_{u,H1}, V_{50,H1}$)}] (out1) at (8.5, 1.1) {};
-        \draw[->] (b1) -- (na1) -- (t1);
-        \draw[->] (t1) -- (out1);
+    \begin{tikzpicture}[>=Stealth, thick, scale=0.88, transform shape]
+        % --- FILA SUPERIOR: HITO 1 (PASIVO) ---
+        \node[anchor=east, font=\bfseries] at (-0.2, 0) {Baseline Hito 1 (Pasivo):};
+        
+        \node[draw, rectangle, rounded corners=2pt, fill=gray!15, minimum height=0.9cm, text width=2.5cm, align=center] (b1) at (1.4, 0) {Puente CA /\\Sensor NTC};
+        
+        \node[draw, rectangle, rounded corners=2pt, fill=yellow!20, minimum height=0.9cm, text width=2.7cm, align=center] (t1) at (6.4, 0) {Twin-T $50\,\text{Hz}$\\(Carga Pasiva)};
+        
+        % Conexion y Nodo Homologo N_A (con linea indicadora superior libre de solapamiento)
+        \draw[->] (b1.east) -- (t1.west);
+        \filldraw[red!80!black] (3.9, 0) circle (2.2pt) coordinate (na1);
+        \draw[red!80!black, thin] (na1) -- (3.9, 0.65) node[above, font=\footnotesize, fill=red!5, draw=red!40, rounded corners=1pt, inner sep=2pt] {Nodo $N_A$: $V_{\mathrm{nodo,H1}}$};
 
-        % Hito 2
-        \node[anchor=east] at (-0.3, -0.4) {\textbf{Sistema Hito 2 (Activo):}};
-        \node[draw, rectangle, fill=gray!15, minimum height=0.8cm, text width=2.8cm, align=center] (b2) at (1.5, -0.4) {Puente CA / NTC};
-        \node[circle, fill=red!80!black, inner sep=1.8pt, label=below:{\footnotesize Nodo $N_A^\prime$ ($V_{\mathrm{nodo,H2}}$)}] (na2) at (3.8, -0.4) {};
-        \node[draw, rectangle, fill=ucbblue!15, minimum height=0.8cm, text width=2.8cm, align=center] (in2) at (6.0, -0.4) {In-Amp (Alta $Z_{in}$)};
-        \node[draw, rectangle, fill=green!15, minimum height=0.8cm, text width=2.4cm, align=center] (t2) at (9.0, -0.4) {Etapa Filtro};
-        \node[circle, fill=blue!80!black, inner sep=1.8pt, label=below:{\footnotesize Salida ($V_{u,H2}, V_{50,H2}$)}] (out2) at (11.2, -0.4) {};
-        \draw[->] (b2) -- (na2) -- (in2);
-        \draw[->] (in2) -- (t2);
-        \draw[->] (t2) -- (out2);
+        % Salida Hito 1
+        \draw[->] (t1.east) -- (8.8, 0);
+        \filldraw[blue!80!black] (8.8, 0) circle (2.2pt);
+        \node[anchor=west, font=\footnotesize] at (9.0, 0) {\textbf{Salida H1} ($V_{u,H1},\; V_{50,H1}$)};
+
+        % --- FILA INFERIOR: HITO 2 (ACTIVO) ---
+        \node[anchor=east, font=\bfseries] at (-0.2, -2.1) {Sistema Hito 2 (Activo):};
+        
+        \node[draw, rectangle, rounded corners=2pt, fill=gray!15, minimum height=0.9cm, text width=2.5cm, align=center] (b2) at (1.4, -2.1) {Puente CA /\\Sensor NTC};
+        
+        \node[draw, rectangle, rounded corners=2pt, fill=ucbblue!15, minimum height=0.9cm, text width=2.7cm, align=center] (in2) at (6.4, -2.1) {In-Amp Activo\\(Alta $Z_{in}$)};
+        
+        \node[draw, rectangle, rounded corners=2pt, fill=green!15, minimum height=0.9cm, text width=2.4cm, align=center] (t2) at (9.9, -2.1) {Etapa Filtro\\Twin-T $50\,\text{Hz}$};
+
+        % Conexion y Nodo Homologo N_A' (con linea indicadora inferior libre de solapamiento)
+        \draw[->] (b2.east) -- (in2.west);
+        \filldraw[red!80!black] (3.9, -2.1) circle (2.2pt) coordinate (na2);
+        \draw[red!80!black, thin] (na2) -- (3.9, -2.75) node[below, font=\footnotesize, fill=red!5, draw=red!40, rounded corners=1pt, inner sep=2pt] {Nodo $N_A^\prime$: $V_{\mathrm{nodo,H2}}$};
+
+        % Vinculo visual entre nodos homologos
+        \draw[<->, dashed, red!70!black] (3.9, -0.2) -- node[fill=white, inner sep=1.5pt, font=\scriptsize\bfseries, text=red!80!black] {Mismo nodo ($K_{\mathrm{pres}}$)} (3.9, -1.9);
+
+        % Conexion a filtro y Salida Hito 2
+        \draw[->] (in2.east) -- (t2.west);
+        \draw[->] (t2.east) -- (12.0, -2.1);
+        \filldraw[blue!80!black] (12.0, -2.1) circle (2.2pt);
+        \node[anchor=west, font=\footnotesize] at (12.2, -2.1) {\textbf{Salida H2} ($V_{u,H2},\; V_{50,H2}$)};
     \end{tikzpicture}
 \end{center}
 
@@ -82,7 +103,7 @@
 \begin{table}[htbp]
     \centering
     \footnotesize
-    \renewcommand{\arraystretch}{1.35}
+    \renewcommand{\arraystretch}{1.3}
     \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{6.2cm}|>{\raggedright\arraybackslash}X|}
     \hline
     \rowcolor[HTML]{EFEFEF} 
@@ -98,21 +119,26 @@
 
 \section*{3. Secuencia de Validación y Registro Prospectivo del Checkpoint 21/oct (Visual H)}
 \begin{center}
-    \begin{tikzpicture}[node distance=0.5cm, >=Stealth, thick, scale=0.78, transform shape]
-        \node[draw, rectangle, fill=ucbblue!10, minimum height=0.7cm] (c1) {1. Etapa Aislada OK};
-        \node[draw, rectangle, fill=ucbblue!10, minimum height=0.7cm, right=0.4cm of c1] (c2) {2. Integración H1+H2};
-        \node[draw, rectangle, fill=ucbblue!10, minimum height=0.7cm, right=0.4cm of c2] (c3) {3. Test Loading};
-        \node[draw, rectangle, fill=ucbblue!10, minimum height=0.7cm, right=0.4cm of c3] (c4) {4. Test Común/CMRR};
-        \node[draw, rectangle, fill=ucbblue!10, minimum height=0.7cm, right=0.4cm of c4] (c5) {5. Test $50\,\text{Hz}$};
-        \node[draw, rectangle, fill=green!15, minimum height=0.7cm, right=0.4cm of c5] (c6) {6. Defensa 28/oct (Cond.)};
-        \draw[->] (c1) -- (c2); \draw[->] (c2) -- (c3); \draw[->] (c3) -- (c4); \draw[->] (c4) -- (c5); \draw[->] (c5) -- (c6);
+    \begin{tikzpicture}[>=Stealth, thick, scale=0.85, transform shape]
+        \node[draw, rectangle, rounded corners=2pt, fill=ucbblue!10, minimum height=0.95cm, text width=2.2cm, align=center, font=\footnotesize] (c1) at (0,0) {\textbf{1. Etapa Aislada}\\Validada};
+        \node[draw, rectangle, rounded corners=2pt, fill=ucbblue!10, minimum height=0.95cm, text width=2.2cm, align=center, font=\footnotesize] (c2) at (3.1,0) {\textbf{2. Integración}\\Hito 1 + Hito 2};
+        \node[draw, rectangle, rounded corners=2pt, fill=ucbblue!10, minimum height=0.95cm, text width=2.2cm, align=center, font=\footnotesize] (c3) at (6.2,0) {\textbf{3. Prueba de}\\Loading ($K_{\mathrm{pres}}$)};
+        \node[draw, rectangle, rounded corners=2pt, fill=ucbblue!10, minimum height=0.95cm, text width=2.2cm, align=center, font=\footnotesize] (c4) at (9.3,0) {\textbf{4. Modo Común}\\y CMRR};
+        \node[draw, rectangle, rounded corners=2pt, fill=ucbblue!10, minimum height=0.95cm, text width=2.2cm, align=center, font=\footnotesize] (c5) at (12.4,0) {\textbf{5. Prueba de}\\$50\,\text{Hz}$ / SIR};
+        \node[draw, rectangle, rounded corners=2pt, fill=green!15, minimum height=0.95cm, text width=2.3cm, align=center, font=\footnotesize] (c6) at (15.6,0) {\textbf{6. Defensa 28/oct}\\(Condicionada)};
+        
+        \draw[->] (c1.east) -- (c2.west);
+        \draw[->] (c2.east) -- (c3.west);
+        \draw[->] (c3.east) -- (c4.west);
+        \draw[->] (c4.east) -- (c5.west);
+        \draw[->] (c5.east) -- (c6.west);
     \end{tikzpicture}
 \end{center}
 
 \begin{table}[htbp]
     \centering
     \footnotesize
-    \renewcommand{\arraystretch}{1.3}
+    \renewcommand{\arraystretch}{1.28}
     \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{5.8cm}|>{\raggedright\arraybackslash}p{4.5cm}|>{\raggedright\arraybackslash}X|}
     \hline
     \rowcolor[HTML]{EFEFEF} 
