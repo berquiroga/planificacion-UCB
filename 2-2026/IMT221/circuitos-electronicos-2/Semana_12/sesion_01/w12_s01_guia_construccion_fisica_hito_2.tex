@@ -1,0 +1,217 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage[american]{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\setlength{\emergencystretch}{2em}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Guía de Construcción Física: Etapa Activa Aislada (Hito 2)}
+\rhead{Semana 12 - Sesión 1}
+\lfoot{Circuitos Electrónicos II}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Guía de Implementación Física: Etapa Activa Aislada para Hito 2}}
+\end{center}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Regla de Aislamiento Pre-Integración}]
+    \raggedright
+    Esta guía aplica \textbf{únicamente} a los grupos con permiso explícito en \textbf{Gate A}. Construya primero la etapa activa \textbf{aislada} del puente de Wheatstone y del filtro Twin-T. No conecte el sistema del Hito 1 hasta demostrar comportamiento propio coherente en alimentación, referencia, ganancia diferencial y modo común preliminar. Los valores de resistores e integrados corresponden al diseño aprobado de cada grupo, no a un kit universal.
+\end{tcolorbox}
+
+\section*{1. Topología de Referencia del Grupo (Visual B)}
+Si su grupo implementó la arquitectura clásica de 3 Op-Amps, verifique cada nodo respecto a su propio diseño aprobado:
+
+\begin{center}
+    \begin{circuitikz}[scale=0.78, transform shape, thick]
+        % Primera Etapa
+        \draw (0,2.6) node[op amp, noinv input up] (A1) {$A_1$};
+        \draw (0,-2.6) node[op amp, noinv input down] (A2) {$A_2$};
+        
+        \draw (A1.+) to[short, -o] ++(-1.2,0) node[left] {$V_1$ (Grupo)};
+        \draw (A2.+) to[short, -o] ++(-1.2,0) node[left] {$V_2$ (Grupo)};
+        
+        \draw (A1.up) -- ++(0,0.4) node[above] {$V_P$};
+        \draw (A1.down) -- ++(0,-0.4) node[below] {$V_N$};
+        \draw (A2.up) -- ++(0,0.4) node[above] {$V_N$};
+        \draw (A2.down) -- ++(0,-0.4) node[below] {$V_P$};
+        
+        \draw (A1.-) -- ++(0,-1.1) coordinate(n1);
+        \draw (A2.-) -- ++(0,1.1) coordinate(n2);
+        \draw (n1) to[R, l={$R_G$}, i>^=$I_G$] (n2);
+        
+        \draw (n1) to[R, l={$R$}] (n1 -| A1.out) -- (A1.out);
+        \draw (n2) to[R, l_={$R$}] (n2 -| A2.out) -- (A2.out);
+        
+        \draw (A1.out) to[short, *-] ++(1.4,0) coordinate(vo1) node[above] {$V_{o1}$};
+        \draw (A2.out) to[short, *-] ++(1.4,0) coordinate(vo2) node[below] {$V_{o2}$};
+        
+        % Segunda Etapa (Sustractor)
+        \draw (7.2,0) node[op amp] (A3) {$A_3$};
+        \draw (A3.up) -- ++(0,0.4) node[above] {$V_P$};
+        \draw (A3.down) -- ++(0,-0.4) node[below] {$V_N$};
+        
+        \draw (vo1) -- (vo1 |- A3.-) to[R, l={$R_1$}] (A3.-);
+        \draw (vo2) -- (vo2 |- A3.+) to[R, l={$R_3$}] (A3.+);
+        
+        \draw (A3.-) -- ++(0,1.5) coordinate(f3) to[R, l={$R_2$}] (f3 -| A3.out) -- (A3.out);
+        \draw (A3.+) to[R, l={$R_4$}] ++(0,-1.6) node[ground]{} node[right=0.2cm] {$V_R$ (Ref.)};
+        \draw (A3.out) to[short, *-o] ++(1.2,0) node[right] {$V_o$};
+    \end{circuitikz}
+\end{center}
+
+\section*{2. Procedimiento Reproducible de Construcción en Tres Fases}
+
+\subsection*{Fase A — Montaje en Frío (Sin alimentación ni IC energizado)}
+\begin{enumerate}
+    \setlength{\itemsep}{1pt}
+    \item \textbf{Identificación y Pinout:} Verifique fabricante, marcado exacto y encapsulado (DIP-8 en LM741/UA741 o LM358; DIP-14 en TL074). Localice el pin 1 con el datasheet oficial. \textbf{Prohibido trasplantar el pinout de un LM741 a un LM358 o TL074.}
+    \item \textbf{Mapa de Pines y Canales Inutilizados:} Dibuje el mapa físico de $V_P$, $V_N$, entradas $+/-\,$ y salidas por canal. Si usa integrados múltiples, anote cómo terminará los canales no usados según las recomendaciones del fabricante (no dejarlos flotando arbitrariamente).
+    \item \textbf{Medición Óhmica y Matching Crítico:} Mida con multímetro y etiquete cada resistor real ($R, R_G, R_1, R_2, R_3, R_4$). Verifique experimentalmente el emparejamiento de razones en el sustractor:
+    \begin{equation*}
+        \frac{R_{2,\mathrm{med}}}{R_{1,\mathrm{med}}} \simeq \frac{R_{4,\mathrm{med}}}{R_{3,\mathrm{med}}} = k
+    \end{equation*}
+    \item \textbf{Recálculo de Ganancia Nominal:} Con los valores medidos reales, recalcule la ganancia esperada:
+    \begin{equation*}
+        A_{d,\mathrm{nom}} = k\left(1 + \frac{2R_{\mathrm{med}}}{R_{G,\mathrm{med}}}\right)
+    \end{equation*}
+    \item \textbf{Cableado Secuencial y Desacoplo:} Monte primero los dos amplificadores de entrada ($A_1, A_2$) con $R$ y $R_G$; luego conecte el sustractor ($A_3$). Instale los capacitores de desacoplo local entre cada pin de alimentación y la referencia según el datasheet. Verifique continuidad y ausencia de cortos entre rieles.
+\end{enumerate}
+
+\subsection*{Fase B — Verificación de Rieles, Referencia y Margen Operativo (Visual C)}
+Defina $V_R$ como el nodo de referencia del circuito y $V_P, V_N$ como los terminales físicos de alimentación del Op-Amp. Los \textbf{rieles efectivos} que observa el amplificador en el marco de referencia de la señal se deducen paso a paso:
+\begin{equation}
+    V_{+,eff} = V_P - V_R, \quad V_{-,eff} = V_N - V_R, \quad V_{S,\mathrm{total}} = V_P - V_N = V_{+,eff} - V_{-,eff}
+\end{equation}
+
+\begin{center}
+    \begin{circuitikz}[scale=0.72, transform shape, thick]
+        % Opcion 1: Dual
+        \node at (0,3.2) {\textbf{1) Fuente Dual de Banco}};
+        \draw (-0.8,2.2) node[left]{$V_P (+V)$} to[short, o-*] (0.2,2.2) -- (1.0,2.2);
+        \draw (-0.8,1.0) node[left]{$V_R (0\,\text{V})$} to[short, o-*] (0.2,1.0) node[ground]{} -- (1.0,1.0);
+        \draw (-0.8,-0.2) node[left]{$V_N (-V)$} to[short, o-*] (0.2,-0.2) -- (1.0,-0.2);
+
+        % Opcion 2: 2x9V
+        \node at (5.2,3.2) {\textbf{2) Dos Baterías $9\,\text{V}$}};
+        \draw (4.2,2.5) to[battery2, l=$B_1$] (4.2,1.0);
+        \draw (4.2,1.0) to[battery2, l=$B_2$] (4.2,-0.5);
+        \draw (4.2,2.5) to[short, *-o] (5.5,2.5) node[right]{$V_P = V(B_{1+})$};
+        \draw (4.2,1.0) to[short, *-o] (5.5,1.0) node[right]{$V_R = \text{Medio } (0\,\text{V})$};
+        \draw (4.2,1.0) node[ground]{};
+        \draw (4.2,-0.5) to[short, *-o] (5.5,-0.5) node[right]{$V_N = V(B_{2-})$};
+
+        % Opcion 3: Virtual Bufferizada
+        \node at (11.5,3.2) {\textbf{3) Fuente Simple + Buffer $V_{REF}$}};
+        \draw (9.8,2.5) node[vcc]{$V_S$} to[R, l=$R_a$] (9.8,1.0) coordinate(vm) to[R, l=$R_b$] (9.8,-0.5) node[ground]{$0\,\text{V}_{\text{físico}}$};
+        \draw (vm) to[short, *-] ++(0.7,0) node[op amp, noinv input up, anchor=+, scale=0.7] (buf) {};
+        \draw (buf.-) -- ++(0,-0.7) -| (buf.out);
+        \draw (buf.out) to[short, *-o] ++(0.9,0) node[right]{$V_R = V_{REF}$};
+    \end{circuitikz}
+\end{center}
+
+\textbf{Ejemplo Didáctico (Ilustrativo, no medición de grupo):} Si se emplea una fuente simple $V_P = V_S = 18.0\,\text{V}$ con terminal negativo en $V_N = 0.0\,\text{V}$ y la referencia virtual bufferizada mide $V_R = V_{REF} = 8.8\,\text{V}$ respecto del terminal negativo:
+\begin{align*}
+    V_{+,eff} &= V_P - V_R = 18.0\,\text{V} - 8.8\,\text{V} = +9.2\,\text{V} \\
+    V_{-,eff} &= V_N - V_R = 0.0\,\text{V} - 8.8\,\text{V} = -8.8\,\text{V}
+\end{align*}
+\textbf{Advertencia sobre Tierra de Instrumentos:} No asuma que el osciloscopio o generador son flotantes. En referencia virtual ($V_{REF}$), conectar el caimán de masa del instrumento a un nodo distinto de la tierra física del equipo puede cortocircuitar la fuente. \textbf{Solicite inspección y autorización docente Pre-Power antes de energizar.}
+
+\subsection*{Fase C — Energizado Controlado y Línea Base Diferencial (Visual D)}
+\begin{center}
+    \begin{tikzpicture}[node distance=0.6cm, >=Stealth, thick, scale=0.82, transform shape]
+        \node[draw, rectangle, fill=ucbblue!10, text width=2.8cm, align=center, minimum height=1cm] (s1) {1. Verificar rieles y salida en reposo};
+        \node[draw, rectangle, fill=ucbblue!10, text width=2.9cm, align=center, minimum height=1cm, right=0.6cm of s1] (s2) {2. Aplicar 2 puntos $V_d$ con $V_{cm}$ fijo};
+        \node[draw, rectangle, fill=ucbblue!10, text width=2.9cm, align=center, minimum height=1cm, right=0.6cm of s2] (s3) {3. Medir $V_{o,1}, V_{o,2}$ reales sin clipping};
+        \node[draw, rectangle, fill=ucbblue!10, text width=3.0cm, align=center, minimum height=1cm, right=0.6cm of s3] (s4) {4. Calcular $A_{d,\mathrm{exp}}$ incremental y $\varepsilon_{A_d}$};
+        \draw[->] (s1) -- (s2);
+        \draw[->] (s2) -- (s3);
+        \draw[->] (s3) -- (s4);
+    \end{tikzpicture}
+\end{center}
+
+\textbf{Derivación de la Medición Incremental (Separación de Offset):} \\
+En un amplificador real existe una tensión de offset a la salida $V_{o,\mathrm{offset}}$ tal que en región lineal:
+\begin{equation}
+    V_o = A_{d,\mathrm{exp}} V_d + A_{c,\mathrm{exp}} V_{cm} + V_{o,\mathrm{offset}}
+\end{equation}
+Si solo se mide un punto $(V_{d,1}, V_{o,1})$, el cociente simple $V_{o,1}/V_{d,1}$ queda contaminado por $V_{o,\mathrm{offset}}$ y por $V_{cm}$:
+\begin{equation*}
+    \frac{V_{o,1}}{V_{d,1}} = A_{d,\mathrm{exp}} + \frac{A_{c,\mathrm{exp}} V_{cm} + V_{o,\mathrm{offset}}}{V_{d,1}} \neq A_{d,\mathrm{exp}}
+\end{equation*}
+En cambio, manteniendo $V_{cm}$ constante y evaluando dos condiciones lineales $(V_{d,1}, V_{o,1})$ y $(V_{d,2}, V_{o,2})$ con $\Delta V_d = V_{d,2} - V_{d,1} \neq 0$, al restar ambas ecuaciones se cancelan exactamente el término común y el offset constante:
+\begin{align}
+    V_{o,2} - V_{o,1} &= \left(A_{d,\mathrm{exp}} V_{d,2} + A_{c,\mathrm{exp}} V_{cm} + V_{o,\mathrm{offset}}\right) \nonumber \\
+                      &\quad - \left(A_{d,\mathrm{exp}} V_{d,1} + A_{c,\mathrm{exp}} V_{cm} + V_{o,\mathrm{offset}}\right) \nonumber \\
+    V_{o,2} - V_{o,1} &= A_{d,\mathrm{exp}}(V_{d,2} - V_{d,1}) \implies \boxed{A_{d,\mathrm{exp}} \approx \frac{V_{o,2} - V_{o,1}}{V_{d,2} - V_{d,1}}}
+\end{align}
+La discrepancia absoluta y el error porcentual respecto al valor analítico ($A_{d,\mathrm{teo}} \neq 0$) se calculan como:
+\begin{equation}
+    \Delta A_d = A_{d,\mathrm{exp}} - A_{d,\mathrm{teo}}, \qquad \varepsilon_{A_d} = \frac{|A_{d,\mathrm{exp}} - A_{d,\mathrm{teo}}|}{|A_{d,\mathrm{teo}}|} \times 100\%
+\end{equation}
+
+\section*{3. Ensayo Preliminar de Modo Común y Cota Condicionada de CMRR (Visual E)}
+Para evaluar el rechazo de modo común, una las dos entradas físicamente ($V_1 = V_2 = V_{cm} \implies V_d = 0$) y aplique dos niveles seguros $V_{cm,1}$ y $V_{cm,2}$ dentro del rango permitido por el datasheet:
+
+\begin{center}
+    \begin{circuitikz}[scale=0.78, transform shape, thick]
+        \draw (0,0.7) to[short, -o] (1.4,0.7) node[right] {Entrada $V_1$ del In-Amp};
+        \draw (0,-0.7) to[short, -o] (1.4,-0.7) node[right] {Entrada $V_2$ del In-Amp};
+        \draw (0,0.7) -- (0,-0.7);
+        \draw (-1.8,0) node[left] {$V_{cm,1} \rightarrow V_{cm,2}$} to[short, o-*] (0,0);
+        \node[right] at (5.0,0) {$\Longrightarrow \quad \text{Medir } V_{o,cm,1},\; V_{o,cm,2} \text{ y resolución } \delta V_o$};
+    \end{circuitikz}
+\end{center}
+
+\textbf{Caso 1 — Variación de salida común resoluble ($|\Delta V_{o,cm}| \gg \delta V_o$):} \\
+Si la diferencia medida $\Delta V_{o,cm} = V_{o,cm,2} - V_{o,cm,1}$ supera claramente el ruido y la resolución instrumental $\delta V_o$:
+\begin{equation}
+    \boxed{A_{c,\mathrm{exp}} \approx \frac{V_{o,cm,2} - V_{o,cm,1}}{V_{cm,2} - V_{cm,1}}}, \quad CMRR = \left|\frac{A_{d,\mathrm{exp}}}{A_{c,\mathrm{exp}}}\right|, \quad CMRR_{dB} = 20\log_{10}\left|\frac{A_{d,\mathrm{exp}}}{A_{c,\mathrm{exp}}}\right|
+\end{equation}
+
+\textbf{Caso 2 — Variación común no resoluble por límite instrumental ($|\Delta V_{o,cm}| < \delta V_o$):} \\
+\textbf{Prohibido reportar $A_c = 0$ o $CMRR = \infty$.} Si el cambio en la salida es menor que la resolución demostrada $\delta V_o$ ante un incremento $\Delta V_{cm} = V_{cm,2} - V_{cm,1} \neq 0$, se establece una cota superior para $|A_c|$ y una \textbf{cota inferior condicionada} para el CMRR:
+\begin{align}
+    |\Delta V_{o,cm}| < \delta V_o &\implies |A_c| = \frac{|\Delta V_{o,cm}|}{|\Delta V_{cm}|} < \frac{\delta V_o}{|\Delta V_{cm}|} \nonumber \\
+                                   &\implies \boxed{CMRR = \frac{|A_d|}{|A_c|} > \frac{|A_d|\,|\Delta V_{cm}|}{\delta V_o}}
+\end{align}
+
+\section*{4. Ejemplos Numéricos Ilustrativos (No son datos de grupos del Hito 2)}
+\begin{itemize}
+    \item \textbf{Ejemplo 1 (Baseline simple):} Si $R=10\,\text{k}\Omega$, $R_G=2\,\text{k}\Omega$ y $k=1$, entonces $A_{d,\mathrm{teo}} = 1 + \frac{2(10)}{2} = 11$. Con $V_1=0.95\,\text{V}$ y $V_2=1.05\,\text{V}$ ($V_d=0.10\,\text{V}$, $V_{cm}=1.00\,\text{V}$), se predice $V_{o,\mathrm{teo}} = 11(0.10) = 1.10\,\text{V}$. Si se mide $V_{o,\mathrm{med}} = 1.07\,\text{V}$, resulta:
+    \begin{equation*}
+        A_{d,\mathrm{exp}} = \frac{1.07}{0.10} = 10.7, \qquad \varepsilon_{A_d} = \frac{|10.7 - 11|}{11} \times 100\% \approx 2.73\%
+    \end{equation*}
+    \item \textbf{Ejemplo 2 (Separación de offset):} Si para $V_{cm}$ fijo se miden $(V_{d,1}, V_{o,1}) = (20\,\text{mV}, 0.24\,\text{V})$ y $(V_{d,2}, V_{o,2}) = (60\,\text{mV}, 0.68\,\text{V})$, el cociente puntual en el primer punto daría $0.24/0.020 = 12$ (sesgado por un offset de $0.02\,\text{V}$), mientras que la pendiente incremental entrega el valor verdadero:
+    \begin{equation*}
+        A_{d,\mathrm{exp}} \approx \frac{0.68 - 0.24}{0.060 - 0.020} = \frac{0.44}{0.040} = 11
+    \end{equation*}
+    \item \textbf{Ejemplo 3 (Modo común resoluble):} Si para $V_{cm,1}=0.5\,\text{V} \rightarrow V_{o,1}=8\,\text{mV}$ y $V_{cm,2}=1.5\,\text{V} \rightarrow V_{o,2}=12\,\text{mV}$ (con resolución válida), entonces:
+    \begin{align*}
+        A_c &\approx \frac{0.012 - 0.008}{1.5 - 0.5} = 0.004 \\
+        \text{Con } A_d = 20:\quad CMRR &= \frac{20}{0.004} = 5000 \implies CMRR_{dB} = 20\log_{10}(5000) \approx 73.98\,\text{dB}
+    \end{align*}
+\end{itemize}
+
+\end{document}

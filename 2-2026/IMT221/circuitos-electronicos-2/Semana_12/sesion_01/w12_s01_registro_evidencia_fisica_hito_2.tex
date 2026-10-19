@@ -1,0 +1,115 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Registro de Evidencia Física: Etapa Activa (Hito 2)}
+\rhead{Semana 12 - Sesión 1}
+\lfoot{Evidencia Experimental}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Registro de Evidencia Física: Etapa Activa Aislada (Hito 2)}}
+\end{center}
+
+\noindent\textbf{Grupo:} \rule{3cm}{0.4pt} \hfill \textbf{Integrantes:} \rule{7.5cm}{0.4pt} \hfill \textbf{Fecha:} \rule{2.5cm}{0.4pt}
+
+\section*{1. Identificación de Dispositivo, Datasheet y Rieles Efectivos (Pre-Power)}
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.35}
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{4.8cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{4.5cm}|>{\raggedright\arraybackslash}X|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Parámetro del Dispositivo (DATASHEET)} & \textbf{Dato Real / Fuente} & \textbf{Parámetro de Alimentación (MEDIDO)} & \textbf{Valor Medido} \\ \hline
+    Marcado exacto y Fabricante & & Arquitectura (Dual / $2\times 9\,\text{V}$ / Virtual) & \\ \hline
+    Encapsulado y N.º de canales & & Potencial positivo $V_P$ y negativo $V_N$ & \\ \hline
+    Rango de alimentación admisible & & Referencia $V_R$ y criterio de tierras & \\ \hline
+    Rango común de entrada ($V_{CM}$) & & Rieles efectivos: $V_{+,eff}=V_P-V_R$, $V_{-,eff}=V_N-V_R$ & \\ \hline
+    Output swing, GBW y Slew Rate & & Verificación de masa de instrumentos & $\square$ Sí \quad $\square$ No \\ \hline
+    Evaluación de compatibilidad & $\square$ Compatible $\square$ No comp. & \textbf{Autorización Docente Pre-Power} & \\ \hline
+    \end{tabularx}
+\end{table}
+
+\section*{2. Verificación de BOM y Resistores Medidos}
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.35}
+    \begin{tabularx}{\textwidth}{|c|l|c|c|c|c|>{\raggedright\arraybackslash}X|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Ref.} & \textbf{Componente / Rol} & \textbf{Valor Nom.} & \textbf{Valor Medido} & \textbf{Tol.} & \textbf{Disp.} & \textbf{Observación / Matching} \\ \hline
+    $R$ & Realimentación 1.ª etapa ($A_1, A_2$) & & & & $\square$ & Par simétrico: $R_{A1} = \dots$, $R_{A2} = \dots$ \\ \hline
+    $R_G$ & Ajuste ganancia 1.ª etapa & & & & $\square$ & Define $A_{d1} = 1 + 2R/R_G$ \\ \hline
+    $R_1, R_2$ & Sustractor rama inversora & & & & $\square$ & \textbf{MATCHING CRITICAL:} $R_2/R_1 = \dots$ \\ \hline
+    $R_3, R_4$ & Sustractor rama no inversora & & & & $\square$ & \textbf{MATCHING CRITICAL:} $R_4/R_3 = \dots$ \\ \hline
+    $C_{\mathrm{dec}}$ & Desacoplo local de rieles & & & & $\square$ & Ubicado junto a pines del IC \\ \hline
+    \end{tabularx}
+\end{table}
+
+\section*{3. Línea Base Diferencial Física (Etapa Aislada)}
+\textit{Distinga explícitamente valores \texttt{ANALÍTICOS}, \texttt{SIMULADOS (LTSpice)} y \texttt{MEDIDOS (Físicos)}.}
+
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{4.5cm}|c|c|c|>{\raggedright\arraybackslash}X|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Magnitud} & \textbf{ANALÍTICO} & \textbf{SIMULADO (LTSpice)} & \textbf{MEDIDO (Físico)} & \textbf{Condición / Unidad (DC o AC, frecuencia)} \\ \hline
+    Punto 1: $V_1, V_2, V_{d,1}, V_{cm}$ & & & & \\ \hline
+    Punto 2: $V_1, V_2, V_{d,2}, V_{cm}$ & & & & \\ \hline
+    Salida $V_{o,1}$ y $V_{o,2}$ & & & & \\ \hline
+    Ganancia $A_d = \frac{V_{o,2}-V_{o,1}}{V_{d,2}-V_{d,1}}$ & & & & \\ \hline
+    Rieles efectivos $V_{+,eff}, V_{-,eff}$ & & & & \\ \hline
+    Discrepancia $\Delta A_d$ y error $\varepsilon_{A_d}$ (\%) & --- & & & $\Delta A_d = A_{d,\mathrm{exp}}-A_{d,\mathrm{teo}}$ \\ \hline
+    \end{tabularx}
+\end{table}
+
+\section*{4. Ensayo Preliminar de Modo Común ($V_1 = V_2 = V_{cm}$)}
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabularx}{\textwidth}{|c|c|c|c|c|>{\raggedright\arraybackslash}X|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Condición} & \textbf{$V_{cm}$ Aplicado} & \textbf{$V_d$ Observado} & \textbf{Salida $V_{o,cm}$} & \textbf{Resolución / Ruido ($\delta V_o$)} & \textbf{$A_c$ Válido o Cota Condicionada} \\ \hline
+    Nivel 1 & & & & & \\ \hline
+    Nivel 2 & & & & & \\ \hline
+    \multicolumn{6}{|l|}{\textbf{Cálculo de $A_c$ o Límite:} Si $|\Delta V_{o,cm}| > \delta V_o \Rightarrow A_c = \dots$ \quad Si no es resoluble: $|A_c| < \frac{\delta V_o}{|\Delta V_{cm}|} = \dots \Rightarrow CMRR > \dots$} \\ \hline
+    \end{tabularx}
+\end{table}
+
+\section*{5. Diagnóstico Causal y Estado al Cierre de la Sesión}
+\begin{tcolorbox}[colback=white, colframe=black]
+    \textbf{Síntoma o Discrepancia Observada:} \hrulefill \\[0.15cm]
+    \textbf{Hipótesis Causal (Diseño / Montaje / Límite Físico):} \hrulefill \\[0.15cm]
+    \textbf{Prueba Discriminante Realizada y Decisión:} \hrulefill \\[0.15cm]
+    \textbf{Estado de la Etapa Activa Aislada:} $\square$ Validada (Lista para integrar el 21/oct) \quad $\square$ Pendiente de ajuste: \hrulefill \\[0.15cm]
+    \textbf{Verificación Docente al Cierre:} \rule{5cm}{0.4pt}
+\end{tcolorbox}
+
+\end{document}

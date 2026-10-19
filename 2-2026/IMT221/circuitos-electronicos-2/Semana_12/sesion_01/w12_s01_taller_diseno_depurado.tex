@@ -1,0 +1,140 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows.meta, positioning}
+\usepackage[american]{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Taller de Diseño Cuantitativo: In-Amp (Versión Depurada)}
+\rhead{Referencia Técnica Hito 2}
+\lfoot{Circuitos Electrónicos II}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Taller de Diseño Cuantitativo: Amplificador de Instrumentación (Hito 2)}}
+\end{center}
+
+\begin{tcolorbox}[colback=yellow!10, colframe=ucbblue, title=\textbf{Instrucción de Uso Diferenciado en Semana 12}]
+    \raggedright
+    \textbf{Los grupos clasificados como \texttt{READY} NO deben repetir este taller} (avanzan directamente a la Guía de Construcción Física). Para los grupos en ruta \texttt{NOT READY} o \texttt{READY WITH MINOR CORRECTIONS}, el docente marcará a continuación \textbf{únicamente} el bloque específico que deben resolver para levantar su bloqueo en el \textit{recheck} de Gate A: \\[0.15cm]
+    $\square$ Bloque A (Loading Hito 1) \quad $\square$ Bloque B ($V_d, V_{cm}$) \quad $\square$ Bloque C/D (Derivación y $R_G$) \quad $\square$ Bloque E/F (CMRR y Mismatch)
+\end{tcolorbox}
+
+\section*{A. El Problema de Carga (Loading) entre Etapas del Hito 1}
+Si una etapa fuente se modela por su equivalente de Thévenin ($V_{TH}, Z_S$) y alimenta una etapa siguiente con impedancia de entrada $Z_L$, la tensión transferida a la carga es:
+\begin{equation}
+    V_L = V_{TH} \frac{Z_L}{Z_S + Z_L} \quad \Longrightarrow \quad \text{Para evitar atenuación por carga se requiere } |Z_L| \gg |Z_S| \implies V_L \approx V_{TH}
+\end{equation}
+
+\begin{center}
+\begin{tikzpicture}[node distance=2.2cm, auto, >=Stealth, thick, scale=0.9, transform shape]
+    \node[draw, rectangle, fill=red!10, minimum height=1cm, text width=2.4cm, align=center] (w) {Puente CA / NTC\\($V_{TH}, Z_S$)};
+    \node[draw, rectangle, fill=yellow!20, minimum height=1cm, text width=2.6cm, align=center, right=1.2cm of w] (load) {Interacción de\\Impedancias};
+    \node[draw, rectangle, fill=ucbblue!10, minimum height=1cm, text width=2.8cm, align=center, right=1.2cm of load] (inamp) {Etapa Activa In-Amp\\(Alta $Z_{in}$)};
+    \node[draw, rectangle, fill=green!10, minimum height=1cm, text width=2.4cm, align=center, right=1.2cm of inamp] (twint) {Filtro Twin-T\\($50\,\text{Hz}$)};
+    
+    \draw[->] (w) -- (load);
+    \draw[->] (load) -- (inamp);
+    \draw[->] (inamp) -- (twint);
+\end{tikzpicture}
+\end{center}
+
+\section*{B. Descomposición Diferencial y de Modo Común}
+Dadas dos tensiones de nodo $V_1$ y $V_2$ respecto a la referencia del circuito:
+\begin{equation}
+    \boxed{V_d = V_2 - V_1}, \qquad \boxed{V_{cm} = \frac{V_1 + V_2}{2}} \quad \Longleftrightarrow \quad \boxed{V_1 = V_{cm} - \frac{V_d}{2}}, \qquad \boxed{V_2 = V_{cm} + \frac{V_d}{2}}
+\end{equation}
+
+\section*{C. Derivación Paso a Paso del In-Amp Clásico de 3 Op-Amps}
+\begin{center}
+    \begin{circuitikz}[scale=0.78, transform shape, thick]
+        \draw (0,2.4) node[op amp, noinv input up] (A1) {$A_1$};
+        \draw (0,-2.4) node[op amp, noinv input down] (A2) {$A_2$};
+        \draw (A1.+) to[short, -o] ++(-1,0) node[left] {$V_1$};
+        \draw (A2.+) to[short, -o] ++(-1,0) node[left] {$V_2$};
+        \draw (A1.-) -- ++(0,-1) coordinate(n1);
+        \draw (A2.-) -- ++(0,1) coordinate(n2);
+        \draw (n1) to[R, l={$R_G$}, i>^=$I_G$] (n2);
+        \draw (n1) to[R, l={$R$}] (n1 -| A1.out) -- (A1.out);
+        \draw (n2) to[R, l_={$R$}] (n2 -| A2.out) -- (A2.out);
+        \draw (A1.out) to[short, *-] ++(1.2,0) coordinate(vo1) node[above] {$V_{o1}$};
+        \draw (A2.out) to[short, *-] ++(1.2,0) coordinate(vo2) node[below] {$V_{o2}$};
+        \draw (6.5,0) node[op amp] (A3) {$A_3$};
+        \draw (vo1) -- (vo1 |- A3.-) to[R, l={$R_1$}] (A3.-);
+        \draw (vo2) -- (vo2 |- A3.+) to[R, l={$R_3$}] (A3.+);
+        \draw (A3.-) -- ++(0,1.5) coordinate(f3) to[R, l={$R_2$}] (f3 -| A3.out) -- (A3.out);
+        \draw (A3.+) to[R, l={$R_4$}] ++(0,-1.5) node[ground]{};
+        \draw (A3.out) to[short, *-o] ++(1,0) node[right] {$V_o$};
+    \end{circuitikz}
+\end{center}
+
+\textbf{Paso 1 (Primera Etapa):} Bajo realimentación negativa ideal ($i_+ = i_- = 0$, $V_{-1} = V_1$, $V_{-2} = V_2$), la corriente a través de $R_G$ desde el nodo superior al inferior es:
+\begin{equation}
+    I_G = \frac{V_1 - V_2}{R_G}
+\end{equation}
+Aplicando LKC en los nodos inversores de $A_1$ y $A_2$:
+\begin{align}
+    \frac{V_{o1} - V_1}{R} &= I_G = \frac{V_1 - V_2}{R_G} \implies V_{o1} = V_1 + \frac{R}{R_G}(V_1 - V_2) \\
+    \frac{V_{o2} - V_2}{R} &= -I_G = \frac{V_2 - V_1}{R_G} \implies V_{o2} = V_2 + \frac{R}{R_G}(V_2 - V_1)
+\end{align}
+Restando ambas salidas intermedias ($V_{o2} - V_{o1}$):
+\begin{equation}
+    V_{o2} - V_{o1} = (V_2 - V_1) + \frac{R}{R_G}(V_2 - V_1) - \frac{R}{R_G}(V_1 - V_2) = \left(1 + \frac{2R}{R_G}\right)(V_2 - V_1) = \left(1 + \frac{2R}{R_G}\right)V_d
+\end{equation}
+
+\textbf{Paso 2 (Segunda Etapa — Sustractor):} En el amplificador diferencial $A_3$, aplicando divisor de tensión en $V_{+3}$ y LKC en $V_{-3}$:
+\begin{equation}
+    V_o = \left(1 + \frac{R_2}{R_1}\right)\frac{R_4}{R_3 + R_4}V_{o2} - \frac{R_2}{R_1}V_{o1}
+\end{equation}
+Si las razones están emparejadas tal que $\frac{R_2}{R_1} = \frac{R_4}{R_3} = k$, entonces $\left(1+k\right)\frac{k}{1+k} = k$, y por tanto:
+\begin{equation}
+    V_o = k(V_{o2} - V_{o1}) = k\left(1 + \frac{2R}{R_G}\right)(V_2 - V_1) \implies \boxed{A_d = k\left(1 + \frac{2R}{R_G}\right)}
+\end{equation}
+
+\section*{D. Ecuación de Síntesis para $R_G$ y Recálculo Nominal}
+Dada una ganancia diferencial objetivo $A_d^\star = \frac{V_{o,\mathrm{target}}}{V_{d,\mathrm{target}}}$ y fijando la razón $k$:
+\begin{equation}
+    \frac{A_d^\star}{k} = 1 + \frac{2R}{R_G} \implies \frac{2R}{R_G} = \frac{A_d^\star}{k} - 1 \implies \boxed{R_G = \frac{2R}{\frac{A_d^\star}{k} - 1}} \quad \left(\text{Para } k=1:\; R_G = \frac{2R}{A_d^\star - 1}\right)
+\end{equation}
+Tras elegir un resistor comercial disponible $R_G^\prime$, es obligatorio recalcular $A_{d,\mathrm{nom}} = k\left(1 + \frac{2R}{R_G^\prime}\right)$.
+
+\section*{E. Ganancia de Modo Común ($A_c$), CMRR y Efecto de Mismatch}
+El modelo lineal general de salida es $V_o = A_d V_d + A_c V_{cm}$. El rechazo de modo común se define como:
+\begin{equation}
+    \boxed{CMRR = \left|\frac{A_d}{A_c}\right|}, \qquad \boxed{CMRR_{dB} = 20\log_{10}\left|\frac{A_d}{A_c}\right|}
+\end{equation}
+Si en el sustractor final existe desajuste de razones ($\frac{R_2}{R_1} \neq \frac{R_4}{R_3}$), al aplicar una entrada común pura $V_{o1} = V_{o2} = V_{cm}$ se produce una ganancia de modo común no nula en la red resistiva:
+\begin{equation}
+    \boxed{A_{c,\mathrm{sustractor}} = \left(1 + \frac{R_2}{R_1}\right)\frac{R_4}{R_3 + R_4} - \frac{R_2}{R_1}}
+\end{equation}
+
+\section*{F. Ejercicios de Reparación Puntual para Gate A}
+\begin{enumerate}
+    \setlength{\itemsep}{1pt}
+    \item Si $V_1 = 2.91\,\text{V}$ y $V_2 = 3.09\,\text{V}$, calcule $V_d$, $V_{cm}$ y verifique la reconstrucción inversa de $V_1$ y $V_2$.
+    \item Para $A_d^\star = 15$, $R = 10\,\text{k}\Omega$ y $k = 1$, calcule $R_G$ exacto. Proponga un valor disponible en su inventario real y recalcule $A_{d,\mathrm{nom}}$.
+    \item Si $A_d = 30$ y $A_c = 0.003$, calcule $CMRR$ y $CMRR_{dB}$. Si $A_d = 50$ y $CMRR_{dB} = 60\,\text{dB}$, despeje $A_c$.
+    \item Demuestre con la ecuación de $A_{c,\mathrm{sustractor}}$ qué ocurre cuando $R_2/R_1 = 10$ pero $R_4/R_3 = 10.1$.
+\end{enumerate}
+
+\end{document}

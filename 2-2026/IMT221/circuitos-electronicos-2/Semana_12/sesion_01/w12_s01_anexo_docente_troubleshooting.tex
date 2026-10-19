@@ -1,0 +1,136 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.8cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | Documento Docente}
+\chead{Guía Docente y Anexo de Troubleshooting: Hito 2}
+\rhead{Semana 12 - Sesión 1}
+\lfoot{Circuitos Electrónicos II}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Guía Docente: Solucionario Depurado y Diagnóstico Físico (Hito 2)}}
+\end{center}
+
+\section*{1. Secuencia Operativa de la Sesión (120 Minutos)}
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabularx}{\textwidth}{|c|c|>{\raggedright\arraybackslash}X|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Segmento} & \textbf{Min} & \textbf{Acción Docente y Evidencia Esperada} \\ \hline
+    1. Estado y baseline Hito 1 & 10 & Verificar estado real de entrega Lab 3 (plazo 18/oct vencido), progreso Lab 4 (25/oct) y baseline Hito 1. \\ \hline
+    2. Gate A por grupos & 25 & Defensa breve; clasificar \texttt{READY} / \texttt{MINOR} / \texttt{NOT READY}; registrar bloqueo exacto. \\ \hline
+    3. Lanzamiento diferenciado & 5 & Asignación explícita de ruta y siguiente acción verificable por grupo. \\ \hline
+    4. Construcción / corrección & 45 & Montaje controlado de etapa aislada o cierre de prerrequisito; intervención según riesgo eléctrico. \\ \hline
+    5. Validación diferencial & 15 & Medición de rieles en pines, referencia, entradas conocidas, salida y ganancia incremental real. \\ \hline
+    6. Modo común preliminar & 10 & Si es viable: respuesta común en dos niveles y evaluación de límites de resolución ($\delta V_o$). \\ \hline
+    7. Registro para 21/oct & 5 & Documentar bloqueos, plan de integración y mediciones pendientes para el checkpoint. \\ \hline
+    8. Verificación individual & 5 & Al menos una justificación técnica individual por estudiante o muestreo registrado. \\ \hline
+    \end{tabularx}
+\end{table}
+
+\section*{2. Diagrama de Flujo de Diagnóstico Sistemático (Visual F)}
+\textit{Sustituir «probar cosas» o cambiar resistores al azar por la secuencia causal: \textbf{Síntoma $\rightarrow$ Hipótesis $\rightarrow$ Prueba $\rightarrow$ Resultado $\rightarrow$ Decisión}.}
+
+\begin{center}
+    \begin{tikzpicture}[node distance=0.9cm, >=Stealth, thick, scale=0.82, transform shape]
+        \node[draw, rectangle, rounded corners, fill=red!15, text width=2.4cm, align=center, minimum height=0.9cm] (sym) {\textbf{Síntoma}\\Observado};
+        \node[draw, rectangle, fill=ucbblue!10, text width=2.3cm, align=center, minimum height=0.9cm, right=0.5cm of sym] (pwr) {1. Rieles y $V_R$\\en pines del IC};
+        \node[draw, rectangle, fill=ucbblue!10, text width=2.2cm, align=center, minimum height=0.9cm, right=0.5cm of pwr] (pin) {2. Pinout y\\continuidad};
+        \node[draw, rectangle, fill=ucbblue!10, text width=2.3cm, align=center, minimum height=0.9cm, right=0.5cm of pin] (net) {3. Red $R, R_G, R_i$\\medida con $\Omega$};
+        \node[draw, rectangle, fill=ucbblue!10, text width=2.3cm, align=center, minimum height=0.9cm, right=0.5cm of net] (sig) {4. Entradas $V_1, V_2$\\y rango $V_{cm}$};
+        \node[draw, rectangle, fill=green!15, text width=2.4cm, align=center, minimum height=0.9cm, right=0.5cm of sig] (dec) {5. Headroom /\\Decisión causal};
+        
+        \draw[->] (sym) -- (pwr);
+        \draw[->] (pwr) -- (pin);
+        \draw[->] (pin) -- (net);
+        \draw[->] (net) -- (sig);
+        \draw[->] (sig) -- (dec);
+    \end{tikzpicture}
+\end{center}
+
+\section*{3. Matriz Docente de Troubleshooting Físico}
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.35}
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}p{4.3cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{3.8cm}|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Síntoma} & \textbf{Hipótesis Prioritarias (en orden)} & \textbf{Verificación Discriminante} & \textbf{Decisión Operativa} \\ \hline
+    \textbf{Sin salida útil} & Rieles/ref. $\rightarrow$ Pinout $\rightarrow$ Ausencia señal $\rightarrow$ Realimentación $\rightarrow$ Saturación & Medir rieles directamente en pines del IC; medir nodos intermedios ($V_{o1}, V_{o2}$) con entrada conocida & Corregir alimentación/cableado en frío; revalidar baseline. \\ \hline
+    \textbf{Ganancia incorrecta} & Resistores reales $\rightarrow$ Fórmula $R_G/k$ $\rightarrow$ Amplitud entrada $\rightarrow$ Sustractor $\rightarrow$ Offset & Medir $R, R_G, R_1\text{--}R_4$ desconectados; medir $V_d$ real y calcular pendiente incremental $\Delta V_o/\Delta V_d$ & Corregir causa única; recalcular $A_{d,\mathrm{nom}}$ y repetir prueba. \\ \hline
+    \textbf{Saturación (Clipping)} & $V_{cm}$ fuera de rango $\rightarrow$ Objetivo $V_o$ imposible $\rightarrow$ Rieles efectivos $\rightarrow$ $A_d$ excesiva & Comparar tensiones de nodos y salida con límites de datasheet bajo alimentación real medida & Reducir entrada/ganancia o ajustar referencia; \textbf{no atribuir a SR}. \\ \hline
+    \textbf{$V_{REF}$ inestable} & Divisor cargado $\rightarrow$ Buffer al límite $\rightarrow$ Retorno corriente $\rightarrow$ Masa instrumento & Medir $V_{REF}$ en vacío, con carga estática y con señal; verificar tierra de instrumentos & Detener pruebas; corregir buffer/tierras o pasar a fuente dual/baterías. \\ \hline
+    \textbf{Fuga común elevada} & Razones $R_2/R_1 \neq R_4/R_3$ $\rightarrow$ Montaje $\rightarrow$ Entradas desiguales $\rightarrow$ Referencia & Verificar $V_1=V_2$ exacto; medir razones resistivas reales; probar con dos niveles comunes seguros & Emparejar resistores/corregir cableado o documentar límite físico. \\ \hline
+    \textbf{Oscilación / ruido} & Falta desacoplo $\rightarrow$ Capacitancia cables/carga $\rightarrow$ Lazo abierto $\rightarrow$ Acoplo externo & Revisar rieles en AC con osciloscopio; verificar capacitores junto al IC y tierras cortas & Instalar desacoplo según datasheet; no puentear nodos al azar. \\ \hline
+    \textbf{LTSpice $\neq$ Hardware} & Distinto macromodelo $\rightarrow$ Resistores reales $\rightarrow$ Rieles reales $\rightarrow$ Offset/tolerancias & Construir tabla comparativa de condiciones exactas (no comparar solo capturas de pantalla) & Alinear parámetros en simulación o documentar límite del modelo ideal. \\ \hline
+    \end{tabularx}
+\end{table}
+\noindent\textbf{Advertencia de Seguridad:} No improvisar conexiones \texttt{OFFSET NULL} genéricas salvo que el datasheet exacto lo especifique. Si un integrado se calienta anormalmente, desconectar de inmediato y diagnosticar sin energía.
+
+\newpage
+\section*{4. Solucionario Cuantitativo de Referencia (Depurado y con Notas Factuales)}
+\textit{Todos los valores numéricos siguientes son \texttt{ILLUSTRATIVE — NOT A HITO 2 REQUIREMENT}. No sustituyen los datos reales de ningún grupo.}
+
+\textbf{A. Ejercicio Guiado de Desbloqueo Gate A:} \\
+Para un In-Amp de 3 Op-Amps con $R=10\,\text{k}\Omega$, $k=1$ y ganancia objetivo $A_d^\star = 6$:
+\begin{equation*}
+    R_G = \frac{2R}{(A_d^\star / k) - 1} = \frac{2(10\,\text{k}\Omega)}{6 - 1} = \frac{20\,\text{k}\Omega}{5} = \boxed{4.0\,\text{k}\Omega}
+\end{equation*}
+\textit{Acción si no existe el valor exacto:} Seleccionar un valor realmente disponible en el inventario del grupo, recalcular $A_{d,\mathrm{nom}}$, verificar que el nuevo rango de salida no sature los rieles efectivos y actualizar esquema y simulación.
+
+\vspace{0.2cm}
+\textbf{B. Soluciones del Taller Previo (Semana 11 — Sesión 2) y Precisiones Técnicas:}
+\begin{enumerate}
+    \setlength{\itemsep}{2pt}
+    \item \textbf{Descomposición ($V_1=2.91\,\text{V}, V_2=3.09\,\text{V}$):}
+    \begin{equation*}
+        V_d = 3.09 - 2.91 = \boxed{0.18\,\text{V}}, \qquad V_{cm} = \frac{2.91 + 3.09}{2} = \boxed{3.00\,\text{V}}
+    \end{equation*}
+    \item \textbf{Diseño de $R_G$ ($A_d^\star=15, R=10\,\text{k}\Omega, k=1$):}
+    \begin{equation*}
+        R_G = \frac{2(10\,\text{k}\Omega)}{15 - 1} = \frac{20\,\text{k}\Omega}{14} \approx \boxed{1.43\,\text{k}\Omega}
+    \end{equation*}
+    \textit{Precisión factual sobre inventario:} Si a modo ilustrativo se sustituye por $R_G^\prime = 1.5\,\text{k}\Omega$ (valor comercial estándar, lo cual \textbf{no implica que esté confirmado en el stock del grupo}), la ganancia nominal pasa a $A_{d,\mathrm{nom}} = 1 + \frac{20}{1.5} \approx \boxed{14.33}$.
+    \item \textbf{CMRR Directo ($A_d=30, A_c=0.003$) e Inverso ($A_d=50, CMRR_{dB}=60\,\text{dB}$):}
+    \begin{equation*}
+        CMRR = \frac{30}{0.003} = 10\,000 \implies \boxed{80\,\text{dB}} \quad \Big| \quad CMRR = 10^{60/20} = 1000 \implies A_c = \frac{50}{1000} = \boxed{0.05}
+    \end{equation*}
+    \item \textbf{Mismatch en el Sustractor ($R_1=R_3=10\,\text{k}\Omega, R_2=100\,\text{k}\Omega \Rightarrow R_2/R_1=10$, pero $R_4=101\,\text{k}\Omega \Rightarrow R_4/R_3=10.1$):}
+    \begin{equation*}
+        A_{c,\mathrm{sustractor}} = \left(1 + \frac{R_2}{R_1}\right)\frac{R_4}{R_3 + R_4} - \frac{R_2}{R_1} = (1 + 10)\frac{101}{10 + 101} - 10 = \frac{1111}{111} - 10 \approx \boxed{0.00901 \neq 0}
+    \end{equation*}
+    \textit{Precisión factual obligatoria:} Esta expresión modela únicamente la fuga de modo común de la red resistiva del \textbf{sustractor ideal aislado}; el CMRR físico total del In-Amp de tres Op-Amps depende también del CMRR intrínseco de los integrados, asimetrías de impedancia y frecuencia.
+    \item \textbf{Chequeo Ilustrativo de Slew Rate ($f=5\,\text{kHz}, V_{o,\max}=2\,\text{V}_{pp} \Rightarrow V_p=1\,\text{V}$):}
+    \begin{equation*}
+        SR_{\mathrm{req}} = 2\pi f V_p = 2\pi(5000)(1) \approx \boxed{0.0314\,\text{V}/\mu\text{s}}
+    \end{equation*}
+    \textit{Precisión factual sobre el LM358:} Cualquier referencia a $SR \approx 0.3\,\text{V}/\mu\text{s}$ para la familia LM358 es solo un ejemplo típico de planeación; antes de declararlo como parámetro del circuito físico, el grupo debe verificar el fabricante exacto, variante y condición de prueba en su propio datasheet.
+\end{enumerate}
+
+\end{document}

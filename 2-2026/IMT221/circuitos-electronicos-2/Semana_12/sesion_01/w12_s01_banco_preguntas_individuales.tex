@@ -1,0 +1,85 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | Documento Docente}
+\chead{Banco de Preguntas Individuales (Spot-Check)}
+\rhead{Semana 12 - Sesión 1}
+\lfoot{Circuitos Electrónicos II}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Anexo Docente: Banco de Preguntas Individuales y Registro de Dominio}}
+\end{center}
+
+\begin{tcolorbox}[colback=yellow!10, colframe=ucbblue, title=\textbf{Regla de Verificación Individual}]
+    \raggedright
+    \textbf{La participación del grupo no demuestra competencia individual.} Durante la revisión de Gate A y el montaje (Segmento 8), seleccione integrantes distintos dentro de cada grupo y formule al menos una pregunta sin ayuda de sus compañeros. Si detecta un error conceptual, aplique remediación delimitada sobre ese punto específico.
+\end{tcolorbox}
+
+\section*{1. Banco de Preguntas de Respuesta Breve y Evidencia Mínima}
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.35}
+    \begin{tabularx}{\textwidth}{|c|l|>{\raggedright\arraybackslash}p{6.2cm}|>{\raggedright\arraybackslash}X|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{\#} & \textbf{Tema} & \textbf{Pregunta Breve para el Estudiante} & \textbf{Evidencia Mínima de Respuesta Correcta} \\ \hline
+    1 & Ganancia & ¿Qué cambia al disminuir $R_G$ manteniendo $R$ y $k$ constantes? & $A_d = k(1 + 2R/R_G)$ aumenta; se debe verificar que $V_o$ no sature el headroom disponible. \\ \hline
+    2 & Derivación & ¿De dónde proviene el factor $2R/R_G$ en la ganancia de primera etapa? & La corriente $I_G = (V_1-V_2)/R_G$ cruza ambos resistores simétricos $R$, sumando dos caídas $I_G R$ en $V_{o2}-V_{o1}$. \\ \hline
+    3 & Loading & ¿Por qué los dos Op-Amps de entrada ayudan al puente de Hito 1? & La señal entra por terminales no inversores ($I_+ \approx 0$, alta $Z_{in}$), reduciendo la corriente extraída del puente. \\ \hline
+    4 & CMRR & ¿Qué ocurre con el CMRR si sube $A_c$ mientras $A_d$ permanece constante? & Como $CMRR = |A_d/A_c|$, el CMRR disminuye y aumenta la fuga de modo común hacia la salida. \\ \hline
+    5 & Matching & ¿Qué condición exacta de resistores exige el sustractor final? & Igualdad de razones: $R_2/R_1 = R_4/R_3 = k$, no necesariamente que los cuatro resistores sean iguales entre sí. \\ \hline
+    6 & Selección IC & ¿Qué dato del datasheet invalidaría el Op-Amp elegido para su diseño? & Rango de alimentación insuficiente, $V_{cm}$ fuera de rango de entrada, swing de salida menor a $V_{o,\max}$ o bajo GBW/SR. \\ \hline
+    7 & Fuente & ¿Qué significa $V_-$ respecto al punto medio de dos baterías de $9\,\text{V}$? & Es un potencial negativo ($\approx -9\,\text{V}$) relativo a la referencia central $V_R=0\,\text{V}$, no una «tierra absoluta». \\ \hline
+    8 & Headroom & ¿Por qué una salida esperada analíticamente puede saturarse en hardware? & Porque excede el output swing real respecto a $V_{+,eff}/V_{-,eff}$ o porque los nodos internos superan el rango común. \\ \hline
+    9 & GBW & ¿Por qué configurar una ganancia muy alta reduce el ancho de banda? & Por la aproximación de polo dominante ($f_{BW} \approx GBW / A_N$), a mayor ganancia de ruido menor ancho de banda cerrado. \\ \hline
+    10 & Slew Rate & ¿Cómo evalúas si una salida senoidal sufrirá distorsión por pendiente? & Calculando $SR_{\mathrm{req}} = 2\pi f V_p$ (usando amplitud pico $V_p$, no $V_{pp}$) y comparando con el $SR$ del datasheet. \\ \hline
+    11 & Diagnóstico & Si al energizar mides cero salida útil, ¿qué verificas primero? & Alimentación en pines del IC, nodo de referencia $V_R$ y pinout antes de cambiar cualquier resistor. \\ \hline
+    12 & Prueba física & ¿Por qué es mejor medir $\Delta V_o / \Delta V_d$ en dos puntos que $V_o/V_d$ en uno solo? & Porque la diferencia entre dos puntos dentro de la región lineal cancela el offset constante de salida. \\ \hline
+    13 & Hito 1 vs. 2 & ¿Por qué obtener una señal más grande a la salida no basta para probar mejora? & Porque amplificar también puede amplificar ruido/interferencia o mantener el puente cargado; se requiere métrica homóloga. \\ \hline
+    14 & Simulación & ¿Por qué una captura de LTSpice con $A_c=0$ no prueba el CMRR físico? & Porque el macromodelo y los resistores ideales no incluyen el mismatch real de tolerancias ni todas las asimetrías del chip. \\ \hline
+    \end{tabularx}
+\end{table}
+
+\section*{2. Planilla de Registro de Verificación Individual en Clase}
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.6}
+    \begin{tabularx}{\textwidth}{|c|>{\raggedright\arraybackslash}p{4.2cm}|c|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Grupo} & \textbf{Estudiante (Nombre / ID)} & \textbf{Preg. \#} & \textbf{Evidencia / Explicación Mostrada} & \textbf{Error Detectado y Remediación Asignada} \\ \hline
+    & & & & \\ \hline
+    & & & & \\ \hline
+    & & & & \\ \hline
+    & & & & \\ \hline
+    & & & & \\ \hline
+    & & & & \\ \hline
+    & & & & \\ \hline
+    & & & & \\ \hline
+    \end{tabularx}
+\end{table}
+
+\end{document}

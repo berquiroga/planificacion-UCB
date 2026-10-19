@@ -1,0 +1,113 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Verificación Gate A — Design Readiness (Hito 2)}
+\rhead{Semana 12 - Sesión 1}
+\lfoot{Unidad 2: Amplificación de Precisión}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Gate A — Verificación de Diseño y Autorización de Montaje (Hito 2)}}
+\end{center}
+
+\noindent\textbf{Grupo:} \rule{2.5cm}{0.4pt} \hfill \textbf{Integrantes:} \rule{6.5cm}{0.4pt} \hfill \textbf{Fecha/Hora:} \rule{2.8cm}{0.4pt} \\
+\textbf{Revisor Docente:} \rule{4.5cm}{0.4pt} \hfill \textbf{Estado Informe Lab 3 (18/oct):} $\square$ Entregado \quad $\square$ Pendiente (Verificar)
+
+\vspace{0.2cm}
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Regla de Progresión Diferenciada (Visual A)}]
+    \centering
+    \begin{tikzpicture}[node distance=1.4cm, >=Stealth, thick, scale=0.88, transform shape]
+        \node[draw, rectangle, rounded corners, fill=white, text width=3.2cm, align=center, minimum height=1cm] (audit) {\textbf{Auditoría Gate A}\\Doc. + Defensa Oral};
+        
+        \node[draw, rectangle, fill=green!15, text width=4.2cm, align=center, minimum height=0.9cm, right=1.8cm of audit, yshift=1.3cm] (ready) {\textbf{READY}\\Evidencia consistente};
+        \node[draw, rectangle, fill=yellow!25, text width=4.2cm, align=center, minimum height=0.9cm, right=1.8cm of audit] (minor) {\textbf{MINOR CORRECTIONS}\\1--2 ajustes acotados};
+        \node[draw, rectangle, fill=red!15, text width=4.2cm, align=center, minimum height=0.9cm, right=1.8cm of audit, yshift=-1.3cm] (notready) {\textbf{NOT READY}\\Brecha crítica de diseño};
+        
+        \node[draw, rectangle, fill=green!5, text width=4.8cm, align=center, minimum height=0.9cm, right=1.5cm of ready] (act1) {Autorizar montaje de \textbf{etapa aislada} $\rightarrow$ Baseline físico};
+        \node[draw, rectangle, fill=yellow!10, text width=4.8cm, align=center, minimum height=0.9cm, right=1.5cm of minor] (act2) {No energizar $\rightarrow$ Corregir $\rightarrow$ Reverificar $\rightarrow$ Montaje};
+        \node[draw, rectangle, fill=red!5, text width=4.8cm, align=center, minimum height=0.9cm, right=1.5cm of notready] (act3) {Prohibido montar $\rightarrow$ Reparar diseño/simulación};
+
+        \draw[->] (audit.east) -- ++(0.5,0) |- (ready.west);
+        \draw[->] (audit.east) -- (minor.west);
+        \draw[->] (audit.east) -- ++(0.5,0) |- (notready.west);
+        \draw[->] (ready) -- (act1);
+        \draw[->] (minor) -- (act2);
+        \draw[->] (notready) -- (act3);
+    \end{tikzpicture}
+\end{tcolorbox}
+
+\section*{1. Matriz de Verificación Rápida (Documentación + Defensa Oral)}
+\textit{Un checkbox no sustituye la explicación oral. No se autoriza el trabajo físico si existen riesgos eléctricos o topológicos sin controlar.}
+
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.35}
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{5.8cm}|>{\raggedright\arraybackslash}X|c|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Componente Obligatorio de Gate A} & \textbf{Evidencia Concreta (Archivo, página, dato o demostración)} & \textbf{Estado (V / C / A)} \\ \hline
+    1. Esquema y baseline Hito 1 real (datos medidos) & & $\square$ V \quad $\square$ C \quad $\square$ A \\ \hline
+    2. Limitación comprobada y métrica de mejora & & $\square$ V \quad $\square$ C \quad $\square$ A \\ \hline
+    3. Topología propuesta y posición (Puente / Twin-T) & & $\square$ V \quad $\square$ C \quad $\square$ A \\ \hline
+    4. Rango diferencial ($V_d$) y común ($V_{cm}$) de entrada & & $\square$ V \quad $\square$ C \quad $\square$ A \\ \hline
+    5. Objetivo de salida ($V_o$) y ganancia requerida ($A_d^\star$) & & $\square$ V \quad $\square$ C \quad $\square$ A \\ \hline
+    6. Derivación algebraica y cálculo de ganancia & & $\square$ V \quad $\square$ C \quad $\square$ A \\ \hline
+    7. Resistores reales, matching crítico y $A_{d,\mathrm{nom}}$ recalculada & & $\square$ V \quad $\square$ C \quad $\square$ A \\ \hline
+    8. Distinción conceptual $A_d$, $A_c$, CMRR y prueba prevista & & $\square$ V \quad $\square$ C \quad $\square$ A \\ \hline
+    9. LTSpice: modo diferencial y comparación numérica & & $\square$ V \quad $\square$ C \quad $\square$ A \\ \hline
+    10. LTSpice: modo común y evidencia interpretada & & $\square$ V \quad $\square$ C \quad $\square$ A \\ \hline
+    11. Op-Amp exacto, fabricante, pinout y datasheet & & $\square$ V \quad $\square$ C \quad $\square$ A \\ \hline
+    12. Fuente/referencia, rango común, headroom, GBW y SR & & $\square$ V \quad $\square$ C \quad $\square$ A \\ \hline
+    13. BOM completa y conexiones reproducibles & & $\square$ V \quad $\square$ C \quad $\square$ A \\ \hline
+    \end{tabularx}
+\end{table}
+\noindent\textit{Leyenda de Estado:} \textbf{V} = Válido; \textbf{C} = Corregir (requiere ajuste puntual); \textbf{A} = Ausente.
+
+\section*{2. Referencia Analítica Obligatoria (Conservar Notación del Curso)}
+Definiciones de señal diferencial y modo común:
+\begin{equation*}
+    V_d = V_2 - V_1, \qquad V_{cm} = \frac{V_1 + V_2}{2} \quad \Longleftrightarrow \quad V_1 = V_{cm} - \frac{V_d}{2}, \qquad V_2 = V_{cm} + \frac{V_d}{2}
+\end{equation*}
+Para el amplificador de instrumentación clásico simétrico de 3 Op-Amps (etapa de entrada con resistores de realimentación $R$ y ganancia $R_G$; etapa sustractora con razones emparejadas $\frac{R_2}{R_1} = \frac{R_4}{R_3} = k$):
+\begin{align*}
+    V_{o1} &= V_1 + \frac{R}{R_G}(V_1 - V_2), \qquad V_{o2} = V_2 + \frac{R}{R_G}(V_2 - V_1) \\
+    V_{o2} - V_{o1} &= (V_2 - V_1) + \frac{2R}{R_G}(V_2 - V_1) = \left(1 + \frac{2R}{R_G}\right)V_d \\
+    V_o &= k(V_{o2} - V_{o1}) = k\left(1 + \frac{2R}{R_G}\right)V_d \implies \boxed{A_d = k\left(1 + \frac{2R}{R_G}\right)}, \qquad \boxed{R_G = \frac{2R}{(A_d/k) - 1}} \quad \left(\frac{A_d}{k} > 1\right)
+\end{align*}
+\textbf{Pregunta de Verificación Oral:} ¿Por qué aumentar $A_d$ no garantiza disminuir $A_c$, y por qué el sustractor final exige igualdad de \textit{razones} resistivas y no solo valores nominales parecidos?
+
+\section*{3. Dictamen Inicial y Trazabilidad de Correcciones}
+\begin{tcolorbox}[colback=white, colframe=black]
+    \textbf{Estado Inicial Gate A:} \quad $\square$ \textbf{READY} \qquad $\square$ \textbf{READY WITH MINOR CORRECTIONS} \qquad $\square$ \textbf{NOT READY} \\[0.2cm]
+    \textbf{Exact blocking issue (Problema bloqueante exacto):} \hrulefill \\[0.2cm]
+    \textbf{Corrección verificable asignada:} \hrulefill \\[0.2cm]
+    \textbf{Responsable en el grupo:} \rule{5cm}{0.4pt} \hfill \textbf{Hora límite de reverificación:} \rule{3.5cm}{0.4pt} \\[0.2cm]
+    \textbf{Resultado de Reverificación (Recheck):} $\square$ Aprobado \quad $\square$ Mantiene bloqueo \hfill \textbf{Hora:} \rule{2.5cm}{0.4pt} \\[0.2cm]
+    \textbf{Permiso Explícito para Comenzar Montaje de Etapa Aislada:} $\square$ \textbf{AUTORIZADO} \quad $\square$ \textbf{DENEGADO} \hfill \textbf{Firma Docente:} \rule{3cm}{0.4pt}
+\end{tcolorbox}
+
+\end{document}

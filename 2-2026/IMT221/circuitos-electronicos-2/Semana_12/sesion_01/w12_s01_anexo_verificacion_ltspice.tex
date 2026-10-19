@@ -1,0 +1,97 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.8cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Protocolo LTSpice y Anexo de Validación Gate A}
+\rhead{Semana 12 - Sesión 1}
+\lfoot{Circuitos Electrónicos II}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Protocolo de Simulación LTSpice y Verificación para Gate A (Hito 2)}}
+\end{center}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Alcance de la Simulación en Gate A}]
+    \raggedright
+    La simulación en LTSpice es una compuerta previa al montaje físico, \textbf{no un reemplazo del hardware}. Un macromodelo genérico o ideal no reproduce por sí solo el CMRR físico real, el mismatch de tolerancias resistivas, el offset ni los límites exactos de salida del chip físico. Todo resultado debe etiquetarse como \texttt{SIMULATED}.
+\end{tcolorbox}
+
+\section*{1. Protocolo de Ensayos Mínimos en LTSpice}
+\begin{enumerate}
+    \setlength{\itemsep}{2pt}
+    \item \textbf{Test A — Modo Diferencial:} Defina $V_{cm}$ y $V_d$ dentro del rango de su proyecto. Configure las fuentes de entrada como:
+    \begin{equation}
+        V_1 = V_{cm} - \frac{V_d}{2}, \qquad V_2 = V_{cm} + \frac{V_d}{2} \implies A_{d,\mathrm{sim}} = \frac{V_{o,\mathrm{sim}}}{V_d}
+    \end{equation}
+    Verifique polaridad, operación en zona lineal y concordancia numérica con $A_{d,\mathrm{nom}}$ calculada con resistores reales.
+    \item \textbf{Test B — Modo Común:} Conecte ambas entradas al mismo potencial común ($V_1 = V_2 = V_{cm} \implies V_d = 0$):
+    \begin{equation}
+        A_{c,\mathrm{sim}} = \frac{V_{o,cm,\mathrm{sim}}}{V_{cm}} \quad (V_{cm} \neq 0)
+    \end{equation}
+    \textit{Advertencia:} Si emplea resistores perfectamente iguales y un Op-Amp ideal en SPICE, obtendrá $V_{o,cm,\mathrm{sim}} \approx 0$; no interprete ese cero matemático como prueba de CMRR infinito en su circuito físico.
+    \item \textbf{Test C — Verificación de Headroom (Rango Extremo):} Evalúe las entradas máximas de diseño ($V_{d,\max}$ y $V_{cm,\max}$) usando el voltaje de alimentación real previsto ($V_{+,eff}, V_{-,eff}$) para descartar recorte (\textit{clipping}).
+\end{enumerate}
+
+\section*{2. Matriz de Evidencia de Simulación del Grupo}
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.45}
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3.2cm}|c|c|c|>{\raggedright\arraybackslash}X|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Ensayo SPICE} & \textbf{Entradas ($V_1, V_2$)} & \textbf{Salida $V_o$ (\texttt{SIMULATED})} & \textbf{Métrica ($A_d$ / $A_c$)} & \textbf{Comparación con Análisis e Interpretación} \\ \hline
+    Test A: Diferencial & & & & \\ \hline
+    Test B: Modo Común & & & & \\ \hline
+    Test C: Headroom & & & & \\ \hline
+    \end{tabularx}
+\end{table}
+
+\section*{3. Anexo Obligatorio: Verificación Docente de Simulación para Gate A}
+\textit{Aprobar esta sección es condición necesaria pero no suficiente para declarar \texttt{READY} en Gate A.}
+
+\vspace{0.2cm}
+\noindent\textbf{Grupo:} \rule{3.5cm}{0.4pt} \hfill \textbf{Macromodelo / Dispositivo en SPICE:} \rule{5.5cm}{0.4pt}
+
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}X|c|c|>{\raggedright\arraybackslash}p{5.5cm}|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Criterio de Cotejo de Simulación} & \textbf{Cumple} & \textbf{No Cumple} & \textbf{Observación / Corrección Requerida} \\ \hline
+    1. El esquemático simulado corresponde exactamente al diseño propuesto & $\square$ & $\square$ & \\ \hline
+    2. Las fuentes de entrada ($V_1, V_2$) y el nodo de referencia están documentados & $\square$ & $\square$ & \\ \hline
+    3. La ganancia diferencial simulada ($A_{d,\mathrm{sim}}$) se comparó numéricamente con el análisis & $\square$ & $\square$ & \\ \hline
+    4. El ensayo en modo común fue simulado e interpretado sin sobreinterpretar el modelo ideal & $\square$ & $\square$ & \\ \hline
+    5. La salida opera sin saturación inesperada bajo las entradas extremas de diseño & $\square$ & $\square$ & \\ \hline
+    6. El tipo de macromodelo (ideal, genérico o fabricante) está explícitamente declarado & $\square$ & $\square$ & \\ \hline
+    7. Los rieles de alimentación simulados son compatibles con el datasheet del IC real & $\square$ & $\square$ & \\ \hline
+    \end{tabularx}
+\end{table}
+
+\noindent\textbf{Dictamen de Simulación:} $\square$ \textbf{Prueba Validada} \quad $\square$ \textbf{Bloqueo Técnico Identificado:} \hrulefill \\[0.2cm]
+\textbf{Verificación Docente:} \rule{5cm}{0.4pt}
+
+\end{document}

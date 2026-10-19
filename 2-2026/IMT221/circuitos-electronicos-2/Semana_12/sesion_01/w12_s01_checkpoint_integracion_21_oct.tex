@@ -1,0 +1,132 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.6cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Checkpoint de Integración y Readiness: 21 de Octubre (Hito 2)}
+\rhead{Semana 12 - Sesión 1}
+\lfoot{Rumbo a Defensa Hito 2}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Hoja de Preparación y Registro: Checkpoint del 21 de Octubre (Hito 2)}}
+\end{center}
+
+\noindent\textbf{Grupo:} \rule{3cm}{0.4pt} \hfill \textbf{Integrantes:} \rule{7.5cm}{0.4pt} \hfill \textbf{Fecha Registro Inicial:} 19/10/2026
+
+\section*{1. Comparación Sistémica Hito 1 vs. Hito 2 en Nodos Homólogos (Visual G)}
+\textit{El Hito 2 exige demostrar una mejora de sistema bajo condiciones equivalentes, no simplemente mostrar que el amplificador tiene ganancia.}
+
+\begin{center}
+    \begin{tikzpicture}[node distance=1.4cm, >=Stealth, thick, scale=0.82, transform shape]
+        % Hito 1
+        \node[anchor=east] at (-0.3, 1.1) {\textbf{Baseline Hito 1 (Pasivo):}};
+        \node[draw, rectangle, fill=gray!15, minimum height=0.8cm, text width=2.8cm, align=center] (b1) at (1.5, 1.1) {Puente CA / NTC};
+        \node[circle, fill=red!80!black, inner sep=1.8pt, label=above:{\footnotesize Nodo $N_A$ ($V_{\mathrm{nodo,H1}}$)}] (na1) at (3.8, 1.1) {};
+        \node[draw, rectangle, fill=yellow!20, minimum height=0.8cm, text width=2.8cm, align=center] (t1) at (6.0, 1.1) {Twin-T $50\,\text{Hz}$ (Carga)};
+        \node[circle, fill=blue!80!black, inner sep=1.8pt, label=above:{\footnotesize Salida ($V_{u,H1}, V_{50,H1}$)}] (out1) at (8.5, 1.1) {};
+        \draw[->] (b1) -- (na1) -- (t1);
+        \draw[->] (t1) -- (out1);
+
+        % Hito 2
+        \node[anchor=east] at (-0.3, -0.4) {\textbf{Sistema Hito 2 (Activo):}};
+        \node[draw, rectangle, fill=gray!15, minimum height=0.8cm, text width=2.8cm, align=center] (b2) at (1.5, -0.4) {Puente CA / NTC};
+        \node[circle, fill=red!80!black, inner sep=1.8pt, label=below:{\footnotesize Nodo $N_A^\prime$ ($V_{\mathrm{nodo,H2}}$)}] (na2) at (3.8, -0.4) {};
+        \node[draw, rectangle, fill=ucbblue!15, minimum height=0.8cm, text width=2.8cm, align=center] (in2) at (6.0, -0.4) {In-Amp (Alta $Z_{in}$)};
+        \node[draw, rectangle, fill=green!15, minimum height=0.8cm, text width=2.4cm, align=center] (t2) at (9.0, -0.4) {Etapa Filtro};
+        \node[circle, fill=blue!80!black, inner sep=1.8pt, label=below:{\footnotesize Salida ($V_{u,H2}, V_{50,H2}$)}] (out2) at (11.2, -0.4) {};
+        \draw[->] (b2) -- (na2) -- (in2);
+        \draw[->] (in2) -- (t2);
+        \draw[->] (t2) -- (out2);
+    \end{tikzpicture}
+\end{center}
+
+\subsection*{Opciones Matemáticas Condicionadas para Cuantificar la Mejora}
+\begin{enumerate}
+    \setlength{\itemsep}{1pt}
+    \item \textbf{Métrica Original $K_L$ de Hito 1:} Si utiliza el factor $K_L$, recupere su definición exacta del informe de Hito 1 (no redefinir de memoria).
+    \item \textbf{Cociente de Preservación en un Nodo Homólogo ($K_{\mathrm{pres}}$):} Midiendo el \textbf{mismo nodo del puente} ($N_A$ vs. $N_A^\prime$) bajo idéntica excitación:
+    \begin{equation}
+        \boxed{K_{\mathrm{pres}} = \frac{|V_{\mathrm{nodo,con\ H2}}|}{|V_{\mathrm{nodo,baseline\ H1}}|}}
+    \end{equation}
+    \textit{Ejemplo Ilustrativo 5 (No es dato de grupo):} Si el puente entregaba $70\,\text{mV}$ al conectarse a la red pasiva de Hito 1 y sube a $95\,\text{mV}$ al conectarse a la entrada de alta impedancia del In-Amp: $K_{\mathrm{pres}} = \frac{95}{70} \approx 1.36$.
+    \item \textbf{Cambio Relativo de Amplitud Útil ($\eta_V$) y Relación Señal/Interferencia ($SIR$):}
+    \begin{equation}
+        \eta_V = \frac{|V_{u,H2}| - |V_{u,H1}|}{|V_{u,H1}|}\times 100\% \quad (V_{u,H1}\neq 0), \qquad SIR = 20\log_{10}\left(\frac{|V_u|}{|V_{50}|}\right), \qquad \boxed{\Delta SIR = SIR_{H2} - SIR_{H1}}
+    \end{equation}
+    \textit{Advertencia:} Un aumento en $\eta_V$ por sí solo refleja ganancia, \textbf{no demuestra menor efecto de carga ni mejor rechazo de interferencia}.
+\end{enumerate}
+
+\section*{2. Diseño del Experimento Comparativo (Completar el 19/oct para ejecutar el 21/oct)}
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.35}
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{6.2cm}|>{\raggedright\arraybackslash}X|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Pregunta de Diseño Experimental} & \textbf{Definición Técnica del Grupo} \\ \hline
+    1. Limitación documentada en Hito 1 & \\ \hline
+    2. Métrica elegida y su ecuación exacta & \\ \hline
+    3. Nodo y magnitud medida en el baseline (Hito 1) & \\ \hline
+    4. Nodo homólogo que se medirá en Hito 2 & \\ \hline
+    5. Condiciones que se mantendrán estrictamente iguales & \\ \hline
+    6. Qué resultado experimental refutaría la mejora esperada & \\ \hline
+    \end{tabularx}
+\end{table}
+
+\section*{3. Secuencia de Validación y Registro Prospectivo del Checkpoint 21/oct (Visual H)}
+\begin{center}
+    \begin{tikzpicture}[node distance=0.5cm, >=Stealth, thick, scale=0.78, transform shape]
+        \node[draw, rectangle, fill=ucbblue!10, minimum height=0.7cm] (c1) {1. Etapa Aislada OK};
+        \node[draw, rectangle, fill=ucbblue!10, minimum height=0.7cm, right=0.4cm of c1] (c2) {2. Integración H1+H2};
+        \node[draw, rectangle, fill=ucbblue!10, minimum height=0.7cm, right=0.4cm of c2] (c3) {3. Test Loading};
+        \node[draw, rectangle, fill=ucbblue!10, minimum height=0.7cm, right=0.4cm of c3] (c4) {4. Test Común/CMRR};
+        \node[draw, rectangle, fill=ucbblue!10, minimum height=0.7cm, right=0.4cm of c4] (c5) {5. Test $50\,\text{Hz}$};
+        \node[draw, rectangle, fill=green!15, minimum height=0.7cm, right=0.4cm of c5] (c6) {6. Defensa 28/oct (Cond.)};
+        \draw[->] (c1) -- (c2); \draw[->] (c2) -- (c3); \draw[->] (c3) -- (c4); \draw[->] (c4) -- (c5); \draw[->] (c5) -- (c6);
+    \end{tikzpicture}
+\end{center}
+
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{5.8cm}|>{\raggedright\arraybackslash}p{4.5cm}|>{\raggedright\arraybackslash}X|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Condición de Readiness (Verificar el 21/oct)} & \textbf{Estado / Ref. a Evidencia} & \textbf{Bloqueo Exacto y Próxima Acción} \\ \hline
+    1. Gate A y diseño aprobados & & \\ \hline
+    2. Etapa activa opera aislada con rieles válidos & & \\ \hline
+    3. Ganancia diferencial medida y ensayo común/límite & & \\ \hline
+    4. Baseline Hito 1 disponible e integración realizada & & \\ \hline
+    5. Comparación de loading/métrica y prueba $50\,\text{Hz}$ & & \\ \hline
+    6. Grounding revisado y discrepancia interpretada & & \\ \hline
+    \end{tabularx}
+\end{table}
+
+\noindent\textbf{Clasificación del 21/oct (No marcar el 19/oct):} $\square$ \texttt{READY FOR DEFENSE} \quad $\square$ \texttt{MINOR EVIDENCE PENDING} \quad $\square$ \texttt{NOT READY} \\
+\textbf{¿Se sostiene la defensa propuesta del 28/oct?} $\square$ Por confirmar \quad $\square$ Viable condicionado \quad $\square$ No viable por bloqueo técnico: \hrulefill
+
+\end{document}
