@@ -1,0 +1,506 @@
+% w12_s01_guia_comprensiva_gate_A_hito_2.tex
+% IMT-221 — Guía integral para aprobar Gate A (Hito 2)
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage[american]{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.8cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\setlength{\emergencystretch}{2em}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{neutralbg}{RGB}{247, 248, 250}
+\definecolor{warnbg}{RGB}{254, 246, 246}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Guía Integral para Aprobar Gate A (Hito 2)}
+\rhead{Semana 12 · Unidad 2}
+\lfoot{Amplificación de Precisión — Guía para Estudiantes}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+% =======================================================
+% ENCABEZADO Y REGLA PRINCIPAL
+% =======================================================
+\begin{center}
+    {\Large\textbf{\textcolor{ucbblue}{IMT-221 — Guía Integral para Aprobar Gate A (Hito 2)}}} \\[0.15cm]
+    {\small\textbf{Semana 12 · Unidad 2: Amplificación de Precisión · Guía para Estudiantes}}
+\end{center}
+
+\begin{tcolorbox}[colback=neutralbg, colframe=ucbblue, title=\textbf{Propósito y Regla Principal de Gate A}]
+    \raggedright
+    \textbf{Propósito:} Explicar paso a paso qué deben comprender, calcular, simular, justificar y presentar \textbf{antes de recibir autorización para construir el front-end activo}. Este material complementa y aclara el Gate A establecido; \textbf{no sustituye el checklist oficial ni cambia los objetivos o fechas del curso}. \\[0.15cm]
+    \textbf{Regla principal:} Gate A \textbf{no es} una exposición de teoría general ni la defensa de un circuito ya armado. Es una \textbf{verificación de que su diseño surge de datos reales de Hito 1, tiene valores calculados, puede funcionar con los componentes y alimentación elegidos, y ha superado pruebas básicas de simulación}. Un circuito que funciona en LTSpice \textbf{todavía no es evidencia física}.
+\end{tcolorbox}
+
+% Distinción visual de los tres estados del proyecto
+\begin{center}
+    \begin{tikzpicture}[>=Stealth, thick, scale=0.88, transform shape]
+        \node[draw=ucbblue, rectangle, rounded corners=2pt, fill=ucbblue!8, minimum height=1.1cm, text width=4.8cm, align=center, font=\footnotesize] (s1) at (0,0) {\textbf{Estado (i): Gate A Aprobado}\\Autorizado para construir\\(Diseño + Simulación + BOM)};
+        \node[draw=ucbblue, rectangle, rounded corners=2pt, fill=ucbblue!15, minimum height=1.1cm, text width=4.8cm, align=center, font=\footnotesize] (s2) at (6.2,0) {\textbf{Estado (ii): Etapa Activa Validada}\\Existe baseline cuantitativo físico\\(Etapa operando aislada)};
+        \node[draw=green!60!black, rectangle, rounded corners=2pt, fill=green!12, minimum height=1.1cm, text width=4.8cm, align=center, font=\footnotesize] (s3) at (12.4,0) {\textbf{Estado (iii): Hito 2 Logrado}\\Integración con Hito 1 +\\Mejora sistémica demostrada};
+        \draw[->, very thick, ucbblue] (s1.east) -- (s2.west);
+        \draw[->, very thick, green!60!black] (s2.east) -- (s3.west);
+    \end{tikzpicture}
+\end{center}
+
+% =======================================================
+% SECCIÓN 0 Y SECCIÓN 1
+% =======================================================
+\section*{0. La Pregunta Central que Deben Responder}
+\begin{tcolorbox}[colback=white, colframe=black]
+    \centering\textbf{¿Qué problema real de nuestro Hito 1 queremos solucionar y por qué nuestra etapa activa es una solución razonable?}
+\end{tcolorbox}
+
+Al conectar las etapas pasivas del Hito 1, sus impedancias interactúan y pueden modificar la amplitud o la forma de la señal. En Hito 2 deben proponer un \textbf{front-end activo de instrumentación y acondicionamiento} y demostrar una mejora cuantificable. \textbf{La posición de la etapa activa no se decide por costumbre: deben justificarla analizando el compromiso técnico.}
+
+\begin{center}
+    \begin{tikzpicture}[>=Stealth, thick, scale=0.85, transform shape]
+        % Hito 1
+        \node[anchor=east, font=\footnotesize\bfseries] at (-0.2, 1.4) {Estructura Hito 1:};
+        \node[draw, rectangle, fill=gray!15, minimum height=0.75cm, text width=3.4cm, align=center, font=\footnotesize] (h1a) at (1.8, 1.4) {NTC / Puente CA};
+        \node[draw, rectangle, fill=gray!15, minimum height=0.75cm, text width=3.4cm, align=center, font=\footnotesize] (h1b) at (6.4, 1.4) {Twin-T (Rechazo $50\,\text{Hz}$)};
+        \node[draw, rectangle, fill=gray!15, minimum height=0.75cm, text width=2.8cm, align=center, font=\footnotesize] (h1c) at (10.6, 1.4) {Salida Pasiva};
+        \draw[->] (h1a) -- node[above, font=\scriptsize, text=red!80!black] {Efecto de carga} (h1b);
+        \draw[->] (h1b) -- (h1c);
+
+        % Ruta Candidata 1
+        \node[anchor=east, font=\footnotesize\bfseries] at (-0.2, 0.2) {Ruta Candidata 1:};
+        \node[draw, rectangle, fill=gray!15, minimum height=0.75cm, text width=2.8cm, align=center, font=\footnotesize] (r1a) at (1.5, 0.2) {Puente CA};
+        \node[draw, rectangle, fill=ucbblue!15, minimum height=0.75cm, text width=3.5cm, align=center, font=\footnotesize] (r1b) at (5.4, 0.2) {\textbf{In-Amp} (Alta $Z_{in}$)};
+        \node[draw, rectangle, fill=gray!15, minimum height=0.75cm, text width=2.6cm, align=center, font=\footnotesize] (r1c) at (9.2, 0.2) {Twin-T};
+        \node[draw, rectangle, fill=gray!15, minimum height=0.75cm, text width=2.0cm, align=center, font=\footnotesize] (r1d) at (12.2, 0.2) {Salida};
+        \draw[->] (r1a) -- (r1b); \draw[->] (r1b) -- (r1c); \draw[->] (r1c) -- (r1d);
+
+        % Ruta Candidata 2
+        \node[anchor=east, font=\footnotesize\bfseries] at (-0.2, -1.0) {Ruta Candidata 2:};
+        \node[draw, rectangle, fill=gray!15, minimum height=0.75cm, text width=2.8cm, align=center, font=\footnotesize] (r2a) at (1.5, -1.0) {Puente CA};
+        \node[draw, rectangle, fill=gray!15, minimum height=0.75cm, text width=3.5cm, align=center, font=\footnotesize] (r2b) at (5.4, -1.0) {Twin-T (Carga directa)};
+        \node[draw, rectangle, fill=ucbblue!15, minimum height=0.75cm, text width=2.6cm, align=center, font=\footnotesize] (r2c) at (9.2, -1.0) {\textbf{In-Amp}};
+        \node[draw, rectangle, fill=gray!15, minimum height=0.75cm, text width=2.0cm, align=center, font=\footnotesize] (r2d) at (12.2, -1.0) {Salida};
+        \draw[->] (r2a) -- (r2b); \draw[->] (r2b) -- (r2c); \draw[->] (r2c) -- (r2d);
+    \end{tikzpicture}
+\end{center}
+\noindent\textit{Compromiso de diseño:} Si el filtro Twin-T carga directamente al puente (Ruta 2), agregar ganancia después puede no eliminar la pérdida ya ocasionada en la primera conexión; en la Ruta 1, la alta impedancia aísla al puente, pero debe cuidarse que la interferencia amplificada no sature al In-Amp antes del filtro.
+
+\section*{1. Qué Llevar y Qué Mostrar en Gate A}
+Presenten \textbf{un documento de diseño de su grupo} (en papel o digital) con estos 12 elementos en orden estricto:
+
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.28}
+    \begin{tabularx}{\textwidth}{|c|>{\raggedright\arraybackslash}p{5.5cm}|>{\raggedright\arraybackslash}X|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Orden} & \textbf{Evidencia Concreta} & \textbf{Pregunta que Debe Responder} \\ \hline
+    1 & Diagrama \textbf{real} y mediciones de Hito 1 & ¿Qué construimos y qué medimos? \\ \hline
+    2 & Una limitación verificable & ¿Qué problema existe, con qué evidencia? \\ \hline
+    3 & Una métrica de comparación & ¿Cómo sabremos que Hito 2 mejoró el sistema? \\ \hline
+    4 & Entradas y salida objetivo & ¿Cuánto esperamos recibir y cuánto queremos entregar? \\ \hline
+    5 & Esquema completo del In-Amp & ¿Cómo está conectado y por qué? \\ \hline
+    6 & Derivación de ganancia y resistencias & ¿De dónde salen los valores, incluido $R_G$? \\ \hline
+    7 & Razonamiento diferencial, modo común y CMRR & ¿Qué amplifica y qué debería rechazar? \\ \hline
+    8 & Op-Amp \textbf{exacto} y datasheet del fabricante & ¿Puede operar en nuestras condiciones? \\ \hline
+    9 & Fuente, referencia y pinout & ¿Es seguro y eléctricamente viable? \\ \hline
+    10 & LTSpice: prueba diferencial y modo común & ¿Responde como el modelo predice sin saturar? \\ \hline
+    11 & BOM con disponibilidad real & ¿Podemos construir con estos componentes? \\ \hline
+    12 & Plan de prueba física & ¿Qué voltajes y magnitudes mediremos primero? \\ \hline
+    \end{tabularx}
+\end{table}
+\noindent\textbf{Nota:} No es necesario tener el circuito armado para aprobar Gate A. Si faltan datos indispensables, declárenlo como \textbf{pendientes}; nunca inventen mediciones.
+
+% =======================================================
+% PARTE I — DE HITO 1 A LOS REQUISITOS CUANTITATIVOS
+% =======================================================
+\section*{Parte I — De Hito 1 a los Requisitos Cuantitativos}
+
+\subsection*{2. Documenten su Sistema Original Real}
+Presenten el diagrama de bloques efectivamente construido en Hito 1 y registren con unidades:
+\begin{itemize}
+    \setlength{\itemsep}{1pt}
+    \item Señal de excitación del puente (amplitud, frecuencia y nodo de referencia).
+    \item Señales en los dos nodos relevantes del puente ($V_1$ y $V_2$).
+    \item Condiciones antes y después de conectar la etapa pasiva (si existen datos comparables).
+    \item Amplitud de la señal útil, interferencias observadas, alimentación y referencia empleadas en Hito 1.
+\end{itemize}
+Si utilizan la métrica \texttt{KL} del Hito 1, conserven \textbf{su definición original exacta}: no cambien la ecuación ni el significado a mitad del proyecto.
+
+\subsection*{2.1. Ejemplo Didáctico de Carga (Valores Ficticios — NO son datos de su grupo)}
+Representemos la salida del puente por su equivalente de Thévenin ($V_{TH}$ en serie con $R_S$) conectado a una etapa siguiente con resistencia de entrada $R_L$. Por divisor de tensión resistivo:
+\begin{equation}
+    V_L = V_{TH}\frac{R_L}{R_S + R_L}
+\end{equation}
+
+\begin{center}
+    \begin{circuitikz}[scale=0.82, transform shape, thick]
+        % Caso 1: Baja impedancia de carga
+        \node at (2.0, 2.7) {\textbf{Caso A: Carga Pasiva ($R_L = 10\,\text{k}\Omega$)}};
+        \draw (0,0) node[ground]{} to[V, v={$V_{TH}=80\,\text{mV}$}] (0,1.8) to[R, l={$R_S=10\,\text{k}\Omega$}, -o] (2.8,1.8) coordinate(a1);
+        \draw (a1) to[R, l_={$R_L=10\,\text{k}\Omega$}, v^>={$V_L=40\,\text{mV}$}] (2.8,0) node[ground]{};
+
+        % Caso 2: Alta impedancia de entrada
+        \node at (9.5, 2.7) {\textbf{Caso B: Entrada Activa ($R_L = 1\,\text{M}\Omega$)}};
+        \draw (8,0) node[ground]{} to[V, v={$V_{TH}=80\,\text{mV}$}] (8,1.8) to[R, l={$R_S=10\,\text{k}\Omega$}, -o] (10.8,1.8) coordinate(a2);
+        \draw (a2) to[R, l_={$R_L=1\,\text{M}\Omega$}, v^>={$V_L^\prime \approx 79.2\,\text{mV}$}] (10.8,0) node[ground]{};
+    \end{circuitikz}
+\end{center}
+
+Sustituyendo los valores ilustrativos ($V_{TH}=80\,\text{mV}$, $R_S=10\,\text{k}\Omega$):
+\begin{align}
+    \text{Con } R_L = 10\,\text{k}\Omega: \quad V_L &= 80\,\text{mV}\left(\frac{10\,\text{k}\Omega}{10\,\text{k}\Omega + 10\,\text{k}\Omega}\right) = 40\,\text{mV} \quad (\text{pierde el } 50\%) \\
+    \text{Con } R_L = 1\,\text{M}\Omega: \quad V_L^\prime &= 80\,\text{mV}\left(\frac{1000\,\text{k}\Omega}{10\,\text{k}\Omega + 1000\,\text{k}\Omega}\right) \approx 79.2\,\text{mV} \quad (\text{preserva el } 99\%)
+\end{align}
+\textit{Nota para CA:} En régimen sinusoidal general, el modelo completo utiliza \textbf{impedancias complejas} $Z_S(f)$ y $Z_L(f)$; el divisor resistivo es una primera aproximación conceptual.
+
+\subsection*{2.2. Elijan una Métrica Antes de Construir}
+La métrica debe poder medirse en condiciones comparables entre Hito 1 e Hito 2. Por ejemplo, una métrica ilustrativa de preservación de amplitud (distinta de \texttt{KL}, válida solo si es pertinente y el docente la aprueba) es:
+\begin{equation}
+    K_V = \frac{V_{\text{útil,cargado}}}{V_{\text{útil,sin carga}}}
+\end{equation}
+\textbf{Advertencia:} Mayor ganancia no demuestra automáticamente mejora del sistema si amplifica por igual la señal útil y la perturbación.
+
+\begin{tcolorbox}[colback=neutralbg, colframe=black, title=\textbf{Entregable Obligatorio — Parte I}]
+    «En Hito 1 observamos \rule{3cm}{0.4pt} en las condiciones \rule{3cm}{0.4pt}. En Hito 2 mejoraremos \rule{3cm}{0.4pt}, medido mediante \rule{3cm}{0.4pt} bajo condiciones comparables».
+\end{tcolorbox}
+
+% =======================================================
+% PARTE II — MATEMÁTICAS NECESARIAS PARA DISEÑAR
+% =======================================================
+\section*{Parte II — Matemáticas Necesarias para Diseñar}
+
+\subsection*{3. Definan Claramente las Señales Diferencial y de Modo Común}
+Siguiendo la convención oficial del curso, a partir de los potenciales de entrada $V_1$ y $V_2$:
+\begin{equation}
+    \boxed{V_d = V_2 - V_1}, \qquad \boxed{V_{cm} = \frac{V_1 + V_2}{2}} \quad \Longleftrightarrow \quad \boxed{V_1 = V_{cm} - \frac{V_d}{2}}, \qquad \boxed{V_2 = V_{cm} + \frac{V_d}{2}}
+\end{equation}
+\textbf{Ejemplo Ilustrativo:} Si $V_1 = 2.47\,\text{V}$ y $V_2 = 2.53\,\text{V}$:
+\begin{equation*}
+    V_d = 2.53\,\text{V} - 2.47\,\text{V} = 0.06\,\text{V} = 60\,\text{mV}, \qquad V_{cm} = \frac{2.47\,\text{V} + 2.53\,\text{V}}{2} = 2.50\,\text{V}
+\end{equation*}
+La información diferencial ($60\,\text{mV}$) es pequeña y está superpuesta sobre un nivel común mucho mayor ($2.50\,\text{V}$). Si trabajan con señales senoidales, especifiquen siempre si las magnitudes son \textbf{pico ($V_p$), pico a pico ($V_{pp}$) o RMS ($V_{\mathrm{rms}}$)}; nunca dividan amplitudes de distinta naturaleza.
+
+\subsection*{4. Derivación Completa de la Ganancia del In-Amp de Tres Operacionales}
+\begin{center}
+    \begin{circuitikz}[scale=0.78, transform shape, thick]
+        % Primera etapa
+        \draw (0,2.4) node[op amp, noinv input up] (A1) {$A_1$};
+        \draw (0,-2.4) node[op amp, noinv input down] (A2) {$A_2$};
+        \draw (A1.+) to[short, -o] ++(-1.2,0) node[left] {$V_1$};
+        \draw (A2.+) to[short, -o] ++(-1.2,0) node[left] {$V_2$};
+        \draw (A1.-) -- ++(0,-1.0) coordinate(n1) node[left] {$V_{-1}\approx V_1$};
+        \draw (A2.-) -- ++(0,1.0) coordinate(n2) node[left] {$V_{-2}\approx V_2$};
+        \draw (n1) to[R, l={$R_G$}, i>^=$I_G$] (n2);
+        \draw (n1) to[R, l={$R$}] (n1 -| A1.out) -- (A1.out);
+        \draw (n2) to[R, l_={$R$}] (n2 -| A2.out) -- (A2.out);
+        \draw (A1.out) to[short, *-] ++(1.3,0) coordinate(vo1) node[above] {$V_{o1}$};
+        \draw (A2.out) to[short, *-] ++(1.3,0) coordinate(vo2) node[below] {$V_{o2}$};
+        % Segunda etapa
+        \draw (6.8,0) node[op amp] (A3) {$A_3$};
+        \draw (vo1) -- (vo1 |- A3.-) to[R, l={$R_1$}] (A3.-);
+        \draw (vo2) -- (vo2 |- A3.+) to[R, l={$R_3$}] (A3.+);
+        \draw (A3.-) -- ++(0,1.5) coordinate(f3) to[R, l={$R_2$}] (f3 -| A3.out) -- (A3.out);
+        \draw (A3.+) to[R, l={$R_4$}] ++(0,-1.5) node[ground]{};
+        \draw (A3.out) to[short, *-o] ++(1.1,0) node[right] {$V_o$};
+    \end{circuitikz}
+\end{center}
+
+\textbf{Supuestos del modelo ideal:} Realimentación negativa estable, corrientes de entrada nulas ($i_+ = i_- = 0$), cortocircuito virtual en cada operacional ($V_{-1}=V_1$, $V_{-2}=V_2$), operación lineal sin saturación, resistencias de primera etapa simétricas ($R$) y razones del sustractor emparejadas.
+
+\textbf{Paso 1 — Salida del primer operacional ($V_{o1}$):} Aplicando Ley de Corrientes de Kirchhoff en el nodo inversor de $A_1$:
+\begin{equation}
+    \frac{V_{o1} - V_1}{R} = \frac{V_1 - V_2}{R_G} \implies V_{o1} - V_1 = \frac{R}{R_G}(V_1 - V_2) \implies \boxed{V_{o1} = V_1 + \frac{R}{R_G}(V_1 - V_2)}
+\end{equation}
+
+\textbf{Paso 2 — Salida del segundo operacional ($V_{o2}$):} Aplicando Ley de Corrientes de Kirchhoff en el nodo inversor de $A_2$:
+\begin{equation}
+    \frac{V_{o2} - V_2}{R} = \frac{V_2 - V_1}{R_G} \implies V_{o2} - V_2 = \frac{R}{R_G}(V_2 - V_1) \implies \boxed{V_{o2} = V_2 + \frac{R}{R_G}(V_2 - V_1)}
+\end{equation}
+
+\textbf{Paso 3 — Diferencia entre salidas de primera etapa ($V_{o2} - V_{o1}$):} Restando ambas ecuaciones y usando que $-(V_1 - V_2) = V_2 - V_1$:
+\begin{align}
+    V_{o2} - V_{o1} &= (V_2 - V_1) + \frac{R}{R_G}(V_2 - V_1) - \frac{R}{R_G}(V_1 - V_2) \nonumber \\
+    V_{o2} - V_{o1} &= (V_2 - V_1) + \frac{2R}{R_G}(V_2 - V_1) \implies \boxed{V_{o2} - V_{o1} = \left(1 + \frac{2R}{R_G}\right)(V_2 - V_1)}
+\end{align}
+
+\textbf{Paso 4 — Etapa sustractora final y ganancia diferencial total ($A_d$):} Si las razones resistivas del tercer operacional cumplen $\frac{R_2}{R_1} = \frac{R_4}{R_3} = k$, entonces $V_o = k(V_{o2} - V_{o1})$:
+\begin{equation}
+    \boxed{V_o = k\left(1 + \frac{2R}{R_G}\right)V_d}, \qquad \boxed{A_d = k\left(1 + \frac{2R}{R_G}\right)}, \qquad \text{y para } k=1:\; \boxed{A_d = 1 + \frac{2R}{R_G}}
+\end{equation}
+
+\subsection*{5. Cálculo de $A_d^\star$, Despeje de $R_G$ y Corrección por Disponibilidad}
+A partir de los valores objetivo de su proyecto ($V_{d,\text{objetivo}}$ y $V_{o,\text{objetivo}}$), si las señales están centradas en la referencia sin requerir offset adicional:
+\begin{equation}
+    \boxed{A_d^\star = \frac{V_{o,\text{objetivo}}}{V_{d,\text{objetivo}}}}
+\end{equation}
+Despejando $R_G$ paso a paso de la ecuación de ganancia ideal (válido para $A_d^\star / k > 1$ con $R_G > 0$):
+\begin{align}
+    A_d^\star = k\left(1 + \frac{2R}{R_G}\right) &\implies \frac{A_d^\star}{k} - 1 = \frac{2R}{R_G} \nonumber \\
+    &\implies \boxed{R_G = \frac{2R}{(A_d^\star / k) - 1}} \qquad \left(\text{Con } k=1:\; \boxed{R_G = \frac{2R}{A_d^\star - 1}}\right)
+\end{align}
+
+\subsubsection*{5.1. Ejemplo Completo de Diseño (Valores Ficticios — NO son datos del grupo)}
+Supongamos $V_{d,p,\max} = 50\,\text{mV} = 0.050\,\text{V}$, salida deseada $V_{o,p,\max} = 1.00\,\text{V}$ y etapa final con $k=1$:
+\begin{align}
+    A_d^\star &= \frac{1.00\,\text{V}}{0.050\,\text{V}} = 20 \\
+    \text{Eligiendo } R = 10\,\text{k}\Omega:\quad R_G &= \frac{2(10\,000\,\Omega)}{20 - 1} = \frac{20\,000\,\Omega}{19} \approx 1052.63\,\Omega \approx 1.053\,\text{k}\Omega
+\end{align}
+Si el inventario real dispone de $R_G^\prime = 1.0\,\text{k}\Omega$ (supuesto ilustrativo), recalculamos la ganancia nominal, la salida máxima y el error relativo:
+\begin{equation}
+    A_{d,\mathrm{nom}} = 1 + \frac{2(10\,000)}{1000} = 21, \qquad V_{o,p,\max} = 21(0.050\,\text{V}) = 1.05\,\text{V}, \qquad \varepsilon_A = \frac{|21 - 20|}{20}\times 100\% = 5\%
+\end{equation}
+\textit{Criterio técnico:} Es obligatorio reportar $A_{d,\mathrm{nom}} = 21$ y verificar si $1.05\,\text{V}$ (un $5\%$ de desviación) es admisible sin saturar.
+
+\subsubsection*{5.2. Verificación que Suele Olvidarse: Salidas Intermedias ($V_{o1}$ y $V_{o2}$)}
+Con el mismo ejemplo ficticio ($V_{cm}=2.50\,\text{V}$, $V_d=0.050\,\text{V} \Rightarrow V_1=2.475\,\text{V}$, $V_2=2.525\,\text{V}$ y $R/R_G = 10\,000/1000 = 10$):
+\begin{align}
+    V_{o1} &= 2.475\,\text{V} + 10(2.475\,\text{V} - 2.525\,\text{V}) = 2.475\,\text{V} - 0.500\,\text{V} = 1.975\,\text{V} \\
+    V_{o2} &= 2.525\,\text{V} + 10(2.525\,\text{V} - 2.475\,\text{V}) = 2.525\,\text{V} + 0.500\,\text{V} = 3.025\,\text{V} \\
+    V_{o2} - V_{o1} &= 3.025\,\text{V} - 1.975\,\text{V} = 1.050\,\text{V}
+\end{align}
+Aunque la salida final sea de $1.05\,\text{V}$, los operacionales de entrada deben ser capaces de alcanzar $1.975\,\text{V}$ y $3.025\,\text{V}$ sin recorte (\textit{clipping}).
+
+% =======================================================
+% PARTE III — RECHAZO DE MODO COMÚN Y COMPONENTES
+% =======================================================
+\section*{Parte III — Rechazo de Modo Común y Selección de Componentes}
+
+\subsection*{6. Modelo Lineal ($A_d$, $A_c$) y CMRR}
+\begin{equation}
+    \boxed{V_o = A_d V_d + A_c V_{cm}}, \qquad \boxed{CMRR = \left|\frac{A_d}{A_c}\right|}, \qquad \boxed{CMRR_{dB} = 20\log_{10}\left|\frac{A_d}{A_c}\right|}
+\end{equation}
+\textbf{Ejemplo Explicativo (No es meta oficial):} Si $A_d = 21$ y $A_c = 0.021$:
+\begin{equation*}
+    CMRR = \frac{21}{0.021} = 1000 \implies CMRR_{dB} = 20\log_{10}(1000) = 60\,\text{dB}
+\end{equation*}
+Para separar el offset en mediciones reales con $V_d = 0$, se recomienda evaluar dos niveles de modo común ($V_{cm,1}, V_{cm,2}$):
+\begin{equation}
+    A_{c,\text{estimado}} = \frac{V_o(V_{cm,2}) - V_o(V_{cm,1})}{V_{cm,2} - V_{cm,1}}
+\end{equation}
+
+\subsection*{7. Emparejamiento de Razones en el Sustractor (\texttt{MATCHING CRITICAL})}
+En el amplificador diferencial final, la salida general es:
+\begin{equation}
+    V_o = \left(1 + \frac{R_2}{R_1}\right)\frac{R_4}{R_3 + R_4}V_{o2} - \frac{R_2}{R_1}V_{o1}
+\end{equation}
+Ante una señal común pura en sus entradas ($V_{o1} = V_{o2} = V_{cm}^\prime$), la ganancia de modo común del sustractor es:
+\begin{equation}
+    A_{c,\mathrm{sub}} = \left(1 + \frac{R_2}{R_1}\right)\frac{R_4}{R_3 + R_4} - \frac{R_2}{R_1} \quad \Longrightarrow \quad A_{c,\mathrm{sub}} = 0 \text{ idealmente si } \boxed{\frac{R_2}{R_1} = \frac{R_4}{R_3} = k}
+\end{equation}
+\textbf{Ejemplo de desajuste:} Si $\frac{R_2}{R_1} = 10$ pero $\frac{R_4}{R_3} = 10.1$:
+\begin{equation*}
+    A_{c,\mathrm{sub}} = (1 + 10)\frac{10.1}{1 + 10.1} - 10 = 11\left(\frac{10.1}{11.1}\right) - 10 \approx 0.00901 \neq 0
+\end{equation*}
+En su BOM deben marcar explícitamente $R_G$, el par $R$ y las razones $R_2/R_1, R_4/R_3$ como \texttt{MATCHING CRITICAL}.
+
+\subsection*{8. Selección del Op-Amp Real, Dinámica y Referencia de Voltaje}
+Las familias LM741, UA741CN, LM358N y TL074 \textbf{no tienen el mismo pinout ni son sustitutos directos}. Deben respaldar su elección con el datasheet del fabricante exacto:
+
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{4.8cm}|>{\raggedright\arraybackslash}X|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Parámetro del Datasheet} & \textbf{Qué Deben Demostrar para Gate A} \\ \hline
+    Parte, fabricante y encapsulado & Que corresponde exactamente al integrado físico que montarán. \\ \hline
+    Pinout & Cuáles terminales físicos son $V_+$, $V_-$, entradas $+/-\,$ y salida de cada canal. \\ \hline
+    Alimentación admisible & Que los rieles reales elegidos operan dentro del rango seguro del fabricante. \\ \hline
+    Rango de modo común ($V_{CM}$) & Que ambas entradas pueden operar alrededor de su nivel $V_{cm}$ sin bloqueo ni saturación. \\ \hline
+    Swing de salida & Que las salidas intermedias ($V_{o1}, V_{o2}$) y la salida final ($V_o$) son alcanzables. \\ \hline
+    GBW y Slew Rate & Que la ganancia en cada etapa y la pendiente máxima son viables a la frecuencia útil. \\ \hline
+    Offset y Bias ($V_{OS}, I_B$) & Que los errores en DC son compatibles con la amplitud de señal de su puente. \\ \hline
+    \end{tabularx}
+\end{table}
+
+\begin{itemize}
+    \setlength{\itemsep}{2pt}
+    \item \textbf{8.1. Comprobación de GBW:} Para una etapa individual de polo dominante, $f_{BW} \approx \frac{GBW}{A_N}$. No apliquen ciegamente la ganancia total a una sola ecuación; revisen cada etapa de la cascada y verifiquen en simulación AC.
+    \item \textbf{8.2. Comprobación de Slew Rate:} Para una salida senoidal de amplitud pico $V_p$ y frecuencia $f$:
+    \begin{equation}
+        \boxed{SR_{\mathrm{req}} = 2\pi f V_p}
+    \end{equation}
+    \textit{Ejemplo ficticio ($V_p=1.05\,\text{V}$, $f=1\,\text{kHz}$):}
+    \begin{equation*}
+        SR_{\mathrm{req}} = 2\pi(1000\,\text{Hz})(1.05\,\text{V}) = 6597\,\text{V/s} \approx 0.00660\,\text{V}/\mu\text{s}
+    \end{equation*}
+    \item \textbf{8.3. Referencia de Voltaje y Rieles Efectivos:} Pueden emplear (1) fuente dual de banco, (2) dos baterías de $9\,\text{V}$ en serie con el punto medio como referencia $0\,\text{V}$, o (3) fuente simple ($0$ a $V_S$) con referencia virtual $V_{REF}$ bufferizada, cuyos rieles efectivos son:
+    \begin{equation}
+        V_{+,eff} = V_S - V_{REF}, \qquad V_{-,eff} = -V_{REF}
+    \end{equation}
+\end{itemize}
+
+\begin{tcolorbox}[colback=warnbg, colframe=red!70!black, title=\textbf{Advertencia Eléctrica Imprescindible}]
+    \raggedright
+    No asuman que el osciloscopio o el generador de funciones tienen tierra aislada. Sus terminales de masa pueden cortocircuitar una referencia virtual ($V_{REF}$). Además, la alimentación que funcionó en el Laboratorio 4 \textbf{no queda automáticamente aprobada para Hito 2} sin verificar el nuevo punto de operación.
+\end{tcolorbox}
+
+% =======================================================
+% PARTE IV — LTSPICE Y PARTE V — BOM
+% =======================================================
+\section*{Parte IV — LTSpice: Qué Demostrar y Cómo Documentarlo}
+\begin{enumerate}
+    \setlength{\itemsep}{2pt}
+    \item \textbf{Prueba A — Modo Diferencial:} Apliquen $V_1 = V_{cm} - V_d/2$ y $V_2 = V_{cm} + V_d/2$. \textit{Ejemplo ficticio:} Con $V_{cm}=2.50\,\text{V}$ y $V_d=50\,\text{mV}$ ($V_1=2.475\,\text{V}, V_2=2.525\,\text{V}$), si la simulación entrega $V_o = 1.04\,\text{V}$ frente a $A_{d,\mathrm{nom}}=21$:
+    \begin{equation}
+        A_{d,\mathrm{sim}} = \frac{1.04\,\text{V}}{0.050\,\text{V}} = 20.8, \qquad \varepsilon_{\mathrm{sim}} = \frac{|20.8 - 21|}{21}\times 100\% \approx 0.95\%
+    \end{equation}
+    \item \textbf{Prueba B — Modo Común:} Configuren $V_1 = V_2 = V_{cm}$ ($V_d = 0$). Documenten la salida $V_o$ simulada y expliquen si responde a un modelo ideal ($V_o=0$), a desbalance resistivo o a offset del macromodelo.
+    \item \textbf{Prueba C — Headroom y Viabilidad:} Verifiquen que \textbf{ni $V_{o1}$, ni $V_{o2}$, ni $V_o$} se saturen bajo las entradas extremas de diseño, e indiquen si el modelo SPICE es ideal, genérico o del fabricante.
+\end{enumerate}
+
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|l|c|c|c|>{\raggedright\arraybackslash}X|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Prueba LTSpice} & \textbf{Entradas Aplicadas} & \textbf{Salida Esperada} & \textbf{Resultado LTSpice} & \textbf{Métrica / Interpretación} \\ \hline
+    Diferencial & $V_1=\dots,\; V_2=\dots$ & $V_o=\dots$ & $V_o=\dots$ & $A_{d,\mathrm{sim}}=\dots,\; \varepsilon_{\mathrm{sim}}=\dots$ \\ \hline
+    Modo Común & $V_1=V_2=\dots$ & $V_o\approx\dots$ & $V_o=\dots$ & Fuga común / limitación de modelo \\ \hline
+    Headroom & Rieles, $V_{cm}$, extremos & Sin saturar & $V_{o1}, V_{o2}, V_o$ & Viable / requiere corrección \\ \hline
+    \end{tabularx}
+\end{table}
+
+\section*{Parte V — Lista de Materiales (BOM) y Decisión Docente}
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.28}
+    \begin{tabularx}{\textwidth}{|l|l|c|c|c|c|>{\raggedright\arraybackslash}X|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Ref.} & \textbf{Función} & \textbf{Modelo / Valor} & \textbf{Tol.} & \textbf{Cant.} & \textbf{Disp.} & \textbf{Fuente / Observación} \\ \hline
+    U1$\dots$ & Etapa de entrada / sustractor & & & & & Fabricante y encapsulado exactos \\ \hline
+    $R$ (par) & Realimentación 1.ª etapa & & & 2 & & Simetría de primera etapa \\ \hline
+    $R_G$ & Ajuste de ganancia & & & 1 & & Define $A_{d1} = 1 + 2R/R_G$ \\ \hline
+    $R_1\text{--}R_4$ & Sustractor final & & & 4 & & \texttt{MATCHING CRITICAL} ($R_2/R_1 = R_4/R_3$) \\ \hline
+    $C_{\mathrm{dec}}$ & Desacoplo local & & & & & Según diseño y datasheet \\ \hline
+    Fuente & Alimentación y referencia & & & & & Dual / $2\times 9\,\text{V}$ / Virtual bufferizada \\ \hline
+    Otros & Protoboard, conectores & & & & & Revisión de continuidad previa \\ \hline
+    \end{tabularx}
+\end{table}
+\noindent\textbf{Clasificación en Gate A:} \textbf{READY} (evidencia coherente; autoriza construir con revisión pre-power); \textbf{READY WITH MINOR CORRECTIONS} (1–2 ajustes acotados; autoriza construir \textit{solo después} de reverificar); \textbf{NOT READY} (falta justificación fundamental; no energiza ni construye hasta resolver el bloqueo). \textbf{Cada integrante debe responder al menos una pregunta oral individual.}
+
+% =======================================================
+% PARTE VI — EJEMPLO FICTICIO DE RESUMEN
+% =======================================================
+\section*{Parte VI — Ejemplo Ficticio de Resumen de Gate A (NO Copiar Números)}
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.22}
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{4.2cm}|>{\raggedright\arraybackslash}X|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Campo} & \textbf{Respuesta Ilustrativa (Ficticia)} \\ \hline
+    Sistema Hito 1 y Limitación & Puente Wheatstone CA $\rightarrow$ Twin-T pasivo; caída de amplitud al conectar etapa pasiva ($80\,\text{mV}$ a $40\,\text{mV}$). \\ \hline
+    Hipótesis y Métrica & Entrada activa de alta impedancia reduce carga; fracción de amplitud preservada bajo igual excitación. \\ \hline
+    Señal y Ganancia Buscada & $V_{d,p,\max}=50\,\text{mV}$, $V_{o,p,\max}=1.00\,\text{V} \implies A_d^\star = 20$. \\ \hline
+    Diseño y Resistores & In-Amp clásico, $k=1$, $R=10\,\text{k}\Omega \implies R_G\text{ teórico} = 1.053\,\text{k}\Omega$; $R_G\text{ supuesto} = 1.00\,\text{k}\Omega$ (pendiente confirmar stock). \\ \hline
+    Ganancia y Salida Nominal & $A_{d,\mathrm{nom}} = 21 \implies V_{o,p,\max} = 1.05\,\text{V}$; razones del sustractor identificadas y prueba común definida. \\ \hline
+    Op-Amp, Fuente, LTSpice, BOM & \textbf{PENDIENTES:} Falta modelo/datasheet real, rieles válidos, simulación ejecutada e inventario confirmado. \\ \hline
+    \textbf{Dictamen del Ejemplo} & \textbf{NOT READY} (Saber calcular la ganancia no demuestra por sí solo que el circuito sea construible). \\ \hline
+    \end{tabularx}
+\end{table}
+
+\newpage
+% =======================================================
+% PARTE VII — PLANTILLA PARA COMPLETAR Y PRESENTAR
+% =======================================================
+\section*{Parte VII — Plantilla del Grupo para Completar y Presentar en Gate A}
+\noindent\textbf{Grupo:} \rule{3cm}{0.4pt} \hfill \textbf{Integrantes:} \rule{7.5cm}{0.4pt} \hfill \textbf{Fecha:} \rule{2.8cm}{0.4pt}
+
+\begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{Formulario de Defensa Documental — Gate A (Hito 2)}]
+    \small
+    \textbf{A. Hito 1 y Necesidad del Sistema}
+    \begin{itemize}
+        \setlength{\itemsep}{3pt}
+        \item Esquema real del sistema Hito 1: \hrulefill
+        \item Medición de entrada relevante, condiciones y fuente: \hrulefill
+        \item Medición de salida relevante, condiciones y fuente: \hrulefill
+        \item Limitación verificable identificada: \hrulefill
+        \item Métrica elegida, fórmula, unidades y justificación: \hrulefill
+        \item Condiciones comparables que se mantendrán en Hito 2: \hrulefill
+    \end{itemize}
+
+    \textbf{B. Diseño Activo Cuantitativo}
+    \begin{itemize}
+        \setlength{\itemsep}{3pt}
+        \item Arquitectura propuesta y ubicación justificada: \hrulefill
+        \item $V_{d,\min}$: \rule{2.2cm}{0.4pt} ; \quad $V_{d,\max}$: \rule{2.2cm}{0.4pt} ; \quad $V_{cm}$ esperado: \rule{2.2cm}{0.4pt}
+        \item $V_o$ objetivo: \rule{2.2cm}{0.4pt} ; \quad $A_d^\star$: \rule{2.0cm}{0.4pt} ; \quad $k$: \rule{1.5cm}{0.4pt} ; \quad $R$: \rule{2.0cm}{0.4pt} ; \quad $R_G$ calculado: \rule{2.2cm}{0.4pt}
+        \item $R_G$ físico disponible: \rule{2.2cm}{0.4pt} ; \quad $A_{d,\mathrm{nom}}$ recalculada: \rule{2.2cm}{0.4pt}
+        \item Extremos previstos: $V_{o1}$: \rule{2.2cm}{0.4pt} ; \quad $V_{o2}$: \rule{2.2cm}{0.4pt} ; \quad $V_o$: \rule{2.2cm}{0.4pt}
+        \item Razones del sustractor: $R_2/R_1$: \rule{2.2cm}{0.4pt} \quad y \quad $R_4/R_3$: \rule{2.2cm}{0.4pt}
+        \item Procedimiento para comprobar modo común: \hrulefill
+    \end{itemize}
+
+    \textbf{C. Viabilidad Física y Datasheet}
+    \begin{itemize}
+        \setlength{\itemsep}{3pt}
+        \item Op-Amp exacto y fabricante: \rule{5cm}{0.4pt} \quad Datasheet (ID/revisión): \hrulefill
+        \item Rieles y referencia propuestos ($V_{+,eff}, V_{-,eff}, V_R$): \hrulefill
+        \item Rango común permitido vs. requerido: \hrulefill
+        \item Swing permitido vs. requerido (incluidas $V_{o1}, V_{o2}$): \hrulefill
+        \item Comprobación de GBW: \rule{4.5cm}{0.4pt} \quad Comprobación de SR ($SR_{\mathrm{req}}$ vs. IC): \hrulefill
+        \item BOM completo y disponible: $\square$ Sí \quad $\square$ No (Bloqueo: \hrulefill)
+    \end{itemize}
+
+    \textbf{D. Validación en LTSpice}
+    \begin{itemize}
+        \setlength{\itemsep}{3pt}
+        \item Modelo empleado: \rule{4cm}{0.4pt} ; \quad $A_{d,\text{analítico}}$: \rule{2.2cm}{0.4pt} ; \quad $A_{d,\text{simulado}}$: \rule{2.2cm}{0.4pt}
+        \item Entrada diferencial aplicada: \rule{3cm}{0.4pt} ; \quad Salida diferencial simulada: \hrulefill
+        \item Entrada común aplicada: \rule{3cm}{0.4pt} ; \quad Salida común simulada: \hrulefill
+        \item ¿Saturación?: \rule{2cm}{0.4pt} ; \quad ¿Salidas intermedias verificadas?: \rule{2cm}{0.4pt} ; \quad Discrepancias: \hrulefill
+    \end{itemize}
+
+    \textbf{E. Secuencia Comprometida para el Montaje Físico} \\
+    1) \textit{Sin energizar:} verificar pinout, continuidad y resistencias medidas. \quad 2) \textit{Pre-señal:} medir rieles reales respecto a la referencia. \quad 3) \textit{Señal diferencial pequeña:} medir $V_1, V_2, V_d, V_o$ y calcular $A_{d,\mathrm{exp}}$. \quad 4) Probar modo común y preparar integración con Hito 1. \\[0.2cm]
+    \textbf{F. Dictamen Docente Gate A:} \quad $\square$ \textbf{READY} \qquad $\square$ \textbf{READY WITH MINOR CORRECTIONS} \qquad $\square$ \textbf{NOT READY} \\[0.15cm]
+    \textbf{Exact blocking issue:} \hrulefill \\[0.15cm]
+    \textbf{Corrección que debe presentar:} \hrulefill \\[0.15cm]
+    \textbf{Reverificado:} Sí / No \quad · \quad \textbf{Se autoriza construir:} Sí / No \hfill \textbf{Firma Docente:} \rule{3.5cm}{0.4pt}
+\end{tcolorbox}
+
+% =======================================================
+% PARTE VIII — DUDAS FRECUENTES Y PARTE IX — AUTOVERIFICACIÓN
+% =======================================================
+\section*{Parte VIII — Resumen de Dudas Frecuentes}
+\begin{itemize}
+    \setlength{\itemsep}{1pt}
+    \footnotesize
+    \item \textbf{¿Debemos traer el circuito armado para Gate A?} No. Gate A autoriza la construcción una vez justificado el diseño.
+    \item \textbf{¿Podemos usar la ganancia de un ejemplo de clase?} No; la ganancia debe surgir de las señales reales de su Hito 1.
+    \item \textbf{¿Debemos entregar un CMRR físico medido en Gate A?} No; en Gate A deben explicar el concepto, justificar el matching y mostrar la simulación.
+    \item \textbf{¿Si LTSpice funciona ya aprobamos?} No; se requiere baseline real, métrica, derivación, datasheet, fuente válida y BOM confirmado.
+    \item \textbf{¿Es obligatorio usar LM741 o dos baterías de $9\,\text{V}$?} No; elijan dispositivos y fuentes disponibles cuya compatibilidad demuestren con el datasheet.
+    \item \textbf{¿Por qué no basta decir que la salida aumentó?} Porque amplificar tanto señal como ruido o mantener el puente cargado no demuestra mejora sistémica.
+\end{itemize}
+
+\begin{tcolorbox}[colback=neutralbg, colframe=ucbblue, title=\textbf{Parte IX — Autoverificación Individual en Cinco Preguntas (Antes de llamar al docente)}]
+    \footnotesize
+    Cada integrante debe poder responder sin ayuda: \textbf{1)} ¿Cuál fue la limitación \textit{medida} de nuestro Hito 1? \textbf{2)} ¿Cómo calculamos nuestra ganancia y $R_G$ con nuestras señales reales? \textbf{3)} ¿Qué diferencia existe entre $A_d$, $A_c$ y CMRR? \textbf{4)} ¿Por qué el Op-Amp, la alimentación y los resistores elegidos son compatibles con nuestro diseño (incluidas $V_{o1}$ y $V_{o2}$)? \textbf{5)} ¿Qué muestran cuantitativamente nuestras pruebas diferencial y de modo común en LTSpice?
+\end{tcolorbox}
+
+\end{document}
