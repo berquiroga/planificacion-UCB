@@ -1,0 +1,149 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage[most]{tcolorbox}
+\usepackage{enumitem}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342} | Robótica}
+\chead{EC2 Diferido: Evaluación Integrada}
+\rhead{Unidad II}
+\lfoot{Evaluación Individual}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{EC2 Diferido — Evaluación Integrada de Unidad II}}\\[0.2cm]
+\end{center}
+
+\begin{tabular}{ll}
+\textbf{Estudiante:} \rule{8cm}{0.15mm} & \textbf{Puntaje:} \rule{2cm}{0.15mm} / 100 \\
+\textbf{Fecha:} \rule{4cm}{0.15mm} & \textbf{Tiempo sugerido:} 95 minutos
+\end{tabular}
+
+\vspace{0.3cm}
+\begin{tcolorbox}[colback=gray!5, colframe=black, title=\textbf{Instrucciones Generales}, left=1mm, right=1mm, top=1mm, bottom=1mm]
+    \small
+    Este examen consiste en \textbf{un único problema de ingeniería progresivo}[cite: 12]. Se proporcionan \textbf{checkpoints de continuidad} para evitar que un error temprano bloquee etapas posteriores. Usar un checkpoint no otorga los puntos de la etapa previa, pero permite evaluar competencias siguientes[cite: 12]. Se evaluará selección de método, justificación, interpretación física y validación de resultados[cite: 12].
+\end{tcolorbox}
+
+\noindent\textbf{\large Problema Único: De una pose deseada al movimiento y esfuerzo[cite: 12]}
+
+Un manipulador 6R con muñeca esférica, modelado con convenciones ABB IRB120, debe desplazarse desde una configuración inicial hacia una pose objetivo dada. El equipo desea responder, en orden: 1) Posibles configuraciones, 2) Mejor rama candidata, 3) Evolución en el tiempo, 4) Velocidad cartesiana, 5) Pérdida de movilidad crítica, 6) Torque exigido[cite: 12].
+
+\noindent\textbf{\large Etapa 1 — Cinemática Inversa y Pieper (20 pts)[cite: 12]}
+
+La pose deseada y el parámetro de la muñeca son:
+\begin{equation*}
+    {}^0p_6^d = \begin{bmatrix} 1.20 \\ 0.80 \\ 1.40 \end{bmatrix}\text{m}, \qquad {}^0z_6^d = \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}, \qquad d_6 = 0.20\text{ m} \text{[cite: 12]}
+\end{equation*}
+
+\begin{enumerate}[label=\textbf{1.\arabic*.}]
+    \item \textbf{(5 pts)} Calcule el centro de muñeca ${}^0p_W$. Explique en una frase \textbf{por qué este punto es útil} en un manipulador con muñeca esférica[cite: 12].
+    \item \textbf{(4 pts)} Usando la proyección de $p_W$ sobre el plano $xy$, escriba un candidato natural para $q_1$ mediante \texttt{atan2} y calcule su valor aproximado[cite: 12].
+    \item \textbf{(6 pts)} En el subproblema geométrico de brazo se obtiene $c_3 = 1/2$. Determine $s_3$ para las dos ramas posibles y obtenga los valores principales $q_3 = \operatorname{atan2}(s_3, c_3)$. Un estudiante afirma: \textit{"Como $\cos q_3$ es el mismo, las dos ramas son físicamente equivalentes y se puede eliminar una"}. Evalúe críticamente esta afirmación[cite: 12].
+    \item \textbf{(5 pts)} Obtenidos $q_1, q_2, q_3$, escriba la relación matricial que permite aislar la orientación de la muñeca. Explique qué debe verificarse al final para aceptar una solución completa de IK[cite: 12].
+\end{enumerate}
+
+\begin{tcolorbox}[colback=yellow!10, colframe=orange, title=\textbf{Checkpoint de Continuidad A}]
+    Para las etapas siguientes, independientemente de sus resultados, utilice como \textbf{configuración objetivo seleccionada} $\mathbf{q}_B$ y los valores iniciales para la articulación 3 analizada[cite: 12]:
+    \begin{equation*}
+        \mathbf{q}_B = [0.588, -0.250, 1.250, 0.400, -0.300, 0.200]^T \text{ rad}
+    \end{equation*}
+    \begin{equation*}
+        q_{3,A} = -0.250 \text{ rad}, \qquad q_{3,B} = 1.250 \text{ rad}
+    \end{equation*}
+\end{tcolorbox}
+
+\noindent\textbf{\large Etapa 2 — Selección y Validación de Rama (10 pts)[cite: 12]}
+
+Se obtienen dos candidatos válidos (ambos cumplen límites y FK):
+\begin{equation*}
+    \mathbf{q}^{(A)} = \begin{bmatrix} 0.588 \\ -0.250 \\ 1.250 \\ 0.400 \\ -0.300 \\ 0.200 \end{bmatrix}, \qquad \mathbf{q}^{(B)} = \begin{bmatrix} 0.588 \\ 1.100 \\ -1.047 \\ -0.900 \\ 0.500 \\ -0.200 \end{bmatrix}, \qquad \mathbf{q}_0 = \begin{bmatrix} 0.600 \\ -0.200 \\ 1.000 \\ 0.350 \\ -0.250 \\ 0.150 \end{bmatrix} \text{[cite: 12]}
+\end{equation*}
+
+\begin{enumerate}[label=\textbf{2.\arabic*.}]
+    \item \textbf{(6 pts)} Determine cuál de los candidatos es más razonable para continuar desde $\mathbf{q}_0$. Justifique utilizando el concepto de \textbf{desplazamiento articular} (no solo intuición visual)[cite: 12].
+    \item \textbf{(4 pts)} Explique por qué "tener menor error de FK" no es suficiente para decidir qué rama usar en una trayectoria real. Mencione al menos \textbf{dos criterios adicionales} relevantes[cite: 12].
+\end{enumerate}
+
+\noindent\textbf{\large Etapa 3 — Trayectoria LSPB (20 pts)[cite: 12]}
+
+Mueva la articulación 3 desde $q_{3,A} = -0.250$ rad hasta $q_{3,B} = 1.250$ rad en $t_f = 4.00$ s, con $\dot{q}_3(0) = \dot{q}_3(t_f) = 0$. Se propone $\ddot{q}_c = 0.50$ rad/s$^2$[cite: 12].
+
+\begin{enumerate}[label=\textbf{3.\arabic*.}]
+    \item \textbf{(5 pts)} Sin calcular $t_c$ aún, justifique rigurosamente la \textbf{factibilidad} del perfil propuesto[cite: 12].
+    \item \textbf{(5 pts)} Si es factible, calcule los parámetros $t_c$ y $\dot{q}_c$[cite: 12].
+    \item \textbf{(7 pts)} En el instante $t^\star = 3.50$ s, determine la fase del movimiento y evalúe $q_3(t^\star), \dot{q}_3(t^\star), \ddot{q}_3(t^\star)$[cite: 12].
+    \item \textbf{(3 pts)} Audite la afirmación: \textit{"En la fase de crucero, $\ddot{q} = 0$, por tanto la articulación está detenida"}. ¿Correcto o incorrecto? Justifique[cite: 12].
+\end{enumerate}
+
+\begin{tcolorbox}[colback=yellow!10, colframe=orange, title=\textbf{Checkpoint de Continuidad B}]
+    Si no obtuvo valores en la Etapa 3, asuma el siguiente estado en $t^\star = 3.50$ s[cite: 12]:
+    \begin{equation*}
+        q_3(t^\star) = 1.1875 \text{ rad}, \qquad \dot{q}_3(t^\star) = 0.250 \text{ rad/s}, \qquad \ddot{q}_3(t^\star) = -0.500 \text{ rad/s}^2
+    \end{equation*}
+\end{tcolorbox}
+
+\noindent\textbf{\large Etapa 4 — Jacobiano y Velocidad Cartesiana (15 pts)[cite: 12]}
+
+En $t^\star$, se analiza un subproblema planar equivalente de dos revolutas. Expresados en la base:
+\begin{equation*}
+    o_0 = \begin{bmatrix} 0 \\ 0 \\ 0 \end{bmatrix}, \quad o_1 = \begin{bmatrix} 1 \\ 1 \\ 0 \end{bmatrix}, \quad o_n = \begin{bmatrix} 2 \\ 1 \\ 0 \end{bmatrix}, \quad z_0 = z_1 = \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix} \text{[m]}
+\end{equation*}
+Velocidad instantánea: $\dot{\mathbf{q}}_{\text{sub}} = [0.250, -0.100]^T$ rad/s[cite: 12].
+
+\begin{enumerate}[label=\textbf{4.\arabic*.}]
+    \item \textbf{(8 pts)} Construya analíticamente las columnas $J_1$ y $J_2$, y ensamble $J = [J_1\;J_2]$[cite: 12].
+    \item \textbf{(4 pts)} Calcule $v_e = J\dot{\mathbf{q}}_{\text{sub}}$. Separe claramente $v_L$ y $\omega$[cite: 12].
+    \item \textbf{(3 pts)} Evalúe: \textit{"Como ambas articulaciones se mueven, el efector necesariamente debe tener una velocidad angular mayor que cualquiera de las velocidades articulares individuales"}[cite: 12].
+\end{enumerate}
+
+\noindent\textbf{\large Etapa 5 — Singularidad como pérdida de movilidad (15 pts)[cite: 12]}
+
+Para otra configuración del mismo robot, $J_p = \begin{bmatrix} 1 & 2 \\ 2 & 4 \end{bmatrix}$[cite: 12].
+
+\begin{enumerate}[label=\textbf{5.\arabic*.}]
+    \item \textbf{(5 pts)} Determine $\operatorname{rank}(J_p)$ y establezca si hay singularidad para una tarea planar 2D[cite: 12].
+    \item \textbf{(5 pts)} Identifique una dirección cartesiana (vector) que \textbf{no} pertenezca al espacio columna de $J_p$ y explique qué significa físicamente su pérdida[cite: 12].
+    \item \textbf{(5 pts)} Compare: \textit{Estudiante A: "El robot está singular porque $\det J_p=0$, por lo tanto no puede moverse."} vs. \textit{Estudiante B: "Perdió rango. Queda una dirección independiente, por lo que una dirección se perdió pero aún puede haber movimiento"}[cite: 12]. ¿Cuál es mejor y por qué la otra es errónea? \vspace{3cm}
+\end{enumerate}
+
+\newpage
+\noindent\textbf{\large Etapa 6 — Dinámica y Torque (15 pts)[cite: 12]}
+
+Para la junta 3 en $t^\star$, use el modelo 1R: $T = \frac{1}{2}J\dot{q}^2$, $V = mg\ell_c(1 - \cos q)$. \\
+Parámetros: $J = 0.35, m = 1.10, \ell_c = 0.40, g = 9.81$ (Unidades SI estándar)[cite: 12].
+
+\begin{enumerate}[label=\textbf{6.\arabic*.}]
+    \item \textbf{(6 pts)} A partir de $L = T - V$, obtenga por Euler-Lagrange la expresión para el torque. (Muestre las derivadas, no copie la ecuación final del formulario)[cite: 12].
+    \item \textbf{(5 pts)} Utilizando el estado de Checkpoint B (o el suyo propio), calcule el torque inercial, el torque gravitacional y el torque total en $t^\star$[cite: 12].
+    \item \textbf{(4 pts)} Audite físicamente: En $\ddot{q}=0$ y $q=\pi/2$, afirman que \textit{"El torque debe ser cero porque no hay aceleración"}. Evalúe esta afirmación con el modelo[cite: 12].
+\end{enumerate}
+
+\noindent\textbf{\large Etapa 7 — Juicio Integrado Final (5 pts)[cite: 12]}
+
+Evalúe críticamente: \textit{"Si el robot puede alcanzar una pose mediante cinemática inversa, entonces necesariamente existe una trayectoria adecuada para alcanzarla, no habrá problemas de singularidad y el esfuerzo de los actuadores será aceptable"}[cite: 12].
+
+Indique qué partes son incorrectas y qué herramienta matemática de la Unidad II permite analizar cada fenómeno por separado (conéctelo con IK, LSPB, Singularidades y Dinámica)[cite: 12]. \vspace{4.5cm}
+
+\begin{center}
+    \textbf{--- FIN DEL EXAMEN ---}
+\end{center}
+
+\end{document}

@@ -1,0 +1,123 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{listings}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    backgroundcolor=\color{gray!5},
+    frame=single,
+    rulecolor=\color{gray!40},
+    breaklines=true,
+    columns=flexible
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342}}
+\chead{Guía de Trabajo Autónomo, Actividades y Bitácora}
+\rhead{Semana 12 - Sesión 1}
+\lfoot{Gestión de Evidencia ECI-3/4}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Guía de Actividades de Sesión, Trabajo Autónomo y Bitácora (Hito 3)}}[cite: 15]
+\end{center}
+
+\section{Actividades Ejecutables en la Sesión W12-S01 (120 min)[cite: 15]}
+\begin{enumerate}
+    \item \textbf{Actividad 1 (10 min) — Objetivo y Evaluación[cite: 15]:} Cada estudiante formula en una oración el objetivo mínimo demostrable del Hito 3 e identifica una diferencia estructural entre $EC$ y $EF$. \textit{Evidencia:} formulación individual sin prometer ROS funcional de antemano[cite: 15].
+    \item \textbf{Actividad 2 (25 min) — Auditoría Gate 0[cite: 15]:} Por equipos, iniciar la Ficha Gate 0, elaborar 5 hipótesis de compatibilidad indicando \textit{«fuente / qué verificaría / qué impide concluir»}, y rescatar el antecedente del proyecto de ajedrez dejando pendientes visibles[cite: 15].
+    \item \textbf{Actividad 3 (20 min) — Arquitectura y Pruebas Gate 1[cite: 15]:} Dibujar la arquitectura de comando y feedback. Proponer \textbf{dos pruebas Gate 1 sin movimiento}, especificando qué medir y quién autoriza, e identificar qué eslabón no se puede probar todavía[cite: 15].
+    \item \textbf{Actividad 4 (20 min) — Diseño de Validación Cinemática[cite: 15]:} Definir tres configuraciones de ensayo (dos regulares + una cercana a singularidad, sin inventar parámetros ABB), marcos $\{B\}$ y $\{TCP\}$, métricas $e_p, e_R, e_J$ y responder a la distinción entre $\tau_{ext}=J^T F$ y el torque dinámico completo[cite: 15].
+    \item \textbf{Actividad 5 (20 min) — Simulacro de Decisión NO-GO[cite: 15]:} Aplicar el checklist de seguridad al escenario ficticio: \textit{«ROS y RViz funcionan; se desconoce el estado del E-stop y no hay supervisor asignado»}. Decisión esperada: \textbf{\texttt{NO-GO}} para movimiento (continuando solo software/auditoría)[cite: 15].
+    \item \textbf{Actividad 6 (25 min) — Backlog y Cierre[cite: 15]:} Definir 3 tareas verificables antes de W12-S02 con responsable principal y suplente, salida reproducible y dependencia crítica, además del \textit{exit ticket} individual[cite: 15].
+\end{enumerate}
+
+\section{Alcance del Trabajo Autónomo y Entregables para W12-S02[cite: 15]}
+\begin{tcolorbox}[colback=yellow!10, colframe=black, left=2mm, right=2mm, top=1mm, bottom=1mm]
+    \footnotesize
+    \textbf{Trabajo autónomo permitido[cite: 15]:} Investigación documental, desarrollo del modelo propio, comparaciones offline, simulación autorizada, organización de repositorio y construcción de bitácora[cite: 15]. \\
+    \textbf{Restricción estricta[cite: 15]:} Prohibido interpretar «trabajo autónomo» como permiso para conectar o mover el robot físico sin supervisión y protocolo aprobado[cite: 15].
+\end{tcolorbox}
+
+\noindent\textbf{Lista de Entregables Gate 0 (Seguimiento en W12-S02)[cite: 15]:}
+\begin{itemize}
+    \item Inventario local actualizado con estados y fuentes verificables[cite: 15].
+    \item Dos arquitecturas candidatas analizadas con sus requisitos de compatibilidad y limitaciones[cite: 15].
+    \item Repositorio inicial estructurado y archivo \texttt{model\_manifest.yaml}[cite: 15].
+    \item Diagrama de flujo explícito de señales de comando y retorno de estado[cite: 15].
+    \item Plan de pruebas Gate 1 (comunicación/lectura sin movimiento) y condiciones de autorización[cite: 15].
+    \item Casos de validación FK/IK/$J$ predefinidos con métricas declaradas[cite: 15].
+    \item Lista de bloqueos, responsables y evidencias iniciales en bitácora[cite: 15].
+\end{itemize}
+
+\section{Matriz RACI Reducida del Equipo[cite: 15]}
+\begin{center}
+\footnotesize
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\textwidth}{|>{\hsize=1.2\hsize\raggedright\arraybackslash}X|>{\hsize=0.9\hsize\raggedright\arraybackslash}X|>{\hsize=1.0\hsize\raggedright\arraybackslash}X|>{\hsize=1.0\hsize\raggedright\arraybackslash}X|>{\hsize=0.9\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Tarea del Proyecto}[cite: 15] & \textbf{Responsable Principal}[cite: 15] & \textbf{Respaldo} (Debe comprenderla)[cite: 15] & \textbf{Evidencia Esperada}[cite: 15] & \textbf{Fecha / Condición}[cite: 15] \\ \hline
+Controlador / versiones / opciones[cite: 15] & & & & \\ \hline
+Código de ajedrez / arq. previa[cite: 15] & & & & \\ \hline
+ROS / driver y compatibilidad[cite: 15] & & & & \\ \hline
+URDF y modelos FK / IK / $J$[cite: 15] & & & & \\ \hline
+Seguridad / protocolo y autorización[cite: 15] & & & & \\ \hline
+Bitácora, Git y reportes[cite: 15] & & & & \\ \hline
+\end{tabularx}
+\end{center}
+
+\section{Plantilla Oficial de Entrada de Bitácora[cite: 15]}
+Cada decisión técnica se documenta mediante el ciclo: \textbf{hipótesis $\to$ prueba $\to$ resultado observado $\to$ interpretación $\to$ siguiente acción}[cite: 15].
+
+\begin{lstlisting}
+ID: ______
+fecha/hora: ______
+equipo y responsables: ______
+hipotesis: ______
+objetivo de la prueba: ______
+software/hardware y versiones: ______
+modo: simulacion / auditoria / comunicacion sin movimiento / movimiento autorizado
+condiciones / frames / parametros: ______
+prueba ejecutada: ______
+resultado observable: ______
+evidencia (log, commit, foto permitida, archivo): ______
+estado funcional: functional / partially_verified / blocked / not verified
+limitaciones / hipotesis descartadas: ______
+proxima accion y responsable: ______
+revision docente/laboratorio requerida: ______
+\end{lstlisting}
+
+\section{Calendario Tentativo de Gates y Contingencia[cite: 15]}
+\begin{itemize}
+    \item \textbf{W12:} Gate 0 documental y diseño de protocolos[cite: 15].
+    \item \textbf{W13:} Gate 1 (lectura de estado sin movimiento) y Gate 2 inicial; \textbf{decisión de contingencia al cierre de W13} (Ruta A física viable, Ruta B interfaz sin movimiento físico, o Ruta C bloqueo externo documentado)[cite: 15].
+    \item \textbf{W14:} Gate 2 completo y Gate 3 (\textbf{únicamente si existe autorización expresa \texttt{GO}})[cite: 15].
+    \item \textbf{W15:} Ejecución de tarea repetible sobre posiciones conocidas del tablero (${}^Bp_{target} = {}^BT_C [{}^Cp_{cell}^T, 1]^T$) y rama de visión opcional[cite: 15].
+    \item \textbf{W16:} Cierre de evidencia de Evaluación Continua ($EC$)[cite: 15].
+    \item \textbf{Posterior a W16 ($EF$):} Demostración sobre nuevo escenario/objetivos y defensa técnica individual sin duplicar exactamente las pruebas de $EC$[cite: 15].
+\end{itemize}
+
+\end{document}

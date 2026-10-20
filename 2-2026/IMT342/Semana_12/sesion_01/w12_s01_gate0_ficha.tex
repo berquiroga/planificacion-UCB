@@ -1,0 +1,103 @@
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{amsmath, amssymb}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342}}
+\chead{Ficha Gate 0 — Inventario y Compatibilidad ROS–ABB}
+\rhead{Semana 12 - Sesión 1}
+\lfoot{Auditoría Sin Movimiento Físico}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Ficha Técnica Gate 0: Inventario Local y Auditoría de Compatibilidad}}[cite: 15]
+\end{center}
+
+\vspace{0.2cm}
+\noindent
+\textbf{Grupo:} \rule{3.5cm}{0.15mm} \hfill
+\textbf{Fecha/Hora:} \rule{4cm}{0.15mm} \hfill
+\textbf{Responsable:} \rule{5cm}{0.15mm} \hfill
+\textbf{Supervisión:} \rule{4.5cm}{0.15mm}[cite: 15]
+
+\vspace{0.2cm}
+\begin{tcolorbox}[colback=yellow!10, colframe=black, title=\textbf{Regla Epistémica de Auditoría Gate 0} {[cite: 15]}, left=2mm, right=2mm, top=1mm, bottom=1mm]
+    \footnotesize
+    Marque el estado como \texttt{confirmado} únicamente cuando exista evidencia observada o fuente documental identificable en el sistema concreto del laboratorio[cite: 15]. \texttt{Pendiente / No verificado} no significa \texttt{ausente}, pero prohíbe asumir compatibilidad[cite: 15]. \textbf{No aprobar hardware ni activar control basándose en esta ficha}[cite: 15].
+\end{tcolorbox}
+
+\begin{center}
+\scriptsize
+\renewcommand{\arraystretch}{1.45}
+\begin{tabularx}{\textwidth}{|>{\hsize=0.95\hsize\raggedright\arraybackslash}X|>{\hsize=1.05\hsize\raggedright\arraybackslash}X|>{\hsize=0.90\hsize\raggedright\arraybackslash}X|>{\hsize=1.20\hsize\raggedright\arraybackslash}X|>{\hsize=0.75\hsize\raggedright\arraybackslash}X|>{\hsize=1.15\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Ítem a Auditar}[cite: 15] & \textbf{Dato Observado}[cite: 15] & \textbf{Estado} [\texttt{confirmado} / \texttt{pendiente} / \texttt{incompatible}][cite: 15] & \textbf{Fuente y Ubicación de Evidencia} (Placa, Pantalla, Commit, Foto)[cite: 15] & \textbf{Responsable}[cite: 15] & \textbf{Próxima Verificación Requerida}[cite: 15] \\ \hline
+1. Manipulador / modelo exacto[cite: 15] & & & & & \\ \hline
+2. Controlador / modelo / revisión[cite: 15] & & & & & \\ \hline
+3. RobotWare versión / revisión[cite: 15] & & & & & \\ \hline
+4. Opciones / licencias instaladas[cite: 15] & & & & & \\ \hline
+5. Interfaz permitida (RWS / EGM / otra)[cite: 15] & & & & & \\ \hline
+6. Estado / método de conexión en lab.[cite: 15] & & & & & \\ \hline
+7. PC disponible y sistema operativo[cite: 15] & & & & & \\ \hline
+8. ROS distro (ROS 1 o ROS 2)[cite: 15] & & & & & \\ \hline
+9. Driver candidato, versión / commit[cite: 15] & & & & & \\ \hline
+10. Requisitos / versiones documentados[cite: 15] & & & & & \\ \hline
+11. Red / control de acceso institucional[cite: 15] & & & & & \\ \hline
+12. Manual / control de seguridad local[cite: 15] & & & & & \\ \hline
+13. URDF / SRDF / otros modelos y versión[cite: 15] & & & & & \\ \hline
+14. Código del ajedrez y modo real de op.[cite: 15] & & & & & \\ \hline
+15. Usuario / operador autorizado[cite: 15] & & & & & \\ \hline
+\end{tabularx}
+\end{center}
+
+\vspace{0.2cm}
+\noindent
+\begin{minipage}[t]{0.49\textwidth}
+    \begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{Hipótesis de Arquitectura A} {[cite: 15]}, left=2mm, right=2mm, top=1mm, bottom=1mm]
+        \footnotesize
+        \textbf{Descripción:} \rule{8.5cm}{0.15mm}\\[0.25cm]
+        \textbf{Fuente documental:} \rule{7.3cm}{0.15mm}\\[0.25cm]
+        \textbf{Requisito crítico no verificado:} \rule{5.6cm}{0.15mm}[cite: 15]
+    \end{tcolorbox}
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.49\textwidth}
+    \begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{Hipótesis de Arquitectura B} {[cite: 15]}, left=2mm, right=2mm, top=1mm, bottom=1mm]
+        \footnotesize
+        \textbf{Descripción:} \rule{8.5cm}{0.15mm}\\[0.25cm]
+        \textbf{Fuente documental:} \rule{7.3cm}{0.15mm}\\[0.25cm]
+        \textbf{Requisito crítico no verificado:} \rule{5.6cm}{0.15mm}[cite: 15]
+    \end{tcolorbox}
+\end{minipage}
+
+\vspace{0.2cm}
+\noindent
+\textbf{Decisión actual del equipo[cite: 15]:} \quad
+$\square$ Investigar A \qquad
+$\square$ Investigar B \qquad
+$\square$ Bloqueado \qquad
+$\square$ Pendiente de acceso supervisado[cite: 15]
+
+\end{document}

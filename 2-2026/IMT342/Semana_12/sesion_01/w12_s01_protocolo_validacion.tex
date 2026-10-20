@@ -1,0 +1,177 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{amsmath, amssymb, bm}
+\usepackage[most]{tcolorbox}
+\usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    backgroundcolor=\color{gray!5},
+    frame=single,
+    rulecolor=\color{gray!40},
+    showstringspaces=false,
+    breaklines=true,
+    breakatwhitespace=false,
+    columns=flexible
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342}}
+\chead{Protocolo de Validación Cinemática (Gate 2)}
+\rhead{Semana 12 - Sesión 1}
+\lfoot{Documento de Especificación Técnica}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Protocolo Reproducible de Validación Cruzada: FK, IK y Jacobiano}}[cite: 15]
+\end{center}
+
+\section{Condiciones Obligatorias de Comparabilidad[cite: 15]}
+Antes de calcular cualquier error numérico entre el modelo propio y el software de referencia (ej. MoveIt/ROS), todas las filas esenciales de esta tabla deben estar alineadas en \texttt{sí}[cite: 15]:
+
+\begin{center}
+\footnotesize
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{\textwidth}{|>{\hsize=1.2\hsize\raggedright\arraybackslash}X|>{\hsize=0.9\hsize\raggedright\arraybackslash}X|>{\hsize=0.9\hsize\raggedright\arraybackslash}X|c|>{\hsize=1.0\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Condición Técnica}[cite: 15] & \textbf{Modelo Propio}[cite: 15] & \textbf{Referencia}[cite: 15] & \textbf{Alineado}[cite: 15] & \textbf{Evidencia / Transformación}[cite: 15] \\ \hline
+Marco base $\{B\}$[cite: 15] & & & sí / no & \\ \hline
+TCP / punto efector $\{TCP\}$[cite: 15] & & & sí / no & \\ \hline
+Orden articular (\texttt{joint\_order})[cite: 15] & & & sí / no & \\ \hline
+Unidades de $q$ ($\mathrm{rad}$ / grados)[cite: 15] & & & sí / no & \\ \hline
+Sentido positivo y offset de juntas[cite: 15] & & & sí / no & \\ \hline
+URDF, árbol cinemático y eslabón terminal[cite: 15] & & & sí / no & \\ \hline
+Herramienta / TCP cargado[cite: 15] & & & sí / no & \\ \hline
+Convención geométrica $J$ (lineal arriba)[cite: 15] & & & sí / no & \\ \hline
+Tolerancias y definición matemática de error[cite: 15] & & & sí / no & \\ \hline
+\end{tabularx}
+\end{center}
+
+\section{Formulaciones Matemáticas de Comparación (Visual V4)[cite: 15]}
+
+\begin{center}
+% Visual V4: Tres paneles comparativos sin desbordamiento interno
+\begin{tikzpicture}[
+    panel/.style={rectangle, draw=ucbblue, thick, fill=ucbblue!5, rounded corners, text width=4.7cm, minimum height=3.1cm, align=left, font=\scriptsize, inner sep=2mm}
+]
+    \node[panel] (p1) at (0,0) {
+        \textbf{Panel 1: Comparación FK}[cite: 15]\\[0.1cm]
+        Entrada: $q^{(k)}$ común.\\
+        Salidas: ${}^BT_{TCP}^{own}, {}^BT_{TCP}^{ref}$.\\[0.1cm]
+        $e_p = \|p_{own} - p_{ref}\|_2$\\
+        $R_e = R_{ref}^T R_{own}$\\
+        $u_e = \operatorname{clip}\!\left(\frac{\operatorname{tr}(R_e)-1}{2},-1,1\right)$\\
+        $e_R = \cos^{-1}(u_e)\;[\mathrm{rad}]$
+    };
+    \node[panel] (p2) at (5.4,0) {
+        \textbf{Panel 2: Comparación IK}[cite: 15]\\[0.1cm]
+        Entrada: Pose deseada $T_d$.\\
+        Ramas: $\{q^{(k)}_{own}\}$ vs. $\{q^{(j)}_{ref}\}$.\\[0.1cm]
+        \textit{No exigir $q_{own} = q_{ref}$}.\\
+        Validar cada candidato vía FK:\\
+        $e_{p,k} = \|p(q^{(k)}) - p_d\|_2$\\
+        $e_{R,k} = \angle\big(R_d^T R(q^{(k)})\big)$
+    };
+    \node[panel] (p3) at (10.8,0) {
+        \textbf{Panel 3: Comparación Jacobiano}[cite: 15]\\[0.1cm]
+        Mismo marco $\{B\}$ y punto $TCP$.\\
+        $v_{TCP} = v_O + \omega \times (p_{TCP} - p_O)$.\\[0.1cm]
+        $e_J = \|J_{own} - J_{ref}\|_F$\\
+        $e_v = \|J_{own}\dot{q} - J_{ref}\dot{q}\|_2$\\
+        $(J_v)_{:,i} \approx \frac{p(q+\varepsilon e_i)-p(q-\varepsilon e_i)}{2\varepsilon}$
+    };
+\end{tikzpicture}
+\end{center}
+
+\subsection{Desarrollo Explícito de las Métricas y Verificaciones[cite: 15]}
+\begin{enumerate}
+    \item \textbf{Cinemática Directa (FK):} Para cada vector de prueba $q^{(k)}$, se evalúan ${}^BT_{TCP}^{own}(q^{(k)})$ y ${}^BT_{TCP}^{ref}(q^{(k)})$[cite: 15]. El error de posición es $e_p = \|p_{own}-p_{ref}\|_2$ en metros, y el error angular se extrae de la traza de $R_e = R_{ref}^T R_{own}$ acotando numéricamente el argumento al intervalo $[-1, 1]$[cite: 15]:
+    \begin{equation}
+        e_R = \cos^{-1}\!\left(\operatorname{clip}\!\left(\frac{\operatorname{tr}(R_e)-1}{2}, -1, 1\right)\right) \quad [\mathrm{rad}] \text{[cite: 15]}
+    \end{equation}
+    \item \textbf{Cinemática Inversa (IK):} Como distintas ramas, semillas u offsets producen vectores articulares distintos pero físicamente válidos, toda solución $q^{(k)}$ se audita evaluando su reproducción de pose mediante FK ($e_{p,k}$ y $e_{R,k}$), además de su pertenencia a límites articulares documentados[cite: 15].
+    \item \textbf{Jacobiano Geométrico y Diferencias Finitas:} Con el twist ordenado lineal arriba y angular abajo, cada columna de articulación revoluta se construye como[cite: 15]:
+    \begin{equation}
+        J_i = \begin{bmatrix} {}^Bz_{i-1} \times ({}^Bp_{TCP} - {}^Bo_{i-1}) \\ {}^Bz_{i-1} \end{bmatrix}, \qquad {}^BJ(q) = \begin{bmatrix} J_v(q) \\ J_\omega(q) \end{bmatrix} \in \mathbb{R}^{6 \times n} \text{[cite: 15]}
+    \end{equation}
+    La verificación por diferencias finitas centrales:
+    \begin{equation}
+        (J_v)_{:,i} \approx \frac{p(q + \varepsilon e_i) - p(q - \varepsilon e_i)}{2\varepsilon} \text{[cite: 15]}
+    \end{equation}
+    comprueba exclusivamente la submatriz traslacional $J_v$ respecto al punto $TCP$ elegido y requiere análisis de sensibilidad probando más de una magnitud de paso $\varepsilon$[cite: 15].
+    \item \textbf{Singularidades y Potencia Virtual:} Se diagnostica pérdida de rango cuando $\operatorname{rank}J(q) < r_{\max}$ según el umbral numérico aplicado a los valores singulares[cite: 15]. Por potencia virtual $P = F^T V = F^T J\dot{q} = (J^T F)^T \dot{q}$, el mapeo estático de un wrench externo es $\tau_{ext} = J^T F$, el cual no debe confundirse con el torque dinámico completo[cite: 15]:
+    \begin{equation}
+        \tau = M(q)\ddot{q} + C(q,\dot{q})\dot{q} + g(q) \text{[cite: 15]}
+    \end{equation}
+\end{enumerate}
+
+\section{Matriz de Ejecución del Protocolo[cite: 15]}
+Todas las entradas y criterios de la siguiente matriz corresponden al protocolo de validación de la sesión[cite: 15]:
+
+\begin{center}
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.45}
+\begin{tabularx}{\textwidth}{|>{\hsize=0.85\hsize\raggedright\arraybackslash}X|>{\hsize=0.65\hsize\raggedright\arraybackslash}X|>{\hsize=1.25\hsize\raggedright\arraybackslash}X|>{\hsize=0.85\hsize\centering\arraybackslash}X|>{\hsize=0.85\hsize\centering\arraybackslash}X|>{\hsize=0.85\hsize\centering\arraybackslash}X|>{\hsize=0.65\hsize\centering\arraybackslash}X|>{\hsize=0.65\hsize\centering\arraybackslash}X|>{\hsize=1.40\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{gray!20}
+\textbf{Caso} & $q$ / $T_d$ & \textbf{Condiciones} & \textbf{Propio} & \textbf{Ref.} & \textbf{Métrica} & \textbf{Tol.} & \textbf{Res.} & \textbf{Evidencia (Commit / Log)} \\ \hline
+FK nominal 1 & & $\{B\}$, $TCP$, unidades & $T$ & $T$ & $e_p, e_R$ & & &[cite: 15] \\ \hline
+FK nominal 2 & & $\{B\}$, $TCP$, unidades & $T$ & $T$ & $e_p, e_R$ & & &[cite: 15] \\ \hline
+IK objetivo 1 & & Límites, semilla y ramas & $\{q^{(k)}\}$ & $\{q^{(j)}\}$ & $e_{p,k}, e_{R,k}$ & & &[cite: 15] \\ \hline
+$J$ nominal & & Mismo punto y orden & $J, J\dot{q}$ & $J, J\dot{q}$ & $e_J, e_v$ & & &[cite: 15] \\ \hline
+Cerca singul. & & Tarea, escala y umbral & $\operatorname{rank}, \sigma_i$ & $\operatorname{rank}, \sigma_i$ & Comp. e interp. & & &[cite: 15] \\ \hline
+\end{tabularx}
+\end{center}
+
+\section{Contratos de Datos para Reproducibilidad[cite: 15]}
+Los campos de resultados deben permanecer vacíos o en \texttt{null}/\texttt{unverified} hasta ejecutar las pruebas reales bajo condiciones comparables[cite: 15].
+
+\noindent\textbf{Esquema \texttt{model\_manifest.yaml}[cite: 15]:}
+\begin{lstlisting}
+robot_model: ABB_IRB120
+controller_model: null
+robotware_version: null
+controller_options_verified: []
+ros_distribution: null
+operating_system: null
+kinematics_reference: null
+urdf_source_commit: null
+base_frame: null
+tcp_frame: null
+joint_order: []
+angle_unit: rad
+length_unit: m
+rpy_convention: null
+record_status: unverified
+\end{lstlisting}
+
+\noindent\textbf{Esquema \texttt{validation\_cases.csv}[cite: 15]:}
+\begin{lstlisting}
+case_id,case_type,q_rad_vector,base_frame,tcp_frame,model_version,reference_version,position_error_m,orientation_error_rad,jacobian_error_fro,rank_threshold,rank_observed,acceptance_result,evidence_link,notes
+\end{lstlisting}
+
+\end{document}

@@ -1,0 +1,437 @@
+\documentclass[aspectratio=169, xcolor={table,xcdraw}]{beamer}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\renewcommand{\tablename}{Tabla}
+
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+
+\title[Lanzamiento ECI-3/4 (Hito 3)]{Lanzamiento del Elemento Integrado III–IV: ROS–ABB IRB120}
+\subtitle{Validación Cinemática, Protocolo de Seguridad y Diseño del Proyecto Final[cite: 15]}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}
+\date{Martes 20 de octubre de 2026 (W12-S01)[cite: 15]}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% --- SLIDE 2: El Desafío de Ingeniería y Cadena Trazable ---
+\begin{frame}{El Desafío de Ingeniería y Cadena Trazable[cite: 15]}
+    \begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=Pregunta Central de Ingeniería {[cite: 15]}, boxsep=1mm, top=1mm, bottom=1mm]
+        \footnotesize\raggedright
+        No es \textit{«¿podemos visualizar un ABB IRB120 en RViz?»}, sino: \textbf{«¿cómo demostramos, con evidencia, que un modelo matemático válido se transforma en una consigna ROS que el controlador físico recibe, acepta, ejecuta de forma autorizada y reporta?»}[cite: 15].
+    \end{tcolorbox}
+
+    \vspace{0.2cm}
+    \textbf{\footnotesize Cadena Trazable Obligatoria (Eslabones Inconfundibles)[cite: 15]:}
+    \begin{center}
+    \begin{tikzpicture}[
+        box/.style={rectangle, draw=ucbblue, thick, fill=white, text width=2.8cm, align=center, rounded corners, font=\scriptsize, minimum height=0.95cm},
+        arrow/.style={-Stealth, very thick, ucbblue}
+    ]
+        \node[box] (n1) at (0, 1.4) {\textbf{1. Modelo Geom.}\\y URDF[cite: 15]};
+        \node[box] (n2) at (3.8, 1.4) {\textbf{2. Modelos Propios}\\FK/IK/$J$ $\leftrightarrow$ Ref.[cite: 15]};
+        \node[box] (n3) at (7.6, 1.4) {\textbf{3. Objetivos y}\\Restricciones[cite: 15]};
+        \node[box] (n4) at (11.4, 1.4) {\textbf{4. Interfaz ROS–ABB}\\Compatible[cite: 15]};
+
+        \node[box] (n5) at (11.4, 0) {\textbf{5. Estado Observable}\\del Controlador[cite: 15]};
+        \node[box, fill=red!10, draw=red!80!black] (n6) at (6.6, 0) {\textbf{6. Permiso Ejecución}\\Protocolo \textbf{GO}[cite: 15]};
+        \node[box, fill=green!10, draw=green!60!black, text width=3.4cm] (n7) at (1.5, 0) {\textbf{7. Movimiento Físico}\\Observado y Registrado[cite: 15]};
+
+        \draw[arrow] (n1) -- (n2);
+        \draw[arrow] (n2) -- (n3);
+        \draw[arrow] (n3) -- (n4);
+        \draw[arrow] (n4) -- (n5);
+        \draw[arrow] (n5) -- (n6);
+        \draw[arrow] (n6) -- (n7);
+    \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+% --- SLIDE 3: Reglas Epistémicas y Alcance Académico ---
+\begin{frame}{Reglas Epistémicas y Alcance Académico (ECI-3/4)[cite: 15]}
+    \begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=Reglas Epistémicas para Toda la Sesión {[cite: 15]}, boxsep=1mm, top=1mm, bottom=1mm]
+        \footnotesize\raggedright
+        \begin{itemize}
+            \item Estado \texttt{confirmado} solo si existe evidencia observada o fuente identificable en el sistema concreto; \texttt{no verificado} no significa \texttt{ausente}[cite: 15].
+            \item Una captura de RViz, una respuesta de red (\texttt{ping}), una señal de servicio y un movimiento físico observado son evidencias de \textbf{niveles distintos}[cite: 15].
+            \item \textbf{Esta sesión NO autoriza mover el robot.} Ninguna prueba con movimiento procede sin protocolo completo y declaración expresa \texttt{GO}[cite: 15].
+        \end{itemize}
+    \end{tcolorbox}
+
+    \vspace{0.15cm}
+    \footnotesize
+    \textbf{Fusión Curricular ECI-3/4 (Hito 3) y Fórmulas Institucionales[cite: 15]:}
+    \begin{center}
+        $\displaystyle \boxed{ EC = 0.25\,E_1 + 0.25\,E_2 + 0.50\,ECI_{3/4} } \qquad\qquad \boxed{ NF = 0.50\,EC + 0.50\,EF }$[cite: 15]
+    \end{center}
+
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \footnotesize\raggedright
+            \textbf{Evaluación Continua ($EC$ hasta W16)[cite: 15]:} Proceso y evidencia verificable en Gates 0–4. La visión con webcam es un complemento opcional, nunca un prerrequisito[cite: 15].
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \footnotesize\raggedright
+            \textbf{Evaluación Final ($EF$ posterior)[cite: 15]:} Instancia separada que exige nueva demostración (objetivos distintos o robustez) y defensa individual[cite: 15].
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- SLIDE 4: Visual V2 - Escalera de Evidencia Gate 0-4 ---
+\begin{frame}{Escalera de Evidencia del Proyecto: Gates 0 a 4 (Visual V2)[cite: 15]}
+    \begin{center}
+    \begin{tikzpicture}[
+        box/.style={rectangle, draw=ucbblue, thick, fill=ucbblue!5, text width=2.1cm, align=center, rounded corners, font=\scriptsize, minimum height=1.25cm},
+        optbox/.style={rectangle, draw=orange!90!black, dashed, thick, fill=yellow!10, text width=3.8cm, align=center, rounded corners, font=\scriptsize, minimum height=0.85cm},
+        arrow/.style={-Stealth, very thick, ucbblue}
+    ]
+        \node[box] (g0) at (0, 0) {\textbf{Gate 0}\\Factibilidad e Inventario Local[cite: 15]};
+        \node[box] (g1) at (2.8, 0.45) {\textbf{Gate 1}\\Estado y Red (Sin Mov.)[cite: 15]};
+        \node[box] (g2) at (5.6, 0.90) {\textbf{Gate 2}\\Validación FK / IK / $J$[cite: 15]};
+        \node[box, fill=red!10, draw=red!80!black] (g3) at (8.7, 1.35) {\textbf{Gate 3}\\Mov. Físico (\textbf{Exige GO})[cite: 15]};
+        \node[box, fill=green!10, draw=green!60!black] (g4) at (11.6, 1.80) {\textbf{Gate 4}\\Tarea Repetible en Tablero[cite: 15]};
+
+        \node[draw=red!80!black, fill=white, rounded corners, font=\tiny\bfseries, text=red!80!black, inner sep=1.5pt] (nogo) at (7.15, 2.35) {Compuerta GO / NO-GO[cite: 15]};
+        \draw[-Stealth, red!80!black, thick] (nogo.south) -- ($(g2.east)!0.5!(g3.west)$);
+
+        \node[optbox] (vis) at (8.7, -0.55) {\textbf{Rama Opcional Paralela:} Visión por Webcam (No es prerrequisito ni bloquea G3/G4)[cite: 15]};
+
+        \draw[arrow] (g0.east) -- (g1.west);
+        \draw[arrow] (g1.east) -- (g2.west);
+        \draw[-Stealth, very thick, red!80!black] (g2.east) -- (g3.west);
+        \draw[arrow] (g3.east) -- (g4.west);
+
+        \draw[-Stealth, dashed, orange!90!black, thick] (g2.south) |- (vis.west);
+        \draw[-Stealth, dashed, orange!90!black, thick] (vis.east) -| (g4.south);
+    \end{tikzpicture}
+    \end{center}
+
+    \vspace{0.1cm}
+    \footnotesize\raggedright
+    \textbf{Secuencia de la sesión (120 min)[cite: 15]:} 10m Desafío/pesos $\to$ 25m Auditoría ABB/ajedrez $\to$ 20m Hipótesis de arquitectura $\to$ 20m Protocolo FK/IK/$J$ y dualidad $\to$ 20m Seguridad $\to$ 25m Backlog y evidencias[cite: 15].
+\end{frame}
+
+% --- SLIDE 5: Bloque A - Visual V1 Arquitectura Bidireccional ---
+\begin{frame}{Bloque A: Arquitectura Bidireccional ROS $\leftrightarrow$ ABB (Visual V1)[cite: 15]}
+    \begin{center}
+    \begin{tikzpicture}[
+        sys/.style={rectangle, draw=ucbblue, thick, fill=ucbblue!5, text width=2.4cm, align=center, rounded corners, font=\scriptsize, minimum height=1.2cm},
+        net/.style={rectangle, draw=gray!80!black, dashed, thick, fill=gray!10, text width=2.4cm, align=center, rounded corners, font=\scriptsize, minimum height=1.2cm},
+        hw/.style={rectangle, draw=orange!80!black, thick, fill=yellow!10, text width=2.4cm, align=center, rounded corners, font=\scriptsize, minimum height=1.2cm},
+        cmd/.style={-Stealth, very thick, red!80!black},
+        fb/.style={-Stealth, very thick, ucbblue, dashed}
+    ]
+        \node[sys] (urdf) at (0, 0) {\textbf{Modelo y Planif.}\\URDF/SRDF, TF\\FK/IK/$J$ Propios[cite: 15]};
+        \node[sys] (ros)  at (3.8, 0) {\textbf{PC / Nodo ROS}\\Interfaz Adaptadora\\{\tiny\texttt{[ROS distro?]}}[cite: 15]};
+        \node[net] (lan)  at (7.8, 0) {\textbf{Red Autorizada}\\Interfaz Documentada\\{\tiny\texttt{[RWS / EGM / RAPID?]}}[cite: 15]};
+        \node[hw]  (ctrl) at (11.8, 0) {\textbf{Controlador ABB}\\{\tiny\texttt{[Modelo? RobotWare?]}}\\Actuadores IRB120[cite: 15]};
+
+        \node[draw=red!80!black, fill=red!10, thick, rounded corners, font=\tiny\bfseries, align=center, inner sep=2pt] (gate) at (9.8, 1.45) {COMPUERTA AUTORIZACIÓN\\Estado Inicial: \textbf{NO-GO}[cite: 15]};
+        \draw[-Stealth, red!80!black, thick] (gate.south) -- (9.8, 0.35);
+
+        \draw[cmd] ([yshift=3mm]urdf.east) -- node[above, font=\tiny\bfseries]{Objetivos} ([yshift=3mm]ros.west);
+        \draw[cmd] ([yshift=3mm]ros.east)  -- node[above, font=\tiny\bfseries]{Comando} ([yshift=3mm]lan.west);
+        \draw[cmd] ([yshift=3mm]lan.east)  -- node[above, font=\tiny\bfseries]{Consigna} ([yshift=3mm]ctrl.west);
+
+        \draw[fb] ([yshift=-3mm]ctrl.west) -- node[below, font=\tiny\bfseries]{Estado real} ([yshift=-3mm]lan.east);
+        \draw[fb] ([yshift=-3mm]lan.west)  -- node[below, font=\tiny\bfseries]{\texttt{joint\_states}} ([yshift=-3mm]ros.east);
+        \draw[fb] ([yshift=-3mm]ros.west)  -- node[below, font=\tiny\bfseries]{Diagnóstico} ([yshift=-3mm]urdf.east);
+    \end{tikzpicture}
+    \end{center}
+
+    \vspace{0.15cm}
+    \begin{tcolorbox}[colback=white, colframe=ucbblue, title=Errores Frecuentes de Interpretación {[cite: 15]}, boxsep=1mm, top=1mm, bottom=1mm]
+        \scriptsize\raggedright
+        \begin{itemize}
+            \item ROS instalado $\neq$ integración ABB disponible; \texttt{ping} exitoso $\neq$ driver funcional[cite: 15].
+            \item \texttt{joint\_states} simulado o URDF en RViz $\neq$ posición reportada por el controlador físico[cite: 15].
+        \end{itemize}
+    \end{tcolorbox}
+\end{frame}
+
+% --- SLIDE 6: Bloque A - Hipótesis de Rutas Técnicas (Gate 0) ---
+\begin{frame}{Bloque A: Rutas Técnicas como Hipótesis, No Decisiones[cite: 15]}
+    \begin{center}
+        \renewcommand{\arraystretch}{1.35}
+        \scriptsize
+        \begin{tabular}{|>{\raggedright\arraybackslash}p{2.9cm}|>{\raggedright\arraybackslash}p{3.6cm}|>{\raggedright\arraybackslash}p{4.1cm}|>{\raggedright\arraybackslash}p{2.4cm}|}
+        \hline
+        \rowcolor{ucbblue!20} \textbf{Hipótesis}[cite: 15] & \textbf{Qué debería demostrar}[cite: 15] & \textbf{Condición previa}[cite: 15] & \textbf{Estado actual}[cite: 15] \\ \hline
+        \textbf{RWS} para observación/gestión[cite: 15] & Consulta o suscripción a estados según interfaz soportada[cite: 15] & Versión RWS/RobotWare compatible; credenciales y permisos[cite: 15] & \textbf{Pendiente}[cite: 15] \\ \hline
+        \textbf{EGM} para modo de guía/control[cite: 15] & Disponibilidad del canal y condiciones de operación[cite: 15] & Opción/licencia EGM; RobotWare; nodo ROS compatible; autorización[cite: 15] & \textbf{Pendiente; NO probar mov.}[cite: 15] \\ \hline
+        \textbf{Bridge RAPID} o integración histórica[cite: 15] & Transferencia verificable de objetivos/estados (ej. ajedrez)[cite: 15] & Código previo recuperado; interfaces documentadas y validadas[cite: 15] & \textbf{Pendiente}[cite: 15] \\ \hline
+        \textbf{Simulación / Virtual Controller}[cite: 15] & Evaluación sin movimiento físico[cite: 15] & Software/licencia/configuración disponible[cite: 15] & \textbf{Pendiente}[cite: 15] \\ \hline
+        \end{tabular}
+    \end{center}
+
+    \vspace{0.15cm}
+    \scriptsize\raggedright
+    \textbf{Ejemplo documental condicionado (\texttt{abb\_robot\_driver})[cite: 15]:} Sus ejemplos RWS 1.0 se orientan a IRC5/RobotWare 6 y su interfaz EGM exige opción/licencia específica (entregado \textit{«as-is»})[cite: 15]. \textbf{No se infiere que el laboratorio cuente con esas opciones hasta auditar en Gate 0}[cite: 15].
+\end{frame}
+
+% --- SLIDE 7: Bloque B - Alineación de Marcos y TCP (Visual V3) ---
+\begin{frame}{Bloque B: Alineación de Marcos y Punto Efector (Visual V3)[cite: 15]}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \scriptsize\raggedright
+            \textbf{Condiciones Obligatorias Antes de Comparar[cite: 15]:}
+            \begin{itemize}\setlength{\itemsep}{1pt}
+                \item Mismo marco base $\{B\}$ y eslabón terminal[cite: 15].
+                \item Mismo punto $\{TCP\}$ y herramienta cargada[cite: 15].
+                \item Mismo \texttt{joint\_order}, unidades ($\mathrm{rad}, \mathrm{m}$), sentidos de giro y offsets[cite: 15].
+            \end{itemize}
+            \vspace{0.1cm}
+            \begin{tcolorbox}[colback=yellow!10, colframe=orange, boxsep=0.8mm, top=1mm, bottom=1mm]
+                \scriptsize\raggedright
+                \textbf{Ejemplo 1 (Error FK por TCP)[cite: 15]:} Si $p_{own}=[0.50, 0.20, 0.40]^T\,\mathrm{m}$ y $p_{ref}=[0.50, 0.20, 0.50]^T\,\mathrm{m}$, entonces:
+                \begin{center}
+                    $\boxed{e_p = \sqrt{0^2+0^2+(-0.10)^2} = 0.10\;\mathrm{m}}$[cite: 15]
+                \end{center}
+                \textbf{No modifique longitudes DH arbitrariamente}[cite: 15]. Verifique primero si existe un offset de herramienta ($TCP$) de $0.10\,\mathrm{m}$[cite: 15].
+            \end{tcolorbox}
+        \end{column}
+        \begin{column}{0.50\textwidth}
+            \centering
+            \begin{tikzpicture}[scale=0.82, thick]
+                \draw[-Stealth, ucbblue, line width=1.2pt] (0,0) -- (1.1,0) node[below, font=\scriptsize]{$x_B$};
+                \draw[-Stealth, ucbblue, line width=1.2pt] (0,0) -- (0,1.1) node[left, font=\scriptsize]{$z_B$};
+                \filldraw[ucbblue] (0,0) circle (2.5pt) node[below left, font=\scriptsize\bfseries]{$\{B\}$};
+
+                \draw[gray!70!black, line width=3.5pt, line cap=round] (0,0) -- (1.3, 1.8) -- (3.0, 2.2);
+                \filldraw[black] (1.3, 1.8) circle (2.5pt);
+                \filldraw[black] (3.0, 2.2) circle (3pt) node[above=2pt, font=\scriptsize\bfseries]{$\{link\}$ ($p_O$)};
+
+                \draw[orange!90!black, line width=2.5pt] (3.0, 2.2) -- (5.0, 2.2);
+                \filldraw[red!80!black] (5.0, 2.2) circle (3pt) node[above=2pt, font=\scriptsize\bfseries, text=red!80!black]{$\{TCP\}$ ($p_{TCP}$)};
+
+                \draw[-Stealth, dashed, black, line width=0.9pt] (0.15, 0.1) to[bend left=12]
+                    node[midway, above left, font=\scriptsize, fill=white, inner sep=1pt]{${}^BT_{link}$} (2.85, 2.1);
+
+                \draw[-Stealth, dotted, orange!90!black, line width=1.2pt] (3.1, 2.0) to[bend right=22]
+                    node[midway, below, font=\scriptsize, fill=white, inner sep=1pt]{${}^{link}T_{TCP}$} (4.9, 2.0);
+
+                \draw[-Stealth, dashed, red!80!black, line width=0.9pt] (0.2, -0.05) to[bend right=16]
+                    node[midway, below right, font=\scriptsize, text=red!80!black, fill=white, inner sep=1pt]{${}^BT_{TCP} = {}^BT_{link}\,{}^{link}T_{TCP}$} (4.95, 2.05);
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- SLIDE 8: Bloque B - Validación de Cinemática Directa e Inversa (Visual V4 Parte 1) ---
+\begin{frame}{Bloque B: Validación de Cinemática Directa (FK) e Inversa (IK)[cite: 15]}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{1. Cinemática Directa (FK)} {[cite: 15]}, boxsep=0.8mm, top=1mm, bottom=1mm]
+                \scriptsize\raggedright
+                Para cada vector de prueba $q^{(k)}$, evaluar en el mismo marco $\{B\}$ y punto $\{TCP\}$[cite: 15]:
+                \begin{center}
+                    ${}^BT_{TCP}^{own}(q^{(k)})=\begin{bmatrix}R_{own}&p_{own}\\0&1\end{bmatrix}$ \\[4pt]
+                    ${}^BT_{TCP}^{ref}(q^{(k)})=\begin{bmatrix}R_{ref}&p_{ref}\\0&1\end{bmatrix}$[cite: 15]
+                \end{center}
+                \textbf{Errores de posición y orientación ($R_e = R_{ref}^T R_{own}$)[cite: 15]:}
+                \begin{center}
+                    $\boxed{ e_p = \|p_{own} - p_{ref}\|_2 \; [\mathrm{m}] }$[cite: 15] \\[4pt]
+                    $\boxed{ e_R = \cos^{-1}\!\left(\operatorname{clip}\!\left(\frac{\operatorname{tr}(R_e)-1}{2}, -1, 1\right)\right) }$[cite: 15]
+                \end{center}
+            \end{tcolorbox}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{2. Cinemática Inversa (IK)} {[cite: 15]}, boxsep=0.8mm, top=1mm, bottom=1mm]
+                \scriptsize\raggedright
+                Dada $T_d$, las listas de candidatos $q^{(k)}_{own}$ y $q^{(j)}_{ref}$ \textbf{no tienen por qué coincidir entrada a entrada} (ramas, semillas, offsets, límites)[cite: 15].
+                \vspace{0.15cm}
+                \par Cada candidato se valida evaluando su pose vía FK bajo la misma convención[cite: 15]:
+                \begin{center}
+                    $\boxed{ e_{p,k} = \|p(q^{(k)}) - p_d\|_2 }$[cite: 15] \\[5pt]
+                    $\boxed{ e_{R,k} = \angle\big(R_d^T R(q^{(k)})\big) }$[cite: 15]
+                \end{center}
+                Registrar convergencia, condición real, límites documentados y viabilidad de trayectoria[cite: 15].
+            \end{tcolorbox}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- SLIDE 9: Bloque B - Validación del Jacobiano Geométrico (Visual V4 Parte 2) ---
+\begin{frame}{Bloque B: Validación del Jacobiano Geométrico ($6 \times n$)[cite: 15]}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{Estructura y Cambio de Punto} {[cite: 15]}, boxsep=0.8mm, top=1mm, bottom=1mm]
+                \scriptsize\raggedright
+                Con parte lineal arriba y angular abajo en $\{B\}$[cite: 15]:
+                \begin{center}
+                    ${}^BJ(q) = \begin{bmatrix} J_v(q) \\ J_\omega(q) \end{bmatrix} \in \mathbb{R}^{6 \times n}$[cite: 15] \\[4pt]
+                    $\boxed{ J_i = \begin{bmatrix} {}^Bz_{i-1} \times ({}^Bp_{TCP} - {}^Bo_{i-1}) \\ {}^Bz_{i-1} \end{bmatrix} }$[cite: 15]
+                \end{center}
+                Si la referencia entrega el Jacobiano en el origen de otro eslabón $O$, aplicar cambio de punto[cite: 15]:
+                \begin{center}
+                    $\boxed{ v_{TCP} = v_O + \omega \times (p_{TCP} - p_O) }$[cite: 15]
+                \end{center}
+            \end{tcolorbox}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{Métricas y Diferencias Finitas} {[cite: 15]}, boxsep=0.8mm, top=1mm, bottom=1mm]
+                \scriptsize\raggedright
+                En igualdad de marcos y puntos, comparar matriz y velocidades[cite: 15]:
+                \begin{center}
+                    $\boxed{ e_J = \|J_{own} - J_{ref}\|_F }$[cite: 15] \\[4pt]
+                    $\boxed{ e_v = \|J_{own}\dot{q} - J_{ref}\dot{q}\|_2 }$[cite: 15]
+                \end{center}
+                Comprobación de parte traslacional por diferencias finitas centrales ($\varepsilon$ pequeño documentado)[cite: 15]:
+                \begin{center}
+                    $\boxed{ (J_v)_{:,i} \approx \frac{p(q + \varepsilon e_i) - p(q - \varepsilon e_i)}{2\varepsilon} }$[cite: 15]
+                \end{center}
+            \end{tcolorbox}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- SLIDE 10: Bloque B - Singularidades y Ejemplo Guiado 2R ---
+\begin{frame}{Bloque B: Singularidades, Escala y Ejemplo Sintético 2R[cite: 15]}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{tcolorbox}[colback=yellow!10, colframe=orange, title=\textbf{Criterio de Rango y Escala} {[cite: 15]}, boxsep=0.8mm, top=1mm, bottom=1mm]
+                \scriptsize\raggedright
+                Pérdida de rango respecto al máximo de la tarea[cite: 15]:
+                \begin{center}
+                    $\boxed{ \operatorname{rank}J(q) < r_{\max} }$[cite: 15]
+                \end{center}
+                \begin{itemize}\setlength{\itemsep}{1pt}
+                    \item En cálculo numérico, el rango depende del umbral sobre los valores singulares ($\sigma_i$)[cite: 15].
+                    \item $\det J$ solo aplica si la matriz es cuadrada[cite: 15].
+                    \item \textbf{Cuidado dimensional:} filas de $J_v$ en $[\mathrm{m/s}]/[\mathrm{rad/s}]$ y de $J_\omega$ en $[\mathrm{rad/s}]/[\mathrm{rad/s}]$. Declarar escala/tarea antes de comparar condición numérica[cite: 15].
+                \end{itemize}
+            \end{tcolorbox}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{Ejemplo Sintético 2R Unitario} {[cite: 15]}, boxsep=0.8mm, top=1mm, bottom=1mm]
+                \scriptsize\raggedright
+                \textbf{Caso Regular ($q_1=0, q_2=\pi/2$)[cite: 15]:}
+                \begin{center}
+                    $J_p = \begin{bmatrix} -1 & -1 \\ 1 & 0 \end{bmatrix}, \quad \det J_p = 1$[cite: 15]
+                \end{center}
+                Si $\dot{q}=[1,-1]^T \implies J_p\dot{q}=[0,1]^T$ (velocidad $+y$)[cite: 15].
+                \vspace{0.1cm}
+                \par\textbf{Caso Singular ($q_1=0, q_2=0$)[cite: 15]:}
+                \begin{center}
+                    $J_p = \begin{bmatrix} 0 & 0 \\ 2 & 1 \end{bmatrix}, \quad \operatorname{rank}J_p = 1$[cite: 15]
+                \end{center}
+                Solo genera velocidad en $+y$; la dirección radial $x$ se pierde en primer orden[cite: 15].
+            \end{tcolorbox}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- SLIDE 11: Bloque C - Dualidad Velocidad-Esfuerzo y Visual V5 ---
+\begin{frame}{Bloque C: Dualidad Velocidad–Esfuerzo y Singularidad (Visual V5)[cite: 15]}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \scriptsize\raggedright
+            \textbf{Derivación por Potencia Virtual[cite: 15]:}
+            Con twist $V = [v^T, \omega^T]^T = J(q)\dot{q}$ y wrench externo $F = [f^T, m^T]^T$ en marcos compatibles[cite: 15]:
+            \begin{center}
+                $P = F^T V = F^T J(q)\dot{q} = (J^T F)^T \dot{q}$[cite: 15] \\[3pt]
+                $\boxed{ \tau_{ext} = J(q)^T F }$[cite: 15]
+            \end{center}
+            \textbf{Ejemplo 2R Extendido ($q_1=q_2=0$)[cite: 15]:}
+            \begin{center}
+                $\tau_{ext} = J_p^T f = \begin{bmatrix} 0 & 2 \\ 0 & 1 \end{bmatrix}\begin{bmatrix} f_x \\ f_y \end{bmatrix} = \begin{bmatrix} 2f_y \\ f_y \end{bmatrix}$[cite: 15]
+            \end{center}
+            Para $f=[1,0]^T \implies \tau_{ext}=[0,0]^T$ en el modelo ideal estático (wrench ortogonal a las velocidades alcanzables)[cite: 15].
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \centering
+            \begin{tikzpicture}[scale=0.88, thick]
+                \draw[->, gray!70] (-0.2, 0) -- (3.3, 0) node[below, font=\scriptsize]{$x$};
+                \draw[->, gray!70] (0, -0.3) -- (0, 1.65) node[left, font=\scriptsize]{$y$};
+
+                \draw[ucbblue, line width=3pt] (0,0) -- (1.0,0) -- (2.0,0);
+                \filldraw[black] (0,0) circle (2pt) node[below left, font=\tiny]{$q_1=0$};
+                \filldraw[black] (1.0,0) circle (2pt) node[below, font=\tiny]{$q_2=0$};
+                \filldraw[red!80!black] (2.0,0) circle (2.5pt);
+
+                \draw[-Stealth, green!60!black, line width=1.5pt] (2.0, 0.08) -- (2.0, 1.35)
+                    node[above, font=\scriptsize\bfseries, text=green!50!black]{$v_y$ disponible ($\operatorname{Im}J_p$)};
+
+                \draw[-Stealth, red!80!black, line width=1.5pt] (2.08, 0.12) -- (3.15, 0.12)
+                    node[above left, font=\tiny\bfseries, text=red!80!black]{$f=[1,0]^T \perp \operatorname{Im}J_p$};
+            \end{tikzpicture}
+
+            \vspace{0.05cm}
+            \begin{tcolorbox}[colback=red!5, colframe=red!70!black, boxsep=0.6mm, top=0.5mm, bottom=0.5mm]
+                \scriptsize\raggedright
+                \textbf{Límite físico[cite: 15]:} $\tau_{ext}=0$ no significa motores sin carga real (existen $M\ddot{q}+C\dot{q}+g$, fricción y estructura), y una singularidad \textbf{no} implica torque dinámico infinito[cite: 15].
+            \end{tcolorbox}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- SLIDE 12: Bloques D, E y F - Tablero, Contingencia y Plan Semanal (Visual V6) ---
+\begin{frame}{Bloques D, E y F: Escenario Tablero y Plan W12–W16 (Visual V6)[cite: 15]}
+    \begin{columns}[T]
+        \begin{column}{0.44\textwidth}
+            \scriptsize\raggedright
+            \textbf{Aplicación Mínima (Tablero $\{C\}$ a Base $\{B\}$)[cite: 15]:}
+            \begin{center}
+                $\boxed{ {}^Bp_{target} = {}^BT_C \begin{bmatrix} {}^Cp_{cell} \\ 1 \end{bmatrix} }$[cite: 15]
+            \end{center}
+            No requiere visión ni motor de ajedrez; exige validar IK, límites y Gate 3 antes de mover[cite: 15].
+            \vspace{0.1cm}
+            \par\textbf{Estados de Bitácora[cite: 15]:}
+            \begin{itemize}\setlength{\itemsep}{1pt}
+                \item \texttt{functional}: demostrado con log/medición e indicando alcance exacto[cite: 15].
+                \item \texttt{partially\_verified}: cumple parcialmente; registrar qué falta[cite: 15].
+                \item \texttt{blocked}: bloqueo documentado y alternativa[cite: 15].
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.54\textwidth}
+            \centering
+            \begin{tikzpicture}[
+                box/.style={rectangle, draw=ucbblue, thick, fill=ucbblue!5, rounded corners, font=\tiny, text width=2.0cm, align=center, minimum height=0.85cm},
+                arrow/.style={-Stealth, thick, ucbblue}
+            ]
+                \node[box] (w12) at (0, 1.45) {\textbf{W12}\\Gate 0 Documental[cite: 15]};
+                \node[box, fill=yellow!15] (w13) at (2.7, 1.45) {\textbf{W13}\\Gate 1/2 + Contingencia[cite: 15]};
+                \node[box, fill=red!10, draw=red!80!black] (w14) at (5.4, 1.45) {\textbf{W14}\\Gate 2/3 (\textbf{Solo si GO})[cite: 15]};
+
+                \node[box] (w15) at (5.4, 0) {\textbf{W15}\\Tablero / Visión Opc.[cite: 15]};
+                \node[box] (w16) at (2.7, 0) {\textbf{W16}\\Cierre Evidencia $EC$[cite: 15]};
+                \node[box, fill=green!10, draw=green!60!black] (ef) at (0, 0) {\textbf{Post-W16 ($EF$)}\\Nueva Demostración[cite: 15]};
+
+                \draw[arrow] (w12) -- (w13);
+                \draw[arrow] (w13) -- (w14);
+                \draw[arrow] (w14) -- (w15);
+                \draw[arrow] (w15) -- (w16);
+                \draw[arrow] (w16) -- (ef);
+            \end{tikzpicture}
+
+            \vspace{0.08cm}
+            \begin{tcolorbox}[colback=yellow!10, colframe=black, boxsep=0.6mm, top=0.5mm, bottom=0.5mm]
+                \tiny\raggedright
+                \textbf{Contingencia al cierre W13[cite: 15]:} (A) Ruta física viable $\to$ seguir Gates 1–3; (B) Interfaz sin mov. $\to$ conservar pruebas de estados/modelos sin simular evidencia física; (C) Bloqueo externo $\to$ elevar al docente/institución[cite: 15].
+            \end{tcolorbox}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,172 @@
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{multicol}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342} | Robótica}
+\chead{Formulario Oficial — EC2 Diferido}
+\rhead{Unidad II}
+\lfoot{Material Autorizado}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\tcbset{
+    sectionbox/.style={
+        colback=ucbblue!5,
+        colframe=ucbblue,
+        fonttitle=\bfseries,
+        left=2mm, right=2mm, top=1mm, bottom=1mm,
+        boxsep=0mm,
+        arc=1mm
+    }
+}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Formulario Oficial — EC2 Diferido}}\\[0.2cm]
+\end{center}
+
+\begin{tcolorbox}[colback=yellow!10, colframe=black, title=\textbf{Aviso y Reglas de Uso}[cite: 11], left=2mm, right=2mm, top=1mm, bottom=1mm]
+    \small
+    Este formulario proporciona relaciones matemáticas de la Unidad II. No indica qué fórmula corresponde a cada apartado ni contiene procedimientos resueltos[cite: 11]. \\
+    \textbf{Permitido:} esta hoja + calculadora científica no programable[cite: 11]. \\
+    \textbf{No permitido:} apuntes, CAS, laptop, Python/Jupyter, teléfono o material adicional[cite: 11].
+\end{tcolorbox}
+
+\vspace{0.2cm}
+\begin{multicols*}{2}
+\small
+
+% --- Transformaciones homogéneas ---
+\begin{tcolorbox}[sectionbox, title=Transformaciones Homogéneas{[cite: 11]}]
+\begin{equation*}
+    T= \begin{bmatrix} R & p \\ 0 & 1 \end{bmatrix} \qquad T^{-1} = \begin{bmatrix} R^T & -R^T p \\ 0 & 1 \end{bmatrix}
+\end{equation*}
+$R^{-1}=R^T$ (para una matriz de rotación válida)[cite: 11].
+\end{tcolorbox}
+
+% --- Cinemática inversa ---
+\begin{tcolorbox}[sectionbox, title=Cinemática Inversa{[cite: 11]}]
+\begin{equation*}
+    p_W = p_6 - d_6 z_6 \qquad z_6 = R_6 \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}
+\end{equation*}
+\begin{equation*}
+    R_3^6 = ({}^0R_3)^T R_0^6 \qquad s = \pm\sqrt{1-c^2}
+\end{equation*}
+\begin{equation*}
+    q = \operatorname{atan2}(s,c)
+\end{equation*}
+Verificación genérica: $\boxed{ T(\mathbf{q}^{(k)}) \approx T_d }$[cite: 11].
+\end{tcolorbox}
+
+% --- Geometría vectorial ---
+\begin{tcolorbox}[sectionbox, title=Geometría Vectorial{[cite: 11]}]
+\begin{equation*}
+    a \times b = \begin{bmatrix} a_y b_z - a_z b_y \\ a_z b_x - a_x b_z \\ a_x b_y - a_y b_x \end{bmatrix}
+\end{equation*}
+Producto punto: $a^T b = a_x b_x + a_y b_y + a_z b_z$[cite: 11]. \\
+Vectores perpendiculares: $a^T b = 0$[cite: 11].
+\end{tcolorbox}
+
+% --- Jacobiano geométrico ---
+\begin{tcolorbox}[sectionbox, title=Jacobiano Geométrico{[cite: 11]}]
+\begin{equation*}
+    v_e = \begin{bmatrix} v_L \\ \omega \end{bmatrix} = J(\mathbf{q})\dot{\mathbf{q}}
+\end{equation*}
+Articulación revoluta:
+\begin{equation*}
+    J_i = \begin{bmatrix} z_{i-1} \times (o_n - o_{i-1}) \\ z_{i-1} \end{bmatrix}
+\end{equation*}
+Articulación prismática:
+\begin{equation*}
+    J_i = \begin{bmatrix} z_{i-1} \\ 0 \end{bmatrix}
+\end{equation*}
+\end{tcolorbox}
+
+% --- Rango y singularidad ---
+\begin{tcolorbox}[sectionbox, title=Rango y Singularidad{[cite: 11]}]
+Para $J \in \mathbb{R}^{m \times n}$: $\operatorname{rank}_{\max}J = \min(m,n)$[cite: 11]. \\
+Criterio general de singularidad:
+\begin{equation*}
+    \boxed{\operatorname{rank}J < \operatorname{rank}_{\max}}
+\end{equation*}
+Para matriz cuadrada, $\det J = 0$ implica pérdida de rango completo[cite: 11].
+\begin{equation*}
+    \det \begin{bmatrix} a & b \\ c & d \end{bmatrix} = ad - bc
+\end{equation*}
+\end{tcolorbox}
+
+% --- LSPB ---
+\begin{tcolorbox}[sectionbox, title=LSPB (Vel. Inicial/Final Nula){[cite: 11]}]
+$\Delta q = q_f - q_i$. \\
+Aceleración mínima: $\boxed{ |\ddot{q}_c| \ge \frac{4|\Delta q|}{t_f^2} }$[cite: 11]. \\
+Tiempo de blend (signos consistentes):
+\begin{equation*}
+    t_c = \frac{t_f}{2} - \frac{1}{2} \sqrt{ t_f^2 - \frac{4(q_f - q_i)}{\ddot{q}_c} }
+\end{equation*}
+Velocidad de crucero: $\dot{q}_c = \ddot{q}_c t_c$[cite: 11]. \\
+\textbf{Fase Aceleración:}
+\begin{equation*}
+    q(t) = q_i + \frac{1}{2}\ddot{q}_c t^2 \quad \dot{q}(t) = \ddot{q}_c t \quad \ddot{q}(t) = \ddot{q}_c
+\end{equation*}
+\textbf{Fase Vel. Constante:}
+\begin{equation*}
+    q(t) = q_i + \ddot{q}_c t_c \left( t - \frac{t_c}{2} \right) \quad \dot{q}(t) = \dot{q}_c \quad \ddot{q}(t) = 0
+\end{equation*}
+\textbf{Fase Deceleración:}
+\begin{align*}
+    q(t) &= q_f - \frac{1}{2}\ddot{q}_c (t_f - t)^2 \\
+    \dot{q}(t) &= \ddot{q}_c (t_f - t) \quad \ddot{q}(t) = -\ddot{q}_c
+\end{align*}
+\end{tcolorbox}
+
+% --- Energía y Dinámica ---
+\begin{tcolorbox}[sectionbox, title=Energía y Lagrange{[cite: 11]}]
+\begin{equation*}
+    L = T - V \qquad \frac{d}{dt} \left( \frac{\partial L}{\partial \dot{q}_i} \right) - \frac{\partial L}{\partial q_i} = \tau_i
+\end{equation*}
+Cinética Rotacional: $T = \frac{1}{2}J\omega^2$[cite: 11]. \\
+Cinética Traslacional: $T = \frac{1}{2}mv^2$[cite: 11]. \\
+Potencial Gravitacional: $V = mgh$[cite: 11].
+\end{tcolorbox}
+
+\begin{tcolorbox}[sectionbox, title=Dinámica General y Modelo 1R{[cite: 11]}]
+Dinámica General de Manipuladores:
+\begin{equation*}
+    \tau = M(\mathbf{q})\ddot{\mathbf{q}} + C(\mathbf{q},\dot{\mathbf{q}})\dot{\mathbf{q}} + \mathbf{g}(\mathbf{q})
+\end{equation*}
+Modelo 1R (Clase):
+\begin{align*}
+    J &= I_c + m\ell_c^2 \quad &T &= \frac{1}{2}J\dot{q}^2 \\
+    V &= mg\ell_c(1 - \cos q) \quad &\tau &= J\ddot{q} + mg\ell_c\sin q
+\end{align*}
+\end{tcolorbox}
+
+% --- Trigonometría e Identidades ---
+\begin{tcolorbox}[sectionbox, title=Identidades y Unidades{[cite: 11]}]
+\begin{align*}
+    &\sin^2\theta + \cos^2\theta = 1 \\
+    &\sin(A \pm B) = \sin A\cos B \pm \cos A\sin B \\
+    &\cos(A \pm B) = \cos A\cos B \mp \sin A\sin B \\
+    &\sin(-\theta) = -\sin\theta \qquad \cos(-\theta) = \cos\theta
+\end{align*}
+Unidades: $[\dot{q}]$=rad/s, $[\ddot{q}]$=rad/s$^2$, $[\tau]$=N$\cdot$m, $[J_{\text{in}}]$=kg$\cdot$m$^2$[cite: 11].
+\end{tcolorbox}
+
+\end{multicols*}
+\end{document}

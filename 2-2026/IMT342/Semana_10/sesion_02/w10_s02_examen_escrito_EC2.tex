@@ -1,0 +1,131 @@
+% ec2_examination.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage[most]{tcolorbox}
+\usepackage{enumitem}
+\usepackage[margin=1.8cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342} | Robótica}
+\chead{Evaluación Escrita Individual (EC2)}
+\rhead{Unidad II}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{EC2 — Modelos Analíticos, Cinemática Diferencial, Trayectorias y Dinámica}}\\[0.2cm]
+\end{center}
+
+\begin{tabular}{ll}
+\textbf{Estudiante:} \rule{8cm}{0.15mm} & \textbf{Puntaje:} \rule{2cm}{0.15mm} / 100 \\
+\textbf{Fecha:} \rule{4cm}{0.15mm} & \textbf{Tiempo recomendado:} 90–95 min.
+\end{tabular}
+
+\vspace{0.3cm}
+\begin{tcolorbox}[colback=gray!5, colframe=black, title=\textbf{Instrucciones y Condiciones}, left=1mm, right=1mm, top=1mm, bottom=1mm]
+    \small
+    \textbf{Permitido:} Formulario oficial EC2 impreso y calculadora científica no programable. \\
+    \textbf{Prohibido:} Apuntes adicionales, laptops, celulares, calculadoras CAS. \\
+    \textbf{Directrices:} Muestre procedimiento suficiente; resultados huérfanos recibirán crédito reducido. Use unidades. No descarte ramas matemáticas sin justificación. Explique el significado físico cuando se le solicite.
+\end{tcolorbox}
+
+\noindent\textbf{\large Problema 1 — Cinemática Inversa / Pieper (20 puntos)}
+
+Un manipulador 6R con muñeca esférica debe alcanzar una pose cuya posición del efector y eje $z_6$ deseado, expresados en la base, son:
+\begin{equation*}
+    {}^0p_6^d = \begin{bmatrix} 1.60 \\ -0.80 \\ 1.40 \end{bmatrix}\text{m}, \qquad {}^0z_6^d = \begin{bmatrix} 0 \\ 1 \\ 0 \end{bmatrix}, \qquad d_6 = 0.25\text{ m}
+\end{equation*}
+
+\begin{enumerate}[label=\textbf{\alph*)}]
+    \item \textbf{(5 pts)} Calcule el centro de muñeca ${}^0p_W$.
+    \item \textbf{(4 pts)} Usando la proyección del centro de muñeca sobre el plano $xy$, escriba un candidato natural para $q_1$ mediante \texttt{atan2} y calcule su valor aproximado.
+    \item \textbf{(5 pts)} En un paso posterior del subproblema de brazo se obtiene $c_3 = \frac{\sqrt{3}}{2}$. Calcule los dos posibles valores de $s_3$ y los dos ángulos principales $q_3 = \operatorname{atan2}(s_3, c_3)$. Explique brevemente por qué ambas soluciones deben conservarse inicialmente.
+    \item \textbf{(6 pts)} Una vez obtenidos $(q_1, q_2, q_3)$: 1) escriba la matriz que debe calcularse para resolver $(q_4, q_5, q_6)$; 2) explique rigurosamente cómo verificaría la validez de una solución candidata completa $\mathbf{q}^{(k)}$.
+\end{enumerate}
+
+\noindent\textbf{\large Problema 2 — Jacobiano, Velocidad y Singularidad (25 puntos)}
+
+En una configuración de un manipulador planar de dos articulaciones revolutas se conocen, expresados todos en el marco base:
+\begin{equation*}
+    o_0 = \begin{bmatrix} 0 \\ 0 \\ 0 \end{bmatrix}, \quad o_1 = \begin{bmatrix} 0 \\ 2 \\ 0 \end{bmatrix}, \quad o_2 = \begin{bmatrix} 1 \\ 2 \\ 0 \end{bmatrix}, \quad z_0 = z_1 = \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix} \text{[m]}
+\end{equation*}
+
+\begin{enumerate}[label=\textbf{\alph*)}]
+    \item \textbf{(10 pts)} Construya analíticamente las dos columnas del Jacobiano geométrico $J_1$ y $J_2$, y ensamble la matriz $J$. 
+    \item \textbf{(6 pts)} Para una velocidad articular $\dot{\mathbf{q}} = [1, -2]^T$ rad/s, calcule $v_e = J\dot{\mathbf{q}}$. Separe e interprete el significado físico de $v_L$ y $\omega$.
+    \item \textbf{(9 pts)} En otra configuración del mismo robot, el sub-Jacobiano translacional es $J_p = \begin{bmatrix} 2 & -1 \\ 4 & -2 \end{bmatrix}$. Determine:
+    \begin{enumerate}[label=\arabic*.]
+        \item El rango de la matriz.
+        \item Si la configuración es singular para una tarea de posición 2D.
+        \item Una dirección cartesiana que \textbf{no} pertenece al espacio columna de $J_p$.
+        \item Qué significa físicamente la pérdida de esa dirección.
+    \end{enumerate}
+    \textit{(Nota: No se otorgará crédito completo si la explicación consiste únicamente en indicar que el determinante es cero).} 
+\end{enumerate}
+
+\noindent\textbf{\large Problema 3 — Trayectoria LSPB (20 puntos)}
+
+Una articulación debe moverse desde $q_i = -0.50$ rad hasta $q_f = 1.00$ rad en $t_f = 4.00$ s, partiendo y terminando en reposo ($\dot{q}(0) = \dot{q}(t_f) = 0$). Se propone utilizar una aceleración constante $\ddot{q}_c = 0.50$ rad/s$^2$.
+
+\begin{enumerate}[label=\textbf{\alph*)}]
+    \item \textbf{(4 pts)} Calcule la aceleración mínima requerida y determine si el valor propuesto es factible para este movimiento.
+    \item \textbf{(6 pts)} Calcule el tiempo de mezcla de aceleración $t_c$ y la velocidad de crucero constante $\dot{q}_c$.
+    \item \textbf{(6 pts)} Evalúe numéricamente el estado cinemático $q(t), \dot{q}(t), \ddot{q}(t)$ exactamente en el instante $t = 3.50$ s. Indique primero en qué fase se encuentra el movimiento.
+    \item \textbf{(4 pts)} Explique: 1) ¿Qué variable cinemática es la que describe un perfil "trapezoidal"?; 2) ¿Por qué durante la fase de crucero $\ddot{q} = 0$ no significa que el robot esté físicamente detenido?
+\end{enumerate}
+
+\noindent\textbf{\large Problema 4 — Dinámica de Euler-Lagrange (20 puntos)}
+
+Considere el modelo de eslabón rígido 1R con energías dadas por: $T = \frac{1}{2}J\dot{q}^2$ y $V = mg\ell_c(1 - \cos q)$.
+
+\begin{enumerate}[label=\textbf{\alph*)}]
+    \item \textbf{(10 pts)} A partir de $L = T - V$, calcule analíticamente $\frac{\partial L}{\partial \dot{q}}$, $\frac{d}{dt}\left(\frac{\partial L}{\partial \dot{q}}\right)$, y $\frac{\partial L}{\partial q}$. Finalmente, obtenga la ecuación de movimiento (torque de actuador).
+    \item \textbf{(6 pts)} Use los parámetros: $J = 0.40$ kg$\cdot$m$^2$, $m = 1.20$ kg, $\ell_c = 0.30$ m, $g = 9.81$ m/s$^2$. En el estado instantáneo $q = \pi/6$ rad y $\ddot{q} = 1.50$ rad/s$^2$, calcule: 1) Torque inercial, 2) Torque gravitacional, 3) Torque total requerido en el motor.
+    \item \textbf{(4 pts)} Dada la forma general $\tau = M(\mathbf{q})\ddot{\mathbf{q}} + C(\mathbf{q}, \dot{\mathbf{q}})\dot{\mathbf{q}} + \mathbf{g}(\mathbf{q})$, indique qué representa físicamente cada término. Explique por qué la ausencia de un término de velocidad en nuestro modelo simple 1R no significa que $C(\mathbf{q}, \dot{\mathbf{q}})\dot{\mathbf{q}} = 0$ en robots de múltiples grados de libertad.
+\end{enumerate}
+
+\noindent\textbf{\large Problema 5 — Integración de Unidad II (15 puntos)}
+
+Se desea construir un procedimiento matemático completo para un robot industrial.
+
+\begin{enumerate}[label=\textbf{\alph*)}]
+    \item \textbf{(10 pts)} Para cada una de las siguientes necesidades de ingeniería, indique exclusivamente: 1) La herramienta matemática principal a utilizar, 2) Su entrada principal, 3) Su salida principal. \\
+    \textit{(Opciones de herramienta: Pieper / IK analítica, Cinemática Directa (FK), LSPB, Jacobiano, Rango/Singularidad, Dinámica)}.
+    
+    \begin{itemize}
+        \item \textbf{Alcanzar una pose deseada en el espacio:}
+        \item \textbf{Validar si una configuración candidata es correcta:}
+        \item \textbf{Desplazarse entre dos configuraciones en un tiempo definido:}
+        \item \textbf{Calcular la velocidad cartesiana del efector final:}
+        \item \textbf{Determinar si la postura actual presenta pérdida de movilidad local:}
+        \item \textbf{Estimar el torque requerido en los motores para efectuar el movimiento:}
+    \end{itemize}
+
+    \item \textbf{(5 pts)} Responda analíticamente:
+    \begin{enumerate}[label=\arabic*.]
+        \item ¿Cuál es la diferencia fundamental entre la \textbf{Cinemática Inversa Analítica} y la \textbf{Cinemática Inversa Diferencial}?
+        \item ¿Por qué estar en una configuración singular \textbf{no} significa necesariamente que "el robot no puede moverse en ninguna dirección"?
+    \end{enumerate}
+\end{enumerate}
+
+\begin{center}
+    \textbf{--- FIN DEL EXAMEN ---}
+\end{center}
+
+\end{document}

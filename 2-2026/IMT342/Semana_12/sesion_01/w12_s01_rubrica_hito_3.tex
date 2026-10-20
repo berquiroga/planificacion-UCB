@@ -1,0 +1,90 @@
+\documentclass[11pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342}}
+\chead{Rúbrica Propuesta Hito 3 (ECI-3/4) y Nota de Reprogramación}
+\rhead{Semana 12 - Sesión 1}
+\lfoot{Propuesta Sujeta a Formalización Administrativa}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Rúbrica Propuesta del Elemento Integrado ECI-3/4 (Hito 3) y Trazabilidad Curricular}}[cite: 15]
+\end{center}
+
+\section*{1. Ponderación Institucional en Evaluación Continua ($EC$) y Nota Final ($NF$)[cite: 15]}
+Fórmulas de ponderación conservadas en la especificación de la asignatura (pendientes de formalización administrativa)[cite: 15]:
+\begin{equation*}
+    \boxed{ EC = 0.25\,E_1 + 0.25\,E_2 + 0.50\,ECI_{3/4} } \qquad\qquad \boxed{ NF = 0.50\,EC + 0.50\,EF } \text{[cite: 15]}
+\end{equation*}
+
+\section*{2. Matriz de Evaluación por Dominios para ECI-3/4 (Propuesta)[cite: 15]}
+
+\noindent
+{\scriptsize
+\renewcommand{\arraystretch}{1.3}
+% La suma de los modificadores \hsize (0.75 + 1.05 + 1.20) es exactamente 3.0 para las 3 columnas X
+\begin{tabularx}{\textwidth}{|>{\hsize=0.75\hsize\raggedright\arraybackslash}X|c|>{\hsize=1.05\hsize\raggedright\arraybackslash}X|>{\hsize=1.20\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Dominio de Competencia}[cite: 15] & \textbf{Peso}[cite: 15] & \textbf{Evidencia Mínima Verificable}[cite: 15] & \textbf{Evidencia Sólida (Desempeño Superior)}[cite: 15] \\ \hline
+
+\textbf{1. Ingeniería del sistema, auditoría y compatibilidad}[cite: 15] & $20\%$[cite: 15] & Manifiesto Gate 0 completo, fuentes documentales identificadas y diagrama de arquitectura bidireccional[cite: 15]. & Versión e interfaz justificadas técnicamente; incertidumbre inicial resuelta mediante pruebas documentadas[cite: 15]. \\ \hline
+
+\textbf{2. Modelos propios y validación FK / IK / $J$}[cite: 15] & $25\%$[cite: 15] & Modelos propios implementados y protocolo de comparación con marcos/TCP alineados[cite: 15]. & Errores ($e_p, e_R, e_J, e_v$), marcos y ramas verificados en múltiples casos; diagnóstico riguroso de discrepancias[cite: 15]. \\ \hline
+
+\textbf{3. Integración ROS–ABB, estados y avance hacia control}[cite: 15] & $25\%$[cite: 15] & Ruta técnica implementada con evidencia trazable del nivel real logrado en laboratorio[cite: 15]. & Comunicación y lectura de estados verificadas; envío de comando y resultado observados según el Gate alcanzado[cite: 15]. \\ \hline
+
+\textbf{4. Seguridad, reproducibilidad, ensayos y fallos}[cite: 15] & $20\%$[cite: 15] & Checklist GO/NO-GO aplicado, plan de pruebas, logs y bitácora estructurada[cite: 15]. & Pruebas repetibles con control de versiones, análisis técnico de fallos y decisiones operativas seguras[cite: 15]. \\ \hline
+
+\textbf{5. Defensa individual y documentación}[cite: 15] & $10\%$[cite: 15] & Explica con claridad su tarea asignada y las limitaciones del sistema[cite: 15]. & Comprende toda la cadena de ingeniería transversalmente; responde preguntas de diagnóstico y transferencia[cite: 15]. \\ \hline
+
+\rowcolor{gray!15}
+\textbf{Total ECI-3/4}[cite: 15] & \textbf{100\%}[cite: 15] & \multicolumn{2}{l|}{\textit{El puntaje máximo en movimiento físico exige ejecución realmente observada y autorizada[cite: 15].}} \\ \hline
+\end{tabularx}
+}
+
+\vspace{0.4cm}
+\noindent
+\begin{minipage}[t]{0.48\textwidth}
+    \begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{Trazabilidad y Separación $EC$ vs. $EF$} {[cite: 15]}, left=2mm, right=2mm, top=1mm, bottom=1mm]
+        \scriptsize
+        \begin{itemize}
+            \item \textbf{Heredado del Elemento III[cite: 15]:} Geometría, transformaciones, modelos cinemáticos, planificación y validación cruzada[cite: 15].
+            \item \textbf{Heredado del Elemento IV[cite: 15]:} Integración con controlador, protocolos, supervisión, lectura de estados, movimiento y seguridad[cite: 15].
+            \item \textbf{Visión Opcional[cite: 15]:} No constituye prerrequisito ni desplaza la evidencia nuclear[cite: 15].
+            \item \textbf{Distinción $EC$ vs. $EF$[cite: 15]:} $EC$ (hasta W16) evalúa el proceso, bitácora y avance por Gates. $EF$ (posterior) evalúa un nuevo escenario/objetivos, pruebas de robustez y defensa individual con instrumento diferenciado[cite: 15].
+        \end{itemize}
+    \end{tcolorbox}
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.48\textwidth}
+    \begin{tcolorbox}[colback=yellow!10, colframe=black, title=\textbf{Nota Oficial de Reprogramación para Registro Académico} {[cite: 15]}, left=2mm, right=2mm, top=1mm, bottom=1mm]
+        \scriptsize
+        «Por decisión docente y ante la reducción efectiva de sesiones disponibles, las antiguas competencias de III y IV se integran en un elemento único ECI-3/4 y un Hito 3 progresivo, conservando un peso conjunto de 50\% de evaluación continua (25\%+25\%). El objetivo prioritario es integración ROS–ABB física verificable, con validación de cinemática, comunicación de estados y seguridad; visión con webcam opcional. Se conserva la instancia de evaluación final global separada, con criterios nuevos de evidencia. Se solicita validación/registro administrativo del instrumento y de cualquier ajuste conforme al reglamento institucional vigente.»[cite: 15]
+    \end{tcolorbox}
+\end{minipage}
+
+\end{document}

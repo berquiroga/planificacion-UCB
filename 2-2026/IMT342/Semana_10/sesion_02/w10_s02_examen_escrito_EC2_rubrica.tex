@@ -1,0 +1,113 @@
+% ec2_rubric.tex
+\documentclass[11pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342} | Robótica}
+\chead{Rúbrica de Calificación EC2}
+\rhead{Uso Exclusivo Docente}
+\lfoot{Especificación Evaluativa}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Rúbrica de Calificación y Criterios de Crédito Parcial (EC2)}}\\[0.2cm]
+\end{center}
+
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Principio General de Calificación}, left=1mm, right=1mm, top=1mm, bottom=1mm]
+    Otorgar crédito únicamente por la evidencia del procedimiento, no solo por el resultado numérico final. Un resultado correcto sin desarrollo matemático no recibe crédito completo. Un error aritmético simple tras un planteamiento conceptual correcto debe preservar gran parte del crédito parcial.
+\end{tcolorbox}
+
+\vspace{0.4cm}
+{\small
+\renewcommand{\arraystretch}{1.5}
+\noindent
+\begin{tabularx}{\textwidth}{|>{\hsize=0.8\hsize\raggedright\arraybackslash}X|>{\hsize=1.2\hsize\raggedright\arraybackslash}X|>{\hsize=1\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!10} \textbf{Problema / Puntaje Max.} & \textbf{Desglose de Puntos} & \textbf{Penalizaciones (Crédito Parcial)} \\ \hline
+
+\textbf{P1. Pieper / IK (20 pts)} & 
+\textbf{a)} Fórmula (2), Álgebra (2), Resultado (1). \newline
+\textbf{b)} Lógica \texttt{atan2} (2), Coordenadas $p_W$ (1), Resultado (1). \newline
+\textbf{c)} Computa $s_3$ (2), Ángulos (2), Lógica Ramas (1). \newline
+\textbf{d)} Fórmula Orientación (3), Condición FK y pose total (3). & 
+Se reduce crédito drásticamente si se ignora el cuadrante en b) y c). Cero puntos en c) si descarta la segunda rama matemática sin justificar. \\ \hline
+
+\textbf{P2. Jacobiano y Sing. (25 pts)} & 
+\textbf{a)} Brazo y vector cruz $J_1$ (5), Ídem $J_2$ (3), Matriz final (2). \newline
+\textbf{b)} Multiplicación (3), Separa y nombra $v_L, \omega$ (2), Interpretación (1). \newline
+\textbf{c)} Rango matricial=1 (2), Estado singular (2), Vector perdido correcto (2), Interpretación física local (3). & 
+Reducción mayor si se mezclan marcos de referencia (frames). Máximo 3/9 pts en c) si la justificación recae *únicamente* en calcular el determinante algebraico en lugar de demostrar la pérdida de movilidad direccional. \\ \hline
+
+\textbf{P3. LSPB (20 pts)} & 
+\textbf{a)} Ecuación acc. mínima (2), Factibilidad (2). \newline
+\textbf{b)} Estructura $t_c$ (2), Resultado $t_c$ (2), Velocidad de crucero (2). \newline
+\textbf{c)} Identifica fase desaceleración (1), Valor de $q$ (2), Valor de $\dot{q}$ (2), Valor de $\ddot{q}$ (1). \newline
+\textbf{d)} \textit{Trapezoidal} es velocidad (2), Lógica de inercia y movimiento constante en $\ddot{q}=0$ (2). & 
+Cero puntos en la fase de evaluación c) si identifica incorrectamente la fase del movimiento en el tiempo solicitado. Pequeña penalidad por errores de calculadora tras formulación correcta. \\ \hline
+
+\textbf{P4. Dinámica (20 pts)} & 
+\textbf{a)} Función L (2), $\partial L/\partial \dot{q}$ (2), Derivada temporal (2), $\partial L/\partial q$ (2), Ecuación final unificada (2). \newline
+\textbf{b)} Torque Inercial (2), Torque Gravitacional (2), Total y Unidades (2). \newline
+\textbf{c)} Significado de $M$ (1), $C$ (1), $g$ (1), Evita generalización (1). & 
+Reducción sustancial si el estudiante evita usar el formalismo de Euler-Lagrange e inventa fórmulas. Penalizar error de signo de la gravedad derivado por no usar coordenadas correctas. \\ \hline
+
+\textbf{P5. Integración (15 pts)} & 
+\textbf{a)} Identifica las herramientas correctas (4), Entradas apropiadas (3), Salidas apropiadas (3). \newline
+\textbf{b)} Define diferencia analítica/diferencial (3), Entiende la supervivencia del rango parcial en singularidad (2). & 
+Crédito parcial dependiente de la lógica sistémica de la tabla. Penalizar ambigüedades. \\ \hline
+
+\end{tabularx}
+}
+
+\newpage
+
+\section*{Matriz de Análisis de Competencias Post-EC2}
+
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Instrucción de Registro Docente}, left=1mm, right=1mm, top=1mm, bottom=1mm]
+    Esta tabla es exclusivamente diagnóstica y debe mantenerse separada de las calificaciones numéricas en el sistema. Complete la clasificación para cada estudiante indicando: \textbf{S} (Strong / Fuerte), \textbf{P} (Partial / Parcial), o \textbf{W} (Weak / Débil).
+\end{tcolorbox}
+
+\vspace{0.4cm}
+{\small
+\renewcommand{\arraystretch}{1.5}
+\noindent
+\begin{tabularx}{\textwidth}{|>{\hsize=1.2\hsize\raggedright\arraybackslash}X|>{\hsize=0.8\hsize\centering\arraybackslash}X|>{\hsize=0.8\hsize\centering\arraybackslash}X|>{\hsize=0.8\hsize\centering\arraybackslash}X|>{\hsize=0.8\hsize\centering\arraybackslash}X|>{\hsize=0.8\hsize\centering\arraybackslash}X|>{\hsize=0.8\hsize\centering\arraybackslash}X|>{\hsize=1\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{gray!20} \textbf{Estudiante} & \textbf{Pieper} (P1) & \textbf{Jacobiano} (P2a) & \textbf{Cinemática Dif.} (P2b/P5) & \textbf{Singularidades} (P2c) & \textbf{LSPB} (P3) & \textbf{Dinámica} (P4) & \textbf{Notas Intervención} \\ \hline
+& S / P / W & S / P / W & S / P / W & S / P / W & S / P / W & S / P / W & \\ \hline
+& S / P / W & S / P / W & S / P / W & S / P / W & S / P / W & S / P / W & \\ \hline
+& S / P / W & S / P / W & S / P / W & S / P / W & S / P / W & S / P / W & \\ \hline
+& S / P / W & S / P / W & S / P / W & S / P / W & S / P / W & S / P / W & \\ \hline
+& S / P / W & S / P / W & S / P / W & S / P / W & S / P / W & S / P / W & \\ \hline
+\end{tabularx}
+}
+
+\vspace{0.6cm}
+\textbf{Criterios de Diagnóstico (Guidance):}
+\begin{itemize}
+    \item \textbf{Strong (Fuerte):} Selecciona el procedimiento correcto y lo ejecuta con errores aritméticos mínimos o nulos.
+    \item \textbf{Partial (Parcial):} El concepto central es visible y comprendido, pero restan lagunas críticas en la ejecución procedimental.
+    \item \textbf{Weak (Débil):} Incapacidad constante de iniciar el método, o evidencia clara de una falacia conceptual o estructural importante.
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,90 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342}}
+\chead{Checklist Operativo de Seguridad y Autorización (Gate 3)}
+\rhead{Semana 12 - Sesión 1}
+\lfoot{Protocolo GO / NO-GO}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{red!80!black}{Protocolo y Checklist de Seguridad para Pruebas en Hardware}}[cite: 15]
+\end{center}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!80!black, title=\textbf{Estado Inicial de la Sesión: NO-GO para Movimiento Físico} {[cite: 15]}, left=2mm, right=2mm, top=1mm, bottom=1mm]
+    \small
+    Ninguna prueba con movimiento físico procede hasta que el operador autorizado y el responsable del laboratorio completen la verificación externa y declaren expresamente \texttt{GO}[cite: 15]. Ante cualquier campo crítico pendiente, duda sobre marcos/objetivos o falta de supervisión formal, la decisión obligatoria es \textbf{\texttt{NO-GO}}[cite: 15].
+\end{tcolorbox}
+
+\section*{1. Distinción de Niveles de Prueba y Evidencia[cite: 15]}
+\begin{center}
+\footnotesize
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{\textwidth}{|>{\hsize=0.8\hsize\raggedright\arraybackslash}X|>{\hsize=0.9\hsize\raggedright\arraybackslash}X|>{\hsize=1.15\hsize\raggedright\arraybackslash}X|>{\hsize=1.15\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{gray!20}
+\textbf{Nivel de Prueba}[cite: 15] & \textbf{Ejemplo}[cite: 15] & \textbf{Lo que Demuestra}[cite: 15] & \textbf{Lo que NO Demuestra}[cite: 15] \\ \hline
+Simulación offline[cite: 15] & FK/MoveIt/RViz sin controlador[cite: 15] & Coherencia de software/modelo bajo supuestos[cite: 15] & Estado real del robot ni seguridad física[cite: 15] \\ \hline
+Conectividad sin movimiento[cite: 15] & Respuesta del controlador bajo interfaz autorizada[cite: 15] & Presencia de comunicación determinada[cite: 15] & Control de trayectoria ni autorización de movimiento[cite: 15] \\ \hline
+Estado observado[cite: 15] & \texttt{joint\_states} verificablemente originados en ABB[cite: 15] & Adquisición de datos y trazabilidad de lectura[cite: 15] & Aceptación de comando de movimiento[cite: 15] \\ \hline
+Movimiento supervisado[cite: 15] & Objetivo ejecutado y medido en zona protegida[cite: 15] & Evidencia física acotada del Gate 3[cite: 15] & Seguridad certificada o validez en cualquier condición[cite: 15] \\ \hline
+\end{tabularx}
+\end{center}
+
+\section*{2. Checklist de Puertas de Seguridad Previas a Gate 3[cite: 15]}
+\begin{center}
+\footnotesize
+\renewcommand{\arraystretch}{1.45}
+\begin{tabularx}{\textwidth}{|>{\hsize=1.25\hsize\raggedright\arraybackslash}X|>{\hsize=1.05\hsize\raggedright\arraybackslash}X|>{\hsize=0.85\hsize\raggedright\arraybackslash}X|c|>{\hsize=0.85\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Condición Crítica}[cite: 15] & \textbf{Cómo se Verifica}[cite: 15] & \textbf{Autoridad que Confirma}[cite: 15] & \textbf{Estado}[cite: 15] & \textbf{Evidencia / Fecha}[cite: 15] \\ \hline
+1. Identidad / controlador / manual correcto[cite: 15] & Inspección e inventario[cite: 15] & Responsable técnico[cite: 15] & Pendiente & \\ \hline
+2. Autorización de acceso al robot[cite: 15] & Registro institucional[cite: 15] & Laboratorio[cite: 15] & Pendiente & \\ \hline
+3. Operador habilitado y supervisor presente[cite: 15] & Asignación formal[cite: 15] & Laboratorio[cite: 15] & Pendiente & \\ \hline
+4. Modo operativo permitido[cite: 15] & Protocolo / manual concreto[cite: 15] & Operador autorizado[cite: 15] & Pendiente & \\ \hline
+5. Zona de exclusión y despeje físico[cite: 15] & Inspección situacional[cite: 15] & Operador autorizado[cite: 15] & Pendiente & \\ \hline
+6. Parada de emergencia (E-stop) y parada normal verificadas[cite: 15] & Procedimiento institucional[cite: 15] & Operador autorizado[cite: 15] & Pendiente & \\ \hline
+7. Trayectoria y objetivos inspeccionados[cite: 15] & Validación offline y revisión[cite: 15] & Operador / Docente[cite: 15] & Pendiente & \\ \hline
+8. Límites, velocidad reducida, tool/TCP y base[cite: 15] & Modelo / doc. / revisión[cite: 15] & Operador autorizado[cite: 15] & Pendiente & \\ \hline
+9. Riesgo de objeto/pieza/gripper minimizado (sin pieza peligrosa en 1er ensayo)[cite: 15] & Configuración y evaluación local[cite: 15] & Operador autorizado[cite: 15] & Pendiente & \\ \hline
+10. Registro de estado y mecanismos de cancelación/aborto[cite: 15] & Protocolo aprobado[cite: 15] & Operador autorizado[cite: 15] & Pendiente & \\ \hline
+11. Condiciones para abortar y recuperar[cite: 15] & Procedimiento aprobado[cite: 15] & Laboratorio[cite: 15] & Pendiente & \\ \hline
+\end{tabularx}
+\end{center}
+
+\vspace{0.3cm}
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Registro de Decisión para Prueba Específica} {[cite: 15]}, left=2mm, right=2mm, top=2mm, bottom=2mm]
+    \small
+    \textbf{Decisión Operativa[cite: 15]:} \qquad $\square$ \textbf{\texttt{GO}} \qquad\qquad $\square$ \textbf{\texttt{NO-GO}} \\[0.3cm]
+    \textbf{Tipo de prueba autorizada (alcance exacto)[cite: 15]:} \rule{9.5cm}{0.15mm} \\[0.3cm]
+    \textbf{Firma e identidad del operador autorizado[cite: 15]:} \rule{9.2cm}{0.15mm} \\[0.3cm]
+    \textbf{Fecha, hora y referencia al protocolo local[cite: 15]:} \rule{9.2cm}{0.15mm}
+    \vspace{0.15cm}
+    \par\scriptsize\textit{Nota importante: Esta plantilla no certifica ni sustituye las normas oficiales de ABB ni los reglamentos locales de seguridad del laboratorio. Prohibido puentear resguardos o improvisar secuencias de arranque[cite: 15].}
+\end{tcolorbox}
+
+\end{document}

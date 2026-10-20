@@ -1,0 +1,145 @@
+% ec2_solutions.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342} | Robótica}
+\chead{Solucionario Oficial EC2}
+\rhead{Uso Estudiantil / Docente}
+\lfoot{M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{red!80!black}{Solucionario Examen Escrito Individual (EC2)}}\\[0.2cm]
+\end{center}
+
+\section*{Problema 1 — Cinemática Inversa / Pieper (20 pts)}
+
+\textbf{a) Centro de Muñeca (5 pts)}
+\begin{equation*}
+    {}^0p_W = {}^0p_6^d - d_6{}^0z_6^d = \begin{bmatrix} 1.60 \\ -0.80 \\ 1.40 \end{bmatrix} - 0.25 \begin{bmatrix} 0 \\ 1 \\ 0 \end{bmatrix} = \boxed{ \begin{bmatrix} 1.60 \\ -1.05 \\ 1.40 \end{bmatrix} \text{m} } \text{}
+\end{equation*}
+
+\textbf{b) Ángulo Base (4 pts)}
+\begin{equation*}
+    q_1 = \operatorname{atan2}(p_{Wy}, p_{Wx}) = \operatorname{atan2}(-1.05, 1.60) \approx \boxed{ -0.581 \text{ rad} \approx -33.3^\circ } \text{}
+\end{equation*}
+
+\textbf{c) Ramas de Brazo (5 pts)}
+Si $c_3 = \frac{\sqrt{3}}{2}$, por identidad pitagórica $s_3 = \pm\sqrt{1 - \frac{3}{4}} = \pm\frac{1}{2}$.
+\begin{align*}
+    q_3^{(1)} &= \operatorname{atan2}\left( \frac{1}{2}, \frac{\sqrt{3}}{2} \right) = \boxed{ \frac{\pi}{6} } \text{} \\
+    q_3^{(2)} &= \operatorname{atan2}\left( -\frac{1}{2}, \frac{\sqrt{3}}{2} \right) = \boxed{ -\frac{\pi}{6} } \text{}
+\end{align*}
+\textbf{Explicación:} Ambas soluciones matemáticas deben conservarse porque representan dos ramas geométricas distintas y físicamente reales (ej. postura codo-arriba y codo-abajo) que logran posicionar la muñeca en el mismo punto del espacio.
+
+\textbf{d) Separación de muñeca y verificación (6 pts)}
+1. La matriz que debe calcularse es la de orientación residual: $\boxed{ {}^3R_6 = ({}^0R_3)^T {}^0R_6^d }$. \\
+2. Para verificar la solución candidata $\mathbf{q}^{(k)}$, se debe inyectar el vector completo en el modelo de Cinemática Directa (FK) y evaluar que la matriz homogénea resultante reproduzca (con un margen de error numérico) la pose objetivo original: $\boxed{ {}^0T_6(\mathbf{q}^{(k)}) \approx {}^0T_6^d }$. \textit{No basta con revisar solo la posición, debe cuadrar la pose completa.}
+
+\section*{Problema 2 — Jacobiano y Singularidades (25 pts)}
+
+\textbf{a) Construcción (10 pts)}
+Primera columna ($J_1$):
+\begin{equation*}
+    o_2 - o_0 = \begin{bmatrix} 1 \\ 2 \\ 0 \end{bmatrix} \implies z_0 \times (o_2 - o_0) = \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix} \times \begin{bmatrix} 1 \\ 2 \\ 0 \end{bmatrix} = \begin{bmatrix} -2 \\ 1 \\ 0 \end{bmatrix} \implies J_1 = \boxed{ \begin{bmatrix} -2 \\ 1 \\ 0 \\ 0 \\ 0 \\ 1 \end{bmatrix} } \text{}
+\end{equation*}
+Segunda columna ($J_2$):
+\begin{equation*}
+    o_2 - o_1 = \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix} \implies z_1 \times (o_2 - o_1) = \begin{bmatrix} 0 \\ 1 \\ 0 \end{bmatrix} \implies J_2 = \boxed{ \begin{bmatrix} 0 \\ 1 \\ 0 \\ 0 \\ 0 \\ 1 \end{bmatrix} } \text{}
+\end{equation*}
+Jacobiano ensamblado: $J = \boxed{ \begin{bmatrix} -2 & 0 \\ 1 & 1 \\ 0 & 0 \\ 0 & 0 \\ 0 & 0 \\ 1 & 1 \end{bmatrix} }$.
+
+\textbf{b) Cinemática Diferencial (6 pts)}
+\begin{equation*}
+    v_e = J\dot{\mathbf{q}} = \begin{bmatrix} -2 & 0 \\ 1 & 1 \\ 0 & 0 \\ 0 & 0 \\ 0 & 0 \\ 1 & 1 \end{bmatrix} \begin{bmatrix} 1 \\ -2 \end{bmatrix} = \boxed{ \begin{bmatrix} -2 \\ -1 \\ 0 \\ 0 \\ 0 \\ -1 \end{bmatrix} } \text{}
+\end{equation*}
+\textbf{Interpretación:} $v_L = [-2, -1, 0]^T$ m/s indica que el efector se traslada linealmente en el cuadrante negativo del plano XY. $\omega = [0, 0, -1]^T$ rad/s indica que el efector rota sobre el eje $-z$ (sentido horario).
+
+\textbf{c) Singularidades (9 pts)}
+1. Dado $J_p = \begin{bmatrix} 2 & -1 \\ 4 & -2 \end{bmatrix}$, la segunda fila es proporcional a la primera (y la segunda columna proporcional a la primera). Por tanto, $\operatorname{rank}(J_p) = 1$. \\
+2. Como el rango es estrictamente menor a la dimensión de la tarea (2D), la configuración es \textbf{Singular}. \\
+3. El espacio columna (las direcciones donde el robot \textit{sí} puede moverse instantáneamente) está generado por el vector $\begin{bmatrix} 1 \\ 2 \end{bmatrix}$. Una dirección ortogonal que se ha \textbf{perdido} es $\boxed{ \begin{bmatrix} -2 \\ 1 \end{bmatrix} }$ (u otra normalizada). \\
+4. \textbf{Significado Físico:} Significa que, sin importar cuánto giren los motores en este instante, el efector no puede generar un vector de velocidad que contenga una componente en la dirección perpendicular perdida.
+
+\section*{Problema 3 — Trayectoria LSPB (20 pts)}
+
+\textbf{a) Factibilidad (4 pts)}
+\begin{equation*}
+    |\ddot{q}_c|_{\min} = \frac{4|q_f - q_i|}{t_f^2} = \frac{4|1.00 - (-0.50)|}{4^2} = \frac{4(1.50)}{16} = \boxed{ 0.375 \text{ rad/s}^2 } \text{}
+\end{equation*}
+Como la aceleración propuesta es $\ddot{q}_c = 0.50 \ge 0.375$, el perfil es \textbf{factible}.
+
+\textbf{b) Parámetros del perfil (6 pts)}
+\begin{align*}
+    t_c &= \frac{t_f}{2} - \frac{1}{2}\sqrt{t_f^2 - \frac{4(q_f - q_i)}{\ddot{q}_c}} = 2 - 0.5\sqrt{16 - \frac{6}{0.50}} = 2 - 0.5\sqrt{4} = 2 - 1 = \boxed{ 1.00 \text{ s} } \text{} \\
+    \dot{q}_c &= \ddot{q}_c t_c = (0.50)(1.00) = \boxed{ 0.50 \text{ rad/s} } \text{}
+\end{align*}
+
+\textbf{c) Estado instantáneo (6 pts)}
+En $t = 3.50$ s, el movimiento se encuentra en la \textbf{Fase de Deceleración} (pues $t_f - t_c = 3.00 < t$).
+\begin{align*}
+    q(3.50) &= q_f - \frac{1}{2}\ddot{q}_c(t_f - t)^2 = 1.00 - 0.5(0.50)(4 - 3.50)^2 = 1.00 - 0.25(0.25) = \boxed{ 0.9375 \text{ rad} } \text{} \\
+    \dot{q}(3.50) &= \ddot{q}_c(t_f - t) = 0.50(4 - 3.50) = \boxed{ 0.25 \text{ rad/s} } \text{} \\
+    \ddot{q}(3.50) &= \boxed{ -0.50 \text{ rad/s}^2 } \text{}
+\end{align*}
+
+\textbf{d) Interpretación (4 pts)}
+1) El perfil trapezoidal describe la gráfica de la \textbf{velocidad} $\dot{q}(t)$. 2) Durante la fase de crucero $\ddot{q} = 0$, pero la velocidad articular se mantiene constante y no nula ($\dot{q} = \dot{q}_c \neq 0$); por lo tanto, el robot sigue avanzando físicamente a lo largo de su ruta de forma uniforme.
+
+\section*{Problema 4 — Dinámica (20 pts)}
+
+\textbf{a) Derivación (10 pts)}
+\begin{equation*}
+    L = T - V = \frac{1}{2}J\dot{q}^2 - mg\ell_c(1 - \cos q) \text{}
+\end{equation*}
+\begin{equation*}
+    \frac{\partial L}{\partial \dot{q}} = J\dot{q}, \qquad \frac{d}{dt}\left(\frac{\partial L}{\partial \dot{q}}\right) = J\ddot{q}, \qquad \frac{\partial L}{\partial q} = -mg\ell_c\sin q \text{}
+\end{equation*}
+Reemplazando en la ecuación de Euler-Lagrange: $J\ddot{q} - (-mg\ell_c\sin q) = \tau \implies \boxed{ \tau = J\ddot{q} + mg\ell_c\sin q }$.
+
+\textbf{b) Torque Numérico (6 pts)}
+\begin{align*}
+    \tau_{\text{inercial}} &= J\ddot{q} = 0.40(1.50) = \boxed{ 0.60 \text{ N}\cdot\text{m} } \text{} \\
+    \tau_{\text{gravedad}} &= mg\ell_c\sin q = (1.20)(9.81)(0.30)\sin\left(\frac{\pi}{6}\right) = 3.5316(0.50) = \boxed{ 1.7658 \text{ N}\cdot\text{m} } \text{} \\
+    \tau_{\text{total}} &= 0.60 + 1.7658 \approx \boxed{ 2.366 \text{ N}\cdot\text{m} } \text{}
+\end{align*}
+
+\textbf{c) Interpretación (4 pts)}
+$M(\mathbf{q})\ddot{\mathbf{q}}$ representa la contribución inercial (esfuerzo para acelerar las masas). $C(\mathbf{q}, \dot{\mathbf{q}})\dot{\mathbf{q}}$ agrupa fuerzas dependientes de la velocidad (Coriolis y fuerzas centrífugas debidas al acoplamiento articular). $\mathbf{g}(\mathbf{q})$ representa la carga puramente gravitacional dependiente de la postura del robot. El modelo 1R es un sistema escalar rígido; su simplicidad anula las fuerzas de interacción cruzada entre eslabones, pero esto no debe generalizarse a los sistemas 6-GDL reales.
+
+\section*{Problema 5 — Integración (15 pts)}
+
+\textbf{a) Arquitectura (10 pts)}
+\begin{itemize}
+    \item \textbf{Alcanzar pose:} IK analítica / Pieper | Entrada: $T_d$ | Salida: $q^{(k)}$.
+    \item \textbf{Validar configuración:} Cinemática Directa (FK) | Entrada: $q^{(k)}$ | Salida: $T(q^{(k)})$.
+    \item \textbf{Desplazarse en tiempo:} LSPB | Entrada: $q_i, q_f, t_f$ | Salida: $q, \dot{q}, \ddot{q}$.
+    \item \textbf{Calcular vel. cartesiana:} Jacobiano Geométrico | Entrada: $q, \dot{q}$ | Salida: $\dot{x}$ ó $v_e$.
+    \item \textbf{Diagnosticar movilidad:} Rango / Singularidad | Entrada: Jacobiano $J(q)$ | Salida: Rango y direcciones perdidas.
+    \item \textbf{Estimar torque:} Dinámica (Euler-Lagrange) | Entrada: $q, \dot{q}, \ddot{q}$ | Salida: $\tau(t)$.
+\end{itemize}
+
+\textbf{b) Distinciones (5 pts)}
+1. La IK Analítica busca posiciones articulares absolutas dadas una pose cartesiana estática. La IK Diferencial opera localmente a nivel de velocidades, usando la inversa del Jacobiano para rastrear desplazamientos instantáneos. \\
+2. Una singularidad implica la pérdida del rango completo matricial (se pierde \textit{al menos una} dirección de movimiento), pero el espacio columna persistente indica que el robot aún puede moverse libremente a lo largo de las demás direcciones tangenciales en el espacio cartesiano.
+
+\end{document}
