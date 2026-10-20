@@ -1,0 +1,66 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Clave Docente RC}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Clave Docente: Diagnóstico Individual RC (Segmento 1)}]
+    \centering \textbf{Derivación Matemática y Criterios de Corrección}
+\end{tcolorbox}
+
+\section*{Solucionario y Derivación Paso a Paso}
+
+\begin{enumerate}
+    \item \textbf{Condición Inicial ($v_C(0^+)$):} \\
+    Por dato del problema, el estado previo es $v_C(0^-) = 3\,\text{V}$. Dado que estamos bajo condiciones de conmutación ordinarias sin fuentes impulsivas, aplicamos el Principio de Continuidad de la tensión en el capacitor:
+    $$v_C(0^+) = v_C(0^-) = \mathbf{3\,\text{V}}$$
+    \textit{Error común a vigilar:} Asumir ciegamente que $v_C(0^+)=0$ u obviar el estado preexistente de la red anterior.
+    
+    \item \textbf{Condición Final ($v_C(\infty)$):} \\
+    Para $t \to \infty$, el capacitor en un circuito DC se comporta como un circuito abierto ($i_C \to 0$). El nodo $a$ queda definido por el divisor de tensión entre $R_1$ y $R_2$ conectado a la fuente de $12\,\text{V}$:
+    $$v_C(\infty) = 12\,\text{V} \cdot \left( \frac{R_2}{R_1 + R_2} \right) = 12 \cdot \left( \frac{4\text{k}}{4\text{k} + 4\text{k}} \right) = \mathbf{6\,\text{V}}$$
+    
+    \item \textbf{Resistencia Equivalente ($R_{eq}$):} \\
+    La resistencia se observa desde los terminales del capacitor ($a$ y tierra) en la \textbf{red posterior} a la conmutación ($t > 0$), con las fuentes independientes apagadas. Apagar la fuente ideal de voltaje de $12\,\text{V}$ significa reemplazarla por un cortocircuito a tierra.
+    $$R_{eq} = R_1 \parallel R_2 = 4\,\text{k}\Omega \parallel 4\,\text{k}\Omega = \mathbf{2\,\text{k}\Omega}$$
+    
+    \item \textbf{Constante de Tiempo ($\tau$):} \\
+    Revisión dimensional: $\Omega \cdot \text{F} = \text{s}$.
+    $$\tau = R_{eq} \cdot C = (2000\,\Omega)(50 \times 10^{-6}\,\text{F}) = \mathbf{0.100\,\text{s}}$$
+    
+    \item \textbf{Ecuación Dinámica y Bosquejo:} \\
+    Utilizando la solución estándar de primer orden $v_C(t) = v_C(\infty) + [v_C(0^+) - v_C(\infty)]e^{-t/\tau}$:
+    $$v_C(t) = 6 + (3 - 6)e^{-t/0.1}$$
+    $$\mathbf{v_C(t) = 6 - 3e^{-10t} \,\text{V}} \quad \text{para } t \ge 0 \text{ (en segundos)}$$
+    
+    \textbf{Interpretación Física:}
+    \begin{itemize}
+        \item La gráfica \textbf{asciende} monótonamente partiendo de $3\,\text{V}$ hasta asintotarse en $6\,\text{V}$.
+        \item La pendiente inicial es $\frac{dv_C}{dt}\Big|_{0^+} = \frac{v_C(\infty) - v_C(0^+)}{\tau} = \frac{6 - 3}{0.1} = \mathbf{+30\,\text{V/s}}$. (Positiva, confirmando la carga).
+        \item A una constante de tiempo ($t = 0.1\,\text{s}$), $v_C(0.1) = 6 - 3e^{-1} \approx \mathbf{4.896\,\text{V}}$.
+    \end{itemize}
+\end{enumerate}
+
+\end{document}

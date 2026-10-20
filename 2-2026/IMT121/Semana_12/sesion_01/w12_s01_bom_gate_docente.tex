@@ -1,0 +1,70 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | BOM y Control de Aprobación}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{warnred}{RGB}{200, 0, 0}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=warnred!5!white, colframe=warnred, title=\textbf{BOM PROVISIONAL Y GATE DE AUTORIZACIÓN (USO DOCENTE)}]
+    \centering \textbf{Preparación de Laboratorio Integrado: RLC Serie} \\
+    \textbf{¡IMPORTANTE: NO ORDENAR COMPRAS HASTA VALIDAR ESTA HOJA!}
+\end{tcolorbox}
+
+\section*{1. Modelo Operativo y Rotación Asumida}
+El diseño de la experiencia depende estrictamente del inventario funcional real.
+\begin{itemize}
+    \item \textbf{Recursos Tentativos:} 3 Generadores de Funciones y 3 Osciloscopios.
+    \item \textbf{Esquema de Rotación:} Cohorte de 9 grupos distribuidos en \textbf{3 Tandas (3 grupos por turno)}. Un cuarto osciloscopio no está confirmado ni asegurado en este planeamiento.
+\end{itemize}
+
+\section*{2. Lista de Materiales y Equipos (BOM Candidata)}
+
+\renewcommand{\arraystretch}{1.5}
+\noindent
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight}p{3cm} >{\RaggedRight\arraybackslash}X >{\centering\arraybackslash}p{2.5cm} >{\centering\arraybackslash}p{2.5cm}}
+\toprule
+\textbf{Ítem y Función} & \textbf{Especificación Técnica a Comprobar} & \textbf{Cantidad} & \textbf{Acción Pdt.} \\ 
+\midrule
+Generador de Señales & Salida efectiva, impedancia interna ($R_{gen}$), rise time, amplitud nominal y masa. & 3 pares con el Osciloscopio & Probar 1 a 1 \\ \addlinespace
+Osciloscopio & Base de tiempo, tasa de muestras, sondas de medición, modo de disparo y \textbf{aislamiento}. & 3 equipos. & Probar 1 a 1 \\ \addlinespace
+Inductor (Energía Magnética) & \textbf{Candidato: $10\,\text{mH}$}. Verificar resistencia DC ($R_{DCR}$), tolerancia y corriente de saturación. & Según \# Grupos & NO ORDENAR \\ \addlinespace
+Capacitor (Energía Eléctrica) & \textbf{Candidato: $1\,\mu\text{F}$ No Polarizado}. Verificar límite dieléctrico/tensión, tolerancia. & Según \# Grupos & NO ORDENAR \\ \addlinespace
+Resistores & Para modelar $R_{total}$ sub/crítico/sobreamortiguado tras deducir $R_{gen} + R_{DCR}$. & Pendiente & NO ORDENAR \\ 
+\bottomrule
+\end{tabularx}
+
+\vspace{0.6cm}
+\begin{tcolorbox}[colback=gray!5, colframe=black, title=\textbf{Gate de Autorización Docente y Seguridad (Hito de Validación)}]
+La Práctica Integrada NO ESTÁ AUTORIZADA hasta que el Docente Responsable firme o tilde todas las comprobaciones ineludibles:
+\begin{itemize}
+    \item[$\square$] Probados y operativos 3 Generadores y 3 Osciloscopios con sus accesorios.
+    \item[$\square$] \textbf{Crítico:} Revisadas las referencias de tierra. Ninguna pinza de masa será conectada a nodos activos (potenciales flotantes) que cortocircuiten el generador.
+    \item[$\square$] Deducidos mediante óhmetro los valores de $R_{DCR}$ del inductor real.
+    \item[$\square$] Calculados los regímenes de disipación de potencia de los resistores a adquirir para evitar quemaduras o humo.
+    \item[$\square$] Ejecutada una prueba "Piloto" por parte del docente con el montaje final (generar, capturar, comparar $\omega_0$ y medir el tiempo logístico real de la prueba).
+\end{itemize}
+\end{tcolorbox}
+
+\end{document}

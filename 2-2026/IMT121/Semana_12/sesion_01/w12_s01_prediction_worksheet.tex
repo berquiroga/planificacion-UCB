@@ -1,0 +1,70 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Protocolo de Predicción}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{warnred}{RGB}{200, 0, 0}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Protocolo de Predicción: Análisis Transitorio RC frente a RLC}]
+    \centering \textbf{Registro Preparatorio de Simulación y Laboratorio}
+\end{tcolorbox}
+
+\textbf{Estudiante:} \hrulefill \quad \textbf{Fecha:} \hrulefill
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=warnred!5!white, colframe=warnred, title=\textbf{Prohibición Operativa (¡Atención!)}]
+Es improcedente abrir LTspice o encender los instrumentos del banco de laboratorio sin haber definido cuantitativamente \textbf{qué estamos buscando}. Rellenar esta tabla analítica es obligatorio para obtener la validación y autorización del docente.
+\end{tcolorbox}
+
+\section*{1. Matriz de Contraste Físico-Matemático}
+Complete la tabla infiriendo los datos a partir del análisis analítico teórico. \textit{Asuma componentes ideales y condiciones de reposo previas ($0\,\text{V}, 0\,\text{A}$) a la excitación temporal}.
+
+\vspace{0.3cm}
+\renewcommand{\arraystretch}{2}
+\noindent
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight}p{4cm} >{\RaggedRight\arraybackslash}X >{\RaggedRight\arraybackslash}X}
+\toprule
+\textbf{Elemento a anticipar} & \textbf{Circuito Serie RC} \newline ($10\,\text{k}\Omega, 470\,\mu\text{F}$) & \textbf{Circuito Serie RLC} \newline ($50\,\Omega, 10\,\text{mH}, 1\,\mu\text{F}$) \\ 
+\midrule
+$v_C(0^+)$ (Arranque Voltaje) & \rule{3cm}{0.4pt} & \rule{3cm}{0.4pt} \\ 
+$i_L(0^+)$ (Arranque Corriente) & N/A & \rule{3cm}{0.4pt} \\ 
+$v_C(\infty)$ tras un escalón DC estable de 9V & \rule{3cm}{0.4pt} & \rule{3cm}{0.4pt} \\ 
+Parámetro(s) de inercia y escala de rapidez del modelo & $R_{eq} =$ \rule{2cm}{0.4pt} \newline $\tau =$ \rule{2.5cm}{0.4pt} & $R_{total} =$ \rule{1.5cm}{0.4pt} \newline $\omega_0 =$ \rule{2.5cm}{0.4pt} \newline $\zeta =$ \rule{2.5cm}{0.4pt} \\ 
+Tendencia/Forma de Onda (Amortiguamiento) & Monotónica & Sub / Crítico / Sobre \newline \rule{3cm}{0.4pt} \\ 
+Escala temporal para configurar el instrumento & Ventana en: \textit{Segundos} & Ventana en: \textit{Milisegundos} \\ 
+Trazas (nodos) a comparar en visor & \rule{3.5cm}{0.4pt} & \rule{3.5cm}{0.4pt} \\ 
+\bottomrule
+\end{tabularx}
+
+\section*{2. Parámetros Físicos No Ideales (Por Verificar)}
+Indique tres parámetros físicos o características de instrumentación del "Mundo Real" que deberá medir con un multímetro, y que no están especificados en los valores ideales nominales impresos en el esquema:
+
+\begin{enumerate}\setlength\itemsep{1cm}
+    \item \rule{\textwidth}{0.4pt}
+    \item \rule{\textwidth}{0.4pt}
+    \item \rule{\textwidth}{0.4pt}
+\end{enumerate}
+
+\end{document}

@@ -1,0 +1,74 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage[american]{circuitikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Diagnóstico RC}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Diagnóstico Individual: Respuesta de Primer Orden (RC)}]
+    \centering \textbf{Verificación de Autonomía Analítica}
+\end{tcolorbox}
+
+\vspace{0.2cm}
+\textbf{Estudiante:} \hrulefill \quad \textbf{Fecha:} \hrulefill
+
+\vspace{0.4cm}
+\noindent \textbf{Definición del Problema:} 
+Antes de $t=0$, un capacitor ideal $C=50\,\mu\text{F}$ permaneció conectado durante suficiente tiempo a una fuente ideal de $3\,\text{V}$ mediante una resistencia. Se sabe fehacientemente que $v_C(0^-) = 3\,\text{V}$. 
+
+En $t=0$, un interruptor de dos posiciones desconecta por completo la red anterior y conecta el terminal superior del capacitor al nodo $a$ de la nueva red que se ilustra a continuación. El terminal inferior del capacitor siempre permanece conectado a tierra. La referencia de voltaje es $v_C = V(a)$.
+
+\begin{center}
+\begin{circuitikz}[scale=1.2, transform shape]
+    % Fuente y red nueva
+    \draw (0,0) to[V, l={$12\,\text{V}$}, invert] (0,3) node[above]{$s$};
+    \draw (0,3) to[R, l={$R_1=4\,\text{k}\Omega$}] (3,3) node[above]{$a$};
+    \draw (3,3) to[R, l_={$R_2=4\,\text{k}\Omega$}] (3,0);
+    
+    % Capacitor y switch
+    \draw (3,3) to[short, *-o] (4.5,3);
+    \draw (5,3) to[C, l={$C=50\,\mu\text{F}$}, v={$v_C$}] (5,0);
+    \draw (5,3.5) node[above]{\small Red $3\,\text{V}$ previa} to[short, o-] (5,3);
+    \draw[thick] (4.5,3) -- (5,3.5); % Posición inicial del switch t<0
+    \draw[dashed, -Stealth] (4.8, 3.4) arc (120:180:0.5) node[midway, left]{\small $t=0$};
+    
+    % Tierra
+    \draw (0,0) -- (5,0);
+    \draw (2.5,0) node[ground]{};
+\end{circuitikz}
+\end{center}
+
+\section*{Determinaciones (Tiempo sugerido: 10 min)}
+Sin consultar solucionarios ni apuntes, justifique y calcule lo siguiente para $t \ge 0$:
+
+\begin{enumerate}\setlength\itemsep{1.8cm}
+    \item Determine el valor exacto de $v_C(0^+)$ y justifique su respuesta físicamente.
+    \item Calcule el valor asintótico final $v_C(\infty)$ asumiendo que el circuito se estabiliza.
+    \item Determine la resistencia equivalente $R_{eq}$ de la red vista por el capacitor para $t > 0$.
+    \item Calcule la constante de tiempo $\tau$ indicando sus unidades.
+    \item Arme la función completa $v_C(t)$. ¿La gráfica asciende o desciende? Trace un bosquejo rápido indicando los valores inicial y final.
+\end{enumerate}
+
+\end{document}

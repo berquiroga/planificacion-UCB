@@ -1,0 +1,204 @@
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[american]{circuitikz}
+
+\title[Del RC al RLC]{Unidad EC3: Del Circuito RC al RLC}
+\subtitle{Modelado Físico y Matemático de Sistemas de Segundo Orden}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' --- Sede Tarija}
+\date{Semana 12}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Dos Almacenamientos, Dos Variables de Estado}
+    Hasta ahora estudiamos circuitos con un solo tipo de inercia (RC o RL). Si mezclamos \textbf{ambos} elementos dinámicos en una red, el sistema ahora posee "dos memorias".
+    
+    \vspace{0.4cm}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{El Capacitor}]
+            \begin{itemize}
+                \item Energía en Campo Eléctrico: $w_C = \frac{1}{2} C v_C^2$
+                \item Ley Constitutiva: $i_C = C \frac{dv_C}{dt}$
+                \item \textbf{Estado:} Requiere conocer $v_C(0^+)$
+            \end{itemize}
+        \end{tcolorbox}
+
+        \column{0.5\textwidth}
+        \begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{El Inductor}]
+            \begin{itemize}
+                \item Energía en Campo Magnético: $w_L = \frac{1}{2} L i_L^2$
+                \item Ley Constitutiva: $v_L = L \frac{di_L}{dt}$
+                \item \textbf{Estado:} Requiere conocer $i_L(0^+)$
+            \end{itemize}
+        \end{tcolorbox}
+    \end{columns}
+    \vspace{0.4cm}
+    \textit{Para determinar la evolución completa de la red RLC, obligatoriamente necesitamos resolver \textbf{dos datos iniciales independientes}: la tensión del capacitor y la corriente del inductor.}
+\end{frame}
+
+\begin{frame}{Modelado del RLC Serie: De la Física a la Ecuación}
+    \begin{columns}[T]
+        \column{0.4\textwidth}
+        \begin{center}
+        \begin{circuitikz}[scale=0.85, transform shape]
+            \draw (0,0) to[V, v=$v_s(t)$] (0,3) 
+                  to[R, l=$R_{total}$, i=$i(t)$, v=$v_R$] (3,3)
+                  to[L, l=$L$, v=$v_L$] (3,0)
+                  to[C, l=$C$, v=$v_C$] (0,0);
+        \end{circuitikz}
+        \end{center}
+        
+        \column{0.6\textwidth}
+        1. Aplicamos Ley de Voltajes de Kirchhoff (KVL):
+        $$v_s(t) = v_R(t) + v_L(t) + v_C(t)$$
+        
+        2. Sustituimos Ley de Ohm y Ley del Inductor:
+        $$v_s = R_{total} \cdot i + L \frac{di}{dt} + v_C$$
+        
+        3. Identificamos la corriente del lazo por la Ley del Capacitor ($i = i_C = C \frac{dv_C}{dt}$). Por tanto, la derivada de la corriente es:
+        $$\frac{di}{dt} = C \frac{d^2v_C}{dt^2}$$
+        
+        4. Reemplazamos en KVL para unificar variables:
+        $$v_s = R_{total} \left( C \frac{dv_C}{dt} \right) + L \left( C \frac{d^2v_C}{dt^2} \right) + v_C$$
+    \end{columns}
+\end{frame}
+
+\begin{frame}{La Ecuación Diferencial de Segundo Orden}
+    Reordenando y dividiendo toda la expresión entre $LC$ (asumiendo $L>0, C>0$), obtenemos la forma canónica de la EDO de un circuito RLC Serie:
+    
+    \begin{alertblock}{Modelo Matemático RLC Serie}
+        $$ \frac{d^2v_C}{dt^2} + \left( \frac{R_{total}}{L} \right) \frac{dv_C}{dt} + \left( \frac{1}{LC} \right) v_C = \frac{1}{LC} v_s(t) $$
+    \end{alertblock}
+    
+    \vspace{0.3cm}
+    \textbf{Interpretación Física de los Términos:}
+    \begin{itemize}
+        \item Término de $\frac{d^2v_C}{dt^2}$: Inercia dinámica asociada al inductor (almacenamiento magnético).
+        \item Término de $\frac{dv_C}{dt}$ (con $R_{total}$): \textbf{Disipación} (Amortiguamiento de la energía en forma de calor por la resistencia de lazo).
+        \item Término $v_C$: Estado elástico de restitución asociado al capacitor.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Parámetros de Diseño: Frecuencia Natural y Amortiguamiento}
+    Para simplificar la ecuación, definimos dos parámetros fundamentales de control:
+    
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Frecuencia Natural no Amortiguada}]
+            $$\omega_0 = \frac{1}{\sqrt{LC}} \quad [\text{rad/s}]$$
+            \textit{¿A qué velocidad intercambiarían energía $L$ y $C$ si la resistencia del circuito fuera literalmente cero (sin pérdida de calor)?} \\
+            $f_0 = \frac{\omega_0}{2\pi} \quad [\text{Hz}]$
+        \end{tcolorbox}
+        
+        \column{0.5\textwidth}
+        \begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Factor de Amortiguamiento}]
+            $$\alpha = \frac{R_{total}}{2L} \quad [\text{s}^{-1}]$$
+            \textit{¿Qué tan rápido se disipa o "frena" la energía en la resistencia?}
+        \end{tcolorbox}
+    \end{columns}
+    
+    \vspace{0.4cm}
+    La EDO puede reescribirse elegantemente como:
+    $$ v_C'' + 2\alpha v_C' + \omega_0^2 v_C = \omega_0^2 v_s(t) $$
+\end{frame}
+
+\begin{frame}{Regímenes de Amortiguamiento (Factor $\zeta = \alpha / \omega_0$)}
+    La relación entre pérdida resistiva ($\alpha$) y energía reactiva ($\omega_0$) define la forma de la respuesta:
+    
+    \vspace{0.2cm}
+    \begin{itemize}
+        \item \textbf{Subamortiguado ($\zeta < 1$):} Poca resistencia. La energía "rebota" entre el capacitor y el inductor causando \textbf{sobreimpulso} y \textbf{oscilaciones} decrecientes. 
+        \item \textbf{Crítico ($\zeta = 1$):} Ocurre en $R_{crit} = 2\sqrt{\frac{L}{C}}$. Es la resistencia de transición donde el sistema retorna al estado final sin oscilar.
+        \item \textbf{Sobreamortiguado ($\zeta > 1$):} Exceso de resistencia. El circuito es sumamente viscoso, no oscila, y llega asintóticamente a la meta (usualmente más lento que el crítico).
+    \end{itemize}
+    
+    \vspace{0.3cm}
+    \textit{Importante: ¡Tener inductores y capacitores juntos NO garantiza oscilación! Si $R_{total}$ es alta, el sistema aniquilará la oscilación antes de que empiece.}
+\end{frame}
+
+\begin{frame}{Clasificación Nominal (Ejemplo de Aplicación)}
+    Considere un circuito con $L = 10\,\text{mH}$ y $C = 1\,\mu\text{F}$. 
+    \begin{itemize}
+        \item Frecuencia natural: $\omega_0 = \frac{1}{\sqrt{0.01 \cdot 10^{-6}}} = 10,000\,\text{rad/s}$ ($f_0 \approx 1.59\,\text{kHz}$).
+        \item Resistencia crítica total: $R_{crit} = 2\sqrt{\frac{10\text{mH}}{1\mu\text{F}}} = \mathbf{200\,\Omega}$.
+    \end{itemize}
+
+    \vspace{0.2cm}
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{cccc}
+    \toprule
+    \textbf{$R_{total}$ hipotética} & $\alpha = \frac{R_{total}}{2L}$ & $\zeta = \frac{R_{total}}{R_{crit}}$ & \textbf{Régimen} \\
+    \midrule
+    $50\,\Omega$ & $2500\,\text{s}^{-1}$ & $0.25$ & \textbf{Subamortiguado (Oscila)} \\
+    $200\,\Omega$ & $10000\,\text{s}^{-1}$ & $1.00$ & \textbf{Críticamente Amortiguado} \\
+    $400\,\Omega$ & $20000\,\text{s}^{-1}$ & $2.00$ & \textbf{Sobreamortiguado (Lento)} \\
+    \bottomrule
+    \end{tabular}
+    
+    \vspace{0.3cm}
+    \begin{tcolorbox}[colback=gray!10, colframe=black, title=Física del Mundo Real]
+    ¡Atención! $R_{total}$ es la resistencia total del lazo, no solo el resistor externo comprado. \\
+    $R_{total} = R_{externa} + R_{generador} + R_{DCR\_bobina} + R_{cables}$.
+    \end{tcolorbox}
+\end{frame}
+
+\begin{frame}{Formas de Onda (Comparativa Visual Teórica)}
+    \begin{center}
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=12cm, height=6.5cm,
+            xlabel={Tiempo $t$ (ms)}, ylabel={$v_C(t)$ (V)},
+            xmin=0, xmax=1.5, ymin=0, ymax=15,
+            grid=major,
+            legend pos=north east,
+            legend style={font=\small}
+        ]
+        % Curvas conceptuales (v_C(infty) = 10V)
+        % Subamortiguado (zeta=0.25, w0=10000)
+        \addplot[blue, thick, domain=0:1.5, samples=200] {10 - 10*exp(-2.5*x)* (cos(deg(9.68*x)) + (2.5/9.68)*sin(deg(9.68*x)))};
+        \addlegendentry{Subamortiguado ($50\Omega$)}
+        
+        % Critico (zeta=1, w0=10000)
+        \addplot[black, thick, domain=0:1.5, samples=100] {10 - 10*(1 + 10*x)*exp(-10*x)};
+        \addlegendentry{Crítico ($200\Omega$)}
+        
+        % Sobreamortiguado (zeta=2, w0=10000) -> s1=-2.68, s2=-37.32
+        \addplot[red, thick, domain=0:1.5, samples=100] {10 - 10*(1.077*exp(-2.68*x) - 0.077*exp(-37.32*x))};
+        \addlegendentry{Sobreamortiguado ($400\Omega$)}
+        
+        \addplot[dashed, gray] coordinates {(0,10) (1.5,10)};
+        \end{axis}
+    \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\end{document}
