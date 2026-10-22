@@ -1,0 +1,87 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Gate Charge y BJT Buffer S12}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Suplemento Técnico: Gate Charge ($Q_g$), Tiempos y el Buffer BJT[cite: 17]}]
+    \textbf{Pregunta Clave:} Si en régimen DC la compuerta del MOSFET es un circuito abierto ideal y no consume corriente, ¿por qué necesitamos agregar drivers de potencia en lugar de conectar directo el pin del microcontrolador?[cite: 17]
+\end{tcolorbox}
+
+\section*{1. Corriente Transitoria y Carga del Gate ($Q_g$)[cite: 17]}
+Para cambiar el estado de un MOSFET (de OFF a ON, o viceversa), su compuerta actúa como un complejo capacitor parasitario que debe ser llenado o vaciado de electrones[cite: 17]. Esta cantidad de carga transitoria está caracterizada en los datasheets como la **Gate Charge ($Q_g$)**[cite: 17].
+
+La corriente transitoria requerida se rige matemáticamente por:
+\begin{equation*}
+    i_G(t) = \frac{dq_G}{dt} \implies Q_g = \int_{\text{transición}} i_G(t) \, dt \quad \text{[cite: 17]}
+\end{equation*}
+
+\textbf{Estimación de Orden de Magnitud (Ejemplo Ficticio)[cite: 17]:} \\
+Considere un MOSFET con $Q_g = 40\,\text{nC}$. Si asumimos una corriente media disponible del driver $I_{G,\text{prom}}$, el tiempo de carga transitorio se puede estimar como:
+\begin{equation*}
+    t_{\text{carga}} \approx \frac{Q_g}{I_{G,\text{prom}}} \quad \text{[cite: 17]}
+\end{equation*}
+\begin{itemize}
+    \item Si un microcontrolador débil suministra solo $I_{G,\text{prom}} = 10\,\text{mA} \implies t_{\text{carga}} \approx 40\,\text{nC} / 10\,\text{mA} = \mathbf{4\,\mu\text{s}}$[cite: 17].
+    \item Si un Driver de Potencia empuja $I_{G,\text{prom}} = 80\,\text{mA} \implies t_{\text{carga}} \approx 40\,\text{nC} / 80\,\text{mA} = \mathbf{0.5\,\mu\text{s}}$[cite: 17].
+\end{itemize}
+\textit{Consecuencia de Diseño:} Tiempos de transición más lentos significan que el NMOS pasará más tiempo cruzando la zona lineal donde coexisten alta tensión y alta corriente, disparando la disipación térmica por \textit{Switching Loss} ($P(t) = V_{DS} \cdot I_D > 0$)[cite: 17]. 
+
+\section*{2. Sourcing, Sinking y la Justificación del Buffer BJT[cite: 17]}
+Un driver diseñado para conmutación de potencia eficiente debe poder ejecutar dos tareas[cite: 17]:
+\begin{itemize}
+    \item \textbf{Sourcing:} Suministrar corriente masiva hacia la compuerta para elevar $V_{GS}$ rápidamente y encender el NMOS[cite: 17].
+    \item \textbf{Sinking:} Extraer (drenar) corriente masiva desde la compuerta hacia tierra para reducir $V_{GS}$ y apagar el transistor abruptamente[cite: 17].
+\end{itemize}
+
+El amplificador de corriente BJT (Buffer) se justifica mediante la relación ideal: $I_C \lesssim \beta I_B$[cite: 17]. Al colocar etapas BJT entre el MCU y la compuerta del MOSFET, una pequeñísima corriente lógica se multiplica, logrando los altos amperajes instantáneos necesarios.
+
+\vspace{0.3cm}
+\section*{3. La Cautela del High-Side Switch (Source Móvil)[cite: 17]}
+El comportamiento del MOSFET depende exclusivamente de la tensión diferencial $\mathbf{V_{GS} = V_G - V_S}$, no del voltaje absoluto $V_G$ respecto a tierra[cite: 17].
+
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape, thick]
+        % Low-Side
+        \draw (0,3) to[R, l=Carga] (0,1) node[nigfete] (M1) {};
+        \draw (M1.S) node[ground]{}; \draw (M1.B) |- (M1.S);
+        \node[left] at (M1.G) {$V_G$}; \node[right] at (0,1) {$V_{DS}$};
+        \node[above] at (0,3) {$V_{bus}$};
+        \node[below] at (0,-1) {\textbf{Low-Side (S=0V)}};
+        
+        % High-Side
+        \draw (6,1) node[nigfete] (M2) {};
+        \draw (6,3) node[above]{$V_{bus}$} -- (M2.D);
+        \draw (M2.S) to[R, l=Carga] (6,-1) node[ground]{};
+        \draw (M2.B) |- (M2.S);
+        \node[left] at (M2.G) {$V_G$}; \node[right=0.2cm] at (M2.S) {$V_S$ (Móvil)};
+        \node[below] at (6,-2) {\textbf{High-Side ($V_S > 0$)}};
+    \end{circuitikz}
+\end{center}
+
+\begin{itemize}
+    \item \textbf{Low-Side:} Si el Source está fijo a GND ($0\,\text{V}$), $V_{GS} = V_G$. Inyectar 5V o 12V al Gate respecto a tierra enciende el dispositivo sin problema[cite: 17].
+    \item \textbf{High-Side:} Si el NMOS está colocado entre el riel positivo y la carga, su Source es móvil[cite: 17]. Si la corriente a través de la carga empuja el Source a $9\,\text{V}$, y usted inyecta $10\,\text{V}$ absolutos al Gate desde su lógica, el $V_{GS}$ real es $10\,\text{V} - 9\,\text{V} = \mathbf{1\,\text{V}}$. ¡El MOSFET no encenderá o lo hará en alta pérdida resistiva! El circuito simulado low-side que usamos hoy \textbf{no valida} el diseño de un Puente H completo[cite: 17].
+\end{itemize}
+
+\end{document}

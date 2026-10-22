@@ -1,0 +1,75 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Ejercicios NMOS W12S02}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Hoja B: Ejercicios de Transferencia Conceptual (Uso Estudiante)[cite: 17]}]
+    Resuelva individualmente para asentar conceptos antes de seleccionar componentes comerciales[cite: 17].
+\end{tcolorbox}
+
+\textbf{1. Parámetros Low-Side y Datos de Datasheet[cite: 17]:} \\
+En un NMOS en configuración Low-Side ($V_S = 0\,\text{V}$), se aplica un pulso $V_G = 8\,\text{V}$[cite: 17]. 
+a) Calcule $V_{GS}$[cite: 17]. 
+b) ¿Garantiza este cálculo por sí solo que la resistencia $R_{DS(on)}$ será mínima?[cite: 17] \hrulefill
+
+\vspace{0.4cm}
+\textbf{2. El Problema del High-Side[cite: 17]:} \\
+En una configuración High-Side, el Source del NMOS sube a $V_S = 9\,\text{V}$ al conducir. Usted inyecta $V_G = 12\,\text{V}$ absolutos respecto a tierra[cite: 17]. 
+a) Calcule el $V_{GS}$ real[cite: 17]. 
+b) Explique por qué referenciar el voltaje del Gate a tierra absoluta es peligroso aquí[cite: 17]. \hrulefill
+
+\vspace{0.4cm}
+\textbf{3. Tiempos Estimados por Gate Charge[cite: 17]:} \\
+Para un NMOS con $Q_g = 30\,\text{nC}$. Si se inyectan corrientes \textit{medias hipotéticas} constantes $I_{G1} = 15\,\text{mA}$ y $I_{G2} = 60\,\text{mA}$[cite: 17]: 
+a) Estime los tiempos transitorios respectivos de encendido[cite: 17]. 
+b) Mencione por qué estos números son aproximaciones teóricas y no "tiempos medidos"[cite: 17]. \hrulefill
+
+\vspace{0.4cm}
+\textbf{4. Pérdidas por Conducción[cite: 17]:} \\
+Dado $I_D = 3\,\text{A}$ y un $R_{DS(on)} = 40\,\text{m}\Omega$ válido específicamente para ese estado térmico y de Gate[cite: 17]. 
+a) Calcule la pérdida de potencia pura en conducción estática ($P_{cond}$)[cite: 17]. 
+b) ¿Es esta la pérdida térmica total en una aplicación PWM?[cite: 17] \hrulefill
+
+\vspace{0.4cm}
+\textbf{5. Elección Ciega de Componentes[cite: 17]:} \\
+El Datasheet dice: "$R_{DS(on)} = 25\,\text{m}\Omega$ @ $V_{GS} = 5\,\text{V}$". Usted solo tiene lógica de $3.3\,\text{V}$[cite: 17]. 
+¿Se puede asumir directamente que a $3.3\,\text{V}$ la resistencia será de $25\,\text{m}\Omega$?[cite: 17] \hrulefill
+
+\vspace{0.4cm}
+\textbf{6. Driver y Puente H[cite: 17]:} \\
+¿Por qué ejecutar exitosamente la simulación Low-Side que se le asignó NO demuestra que usted esté listo para construir un Puente H?[cite: 17] \hrulefill
+
+\newpage
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Clave Docente: Soluciones a los Ejercicios de Transferencia[cite: 17]}]
+    Reservado para corrección y retroalimentación colectiva[cite: 17].
+\end{tcolorbox}
+
+\textbf{Soluciones Esperadas[cite: 17]:}
+\begin{enumerate}
+    \item \textbf{a)} $V_{GS} = 8\,\text{V} - 0\,\text{V} = \mathbf{8\,\text{V}}$[cite: 17]. \textbf{b)} NO. Se debe consultar el datasheet para asegurar que a $8\,\text{V}$ el fabricante garantiza un bajo $R_{DS(on)}$ para la corriente exigida[cite: 17].
+    \item \textbf{a)} $V_{GS} = 12\,\text{V} - 9\,\text{V} = \mathbf{3\,\text{V}}$[cite: 17]. \textbf{b)} El $V_S$ es móvil. Un $V_{GS}$ de $3\,\text{V}$ puede ser insuficiente para encender el MOSFET y provocar alta disipación por entrar en zona óhmica restrictiva o corte[cite: 17].
+    \item \textbf{a)} $t_{15\text{mA}} \approx 30\,\text{nC} / 15\,\text{mA} = \mathbf{2\,\mu\text{s}}$. $t_{60\text{mA}} \approx 30\,\text{nC} / 60\,\text{mA} = \mathbf{0.5\,\mu\text{s}}$[cite: 17]. \textbf{b)} Son promedios ideales. Físicamente hay resistencias, capacitancias variables ($C_{GD}$ efecto Miller) y los flancos no son constantes[cite: 17].
+    \item \textbf{a)} $P_{cond} \approx (3\,\text{A})^2 \cdot 0.040\,\Omega = \mathbf{0.36\,\text{W}}$[cite: 17]. \textbf{b)} NO. Faltan incluir las enormes pérdidas de conmutación (\textit{Switching Losses}) que ocurren en cada transición de estado[cite: 17].
+    \item \textbf{NO.} El $R_{DS(on)}$ a $3.3\,\text{V}$ será mayor, o el dispositivo podría ni siquiera conducir. Se necesita una gráfica específica o escoger otro componente[cite: 17].
+    \item La topología Low-Side tiene el Source atado a tierra y carga resistiva simple. El Puente H exige control High-Side (Source móvil), protección contra \textit{Shoot-through} (cortocircuito entre rieles) y manejo de cargas inductivas[cite: 17].
+\end{enumerate}
+
+\end{document}

@@ -1,0 +1,105 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Auditoría Simulación NMOS W12S02}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Auditoría Individual de Simulación LTspice (NMOS Low-Side)}]
+    \textbf{Objetivo:} Demostrar la ejecución real o la predicción causal de la topología asignada. Las capturas de compañeros no sustituyen su explicación lógica[cite: 17].
+\end{tcolorbox}
+
+\noindent\textbf{Nombre Estudiante:} \rule{7cm}{0.15mm} \hfill \textbf{Fecha:} \rule{3cm}{0.15mm} \\[0.3cm]
+\textbf{Estado de su evidencia (Marque uno):} \quad $\square$ Ejecutada \quad $\square$ Predicción \quad $\square$ No ejecutada[cite: 17]
+
+\section*{1. Topología del Circuito Asignado (MDEMO Hipotético)[cite: 17]}
+
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape, thick]
+        % VPOWER y RLOAD
+        \draw (0,4.5) node[above]{$+12\,\text{V}$} to[R, l={$10\,\Omega$}, a={RLOAD}] (0,2.5);
+        
+        % MOSFET (nigfete = n-channel MOSFET con terminal Bulk)
+        \draw (0,1) node[nigfete] (M1) {};
+        
+        % Etiquetas internas del MOSFET (D, S, B, G)
+        \node[right=0.1cm] at (M1.D) {D};
+        \node[right=0.1cm] at (M1.S) {S};
+        \node[right=0.1cm] at (M1.B) {B};
+        \node[above left=0.05cm] at (M1.G) {G};
+        
+        % Conexiones D, S, B
+        \draw (0,2.5) node[circle,fill,inner sep=1pt]{} node[right=0.2cm]{\textbf{drain}} -- (M1.D);
+        \draw (M1.S) -- (0,-1.5) node[ground]{};
+        \draw (M1.B) -- ++(0.8,0) |- (0,-1) node[circle,fill,inner sep=1pt]{}; % Conexión Bulk a Source por la derecha
+        
+        % Nodos de Gate y Control
+        \draw (-2.5,1) node[circle,fill,inner sep=1pt]{} node[above]{\textbf{gate}} -- (M1.G);
+        \draw (-5,1) node[circle,fill,inner sep=1pt]{} node[above]{\textbf{ctrl}} to[R, l={$R_G$}] (-2.5,1);
+        
+        % RPD y VCTRL
+        \draw (-5,1) to[R, l_={100k$\Omega$}, a={RPD}] (-5,-1.5) node[ground]{};
+        \draw (-7.5,1) to[V, l={VCTRL}] (-7.5,-1.5) node[ground]{};
+        \draw (-7.5,1) -- (-5,1);
+        
+        % Capacitores Parásitos (Didácticos)
+        \draw (-2.5,1) -- (-2.5,-0.5) to[C, l={CGS}, a={10nF}] (0,-0.5) node[circle,fill,inner sep=1pt]{};
+        \draw (-2.5,1) -- (-2.5,3.2) to[C, l={CGD}, a={2nF}] (0,3.2) -- (0,2.5);
+    \end{circuitikz}
+\end{center}
+
+\vspace{0.3cm}
+\textbf{Identificación de Nodos y Elementos:}
+\begin{itemize}
+    \item ¿Cuál es la única variable de comparación que cambia usando la directiva \texttt{.step}?[cite: 17] \\
+    \rule{0.6\linewidth}{0.15mm}
+    \item El pulso VCTRL tiene un tiempo de subida de $t_r = 5\,\mu\text{s}$. ¿Es un pulso ideal de flanco vertical?[cite: 17] \\
+    \rule{0.6\linewidth}{0.15mm}
+\end{itemize}
+
+\vspace{0.3cm}
+\section*{2. Transitorios, Potencia y Energía[cite: 17]}
+Considere el encendido del MOSFET y responda matemáticamente:
+\begin{enumerate}
+    \item \textbf{Potencia Ideal de la Carga (Carga Resistiva):} Asumiendo que el NMOS fuera un switch ideal ($V_{DS} = 0\,\text{V}$)[cite: 17]:
+    \begin{equation*}
+        I_{\text{carga,ideal}} = \frac{12\,\text{V}}{10\,\Omega} = 1.2\,\text{A} \implies P_{\text{carga,ideal}} = \frac{(12\,\text{V})^2}{10\,\Omega} = \mathbf{14.4\,\text{W}} \quad \text{[cite: 17]}
+    \end{equation*}
+    
+    \item \textbf{Disipación en el MOSFET:} ¿Es correcto afirmar que esos $14.4\,\text{W}$ se disipan en el transistor M1? Justifique mediante $p_D(t) = V_{DS}(t) \cdot I_D(t)$[cite: 17]. \\
+    \rule{\linewidth}{0.15mm} \\[0.2cm]
+    \rule{\linewidth}{0.15mm}
+    
+    \item \textbf{Limitación del Modelo RC Simplificado:} Se aproxima la capacitancia total de compuerta a $C_{\text{nom}} = 12\,\text{nF}$. Para $R_G = 220\,\Omega$, estimamos $\tau_{220} = 2.64\,\mu\text{s}$, y para $R_G = 22\,\Omega$, $\tau_{22} = 0.264\,\mu\text{s}$[cite: 17]. \\
+    Explique por qué es erróneo afirmar que el tiempo de encendido del MOSFET con $22\,\Omega$ será \textbf{exactamente} 10 veces más rápido que con $220\,\Omega$ (Indicio: Efecto Miller, CGD móvil, $t_r$ de la fuente)[cite: 17]: \\
+    \rule{\linewidth}{0.15mm} \\[0.2cm]
+    \rule{\linewidth}{0.15mm}
+\end{enumerate}
+
+\section*{3. Registro de Observaciones (O Predicciones Causalmente Justificadas)[cite: 17]}
+Escriba dos observaciones de las trazas $V_{GS}, V_{DS}$ e $I_D$ al variar $R_G$, indicando explícitamente si son \textit{medidas en LTspice} o \textit{esperadas lógicamente}:
+\begin{itemize}
+    \item Observación 1: \rule{0.8\linewidth}{0.15mm}
+    \item Observación 2: \rule{0.8\linewidth}{0.15mm}
+\end{itemize}
+
+\end{document}
