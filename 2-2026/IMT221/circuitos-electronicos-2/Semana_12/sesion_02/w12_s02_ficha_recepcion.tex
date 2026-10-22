@@ -1,0 +1,132 @@
+% w12_s02_ficha_recepcion_evidencia_bloqueo.tex
+% IMT-221 — Semana 12, Sesión 2 (21/10/2026)
+% Artefacto 1: Ficha de recepción de evidencia y bloqueo técnico
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\setlength{\emergencystretch}{2em}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{neutralbg}{RGB}{247, 248, 250}
+\definecolor{warnbg}{RGB}{254, 246, 246}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{IMT-221}}
+\chead{Ficha de Recepción de Evidencia y Bloqueo Técnico (Gate A)}
+\rhead{Semana 12 - Sesión 2}
+\lfoot{Unidad 2: Amplificación de Precisión — Suplemento de Trazabilidad}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\textbf{\textcolor{ucbblue}{Ficha de Recepción de Evidencia y Dictamen de Bloqueo Técnico (Hito 2)}}} \\[0.1cm]
+    {\footnotesize\textbf{Suplemento de Trazabilidad Documental (15 min) · Reutiliza criterios técnicos de \texttt{w12\_s01\_verificacion\_gate\_A.pdf}}}
+\end{center}
+
+\vspace{-0.2cm}
+\begin{center}
+    \begin{tikzpicture}[>=Stealth, thick, scale=0.84, transform shape]
+        \node[draw=ucbblue, rectangle, rounded corners=2pt, fill=ucbblue!10, minimum height=0.8cm, text width=2.0cm, align=center, font=\scriptsize\bfseries] (n1) at (0,0) {1. Hito 1\\Trazable};
+        \node[draw=ucbblue, rectangle, rounded corners=2pt, fill=ucbblue!10, minimum height=0.8cm, text width=2.1cm, align=center, font=\scriptsize\bfseries] (n2) at (2.7,0) {2. Requisito\\y Métrica};
+        \node[draw=ucbblue, rectangle, rounded corners=2pt, fill=ucbblue!10, minimum height=0.8cm, text width=2.1cm, align=center, font=\scriptsize\bfseries] (n3) at (5.4,0) {3. Ganancia\\Objetivo $A_d^\star$};
+        \node[draw=ucbblue, rectangle, rounded corners=2pt, fill=ucbblue!10, minimum height=0.8cm, text width=2.1cm, align=center, font=\scriptsize\bfseries] (n4) at (8.1,0) {4. Síntesis $R_G$\\y Matching};
+        \node[draw=ucbblue, rectangle, rounded corners=2pt, fill=ucbblue!10, minimum height=0.8cm, text width=2.1cm, align=center, font=\scriptsize\bfseries] (n5) at (10.8,0) {5. Simulación\\LTSpice};
+        \node[draw=ucbblue, rectangle, rounded corners=2pt, fill=ucbblue!10, minimum height=0.8cm, text width=2.1cm, align=center, font=\scriptsize\bfseries] (n6) at (13.5,0) {6. Fuente, IC\\y Seguridad};
+        \node[draw=green!60!black, rectangle, rounded corners=2pt, fill=green!15, minimum height=0.8cm, text width=2.0cm, align=center, font=\scriptsize\bfseries] (n7) at (16.2,0) {7. Dictamen\\Gate A};
+        \draw[->] (n1) -- (n2); \draw[->] (n2) -- (n3); \draw[->] (n3) -- (n4);
+        \draw[->] (n4) -- (n5); \draw[->] (n5) -- (n6); \draw[->] (n6) -- (n7);
+    \end{tikzpicture}
+\end{center}
+
+\vspace{-0.2cm}
+\begin{tcolorbox}[colback=neutralbg, colframe=ucbblue, boxsep=2pt, top=3pt, bottom=3pt, title=\textbf{Regla de Trazabilidad e Inspección Rápida}]
+    \footnotesize\raggedright
+    Una colección de archivos o capturas \textbf{no equivale} a un diseño si no permite seguir el vínculo entre datos, cálculos y validación. El docente debe poder abrir la fuente exacta de cada dato. Si falta una medición base, escriba explícitamente \texttt{NO MEDIDO / EVIDENCIA NO DISPONIBLE} (prohibido extrapolar datos ajenos). \\
+    \textbf{Ejemplo ilustrativo (NO son datos del curso):} \texttt{Hito 1: $V_{d,\max}=40\,\text{mV}$ en condición X, archivo medidas.csv fila 8 $\rightarrow$ $V_{o,\text{target}}=0.8\,\text{V}$ $\rightarrow$ $A_d^\star=20$ $\rightarrow$ esquema h2.asc $\rightarrow$ LTSpice común: PENDIENTE}.
+\end{tcolorbox}
+
+\section*{1. Ficha Única de Evidencia Trazable por Grupo}
+\begin{table}[htbp]
+    \centering
+    \scriptsize
+    \renewcommand{\arraystretch}{1.28}
+    \begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{4.6cm}|>{\raggedright\arraybackslash}p{4.2cm}|c|>{\raggedright\arraybackslash}X|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Campo de Evidencia Requerido} & \textbf{Valor o Referencia Declarada por el Grupo} & \textbf{Estado (V / PNV / A)} & \textbf{Archivo, Hoja, Medición o Captura y Ubicación Exacta} \\ \hline
+    1. Grupo, integrantes y fecha & & $\square$ V $\square$ PNV $\square$ A & \\ \hline
+    2. Hito 1: configuración efectiva (Wheatstone/NTC, Twin-T, nodos) & & $\square$ V $\square$ PNV $\square$ A & \\ \hline
+    3. Hito 1: baseline real y condición de medición & & $\square$ V $\square$ PNV $\square$ A & \\ \hline
+    4. Limitación observable y evidencia cuantitativa & & $\square$ V $\square$ PNV $\square$ A & \\ \hline
+    5. Métrica propuesta de mejora sistémica & & $\square$ V $\square$ PNV $\square$ A & \\ \hline
+    6. Diagrama propuesto Hito 2 y ubicación del In-Amp & & $\square$ V $\square$ PNV $\square$ A & \\ \hline
+    7. Rango de $V_d$, $V_{cm}$, salida objetivo y frecuencia & & $\square$ V $\square$ PNV $\square$ A & \\ \hline
+    8. $A_d^\star$, $R, R_G, k$, resistores disponibles y $A_{d,\mathrm{nom}}$ recalculada & & $\square$ V $\square$ PNV $\square$ A & \\ \hline
+    9. Matching crítico ($R_2/R_1, R_4/R_3$) y estrategia CMRR & & $\square$ V $\square$ PNV $\square$ A & \\ \hline
+    10. LTSpice: modo diferencial, modo común y headroom & & $\square$ V $\square$ PNV $\square$ A & \\ \hline
+    11. IC preciso, fabricante, datasheet y pinout verificado & & $\square$ V $\square$ PNV $\square$ A & \\ \hline
+    12. Fuente, nodo de referencia ($V_{REF}$) y márgenes eléctricos & & $\square$ V $\square$ PNV $\square$ A & \\ \hline
+    13. BOM completa y disponibilidad física real & & $\square$ V $\square$ PNV $\square$ A & \\ \hline
+    14. Siguiente medición o comprobación planificada & & $\square$ V $\square$ PNV $\square$ A & \\ \hline
+    \end{tabularx}
+\end{table}
+\noindent{\scriptsize\textbf{Códigos de Estado:} \textbf{V} = Verificable (inspeccionado y consistente); \textbf{PNV} = Presente No Verificado (declarado sin respaldo comprobable inmediato); \textbf{A} = Ausente (\texttt{NO MEDIDO / EVIDENCIA NO DISPONIBLE}).}
+
+\section*{2. Semáforo de Decisión Gate A y Clasificación de Faltantes}
+\begin{center}
+    \begin{tikzpicture}[>=Stealth, thick, scale=0.85, transform shape]
+        \node[draw, rectangle, rounded corners=2pt, fill=white, text width=3.1cm, align=center, minimum height=0.9cm, font=\footnotesize\bfseries] (gate) at (0,0) {Evaluación Gate A\\(Ficha + Defensa Oral)};
+        
+        \node[draw=green!60!black, rectangle, fill=green!12, text width=4.3cm, align=center, minimum height=0.8cm, font=\scriptsize] (r1) at (5.2, 1.15) {\textbf{READY}\\Topología, cálculos, SPICE, IC, rieles y conexiones válidas};
+        \node[draw=orange!80!black, rectangle, fill=yellow!20, text width=4.3cm, align=center, minimum height=0.8cm, font=\scriptsize] (r2) at (5.2, 0) {\textbf{MINOR CORRECTIONS}\\Diseño defendible con detalle no crítico o ajuste localizado};
+        \node[draw=red!80!black, rectangle, fill=red!12, text width=4.3cm, align=center, minimum height=0.8cm, font=\scriptsize] (r3) at (5.2, -1.15) {\textbf{NOT READY}\\Falta fundamento: topología, $A_d$, SPICE, pinout, fuente o baseline};
+
+        \node[draw=green!60!black, rectangle, fill=green!5, text width=5.2cm, align=center, minimum height=0.8cm, font=\scriptsize] (a1) at (11.4, 1.15) {Autoriza montaje aislado $\rightarrow$ \textbf{Energizar solo tras chequeo físico previo y supervisión}};
+        \node[draw=orange!80!black, rectangle, fill=yellow!8, text width=5.2cm, align=center, minimum height=0.8cm, font=\scriptsize] (a2) at (11.4, 0) {Corregir ítem puntual $\rightarrow$ \textbf{Revalidar antes de autorizar energización}};
+        \node[draw=red!80!black, rectangle, fill=red!5, text width=5.2cm, align=center, minimum height=0.8cm, font=\scriptsize] (a3) at (11.4, -1.15) {Permanecer en diseño/simulación $\rightarrow$ \textbf{PROHIBIDO ENERGIZAR}};
+
+        \draw[->] (gate.east) -- ++(0.4,0) |- (r1.west);
+        \draw[->] (gate.east) -- (r2.west);
+        \draw[->] (gate.east) -- ++(0.4,0) |- (r3.west);
+        \draw[->] (r1.east) -- (a1.west);
+        \draw[->] (r2.east) -- (a2.west);
+        \draw[->] (r3.east) -- (a3.west);
+    \end{tikzpicture}
+\end{center}
+
+\noindent{\footnotesize\textbf{Distinción Obligatoria de Faltantes:}
+\begin{itemize}
+    \setlength{\itemsep}{1pt}
+    \item \textbf{Bloqueo técnico crítico ($\rightarrow$ \texttt{NOT READY}):} Ganancia equivocada o sin justificar desde Hito 1; realimentación incorrecta; simulación contradictoria sin diagnóstico; voltajes fuera de rango en datasheet; tierra de instrumento peligrosa frente a $V_{REF}$; ausencia de evidencia mínima para fijar el objetivo. \textit{Un archivo faltante que impide verificar un ensayo técnico es un bloqueo crítico, no una brecha menor.}
+    \item \textbf{Brecha documental menor ($\rightarrow$ \texttt{MINOR CORRECTIONS}):} Página mal numerada, captura pendiente de pegar en el documento o formato incompleto, \textbf{únicamente si el docente ya inspeccionó y validó en vivo la evidencia técnica subyacente}.
+\end{itemize}}
+
+\begin{tcolorbox}[colback=warnbg, colframe=red!75!black, boxsep=2pt, top=3pt, bottom=3pt, title=\textbf{Acta Mínima de Dictamen Gate A y Autorización de Energización}]
+    \footnotesize
+    \textbf{Grupo:} \rule{2.8cm}{0.4pt} \hfill \textbf{Dictamen:} $\square$ \textbf{READY} \quad $\square$ \textbf{MINOR CORRECTIONS} \quad $\square$ \textbf{NOT READY} \\[0.15cm]
+    \textbf{Evidencia técnica efectivamente inspeccionada:} \hrulefill \\[0.15cm]
+    \textbf{Bloqueo prioritario causal (Uno solo, raíz del problema):} \hrulefill \\[0.15cm]
+    \textbf{Próxima acción específica y verificable:} \hrulefill \\[0.15cm]
+    \textbf{Responsable:} \rule{4.5cm}{0.4pt} \hfill \textbf{Fecha/Hora de reverificación:} \rule{4.0cm}{0.4pt} \\[0.15cm]
+    \textbf{Energización Física Autorizada (Por defecto = NO):} \quad $\square$ \textbf{NO AUTORIZADA} \quad $\square$ \textbf{SÍ (Tras pre-power físico)} \hfill \textbf{Firma Docente:} \rule{3cm}{0.4pt}
+\end{tcolorbox}
+
+\end{document}

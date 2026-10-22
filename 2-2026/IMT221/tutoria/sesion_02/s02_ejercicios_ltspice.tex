@@ -1,0 +1,74 @@
+% exercises.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Workbook (Entregable LTspice y CP1B)}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!80!black, title=\textbf{Declaración de Integridad}]
+    Asegúrese de diferenciar claramente si sus resultados fueron PREVISTOS matemáticamente, SIMULADOS en software, o MEDIDOS físicamente. Los modelos de la sección CP1B en esta hoja son SINTÉTICOS.
+\end{tcolorbox}
+
+\section{Actividades CP1A: Filtro RC (Predicción vs Simulación)}
+
+\subsection{A. Predicciones Analíticas antes de Simular}
+Complete la tabla evaluando $G_{dB} = -10 \log_{10}[1 + (f/f_c)^2]$ y $\phi = -\arctan(f/f_c)$.
+\begin{center}
+\begin{tabularx}{\textwidth}{@{} c X X X X @{}}
+\toprule
+$f$ \textbf{(Hz)} & $|H|$ \textbf{Predicho} & $G_{dB}$ \textbf{Predicho} & $\phi$ \textbf{Predicha} ($^\circ$) & $G_{dB}$ \textbf{Simulado (LTspice)} \\ \midrule
+15.9 & & & & \\ \addlinespace[15pt]
+159.15 & & & & \\ \addlinespace[15pt]
+1591.5 & & & & \\ \bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{B. Rediseño Teórico sin LTspice}
+Si duplicamos la capacitancia a $C_2 = 200\,\text{nF}$, explique matemáticamente cómo se afecta $\tau$, el valor de $f_c$ y justifique hacia dónde se desplazará el diagrama de Bode.
+\vspace{3.5cm}
+
+\subsection{C. Carga Resistiva (Transferencia Modificada)}
+Si medimos la salida diferencial entre \texttt{in} y \texttt{out} midiendo el voltaje sobre la resistencia: $V_R(s) = V_{in}(s) - V_{out}(s)$. Deduzca $H_R(s)$ y explique qué tipo de filtro resulta.
+\vspace{3.5cm}
+
+\newpage
+\section{Actividades CP1B: Calibración y Modelado Sintético}
+
+\subsection{D. Ajuste por Mínimos Cuadrados}
+Usando la tabla sintética: $(20^\circ\text{C}, 0.42\,\text{V}), (30^\circ\text{C}, 0.59\,\text{V}), (40^\circ\text{C}, 0.83\,\text{V}), (50^\circ\text{C}, 1.02\,\text{V}), (60^\circ\text{C}, 1.19\,\text{V})$.
+Calcule paso a paso la pendiente $a$ y la intersección $b$. Muestre las unidades finales. Estime $V_s$ para $T = 35^\circ\text{C}$.
+\vspace{5.5cm}
+
+\subsection{E. Identificación del Escalón Térmico}
+Datos hipotéticos: $\Delta u = 0.3$. $T_0 = 25^\circ\text{C}, T_\infty = 40^\circ\text{C}$. Tiempo al cruce de $34.48^\circ\text{C}$ ocurre a los $120\,\text{s}$ del escalón. Calcule $K, \tau$ y escriba $G_p(s)$.
+\vspace{4.5cm}
+
+\section{F. Registro de Fallos y Preguntas Fundamentadas}
+Escriba al menos tres dudas técnicas surgidas de errores, lecturas inesperadas o discrepancias durante la simulación. Siga el formato: "Intenté...", "Esperaba...", "Observé...".
+
+\vspace{0.5cm}
+\noindent \textbf{Duda 1 (LTspice/Simulación):} \\ \vspace{2cm}
+
+\noindent \textbf{Duda 2 (Matemática/Rediseño RC):} \\ \vspace{2cm}
+
+\noindent \textbf{Duda 3 (Térmico/Planta):} \\ \vspace{2cm}
+
+\end{document}

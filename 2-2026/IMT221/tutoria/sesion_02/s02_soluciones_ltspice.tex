@@ -1,0 +1,70 @@
+% solutions.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Instructor Solutions S01/S02}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\section*{Solucionario Docente y Guía de Verificación}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Nota Exclusiva del Docente}]
+Los datos presentados aquí son \textbf{SINTÉTICOS E ILUSTRATIVOS} diseñados para mostrar el procedimiento. El estudiante debe rehacer los cálculos si se le proporciona un archivo \texttt{.csv} con datos experimentales medidos.
+\end{tcolorbox}
+
+\subsection*{A. Predicciones Analíticas (Filtro RC)}
+Dado $R=10\,\text{k}\Omega, C=100\,\text{nF}$, tenemos $\tau = 1\,\text{ms}$ y $f_c = 1/(2\pi(0.001)) \approx 159.15\,\text{Hz}$.
+\begin{itemize}
+    \item $15.9\,\text{Hz} (0.1 f_c)$: $|H| \approx 0.9950$, $G_{dB} \approx -0.043\,\text{dB}$, $\phi \approx -5.71^\circ$
+    \item $159.15\,\text{Hz} (f_c)$: $|H| \approx 0.7071$, $G_{dB} \approx -3.01\,\text{dB}$, $\phi \approx -45.0^\circ$
+    \item $1591.5\,\text{Hz} (10 f_c)$: $|H| \approx 0.0995$, $G_{dB} \approx -20.04\,\text{dB}$, $\phi \approx -84.29^\circ$
+\end{itemize}
+
+\subsection*{B. Rediseño Teórico (Duplicar Capacitancia)}
+Si $C' = 200\,\text{nF} = 2C$, entonces $\tau' = R(2C) = 2\tau = 2\,\text{ms}$. \\
+La nueva frecuencia de corte es $f_c' = 1 / (2\pi \cdot 2\tau) = f_c / 2 \approx 79.57\,\text{Hz}$. \\
+El diagrama de Bode mantiene su forma y pendiente asintótica (-20 dB/década), pero la curva entera se desplaza hacia la izquierda en el eje semilogarítmico (una octava hacia abajo).
+
+\subsection*{C. Carga Resistiva (Transferencia Modificada)}
+Si medimos sobre la resistencia:
+\begin{align*}
+    V_R(s) &= V_{in}(s) \frac{R}{R + \frac{1}{sC}} = V_{in}(s) \frac{sRC}{1 + sRC} \\
+    H_R(s) &= \frac{sRC}{1 + sRC}
+\end{align*}
+Es un filtro de paso alto con un cero en el origen. A bajas frecuencias $\omega \to 0$, $H_R \to 0$.
+
+\subsection*{D. Calibración Estática por Mínimos Cuadrados}
+Datos: $T = [20, 30, 40, 50, 60]^\circ\text{C}$, $V = [0.42, 0.59, 0.83, 1.02, 1.19]\,\text{V}$.
+\begin{itemize}
+    \item \textbf{Medias:} $\bar{T} = 40^\circ\text{C}$, $\bar{V} = 0.81\,\text{V}$.
+    \item \textbf{Coeficiente $a$:} $\sum(T_i - \bar{T})^2 = 1000$. $\sum(T_i - \bar{T})(V_i - \bar{V}) = 19.7$. \\
+    $a = 19.7 / 1000 = 0.0197\,\text{V}/^\circ\text{C}$.
+    \item \textbf{Coeficiente $b$:} $b = \bar{V} - a\bar{T} = 0.81 - (0.0197)(40) = 0.022\,\text{V}$.
+    \item \textbf{Ecuación resultante:} $V_s = 0.0197 T_{ref} + 0.022$.
+    \item \textbf{Predicción $35^\circ$C:} $V_s(35) = 0.0197(35) + 0.022 = 0.7115\,\text{V}$.
+\end{itemize}
+
+\subsection*{E. Identificación Dinámica al Escalón}
+\begin{itemize}
+    \item $\Delta u = 0.3$. $\Delta T = 40 - 25 = 15^\circ\text{C}$.
+    \item \textbf{Ganancia:} $K = 15 / 0.3 = 50\,\frac{^\circ\text{C}}{\text{Unidad}}$.
+    \item \textbf{Constante de tiempo ($\tau$):} El problema indica que el $63.2\%$ de la excursión ($25 + 0.632(15) = 34.48^\circ\text{C}$) se alcanza a los $120\,\text{s}$. Por tanto $\tau = 120\,\text{s}$.
+    \item \textbf{Modelo:} $G_p(s) = \frac{50}{120s + 1}$.
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,246 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage{listings}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Guía LTspice Unificada (W12S01)}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{spicebg}{RGB}{245, 245, 245}
+
+\lstdefinestyle{spice}{
+    backgroundcolor=\color{spicebg},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    rulecolor=\color{gray!50},
+    keywordstyle=\color{ucbblue}\bfseries,
+    commentstyle=\color{green!50!black},
+    morekeywords={.param, .model, .step, .tran, PULSE, NMOS}
+}
+
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{W12S01 — Guía Estudiantil Corregida (Configuración Única)}}\\[0.15cm]
+    {\large \textbf{IMT-221 — Circuitos Electrónicos III}}[cite: 10]
+\end{center}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Alcance y Propósito de la Actividad}]
+    \textbf{Uso:} Reconstrucción manual en LTspice de un interruptor NMOS \textit{low-side} y comparación de dos resistencias de compuerta[cite: 10]. Este es un ejercicio \textbf{hipotético}; no representa una especificación del laboratorio físico, ni el MOSFET oficial del curso, ni un diseño seguro de Hito 3[cite: 10].
+\end{tcolorbox}
+
+\section*{1. Parámetros Aprobados (Configuración Única)}
+Los siguientes parámetros son idénticos en la guía, el netlist y el solucionario[cite: 10]:
+
+\vspace{0.2cm}
+\noindent
+\begin{tabularx}{\textwidth}{@{} l >{\raggedright\arraybackslash}X @{}}
+\toprule
+\textbf{Parámetro}[cite: 10] & \textbf{Valor Aprobado}[cite: 10] \\ \midrule
+Bus de alimentación (\texttt{VPOWER})[cite: 10] & $12\,\text{V DC}$[cite: 10] \\
+Carga (\texttt{RLOAD})[cite: 10] & $10\,\Omega$ resistiva[cite: 10] \\
+Resistencia de gate lenta ($R_G$)[cite: 10] & $220\,\Omega$[cite: 10] \\
+Resistencia de gate rápida ($R_G$)[cite: 10] & $22\,\Omega$[cite: 10] \\
+Resistencia pull-down (\texttt{RPD})[cite: 10] & $100\,\text{k}\Omega$[cite: 10] \\
+Señal de control (\texttt{VCTRL})[cite: 10] & \texttt{PULSE(0 10 1m 5u 5u 2m 4m)}[cite: 10] \\
+Análisis transitorio[cite: 10] & \texttt{.tran 0 8m 0 1u}[cite: 10] \\
+Modelo didáctico NMOS[cite: 10] & \texttt{MDEMO} NMOS \texttt{LEVEL=1} (definido en la Sección 3)[cite: 10] \\
+Capacitores explícitos ficticios[cite: 10] & $C_{GS} = 10\,\text{nF}$, $C_{GD} = 2\,\text{nF}$[cite: 10] \\ \bottomrule
+\end{tabularx}
+
+\begin{tcolorbox}[colback=yellow!10, colframe=orange!80!black, title=\textbf{Control de Variables y Retiro de Versión Anterior}]
+    \textbf{Solo cambia \texttt{RG} entre las dos corridas}[cite: 10]. El archivo \texttt{.cir} anterior de $4\,\Omega$ y $R_G = 100\,\Omega / 10\,\text{k}\Omega$ se retira del conjunto vigente; no deben utilizarse sus resultados ni sus valores[cite: 10]. Los capacitores $C_{GS}$ y $C_{GD}$ son valores elegidos didácticamente para incrementar la visibilidad de la respuesta dinámica y no corresponden a cifras de un datasheet[cite: 10]. La variación visible aún debe verificarse en LTspice[cite: 10].
+\end{tcolorbox}
+
+\section*{2. Esquema de Conexiones y Tabla Exacta de Nodos}
+El siguiente diagrama muestra la topología completa con separación amplia entre ramas paralelas, donde \texttt{CGD} une directamente los nodos \texttt{gate} y \texttt{drain}, y el terminal \textit{bulk/body} del MOSFET se conecta a \texttt{source}/tierra[cite: 10]:
+
+\begin{center}
+\makebox[\textwidth][c]{%
+\resizebox{0.98\textwidth}{!}{%
+\begin{circuitikz}[thick]
+    % MOSFET M1 con bulk unido a source
+    \draw (0,0) node[nmos, bulk](M1){};
+    \draw (M1.bulk) -- ++(0.25,0) |- (M1.S);
+    \node[right=0.45cm, align=left] at (0,0.15) {\textbf{\texttt{M1}}\\\footnotesize\texttt{(MDEMO)}};
+    
+    % Coordenadas principales de la rama de potencia
+    \coordinate (drain_node) at (0, 2.2);
+    \coordinate (vbus_node)  at (0, 4.8);
+    \coordinate (gnd_m1)     at (0, -2.8);
+    
+    % Drenador, carga RLOAD y nodo vbus
+    \draw (M1.D) -- (drain_node);
+    \node[right=0.2cm] at (0, 1.7) {\textbf{\texttt{drain}}};
+    \draw (drain_node) to[R, l_={\shortstack[l]{\texttt{RLOAD}\\$10\,\Omega$}}, *-*] (vbus_node);
+    \node[above=0.15cm] at (vbus_node) {\textbf{\texttt{vbus (+12 V)}}};
+    
+    % Fuente VPOWER a la derecha con etiqueta hacia el exterior
+    \draw (vbus_node) -- (3.8, 4.8)
+          to[V, l^={\shortstack[l]{\texttt{VPOWER}\\$12\,\text{V DC}$}}] (3.8, -2.8) node[ground]{};
+    
+    % Surtidor (Source) a GND
+    \draw (M1.S) -- (gnd_m1) node[ground]{};
+    \node[right=0.2cm] at (0, -2.1) {\texttt{0 (GND)}};
+    
+    % Coordenadas de la red de compuerta (amplia separación horizontal)
+    \coordinate (gate_rpd)  at (-2.8, 0 |- M1.G);
+    \coordinate (gate_cgs)  at (-5.6, 0 |- M1.G);
+    \coordinate (ctrl_node) at (-8.8, 0 |- M1.G);
+    
+    % Conexión horizontal del nodo gate
+    \draw (M1.G) -- (gate_rpd) -- (gate_cgs);
+    \node[above=0.15cm] at (-1.4, 0 |- M1.G) {\textbf{\texttt{gate}}};
+    
+    % Capacitor Miller CGD entre gate y drain (etiqueta arriba)
+    \draw (gate_rpd) to[short, *-] (-2.8, 2.2)
+          to[C, l^={\texttt{CGD} ($2\,\text{nF}$)}, -*] (drain_node);
+          
+    % Resistencia RPD hacia GND (etiqueta a la derecha, hacia zona libre)
+    \draw (gate_rpd) to[R, l^={\shortstack[l]{\texttt{RPD}\\$100\,\text{k}\Omega$}}] (-2.8, -2.8) node[ground]{};
+    
+    % Capacitor CGS hacia GND (etiqueta a la derecha, en el canal libre de 2.8 cm)
+    \draw (gate_cgs) to[C, l^={\shortstack[l]{\texttt{CGS}\\$10\,\text{nF}$}}, *-] (-5.6, -2.8) node[ground]{};
+    
+    % Resistencia RGATE y fuente de pulsos VCTRL
+    \draw (ctrl_node) to[R, l^={\texttt{RGATE} = \texttt{\{RG\}}}, *-] (gate_cgs);
+    \node[above=0.15cm] at (ctrl_node) {\textbf{\texttt{ctrl}}};
+    \draw (ctrl_node) to[sV, l_={\shortstack[r]{\texttt{VCTRL}\\\footnotesize\texttt{PULSE}}}] (-8.8, -2.8) node[ground]{};
+\end{circuitikz}%
+}%
+}
+\end{center}
+
+\noindent\textbf{Prevalece esta tabla exacta de nodos sobre cualquier representación gráfica}[cite: 10]:
+
+\vspace{0.15cm}
+\noindent
+\begin{tabularx}{\textwidth}{@{} l l l >{\raggedright\arraybackslash}X @{}}
+\toprule
+\textbf{Elemento}[cite: 10] & \textbf{Desde}[cite: 10] & \textbf{Hasta}[cite: 10] & \textbf{Valor / Configuración}[cite: 10] \\ \midrule
+\texttt{VPOWER}[cite: 10] & \texttt{vbus} ($+$)[cite: 10] & \texttt{0} ($-$)[cite: 10] & $12\,\text{V}$[cite: 10] \\
+\texttt{RLOAD}[cite: 10] & \texttt{vbus}[cite: 10] & \texttt{drain}[cite: 10] & $10\,\Omega$[cite: 10] \\
+\texttt{M1 (D,G,S,B)}[cite: 10] & \texttt{drain}, \texttt{gate}, \texttt{0}, \texttt{0}[cite: 10] & —[cite: 10] & Modelo \texttt{MDEMO} (4 terminales o 3 terminales con bulk implícito a source)[cite: 10] \\
+\texttt{VCTRL}[cite: 10] & \texttt{ctrl} ($+$)[cite: 10] & \texttt{0} ($-$)[cite: 10] & \texttt{PULSE(0 10 1m 5u 5u 2m 4m)}[cite: 10] \\
+\texttt{RGATE}[cite: 10] & \texttt{ctrl}[cite: 10] & \texttt{gate}[cite: 10] & \texttt{\{RG\}}[cite: 10] \\
+\texttt{RPD}[cite: 10] & \texttt{gate}[cite: 10] & \texttt{0}[cite: 10] & $100\,\text{k}\Omega$[cite: 10] \\
+\texttt{CGS}[cite: 10] & \texttt{gate}[cite: 10] & \texttt{0}[cite: 10] & $10\,\text{nF}$[cite: 10] \\
+\texttt{CGD}[cite: 10] & \texttt{gate}[cite: 10] & \texttt{drain}[cite: 10] & $2\,\text{nF}$ (\textbf{No conectar \texttt{CGD} a GND})[cite: 10] \\ \bottomrule
+\end{tabularx}
+
+\newpage
+
+\section*{3. Pasos de Construcción en LTspice}
+\begin{enumerate}[noitemsep]
+    \item Ir a \texttt{File $\to$ New Schematic} y guardar el archivo como \texttt{w12s01\_gate\_RG.asc}[cite: 10].
+    \item Insertar componente \texttt{voltage} (\texttt{F2} en configuraciones habituales): nombrar como \texttt{VPOWER}, valor DC \texttt{12}, terminal negativo a GND y terminal positivo a la etiqueta \texttt{vbus}[cite: 10].
+    \item Insertar resistencia \texttt{RLOAD=10} entre los nodos \texttt{vbus} y \texttt{drain}[cite: 10].
+    \item Insertar símbolo NMOS y verificar pines: D $\to$ \texttt{drain}, G $\to$ \texttt{gate}, S $\to$ GND, bulk/body $\to$ GND; cambiar el nombre del modelo a \texttt{MDEMO}[cite: 10].
+    \item Insertar fuente \texttt{VCTRL} entre \texttt{ctrl} y GND; configurar como \texttt{PULSE(0 10 1m 5u 5u 2m 4m)} (offset $0\,\text{V}$, alto $10\,\text{V}$, retardo $1\,\text{ms}$, subida $5\,\mu\text{s}$, bajada $5\,\mu\text{s}$, tiempo ON $2\,\text{ms}$, período $4\,\text{ms}$)[cite: 10].
+    \item Insertar resistencia \texttt{RGATE} entre \texttt{ctrl} y \texttt{gate}, asignando el valor literal \texttt{\{RG\}}[cite: 10].
+    \item Insertar \texttt{RPD=100k} y \texttt{CGS=10n} entre \texttt{gate} y GND; insertar \texttt{CGD=2n} entre \texttt{gate} y \texttt{drain} (\textbf{no conectar \texttt{CGD} a GND})[cite: 10].
+    \item Etiquetar los nodos como \texttt{vbus}, \texttt{ctrl}, \texttt{gate} y \texttt{drain} (usando \texttt{F4})[cite: 10].
+    \item Insertar las siguientes directivas SPICE como comandos activos en el esquemático[cite: 10]:
+\end{enumerate}
+
+\begin{lstlisting}[style=spice]
+.param RG=220
+.model MDEMO NMOS (LEVEL=1 VTO=3 KP=4 LAMBDA=0.01 RD=0.02 RS=0.02)
+.step param RG list 220 22
+.tran 0 8m 0 1u
+\end{lstlisting}
+
+\begin{enumerate}[resume]
+    \item Ejecutar \texttt{Run}: una sola simulación con \texttt{.step} contiene \textbf{ambos valores} de $R_G$ ($220\,\Omega$ y $22\,\Omega$); no modifique la carga, el modelo ni la fuente entre casos[cite: 10].
+\end{enumerate}
+
+\section*{4. Magnitudes por Observar y Relaciones Matemáticas en los Nodos}
+Dado que el interruptor opera en configuración \textit{low-side} con el surtidor conectado directamente a la referencia de tierra ($V_S = V(0) = 0\,\text{V}$), las tensiones intrínsecas del MOSFET se reducen paso a paso a[cite: 10]:
+\begin{align}
+    V_{GS}(t) &= V_G(t) - V_S(t) = V(\text{gate}) - 0\,\text{V} = V(\text{gate}) \text{[cite: 10]} \\
+    V_{DS}(t) &= V_D(t) - V_S(t) = V(\text{drain}) - 0\,\text{V} = V(\text{drain}) \text{[cite: 10]}
+\end{align}
+
+\subsection*{Diferencia entre Corriente de Carga $I(\text{RLOAD})$ y Corriente de Drenador $I_D(\text{M1})$}
+Aplicando la Ley de Corrientes de Kirchhoff (LCK) en el nodo \texttt{drain} durante las transiciones de conmutación, la corriente que circula por el capacitor $C_{GD}$ desde la compuerta hacia el drenador es $i_{CGD}(t) = C_{GD}\frac{d}{dt}\left[V(\text{gate}) - V(\text{drain})\right]$[cite: 10]. Por tanto, en el nodo \texttt{drain} se cumple:
+\begin{align}
+    I(\text{RLOAD}) + i_{CGD}(t) &= I_D(\text{M1}) \\
+    I_D(\text{M1}) &= I(\text{RLOAD}) + C_{GD}\frac{d\left[V(\text{gate}) - V(\text{drain})\right]}{dt} \text{[cite: 10]}
+\end{align}
+Esto demuestra por qué \texttt{I(RLOAD)} sirve para observar la corriente de la carga en régimen permanente ($\frac{dV}{dt} = 0$), pero \textbf{no es idéntica a la corriente de drenador \texttt{Id(M1)} en los flancos debido a \texttt{CGD}}[cite: 10]. De igual modo, la potencia instantánea disipada en el transistor \texttt{M1} debe observarse mediante el producto[cite: 10]:
+\begin{align}
+    p_D(t) &= V_{DS}(t) \cdot I_D(\text{M1}) = V(\text{drain}) \cdot \text{Id(M1)} \text{[cite: 10]}
+\end{align}
+
+\subsection*{Ventanas de Zoom Obligatorias}
+Graficar \texttt{V(ctrl)}, \texttt{V(gate)}, \texttt{V(drain)}, \texttt{Id(M1)} y \texttt{V(drain)*Id(M1)} (confirmando el signo de la corriente)[cite: 10]. Realizar zoom en el encendido cerca de $\mathbf{1\,\text{ms}}$ y en el apagado cerca de $\mathbf{3.005\,\text{ms}}$, manteniendo exactamente iguales los ejes entre $R_G = 220\,\Omega$ y $R_G = 22\,\Omega$[cite: 10]:
+
+\begin{center}
+\begin{tikzpicture}
+    \begin{axis}[
+        width=13.5cm, height=4.5cm,
+        xmin=0, xmax=6, ymin=-1.5, ymax=14.8,
+        axis lines=left,
+        xlabel={Tiempo $t$ [ms]}, ylabel={\texttt{V(ctrl)} [V]},
+        xtick={0, 1, 3, 5}, xticklabels={0, 1.0, 3.005, 5.0},
+        ytick={0, 10},
+        clip=false
+    ]
+    \addplot[thick, ucbblue] coordinates {(0,0) (1,0) (1.08,10) (3,10) (3.08,0) (5,0) (5.08,10) (6,10)};
+    
+    % Recuadro de Zoom Turn-On sin invadir el eje X
+    \draw[red, thick, dashed, rounded corners=2pt] (axis cs:0.82, -0.6) rectangle (axis cs:1.26, 10.8);
+    \node[red, font=\footnotesize, align=center, anchor=south] at (axis cs:1.04, 11.0) {\textbf{Zoom Turn-On}\\($\approx 1\,\text{ms}$)[cite: 10]};
+    
+    % Recuadro de Zoom Turn-Off sin invadir el eje X
+    \draw[red, thick, dashed, rounded corners=2pt] (axis cs:2.82, -0.6) rectangle (axis cs:3.26, 10.8);
+    \node[red, font=\footnotesize, align=center, anchor=south] at (axis cs:3.04, 11.0) {\textbf{Zoom Turn-Off}\\($\approx 3.005\,\text{ms}$)[cite: 10]};
+    \end{axis}
+\end{tikzpicture}
+\end{center}
+\textit{Nota de investigación: Con mayor $R_G$, se espera corriente de gate limitada y posibles flancos más lentos; sin embargo, dado que los tiempos de subida y bajada de \texttt{VCTRL} son de $5\,\mu\text{s}$, esto puede reducir la diferencia observable entre casos[cite: 10]. No asuma resultados numéricos sin ejecutar[cite: 10].}
+
+\section*{5. Entregables Formativos de la Actividad y Tabla de Registro}
+\begin{itemize}[noitemsep]
+    \item Captura del esquema completo con etiquetas de nodos y directiva del modelo \texttt{MDEMO}[cite: 10].
+    \item Gráficas comparativas de $V_{GS}$ y $V_{DS}$ para los dos pasos de \texttt{RG} ($220\,\Omega$ y $22\,\Omega$)[cite: 10].
+    \item Tabla comparativa con la diferencia de duración de flanco (o explicación si no se aprecia)[cite: 10].
+    \item Breve comentario sobre la corriente de carga, la potencia del MOSFET y los límites de la simulación[cite: 10].
+    \item \textit{Contingencia:} Si falla LTspice, registrar el error real del log y presentar una predicción razonada sin fabricar datos[cite: 10].
+\end{itemize}
+
+\vspace{0.2cm}
+\renewcommand{\arraystretch}{1.45}
+\noindent
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}X|c|c|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Magnitud / Evento Observado}[cite: 10] & \textbf{Paso $R_G = 220\,\Omega$}[cite: 10] & \textbf{Paso $R_G = 22\,\Omega$}[cite: 10] & \textbf{Observación / Explicación Causal}[cite: 10] \\ \hline
+Duración flanco subida $V_{GS}$ ($\approx 1\,\text{ms}$)[cite: 10] & \hspace{2.6cm} & \hspace{2.6cm} & \\ \hline
+Duración flanco caída $V_{DS}$ ($\approx 1\,\text{ms}$)[cite: 10] & & & \\ \hline
+Duración flanco bajada $V_{GS}$ ($\approx 3.005\,\text{ms}$)[cite: 10] & & & \\ \hline
+Corriente estacionaria ON e \texttt{Id(M1)} pico[cite: 10] & & & \\ \hline
+Pulso de potencia $V(\text{drain})\cdot\text{Id(M1)}$[cite: 10] & & & \\ \hline
+\end{tabularx}
+
+\end{document}

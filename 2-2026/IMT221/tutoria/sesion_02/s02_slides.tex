@@ -1,0 +1,422 @@
+% lecture.tex
+\documentclass[aspectratio=169, xcolor={table,xcdraw}]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+\setbeamercolor{block title}{bg=ucbblue!15, fg=ucbblue}
+\setbeamercolor{block body}{bg=ucbblue!5}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage[most]{tcolorbox}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, backgrounds}
+
+\title[Sensor y Planta Térmica]{Calibración de Sensor e Identificación de Planta Térmica}
+\subtitle{IMT-221 Circuitos Electrónicos II — Sesión 2/10 (Tutoría Intensiva)}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}
+\date{Sesión 2}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Pregunta de Ingeniería}
+    \begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=Objetivo de la Sesión]
+        \footnotesize Antes de diseñar un acondicionador (op-amp) o un controlador (PI/PID), necesitamos caracterizar dos fenómenos independientes: la \textbf{calibración del sensor} y la \textbf{dinámica de la planta}.
+    \end{tcolorbox}
+    
+    \vspace{0.3cm}
+    \centering
+    \textbf{V3: Arquitectura de Caracterización (Dos Modelos Separados)}
+    
+    \vspace{0.4cm}
+    \begin{tikzpicture}[node distance=0.6cm and 0.6cm, thick,
+        block/.style={draw, rounded corners, fill=blue!10, text width=2.2cm, align=center, minimum height=0.9cm, font=\footnotesize}]
+        
+        % Modelo 1: Calibración
+        \node[block, fill=green!10] (ref) {Ref. Térmica\\$T_{ref}$};
+        \node[block, right=of ref] (calib) {Calibración\\$V_s = a T_{ref} + b$};
+        \node[block, fill=orange!10, right=of calib] (lectura) {Lectura\\$V_{s}$};
+        
+        \draw[->] (ref) -- (calib);
+        \draw[->] (lectura) -- (calib);
+        
+        % Modelo 2: Dinámica
+        \node[block, fill=red!10, below=0.8cm of ref] (actuador) {Comando\\$u(t)$};
+        \node[block, right=of actuador] (planta) {Planta\\$G_p(s)$};
+        \node[block, fill=orange!10, right=of planta] (sensor) {Sensor\\$T(t) \to V_s(t)$};
+        
+        \draw[->] (actuador) -- (planta);
+        \draw[->] (planta) -- (sensor);
+    \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Recuperación CP1A: RC Pasa-Bajos}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \centering
+            \textbf{Topología (Filtro RC)}
+            
+            \vspace{0.2cm}
+            \begin{circuitikz}[thick, scale=0.8, transform shape]
+                \draw (0,2) to[short, o-] (1,2) to[R, l=$R$] (3,2) to[short, -o] (4.5,2);
+                \draw (3,2) to[C, l=$C$] (3,0);
+                \draw (0,0) to[short, o-o] (4.5,0);
+                \draw (3,0) node[ground]{};
+                
+                \node[left] at (0,2) {$v_{in}$};
+                \node[right] at (4.5,2) {$v_{out}$};
+            \end{circuitikz}
+            
+            \vspace{0.4cm}
+            \textbf{Normalización y Corte:}
+            
+            \vspace{0.2cm}
+            {\centering $\displaystyle \omega_c = \frac{1}{RC} \implies f_c = \frac{1}{2\pi RC}$ \par}
+            \vspace{0.2cm}
+            {\centering $\displaystyle H(j\omega) = \frac{1}{1 + j\left(\frac{f}{f_c}\right)}$ \par}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{Funciones Analíticas:} 
+            
+            \vspace{0.2cm}
+            {\centering $\displaystyle G_{dB}(f) = -10 \log_{10}\left[1 + \left(\frac{f}{f_c}\right)^2\right]$ \par}
+            \vspace{0.2cm}
+            {\centering $\displaystyle \phi(f) = -\arctan\left(\frac{f}{f_c}\right)$ \par}
+            
+            \vspace{0.4cm}
+            \begin{tcolorbox}[colback=white, colframe=gray, title=Ejemplo Ilustrativo (No Medido)]
+                \scriptsize Si $R=10\,\text{k}\Omega, C=100\,\text{nF} \implies f_c \approx 159.1\,\text{Hz}$
+                \begin{itemize}
+                    \item En $0.1 f_c$: $G_{dB} \approx -0.04\,\text{dB}$, $\phi \approx -5.7^\circ$
+                    \item En $f_c$: $G_{dB} \approx -3.01\,\text{dB}$, $\phi = -45^\circ$
+                    \item En $10 f_c$: $G_{dB} \approx -20.0\,\text{dB}$, $\phi \approx -84.3^\circ$
+                \end{itemize}
+            \end{tcolorbox}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{V4: Inventario y Reglas de Seguridad}
+    \begin{alertblock}{Restricción de Energización}
+        \footnotesize No existe permiso técnico para energizar una planta térmica solo porque esta guía lo describe. Si las conexiones y límites no están verificados, se utilizará un \textbf{Dataset Histórico Auténtico} provisto por el instructor.
+    \end{alertblock}
+    
+    \vspace{0.2cm}
+    \begin{center}
+    \resizebox{0.95\textwidth}{!}{
+    \begin{tabular}{@{} l l l @{}}
+        \toprule
+        \textbf{Requisito de Inventario} & \textbf{Estado} & \textbf{Procedencia de los Datos} \\ \midrule
+        Actuador y entrada manipulada $u(t)$ & CONFIRMADO / FALTA & (Manual, Ficha, Inspección) \\ \addlinespace
+        Sensor y señal cruda observada $V_s$ & CONFIRMADO / FALTA & (Multímetro, Ficha Técnica) \\ \addlinespace
+        Instrumento patrón de referencia $T_{ref}$ & CONFIRMADO / FALTA & (Termocupla validada, Termómetro) \\ \addlinespace
+        Alimentación y límites seguros & CONFIRMADO / FALTA & (Fuentes de laboratorio) \\ \addlinespace
+        Protocolo de apagado de emergencia & CONFIRMADO / FALTA & (Procedimiento UCB) \\ \bottomrule
+    \end{tabular}
+    }
+    \end{center}
+\end{frame}
+
+\begin{frame}{Calibración Estática del Sensor}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            La calibración busca una relación empírica entre la lectura $V_s$ y la referencia $T_{ref}$:
+            
+            \vspace{0.2cm}
+            {\centering $\displaystyle V_s = a T_{ref} + b + \epsilon$ \par}
+            
+            \vspace{0.4cm}
+            Minimizando el error cuadrático:
+            
+            \vspace{0.2cm}
+            {\centering $\displaystyle a = \frac{\sum (T_i - \bar{T})(V_i - \bar{V})}{\sum (T_i - \bar{T})^2} \qquad b = \bar{V} - a\bar{T}$ \par}
+            
+            \vspace{0.4cm}
+            \footnotesize \textbf{Nota:} Invertir una regresión de $V$ sobre $T$ no es idéntico a ajustar $T$ sobre $V$.
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \centering
+            \textbf{V5: Ejemplo Ilustrativo de Ajuste}
+            
+            \begin{tikzpicture}
+                \begin{axis}[
+                    width=0.95\linewidth, height=4.8cm, % Se elimina scale only axis
+                    xlabel={$T_{ref}$ ($^\circ$C)}, ylabel={$V_s$ (V)},
+                    grid=both,
+                    xmin=15, xmax=55, ymin=0.4, ymax=1.2,
+                    label style={font=\small}, tick label style={font=\footnotesize},
+                    legend style={at={(0.05,0.95)}, anchor=north west, font=\tiny}
+                ]
+                % Recta ajustada V = 0.02*T + 0.1
+                \addplot[thick, blue, domain=20:50] {0.02*x + 0.1};
+                \addlegendentry{Ajuste: $0.02T + 0.1$}
+                % Puntos "medidos"
+                \addplot[only marks, mark=*, red] coordinates {
+                    (20, 0.51) (30, 0.68) (40, 0.91) (50, 1.10)
+                };
+                \addlegendentry{Pares $(T_i, V_i)$}
+                \end{axis}
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Identificación Dinámica: Ensayo al Escalón}
+    Aplicamos un cambio conocido $\Delta u$ al actuador y observamos las variables en desviación: $\delta u(t) = u(t) - u_0$, $\delta T(t) = T(t) - T_0$.
+    
+    \vspace{0.3cm}
+    Para un modelo continuo de \textbf{primer orden sin retardo}:
+    
+    \vspace{0.2cm}
+    {\centering $\displaystyle \tau \frac{d\delta T(t)}{dt} + \delta T(t) = K \delta u(t) \implies G_p(s) = \frac{\Delta T(s)}{\Delta U(s)} = \frac{K}{\tau s + 1}$ \par}
+    
+    \vspace{0.3cm}
+    Si observamos una estabilización completa ($T_\infty$):
+    
+    \vspace{0.2cm}
+    {\centering $\displaystyle K = \frac{T_\infty - T_0}{\Delta u} \quad \left[ \frac{^\circ\text{C}}{\text{Unidad}} \right]$ \par}
+    
+    \vspace{0.3cm}
+    El parámetro temporal $\tau$ se extrae en el instante donde la respuesta alcanza el $63.2\%$ de su recorrido total:
+    
+    \vspace{0.2cm}
+    {\centering $\displaystyle T_{63} = T_0 + 0.632(T_\infty - T_0)$ \par}
+\end{frame}
+
+\begin{frame}{V6: Análisis Gráfico del Escalón (Ilustrativo)}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \centering
+            \textbf{Comando $u(t)$}
+            
+            \begin{tikzpicture}
+                \begin{axis}[
+                    width=0.95\linewidth, height=4.2cm, % Se elimina scale only axis
+                    xlabel={$t$ (s)}, ylabel={$u(t)$},
+                    grid=both,
+                    xmin=0, xmax=100, ymin=0, ymax=0.6,
+                    label style={font=\small}, tick label style={font=\footnotesize}
+                ]
+                \addplot[thick, blue, const plot] coordinates {(0,0.2) (10,0.2) (10,0.5) (100,0.5)};
+                \node[above left, font=\scriptsize] at (axis cs: 10,0.2) {$u_0=0.2$};
+                \node[above left, font=\scriptsize] at (axis cs: 50,0.5) {$\Delta u=0.3$};
+                \end{axis}
+            \end{tikzpicture}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \centering
+            \textbf{Respuesta Térmica $T(t)$}
+            
+            \begin{tikzpicture}
+                \begin{axis}[
+                    width=0.95\linewidth, height=4.2cm, % Se elimina scale only axis
+                    xlabel={$t$ (s)}, ylabel={$T(t)$ ($^\circ$C)},
+                    grid=both,
+                    xmin=0, xmax=100, ymin=20, ymax=35,
+                    label style={font=\small}, tick label style={font=\footnotesize}
+                ]
+                \addplot[thick, red, domain=0:10] {25};
+                \addplot[thick, red, domain=10:100, samples=50] {25 + 6*(1 - exp(-(x-10)/40))};
+                % Marcas
+                \draw[dashed, black] (axis cs: 0, 31) -- (axis cs: 100, 31) node[pos=0.1, above, font=\scriptsize]{$T_\infty=31$};
+                \draw[dashed, black] (axis cs: 50, 25) -- (axis cs: 50, 28.79) -- (axis cs: 0, 28.79) node[left, font=\scriptsize]{$T_{63}$};
+                \end{axis}
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.2cm}
+    {\centering \footnotesize $\displaystyle K = \frac{31 - 25}{0.3} = 20\, \frac{^\circ\text{C}}{\text{Unidad}} \qquad \tau = 50 - 10 = 40\,\text{s} \qquad \implies G_p(s) = \frac{20}{40s + 1}$ \par}
+\end{frame}
+
+\begin{frame}{Validación y Trazabilidad del Modelo}
+    Un ajuste empírico es solo una hipótesis. Se debe contrastar frente a observaciones reales mediante el análisis de residuos $e_i$:
+    
+    \vspace{0.2cm}
+    {\centering $\displaystyle e_i = T_{obs,i} - T_{mod}(t_i)$ \par}
+    \vspace{0.2cm}
+    {\centering $\displaystyle RMSE_T = \sqrt{\frac{1}{N}\sum e_i^2} \quad \quad \quad MAE_T = \frac{1}{N}\sum \vert{}e_i\vert{}$ \par}
+    
+    \vspace{0.4cm}
+    \begin{alertblock}{Diagnóstico Experimental}
+        \footnotesize
+        \begin{itemize}
+            \item \textbf{Inicio Tardío:} Sugiere un retardo físico $L \implies G_{p,L}(s) = \frac{K e^{-Ls}}{\tau s + 1}$.
+            \item \textbf{Error Creciente:} Posible deriva ambiental o falla en alcanzar estacionario.
+            \item \textbf{Trazabilidad:} Datos sin sello de tiempo o sin fuente declarada \textbf{carecen de validez técnica} y quedan en estado "PENDIENTE".
+        \end{itemize}
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{V5: Diagrama de Bode Analítico Ideal}
+    \centering
+    \begin{tikzpicture}
+        \begin{semilogxaxis}[
+            name=mag,
+            width=0.85\textwidth, height=3.2cm, % Reducido y sin scale only axis
+            ylabel={$G_{dB}$ (dB)},
+            xticklabel=\empty,
+            ymin=-25, ymax=5,
+            ytick={-20, -3, 0},
+            grid=both,
+            domain=0.01:100,
+            samples=100,
+            label style={font=\small},
+            tick label style={font=\footnotesize}
+        ]
+            \addplot[thick, blue] {-10*log10(1 + x^2)};
+            \addplot[dashed, red] coordinates {(0.01, 0) (1, 0)};
+            \addplot[dashed, red] { -20*log10(x) };
+            \addplot[mark=*, black, mark size=1.5pt] coordinates {(1, -3.01)} node[below left, font=\scriptsize] {$-3\text{ dB}$};
+        \end{semilogxaxis}
+        
+        \begin{semilogxaxis}[
+            at={(mag.south west)},
+            anchor=north west,
+            yshift=-0.1cm, % Acercado para optimizar espacio vertical
+            width=0.85\textwidth, height=3.2cm,
+            xlabel={$f/f_c$ (Normalizada)},
+            ylabel={$\phi$ ($^\circ$)},
+            ymin=-95, ymax=5,
+            ytick={0, -45, -90},
+            grid=both,
+            domain=0.01:100,
+            samples=100,
+            label style={font=\small},
+            tick label style={font=\footnotesize}
+        ]
+            \addplot[thick, blue] {-atan(x)};
+            \addplot[mark=*, black, mark size=1.5pt] coordinates {(1, -45)} node[above right, font=\scriptsize] {$-45^\circ$};
+        \end{semilogxaxis}
+    \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Requisitos de Acondicionamiento (Para Sesión 3)}
+    \begin{tcolorbox}[colback=white, colframe=ucbblue, title=V8: Especificaciones de Rango]
+        Transformamos el rango de salida del sensor $[V_{s,min}, V_{s,max}]$ a un rango objetivo del controlador $[V_{o,min}, V_{o,max}]$ mediante una relación afín.
+    \end{tcolorbox}
+    
+    \vspace{0.2cm}
+    La ecuación de diseño general para el op-amp será: 
+    
+    \vspace{0.2cm}
+    {\centering $\displaystyle V_o = A V_s + B$ \par}
+    
+    \vspace{0.4cm}
+    {\centering $\displaystyle A = \frac{V_{o,max} - V_{o,min}}{V_{s,max} - V_{s,min}} \qquad \text{y} \qquad B = V_{o,min} - A V_{s,min}$ \par}
+    
+    \vspace{0.4cm}
+    \begin{alertblock}{Nota Crítica}
+        \scriptsize Un cálculo matemático de $A$ y $B$ no garantiza que un amplificador real pueda generarlos. Falta revisar \textit{Output Swing}, \textit{Common-Mode} y alimentación (Sesión 3).
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Metodología de Validación: Simulación y Laboratorio}
+    \begin{columns}[T]
+        \begin{column}{0.4\textwidth}
+            \textbf{Starter SPICE (.ac):}
+\begin{verbatim}
+* CP1A - RC low pass 
+V1 in 0 AC 1
+R1 in out 10k
+C1 out 0 100n
+.ac dec 100 10 10000
+.end
+\end{verbatim}
+            \vspace{0.2cm}
+            \small \textit{Graficar $V(out)/V(in)$ para observar la transferencia $H(s)$ independientemente de la fuente física.}
+        \end{column}
+        \begin{column}{0.58\textwidth}
+            \centering
+            \textbf{V6: Flujo de Contraste y Discrepancia}\\
+            \vspace{0.2cm}
+            \begin{tikzpicture}[node distance=0.8cm, thick,
+                block/.style={draw, rounded corners, fill=blue!10, text width=2cm, align=center, minimum height=1.1cm, font=\scriptsize}]
+                
+                \node[block] (pred) {\textbf{Predicción}\\Ecuación};
+                \node[block, right=0.3cm of pred] (sim) {\textbf{Simulación}\\Barrido AC};
+                \node[block, right=0.3cm of sim] (med) {\textbf{Medición}\\Física};
+                \node[block, draw=red, fill=red!10, below=0.4cm of sim] (exp) {\textbf{Hipótesis}\\Explicación};
+                
+                \draw[->] (pred) -- (sim);
+                \draw[->] (sim) -- (med);
+                \draw[->] (med) |- (exp);
+                \draw[->] (pred) |- (exp);
+            \end{tikzpicture}
+            
+            \vspace{0.3cm}
+            \begin{tcolorbox}[colback=white, colframe=gray, width=\textwidth, center]
+                \centering \footnotesize
+                \textbf{Cuantificación del Error (Misma Frecuencia):} \\
+                \vspace{0.1cm}
+                $E_G(\%) = 100 \frac{\vert G_{meas} - G_{pred}\vert}{\vert G_{pred}\vert} \quad \Delta \phi = \phi_{meas} - \phi_{pred}$
+            \end{tcolorbox}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{V8: Analogía de Redes (Eléctrico vs. Térmico)}
+    \textbf{Advertencia Científica:} El modelo térmico es un \textbf{candidato} pendiente de validación en la Sesión 2.
+    
+    \vspace{0.2cm}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \centering
+            \textbf{Sistema Eléctrico RC} \\
+            (Validado en Sesión 1)
+            
+            \vspace{0.2cm}
+            {\centering $\displaystyle \tau_e \frac{dv_{out}}{dt} + v_{out} = v_{in}$ \par}
+            \vspace{0.2cm}
+            {\centering $\displaystyle H_e(s) = \frac{1}{1 + s\tau_e}$ \par}
+            \vspace{0.2cm}
+            
+            \begin{itemize}
+                \item Ganancia DC: $1$ (V/V) \textit{adimensional}.
+                \item Dinámica: $\tau_e = RC$ [s].
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \centering
+            \textbf{Sistema Térmico Candidato} \\
+            (Planta Proyecto)
+            
+            \vspace{0.2cm}
+            {\centering $\displaystyle C_{th} \frac{d\Delta T}{dt} + G_{th}\Delta T = P(t)$ \par}
+            \vspace{0.2cm}
+            {\centering $\displaystyle \frac{\Delta T(s)}{P(s)} = \frac{1/G_{th}}{1 + s \frac{C_{th}}{G_{th}}}$ \par}
+            \vspace{0.2cm}
+            
+            \begin{itemize}
+                \item Ganancia DC: $1/G_{th}$ [K/W].
+                \item Dinámica: $\tau_{th} = C_{th}/G_{th}$ [s].
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\end{document}

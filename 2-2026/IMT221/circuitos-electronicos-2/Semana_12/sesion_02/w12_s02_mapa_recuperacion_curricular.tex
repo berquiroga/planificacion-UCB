@@ -1,0 +1,121 @@
+% w12_s02_mapa_recuperacion_curricular.tex
+% IMT-221 — Semana 12, Sesión 2 (21/10/2026)
+% Artefacto 3: Mapa de recuperación curricular y evaluación (PROPUESTO / POR APROBAR)
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.3cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\setlength{\emergencystretch}{2em}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{neutralbg}{RGB}{247, 248, 250}
+
+% Columnas con alineación izquierda automática para evitar Underfull/Overfull \hbox
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{IMT-221 — Circuitos Electrónicos II}}
+\chead{Mapa de Recuperación Curricular y Evaluación — Estado: PROPUESTO / POR APROBAR}
+\rhead{Semana 12 - Sesión 2}
+\lfoot{Insumo de Planificación Docente — No elimina contenidos ni evaluaciones oficiales}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\textbf{\textcolor{ucbblue}{Mapa de Recuperación Curricular y Articulación de Evaluaciones (IMT-221)}}} \\[0.08cm]
+    {\footnotesize\textbf{Estado Documental: INSUMO TÉCNICO PROPUESTO PARA DECISIÓN — Requiere Cotejo con el Plan Oficial Íntegro Antes de Fijar Fechas o Ponderaciones}}
+\end{center}
+
+\vspace{-0.2cm}
+\section*{1. Cadena de Dependencias Curriculares y Estados de Trazabilidad}
+\begin{center}
+    \begin{tikzpicture}[>=Stealth, thick, scale=0.88, transform shape]
+        \node[draw=ucbblue, rectangle, rounded corners=2pt, fill=ucbblue!12, minimum height=1.0cm, text width=4.2cm, align=center, font=\scriptsize] (d1) at (0,0) {\textbf{1. Unidad 2 Fundamental}\\{\ttfamily [ACTUAL: En verificación]}\\In-Amp, CMRR, Labs 3--4, Superdiodo};
+        \node[draw=orange!80!black, rectangle, rounded corners=2pt, fill=yellow!18, minimum height=1.0cm, text width=4.2cm, align=center, font=\scriptsize] (d2) at (5.3,0) {\textbf{2. Etapa Activa Hito 2}\\{\ttfamily [ACTUAL: Gate A en curso]}\\Etapa aislada $\rightarrow$ Integración Hito 1};
+        \node[draw=purple!80!black, rectangle, rounded corners=2pt, fill=purple!10, minimum height=1.0cm, text width=4.4cm, align=center, font=\scriptsize] (d3) at (10.7,0) {\textbf{3. Unidad 3: Filtros Activos}\\{\ttfamily [OFICIAL / DESPLAZADO]}\\Diseño, cascadas y estabilidad};
+        \node[draw=purple!80!black, rectangle, rounded corners=2pt, fill=purple!10, minimum height=1.0cm, text width=4.2cm, align=center, font=\scriptsize] (d4) at (16.1,0) {\textbf{4. Hito 3 Diferenciado}\\{\ttfamily [PROPUESTO / POR APROBAR]}\\Evolución activa del filtro en PFI};
+        \node[draw=red!80!black, rectangle, rounded corners=2pt, fill=red!10, minimum height=1.0cm, text width=4.6cm, align=center, font=\scriptsize] (d5) at (21.6,0) {\textbf{5. Evaluación Individual y Resto}\\{\ttfamily [OFICIAL OBLIGATORIO]}\\EC2 escrito/indiv., Osciladores, PID, AB};
+        
+        \draw[->, very thick] (d1) -- (d2);
+        \draw[->, very thick] (d2) -- (d3);
+        \draw[->, very thick] (d3) -- (d4);
+        \draw[->, very thick] (d4) -- (d5);
+    \end{tikzpicture}
+\end{center}
+
+\vspace{-0.3cm}
+\section*{2. Auditoría de Contenidos Obligatorios, Estado Real y Propuestas Condicionadas}
+\begin{table}[htbp]
+    \centering
+    \scriptsize
+    \renewcommand{\arraystretch}{1.24}
+    \begin{tabularx}{\textwidth}{|P{4.3cm}|P{4.3cm}|P{4.8cm}|P{4.8cm}|Y|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Área / Obligación Curricular} & \textbf{Estado {\ttfamily ACTUAL} Sustentado (21/10)} & \textbf{Evidencia Mínima por Confirmar} & \textbf{Posible Integración {\ttfamily PROPUESTA}} & \textbf{Riesgo / Decisión {\ttfamily POR APROBAR}} \\ \hline
+    1. Unidad 2: In-Amp, CMRR, selección real y calibración & Introducido; dominio independiente y diseño aún no verificados. & Diseño defendible en Gate A, pruebas diferencial/común y calibración. & Ejecución directa dentro del flujo técnico de Hito 2. & Tiempo físico de banco y verificación de dominio individual. \\ \hline
+    2. Unidad 2: Rectificación de precisión / superdiodo & Cobertura no acreditada hasta la fecha. & Análisis teórico-operativo y actividad práctica o simulación guiada. & Microactividad de acondicionamiento/detección de envolvente si el programa lo permite. & Definir actividad explícita; prohibido omitir el tema por defecto. \\ \hline
+    3. Informe Lab 3 (Formato IEEE) & Plazo 18/10 vencido; recepción posterior y calidad por verificar. & Comprobar entrega efectiva y trazabilidad de datos DC por grupo. & Documenta base de errores DC ($V_{OS}$, mismatch) para Hito 2. & Aplicar normativa vigente tras verificar recepción real. \\ \hline
+    4. Informe Lab 4 (Formato IEEE) & Datos físicos adquiridos; interpretación final pendiente. & Contraste cuantitativo entre predicción, datasheet y medición GBW/SR. & Fundamenta selección dinámica del Op-Amp para Hito 2. & Plazo comunicado: \textbf{25/10/2026 (23:59)}. \\ \hline
+    5. Proyecto Hito 2 (Front-End Activo) & Cálculos iniciales vistos; ningún Gate A ni montaje confirmados. & Gate A $\rightarrow$ etapa aislada $\rightarrow$ integración H1 $\rightarrow$ mejora medida y defensa. & Eje central del proyecto acumulativo PFI actual. & Defensa 28/10 condicional a matriz de factibilidad GO/NO-GO. \\ \hline
+    6. Unidad 3: Filtros activos, cascadas y estabilidad & Desplazada respecto al cronograma oficial por cierre de Unidad 2. & Síntesis de filtro activo, respuesta en frecuencia, simulación, medición y estabilidad. & Reemplazo/evolución del filtro pasivo Twin-T por etapa selectiva activa en el PFI. & No sustituir competencia analítica de diseño por simple montaje. \\ \hline
+    7. Proyecto Hito 3 & Previsto en el programa; alcance operativo actual no establecido. & Producto técnico claramente diferenciado de Hito 2. & Integración de filtrado activo y acondicionamiento completo en PFI. & Requiere definición formal de alcance, rúbrica y fecha. \\ \hline
+    8. Otros temas: Osciladores, PID analógico, Potencia / Clase AB & Pendiente de auditoría detallada contra el plan oficial. & Evidencia mínima específica por cada unidad temática del sílabo. & Módulos focalizados o prácticas integradas según el plan oficial. & Prohibido eliminar temas sin resolución institucional expresa. \\ \hline
+    9. Laboratorios 5 a 8 y prácticas restantes & Alcance exacto pendiente de cotejo documental con el programa. & Identificar competencias experimentales cubiertas por cada práctica. & Articulación caso por caso con hitos del PFI donde exista equivalencia real. & Toda equivalencia laboratorio--proyecto requiere aprobación formal. \\ \hline
+    10. EC2 y evaluaciones escritas / individuales & Sin dominio individual verificado hasta la fecha. & Prueba individual independiente (cálculo, diagnóstico y criterio de diseño). & Evaluar sobre los mismos circuitos trabajados, separando nota individual de grupal. & Mantener pesos y estructura oficial mientras no exista cambio aprobado. \\ \hline
+    \end{tabularx}
+\end{table}
+
+\newpage
+\section*{3. Plantilla de Matriz Final de Planificación (11 Campos por Contenido Oficial)}
+\textit{Instrucción para el docente: Completar una fila por cada contenido oficial una vez cotejado el documento íntegro del plan de asignatura y los resultados reales del checkpoint del 21/10. No inventar números de sesiones ni ponderaciones sin respaldo.}
+
+\begin{table}[htbp]
+    \centering
+    \scriptsize
+    \setlength{\tabcolsep}{4pt}
+    \renewcommand{\arraystretch}{1.45}
+    \begin{tabularx}{\textwidth}{|P{1.9cm}|P{2.5cm}|P{2.0cm}|P{2.0cm}|P{2.6cm}|P{2.4cm}|P{1.9cm}|P{2.0cm}|P{2.0cm}|P{1.5cm}|Y|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{1. Unidad / Comp.} & \textbf{2. Tema del Programa Oficial} & \textbf{3. Estado (OF / ACT / PROP / PA)} & \textbf{4. Prerrequisito Técnico} & \textbf{5. Evidencia Mínima Exigida} & \textbf{6. Actividad Integrable} & \textbf{7. Mín. Sesiones Est.} & \textbf{8. Instrumento Evaluación} & \textbf{9. Recursos Requeridos} & \textbf{10. Resp.} & \textbf{11. Autorización} \\ \hline
+    EC2 / Unidad 2 & Amplificador de Instrumentación y CMRR & {\ttfamily ACTUAL / PROPUESTO} & Análisis DC y límites GBW/SR & Gate A + etapa aislada + prueba común & Diseño y validación Hito 2 & {\ttfamily [SEGÚN DATOS 21/10]} & Defensa + Spot-check indiv. & IC real, fuente, osciloscopio & Docente / Grupos & {\ttfamily [POR APROBAR]} \\ \hline
+    EC2 / Unidad 2 & Rectificación de precisión (Superdiodo) & {\ttfamily OFICIAL / POR APROBAR} & Diodos + Op-Amp en lazo cerrado & Análisis de cruce por cero + prueba & Acondicionamiento CA/CC en PFI & {\ttfamily [COTEJAR PLAN]} & Ejercicio / Práctica corta & Op-Amp, diodos señal & Docente & {\ttfamily [POR APROBAR]} \\ \hline
+    Unidad 3 & Filtros activos, cascadas y estabilidad & {\ttfamily OFICIAL / PROPUESTO} & Respuesta en frecuencia (Lab 4) & Cálculo $H(s)$, Bode SPICE y medición & Etapa de filtrado activo para Hito 3 & {\ttfamily [COTEJAR PLAN]} & Pre-Lab + Medición + Examen & Op-Amp, red $RC$ medida & Docente & {\ttfamily [POR APROBAR]} \\ \hline
+    Unidad 3 / PFI & Hito 3 (Producto diferenciado de Hito 2) & {\ttfamily PROPUESTO / POR APROBAR} & Hito 2 validado + Filtros activos & Mejora espectral / estabilidad medida & Integración con cadena activa PFI & {\ttfamily [COTEJAR PLAN]} & Rúbrica Hito 3 (por definir) & Banco completo de lab. & Docente / Coord. & {\ttfamily [POR APROBAR]} \\ \hline
+    Unidades Post. & Osciladores, PID analógico, Potencia Clase AB & {\ttfamily OFICIAL / POR APROBAR} & Realimentación y etapa de salida & {\ttfamily [VALOR REQUERIDO DEL PLAN OFICIAL]} & {\ttfamily [POR DEFINIR CON PROGRAMA]} & {\ttfamily [COTEJAR PLAN]} & {\ttfamily [SEGÚN PLAN OFICIAL]} & Componentes de potencia/RC & Docente & {\ttfamily [POR APROBAR]} \\ \hline
+    Transversal & Prácticas Oficiales Labs 5 a 8 & {\ttfamily OFICIAL / POR APROBAR} & Labs 1--4 & {\ttfamily [COTEJAR GUÍAS OFICIALES]} & Equivalencia parcial controlada & {\ttfamily [COTEJAR PLAN]} & Informes / Evidencia banco & Laboratorio C-07 & Docente / Coord. & {\ttfamily [POR APROBAR]} \\ \hline
+    \end{tabularx}
+\end{table}
+
+\section*{4. Resumen Transparente para Estudiantes (Estado de Fechas y Obligaciones al 21/10/2026)}
+\begin{tcolorbox}[colback=neutralbg, colframe=ucbblue, title=\textbf{Comunicado Académico de Progresión y Reglas Vigentes}]
+    \footnotesize
+    \begin{enumerate}
+        \setlength{\itemsep}{2pt}
+        \item \textbf{Prioridad Técnica Inmediata:} Ningún grupo construye ni energiza el circuito de Hito 2 sin aprobar \textbf{Gate A} (ficha trazable + defensa oral) y la verificación de seguridad eléctrica en banco.
+        \item \textbf{Informes de Laboratorio:} El plazo del Informe de Lab 3 venció el \textbf{18/10/2026} (se auditará el estado real de recepción). El Informe de Lab 4 mantiene su fecha oficial de entrega para el \textbf{25 de octubre de 2026 a las 23:59}.
+        \item \textbf{Defensa del Hito 2 (28 de octubre de 2026):} Se mantiene como \textbf{fecha propuesta condicional}. Durante la sesión de hoy (21/10) se levantará la matriz real de avance de todos los grupos para emitir una recomendación técnica ({\ttfamily GO} o {\ttfamily NO-GO}). Cualquier ajuste de fecha será comunicado oficialmente una vez aprobado; mientras tanto, rige el cronograma vigente.
+        \item \textbf{Continuidad hacia Unidad 3 e Hito 3:} El trabajo riguroso que realicen en la etapa activa del Hito 2 servirá de base directa para el estudio de \textbf{filtros activos, conexión en cascada y estabilidad (Unidad 3)} y su evolución hacia el \textbf{Hito 3}. Ningún tema obligatorio del programa ni las evaluaciones individuales han sido eliminados.
+    \end{enumerate}
+\end{tcolorbox}
+
+\end{document}

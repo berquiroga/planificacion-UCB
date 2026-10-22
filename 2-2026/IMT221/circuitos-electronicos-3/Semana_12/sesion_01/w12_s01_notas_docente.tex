@@ -1,0 +1,70 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Notas Docentes: PFI y Driver (W12S01)}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\section*{1. Arquitectura PFI y Mapeo EC3 / Hito 3[cite: 7]}
+Las rutas a continuación son diagramas funcionales, \textbf{no} la conexión física literal ni el orden único de los componentes[cite: 7].
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tikzpicture}[node distance=0.8cm, auto, thick, >=Stealth]
+    \tikzset{every node/.style={draw, rounded corners, align=center, font=\small, minimum height=1cm, text width=4cm}}
+    
+    \node[fill=gray!20] (bus) {FUENTE / BUS DC};
+    \node[fill=red!10, right=of bus] (prot) {[Protección U1]};
+    \node[fill=yellow!20, right=of prot] (puente) {[Puente MOSFET U3]};
+    \node[draw=none, fill=none, right=of puente, text width=2cm, font=\bfseries] (carga) {CARGA};
+    
+    \node[fill=ucbblue!20, below=of puente] (drivers) {[Driver BJT U3]};
+    \node[fill=green!10, below=of drivers] (ctrl) {[Control U4]};
+    \node[fill=purple!10, left=of ctrl] (sens) {[Sensado U2]};
+    \node[draw=none, fill=none, left=of sens, text width=2.5cm, font=\bfseries] (fisica) {Magnitud Física};
+    
+    \draw[->, ultra thick] (bus) -- (prot);
+    \draw[->, ultra thick] (prot) -- (puente);
+    \draw[<->, ultra thick] (puente) -- (carga);
+    
+    \draw[->] (ctrl) -- (drivers);
+    \draw[->] (drivers) -- (puente);
+    
+    \draw[->, dashed] (fisica) -- (sens);
+    \draw[->] (sens) -- (ctrl);
+    
+    \draw[->, dashed, bend right=30] (ctrl.south) to node[draw=none, fill=none, below]{[Realimentación U4]} (sens.south);
+\end{tikzpicture}
+}
+\end{center}
+
+\section*{2. Riesgos Críticos: Buffer BJT y Topologías[cite: 7]}
+\begin{itemize}
+    \item \textbf{Buffer BJT:} Un driver BJT sirve como etapa de sourcing/sinking para aislar el microcontrolador y entregar la corriente $I_g$ requerida, pero esto aplica \textbf{si y solo si} se valida su saturación, niveles y $I_c$[cite: 7]. No afirmar que cualquier BJT evita el shoot-through o excita un gate directamente[cite: 7].
+    \item \textbf{High-Side Source Móvil:} En una topología high-side, el Source no está conectado a ground, es móvil[cite: 7]. Exige topologías de referencia específicas (ej. Bootstrap); una tensión $V_G = 10\,\text{V}$ no implica $V_{GS}=10\,\text{V}$[cite: 7].
+    \item \textbf{Limitaciones del Switch Aislado:} Una simulación con un NMOS resistivo aislado \textbf{no} valida cargas inductivas (flyback), dead-time, ni demuestra protección frente a shoot-through en un puente H completo[cite: 7].
+\end{itemize}
+
+\section*{3. Matriz de Evidencias (EC3 vs Hito 3)[cite: 7]}
+\begin{itemize}
+    \item \textbf{Simulación single low-side:} Muestra el comportamiento del modelo y $R_G$, \textbf{pero no demuestra} drivers BJT o puente H validados[cite: 7].
+    \item \textbf{PCB y mediciones futuras:} La placa física y la medición de voltajes, tiempos y temperatura (Hito 3) documentan construcción, pero un cálculo de $R_{DS(on)}$ simulado no prueba seguridad de hardware[cite: 7].
+\end{itemize}
+
+\end{document}

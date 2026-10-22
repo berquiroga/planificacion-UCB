@@ -1,0 +1,194 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=2.3cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{Uso Exclusivo del Docente}}
+\rhead{IMT-221 | Solucionario Unificado LTspice (W12S01)}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{W12S01 — Solucionario Docente Unificado}}\\[0.15cm]
+    {\large \textbf{IMT-221 $\cdot$ Circuitos Electrónicos III $\cdot$ Uso Exclusivo del Docente}}[cite: 11]
+\end{center}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Configuración Única Auditada}]
+    $V_{bus} = 12\,\text{V}$; $R_{LOAD} = 10\,\Omega$; $R_G = \{220, 22\}\,\Omega$; $R_{PD} = 100\,\text{k}\Omega$; $V_{CTRL} = \texttt{PULSE(0 10 1m 5u 5u 2m 4m)}$; $\texttt{.tran 0 8m 0 1u}$; modelo \texttt{MDEMO} y capacitancias $C_{GS} = 10\,\text{nF}$, $C_{GD} = 2\,\text{nF}$[cite: 11]. Los valores del modelo y las capacitancias son \textbf{hipotéticos}; ni el modelo ni las curvas representan dispositivos reales de fabricante[cite: 11].
+\end{tcolorbox}
+
+\section*{1. Lista de Verificación Previa a Revisar la Gráfica}
+Antes de calificar las trazas del estudiante, comprobar en el esquemático[cite: 11]:
+\begin{itemize}[noitemsep]
+    \item $\square$ \texttt{vbus} $= +12\,\text{V}$ y resistencia de carga de $10\,\Omega$ conectada entre \texttt{vbus} y \texttt{drain}[cite: 11].
+    \item $\square$ Transistor \texttt{M1}: drenador $\to$ \texttt{drain}, gate $\to$ \texttt{gate}, source y bulk $\to$ GND[cite: 11].
+    \item $\square$ Resistencia $R_G$ entre \texttt{ctrl} y \texttt{gate} con valor paramétrico \texttt{\{RG\}}; $R_{PD} = 100\,\text{k}\Omega$ entre \texttt{gate} y GND[cite: 11].
+    \item $\square$ Capacitores explícitos: $C_{GS} = 10\,\text{nF}$ entre \texttt{gate} y GND; $C_{GD} = 2\,\text{nF}$ entre \texttt{gate} y \texttt{drain}[cite: 11].
+    \item $\square$ Fuente \texttt{VCTRL} de $0 \to 10\,\text{V}$ con tiempos de subida y bajada de $5\,\mu\text{s}$[cite: 11].
+    \item $\square$ Directiva \texttt{.step param RG list 220 22} activa y modelo \textbf{\texttt{MDEMO}} declarado (no un MOSFET indefinido)[cite: 11].
+\end{itemize}
+
+\section*{2. Cálculos Previos de Referencia (Desarrollo Explícito Paso a Paso)}
+\textit{Nota crítica: Estos cálculos proporcionan escalas físicas orientativas y \textbf{NO} son los resultados numéricos directos de LTspice[cite: 11].}
+
+\subsection*{2.1 Corriente y Potencia Máxima en la Carga (Interruptor ON Ideal)}
+Aplicando la Ley de Tensiones de Kirchhoff (LTK) en la malla de potencia cuando el MOSFET actúa como un interruptor cerrado ideal ($V_{DS(\text{on}),\text{ideal}} \to 0\,\text{V}$)[cite: 11]:
+\begin{align}
+    V_{bus} &= I_{load} R_{LOAD} + V_{DS(\text{on})} \xrightarrow{V_{DS(\text{on})} \to 0} I_{load,\text{ideal}} = \frac{V_{bus}}{R_{LOAD}} = \frac{12\,\text{V}}{10\,\Omega} = 1.2\,\text{A} \text{[cite: 11]}
+\end{align}
+La potencia disipada \textbf{en la resistencia de carga} (no en el MOSFET) bajo esta condición límite ideal es[cite: 11]:
+\begin{align}
+    P_{load,\text{ideal}} &= I_{load,\text{ideal}}^2 \cdot R_{LOAD} = \frac{V_{bus}^2}{R_{LOAD}} = \frac{(12\,\text{V})^2}{10\,\Omega} = \frac{144\,\text{V}^2}{10\,\Omega} = 14.4\,\text{W} \text{[cite: 11]}
+\end{align}
+
+\subsection*{2.2 Escala de Tiempo RC Simplificada (Despreciando Dinámica de Drain / Efecto Miller)}
+Si se aproxima la carga de compuerta tratando a $C_{GS}$ y $C_{GD}$ como si estuvieran en paralelo estático hacia masa (sin considerar que el nodo \texttt{drain} se mueve durante la transición)[cite: 11]:
+\begin{align}
+    C_{\text{equiv,aprox}} &= C_{GS} + C_{GD} = 10\,\text{nF} + 2\,\text{nF} = 12\,\text{nF} = 12 \times 10^{-9}\,\text{F} \text{[cite: 11]}
+\end{align}
+Calculando explícitamente la constante de tiempo $\tau = R_G \cdot C_{\text{equiv,aprox}}$ para ambos valores del parámetro $R_G$[cite: 11]:
+\begin{align}
+    \tau_{220} &= R_{G,\text{lenta}} \cdot C_{\text{equiv,aprox}} = (220\,\Omega) \cdot (12 \times 10^{-9}\,\text{F}) = 2640 \times 10^{-9}\,\text{s} = 2.64\,\mu\text{s} \text{[cite: 11]} \\
+    \tau_{22} &= R_{G,\text{rápida}} \cdot C_{\text{equiv,aprox}} = (22\,\Omega) \cdot (12 \times 10^{-9}\,\text{F}) = 264 \times 10^{-9}\,\text{s} = 0.264\,\mu\text{s} \text{[cite: 11]}
+\end{align}
+\textbf{Por qué $\tau_{220}$ y $\tau_{22}$ no son los tiempos de conmutación reales ni simulados:}
+\begin{enumerate}[noitemsep]
+    \item El pulso de entrada \texttt{VCTRL} no es un escalón ideal; ya emplea una rampa de $\mathbf{5\,\mu\text{s}}$ \textbf{por flanco}[cite: 11].
+    \item El capacitor $C_{GD}$ conecta la compuerta con un nodo \texttt{drain} móvil, haciendo que la capacitancia aparente de entrada varíe dinámicamente (efecto Miller)[cite: 11].
+\end{enumerate}
+
+\subsection*{2.3 Corriente Transitoria en la Resistencia de Gate}
+Aplicando la Ley de Ohm instantánea sobre la resistencia $R_G$ y la LCK en el nodo \texttt{gate} (despreciando la pequeña corriente en $R_{PD} = 100\,\text{k}\Omega$ frente a $R_G$)[cite: 11]:
+\begin{align}
+    i_{RG}(t) &= \frac{V_{ctrl}(t) - V_{gate}(t)}{R_G} \approx C_{GS}\frac{dV_{gate}(t)}{dt} + C_{GD}\frac{d\left[V_{gate}(t) - V_{drain}(t)\right]}{dt} \text{[cite: 11]}
+\end{align}
+No se debe asumir permanentemente que $i_{RG} = \frac{10\,\text{V}}{R_G}$, porque $V_{gate}(t)$ cambia continuamente durante toda la transición[cite: 11].
+
+\section*{3. Qué Mirar en Cada Traza y Criterios de Comparación}
+\renewcommand{\arraystretch}{1.25}
+\noindent
+\begin{tabularx}{\textwidth}{@{} l >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X @{}}
+\toprule
+\textbf{Traza}[cite: 11] & \textbf{Interpretación Esperada}[cite: 11] & \textbf{Señal de Error de Montaje}[cite: 11] \\ \midrule
+\texttt{V(ctrl)}[cite: 11] & Debe coincidir exactamente en los dos pasos de $R_G$[cite: 11]. & Pulso o directiva \texttt{.step} configurados incorrectamente[cite: 11]. \\
+\texttt{V(gate)} $= V_{GS}$[cite: 11] & $R_G = 220\,\Omega$ suele dar respuesta más lenta que $R_G = 22\,\Omega$[cite: 11]. & Gate flotante, resistor mal puesto o pulso de $5\,\mu\text{s}$ dominante[cite: 11]. \\
+\texttt{V(drain)} $= V_{DS}$[cite: 11] & $\approx 12\,\text{V}$ en OFF; cae al pasar a ON (el valor ON no es necesariamente $0\,\text{V}$ exacto)[cite: 11]. & Conexión incorrecta o $V_{GS}$ insuficiente[cite: 11]. \\
+\texttt{Id(M1)}[cite: 11] & Corriente positiva de D $\to$ S durante ON (revisar signo)[cite: 11]. & Source o body/bulk mal conectado[cite: 11]. \\
+\texttt{V(drain)*Id(M1)}[cite: 11] & Potencia instantánea disipada en el modelo M1; solapamiento relevante en transiciones[cite: 11]. & No confundir con la potencia disipada en la carga ($R_{LOAD}$)[cite: 11]. \\ \bottomrule
+\end{tabularx}
+
+\vspace{0.2cm}
+\noindent\textbf{Umbrales y ventanas de comparación:} Aplicar el mismo criterio $10\text{--}90\%$ de la excursión de tensión sobre el mismo tipo de flanco, con ejes idénticos, distinguiéndolo del flanco de $5\,\mu\text{s}$ de \texttt{V(ctrl)}[cite: 11]. Los intervalos útiles están en la subida de $\mathbf{1\,\text{ms}}$, la bajada de $\mathbf{3.005\,\text{ms}}$ y la siguiente subida de $\mathbf{5\,\text{ms}}$[cite: 11].
+
+\newpage
+
+\section*{4. Criterios de Evaluación: Resultados Aceptables vs. No Aceptables}
+\noindent
+\begin{tabularx}{\textwidth}{@{} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X @{}}
+\toprule
+\textbf{\textcolor{green!50!black}{Respuestas Aceptables (Correctas)}}[cite: 11] & \textbf{\textcolor{red!70!black}{Respuestas No Aceptables (Incorrectas)}}[cite: 11] \\ \midrule
+\begin{itemize}[leftmargin=*, noitemsep, topsep=0pt]
+    \item Señalar que $220\,\Omega$ limita en general la corriente de gate y puede prolongar los flancos, justificando cómo afecta al solapamiento de $V_{DS}$ e $I_D$[cite: 11].
+    \item Indicar que la diferencia observable es pequeña o moderada porque el flanco del pulso de entrada ($5\,\mu\text{s}$) domina sobre $\tau_{22}=0.264\,\mu\text{s}$ y compite con $\tau_{220}=2.64\,\mu\text{s}$, siempre que las curvas lo avalen[cite: 11].
+\end{itemize} &
+\begin{itemize}[leftmargin=*, noitemsep, topsep=0pt]
+    \item Afirmar que el flanco dura exactamente $2.64\,\mu\text{s}$ o $0.264\,\mu\text{s}$ (son solo constantes RC simplificadas)[cite: 11].
+    \item Asignar $14.4\,\text{W}$ como pérdida del MOSFET (esa cifra es la potencia ideal de la carga resistiva de $10\,\Omega$)[cite: 11].
+    \item Concluir que un driver real de MCU/BJT es seguro basándose en una fuente ideal de $10\,\text{V}$[cite: 11].
+    \item Reutilizar la clave numérica del circuito retirado ($R_{LOAD}=4\,\Omega$, $R_G=100\,\Omega/10\,\text{k}\Omega$)[cite: 11].
+\end{itemize} \\ \bottomrule
+\end{tabularx}
+
+\section*{5. Análisis Riguroso de la Potencia de Transición}
+La potencia instantánea disipada en el MOSFET y la energía perdida durante una transición en el intervalo $[t_1, t_2]$ se expresan como[cite: 11]:
+\begin{align}
+    p_D(t) &= v_{DS}(t) i_D(t), \qquad E_{sw} = \int_{t_1}^{t_2} p_D(t)\,dt = \int_{t_1}^{t_2} v_{DS}(t) i_D(t)\,dt \text{[cite: 11]}
+\end{align}
+Sustituyendo la relación de nodos $i_D(t) = I(\text{RLOAD}) + i_{CGD}(t)$, se obtiene el error cometido si el estudiante utiliza \texttt{I(RLOAD)} en lugar de \texttt{Id(M1)}[cite: 11]:
+\begin{align}
+    p_D(t) &= V(\text{drain}) \cdot \left[ I(\text{RLOAD}) + C_{GD}\frac{d\left(V(\text{gate}) - V(\text{drain})\right)}{dt} \right] \neq V(\text{drain}) \cdot I(\text{RLOAD}) \text{[cite: 11]}
+\end{align}
+Por tanto, \texttt{V(drain)*I(RLOAD)} \textbf{no es la potencia exacta de M1 durante los transitorios} cuando circula corriente desplazada por $C_{GD}$[cite: 11]. Asimismo, la altura del pico de potencia no equivale por sí sola a la energía $E_{sw}$ (que depende del área bajo la curva en una ventana bien definida), y debe diferenciarse la pérdida en régimen ON de la pérdida de transición[cite: 11].
+
+\begin{center}
+\begin{tikzpicture}
+    \begin{axis}[
+        width=12.5cm, height=4.2cm,
+        xmin=0, xmax=8, ymin=0, ymax=1.25,
+        axis lines=left,
+        xlabel={Tiempo durante el flanco de encendido ($\approx 1\,\text{ms}$, escala de $\mu\text{s}$)},
+        ylabel={Magnitud norm.},
+        xtick=\empty, ytick=\empty,
+        legend style={at={(0.5,1.05)}, anchor=south, legend columns=3, draw=none, font=\footnotesize}
+    ]
+    % Rampa Vctrl (5 us)
+    \addplot[thick, black, dotted, domain=0:5] {x/5};
+    \addplot[thick, black, dotted, domain=5:8, forget plot] {1};
+    % Vgate RG=22 (sigue de cerca a la rampa de 5 us)
+    \addplot[thick, blue, domain=0:8, samples=100] {x < 5 ? (x/5 - 0.08*(1-exp(-x/0.4))) : (1 - 0.08*exp(-(x-5)/0.4))};
+    % Vgate RG=220 (retrasada por tau=2.64 us)
+    \addplot[thick, red, dashed, domain=0:8, samples=100] {x < 5 ? (x/5 - 0.45*(1-exp(-x/2.64))) : (1 - 0.45*exp(-(x-5)/2.64))};
+    
+    \legend{Rampa \texttt{V(ctrl)} ($5\,\mu\text{s}$), \texttt{V(gate)} ($R_G=22\,\Omega$), \texttt{V(gate)} ($R_G=220\,\Omega$)}
+    \end{axis}
+\end{tikzpicture}
+\end{center}
+
+\section*{6. Diagnóstico Rápido Docente}
+\begin{itemize}[noitemsep]
+    \item \textbf{Gate plana a $0\,\text{V}$:} fuente \texttt{PULSE} inactiva, cable abierto, $R_G$ mal conectada o corto a tierra[cite: 11].
+    \item \textbf{Drain plana a $12\,\text{V}$:} el transistor no enciende (revisar gate, modelo \texttt{MDEMO}, conexiones o control)[cite: 11].
+    \item \textbf{Curva inversa o corriente negativa:} revisar signo de \texttt{Id(M1)} y orientación de source/body[cite: 11].
+    \item \textbf{Dos curvas aparentemente iguales:} comprobar directiva \texttt{.step}, llaves \texttt{\{RG\}}, efecto dominante de la fuente de $5\,\mu\text{s}$ y escala horizontal (hacer zoom a $\mu\text{s}$)[cite: 11].
+    \item \textbf{No converge:} comprobar conexión del terminal bulk, sintaxis de \texttt{.model MDEMO}, directivas y nodos flotantes; guardar archivo \texttt{.log}[cite: 11].
+    \item \textbf{Potencia de carga muy alta ($14.4\,\text{W}$):} distinguir disipación en $R_{LOAD}=10\,\Omega$ de la disipación en el MOSFET; no tomar como especificación física de laboratorio[cite: 11].
+\end{itemize}
+
+\section*{7. Preguntas de Defensa Individual (Con Clave)}
+\begin{enumerate}[noitemsep]
+    \item \textbf{¿Cuál es el único parámetro cambiado entre las dos corridas?} \textbf{\texttt{RG}} ($220\,\Omega$ vs. $22\,\Omega$)[cite: 11].
+    \item \textbf{¿Qué nodos unen $C_{GS}$ y $C_{GD}$?} \textbf{\texttt{gate}--\texttt{source} (GND) y \texttt{gate}--\texttt{drain}}, respectivamente[cite: 11].
+    \item \textbf{¿Por qué puede cambiar el tiempo de transición aunque $V_{ctrl}$ final sea idéntico ($10\,\text{V}$)?} Por la \textbf{carga de compuerta y la limitación de corriente dinámica} a través de $R_G$[cite: 11].
+    \item \textbf{¿Por qué la corriente de carga en estado ON debería ser similar a largo plazo en ambos casos?} Porque comparten \textbf{la misma fuente de bus, la misma carga y el mismo $V_{GS}$ final estacionario}; $R_G$ afecta principalmente al transitorio[cite: 11].
+    \item \textbf{¿Qué significa la cifra $1.2\,\text{A}$?} Es el \textbf{máximo ideal aproximado de corriente en la carga} (asumiendo $V_{DS(\text{on})} \approx 0\,\text{V}$), no una medición real ni un límite seguro del transistor[cite: 11].
+    \item \textbf{¿Qué hace falta para diseñar un driver BJT real?} \textbf{Datos reales de la carga y del MOSFET, $Q_g$ real de hoja de datos, tensión/corriente disponible del driver, cálculo de disipación, protecciones y validación experimental}[cite: 11].
+\end{enumerate}
+
+\section*{8. Rúbrica Formativa Opcional (20 Puntos) y Estado de Validación}
+\noindent
+\begin{tabularx}{\textwidth}{@{} >{\raggedright\arraybackslash}X r @{}}
+\toprule
+\textbf{Criterio de Evaluación}[cite: 11] & \textbf{Puntos}[cite: 11] \\ \midrule
+Conectividad del esquema (incluyendo $C_{GS}$, $C_{GD}$, bulk) y modelo \texttt{MDEMO} correctos[cite: 11] & 5[cite: 11] \\
+Dos escenarios de $R_G$ ($220\,\Omega$ y $22\,\Omega$) comparables en igual escala y ventana temporal[cite: 11] & 4[cite: 11] \\
+Interpretación física y causal de $V_{GS}$, $V_{DS}$ e $I_D$[cite: 11] & 5[cite: 11] \\
+Distinción clara entre potencia de la carga ($R_{LOAD}$) y potencia del MOSFET ($p_D$)[cite: 11] & 3[cite: 11] \\
+Reconocimiento de limitaciones del modelo idealizado y razonamiento independiente[cite: 11] & 3[cite: 11] \\ \midrule
+\textbf{Total Formativo}[cite: 11] & \textbf{20}[cite: 11] \\ \bottomrule
+\end{tabularx}
+
+\vspace{0.3cm}
+\begin{tcolorbox}[colback=red!5, colframe=red!75!black, title=\textbf{Estado de Validación del Paquete}]
+    Los parámetros han sido auditados y unificados entre los archivos del paquete[cite: 11]. \textbf{LTspice aún no ha sido ejecutado} en este entorno, por lo que los resultados numéricos de la simulación permanecen pendientes[cite: 11]. El docente debe ejecutar la simulación y guardar el archivo \texttt{.log} y las trazas antes de declarar la simulación como empíricamente verificada[cite: 11].
+\end{tcolorbox}
+
+\end{document}

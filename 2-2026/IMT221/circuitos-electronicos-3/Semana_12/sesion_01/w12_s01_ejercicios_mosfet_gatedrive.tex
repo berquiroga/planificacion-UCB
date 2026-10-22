@@ -1,0 +1,86 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Ejercicios MOSFET (W12S01)}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+% ================= PARTE 1: ESTUDIANTE =================
+\section*{Parte I: Hoja de Trabajo del Estudiante[cite: 7]}
+
+\textbf{Circuito Conceptual High-Side (Referencia)[cite: 7]}
+\begin{center}
+\begin{circuitikz}[scale=1.2, transform shape]
+    \draw (0,0) node[nmos](M){};
+    \draw (M.D) -- (0,1) node[vcc]{$V_{BUS}$};
+    \draw (M.S) -- (0,-1) node[right]{$V_S$ (Móvil)} to[R, l=Carga] (0,-3) node[ground]{};
+    \draw (M.G) -- (-1.5,0) node[left]{$V_G$};
+    \draw[->, red, thick] (-1, 0.2) to[bend right] node[left] {$V_{GS}$} (-0.2, -0.6);
+\end{circuitikz}
+\end{center}
+
+\textbf{E2. Selección Condicional y Evaluación Térmica[cite: 7]}
+Considere un bus de $12\,\text{V}$ y una carga resistiva que demanda $3\,\text{A}$ nominal cuando está encendida. Es un montaje \textit{low-side} ($V_S = 0\,\text{V}$) excitado por un controlador de $3.3\,\text{V}$[cite: 7]. Frecuencia PWM no definida[cite: 7]. Dos MOSFET ficticios candidatos[cite: 7]:
+\begin{itemize}
+    \item \textbf{Candidato X:} $R_{DS(on)} = 25\,\text{m}\Omega$ ensayado a $V_{GS}=4.5\,\text{V}$. $Q_g = 60\,\text{nC}$[cite: 7].
+    \item \textbf{Candidato Y:} $R_{DS(on)} = 55\,\text{m}\Omega$ ensayado a $V_{GS}=2.5\,\text{V}$. $Q_g = 15\,\text{nC}$[cite: 7].
+\end{itemize}
+\begin{enumerate}
+    \item Calcule $V_{GS}$ real aplicado al canal[cite: 7].
+    \item Calcule $P_{cond}$ para el Candidato Y asumiendo que el $R_{DS(on)}$ se mantiene constante a $3.3\,\text{V}$[cite: 7].
+    \item Indique al menos dos condiciones faltantes en el problema que impiden seleccionar un candidato final definitivo[cite: 7].
+\end{enumerate}
+
+\textbf{E3. Capacidad del Driver y Tiempos de Transición[cite: 7]}
+Para un MOSFET con $Q_g = 30\,\text{nC}$ en una condición ficticia de conmutación[cite: 7]:
+\begin{enumerate}
+    \item Estime el tiempo de transferencia de carga $t_{charge}$ si la corriente de gate promedio es $I_{G,avg} = 3\,\text{mA}$[cite: 7].
+    \item Recalcule para $I_{G,avg} = 30\,\text{mA}$ e indique por qué duplicar la corriente de gate no garantiza matemáticamente un tiempo exacto de transición $V_{DS}$ fall time[cite: 7].
+\end{enumerate}
+
+\newpage
+% ================= PARTE 2: SOLUCIONARIO =================
+\section*{Parte II: Clave del Docente (Worked Examples)[cite: 7]}
+
+\subsection*{Resolución E2 (W2, W3, W5)[cite: 7]}
+\textbf{1. Tensión de control real:} Si $V_G = 3.3\,\text{V}$ y la configuración es low-side ($V_S = 0\,\text{V}$)[cite: 7]:
+\begin{equation*}
+    V_{GS} = V_G - V_S = 3.3\,\text{V} - 0\,\text{V} = 3.3\,\text{V} \text{[cite: 7]}
+\end{equation*}
+\textit{Nota (W2):} En un high-side con $V_S=8\,\text{V}$ y $V_G=10\,\text{V}$, $V_{GS}$ sería solo $2\,\text{V}$[cite: 7].
+
+\textbf{2. Evaluación Térmica Ficticia (W3):} Para el Candidato Y ($V_{GS} = 3.3\,\text{V} > 2.5\,\text{V}$)[cite: 7]:
+\begin{equation*}
+    P_{Y} \approx I_D^2 R_{DS(on)} = (3)^2 (0.055) = 0.495\,\text{W} \text{[cite: 7]}
+\end{equation*}
+El Candidato X es inválido (no justificado) porque su $R_{DS(on)}$ se garantiza a $4.5\,\text{V}$, y el micro solo entrega $3.3\,\text{V}$[cite: 7].
+
+\textbf{3. Información Faltante:} Falta conocer el gate driver (corriente disponible), comportamiento térmico ($R_{\theta}$), frecuencia PWM (pérdidas de switching $P_{sw}$) y transitorios SOA[cite: 7]. Una elección basada solo en "menor R" es insuficiente[cite: 7].
+
+\subsection*{Resolución E3 (W4)[cite: 7]}
+\textbf{1. Transitorios teóricos de gate:} Usando $t_{charge} \approx \frac{Q_g}{I_{G,avg}}$[cite: 7]:
+\begin{equation*}
+    t_A \approx \frac{30 \times 10^{-9}\,\text{C}}{3 \times 10^{-3}\,\text{A}} = 10\,\mu\text{s} \text{[cite: 7]}
+\end{equation*}
+\textbf{2. Incremento de corriente:}
+\begin{equation*}
+    t_B \approx \frac{30 \times 10^{-9}\,\text{C}}{30 \times 10^{-3}\,\text{A}} = 1\,\mu\text{s} \text{[cite: 7]}
+\end{equation*}
+Diez veces más corriente implica un tiempo de transferencia estimado 10 veces menor bajo el mismo $Q_g$[cite: 7]. Sin embargo, esto \textbf{no} equivale al tiempo de conmutación del drain ni a la duración Miller exacta, debido a la variación de $I_G$ y capacitancias parásitas dinámicas ($C_{GD}$)[cite: 7].
+
+\end{document}

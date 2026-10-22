@@ -1,0 +1,107 @@
+% worksheet.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | CP1A Worksheet Estudiante}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!80!black, title=\textbf{ATENCIÓN: Validez de los Datos}]
+    Los valores mostrados ($R=10\,\text{k}\Omega, C=100\,\text{nF}$) son \textbf{ILUSTRATIVOS}. Recalcule todas las tablas para los componentes físicos que utilice en el banco, o para el dataset provisto. Ningún resultado obtenido por ecuación matemática o simulador debe anotarse como medición experimental.
+\end{tcolorbox}
+
+\section*{E1. Diagnóstico Inicial}
+Resuelva individualmente:
+\begin{enumerate}
+    \item Simplifique $\frac{1}{1+j}$ separando parte real e imaginaria y halle su módulo: \vspace{1.2cm}
+    \item Para dos impedancias $Z_1$ y $Z_2$ en serie, con la salida tomada sobre $Z_2$, escriba la ecuación de transferencia $\frac{V_{out}}{V_{in}}$: \vspace{1.2cm}
+    \item Si $R=10\,\text{k}\Omega$ y $C=100\,\text{nF}$ (valores ilustrativos), calcule $\tau$ en segundos: \vspace{1.2cm}
+    \item Conceptualmente, si la frecuencia $f$ de la excitación aumenta progresivamente, ¿qué le ocurre al módulo de la impedancia capacitiva $|Z_C|$? \vspace{1.2cm}
+\end{enumerate}
+
+\section*{E2. Configuración y Derivación Analítica del Filtro}
+
+\subsection*{A. Registro de Parámetros del Montaje (Antes de simular o medir)}
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}l X l l@{}}
+\toprule
+\textbf{Parámetro} & \textbf{Valor} & \textbf{Unidad} & \textbf{Origen / Observación} \\ \midrule
+R nominal / medido & \hspace{2cm} / \hspace{2cm} & $\Omega$ & \\ \addlinespace
+C nominal / medido & \hspace{2cm} / \hspace{2cm} & F & \\ \addlinespace
+$\tau$ y $f_c$ nominales & \hspace{2cm} / \hspace{2cm} & s / Hz & Ecuaciones analíticas \\ \addlinespace
+Fuente AC (Amplitud/tipo) & & & e.g. 2Vpp, Pico, RMS \\ \addlinespace
+Instrumentos / Modelos & & --- & \\ \addlinespace
+Dataset Experimental & & --- & (Llenar si falla el banco) \\ \bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection*{B. Derivación de $H(s)$}
+Dibuje el circuito $V_{in} \to R \to V_{out}$ con $C$ hacia la referencia (GND). Demuestre \textbf{todos los pasos} utilizando el divisor de impedancias para llegar a $H(s) = \frac{1}{1+sRC}$. Verifique que las unidades de $RC$ equivalen a segundos. Evalúe los límites teóricos $\lim_{s \to 0} H(s)$ y $\lim_{s \to \infty} H(s)$.
+
+\vspace{6cm}
+
+\section*{E3. Tabla Predictiva del Modelo}
+Utilizando las ecuaciones derivadas, complete los valores analíticos \textbf{antes de abrir LTspice}. Use su frecuencia de corte calculada.
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}c X X X X X@{}}
+\toprule
+\textbf{r = $f/f_c$} & \textbf{f [Hz]} & \textbf{$G_{pred}$ [V/V]} & \textbf{$G_{pred}$ [dB]} & \textbf{$\phi_{pred}$ [$^\circ$]} & \textbf{Visto Bueno} \\ \midrule
+0.1 & & & & & \\ \addlinespace[10pt]
+1 & & & & & \\ \addlinespace[10pt]
+10 & & & & & \\ \bottomrule
+\end{tabularx}
+\end{center}
+
+\section*{E4. Adquisición Experimental o de Dataset}
+Registrar el cruce temporal $\Delta t = t_{out} - t_{in}$. Calcular la fase con $\phi = -360^\circ f \Delta t$ en segundos. Calcular la ganancia física dividiendo $V_{out}$ entre $V_{in}$ usando exactamente la misma escala y convención (p. ej., Vpp/Vpp).
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{@{}l l l l l l l l l@{}}
+\toprule
+\textbf{f [Hz]} & \textbf{Vin (valor+tipo)} & \textbf{Vout (mismo tipo)} & \textbf{$t_{in}$ [s]} & \textbf{$t_{out}$ [s]} & \textbf{$\Delta t$ [s]} & \textbf{G} & \textbf{$\phi$ [$^\circ$]} & \textbf{Condición/Equipo} \\ \midrule
+& & & & & & & & \\ \addlinespace[12pt]
+& & & & & & & & \\ \addlinespace[12pt]
+& & & & & & & & \\ \addlinespace[12pt]
+& & & & & & & & \\ \bottomrule
+\end{tabular}
+}
+\end{center}
+
+\section*{E5. Contraste de Evidencias y Análisis de Discrepancia}
+Registre los valores de Predicción (analítica), Simulación (LTspice) y Experimento (Banco).
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}l l l l X X@{}}
+\toprule
+\textbf{f [Hz]} & \textbf{Predicción} & \textbf{Simulación} & \textbf{Experimento} & \textbf{Diferencia Cuantificada} & \textbf{Hipótesis y Test} \\ 
+ & G[dB], $\phi$[$^\circ$] & G[dB], $\phi$[$^\circ$] & G[dB], $\phi$[$^\circ$] & $\Delta G_{dB}$, Error \% & (Justifique la causa)\\ \midrule
+& & & & & \\ \addlinespace[20pt]
+& & & & & \\ \addlinespace[20pt]
+& & & & & \\ \bottomrule
+\end{tabularx}
+\end{center}
+
+\section*{E6. Evaluación Oral (Checkpoint Analítico)}
+Prepare respuestas técnicas justificadas para las siguientes preguntas:
+\begin{enumerate}
+    \item Si $C$ se duplica a $2C$ manteniendo $R$ idéntico, demuestre matemáticamente qué ocurre con la constante de tiempo $\tau$, la frecuencia de corte $f_c$ y el desplazamiento visual del diagrama de Bode completo.
+    \item Detalle la diferencia entre la ganancia DC adimensional de este circuito ($1$ V/V) y la ganancia DC del modelo de temperatura propuesto ($K/W$).
+\end{enumerate}
+
+\end{document}

@@ -1,0 +1,71 @@
+% solutions.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Instructor Notes S01}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\section*{Solucionario Docente: CP1A (Dynamic Foundations)}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Nota Crítica}]
+Los valores numéricos presentados a continuación asumen el escenario \textbf{ILUSTRATIVO} donde $R = 10\,\text{k}\Omega$ y $C = 100\,\text{nF}$. Los estudiantes \textbf{deben proveer} valores recalculados si emplean componentes reales medidos u otros nominales aprobados.
+\end{tcolorbox}
+
+\subsection*{WE1: Diagnóstico Inicial}
+\begin{enumerate}
+    \item \textbf{Complejos:} $\frac{1}{1+j} \cdot \frac{1-j}{1-j} = \frac{1-j}{1 - j^2} = \frac{1-j}{2} = 0.5 - 0.5j$. \\ 
+    Su módulo es $\sqrt{(0.5)^2 + (-0.5)^2} = \sqrt{0.5} \approx 0.7071$.
+    \item \textbf{Divisor de Impedancias:} $V_{out}/V_{in} = Z_2 / (Z_1 + Z_2)$.
+    \item \textbf{Cálculo de $\tau$:} $\tau = RC = (10 \times 10^3\,\Omega)(100 \times 10^{-9}\,\text{F}) = 10^{-3}\,\text{s} = 1\,\text{ms}$.
+    \item \textbf{Comportamiento Capacitivo:} Al aumentar $f$, el módulo $|Z_C| = 1/(2\pi f C)$ \textbf{disminuye}, aproximándose a un cortocircuito ideal en alta frecuencia.
+\end{enumerate}
+
+\subsection*{WE2: Derivación de $H(s)$}
+El estudiante debe dibujar la fuente conectada al resistor $R$, seguido del nodo de salida $V_{out}$, con el capacitor $C$ conectando el nodo $V_{out}$ a tierra.
+\begin{align*}
+    Z_R &= R \\
+    Z_C(s) &= \frac{1}{sC} \\
+    H(s) &= \frac{Z_C}{Z_R + Z_C} = \frac{\frac{1}{sC}}{R + \frac{1}{sC}} = \frac{1}{sRC + 1}
+\end{align*}
+\textbf{Comprobación Dimensional:} $[\Omega] \times [\text{F}] = \left(\frac{\text{V}}{\text{A}}\right) \left(\frac{\text{A}\cdot\text{s}}{\text{V}}\right) = \text{segundos}$. \\
+\textbf{Límites:} $\lim_{s \to 0} H(s) = 1$ (Pasa-bajos ideal en DC). $\lim_{s \to \infty} H(s) = 0$.
+
+\subsection*{WE3: Predicción Cuantitativa (Clave)}
+Dado $\tau = 1\,\text{ms} \implies f_c \approx 159.15\,\text{Hz}$.
+\begin{itemize}
+    \item \textbf{0.1$f_c$ (15.9 Hz):} $G = 0.9950 \implies G_{dB} = -0.043\,\text{dB} \implies \phi = -5.71^\circ$
+    \item \textbf{1.0$f_c$ (159.15 Hz):} $G = 0.7071 \implies G_{dB} = -3.01\,\text{dB} \implies \phi = -45.0^\circ$
+    \item \textbf{10$f_c$ (1591.5 Hz):} $G = 0.0995 \implies G_{dB} = -20.04\,\text{dB} \implies \phi = -84.29^\circ$
+\end{itemize}
+
+\subsection*{WE4 y WE5: Fase y Diagnóstico de Discrepancia}
+Si a $500\,\text{Hz}$ un estudiante reporta una salida retrasada $\Delta t = 0.25\,\text{ms}$, la fase se calcula como:
+\[ \phi = -360^\circ \times 500 \times (0.00025) = -45^\circ \]
+\textbf{Ejemplo de Discrepancia:} El alumno reporta $G_{obs} = 0.6800$ en $f_c$ (predicción $0.7071$). \\
+$E_G = 100 \frac{|0.68 - 0.7071|}{0.7071} = 3.83\%$.
+\begin{itemize}
+    \item \textbf{Falso Test:} "Error experimental". (Rechazar por impreciso).
+    \item \textbf{Test Válido 1 (Componentes):} El capacitor real tiene un 10\% de tolerancia. Se verifica midiendo $C$ y recalculando el modelo.
+    \item \textbf{Test Válido 2 (Instrumentación):} $V_{in}$ cayó debido a la carga del generador. Se verifica asegurando medir $V_{in}$ simultáneamente a $V_{out}$ para cada punto.
+\end{itemize}
+
+\subsection*{WE6: Rediseño Oral ($C \to 2C$)}
+$\tau' = R(2C) = 2\tau$. $f_c' = \frac{1}{2\pi R(2C)} = \frac{f_c}{2}$. La curva del Bode no cambia de forma, sino que \textbf{se desplaza completamente hacia frecuencias más bajas} (hacia la izquierda en el eje semilogarítmico), cortando en $f_c/2$.
+
+\end{document}

@@ -1,0 +1,62 @@
+% checklist.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | CP1A Evaluation Checklist}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\section*{Rúbrica de Validación y Checkpoint: CP1A}
+Marcar cada requisito como \textbf{Sí}, \textbf{Parcial}, \textbf{No}, o \textbf{N/A (justificado)}. Para aprobar el artefacto, es fundamental que el estudiante documente \textit{dónde} reside la evidencia.
+
+\vspace{0.5cm}
+\noindent
+\begin{tabularx}{\textwidth}{@{} X p{2.5cm} p{2cm} @{}}
+\toprule
+\textbf{Criterio Fundamental Evaluado} & \textbf{Ubicación de la Evidencia} & \textbf{Estado (Firma Docente)} \\ 
+\midrule
+1. Dibuja el circuito, deriva $H(s)=\frac{1}{1+sRC}$ explícitamente y justifica la toma de señal sobre el capacitor. & & \\ \addlinespace[10pt]
+
+2. Determina la constante $\tau$, la frecuencia angular $\omega_c$, y la frecuencia en Hertz $f_c$, demostrando uso correcto de unidades. & & \\ \addlinespace[10pt]
+
+3. Registra tres predicciones numéricas analíticas (ganancia y fase) \textbf{previas} a ejecutar la simulación AC. & & \\ \addlinespace[10pt]
+
+4. Adjunta configuración del barrido AC en LTspice y lo etiqueta estrictamente como \textbf{simulación}, no como medición física. & & \\ \addlinespace[10pt]
+
+5. Adjunta mediciones reales (Osciloscopio) o el dataset validado trazable sin fusionar ni inventar categorías. & & \\ \addlinespace[10pt]
+
+6. Estructura la comparación (Predicción $\to$ Simulación $\to$ Medición) alineada correctamente por frecuencia. & & \\ \addlinespace[10pt]
+
+7. Cuantifica un error porcentual real basado en sus propios datos empíricos obtenidos (no hipótesis genéricas). & & \\ \addlinespace[10pt]
+
+8. Propone una hipótesis técnica plausible ante la discrepancia y un plan de prueba (\textit{test}) válido para corroborarlo. & & \\ \addlinespace[10pt]
+
+9. Responde el rediseño oral: Justifica el impacto físico y matemático en el Bode al duplicar la capacitancia. & & \\ \addlinespace[10pt]
+
+10. Explica la analogía RC/térmica sin asumir que la planta física ya ha sido validada, reconociendo diferencias de unidades en la ganancia. & & \\ 
+\bottomrule
+\end{tabularx}
+
+\vspace{1cm}
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Resolución Final del Taller}]
+\textbf{Veredicto (Encierre uno):} \hspace{1cm} APROBADO \hspace{1cm} CON CORRECCIONES \hspace{1cm} INCOMPLETO \\
+\\
+\textbf{Observaciones Adicionales:} \vspace{1.5cm}
+\end{tcolorbox}
+
+\end{document}

@@ -1,0 +1,115 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern} % Soluciona el warning de fuente monoespaciada en negrita
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usepackage{listings}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Práctica LTspice Low-Side (W12S01)}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+% Definición de estilo SPICE personalizado para evitar el error "language undefined"
+\lstdefinestyle{spice}{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!60!black},
+    morekeywords={.param, .model, .step, .tran, .end}
+}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!80!black, title=\textbf{Prueba LTspice Previa Obligatoria {[cite: 7]}}]
+    \textbf{ESTADO TÉCNICO:} El netlist propuesto en este documento contiene parámetros didácticos y explícitamente genéricos[cite: 7]. Es obligatoria la validación ejecutando los pasos en la versión local de LTspice antes de distribuir a los estudiantes[cite: 7]. \textbf{NO conectar este montaje como circuito de hardware físico; la fuente ideal no representa un pin MCU ni un driver BJT real[cite: 7].}
+\end{tcolorbox}
+
+\section*{1. Esquema Conceptual del Ensayo[cite: 7]}
+Simulación para analizar cómo la resistencia serie $R_G$ (excitación idealizada) afecta el tiempo de conmutación[cite: 7].
+
+\begin{center}
+\begin{circuitikz}[scale=1.1, transform shape]
+    % Transistor (Etiqueta separada para evitar solapamientos)
+    \draw (0,0) node[nmos] (M) {};
+    \node[right=0.2cm] at (0,0) {M1 (NM\_SIM)};
+    
+    % Drain, RLOAD y Bus DC
+    \draw (M.D) -- (0,1.5) coordinate (D_node);
+    \node[right] at (D_node) {drain};
+    \draw (D_node) to[R, l=\texttt{RLOAD} $4\Omega$, *-] (0,4) node[vcc]{bus (+12V)};
+    
+    % Source y Ground
+    \draw (M.S) -- (0,-1.5) coordinate (S_node);
+    \node[right] at (S_node) {source};
+    \draw (S_node) node[ground]{};
+    
+    % Gate, RGATE y Control
+    \draw (M.G) -- (-2,0) coordinate (G_node);
+    \node[above right] at (G_node) {gate};
+    \draw (G_node) to[R, l_=\texttt{RGATE} $\{RG\}$, *-] (-5,0) coordinate (CMD_node);
+    \node[above] at (CMD_node) {cmd};
+    \draw (CMD_node) to[sV, l=\texttt{VCTRL}] (-5,-1.5) node[ground]{};
+    
+    % Capacitancias parásitas ilustrativas (Ruteadas por fuera para claridad)
+    \draw (G_node) to[C, l=\texttt{CGS} $2\text{nF}$] (-2,-1.5) -- (S_node);
+    \draw (G_node) -- (-2,1.5) to[C, l=\texttt{CGD} $0.4\text{nF}$, -*] (D_node);
+\end{circuitikz}
+\end{center}
+
+\section*{2. Netlist de Simulación (\texttt{w12s01\_low\_side\_gate\_RG.cir})[cite: 7]}
+\begin{lstlisting}[style=spice]
+* W12S01 MOSFET low-side hipotetico
+.param RG=100
+VBUS bus 0 12
+RLOAD bus drain 4
+VCTRL cmd 0 PULSE(0 10 5u 50n 50n 150u 300u)
+RGATE cmd gate {RG}
+M1 drain gate 0 0 NM_SIM L=1u W=1u
+CGS gate 0 2n
+CGD gate drain 0.4n
+.model NM_SIM NMOS (LEVEL=1 VTO=2 KP=2 LAMBDA=0.01)
+.step param RG list 100 10k
+.tran 0 600u 0 20n
+.end
+\end{lstlisting}
+
+\section*{3. Tabla de Medición / Observación (Block D)[cite: 7]}
+\textit{Registrar predicción antes de simular. $R_G \uparrow \implies$ corriente limitada $\implies$ transición de drain dura más[cite: 7].}
+
+\vspace{0.3cm}
+\renewcommand{\arraystretch}{1.5}
+{\footnotesize % Reducir fuente para asegurar el ajuste horizontal perfecto
+\noindent
+\begin{tabularx}{\textwidth}{|c|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Condición} & \textbf{Pred. $V_{GS}$} & \textbf{$V_{GS}$ obs.} & \textbf{Trans. $V_{DS}$} & \textbf{$I_D$} & \textbf{Potencia} & \textbf{Límite evid.} \\ \hline
+RG=100$\Omega$[cite: 7] & & & & & & \\ \hline
+RG=10k$\Omega$[cite: 7] & & & & & & \\ \hline
+\end{tabularx}
+}
+
+\vspace{0.8cm}
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Evidencia de Trazas LTspice (V5) {[cite: 7]}}]
+    \centering
+    \vspace{2cm}
+    \Huge \textcolor{gray}{[CAPTURA PENDIENTE][cite: 7]}
+    \vspace{2cm}
+\end{tcolorbox}
+\textit{No fabricar trazas de respaldo. De no ejecutarse en clase, registrar "no ejecutado"[cite: 7].}
+
+\end{document}

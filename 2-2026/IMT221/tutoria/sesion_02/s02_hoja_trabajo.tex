@@ -1,0 +1,79 @@
+% handout.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Workbook S02 (CP1A + CP1B)}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!80!black, title=\textbf{ATENCIÓN: Validez de la Evidencia}]
+    Para validar las competencias, debe etiquetar rigurosamente sus datos como \textbf{MEDIDO} (obtenido en su banco), \textbf{REFERENCIA AUTÉNTICA} (dataset provisto por instructor), o \textbf{ILUSTRATIVO} (ficticio). No invente datos para forzar ajustes matemáticos.
+\end{tcolorbox}
+
+\section*{Sección A: Recuperación CP1A (Filtro RC)}
+\subsection*{E1. Derivación y Simulación AC}
+1. Dado un resistor $R$ y capacitor $C$, derive paso a paso la función de transferencia $H(s) = \frac{1}{1+sRC}$ utilizando divisor de tensión. Defina $\tau$ y calcule la frecuencia de corte $f_c$ física. \vspace{3.5cm}
+
+\noindent 2. Complete la tabla predictiva con $G_{dB}$ y $\phi$ evaluando sus propias ecuaciones \textbf{antes} de ejecutar LTspice.
+\begin{center}
+\begin{tabularx}{0.8\textwidth}{@{} X l l l @{}}
+\toprule
+\textbf{Frecuencia} & \textbf{$G_{dB}$ Analítico} & \textbf{$\phi$ Analítico} & \textbf{Validación LTspice} \\ \midrule
+$0.1 f_c$ & & & \\ \addlinespace[10pt]
+$f_c$ & & & \\ \addlinespace[10pt]
+$10 f_c$ & & & \\ \bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection*{E2. Análisis Conceptual Independiente}
+Explique con bases matemáticas y físicas qué ocurre con la constante $\tau$, la frecuencia $f_c$ y el desplazamiento del diagrama de Bode si el capacitor se reemplaza por uno del \textbf{doble} de su valor ($2C$), manteniendo $R$ fijo. \vspace{2.5cm}
+
+\newpage
+\section*{Sección B: Caracterización de Planta (CP1B)}
+
+\subsection*{E3. Inventario de Procedencia de Datos}
+Complete el inventario declarando el estado actual de su banco (CONFIRMADO, SUPUESTO, o FALTA). Si aplica un dataset externo, especifique la fuente.
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}l l X X@{}}
+\toprule
+\textbf{Dato} & \textbf{Unidad} & \textbf{Estado} & \textbf{Fuente / Origen} \\ \midrule
+Actuador $u(t)$ & & & \\ \addlinespace[10pt]
+Sensor / Señal $V_s$ & & & \\ \addlinespace[10pt]
+Referencia $T_{ref}$ & & & \\ \addlinespace[10pt]
+Dataset Alternativo & --- & & \\ \bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection*{E4. Calibración Estática}
+A partir de los pares $(T_i, V_i)$ auténticos medidos o provistos, calcule los coeficientes $a, b$ asumiendo el modelo afín $V_s = aT_{ref} + b$. Calcule el $RMSE_V$. Indique el dominio de validez térmico demostrado por estos datos. \vspace{4cm}
+
+\subsection*{E5. Identificación Dinámica al Escalón}
+Documente el instante de inicio $t_0$, el estado inicial $(u_0, T_0)$ y la magnitud del cambio $\Delta u$. Demuestre si existe estabilización estacionaria $T_\infty$. Calcule la ganancia $K$ y determine $\tau$ utilizando el cruce del $63.2\%$. \vspace{4cm}
+
+\noindent \textbf{Modelo Identificado:} $G_p(s) =$ \vspace{1cm}
+
+\subsection*{E6. Diagnóstico y Adecuación del Modelo}
+Si superpone su modelo exponencial y nota que la respuesta real comienza a subir \textit{varios segundos después} del comando de entrada, ¿qué fenómeno físico estaría evidenciando y cómo modificaría la estructura de $G_p(s)$? \vspace{2cm}
+
+\subsection*{E7. Requisitos de Acondicionamiento (Hacia S3)}
+Defina el rango crudo del sensor confirmado en E4: $[V_{s,min}, V_{s,max}] =$\hspace{2cm} V \\
+Suponga que la arquitectura de control exige un rango objetivo $[V_{o,min}, V_{o,max}] = [0, 3.3]$ V. Calcule las ganancias teóricas $A$ y $B$ para $V_o = A V_s + B$. \vspace{2cm}
+
+\end{document}

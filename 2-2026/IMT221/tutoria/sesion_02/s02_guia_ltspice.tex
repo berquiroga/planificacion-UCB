@@ -1,0 +1,114 @@
+% lab-guide.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Guía Asincrónica LTspice (CP1A/CP1B)}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{Guía de Trabajo Asincrónico: LTspice, Dinámica RC, Calibración e Identificación Térmica}} \\
+    \vspace{0.2cm}
+    \textit{Sesiones 1 y 2/10 — CP1A (Recuperación) y CP1B (Preparación)}
+\end{center}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!80!black, title=\textbf{Regla Principal del Método de Trabajo}]
+    Escribe siempre tus predicciones analíticas \textbf{antes} de ejecutar la simulación o pulsar \textit{Run}. Una curva generada por el software no equivale a demostrar comprensión, ni reemplaza a una medición empírica real.
+\end{tcolorbox}
+
+\section{Parte I — CP1A: Instalación y Circuito RC en LTspice}
+
+\subsection{1.1 Instalación y Herramientas Básicas}
+Descargue LTspice de Analog Devices. Identifique las 6 herramientas principales:
+\begin{itemize}
+    \item \textbf{Resistor / Capacitor / Voltage Source:} Teclas rápidas \texttt{R}, \texttt{C}, \texttt{V}.
+    \item \textbf{Wire / Ground:} Teclas \texttt{W}, \texttt{G}. (¡Todo circuito necesita una tierra!).
+    \item \textbf{Run:} Menú Simulate o icono de ejecución.
+\end{itemize}
+
+\subsection{1.2 Construcción del Filtro Pasa-Bajos}
+Construya el siguiente esquema en LTspice. Guarde el archivo como \texttt{RC\_inicial.asc}.
+\begin{center}
+    \begin{circuitikz}[thick, scale=0.85, transform shape]
+        \draw (0,2) to[V, l=$V_1$, v=$in$] (0,0);
+        \draw (0,2) to[R, l=$R_1$ (10k)] (3,2);
+        \draw (3,2) to[short, -o] (4,2) node[right] {$out$};
+        \draw (3,2) to[C, l=$C_1$ (100n)] (3,0);
+        \draw (0,0) -- (3,0);
+        \draw (1.5,0) node[ground]{};
+    \end{circuitikz}
+\end{center}
+\textit{Convención SPICE:} Escriba \texttt{100n} para 100 nF. Utilice la herramienta \textbf{Label Net} para nombrar los nodos como \texttt{in} y \texttt{out}.
+
+\subsection{1.3 Cálculos Predictivos (¡Antes de simular!)}
+Derive la función de transferencia: $\displaystyle H(s) = \frac{V_{out}(s)}{V_{in}(s)} = \frac{1}{1+sRC}$. \\
+Calcule los valores nominales:
+\begin{align*}
+    \tau &= RC = (10^4)(100 \times 10^{-9}) = 1\,\text{ms} \\
+    f_c &= \frac{1}{2\pi RC} \approx 159.15\,\text{Hz}
+\end{align*}
+Para una sinusoide, prediga $|H|$ y el desfase temporal en tres frecuencias clave:
+$15.9\,\text{Hz} (0.1 f_c)$, $159\,\text{Hz} (f_c)$, y $1591\,\text{Hz} (10 f_c)$.
+
+\section{Simulaciones en LTspice}
+
+\subsection{2.1 Simulación Temporal (Transient)}
+\begin{enumerate}
+    \item Configure $V_1$ como fuente sinusoidal (\texttt{SINE}): \texttt{SINE(0 1 159)}.
+    \item Añada la directiva de análisis temporal: \texttt{.tran 0 40m}.
+    \item Ejecute y grafique las tensiones haciendo clic en los cables \texttt{in} y \texttt{out}.
+    \item Utilice cursores para encontrar la diferencia de tiempo entre los picos de las sinusoides ($\Delta t$). Calcule el desfase con $\phi = -360^\circ f \Delta t$.
+\end{enumerate}
+
+\subsection{2.2 Respuesta al Escalón (PULSE)}
+\begin{enumerate}
+    \item Guarde como \texttt{RC\_escalon.asc}.
+    \item Cambie $V_1$ a \texttt{PULSE(0 1 1m 1u 1u 100m 200m)}.
+    \item Cambie el análisis a \texttt{.tran 0 10m}.
+    \item Verifique que transcurrido un tiempo $t = \tau = 1\,\text{ms}$ desde el salto, la salida alcanza aproximadamente el $63.2\%$ de su excursión total ($0.632\,\text{V}$).
+\end{enumerate}
+
+\subsection{2.3 Barrido en Frecuencia (AC Analysis y Diagrama de Bode)}
+\begin{enumerate}
+    \item Guarde como \texttt{RC\_bode.asc}.
+    \item En las propiedades de $V_1$, asigne \textbf{Small Signal AC Amplitude = 1}.
+    \item Inserte la directiva de barrido AC: \texttt{.ac dec 50 10 100k}.
+    \item Elimine la directiva \texttt{.tran} anterior. Ejecute.
+    \item Agregue la traza \texttt{V(out)/V(in)}. Inspeccione magnitud en dB y fase.
+\end{enumerate}
+
+\section{Parte II — CP1B: Caracterización Térmica (Modelos Sintéticos)}
+
+\begin{tcolorbox}[colback=blue!5, colframe=blue, title=\textbf{Nota de Transferencia Analógica}]
+    Si no dispone de la planta térmica física, usaremos cálculos \textbf{didácticos sintéticos} para practicar el método de Mínimos Cuadrados y la respuesta de Primer Orden. Un LTspice \texttt{RC} es matemáticamente análogo a un sistema térmico de un polo, pero \textbf{sus unidades y física son distintas}.
+\end{tcolorbox}
+
+\subsection{3.1 Calibración del Sensor}
+Con base en los datos hipotéticos $(T_i, V_i)$: $(20, 0.42)$, $(30, 0.59)$, $(40, 0.83)$, $(50, 1.02)$, $(60, 1.19)$, encuentre el modelo $V_s = aT + b$.
+\begin{align*}
+    a = \frac{\sum (T_i - \bar{T})(V_i - \bar{V})}{\sum (T_i - \bar{T})^2} \qquad \qquad b = \bar{V} - a\bar{T}
+\end{align*}
+
+\subsection{3.2 Respuesta al Escalón (Dinámica FOPDT)}
+Considere un escalón térmico. El actuador pasa de $u_0 = 0.2$ a $u_1 = 0.5$ ($\Delta u = 0.3$). La temperatura pasa de $T_0 = 25^\circ\text{C}$ a $T_\infty = 40^\circ\text{C}$. Suponga que se alcanza el $63.2\%$ del cambio de temperatura a los $120\,\text{s}$ desde el escalón. Determine $K$, $\tau$ y construya la función candidata $G_p(s)$.
+
+\end{document}

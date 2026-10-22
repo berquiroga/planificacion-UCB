@@ -1,0 +1,151 @@
+% w12_s02_matriz_factibilidad_decision_hito_2.tex
+% IMT-221 — Semana 12, Sesión 2 (21/10/2026)
+% Artefacto 2: Matriz de factibilidad, validación de etapa aislada y decisión Hito 2
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.6cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\setlength{\emergencystretch}{2em}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{neutralbg}{RGB}{247, 248, 250}
+\definecolor{warnbg}{RGB}{254, 246, 246}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{IMT-221}}
+\chead{Matriz de Factibilidad y Decisión: Defensa Condicional Hito 2}
+\rhead{Semana 12 - Sesión 2}
+\lfoot{Estado: Documento Técnico para Decisión Académica}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\textbf{\textcolor{ucbblue}{Matriz de Factibilidad, Validación Física y Decisión GO / NO-GO (Hito 2)}}} \\[0.1cm]
+    {\footnotesize\textbf{Checkpoint del 21 de Octubre de 2026 · Evaluación Colectiva de Viabilidad para la Defensa Propuesta del 28/10}}
+\end{center}
+
+\section*{1. Separación Formal de las Tres Compuertas Técnicas (Evitar Falsas Equivalencias)}
+\begin{center}
+    \begin{tikzpicture}[>=Stealth, thick, scale=0.88, transform shape]
+        \node[draw=ucbblue, rectangle, rounded corners=2pt, fill=ucbblue!8, minimum height=1.25cm, text width=4.9cm, align=center, font=\footnotesize] (g1) at (0,0) {\textbf{Compuerta 1: Gate A}\\Preparación de diseño y seguridad\\para construir (No prueba operación)};
+        \node[draw=ucbblue, rectangle, rounded corners=2pt, fill=ucbblue!16, minimum height=1.25cm, text width=4.9cm, align=center, font=\footnotesize] (g2) at (6.2,0) {\textbf{Compuerta 2: Etapa Aislada}\\Medición física incremental de $A_{d,\mathrm{meas}}$\\y prueba común sin Hito 1};
+        \node[draw=green!60!black, rectangle, rounded corners=2pt, fill=green!14, minimum height=1.25cm, text width=4.9cm, align=center, font=\footnotesize] (g3) at (12.4,0) {\textbf{Compuerta 3: Hito 2 Defendible}\\Integración física con Hito 1 +\\Mejora sistémica homóloga medida};
+        \draw[->, very thick, ucbblue] (g1.east) -- node[above, font=\scriptsize\bfseries] {$\neq$} (g2.west);
+        \draw[->, very thick, green!60!black] (g2.east) -- node[above, font=\scriptsize\bfseries] {$\neq$} (g3.west);
+    \end{tikzpicture}
+\end{center}
+
+\section*{2. Protocolo y Desarrollo Matemático de Etapa Aislada (Solo Grupos con Gate A \texttt{READY})}
+Una vez firmada la autorización de Gate A y verificado en frío el montaje (pinout, rieles efectivos $V_{+,eff}, V_{-,eff}$ respecto a $V_{REF}$ y masas de instrumentos), la etapa activa se ensaya \textbf{separada de Hito 1}:
+
+\subsection*{2.1. Derivación de la Ganancia Diferencial Incremental ($A_{d,\mathrm{meas}}$)}
+En presencia de un offset de salida aproximadamente constante $V_{o,\mathrm{offset}}$ y un nivel común fijo $V_{cm}$, la respuesta lineal de la etapa aislada ante dos entradas diferenciales pequeñas y seguras $V_{d1} \neq V_{d2}$ es:
+\begin{align}
+    V_{\mathrm{out},1} &= A_{d,\mathrm{meas}} V_{d1} + A_c V_{cm} + V_{o,\mathrm{offset}} \\
+    V_{\mathrm{out},2} &= A_{d,\mathrm{meas}} V_{d2} + A_c V_{cm} + V_{o,\mathrm{offset}}
+\end{align}
+Restando miembro a miembro ambas expresiones bajo $V_{cm}$ constante, se cancelan $A_c V_{cm}$ y $V_{o,\mathrm{offset}}$:
+\begin{equation}
+    V_{\mathrm{out},2} - V_{\mathrm{out},1} = A_{d,\mathrm{meas}}(V_{d2} - V_{d1}) \implies \boxed{A_{d,\mathrm{meas}} \approx \frac{V_{\mathrm{out},2} - V_{\mathrm{out},1}}{V_{d2} - V_{d1}}, \qquad V_{d2} \neq V_{d1}}
+\end{equation}
+\textbf{Ejemplo Trabajado 2 (Valores Ilustrativos — NO son mediciones de grupos):} \\
+Suponga dos estímulos diferenciales $V_{d1} = 20\,\text{mV} = 0.020\,\text{V}$ y $V_{d2} = 40\,\text{mV} = 0.040\,\text{V}$, con salidas medidas $V_{o1} = 0.46\,\text{V}$ y $V_{o2} = 0.88\,\text{V}$. Si se calcularan cocientes de un solo punto se obtendrían valores aparentes distintos debido al offset ($0.04\,\text{V}$):
+\begin{equation*}
+    \frac{V_{o1}}{V_{d1}} = \frac{0.46\,\text{V}}{0.020\,\text{V}} = 23, \qquad \frac{V_{o2}}{V_{d2}} = \frac{0.88\,\text{V}}{0.040\,\text{V}} = 22
+\end{equation*}
+En cambio, aplicando la pendiente incremental entre ambos puntos:
+\begin{equation*}
+    \Delta V_o = 0.88\,\text{V} - 0.46\,\text{V} = 0.42\,\text{V}, \qquad \Delta V_d = 0.040\,\text{V} - 0.020\,\text{V} = 0.020\,\text{V} \implies \boxed{A_{d,\mathrm{meas}} \approx \frac{0.42\,\text{V}}{0.020\,\text{V}} = 21}
+\end{equation*}
+\textit{Advertencia:} El cociente incremental reduce la confusión con un offset constante, pero no corrige saturación, deriva térmica ni errores de escala instrumental.
+
+\subsection*{2.2. Ensayo de Modo Común y Regla contra Inferencia Indebida de CMRR (Ejemplo 4)}
+Al aplicar $V_1 = V_2 = V_{cm}$ ($V_d = 0$) en dos niveles permitidos ($\Delta V_{cm} = V_{cm,2} - V_{cm,1} \neq 0$), se estima:
+\begin{equation}
+    A_{c,\mathrm{meas}} \approx \frac{\Delta V_{\mathrm{out}}}{\Delta V_{cm}}
+\end{equation}
+Si la variación $\Delta V_{\mathrm{out}}$ es inferior a la resolución o piso de ruido del instrumento, se registra obligatoriamente: \texttt{A\_c no cuantificable con este montaje / CMRR físico no cuantificable con evidencia disponible}. \textbf{Nunca se reporta $A_c = 0$ ni $CMRR = \infty$ físico a partir de una lectura no resoluble o de una simulación ideal.}
+
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|l|c|c|c|c|>{\raggedright\arraybackslash}X|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Condición de Prueba (Etapa Aislada)} & \textbf{$V_{cm}$} & \textbf{$V_d$} & \textbf{$V_o$ Medido} & \textbf{Rieles Efectivos} & \textbf{Interpretación ($A_{d,\mathrm{meas}}$, $A_c$ o límite)} \\ \hline
+    Diferencial Punto 1 & & & & & \\ \hline
+    Diferencial Punto 2 & & & & & \\ \hline
+    Modo Común (si es viable) & & $0\,\text{V}$ & & & \\ \hline
+    \end{tabularx}
+\end{table}
+
+\section*{3. Contrato Experimental de Mejora Sistémica: Hito 1 vs. Hito 2}
+Obtener una amplitud mayor a la salida \textbf{no demuestra por sí solo} haber resuelto el problema de carga (\textit{loading}). Antes de comparar, debe fijarse el mismo estímulo, nodos homólogos, frecuencia, referencia y carga:
+\begin{enumerate}
+    \setlength{\itemsep}{2pt}
+    \item \textbf{Métrica Original \texttt{KL} de Hito 1:} Conservar su definición documental original si fue establecida en Hito 1 (no recrearla).
+    \item \textbf{Indicador de Preservación de Señal en Nodo Homólogo ($K_p$, sujeto a aprobación docente):}
+    \begin{equation}
+        \boxed{K_p = \frac{|V_{\text{nodo,conectado}}|}{|V_{\text{nodo,sin carga}}|}}
+    \end{equation}
+    \item \textbf{Relación Señal/Interferencia ($SIR_{\mathrm{dB}}$), Mejora ($\Delta SIR$) y Atenuación de $50\,\text{Hz}$ ($A_{50\,\text{Hz},\mathrm{dB}}$):}
+    \begin{equation}
+        \boxed{SIR_{\mathrm{dB}} = 20\log_{10}\left(\frac{V_{\text{útil}}}{V_{50\,\text{Hz}}}\right)}, \qquad \boxed{\Delta SIR = SIR_{H2} - SIR_{H1}}, \qquad \boxed{A_{50\,\text{Hz},\mathrm{dB}} = 20\log_{10}\left(\frac{V_{\mathrm{out},50}}{V_{\mathrm{in},50}}\right)}
+    \end{equation}
+\end{enumerate}
+\textbf{Condición crucial:} Si el grupo carece de un baseline trazable de Hito 1, no puede afirmar mejora demostrada; debe declarar la medición comparativa como pendiente.
+
+\section*{4. Matriz Consolidada de Factibilidad por Cohorte y Decisión GO / NO-GO (28/10)}
+\begin{table}[htbp]
+    \centering
+    \scriptsize
+    \renewcommand{\arraystretch}{1.45}
+    \begin{tabularx}{\textwidth}{|c|c|c|c|c|c|c|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|c|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Grupo} & \textbf{Base H1} & \textbf{Gate A} & \textbf{SPICE} & \textbf{Etapa Aisl.} & \textbf{Integr.} & \textbf{Comp. Fís.} & \textbf{Recursos Pendientes} & \textbf{Trabajo / Sesiones Necesarias} & \textbf{Def. Indiv. Viable} \\ \hline
+    G1 & & & & & & & & & $\square$ Sí $\square$ No \\ \hline
+    G2 & & & & & & & & & $\square$ Sí $\square$ No \\ \hline
+    G3 & & & & & & & & & $\square$ Sí $\square$ No \\ \hline
+    G4 & & & & & & & & & $\square$ Sí $\square$ No \\ \hline
+    G5 & & & & & & & & & $\square$ Sí $\square$ No \\ \hline
+    G6 & & & & & & & & & $\square$ Sí $\square$ No \\ \hline
+    \end{tabularx}
+\end{table}
+
+\noindent\textbf{Criterios de Recomendación Colectiva (Basados en Evidencia, no en Esperanza):}
+\begin{itemize}
+    \setlength{\itemsep}{1pt}
+    \footnotesize
+    \item \textbf{Recomendación \texttt{GO} para el 28/10:} Existe mayoría de diseños con Gate A aprobado, capacidad física comprobada para montar, medir etapa aislada e integrar con Hito 1, recursos disponibles y viabilidad real de defensa individual con evidencia.
+    \item \textbf{Recomendación \texttt{NO-GO} para el 28/10:} Faltan dependencias críticas en la cohorte o no existe ventana física suficiente antes del 28/10. \textit{Ejemplo Ilustrativo 5 (No es estado real):} Si de 6 grupos solo 1 está \texttt{READY}, 2 en \texttt{MINOR}, 3 en \texttt{NOT READY} y ninguno tiene etapa aislada medida, el criterio técnico obliga a recomendar \texttt{NO-GO} y cuantificar sesiones requeridas.
+\end{itemize}
+
+\begin{tcolorbox}[colback=warnbg, colframe=red!75!black, title=\textbf{Acta de Recomendación sobre la Defensa Propuesta del 28/10 (Sujeta a Aprobación)}]
+    \footnotesize
+    \textbf{Recomendación Docente Fundamentada:} \quad $\square$ \textbf{GO (Sostener 28/10)} \qquad $\square$ \textbf{NO-GO (Solicitar reprogramación)} \\[0.15cm]
+    \textbf{Evidencia agregada que justifica la recomendación:} \hrulefill \\[0.15cm]
+    \textbf{Mediciones, recursos y número estimado de sesiones aún necesarias:} \hrulefill \\[0.15cm]
+    \textbf{Fecha alternativa propuesta (No aprobada oficialmente):} \rule{4.5cm}{0.4pt} \\[0.15cm]
+    \textbf{Autoridad académica / Decisión formal / Fecha de comunicación oficial:} \hrulefill
+\end{tcolorbox}
+
+\end{document}

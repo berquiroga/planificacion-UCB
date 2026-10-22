@@ -1,0 +1,82 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Ficha de Cierre A/B/AB (W12S01)}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Cierre Conceptual: Topologías A, B y AB {[cite: 7]}}]
+    La polarización de reposo modifica la conducción y la distorsión alrededor del cruce por cero[cite: 7]. La presencia de corriente de reposo no equivale a una alta eficiencia global[cite: 7].
+\end{tcolorbox}
+
+\section*{1. Fundamento de Eficiencia y Potencia[cite: 7]}
+La lectura instantánea bajo entrada senoidal no equivale a $I_Q$[cite: 7]. Obtener $I_Q$ exige evaluar con la entrada anulada o en condición estacionaria[cite: 7].
+Las relaciones matemáticas de potencia promedio y eficiencia real exigen considerar \textbf{todas} las fuentes de energía[cite: 7]:
+\begin{equation*}
+    p(t) = v(t)i(t), \qquad P_{avg} = \frac{1}{T} \int_{t_0}^{t_0+T} v(t)i(t)\,dt \text{[cite: 7]}
+\end{equation*}
+\begin{equation*}
+    \eta = \frac{P_{load}}{P_{sources}}, \qquad P_{load} = \langle v_{load} i_{load} \rangle \text{[cite: 7]}
+\end{equation*}
+\textit{Nota: Una fuente ideal de offset de gate/base puede aportar potencia; debe incluirse en el balance antes de calcular $\eta$[cite: 7].}
+
+\section*{2. Visualización Conceptual: Crossover vs. Overlap[cite: 7]}
+\begin{center}
+\begin{tikzpicture}
+    \begin{axis}[
+        width=12cm, height=5cm,
+        axis lines=middle,
+        xmin=0, xmax=10, ymin=-1.5, ymax=1.5,
+        xlabel={$t$}, ylabel={$v_o(t)$},
+        xtick=\empty, ytick=\empty,
+        legend style={at={(0.5,-0.15)}, anchor=north, legend columns=2, draw=none}
+    ]
+    % Clase B (Notch)
+    \addplot[thick, red, domain=0:10, samples=200] {
+        sin(deg(x)) > 0.3 ? sin(deg(x))-0.3 : (sin(deg(x)) < -0.3 ? sin(deg(x))+0.3 : 0)
+    };
+    % Clase AB (Notch reducido por Bias)
+    \addplot[thick, blue, dashed, domain=0:10, samples=200] {
+        sin(deg(x)) > 0.05 ? sin(deg(x))-0.05 : (sin(deg(x)) < -0.05 ? sin(deg(x))+0.05 : 0)
+    };
+    
+    % Flecha y etiqueta para IQ
+    \draw[->, thick, ucbblue] (axis cs: 5, 0) -- (axis cs: 5, 0.4) node[above] {$I_Q > 0$ (Overlap)};
+    
+    \legend{Clase B (Distorsión Crossover), Clase AB (Bias Overlap)}
+    \end{axis}
+\end{tikzpicture}
+\end{center}
+\textit{El notch ocurre cerca del cruce por cero, no en las crestas (que indicarían clipping)[cite: 7]. La Clase AB reduce el notch pero introduce sensibilidad térmica y pérdidas estáticas[cite: 7].}
+
+\vspace{0.5cm}
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Ticket de Comprobación Individual}]
+    \textbf{Nombre:} \rule{8cm}{0.4pt}
+    \vspace{0.3cm}
+    
+    \begin{enumerate}
+        \item Notch en: \rule{10cm}{0.4pt}[cite: 7]
+        \item Modificación topológica de B $\to$ AB: \rule{7cm}{0.4pt}[cite: 7]
+        \item Efecto en $I_Q$ al pasar a Clase AB: \rule{7cm}{0.4pt}[cite: 7]
+        \item \textbf{Evidencia propia LTspice (marcar una):} $\square$ Completada \quad $\square$ Parcial \quad $\square$ No lograda[cite: 7]
+    \end{enumerate}
+\end{tcolorbox}
+
+\end{document}

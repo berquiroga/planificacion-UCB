@@ -1,0 +1,70 @@
+% solutions.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Instructor Solutions S02}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\section*{Solucionario Docente y Guía Asincrónica (S02)}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Nota de Fallback (Datos Ilustrativos)}]
+Los cálculos de esta clave asumen \textbf{datos sintéticos ilustrativos}. Si el hardware no está disponible de forma segura, el instructor \textbf{debe} proveer archivos CSV con datos auténticos históricos y exigir al estudiante que recalcule usando esos valores.
+\end{tcolorbox}
+
+\subsection*{WE1: Recuperación RC (CP1A)}
+Para $R=10\,\text{k}\Omega$ y $C=100\,\text{nF}$, $\tau = 1\,\text{ms}$ y $f_c = \frac{1}{2\pi \tau} \approx 159.15\,\text{Hz}$.
+\begin{itemize}
+    \item Si se \textbf{duplica la capacitancia} a $2C$: \\
+    $\tau' = R(2C) = 2\tau = 2\,\text{ms}$. \\
+    $f_c' = \frac{1}{2\pi R(2C)} = \frac{f_c}{2} \approx 79.57\,\text{Hz}$.
+    \item \textbf{Efecto en el Bode:} La curva de atenuación mantiene sus asíntotas (-20 dB/dec) pero se traslada \textbf{una octava a la izquierda} hacia frecuencias más bajas.
+\end{itemize}
+
+\subsection*{WE2: Calibración Estática (Ilustrativa)}
+Suponga los pares ficticios: $(20^\circ\text{C}, 0.51\,\text{V})$, $(30^\circ\text{C}, 0.68\,\text{V})$, $(40^\circ\text{C}, 0.91\,\text{V})$, $(50^\circ\text{C}, 1.10\,\text{V})$.
+\begin{itemize}
+    \item \textbf{Medias:} $\bar{T} = 35^\circ\text{C}$, $\bar{V} = 0.80\,\text{V}$.
+    \item \textbf{Pendiente (a):} $a = \frac{\sum (T_i - \bar{T})(V_i - \bar{V})}{\sum (T_i - \bar{T})^2} = \frac{10.0}{500} = 0.020\,\frac{\text{V}}{^\circ\text{C}}$.
+    \item \textbf{Intersección (b):} $b = \bar{V} - a\bar{T} = 0.80 - (0.020)(35) = 0.10\,\text{V}$.
+    \item \textbf{Modelo Ajustado:} $V_s = 0.020\,T_{ref} + 0.10$.
+    \item \textbf{Residuos:} $0.01, -0.02, 0.01, 0.00\,\text{V}$. $RMSE \approx 0.012\,\text{V}$.
+\end{itemize}
+
+\subsection*{WE3: Identificación Dinámica al Escalón (Ilustrativa)}
+Suponga $u_0 = 0.2$, $\Delta u = 0.3$. Temperaturas: $T_0 = 25^\circ\text{C}$, $T_\infty = 31^\circ\text{C}$. Se asume $\Delta T = 6^\circ\text{C}$.
+\begin{itemize}
+    \item \textbf{Ganancia estática:} $K = \frac{31 - 25}{0.3} = 20\,\frac{^\circ\text{C}}{\text{Unidad de comando}}$.
+    \item \textbf{Constante de tiempo ($\tau$):} Si la gráfica cruza $T_{63} = 25 + 0.632(6) = 28.79^\circ\text{C}$ a los $40\,\text{s}$ \textbf{después} del escalón, entonces $\tau = 40\,\text{s}$.
+    \item \textbf{Modelo en variables de desviación:} $G_p(s) = \frac{\Delta T(s)}{\Delta U(s)} = \frac{20}{40s + 1}$.
+\end{itemize}
+
+\subsection*{WE4: Requisitos de Acondicionamiento (Hacia S3)}
+Si la calibración anterior fue validada en el rango $20^\circ\text{C} \to 50^\circ\text{C}$, el rango de entrada real confiable es $[0.50\,\text{V}, 1.10\,\text{V}]$. 
+\begin{itemize}
+    \item Si el rango destino es $[0\,\text{V}, 3.3\,\text{V}]$ (p.ej. entrada de un ADC):
+    \item $A = \frac{3.3 - 0}{1.10 - 0.50} = \frac{3.3}{0.6} = 5.5$ V/V.
+    \item $B = 0 - (5.5)(0.50) = -2.75$ V.
+\end{itemize}
+\textit{Nota Socrática (E7):} El diseño exige restar voltaje. El estudiante deberá revisar si posee fuentes negativas (bipolares) para alimentar el op-amp y lograr este offset negativo.
+
+\subsection*{Defensa Oral Docente (Intervención de 5-10 min)}
+\textbf{Pregunta clave:} "¿Por qué no puedes ajustar un retardo $e^{-Ls}$ automáticamente si ves una demora inicial?" \\
+\textbf{Criterio:} El alumno debe responder que primero se verifica la cadena de adquisición (frecuencia de muestreo, sellos de tiempo del actuador) y si la inercia corresponde realmente al sensor de medición, antes de añadir ceros/polos virtuales a la planta.
+
+\end{document}
