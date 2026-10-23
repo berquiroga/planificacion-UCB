@@ -1,0 +1,65 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Mapa Evidencias y EC4}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Documento Docente: Mapa de Evidencias y Protección del EC4[cite: 16]}]
+    \textbf{Regla Crítica:} No permitir que el cierre administrativo del Hito 2 o los retrasos experimentales de EC3 consuman el tiempo técnico reservado normativamente para EC4 (Feedback y Estabilidad)[cite: 16].
+\end{tcolorbox}
+
+\section*{1. Tipología y Límites de la Evidencia Recopilada[cite: 16]}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!20}
+\textbf{Producto Generado} & \textbf{¿Qué Demuestra Válidamente?} & \textbf{¿Qué NO Demuestra?} \\ \hline
+\textbf{Cálculo Analítico} & Predicción de márgenes y selección bajo supuestos teóricos. & Comportamiento físico real o disipación bajo condiciones no ideales[cite: 16]. \\ \hline
+\textbf{LTspice / Simulación} & Respuesta del modelo bajo parámetros fijos y entorno idealizado[cite: 16]. & Seguridad física o conformidad térmica del componente comercial real[cite: 16]. \\ \hline
+\textbf{Registro Físico de Banco} & Condición eléctrica medida con instrumentos y seguridad de operación[cite: 16]. & El dominio teórico individual de \textit{todos} los integrantes del grupo[cite: 16]. \\ \hline
+\textbf{Examen Escrito Individual (EC3)} & Razonamiento causal propio bajo consigna supervisada (Tiempos, $V_{GS}$, etc)[cite: 16]. & La habilidad práctica motriz de integración de hardware (PFI)[cite: 16]. \\ \hline
+\textbf{Hito 3 / PFI Completo} & Integración total de subsistemas, puente H físico y reporte térmico en Python[cite: 16]. & Que la etapa E1 (Low-Side) pueda sustituir la complejidad exigida en Hito 3[cite: 16]. \\ \hline
+\end{tabularx}
+
+\vspace{0.5cm}
+\section*{2. Minuta de Decisiones Pendientes y Calendario[cite: 16]}
+No presuponer fechas si no han sido validadas por el calendario institucional[cite: 16].
+
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{5.5cm}|c|>{\raggedright\arraybackslash}X|c|}
+\hline
+\rowcolor{gray!20}
+\textbf{Hito de Decisión Administrativa} & \textbf{Estado Actual} & \textbf{Validación Exigida Previa} & \textbf{Fecha Aprobada} \\ \hline
+Adquisición/Asignación Componentes E1 (MOSFET, Carga, Fuente, Res.)[cite: 16] & PENDIENTE & Datasheets, Cálculos térmicos y Presupuesto[cite: 16]. & \rule{2cm}{0.15mm} \\ \hline
+Autorización Física para Montaje E1 & PENDIENTE & Ficha Pre-Montaje (Checklist G1)[cite: 16]. & \rule{2cm}{0.15mm} \\ \hline
+Examen Escrito Individual EC3 (Ponderación y Fecha) & PENDIENTE & Contenido efectivamente impartido[cite: 16]. & \rule{2cm}{0.15mm} \\ \hline
+Hito 3 Experimental Final & PENDIENTE & Progresión validada G1 a G4[cite: 16]. & \rule{2cm}{0.15mm} \\ \hline
+\textbf{Bloque Teórico EC4 (Realimentación)} & PROTEGIDO & Asegurar tiempo de sesiones efectivas[cite: 16]. & \rule{2cm}{0.15mm} \\ \hline
+\end{tabularx}
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=yellow!10, colframe=orange, title=\textbf{Triage Docente (Próxima Sesión Efectiva)[cite: 16]}]
+    Seleccione la prioridad técnica principal (solo una) para la sesión inmediata de EC3 en función de los materiales realmente disponibles en laboratorio:\\
+    $\square$ 1. Selección formal comercial del MOSFET a partir de Datasheets reales.\\
+    $\square$ 2. Diseño analítico y simulación del circuito Gate Driver BJT.\\
+    $\square$ 3. Medición física de primera etapa de \textit{Switching} / Verificación Low-side.\\
+    $\square$ 4. Otro requisito de seguridad previo identificado.
+\end{tcolorbox}
+
+\end{document}

@@ -1,0 +1,67 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Ficha Banco E1 y BOM}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Ficha de Especificación E1 y BOM Condicionada (Safety Gate)[cite: 16]}]
+    \textbf{Condición Estricta:} Esta ficha \textbf{NO} autoriza la energización del banco. Es una herramienta de diseño para mapear la trazabilidad de los componentes requeridos frente a los manuales reales y protocolos de laboratorio. No llene con valores inventados[cite: 16].
+\end{tcolorbox}
+
+\section*{1. Requisitos de Seguridad y Fronteras Físicas del Banco E1 (Low-Side Resistivo)[cite: 16]}
+Para energizar, todos los estados deben decir "CONFIRMADO". De lo contrario, se mantiene el bloqueo[cite: 16].
+
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{6cm}|c|>{\raggedright\arraybackslash}X|p{3.5cm}|}
+\hline
+\rowcolor{gray!20}
+\textbf{Requisito Físico} & \textbf{Estado} & \textbf{Fuente del Dato / Método de Verificación} & \textbf{Bloqueo si Falta} \\ \hline
+$V_{bus}$ nominal y máximo & & Ficha de fuente de banco / Docente & No energizar[cite: 16] \\ \hline
+Límite de corriente / Respuesta a fallas de fuente & & Manual y ensayo de corto controlado & No energizar[cite: 16] \\ \hline
+Tipo de carga, $R_L$, Potencia nominal térmica & & Inventario / Datasheet carga / Multímetro & No energizar[cite: 16] \\ \hline
+Corriente Continua ($I_{cont}$) y Pico ($I_{peak}$) & & Cálculo analítico de peor caso $\to$ Medición & No elegir MOSFET[cite: 16] \\ \hline
+$V_{logic}, V_{drive}$, corriente máxima del controlador & & Datasheet MCU / Driver externo & No conectar Gate[cite: 16] \\ \hline
+MOSFET Comercial: Pinout, $V_{GS}$, SOA, Tj & & Datasheet original del fabricante & No montar[cite: 16] \\ \hline
+Protección de sobrecorriente (Fusible) & & Revisión de seguridad local & No energizar[cite: 16] \\ \hline
+Sondas Osciloscopio: Referencias de Tierra (GND) & & Chequeo cruzado con responsable laboratorio & No conectar GND Clip[cite: 16] \\ \hline
+\end{tabularx}
+
+\vspace{0.3cm}
+\section*{2. BOM Maestra Condicionada (Listado de Materiales Propuesto)[cite: 16]}
+Las filas son categorías para cotización/inventario, no una orden de compra pre-aprobada. 
+
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{|p{1.2cm}|p{4.5cm}|>{\raggedright\arraybackslash}X|p{2.5cm}|p{2cm}|p{2cm}|}
+\hline
+\rowcolor{ucbblue!20}
+\textbf{Etapa} & \textbf{Componente Candidato} & \textbf{Función / Criterio de Selección Fundamental} & \textbf{Disponibilidad} & \textbf{Reutilizable en E4?} & \textbf{Aprobación} \\ \hline
+E1 & Fuente DC con limitación & Proveer $V_{bus} / I_{max}$ seguro y protegido[cite: 16]. & PENDIENTE & E1--E4[cite: 16] & PENDIENTE \\ \hline
+E1 & Carga Resistiva de Potencia & Soporte de $R$ nominal bajo estrés térmico[cite: 16]. & PENDIENTE & E1--E2[cite: 16] & PENDIENTE \\ \hline
+E1 & MOSFET Potencia & $V_{DSS}$, $I_D$, $R_{DS(on)}$ al $V_{GS}$ real, Qg, SOA[cite: 16]. & PENDIENTE & Condicionado* & PENDIENTE \\ \hline
+E1 & Instrumentos y Sondas & Rango tensión, aislamiento de tierra (Ground)[cite: 16]. & PENDIENTE & E1--E4[cite: 16] & PENDIENTE \\ \hline
+E2 & Buffer BJT (Sourcing/Sinking) & Multiplicador corriente, $I_B$, $I_C$, conmutación[cite: 16]. & PENDIENTE & Condicionado* & PENDIENTE \\ \hline
+E3 & Carga Inductiva (Motor/Bobina) & Almacenamiento $\frac{1}{2} L I^2$, Corriente nominal[cite: 16]. & PENDIENTE & E3--E4[cite: 16] & PENDIENTE \\ \hline
+E3 & Diodo de Recirculación (Flyback) & Tolerancia de picos transitorios, respuesta rápida[cite: 16]. & PENDIENTE & E3--E4[cite: 16] & PENDIENTE \\ \hline
+E4 & Controladores High-Side / Puente & Evitar Shoot-through, manejo Source flotante[cite: 16]. & PENDIENTE & E4 (Exclusivo) & PENDIENTE \\ \hline
+\end{tabularx}
+\vspace{0.1cm}
+\small{*La reutilización en E4 (Puente H) depende de que el componente cumpla los requisitos de High-Side.}
+
+\end{document}

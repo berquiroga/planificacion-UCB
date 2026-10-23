@@ -1,0 +1,95 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Ejercicio Buffer BJT EC3}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Taller E2: Dimensionamiento Conceptual de Buffer BJT (Uso Estudiante)[cite: 16]}]
+    \textbf{Aviso:} Los valores numéricos aquí son \textbf{puramente hipotéticos}. Su propósito es comprender la física de la transferencia de carga antes de abrir el Datasheet comercial final[cite: 16].
+\end{tcolorbox}
+
+\textbf{1. Cálculo Hipotético de Gate Charge y Tiempos[cite: 16]} \\
+Un MOSFET hipotético declara en su Datasheet una carga de compuerta $Q_g = 40\,\text{nC}$ bajo ciertas condiciones de prueba.
+Si un microcontrolador directo sin buffer inyecta una corriente media de $I_{G1} = 10\,\text{mA}$, y luego se conecta un Buffer BJT que inyecta una corriente media de $I_{G2} = 80\,\text{mA}$[cite: 16]:
+\begin{itemize}
+    \item[a)] Estime matemáticamente los tiempos característicos teóricos de transferencia de carga $t_{10}$ y $t_{80}$[cite: 16].
+    \item[b)] Explique por qué el resultado matemático $\frac{t_{10}}{t_{80}} = 8$ \textbf{NO} significa que las pérdidas reales de \textit{switching} serán exactamente ocho veces menores en el mundo real[cite: 16].
+\end{itemize}
+\vspace{2.5cm}
+
+\textbf{2. Arquitectura de Sourcing y Sinking[cite: 16]} \\
+Diseñe un diagrama de bloques (NO un esquemático electrónico final) que contenga: (1) Control lógico, (2) Bloque Buffer BJT, (3) Resistencia $R_G$ y (4) NMOS[cite: 16].
+Dibuje e identifique con flechas gruesas la corriente de \textbf{Sourcing} y la corriente de \textbf{Sinking}[cite: 16].
+\vspace{3.5cm}
+
+\textbf{3. Verificación de Datasheet Previa a E2[cite: 16]} \\
+Enliste dos parámetros críticos que deben leerse en el Datasheet del BJT y dos en el del MOSFET antes de intentar conectarlos físicamente y encender la fuente[cite: 16].
+\vspace{2.5cm}
+
+\textbf{4. Source Móvil y Efectividad del Driver[cite: 16]} \\
+Señal a la entrada del Gate: $V_G = 10\,\text{V}$. Debido a la carga, el Source del MOSFET está a $V_S = 9\,\text{V}$[cite: 16].
+\begin{itemize}
+    \item[a)] Calcule $V_{GS}$[cite: 16].
+    \item[b)] Explique si esta topología High-Side con esa tensión de Gate encenderá el dispositivo correctamente.
+\end{itemize}
+\vspace{2.5cm}
+
+\newpage
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Clave Docente: Solucionario del Taller E2[cite: 16]}]
+    Para retroalimentación inmediata.
+\end{tcolorbox}
+
+\textbf{Soluciones Esperadas[cite: 16]:}
+\begin{enumerate}
+    \item \textbf{a)} Tiempos de transferencia teórica de carga asumiendo corriente media constante:
+    \begin{align*}
+        t_{10} &\approx \frac{Q_g}{I_{G1}} = \frac{40 \times 10^{-9}\,\text{C}}{10 \times 10^{-3}\,\text{A}} = \mathbf{4\,\mu\text{s}} \quad \text{[cite: 16]} \\
+        t_{80} &\approx \frac{Q_g}{I_{G2}} = \frac{40 \times 10^{-9}\,\text{C}}{80 \times 10^{-3}\,\text{A}} = \mathbf{0.5\,\mu\text{s}} \quad \text{[cite: 16]}
+    \end{align*}
+    \textbf{b)} Estas escalas de transferencia de carga no son una medición \textit{turn-on}/\textit{turn-off} exacta. Físicamente, las capacitancias varían con la tensión, se presenta la meseta de Miller, y la disipación depende del cruce simultáneo real de $V_{DS}$ e $I_D$, el cual es no-lineal[cite: 16].
+
+    \item \textbf{Arquitectura Funcional[cite: 16]:} 
+    \begin{center}
+    \begin{tikzpicture}[auto, thick, node distance=2.5cm]
+        \node[draw, rounded corners] (mcu) {Control Lógico (MCU)};
+        \node[draw, rounded corners, right=of mcu, align=center] (bjt) {Bloque BJT \\ Sourcing/Sinking};
+        \node[draw, right=1.5cm of bjt] (rg) {$R_G$};
+        \node[draw, rounded corners, right=1.5cm of rg] (nmos) {Gate NMOS};
+        
+        \draw[->] (mcu) -- (bjt);
+        \draw[->, transform canvas={yshift=2mm}, blue, ultra thick] (bjt) -- node[above]{Sourcing ($i_G \uparrow$)} (rg);
+        \draw[<-, transform canvas={yshift=-2mm}, red, ultra thick] (bjt) -- node[below]{Sinking ($i_G \downarrow$)} (rg);
+        \draw[-] (rg) -- (nmos);
+    \end{tikzpicture}
+    \end{center}
+    El Sourcing entrega carga para encender; el Sinking la retira hacia tierra para apagar rápidamente[cite: 16].
+
+    \item \textbf{Límites Críticos[cite: 16]:} \\
+    \textbf{BJT:} $V_{CE(sat)}$, máxima corriente de colector impulsiva ($I_{C,peak}$), $\beta$ bajo alta inyección, disipación térmica[cite: 16]. \\
+    \textbf{MOSFET:} $Q_g$ real a la tensión de drive, $V_{GS(max)}$ tolerable, $R_{DS(on)}$ garantizado al $V_{GS}$ aplicado[cite: 16].
+
+    \item \textbf{a)} $V_{GS} = V_G - V_S = 10\,\text{V} - 9\,\text{V} = \mathbf{1\,\text{V}}$[cite: 16]. \\
+    \textbf{b)} \textbf{NO.} Con $V_{GS} = 1\,\text{V}$, un MOSFET de potencia estándar no entra en región óhmica de baja resistencia. Para un control High-Side, el bloque Driver debe ser capaz de empujar la compuerta varios voltios \textit{por encima} de la tensión de la fuente (Ej. usando Bootstrap)[cite: 16].
+\end{enumerate}
+
+\end{document}

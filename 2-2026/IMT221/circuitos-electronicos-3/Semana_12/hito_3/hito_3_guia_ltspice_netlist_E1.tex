@@ -1,0 +1,74 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Guía LTspice E1 (Low-Side)}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{E1 — Guía de Simulación LTspice desde un Esquema Manual[cite: 20]}]
+    \textbf{Propósito:} Reconstruir el circuito E1 por conexiones de Nodos. Utiliza una fuente de control ideal y capacidades parásitas didácticas[cite: 20]. \textit{Este modelo NO representa un MOSFET comercial específico[cite: 20].}
+\end{tcolorbox}
+
+\section*{1. Tabla de Nodos del Esquema (Netlist Mapping)[cite: 20]}
+El diodo de cuerpo del NMOS pertenece intrínsecamente al modelo SPICE, no requiere componente externo[cite: 20].
+
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|l|l|l|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{gray!20}
+\textbf{Elemento} & \textbf{Nodo 1 (+)} & \textbf{Nodo 2 (-)} & \textbf{Valor / Rol} \\ \hline
+\texttt{V1} & \texttt{bus} & \texttt{0} & $12\,\text{V DC}$ (Alimentación Potencia)[cite: 20] \\ \hline
+\texttt{RLOAD} & \texttt{bus} & \texttt{drain} & $100\,\Omega$ (Carga Resistiva)[cite: 20] \\ \hline
+\texttt{M1} (D/G/S/B) & \texttt{drain}/\texttt{gate} & \texttt{0}/\texttt{0} & NMOS Didáctico \texttt{MDEMO\_E1}[cite: 20] \\ \hline
+\texttt{VPULSE} & \texttt{ctrl} & \texttt{0} & \texttt{PULSE(0 5 1m 1u 1u 2m 4m)} (Control Ideal)[cite: 20] \\ \hline
+\texttt{RGATE} & \texttt{ctrl} & \texttt{gate} & \texttt{\{RG\}} parametrizada (47 vs 220$\,\Omega$)[cite: 20] \\ \hline
+\texttt{RPD} & \texttt{gate} & \texttt{0} & $100\,\text{k}\Omega$ (Pull-down de seguridad)[cite: 20] \\ \hline
+\texttt{CGS\_EXT} & \texttt{gate} & \texttt{0} & $10\,\text{nF}$ (Parásita Didáctica)[cite: 20] \\ \hline
+\texttt{CGD\_EXT} & \texttt{gate} & \texttt{drain} & $2\,\text{nF}$ (Parásita Miller Didáctica)[cite: 20] \\ \hline
+\end{tabularx}
+
+\section*{2. Netlist Propuesto de Configuración SPICE[cite: 20]}
+Este bloque contiene el código a insertar en LTspice usando las directivas (tecla 'S')[cite: 20].
+\begin{tcolorbox}[colback=black!5, colframe=black, fontupper=\ttfamily, sharp corners]
+* Hito 3 E1 - MODELADO DIDACTICO, NO MODELO COMERCIAL[cite: 20] \\
+.param RG=47[cite: 20] \\
+V1 bus 0 12[cite: 20] \\
+RLOAD bus drain 100[cite: 20] \\
+VPULSE ctrl 0 PULSE(0 5 1m 1u 1u 2m 4m)[cite: 20] \\
+RGATE ctrl gate \{RG\}[cite: 20] \\
+RPD gate 0 100k[cite: 20] \\
+M1 drain gate 0 0 MDEMO\_E1[cite: 20] \\
+CGS\_EXT gate 0 10n[cite: 20] \\
+CGD\_EXT gate drain 2n[cite: 20] \\
+.model MDEMO\_E1 NMOS (LEVEL=1 VTO=2 KP=4 LAMBDA=0.01 RD=0.02 RS=0.02)[cite: 20] \\
+.step param RG list 47 220[cite: 20] \\
+.tran 0 8m 0 0.1u[cite: 20] \\
+.end[cite: 20]
+\end{tcolorbox}
+
+\section*{3. Protocolo de Análisis y Evidencia[cite: 20]}
+\begin{itemize}
+    \setlength\itemsep{0.2em}
+    \item El pulso $0-5\,\text{V}$ tiene un retardo de $1\,\text{ms}$, flancos de $1\,\mu\text{s}$, ancho de $2\,\text{ms}$ y periodo de $4\,\text{ms}$[cite: 20].
+    \item Ejecute la simulación. Registre \texttt{V(ctrl)}, \texttt{V(gate)} ($V_{GS}$), \texttt{V(drain)} ($V_{DS}$) e \texttt{I(RLOAD)}[cite: 20].
+    \item Aplique Zoom en las transiciones de $t \approx 1\,\text{ms}$ y $t \approx 3.001\,\text{ms}$[cite: 20]. Compare visualmente cómo los flancos de $V_{DS}$ e $I_D$ varían al cambiar $R_G$ entre $47\,\Omega$ y $220\,\Omega$[cite: 20].
+    \item \textbf{Restricción:} No atribuir los tiempos observados a la capacidad dinámica de un pin de GPIO real, ya que \texttt{VPULSE} es una fuente ilimitada ideal[cite: 20].
+\end{itemize}
+
+\end{document}

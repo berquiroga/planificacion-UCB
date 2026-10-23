@@ -1,0 +1,61 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Diagnóstico Individual EC3 (E1)}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Hoja Diagnóstica Individual (10 min) — Evidencia de Pérdidas}]
+    Acredite su comprensión de las pérdidas por conmutación antes de avanzar a la especificación de componentes físicos para la Etapa 1 (E1)[cite: 16].
+\end{tcolorbox}
+
+\noindent\textbf{Nombre Estudiante:} \rule{7cm}{0.15mm} \hfill \textbf{Fecha:} \rule{3cm}{0.15mm} \\[0.3cm]
+\textbf{Estado de su evidencia LTspice W12S02 (Marque uno)[cite: 16]:} \\
+$\square$ Observación LTspice ejecutada y documentada \quad $\square$ Predicción teórica \quad $\square$ Ninguna corrida
+
+\vspace{0.4cm}
+\textbf{1. Físico-Matemática de Transiciones (Turn-ON / Turn-OFF)[cite: 16]} \\
+Durante el flanco de encendido de un NMOS en configuración Low-Side con carga resistiva, ¿qué ocurre cualitativamente con $V_{GS}, V_{DS}$ e $I_D$? ¿Qué magnitudes eléctricas "coexisten" peligrosamente durante este breve intervalo transitorio?[cite: 16]
+\vspace{2.5cm}
+
+\textbf{2. Definiciones de Potencia y Energía[cite: 16]} \\
+Defina matemáticamente las siguientes magnitudes, indicando explícitamente sus unidades físicas en el SI:
+\begin{itemize}
+    \item Potencia instantánea disipada por el MOSFET ($p_D(t)$)[cite: 16]: \hrulefill
+    \item Energía de un evento único de conmutación en la ventana $[t_a, t_b]$ ($E_{event}$)[cite: 16]: \hrulefill
+    \item Potencia media de \textit{switching} repetitivo ($P_{sw}$)[cite: 16]: \hrulefill
+\end{itemize}
+
+\vspace{0.2cm}
+\textbf{3. La Trampa de la "Carga Ideal"[cite: 16]} \\
+En una simulación didáctica con $V_{bus} = 12\,\text{V}$ y $R_L = 10\,\Omega$, un cálculo arroja $14.4\,\text{W}$[cite: 16]. 
+Identifique a qué variable física corresponde exactamente ese valor y justifique mediante una ley de circuitos. ¿Por qué es un error fatal de diseño asumir que esos $14.4\,\text{W}$ son la disipación térmica del MOSFET real?[cite: 16]
+\vspace{3cm}
+
+\textbf{4. Auditoría de Simulación[cite: 16]} \\
+Declare una limitación fundamental del modelo pedagógico LTspice (\texttt{MDEMO}) que usamos la semana pasada, y proponga qué medición en el laboratorio pondría a prueba dicha limitación[cite: 16].
+\vspace{2.5cm}
+
+\begin{flushright}
+    \textit{Uso Docente:} \quad $\square$ Seguro \quad $\square$ Parcial \quad $\square$ Débil
+\end{flushright}
+
+\end{document}

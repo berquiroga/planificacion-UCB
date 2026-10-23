@@ -1,0 +1,61 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Guía Estudiante E1 (Hito 3)}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Hito 3 · E1 — Guía Autónoma de Diseño Low-Side (ESTUDIANTES)[cite: 20]}]
+    \textbf{Aviso de Seguridad:} Etapa preparatoria \textbf{no autorizada} para conexión física ni compra de componentes. El objetivo es resolver analíticamente el dimensionamiento de una carga de $100\,\Omega$ a $12\,\text{V}$[cite: 20].
+\end{tcolorbox}
+
+\section*{A. Del Problema al Diagrama (Guiado)[cite: 20]}
+\begin{enumerate}
+    \item \textbf{Topología:} Dibuje la fuente de $12\,\text{V}$, resistencia de $100\,\Omega$, Drenador, Surtidor, Compuerta, resistencia serie $R_G$, resistencia \textit{pull-down} y retorno común[cite: 20]. Rotule (G/D/S), $V_{GS}, V_{DS}, I_D$. Indique la dirección de la corriente en estado ON[cite: 20]. \\
+    ¿Por dónde conduce el \textit{Body Diode} inherente y por qué \textbf{no debe conducir} en la polaridad nominal Low-Side?[cite: 20] \hrulefill \\[0.2cm] \hrulefill
+    
+    \item \textbf{Cálculo ON Ideal:} Calcule la corriente máxima ideal ON a partir de la Malla de Salida (KVL). Registre unidades y la suposición matemática del MOSFET ideal[cite: 20]. \hrulefill
+    
+    \item \textbf{Potencia Ideal:} Calcule la potencia ideal de la resistencia en estado ON. ¿Serviría usar una resistencia típica de $1/4\,\text{W}$ ($0.25\,\text{W}$)? Justifique su respuesta basándose en el margen térmico[cite: 20]. \hrulefill \\[0.2cm] \hrulefill
+    
+    \item \textbf{Estado ON Real:} Si en estado ON el MOSFET presenta una resistencia de canal $R_{DS(on)}$, desarrolle matemáticamente por KVL las expresiones para: $I_{ON}, V_{DS,on}, P_{MOS,on}$ y $P_{LOAD}$[cite: 20]. \hrulefill \\[0.2cm] \hrulefill
+    
+    \item \textbf{Lectura de Datasheet:} Explique qué limita la validez del parámetro $R_{DS(on)}$ (¿De qué otras variables depende?). ¿Por qué el umbral $V_{GS(th)}$ \textbf{no} constituye una especificación de operación de baja pérdida?[cite: 20] \hrulefill \\[0.2cm] \hrulefill
+    
+    \item \textbf{Tensión Relativa:} Con Source a $0\,\text{V}$ y Gate a $5\,\text{V}$, calcule $V_{GS}$[cite: 20]. Si en una topología distinta el Source subiera a $4\,\text{V}$ manteniendo el Gate absoluto a $5\,\text{V}$, ¿cuál es el nuevo $V_{GS}$ y qué ocurriría?[cite: 20] \hrulefill
+\end{enumerate}
+
+\section*{B. Selección y Defensa Técnica[cite: 20]}
+Busque \textbf{dos} Datasheets originales de fabricantes para NMOS candidatos[cite: 20]. Para cada uno anote: 
+\begin{itemize}
+    \setlength\itemsep{0em}
+    \item Número de parte, $V_{(BR)DSS}$, límite de $\pm V_{GS}$, $Q_g$ (con condiciones de prueba)[cite: 20].
+    \item $R_{DS(on)}$ \textbf{máximo} junto a su respectivo $V_{GS} / I_D$ / Temperatura de ensayo[cite: 20].
+    \item Resistencia Térmica, SOA, Pinout y encapsulado[cite: 20].
+\end{itemize}
+\textbf{Responda:} (a) ¿Puede utilizarse una cifra de $R_{DS(on)}$ publicada a $V_{GS}=10\,\text{V}$ si su lógica solo entrega $5\,\text{V}$?[cite: 20] (b) ¿Qué mediciones preliminares en frío haría antes de conectar la potencia?[cite: 20]
+
+\section*{C. Simulación LTspice y Prevención[cite: 20]}
+Monte el circuito E1 en LTspice usando una fuente de control ideal de $0-5\,\text{V}$. Use la directiva \texttt{.step} para comparar $R_G = 47\,\Omega$ frente a $R_G = 220\,\Omega$[cite: 20]. \\
+Antes de simular, \textbf{dibuje a mano} la gráfica esperada de $V_{ctrl}, V_{GS}, V_{DS}$ e $I_D$ durante el flanco de encendido[cite: 20]. Si no puede ejecutar LTspice, escriba "NO EJECUTADO" y reporte solo sus predicciones[cite: 20].
+
+\end{document}

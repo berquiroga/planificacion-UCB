@@ -1,0 +1,80 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Protocolo Incremental E1-E4}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Arquitectura Funcional del Proyecto: Protocolo Incremental EC3[cite: 13]}]
+    Este documento mapea el flujo rígido del proyecto experimental. Se basa en ciclos de 8 pasos (P1 a P8) y 4 Puertas de Habilitación (G1 a G4). \textbf{No se permite saltar de una etapa a otra sin evidencia firmada[cite: 13].}
+\end{tcolorbox}
+
+\section*{1. Ciclo Invariable de una Hipótesis (P1 a P8)[cite: 13]}
+Toda modificación o nueva etapa debe recorrer este ciclo antes de la medición física[cite: 13].
+
+\par\vspace{0.2cm}\noindent
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\linewidth}{|c|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{gray!20}
+\textbf{Fase} & \textbf{Actividad} & \textbf{Evidencia} \\ \hline
+\textbf{P1} & \textbf{Hipótesis:} Definir variable a cambiar y dirección del efecto esperado (Ej. Si $R_G \uparrow$ entonces...)[cite: 13]. & Hipótesis escrita falsable[cite: 13]. \\ \hline
+\textbf{P2} & \textbf{Cálculo Analítico:} Relación física y límites[cite: 13]. & Memoria con consistencia dimensional[cite: 13]. \\ \hline
+\textbf{P3} & \textbf{Simulación LTspice:} Ejecutar caso documentado[cite: 13]. & Esquemático real, trazas, .logs[cite: 13]. \\ \hline
+\textbf{P4} & \textbf{Revisión Pre-Montaje (Safety):} Datasheets, límites de instrumentos y tierras del osciloscopio[cite: 13]. & \textbf{Checklist autorizado (¡Crítico!)}[cite: 13] \\ \hline
+\textbf{P5} & \textbf{Montaje Físico:} Inspección visual/eléctrica en FRIO. Energización controlada solo bajo autorización[cite: 13]. & Registro de inspección, sin condiciones de bloqueo[cite: 13]. \\ \hline
+\textbf{P6} & \textbf{Medición Experimental:} Osciloscopio y Termocuplas[cite: 13]. & Registros de $V_{GS}, V_{DS}, I_D$ acotados[cite: 13]. \\ \hline
+\textbf{P7} & \textbf{Comparación:} Teoría vs Simulación vs Realidad[cite: 13]. & Tabla de discrepancias y causas[cite: 13]. \\ \hline
+\textbf{P8} & \textbf{Corrección:} Ajustar modelo LTspice o Hardware[cite: 13]. & Nueva iteración si cambia hardware[cite: 13]. \\ \hline
+\end{tabularx}
+
+\vspace{0.4cm}
+\section*{2. Las 4 Etapas Arquitectónicas y Puertas de Aprobación (G1-G4)[cite: 13]}
+
+\begin{center}
+\resizebox{\linewidth}{!}{
+\begin{tikzpicture}[auto, thick, node distance=1.5cm]
+    \node[draw, fill=blue!10, rounded corners, minimum height=1.2cm, align=center] (E1) {\textbf{E1} \\ Low-Side \\ Resistivo};
+    \node[draw, fill=blue!10, rounded corners, minimum height=1.2cm, align=center, right=of E1] (E2) {\textbf{E2} \\ Buffer BJT \\ + NMOS};
+    \node[draw, fill=blue!10, rounded corners, minimum height=1.2cm, align=center, right=of E2] (E3) {\textbf{E3} \\ Carga Inductiva \\ + Protección};
+    \node[draw, fill=orange!20, rounded corners, minimum height=1.2cm, align=center, right=of E3] (E4) {\textbf{E4 (Hito 3)} \\ Puente H Full \\ Control + PFI};
+    
+    \draw[-Stealth, ultra thick, red] (E1) -- node[above]{\textbf{G1}} (E2);
+    \draw[-Stealth, ultra thick, red] (E2) -- node[above]{\textbf{G2}} (E3);
+    \draw[-Stealth, ultra thick, red] (E3) -- node[above]{\textbf{G3}} (E4);
+\end{tikzpicture}
+}
+\end{center}
+
+\begin{itemize}
+    \setlength\itemsep{0.2em}
+    \item \textbf{Puerta G1:} Para saltar a E2, se requiere $I_{cont}$, térmica y tierra auditadas. Medición validada de conmutación[cite: 13].
+    \item \textbf{Puerta G2:} Cálculo de Sourcing/Sinking BJT justificado por Datasheet, límites de $V_{CE(sat)}$ e $I_B$ validados[cite: 13].
+    \item \textbf{Puerta G3:} Modelo $E_L = \frac{1}{2} L I^2$. Diodo Flyback y SOA validados. \textbf{Prohibido} quitar diodo en caliente[cite: 13].
+    \item \textbf{Puerta G4 (Hito 3):} Driver High-Side resuelto, \textit{Dead Time} verificado anti \textit{Shoot-through}. Análisis Python[cite: 13].
+\end{itemize}
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Reglas de Parada Oficial (Stop Rules)[cite: 13]}]
+    \textbf{NO ENERGIZAR y DETENER TRABAJO si hay:} Polaridad incierta, tierras de osciloscopio referenciadas peligrosamente, olor a quemado, límite de fuente desconocido, o componente sin datasheet. Detener el \textit{debugging} si amenaza el tiempo protegido para la Teoría EC4 o Exámenes Individuales[cite: 13].
+\end{tcolorbox}
+
+\end{document}

@@ -1,0 +1,61 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Seguridad Incremental E1-E4}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Hito 3: Especificación Incremental E1$\to$E4 y Puertas de Seguridad[cite: 20]}]
+    \textbf{ATENCIÓN:} La arquitectura está aprobada. La energización y el montaje específico de hardware \textbf{NO están aprobados}[cite: 20]. Este documento es una especificación de evidencias, no un permiso de conexión.
+\end{tcolorbox}
+
+\section*{Progresión Arquitectónica y Puertas de Aprobación (G1-G4)[cite: 20]}
+Cada fase debe cumplir un ciclo de 8 pasos (Hipótesis, Cálculo, Simulación, Inspección BOM, Montaje Físico en frío, Medición Autorizada, Contraste, Corrección)[cite: 20].
+
+\begin{itemize}
+    \setlength\itemsep{0.4em}
+    \item \textbf{E1 — NMOS Low-Side Resistivo (Puerta G1)[cite: 20]:} \\
+    \textbf{Hipótesis:} Comandar $V_{GS}$ eleva $I_{load}$ y cae $V_{DS}$. Estudiar $12\,\text{V} / 100\,\Omega$[cite: 20]. \\
+    \textbf{G1:} Requiere Datasheets verificados (pinout, SOA), esquema LTspice, fuente de banco con límite de corriente configurado, verificación de tierra física (GND) del osciloscopio[cite: 20].
+    
+    \item \textbf{E2 — Buffer BJT Sourcing/Sinking (Puerta G2)[cite: 20]:} \\
+    \textbf{Hipótesis:} Fuente de corriente BJT modifica tiempos de conmutación ON/OFF. \\
+    \textbf{G2:} Cálculos de $I_B, I_{C,max}, V_{CE(sat)}$ validados por datasheet. Simulaciones de \textit{sourcing}/\textit{sinking} aprobadas[cite: 20].
+    
+    \item \textbf{E3 — Carga Inductiva + Recirculación (Puerta G3)[cite: 20]:} \\
+    \textbf{Hipótesis:} Abrir el switch requiere trayecto de descarga para $E_L = \frac{1}{2} L I^2$[cite: 20]. \\
+    \textbf{G3:} Diodo de protección (Flyback) calculado y montado. \textbf{Prohibido} quitar el diodo con la bobina energizada[cite: 20].
+    
+    \item \textbf{E4 — Puente H MOSFET / Hito 3 (Puerta G4)[cite: 20]:} \\
+    \textbf{Hipótesis:} Inversión de giro sin cortocircuitar el bus (Shoot-through)[cite: 20]. \\
+    \textbf{G4:} Driver High-Side resuelto, \textit{Dead Time} verificado en osciloscopio sin carga, térmica modelada en Python. Defensa técnica final[cite: 20].
+\end{itemize}
+
+\section*{Checklist Pre-Energización (Exclusivo Revisión Docente)[cite: 20]}
+Ningún circuito se energiza si falta un solo check:
+\begin{itemize}
+    \item[$\square$] Datasheets exactos impresos y pinout real coincide con el cableado[cite: 20].
+    \item[$\square$] Fuente de poder seteada con límite de corriente y protección de emergencia probada[cite: 20].
+    \item[$\square$] Margen térmico de $R_{load}$ ($I^2 R$) verificado; riesgo de quemaduras mitigado[cite: 20].
+    \item[$\square$] Sondas de osciloscopio referenciadas correctamente. Pinza de masa NO está en nodo flotante[cite: 20].
+\end{itemize}
+
+\textbf{Condiciones de Parada de Emergencia (Stop Rules):} Detener ante olores anormales, sobrecorrientes, ruido transitorio no explicado, o manipulación riesgosa. \textbf{Desenergizar siguiendo protocolo institucional, no manipular ni ajustar componentes con el circuito vivo}[cite: 20].
+
+\end{document}

@@ -1,0 +1,107 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Clave Docente E1}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Material Reservado Docente: Solucionario E1 (Low-Side)[cite: 20]}]
+    Evaluación de topología, cálculo analítico, interpretación del Datasheet y diagnóstico de simulación LTspice[cite: 20].
+\end{tcolorbox}
+
+\section*{A. Solución Analítica Central[cite: 20]}
+Escenario didáctico: Bus DC de $12\,\text{V}$, Carga $R_L = 100\,\Omega$, lógica ideal $0/5\,\text{V}$[cite: 20].
+
+\vspace{0.3cm}
+\textbf{1. Topología y Body Diode[cite: 20]:}
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape, thick]
+        % Rama de Carga
+        \draw (0,4) node[above]{$+12\,\text{V}$} to[R, l=$100\,\Omega$, a=$R_L$, i>=$I_D$] (0,2);
+        \draw (0,2) node[circle,fill,inner sep=1pt]{} node[left=0.1cm]{drain};
+        
+        % Transistor NMOS (nigfete incluye el terminal Bulk)
+        \draw (0,0.5) node[nigfete] (M1) {};
+        \node[above left=0.05cm] at (M1.G) {G};
+        \node[above right=0.05cm] at (M1.D) {D};
+        \node[below right=0.05cm] at (M1.S) {S};
+        \node[below right=0.05cm] at (M1.B) {B};
+        
+        % Conexiones principales del transistor
+        \draw (0,2) -- (M1.D);
+        \draw (M1.S) -- (0,-1.5) node[ground]{};
+        
+        % Conexión del Bulk al Source (por la derecha para no cruzar el Diodo)
+        \draw (M1.B) -- ++(0.6,0) |- (0,-1);
+        
+        % Diodo de cuerpo explícito (separado a la derecha para evitar solapamientos)
+        \draw[blue, dashed] (M1.S) -- ++(2.5,0) coordinate (diode_S) 
+            to[D, l=Body Diode] (diode_S |- M1.D) -- (M1.D);
+            
+        % Marcador de voltaje V_DS
+        \draw[<->, red, thick] (4.5, 0 |- M1.D) -- (4.5, 0 |- M1.S) node[midway, right] {$V_{DS}$};
+        \draw[dashed, gray] (M1.D) -- (4.5, 0 |- M1.D);
+        \draw[dashed, gray] (M1.S) -- (4.5, 0 |- M1.S);
+        
+        % Red de excitación (Gate y resistores)
+        \draw (-2, 0.5) node[circle,fill,inner sep=1pt]{} node[above]{gate} -- (M1.G);
+        \draw (-4.5, 0.5) node[circle,fill,inner sep=1pt]{} node[above]{ctrl} to[R, l=$R_G$] (-2, 0.5);
+        \draw (-4.5, 0.5) to[V, l=$0/5\,\text{V}$] (-4.5, -1.5) node[ground]{};
+        \draw (-2, 0.5) to[R, l_=$R_{PD}$] (-2, -1.5) node[ground]{};
+    \end{circuitikz}
+\end{center}
+\textit{Body Diode:} El ánodo está en el Source y el cátodo en el Drain[cite: 20]. Con $+12\,\text{V}$ en el Drain, está inversamente polarizado. Si la polaridad se invirtiera, causaría un cortocircuito incontrolado[cite: 20].
+
+\vspace{0.4cm}
+\textbf{2 y 3. Estado ON Ideal[cite: 20]:}
+\begin{align*}
+    I_{ON,ideal} &= \frac{V_{BUS}}{R_L} = \frac{12\,\text{V}}{100\,\Omega} = \mathbf{0.12\,\text{A} = 120\,\text{mA}} \quad \text{[cite: 20]} \\
+    P_{LOAD,ideal} &= I^2 R_L = (0.12\,\text{A})^2 (100\,\Omega) = \mathbf{1.44\,\text{W}} \quad \text{[cite: 20]}
+\end{align*}
+\textit{Conclusión Térmica:} Una resistencia de $1/4\,\text{W}$ ($0.25\,\text{W}$) se quemaría instantáneamente al disipar $1.44\,\text{W}$. Se requiere un componente de $3\,\text{W}$ a $5\,\text{W}$ con disipación adecuada[cite: 20].
+
+\vspace{0.4cm}
+\textbf{4. Estado ON No-Ideal (Con $R_{DS(on)}$)[cite: 20]:}
+\begin{align*}
+    I_{ON} &= \frac{V_{BUS}}{R_L + R_{DS(on)}} \quad ; \quad V_{DS,on} = I_{ON} \cdot R_{DS(on)} \quad \text{[cite: 20]} \\
+    P_{MOS,on} &= I_{ON}^2 R_{DS(on)} \quad ; \quad P_{LOAD} = I_{ON}^2 R_L \quad \text{[cite: 20]}
+\end{align*}
+\textit{Ejemplo Numérico Hipotético (Asumiendo un $R_{DS(on)} = 50\,\text{m}\Omega$ validado)[cite: 20]:} \\
+$I_{ON} = 12 / 100.05 \approx 0.1199\,\text{A}$ $\implies$ $P_{MOS,on} \approx (0.1199)^2 (0.05) \approx \mathbf{0.719\,\text{mW}}$[cite: 20]. \\
+Nota crítica: ¡$1.44\,\text{W}$ es la potencia de la carga, no del MOSFET![cite: 20]
+
+\vspace{0.4cm}
+\textbf{5 y 6. Criterios $V_{GS}$[cite: 20]:}
+$R_{DS(on)}$ depende críticamente del $V_{GS}$ aplicado, la corriente y la temperatura (Tj)[cite: 20]. El $V_{GS(th)}$ es solo el umbral de conducción de prueba (microamperios), no garantiza baja resistencia[cite: 20].
+Si $V_G = 5\,\text{V}$ absoluto y $V_S$ sube a $4\,\text{V}$, entonces $V_{GS} = 5 - 4 = \mathbf{1\,\text{V}}$. El MOSFET se apagará o entrará en alta disipación[cite: 20].
+
+\section*{B. Guía de Evaluación de Datasheets y LTspice[cite: 20]}
+\textbf{Selección Comercial:} Si la hoja técnica especifica "$25\,\text{m}\Omega$ @ $V_{GS}=10\,\text{V}$", es \textbf{inválido} usar ese dato si la lógica entregará solo $5\,\text{V}$[cite: 20]. Exija que el estudiante muestre la gráfica o tabla de especificación para $5\,\text{V}$ exactos[cite: 20]. \\
+\textbf{Auditoría LTspice:}
+\begin{itemize}
+    \setlength\itemsep{0.2em}
+    \item Revisar que $V(ctrl)$, $V_{GS}$ y $V_{DS}$ compartan eje temporal[cite: 20].
+    \item La potencia de MOSFET $p_D = V_{DS} \cdot I_D$ es un pico transitorio, distinto a la potencia estática de la carga $I^2 R_L$[cite: 20].
+    \item Un pin de $5\,\text{V}$ en SPICE es una fuente de corriente \textbf{ilimitada} ideal. En hardware real, la compuerta necesita corriente dinámica ($\approx Q_g / t$) que un GPIO de $20\,\text{mA}$ podría no suministrar lo suficientemente rápido (justificando E2 Buffer BJT)[cite: 20].
+\end{itemize}
+
+\end{document}

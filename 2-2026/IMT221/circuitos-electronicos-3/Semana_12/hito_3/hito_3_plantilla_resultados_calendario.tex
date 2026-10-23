@@ -1,0 +1,66 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=1cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Plantilla Evidencias y Calendario}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Hito 3: Plantilla de Evidencia Trazable Estudiante/Docente[cite: 20]}]
+    \textbf{Regla:} Jamás sustituir una celda "no ejecutado" por un valor analítico sin rotularlo. Nunca inventar capturas ni datos[cite: 20].
+\end{tcolorbox}
+
+\textbf{Grupo:} \rule{2cm}{0.15mm} \quad \textbf{Estudiante:} \rule{4cm}{0.15mm} \quad \textbf{Modelo/Archivo:} \rule{3cm}{0.15mm} \\[0.2cm]
+\textbf{Estado de Banco:} $\square$ Solo predicción \quad $\square$ LTspice Ejecutado \quad $\square$ Medición Física Autorizada \quad $\square$ No ejecutado[cite: 20]
+
+\par\vspace{0.2cm}\noindent
+\renewcommand{\arraystretch}{1.8}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{gray!20}
+\textbf{Magnitud} & \textbf{Predicción (Unidad)} & \textbf{Cálculo y Supuestos} & \textbf{LTspice (.log/archivo)} & \textbf{Medición Física Autorizada} \\ \hline
+$V_{GS}$ OFF / ON & & & & \\ \hline
+$V_{DS}$ OFF / ON & & & & \\ \hline
+$I_D$ ON (Corriente) & & & & \\ \hline
+Potencia de Carga & & & & \\ \hline
+Potencia MOSFET & & & & \\ \hline
+Flanco ON ($R_{G1}$) & & & & \\ \hline
+\end{tabularx}
+
+\vspace{0.3cm}
+\textbf{Riesgo principal identificado:} \rule{5cm}{0.15mm} \quad \textbf{Criterio de Parada:} \rule{5cm}{0.15mm} \\[0.2cm]
+\textbf{Firma Autorización Energización:} \rule{4cm}{0.15mm} \quad \textbf{Estado Puerta G1:} $\square$ Aprobada $\square$ Bloqueada[cite: 20]
+
+\vspace{0.5cm}
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Registro de Aprobaciones Administrativas y Calendario[cite: 20]}]
+    \textbf{Nota Administrativa:} Las metas propuestas en las guías NO son fechas institucionalmente aprobadas. Semanas del programa original no crean fechas efectivas automáticamente si hay retrasos[cite: 20].
+\end{tcolorbox}
+
+\par\vspace{0.2cm}\noindent
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{4cm}|p{3.5cm}|p{2cm}|p{2cm}|>{\raggedright\arraybackslash}X|c|}
+\hline
+\rowcolor{ucbblue!20}
+\textbf{Hito / Decisión} & \textbf{Responsable} & \textbf{Propuesta} & \textbf{Validada} & \textbf{Evidencia de Aprobación} & \textbf{Estado} \\ \hline
+Examen Escrito Individual EC3[cite: 20] & Docente / Institución & 6 Noviembre[cite: 20] & & Contenido impartido evaluable[cite: 20] & PENDIENTE \\ \hline
+Laboratorio Físico E1[cite: 20] & Docente / Resp. Lab & 30 Octubre[cite: 20] & & Puerta de Seguridad G1 aprobada[cite: 20] & CONDICIONADO \\ \hline
+E2-E4 y Entrega Hito 3[cite: 20] & Docente / Institución & 20 Noviembre[cite: 20] & & Rúbricas y progresión G1-G4[cite: 20] & PENDIENTE \\ \hline
+Teoría Realimentación EC4[cite: 20] & Docente / Institución & Noviembre[cite: 20] & & Tiempo de sesión protegido[cite: 20] & PENDIENTE \\ \hline
+\end{tabularx}
+
+\end{document}
