@@ -1,0 +1,71 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\setlength{\emergencystretch}{2em}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Inventario de Evidencia: Laboratorios 3 a 8}
+\rhead{Semana 13 - Sesión 1}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\textbf{\textcolor{ucbblue}{Inventario de Evidencia y Auditoría de Laboratorios (Labs 3–8)}}}[cite: 7]
+\end{center}
+
+\begin{center}
+    \begin{tikzpicture}[>=Stealth, thick, scale=0.85, transform shape]
+        \node[draw=black, fill=gray!10, text width=2.4cm, align=center, minimum height=0.8cm, font=\scriptsize] (p1) at (0,0) {1. Ejecución\\Física};
+        \node[draw=black, fill=gray!10, text width=2.4cm, align=center, minimum height=0.8cm, font=\scriptsize] (p2) at (3.2,0) {2. Datos\\Crudos/Físicos};
+        \node[draw=black, fill=gray!10, text width=2.4cm, align=center, minimum height=0.8cm, font=\scriptsize] (p3) at (6.4,0) {3. Análisis\\Verificado};
+        \node[draw=black, fill=gray!10, text width=2.4cm, align=center, minimum height=0.8cm, font=\scriptsize] (p4) at (9.6,0) {4. Informe /\\Cuaderno};
+        \node[draw=ucbblue, fill=ucbblue!10, text width=2.4cm, align=center, minimum height=0.8cm, font=\scriptsize] (p5) at (12.8,0) {5. Interpretación\\Validada};
+        \draw[->] (p1) -- (p2); \draw[->] (p2) -- (p3); \draw[->] (p3) -- (p4); \draw[->] (p4) -- (p5);
+        \node[draw=red!80!black, fill=red!10, text width=2.0cm, align=center, minimum height=0.6cm, font=\scriptsize] (unk) at (9.6,-1.2) {\textbf{UNKNOWN}};
+        \draw[->, dashed, red!80!black] (p4) -- node[right, font=\tiny] {No localizado} (unk);
+    \end{tikzpicture}
+\end{center}
+
+\begin{tcolorbox}[colback=white, colframe=black, boxsep=1pt, top=2pt, bottom=2pt]
+    \scriptsize\raggedright \textbf{Regla de Auditoría:} "No localizado en esta auditoría" no significa "nunca presentado". Verifique LMS y registros antes de marcar ausencia definitiva. No califique por no tener un archivo abierto durante la auditoría.[cite: 7]
+\end{tcolorbox}
+
+\begin{table}[htbp]
+    \centering
+    \scriptsize
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabularx}{\textwidth}{|P{0.9cm}|P{2.8cm}|P{2.3cm}|P{2.3cm}|P{2.2cm}|P{2.2cm}|P{3.5cm}|Y|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Lab} & \textbf{Evidencia Prevista} & \textbf{Ejecución y Datos Físicos} & \textbf{Análisis Verificado} & \textbf{Informe LMS / Cuaderno} & \textbf{Interpretación Revisada} & \textbf{Acción Pendiente de Auditoría} & \textbf{Estado} \\ \hline
+    Lab 3 & No idealidades DC y compensación. & Datos adquiridos cerca del cierre. & Pendiente. & Plazo 18/10 vencido; recepción desconocida. & Pendiente. & Verificar entrega real, baseline, discrepancia y datos before/after. & \texttt{ACTUAL / UNKNOWN}[cite: 7] \\ \hline
+    Lab 4 & GBW/SR, respuesta dinámica. & Adquisición reportada terminada. & Pendiente. & Plazo 25/10 vencido; recepción desconocida. & Pendiente. & Revisar tablas, estimación de bandwidth, SR y diagnóstico. & \texttt{ACTUAL / UNKNOWN}[cite: 7] \\ \hline
+    Lab 5 & Diodo real, rectificador de precisión. & No establecido. & No establecido. & \texttt{UNKNOWN}. & \texttt{UNKNOWN}. & Verificar montaje, datos y análisis de no idealidad. & \texttt{UNKNOWN / PROPOSED}[cite: 7] \\ \hline
+    Lab 6 & Sallen-Key 2do orden y Bode. & No establecido. & No establecido. & \texttt{UNKNOWN}. & \texttt{UNKNOWN}. & Revisar circuito, barrido, frecuencia característica y registro. & \texttt{UNKNOWN / PROPOSED}[cite: 7] \\ \hline
+    Lab 7 & Estabilidad y carga capacitiva. & No establecido (Prog. Semana 13). & No establecido. & \texttt{UNKNOWN}. & \texttt{UNKNOWN}. & Confirmar qué ensayo exige la guía oficial y evidencia. & \texttt{UNKNOWN / PROPOSED}[cite: 7] \\ \hline
+    Lab 8 & Clase AB y límite térmico. & Futuro en plan original. & No establecido. & \texttt{UNKNOWN}. & \texttt{UNKNOWN}. & Verificar diseño, límites y decidir ruta física factible. & \texttt{UNKNOWN / PROPOSED}[cite: 7] \\ \hline
+    \end{tabularx}
+\end{table}
+
+\end{document}

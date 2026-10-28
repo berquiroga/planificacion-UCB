@@ -1,0 +1,80 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\setlength{\emergencystretch}{2em}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Mapa de Trazabilidad de Competencias Restantes (U2 – U4)}
+\rhead{Semana 13 - Sesión 1}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\textbf{\textcolor{ucbblue}{Mapa de Trazabilidad Curricular: Cobertura, Actividades y Evaluación}}}[cite: 7]
+\end{center}
+
+\vspace{-0.2cm}
+\begin{center}
+    \begin{tikzpicture}[>=Stealth, thick, scale=0.82, transform shape]
+        \node[draw=black, fill=white, text width=2.5cm, align=center, minimum height=0.8cm, font=\scriptsize] (a) at (0,0) {Resultado Oficial};
+        \node[draw=black, fill=white, text width=2.5cm, align=center, minimum height=0.8cm, font=\scriptsize] (b) at (3.0,0) {Estado Actual (26/10)};
+        \node[draw=ucbblue, fill=ucbblue!10, text width=2.5cm, align=center, minimum height=0.8cm, font=\scriptsize] (c) at (6.0,0) {Actividad / Práctica};
+        \node[draw=orange, fill=orange!10, text width=2.5cm, align=center, minimum height=0.8cm, font=\scriptsize] (d) at (9.0,0) {Evidencia de Eval.};
+        \node[draw=black, fill=white, text width=2.5cm, align=center, minimum height=0.8cm, font=\scriptsize] (e) at (12.0,0) {Ventana Propuesta};
+        \node[draw=green!60!black, fill=green!10, text width=2.5cm, align=center, minimum height=0.8cm, font=\scriptsize] (f) at (15.0,0) {Estado / Aprobación};
+        \draw[->] (a) -- (b); \draw[->] (b) -- (c); \draw[->] (c) -- (d); \draw[->] (d) -- (e); \draw[->] (e) -- (f);
+    \end{tikzpicture}
+\end{center}
+
+\begin{tcolorbox}[colback=white, colframe=black, boxsep=1pt, top=2pt, bottom=2pt, title=\textbf{Definición Cuantitativa para Hito 3}]
+    \footnotesize\raggedright
+    Para medir la transferencia del componente de $50\,\text{Hz}$ y justificar el requisito de Hito 3 ($< -40\,\text{dB}$):
+    \begin{equation}
+        G_{dB}(f) = 20\log_{10}\left|\frac{V_{out}(f)}{V_{in}(f)}\right| \quad \implies \quad A_{50,dB} = 20\log_{10}\left|\frac{V_{50,out}}{V_{50,in}}\right|
+    \end{equation}
+    Registrar amplitudes reales, puntos de medida y condiciones; no usar únicamente el valor del generador.[cite: 7]
+\end{tcolorbox}
+
+\begin{table}[htbp]
+    \centering
+    \scriptsize
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|P{1.8cm}|P{2.3cm}|P{2.5cm}|P{2.5cm}|P{2.5cm}|P{2.5cm}|P{1.8cm}|Y|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Unidad / Tema} & \textbf{Alcance Oficial} & \textbf{Cobertura Actual} & \textbf{Desempeño Requerido} & \textbf{Actividad Práctica} & \textbf{Evidencia de Evaluación} & \textbf{Ventana más temprana} & \textbf{Estado / Aprobación} \\ \hline
+    U2: Errores DC y Lím. Dinámicos & Errores DC y limitaciones dinámicas. & Enseñado; interpretación L4 no verificada. & Explicar y analizar comportamiento real. & Análisis Labs 3--4. & Informe + comprobación individual. & Tras auditoría & Parcial / no verificado[cite: 7] \\ \hline
+    U2: In-Amp / CMRR & Ganancia y rechazo de modo común. & Introducido; dominio numérico no verificado. & Derivar, seleccionar componentes, justificar CMRR. & Diseño/medición Hito 2. & Gate A, etapa física, integración. & Depende H2 & En progreso[cite: 7] \\ \hline
+    U2: Rectificador Precisión & Diodo real / superdiodo. & Cobertura desconocida. & Analizar rectificación ideal vs. real. & Lab 5 o microactividad. & Datos y análisis Lab 5. & Tras auditoría & Desconocido[cite: 7] \\ \hline
+    U3: Filtros Activos & Butterworth, Sallen-Key/MFB, cascadas. & Debe auditarse (desplazada). & Diseñar, simular y medir Bode. & Lab 6 / Hito 3 con evidencias distintas. & Registro L6 + evidencia Hito 3. & Calendario propuesto & Desconocido[cite: 7] \\ \hline
+    U3: Estabilidad & Margen de fase, carga cap. y compensación. & Cobertura desconocida. & Analizar estabilidad e interpretar prueba L7. & Lab 7 y etapa activa. & Evidencia L7 + examen EC2. & Calendario propuesto & Desconocido[cite: 7] \\ \hline
+    U3: Osciladores & Barkhausen, Wien, VCO. & Cobertura desconocida. & Explicar y diseñar oscilador básico. & Actividad focalizada. & Comprobación analítica explícita. & Calendario propuesto & Desconocido[cite: 7] \\ \hline
+    U4: PID Analógico & Estructura, ajuste (Ziegler-Nichols). & Cobertura desconocida. & Ajustar y justificar PID continuo. & Ejercicio / Práctica individual. & Evidencia para examen EC2. & Previo 23/11 & Desconocido[cite: 7] \\ \hline
+    U4: Potencia & Clase AB, límite térmico / disipador. & Preparación desconocida. & Diseñar límites eléctricos y térmicos. & Lab 8 (físico/analítico). & Evidencia Lab 8. & Calendario propuesto & Desconocido[cite: 7] \\ \hline
+    PFI en Lazo Cerrado & In-Amp + filtro + PID + potencia. & Integración no verificada. & Validar sistema y rediseñar in situ. & Integración final. & Comp. A y B Evaluac. Final. & Semana 18 & Desconocido[cite: 7] \\ \hline
+    \end{tabularx}
+\end{table}
+
+\end{document}

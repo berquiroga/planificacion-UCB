@@ -1,0 +1,67 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Requisitos de Informe Técnico IEEE (Hito 2 y Hito 3)}
+\rhead{Semana 13 - Sesión 2}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\textbf{\textcolor{ucbblue}{Requisitos de Estructura Documental y Trazabilidad (Hitos 2 y 3)}}}[cite: 9]
+\end{center}
+
+\begin{tcolorbox}[colback=white, colframe=black, boxsep=1pt, top=2pt, bottom=2pt]
+    \footnotesize\raggedright
+    \textbf{Comunicado Docente Oficial:} Los informes técnicos tipo IEEE constituyen el entregable documental de los Hitos 2 y 3, conservando sus respectivas verificaciones físicas. Durante el montaje se formularán preguntas breves para identificar dificultades y orientar correcciones; estas \textbf{no} son defensas orales formales ni reemplazan el examen individual EC2.\\[0.1cm]
+    \textbf{Fecha de Entrega:} Por confirmar. \quad \textbf{Rúbrica:} Por aprobar. \quad \textbf{Formato IEEE:} Aprobado por docente (28/10); \textit{Validez Institucional: Por verificar (reemplazo de F.I.V.E.)}[cite: 9]
+\end{tcolorbox}
+
+\section*{1. Estructura Requerida para Informe Hito 2 (Acondicionamiento In-Amp)[cite: 9]}
+El reporte debe permitir reproducir lo declarado y separar los resultados teóricos de las hipótesis físicas. No se exige un documento "completo" si el montaje físico no alcanzó la etapa de integración.
+\begin{enumerate}
+    \setlength{\itemsep}{2pt}
+    \item \textbf{Título, autoría y contribuciones:} Grupo, versión, fecha y declaración de responsabilidades.
+    \item \textbf{Resumen:} Problema medible, solución propuesta, estado real. No incluir mejoras no verificadas.
+    \item \textbf{Problema y Baseline H1:} Esquema/medida disponible (Twin-T), limitación, métrica $M$ y criterio de éxito.
+    \item \textbf{Arquitectura H2:} Diagrama completo, interfaces, referencias de nodo, alimentación y motivación del diseño.
+    \item \textbf{Método de Diseño:} Topología real, derivación algebraica de ganancia, selección de resistores (matching), rechazo de modo común predicho/medido y justificación de límites con el datasheet del IC real.
+    \item \textbf{Simulación LTSpice:} Modelos, amplitudes/fuentes, mediciones identificadas. No atribuir fidelidad física no comprobada.
+    \item \textbf{Montaje y Procedimiento:} Fotos etiquetadas, revisión pre-power, instrumentos, carga y secuencia de pruebas.
+    \item \textbf{Resultados Físicos:} Datos crudos con unidades, gráficos y cálculos incrementales. Diferenciar claramente etiquetas: \texttt{PREDICHO}, \texttt{SIMULADO}, \texttt{MEDIDO}, \texttt{PENDIENTE}, \texttt{NO OBTENIDO}.
+    \item \textbf{Discusión:} Análisis de diferencias teoría/simulación/banco, saturación, incertidumbre y comparación sistémica contra Hito 1 bajo condiciones comparables (o razón documental de no disponibilidad).
+    \item \textbf{Conclusiones y Trabajo Pendiente:} Respaldadas exclusivamente por los registros de banco.
+\end{enumerate}
+
+\section*{2. Estructura Separada / Identificable para Informe Hito 3 (Filtro Activo)[cite: 9]}
+La evidencia del Hito 3 debe reportarse de manera independiente y distinguible del Lab 6.
+\begin{itemize}
+    \setlength{\itemsep}{2pt}
+    \item \textbf{Diseño de Filtro:} Adaptación del esquema a la topología activa (Ej. Butterworth 4.º orden).
+    \item \textbf{Respuesta Frecuencial:} Curva de Bode (simulada y medida), análisis por etapas y en cascada.
+    \item \textbf{Condición de Interferencia:} Prueba y justificación del criterio de atenuación ($50\,\text{Hz} < -40\,\text{dB}$) preservando la señal útil del sensor de Hito 1/Hito 2.
+    \item \textbf{Carga y Estabilidad:} Análisis de interacción de impedancias con el Hito 2.
+\end{itemize}
+\textit{Aviso: No confundir la curva de un Sallen-Key de segundo orden (Lab 6) con la demostración de desempeño del filtro integrado de cuarto orden (Hito 3).}
+
+\end{document}

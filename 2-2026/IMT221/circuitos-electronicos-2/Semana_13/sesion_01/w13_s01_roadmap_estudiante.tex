@@ -1,0 +1,82 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.8cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\setlength{\emergencystretch}{2em}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Roadmap de Evaluación: Ponderaciones y Fechas}
+\rhead{Actualización: 26/10/2026}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\textbf{\textcolor{ucbblue}{Roadmap Oficial de Evaluación y Fechas Restantes (IMT-221)}}}[cite: 7] \\[0.1cm]
+    {\footnotesize\textbf{Comunicado Estudiantil: Ponderaciones Oficiales y Estado de Fechas}}
+\end{center}
+
+\begin{center}
+    \begin{tikzpicture}[>=Stealth, thick, scale=0.85, transform shape]
+        % Visual 8: Atribucion de evidencia[cite: 7]
+        \node[draw=ucbblue, rectangle, rounded corners=2pt, fill=ucbblue!10, minimum height=1.0cm, text width=5.5cm, align=center, font=\footnotesize] (g) at (0,0) {\textbf{Artefactos Grupales}\\Demuestran desempeño sistémico del equipo\\(Ej. Informes de Lab, Placas Físicas H2/H3)};
+        \node[draw=orange!80!black, rectangle, rounded corners=2pt, fill=yellow!15, minimum height=1.0cm, text width=5.5cm, align=center, font=\footnotesize] (i) at (7.5,0) {\textbf{Competencia Analítica Individual}\\Evaluada de forma separada y atribuible\\(Ej. Examen EC2, Rediseño final in situ)};
+        \draw[<->, dashed, thick] (g.east) -- node[above, font=\scriptsize] {Contextos conectados} node[below, font=\scriptsize] {No intercambiables} (i.west);
+    \end{tikzpicture}
+\end{center}
+
+\section*{1. Estructura Oficial de Ponderación (Segundo 50\% del Semestre)}
+\begin{table}[htbp]
+    \centering
+    \small
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabularx}{\textwidth}{|P{3.8cm}|P{2.2cm}|Y|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Bloque de Evaluación} & \textbf{Peso Oficial} & \textbf{Composición / Naturaleza de la Evidencia} \\ \hline
+    \textbf{Labs 3 a 8} & $40\%$ EC2 & Informes técnicos y cuadernos de análisis. \textit{Aviso: Las entregas y análisis pendientes están sujetos a auditoría docente.}[cite: 7] \\ \hline
+    \textbf{Hitos 2 y 3 (PFI)} & $30\%$ EC2 & Implementación, integración física y defensa de mejoras sistémicas. No se asume división 15\%/15\% internamente.[cite: 7] \\ \hline
+    \textbf{Examen Escrito EC2} & $30\%$ EC2 & Prueba escrita individual sumativa (Ej. PID, margen de fase).[cite: 7] \\ \hline
+    \multicolumn{3}{|c|}{\cellcolor[HTML]{DDEEFF} \textbf{Evaluación Final} (50\% de la Nota Definitiva del Curso)} \\ \hline
+    \textbf{Componente A (Final)} & $40\%$ del bloque & Validación física del PFI completo en lazo cerrado (Grupal).[cite: 7] \\ \hline
+    \textbf{Componente B (Final)} & $60\%$ del bloque & Defensa/rediseño individual \textit{in situ} a partir de fallas (Indiv).[cite: 7] \\ \hline
+    \end{tabularx}
+\end{table}
+
+\section*{2. Calendario de Hitos y Exámenes Restantes}
+\begin{table}[htbp]
+    \centering
+    \small
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabularx}{\textwidth}{|l|l|c|Y|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Evaluación} & \textbf{Fecha / Ventana} & \textbf{Estado} & \textbf{Observación Operativa} \\ \hline
+    Informe Lab 4 & \textbf{25 de octubre} & OFICIAL & Fecha fijada previamente.[cite: 7] \\ \hline
+    Defensa Hito 2 & 28 de octubre & EN RIESGO & Defensa condicionada a superación de Gate A y validación física previa. Sujeto a reevaluación técnica.[cite: 7] \\ \hline
+    Examen EC2 & \textbf{23 de nov.} & OFICIAL & Examen escrito individual.[cite: 7] \\ \hline
+    Recuperatorio 2 & \textbf{25 de nov.} & OFICIAL & Cierre de bloque continuo.[cite: 7] \\ \hline
+    Evaluación Final & Semana 18 & PENDIENTE & Fecha exacta sujeta a confirmación oficial.[cite: 7] \\ \hline
+    \end{tabularx}
+\end{table}
+
+\end{document}

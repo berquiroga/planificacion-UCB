@@ -1,0 +1,64 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Log de Decisiones, Aprobaciones y Comunicaciones Docentes}
+\rhead{Semana 13 - Sesión 1}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\textbf{\textcolor{ucbblue}{Registro de Decisiones, Desviaciones y Aprobaciones Curriculares}}}[cite: 7]
+\end{center}
+
+\begin{center}
+    \begin{tikzpicture}[>=Stealth, thick, scale=0.85, transform shape]
+        % Visual 7: Decision sobre formato de informes[cite: 7]
+        \node[draw=orange!80!black, rectangle, rounded corners=2pt, fill=yellow!15, minimum height=0.8cm, text width=4.5cm, align=center, font=\scriptsize] (i1) at (0,0.7) {\textbf{Instrucción Previa}\\Miniartículo IEEE (Labs 3 y 4)};
+        \node[draw=orange!80!black, rectangle, rounded corners=2pt, fill=yellow!15, minimum height=0.8cm, text width=4.5cm, align=center, font=\scriptsize] (i2) at (0,-0.7) {\textbf{Syllabus Oficial}\\Informe F.I.V.E. + Cuaderno};
+        \node[draw=ucbblue, rectangle, rounded corners=2pt, fill=ucbblue!10, minimum height=1.0cm, text width=4.5cm, align=center, font=\scriptsize] (d) at (6,0) {\textbf{Decisión Docente Explícita}\\Armonizar / Conservar / Modificar};
+        \node[draw=green!60!black, rectangle, rounded corners=2pt, fill=green!15, minimum height=1.0cm, text width=4.0cm, align=center, font=\scriptsize] (a) at (11.5,0) {\textbf{Aprobación y Comunicación}\\(No expandir F.I.V.E. sin fuente)};
+        \draw[->] (i1.east) -- (d.west); \draw[->] (i2.east) -- (d.west); \draw[->] (d.east) -- (a.west);
+    \end{tikzpicture}
+\end{center}
+
+\begin{table}[htbp]
+    \centering
+    \scriptsize
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{|P{2.2cm}|P{2.5cm}|P{2.6cm}|P{2.4cm}|P{3.5cm}|P{2.0cm}|P{1.6cm}|Y|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Tema / Conflicto} & \textbf{Fuente / Estado Actual} & \textbf{Opciones de Acción} & \textbf{Decisión Docente} & \textbf{Justificación Técnica} & \textbf{Autoridad Aprobadora} & \textbf{Vigencia} & \textbf{Comunicación Estudiantes} \\ \hline
+    Defensa Hito 2 (28/10) & Propuesto / En riesgo por falta de validaciones. & 1) Defensa; 2) Checkpoint; 3) Posponer general. & & Faltan Gates A y etapas aisladas validadas. No se fuerza defensa sin evidencia. & Docente / Coord. & & \texttt{Pendiente}[cite: 7] \\ \hline
+    F.I.V.E. vs IEEE (Labs 3--4) & Discrepancia instrucción oral vs. Syllabus oficial. & 1) Conservar IEEE; 2) Exigir F.I.V.E.; 3) Armonizar. & \textbf{Armonizar (Propuesta):} IEEE + Cuaderno. & Retiene formato IEEE pero exige trazabilidad de datos crudos (cuaderno). & Coordinación & & \texttt{Pendiente}[cite: 7] \\ \hline
+    Reparto de 30\% en Hitos 2 y 3 & No especificado en plan oficial. & Solicitar aclaración vs Asignar 15/15. & Solicitar aclaración. & Inventar pesos distorsiona la evaluación continua oficial. & Coordinación & -- & \texttt{Pendiente}[cite: 7] \\ \hline
+    Estado de entrega Labs 3 y 4 & Desconocido; plazos 18/10 y 25/10 transcurridos. & Auditar LMS vs Cero automático. & \textbf{Auditar} LMS. & Fecha vencida no prueba omisión sin verificar registro de recepción. & Docente & Inmediata & Silencio hasta revisar.[cite: 7] \\ \hline
+    Eval. Final Sem. 18 & Fecha exacta desconocida. & Confirmar con Jefatura. & Esperar confirmación de calendario. & Logística PFI físico requiere fecha exacta. & Jefatura & -- & \texttt{Pendiente}[cite: 7] \\ \hline
+    Alcance de Examen EC2 & PID/Margen fase explícitos en plan, resto incierto. & Confirmar blueprint oficial. & Priorizar enseñanza U3/U4. & No puede evaluarse sumativamente sin oportunidad previa de práctica. & Docente & Previo 23/11 & \texttt{Pendiente}[cite: 7] \\ \hline
+    \end{tabularx}
+\end{table}
+
+\end{document}

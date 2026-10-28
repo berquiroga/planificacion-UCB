@@ -1,0 +1,66 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\setlength{\emergencystretch}{2em}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Calendario de Recuperación y Plan de Dependencias}
+\rhead{Semana 13 - Sesión 1}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\textbf{\textcolor{ucbblue}{Calendario Preliminar de Dependencias y Hitos (Octubre--Noviembre 2026)}}}[cite: 7] \\[0.1cm]
+    {\footnotesize\textbf{Estado Documental: PROPOSED — No aprobado. Debe revisarse tras auditoría de evidencia y disponibilidad.}}
+\end{center}
+
+\begin{tcolorbox}[colback=white, colframe=black, boxsep=1pt, top=2pt, bottom=2pt, title=\textbf{Regla de Bifurcación (Branch Rule)}]
+    \footnotesize\raggedright
+    Si los grupos no están listos para defender Hito 2 el 28/10, no etiquetar automáticamente el 09/11 como nueva defensa. Registrar corrección mínima, obtener aprobación para cambiar la fecha y reevaluar factibilidad de Hito 3. Si Hito 2 se valida antes, utilizar tiempo liberado para cubrir resultados U3/U4 pendientes, no para inventar alcance adicional.[cite: 7]
+\end{tcolorbox}
+
+\begin{table}[htbp]
+    \centering
+    \scriptsize
+    \renewcommand{\arraystretch}{1.35}
+    \begin{tabularx}{\textwidth}{|P{1.6cm}|P{2.8cm}|P{3.0cm}|P{3.0cm}|P{2.6cm}|P{1.6cm}|Y|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Fecha} & \textbf{Prioridad Candidata} & \textbf{Evidencia / Resultado} & \textbf{Dependencia / Prerrequisito} & \textbf{Riesgo / Contingencia} & \textbf{Canal Eval.} & \textbf{Aprobación} \\ \hline
+    Lun 26/10 & Auditoría de todos los canales y bloqueos H2. & Matriz, inventario, log. & Traer artefactos y consultar LMS. & Desconocido $\neq$ no entregado. & -- & Sesión actual[cite: 7] \\ \hline
+    Mié 28/10 & Revisión Gate A, autorización de montaje. & Estado por grupo, corrección verificable. & Baseline H1, esquema, BOM, SPICE. & No realizar defensa sin evidencia integrada. & H2 / Gate A & \texttt{POR APROBAR}[cite: 7] \\ \hline
+    Lun 02/11 & \multicolumn{5}{c|}{\textbf{FERIADO OFICIAL — Sin clase regular}} & Restricción del plan[cite: 7] \\ \hline
+    Mié 04/11 & Construcción etapa aislada H2; Lab 5. & Ganancia física; evidencia Lab 5 independiente. & Autorización de Gate A. & Competencia de equipos y tiempo físico. & L5 / H2 & \texttt{PROPUESTO}[cite: 7] \\ \hline
+    Lun 09/11 & Integración H1+H2 / Baseline comparativo. & Mejora medible bajo condiciones homólogas. & Etapa activa validada en banco. & Falta baseline original H1. & Hito 2 & \texttt{PROPUESTO}[cite: 7] \\ \hline
+    Mié 11/11 & Lab 6 (Sallen-Key) / Diseño filtro Hito 3. & Registro L6 diferenciado de cálculos H3. & Prediseño y componentes. & Sin registro no hay L6. & Lab 6 & \texttt{PROPUESTO}[cite: 7] \\ \hline
+    Lun 16/11 & Cascada 4to orden (H3) y Lab 7 (Carga cap). & Respuesta por sección, atenuación $50\,\text{Hz}$. & Confirmar $10\,\text{Hz}$ en material oficial. & Cascada no garantiza rechazo ni mejora. & Hito 3 / L7 & \texttt{PROPUESTO}[cite: 7] \\ \hline
+    Mié 18/11 & PID, Lab 8 (clase AB/térmico) e inventario PFI. & Práctica indiv. PID; cálculos L8. & Pretrabajo PID y logística. & Requiere acceso físico adicional si carga es alta. & Lab 8 & \texttt{PROPUESTO}[cite: 7] \\ \hline
+    \textbf{Lun 23/11} & \textbf{Examen Escrito EC2} & Evidencia ind. PID y Margen de fase. & Enseñanza/práctica real previa. & Verificar que contenido fue enseñado. & Examen EC2 & \textbf{OFICIAL}[cite: 7] \\ \hline
+    \textbf{Mié 25/11} & \textbf{Recuperatorio 2 y cierre} & Evidencia de recuperación. & Confirmar elegibilidad. & No inventar sustituciones. & Recup. & \textbf{OFICIAL}[cite: 7] \\ \hline
+    Semana 18 & Evaluación Final A (PFI) y B (rediseño). & Val. física lazo cerrado (40\%) y rediseño (60\%). & Subsistemas integrados PFI. & Falta fecha y posible acceso físico. & Final (50\%) & \texttt{PENDIENTE}[cite: 7] \\ \hline
+    \end{tabularx}
+\end{table}
+
+\end{document}

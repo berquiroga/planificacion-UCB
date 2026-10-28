@@ -1,0 +1,83 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.8cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\setlength{\emergencystretch}{2em}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Registro Específico de Recuperación de Hito 2}
+\rhead{Semana 13 - Sesión 1}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\textbf{\textcolor{ucbblue}{Registro de Estado, Bloqueo y Recuperación (Hito 2)}}}[cite: 7]
+\end{center}
+
+\begin{center}
+    \begin{tikzpicture}[>=Stealth, thick, scale=0.88, transform shape]
+        % Visual 4: Tres Compuertas Hito 2[cite: 7]
+        \node[draw=ucbblue, rectangle, rounded corners=2pt, fill=ucbblue!10, minimum height=1.0cm, text width=4.5cm, align=center, font=\footnotesize] (g1) at (0,0) {\textbf{1. Gate A — Design Ready}\\Cálculos, simulación, IC, fuente coherentes. Autoriza construir.};
+        \node[draw=ucbblue, rectangle, rounded corners=2pt, fill=ucbblue!15, minimum height=1.0cm, text width=4.5cm, align=center, font=\footnotesize] (g2) at (5.5,0) {\textbf{2. Etapa Activa Validada}\\Circuito aislado opera físicamente con mediciones cuantitativas.};
+        \node[draw=green!60!black, rectangle, rounded corners=2pt, fill=green!15, minimum height=1.0cm, text width=4.5cm, align=center, font=\footnotesize] (g3) at (11.0,0) {\textbf{3. Logro de Hito 2}\\Integración con H1 demuestra mejora cuantificable en cond. comparables.};
+        \draw[->, very thick] (g1) -- (g2); \draw[->, very thick] (g2) -- (g3);
+    \end{tikzpicture}
+\end{center}
+
+\section*{Ficha de Auditoría y Diagnóstico de Bloqueo Causal}
+\noindent\textbf{Grupo e integrantes:} \rule{6.5cm}{0.4pt} \hfill \textbf{Fecha de Auditoría:} 26/10/2026
+
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.45}
+    \begin{tabularx}{\textwidth}{|P{6.5cm}|Y|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Dependencia Requerida} & \textbf{Evidencia Mostrada / Estado Actual} \\ \hline
+    Arquitectura real de Hito 1 y Limitación & \\ \hline
+    Baseline medido + Archivo de referencia & \\ \hline
+    Métrica elegida y definición exacta & \\ \hline
+    Rango de entrada diferencial y Salida objetivo & \\ \hline
+    Ganancia objetivo y Resistores elegidos justificados & \\ \hline
+    Matching / CMRR (Simulación dif. y común LTSpice) & \\ \hline
+    Op-Amp, fabricante, datasheet exactos y compatibilidad & \\ \hline
+    BOM y Esquema Construible (Fin Gate A) & \\ \hline
+    Evidencia física de etapa aislada validada & \\ \hline
+    Integración H1 + H2 y Comparación homóloga & \\ \hline
+    \end{tabularx}
+\end{table}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black]
+    \textbf{Clasificación Operativa del Bloqueo (Marcar uno)[cite: 7]:} \\[0.15cm]
+    $\square$ \textbf{Design blocker:} Falta/error crítico en topología, cálculo, simulación, alimentación o IC. Permanecer en diseño.\\[0.1cm]
+    $\square$ \textbf{Documentation/evidence blocker:} Base técnica defendible, pero falta registro necesario. Confirmar.\\[0.1cm]
+    $\square$ \textbf{Ready for Gate A recheck:} Correcciones realizadas, falta comprobación final.\\[0.1cm]
+    $\square$ \textbf{Active stage built but not validated:} Hay montaje, pero no medición física suficiente.\\[0.1cm]
+    $\square$ \textbf{Integrated Hito 2 evidence available:} Comparación de sistema con H1 verificable. Listo para defensa. \\[0.2cm]
+    \textbf{Bloqueo Causal Prioritario:} \hrulefill \\[0.15cm]
+    \textbf{Próxima Acción Verificable Asignada:} \hrulefill \\[0.15cm]
+    \textbf{Ventana Más Temprana de Evaluación Defendible:} \rule{4.5cm}{0.4pt}
+\end{tcolorbox}
+
+\end{document}

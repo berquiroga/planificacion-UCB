@@ -1,0 +1,79 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.2cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\setlength{\emergencystretch}{2em}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Master Assessment Matrix: Auditoría Global y Replanificación}
+\rhead{Semana 13 - Sesión 1}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\textbf{\textcolor{ucbblue}{Matriz Maestra de Evaluación (EC2 y Final) — Estado: AUDITORÍA DOCENTE}}}
+\end{center}
+
+\vspace{-0.2cm}
+\begin{center}
+    \begin{tikzpicture}[>=Stealth, thick, scale=0.85, transform shape]
+        % Visual 1: Tres Capas
+        \node[draw=ucbblue, fill=blue!5, text width=4cm, align=center, minimum height=1cm, rounded corners] (oficial) at (0, 1.8) {\textbf{CAPA OFICIAL}\\Syllabus, Pesos, Fechas};
+        \node[draw=orange, fill=orange!10, text width=4cm, align=center, minimum height=1cm, rounded corners] (actual) at (5, 1.8) {\textbf{CAPA ACTUAL}\\Medido, Entregado, Verificado};
+        \node[draw=green!60!black, fill=green!10, text width=4cm, align=center, minimum height=1cm, rounded corners] (propuesto) at (10, 1.8) {\textbf{CAPA PROPUESTA}\\Recuperación por Aprobar};
+        \draw[->] (oficial) -- (actual); \draw[->] (actual) -- (propuesto);
+
+        % Visual 2: Arquitectura EC2 y Final
+        \node[draw=black, fill=gray!10, text width=6cm, align=center, minimum height=0.8cm] (ec2) at (3.5, 0) {\textbf{Evaluación Continua 2 (EC2)}\\50\% de Habilitación};
+        \node[draw=black, fill=gray!10, text width=5cm, align=center, minimum height=0.8cm] (final) at (10.5, 0) {\textbf{Evaluación Final}\\50\% de Nota Final};
+        
+        \node[draw=black, fill=white, text width=2.4cm, align=center, font=\scriptsize] (l) at (1, -1.2) {Labs 3--8\\(\textbf{40\% comb.})};
+        \node[draw=black, fill=white, text width=2.4cm, align=center, font=\scriptsize] (h) at (3.5, -1.2) {Hitos 2 y 3\\(\textbf{30\% comb.})};
+        \node[draw=black, fill=white, text width=2.4cm, align=center, font=\scriptsize] (e) at (6, -1.2) {Examen Indiv.\\(\textbf{30\%})};
+        \draw[->] (ec2) -- (l); \draw[->] (ec2) -- (h); \draw[->] (ec2) -- (e);
+
+        \node[draw=black, fill=white, text width=2.2cm, align=center, font=\scriptsize] (ca) at (9.5, -1.2) {Comp. A\\(\textbf{40\% del blq})};
+        \node[draw=black, fill=white, text width=2.2cm, align=center, font=\scriptsize] (cb) at (12, -1.2) {Comp. B\\(\textbf{60\% del blq})};
+        \draw[->] (final) -- (ca); \draw[->] (final) -- (cb);
+    \end{tikzpicture}
+\end{center}
+
+\vspace{-0.2cm}
+\begin{table}[htbp]
+    \centering
+    \scriptsize
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|P{1.8cm}|P{2.3cm}|P{2.8cm}|P{2.6cm}|P{1.8cm}|P{3.0cm}|P{3.0cm}|Y|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Canal y Peso Oficial} & \textbf{Ítem / Resultado} & \textbf{Criterio / Condición Oficial} & \textbf{Estado Actual} & \textbf{Atribución} & \textbf{Brecha Identificada} & \textbf{Acción / Ventana Propuesta} & \textbf{Aprobación Necesaria} \\ \hline
+    Labs 3--8 (\textbf{40\% comb.}) & Informes Técnicos y Cuadernos & Offset DC, filtro 4to orden (10Hz), diseño disipador/clase AB. & Plazos L3 (18/10) y L4 (25/10) vencidos; recepción no verificada. & Grupal & Conflicto instrucción IEEE vs. F.I.V.E.; Ponderación interna desconocida. & Auditar entregas; armonizar formatos. & Definición F.I.V.E. y pesos internos. \\ \hline
+    Hitos 2 y 3 (\textbf{30\% comb.}) & Acondicionamiento In-Amp y Filtro Activo & Ganancia calibrada, atenuación $50\,\text{Hz} < -40\,\text{dB}$. & Hito 2 sin Gate A; Hito 3 sin iniciar. Baseline sin validar. & Grupal & Riesgo de fecha (28/10); Reparto interno 30\% no especificado. & Evaluar Gate A; posponer defensa si no hay viabilidad técnica. & Aprobación de reprogramación. \\ \hline
+    Examen EC2 (\textbf{30\%}) & Prueba escrita individual sumativa & Ajuste teórico PID continuo y margen de fase. & Contenidos U3/U4 aún no cubiertos en aula. & Individual & Falta oportunidad de práctica antes de evaluación. & Fijar \textbf{23/11}; recuperar U3/U4 prioritariamente. & Confirmar alcance completo del examen. \\ \hline
+    Evaluación Final (\textbf{50\%}) & Validación física PFI en lazo cerrado & Comp. A (40\% del bloque): Desempeño físico integrado. & Hitos previos retrasados. & Grupal & Fecha exacta de Semana 18 desconocida. & Validar PFI al cierre. & Fecha institucional.[cite: 7] \\ \hline
+    Evaluación Final & Rediseño indiv. \textit{in situ} & Comp. B (60\% del bloque): Por falla del hardware propio. & Depende del PFI físico terminado. & Individual & Fecha y rúbrica desconocidas. & Diseñar rúbrica causal. & Rúbrica y fecha.[cite: 7] \\ \hline
+    \end{tabularx}
+\end{table}
+
+\end{document}

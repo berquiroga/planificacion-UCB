@@ -1,0 +1,108 @@
+% w13_s02_log_medida_inamp.tex
+% IMT-221 — Semana 13, Sesión 2
+% Artefacto 2: Log de Medida y Evidencia In-Amp (Planilla de Banco)
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage[american]{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\setlength{\emergencystretch}{2em}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Log de Medida y Evidencia de Banco (In-Amp)}
+\rhead{Semana 13 - Sesión 2}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\textbf{\textcolor{ucbblue}{Planilla de Banco: Log de Medida, Etapa Aislada e Integración H2}}}
+\end{center}
+
+\begin{table}[htbp]
+    \centering
+    \scriptsize
+    \renewcommand{\arraystretch}{1.35}
+    \begin{tabularx}{\textwidth}{|P{3.8cm}|Y|}
+    \hline
+    \textbf{Grupo / Fecha / Rev. Circuito} & \\ \hline
+    \textbf{Esquema y foto identificable} & \\ \hline
+    \textbf{CI y Datasheet (versión)} & \\ \hline
+    \textbf{Fuente / Rieles / Ref. / Masa Inst.} & \\ \hline
+    \textbf{Instrumento (modelo/rango)} & \\ \hline
+    \end{tabularx}
+\end{table}
+
+\section*{1. Configuración del Estímulo (Visual 4)}
+Las entradas reales $v_+$ y $v_-$ se miden respecto a la misma referencia. Para una etapa lineal (modelo aproximado): $v_o \approx A_d v_d + A_{cm} v_{cm} + v_{o,\mathrm{offset}}$. No asuma CMRR infinito por simulación.
+\begin{center}
+    \begin{circuitikz}[>=Stealth, thick, scale=0.85, transform shape]
+        \draw (0,1) to[short, o-] (2,1) node[right]{$P+$};
+        \draw (0,-1) to[short, o-] (2,-1) node[right]{$P-$};
+        \draw (3.5, 0) node[draw, rectangle, fill=ucbblue!15, minimum width=2cm, minimum height=2.5cm, align=center] {Acondicionador\\In-Amp H2};
+        \draw (4.5, 0) to[short, -o] (5.5,0) node[right]{$P_{out}$ ($v_o$)};
+        
+        \node[font=\footnotesize] at (0, 1.3) {$v_1 = v_{cm} - v_d/2$};
+        \node[font=\footnotesize] at (0, -1.3) {$v_2 = v_{cm} + v_d/2$};
+    \end{circuitikz}
+\end{center}
+\vspace{-0.2cm}
+Las ganancias instrumentales se aíslan mediante diferencias incrementales para mitigar el offset:
+\begin{equation}
+    A_{d,\mathrm{med}} \approx \frac{\Delta v_o}{\Delta v_d}\bigg|_{v_{cm}\,\mathrm{constante}}, \qquad A_{cm,\mathrm{med}} \approx \frac{\Delta v_o}{\Delta v_{cm}}\bigg|_{v_d\,\mathrm{constante}} \text{ (Si resolución lo permite)}
+\end{equation}
+
+\section*{2. Registro de Etapa Aislada (Modo Diferencial y Común)}
+\textit{Toda celda sin dato debe marcarse como \texttt{NO OBTENIDO} indicando el motivo en observación. Diferencie claramente $V_{\mathrm{out}}$ previsto, simulado y medido.}
+
+\begin{table}[htbp]
+    \centering
+    \scriptsize
+    \renewcommand{\arraystretch}{1.35}
+    \begin{tabularx}{\textwidth}{|c|c|c|c|c|c|c|c|P{2.5cm}|Y|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Estado} & \textbf{P+ (V)} & \textbf{P- (V)} & \textbf{$v_d$ (V)} & \textbf{$v_{cm}$ (V)} & \textbf{$v_{o,\mathrm{prev}}$} & \textbf{$v_{o,\mathrm{sim}}$} & \textbf{$v_{o,\mathrm{med}}$} & \textbf{Ref / Suministro} & \textbf{Archivo / ID / Obs.} \\ \hline
+    Dif 1 & & & & & & & & & \\ \hline
+    Dif 2 & & & & & & & & & \\ \hline
+    Común 1 & & & 0 & & & & & & \\ \hline
+    Común 2 & & & 0 & & & & & & \\ \hline
+    \end{tabularx}
+\end{table}
+\noindent\textbf{Cálculo $A_{d,\mathrm{med}}$:} \rule{4cm}{0.4pt} \quad \textbf{Cálculo $A_{cm,\mathrm{med}}$ (o Límite Instrumental):} \hrulefill
+
+\section*{3. Comparación Sistémica (Hito 1 vs. Hito 1 + Hito 2)}
+\begin{table}[htbp]
+    \centering
+    \scriptsize
+    \renewcommand{\arraystretch}{1.45}
+    \begin{tabularx}{\textwidth}{|P{1.8cm}|P{1.8cm}|P{2.0cm}|P{2.2cm}|c|c|c|X|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Estímulo y Unidades} & \textbf{Configuración y Carga} & \textbf{Puntos Equivalentes} & \textbf{Métrica M y Definición} & \textbf{Resultado H1} & \textbf{Resultado H1+H2} & \textbf{Incertidum.} & \textbf{Conclusión Válida / Pendiente} \\ \hline
+     & & & & & & & \\ \hline
+     & & & & & & & \\ \hline
+    \end{tabularx}
+\end{table}
+
+\end{document}
