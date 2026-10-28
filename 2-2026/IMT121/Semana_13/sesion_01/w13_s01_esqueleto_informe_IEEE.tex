@@ -1,0 +1,83 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Estructura Informe IEEE}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Artefacto A3: Estructura Editorial Compatible IEEE (EC3)}]
+    \centering \textbf{Caracterización Analítica, Computacional y Experimental de Circuitos RC y RLC Serie}
+\end{tcolorbox}
+
+\noindent\textit{Este documento es una pauta de contenido para la confección del informe. Usted debe adaptarlo a la plantilla institucional en doble columna oficial del departamento. Fecha de entrega propuesta: 06/11/2026, 23:59 hrs.}
+
+\section*{Estructura Obligatoria y Contenidos Mínimos}
+
+\textbf{Autores:} Nombres reales de los integrantes, afiliación y correos UCB. \\
+\textbf{Resumen:} 120–200 palabras. Debe explicitar los valores de prueba utilizados, las variables de estado comparadas y \textit{únicamente la evidencia efectivamente recolectada} (no proyectar resultados teóricos si la sesión tuvo un NO-GO experimental).\\
+\textbf{Palabras Clave:} RC, RLC, respuesta transitoria, LTspice, constante de tiempo, amortiguamiento, osciloscopio.
+
+\vspace{0.2cm}
+\subsubsection*{I. Introducción}
+Describa el objetivo de validar los modelos dinámicos mediante tres frentes de evidencia: cálculo en hoja, simulador numérico y montaje de banco. Indique los objetivos específicos reales (si no pudo medir RLC por problemas de equipo, debe explicitarlo aquí honestamente).
+
+\subsubsection*{II. Fundamento Teórico}
+Plantee las ecuaciones con convenciones de signos limpias. Para RC: $i_C = C \frac{dv_C}{dt}$, la definición de umbral $\tau$. Para RLC: $LC v_C'' + R_{\text{tot}}C v_C' + v_C = v_s(t)$, con la definición exhaustiva de $\omega_0, \alpha$ y $\zeta$. Liste la bibliografía técnica (ej. manual del instrumento real usado).
+
+\subsubsection*{III. Metodología y Seguridad}
+Tabule los componentes (Nominales y Medidos con LCR u óhmetro). Reporte modelo/ID de los equipos utilizados. Declare los ajustes de la fuente (amplitud real observada, offset, frecuencia) y la configuración de adquisición. \textbf{Documente el NO-GO en caso de haberse bloqueado el experimento por seguridad.}
+
+\subsubsection*{IV. Resultados y Tablas (Contraste Numérico)}
+Divida sus resultados. Ejemplo: \textit{Tabla 1: Predicciones} / \textit{Tabla 2: Datos LTspice} / \textit{Tabla 3: Captura Banco}.
+
+\vspace{0.15cm}
+\renewcommand{\arraystretch}{1.3}
+\noindent
+\begin{tabularx}{\textwidth}{
+  >{\bfseries\RaggedRight\hsize=1.1\hsize}X 
+  >{\RaggedRight\arraybackslash\hsize=1.0\hsize}X 
+  >{\RaggedRight\arraybackslash\hsize=1.0\hsize}X 
+  >{\RaggedRight\arraybackslash\hsize=1.1\hsize}X 
+  >{\RaggedRight\arraybackslash\hsize=0.8\hsize}X}
+\toprule
+\textbf{Cantidad} & \textbf{Analítico} & \textbf{LTspice} & \textbf{Experimental (Si GO)} & \textbf{Unidad} \\
+\midrule
+RC $v_C(0^+)$ & $0$ & $0$ & $0$ (Pre-Flanco) & V \\
+RC $\tau$     & $10$ & \textit{Simulado} & \textit{Medido} & ms \\
+RLC $\zeta$   & $0.8$ (\textit{Ejemplo}) & \textit{No aplica} & \textit{Inferido (o NO MED)} & -- \\
+\bottomrule
+\end{tabularx}
+
+\subsubsection*{V. Discusión de Discrepancias}
+Aquí reside el peso de su calificación (20\%). Un error del 8\% en $\tau_{\text{med}}$ NO se reporta simplemente como "hubo error". Debe calcular si una tolerancia del $5\%$ en el capacitor más la $R_{\text{gen}}$ oculta explican matemáticamente ese desvío. No culpe al software sin evidencia.
+
+\subsubsection*{VI. Conclusiones y Anexos}
+Enumere de 3 a 5 hallazgos apoyados \textbf{solo} en sus tablas. Adjunte en Anexos las capturas originales del osciloscopio nítidas con los cursores visibles y los esquemáticos del netlist.
+
+\vspace{0.3cm}
+\begin{tcolorbox}[colback=gray!5, colframe=black, title=\textbf{Pauta de Calidad Propuesta (Orientativa 30\% EC3)}]
+\small Reproducibilidad del Método (25\%) | Datos y Procedencia Auténtica (25\%) | Análisis Cuantitativo (25\%) | Discusión/Razonamiento Científico (20\%) | Presentación y Formato IEEE (5\%).
+\end{tcolorbox}
+
+\end{document}

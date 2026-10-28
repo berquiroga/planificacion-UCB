@@ -1,0 +1,83 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Hoja de Datos y Rotación}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Artefacto A2: Hoja de Datos Físicos y Control de Rotación}]
+    \centering \textbf{Registro Primario de Instrumentación (Llenar en Banco)}
+\end{tcolorbox}
+
+\textbf{Fecha:} \rule{2.5cm}{0.4pt} \quad \textbf{Grupo:} \rule{1.5cm}{0.4pt} \quad \textbf{Estación:} \texttt{E}\rule{1cm}{0.4pt} \quad \textbf{Hora GO:} \rule{2.5cm}{0.4pt}
+
+\vspace{0.1cm}
+\textbf{Estado Pre-Vuelo:} Kit completo Sí/No: \rule{1.5cm}{0.4pt} \quad Masas seguras (Común): \rule{1.5cm}{0.4pt}
+
+\section*{1. Registro Paramétrico Etapa A (RC)}
+\renewcommand{\arraystretch}{1.5}
+\noindent
+\begin{tabularx}{\textwidth}{
+  >{\bfseries\RaggedRight\hsize=0.9\hsize}X 
+  >{\centering\arraybackslash\hsize=1.0\hsize}X 
+  >{\centering\arraybackslash\hsize=1.0\hsize}X 
+  >{\centering\arraybackslash\hsize=0.6\hsize}X 
+  >{\RaggedRight\arraybackslash\hsize=1.5\hsize}X}
+\toprule
+\textbf{Parámetro} & \textbf{Nominal / Predicho} & \textbf{Verificado / Medido} & \textbf{Unidad} & \textbf{Método / Origen} \\
+\midrule
+$R_{\text{ext}}$ & $10\,\text{k}\Omega$ & & $\Omega$ & Multímetro \\ \addlinespace
+$C$ & $1\,\mu\text{F}$ & & F & Etiqueta o medidor LCR \\ \addlinespace
+$R_{\text{gen}}$ & Desconocido & & $\Omega$ & Manual del equipo o prueba \\ \addlinespace
+$\tau$ & $\approx 10\,\text{ms}$ (Sin $R_{\text{gen}}$) & & ms & Calculado o leído en pantalla \\ \addlinespace
+$V_i$ (CH2) & $0\,\text{V}$ & & V & Lectura inicial (pre-flanco) \\ \addlinespace
+$V_f$ (CH2) & Pend. Amplitud & & V & Lectura meseta estabilizada \\ \addlinespace
+$t_s$ (CH1) & Origen flanco & & s o ms & Cursores en Osciloscopio \\ \addlinespace
+$V_{\tau}$ (CH2) & Calc: & & V & Fórmula $V_i + 0.632(V_f - V_i)$ \\ \addlinespace
+$t_{\tau}$ (CH2) & & & s o ms & Cursores interceptando $V_{\tau}$ \\ \addlinespace
+$\tau_{\text{med}}$ & NO APLICA & & ms & Resta absoluta: $t_{\tau} - t_s$ \\ \addlinespace
+Error Rel. & NO APLICA & & \% & $| \tau_{\text{med}} - \tau_{\text{pred}} | / \tau_{\text{pred}}$ \\
+\bottomrule
+\end{tabularx}
+
+\section*{2. Configuración de Instrumentos Exactos}
+\begin{itemize}\setlength\itemsep{0.1cm}
+    \item \textbf{Generador:} Modelo/ID \rule{3cm}{0.4pt}; Función \rule{2cm}{0.4pt}; Amplitud Ind. \rule{2cm}{0.4pt}; Amplitud Real Obs. \rule{2cm}{0.4pt}; Offset \rule{2cm}{0.4pt}; Frec. \rule{2cm}{0.4pt}; Carga Z \rule{1.5cm}{0.4pt}.
+    \item \textbf{Osciloscopio:} ID \rule{3cm}{0.4pt}; CH1 \rule{1.5cm}{0.4pt}; CH2 \rule{1.5cm}{0.4pt}; Atenuación (1X/10X) \rule{1.5cm}{0.4pt}; Base T ($X$) \rule{2cm}{0.4pt}; Escala $Y$ \rule{2cm}{0.4pt}; Disparo/Trigger \rule{2cm}{0.4pt}.
+\end{itemize}
+
+\section*{3. Preparación RLC y Logística de Equipo}
+\noindent$L_{\text{nom}} =$ \rule{1.5cm}{0.4pt} \quad $R_{\text{DCR}} =$ \rule{1.5cm}{0.4pt} \quad $C_{\text{nom}} =$ \rule{1.5cm}{0.4pt} \quad $R_{\text{ext\_elegida}} =$ \rule{1.5cm}{0.4pt} \\
+$R_{\text{total\_calc}} =$ \rule{1.5cm}{0.4pt} \quad $\zeta_{\text{pred}} =$ \rule{1.5cm}{0.4pt} \quad Régimen esperado: \rule{4cm}{0.4pt}
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=gray!5, colframe=black, title=\textbf{Trazabilidad Individual de Rotación Interna}]
+\small
+\textbf{Estudiante 1 ID:} \rule{3cm}{0.4pt} Rol real: \rule{5cm}{0.4pt} \\
+\textbf{Estudiante 2 ID:} \rule{3cm}{0.4pt} Rol real: \rule{5cm}{0.4pt} \\
+\textbf{Estudiante 3 ID:} \rule{3cm}{0.4pt} Rol real: \rule{5cm}{0.4pt} \\
+\textit{Nota: No invente asistencia, participación generalizada ni duración. Un estudiante que interpretó los datos sin conectar los cables anota su labor analítica (No se penalizará la alternancia de roles físicos).}
+\end{tcolorbox}
+
+\end{document}

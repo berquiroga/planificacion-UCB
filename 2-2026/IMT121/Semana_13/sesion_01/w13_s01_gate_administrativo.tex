@@ -1,0 +1,86 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | W12S3 — Artefacto A4}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{warnred}{RGB}{180, 0, 0}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=warnred!5!white, colframe=warnred, title=\textbf{Artefacto A4: Checklist GO / NO-GO Docente (Autorización Física)}]
+    \centering \textbf{Se Verifica por Estación y Montaje \textit{Antes} de Habilitar la Salida de Fuente}
+\end{tcolorbox}
+
+\noindent\textbf{Fecha:} \rule{2.5cm}{0.4pt} \quad \textbf{Estación:} \rule{2.5cm}{0.4pt} \quad \textbf{Docente / Téc:} \hrulefill \\
+\textbf{Generador ID:} \rule{3.5cm}{0.4pt} \quad \textbf{Osciloscopio ID:} \rule{3.5cm}{0.4pt} \quad \textbf{Hora:} \rule{2cm}{0.4pt}
+
+\section*{1. Lista de Control Crítica (Safety Gate)}
+Si un solo ítem crítico no está verificado (Falla de asilamiento o de revisión), el grupo entero cae en \textbf{NO-GO}.
+
+\vspace{0.2cm}
+\renewcommand{\arraystretch}{1.55}
+\noindent
+\begin{tabularx}{\textwidth}{
+  >{\RaggedRight\arraybackslash\hsize=1.4\hsize}X
+  >{\centering\arraybackslash\hsize=0.4\hsize}X
+  >{\centering\arraybackslash\hsize=0.4\hsize}X
+  >{\RaggedRight\arraybackslash\hsize=1.8\hsize}X}
+\toprule
+\textbf{Control Crítico Obligatorio} & \textbf{Sí} & \textbf{No} & \textbf{Evidencia / Anotación de Campo} \\
+\midrule
+1. Equipos de la estación encendidos e inspeccionados & {[$\square$]} & {[$\square$]} & \\ \addlinespace
+2. Aislamiento comprobado. Ninguna pinza GND cruzada & {[$\square$]} & {[$\square$]} & \\ \addlinespace
+3. Masas de CH1/CH2 y Generador agrupadas en retorno & {[$\square$]} & {[$\square$]} & \\ \addlinespace
+4. Offset, Voltajes pico y tipo de carga (Z) seguros & {[$\square$]} & {[$\square$]} & \\ \addlinespace
+5. Resistores comprobados ($1/4\,\text{W}$ compatible con potencia) & {[$\square$]} & {[$\square$]} & \\ \addlinespace
+6. C identificado como No Polarizado ($1\,\mu\text{F} \ge 25\,\text{V}$) & {[$\square$]} & {[$\square$]} & \\ \addlinespace
+7. Piloto Docente previo con onda y frecuencia probada & {[$\square$]} & {[$\square$]} & \\ \addlinespace
+8. Alumno designado para maniobrar el generador listo & {[$\square$]} & {[$\square$]} & \\
+\bottomrule
+\end{tabularx}
+
+\section*{2. Resolución Formal (GO/NO-GO)}
+\begin{tcolorbox}[colback=gray!5, colframe=black, title=\textbf{Toma de Decisión Documentada}]
+\textbf{Dictamen Operativo (Marcar uno):} \\
+{[$\square$]} \textbf{GO RC Autorizado} \hspace{1cm} {[$\square$]} \textbf{NO-GO RC} (Bloqueo de Energía) \\
+{[$\square$]} \textbf{GO RLC Autorizado} \hspace{0.8cm} {[$\square$]} \textbf{NO-GO RLC} (Bloqueo de Energía)
+
+\vspace{0.4cm}
+\textbf{Justificación o Plan de Acción Inmediato (Para casos de falla):} \par\vspace{0.2cm}
+\rule{\textwidth}{0.4pt} \par\vspace{0.4cm}
+\rule{\textwidth}{0.4pt} \par\vspace{0.4cm}
+
+\textbf{Contingencia Obligatoria NO-GO:} El grupo deberá mantener su estación apagada. Se limitarán a la inspección puramente desenergizada (medir resistencias y $R_{\text{DCR}}$ en frío), calcular tolerancias y leer u operar curvas en LTspice. Bajo ningún concepto deben rellenar sus tablas con inventos numéricos "ideales" fingiendo haber utilizado el osciloscopio. \par\vspace{0.3cm}
+
+\textbf{Firma/Constancia Autorizante:} \rule{6cm}{0.4pt}
+\end{tcolorbox}
+
+\section*{3. Matriz de Observación Formativa Propuesta}
+Uso del docente sin ponderación final asignada (útil para auditoría de competencias del $20\%$):\par\vspace{0.2cm}
+\begin{itemize}
+    \item \textbf{Predice y calcula antes de conectar:} [$\square$] Logrado \quad [$\square$] Parcial \quad [$\square$] No obs.
+    \item \textbf{Identifica sondas, retornos y peligro de corto:} [$\square$] Logrado \quad [$\square$] Parcial \quad [$\square$] No obs.
+    \item \textbf{Interpreta u obtiene captura auténtica:} [$\square$] Logrado \quad [$\square$] Parcial \quad [$\square$] No obs.
+\end{itemize}
+
+\end{document}

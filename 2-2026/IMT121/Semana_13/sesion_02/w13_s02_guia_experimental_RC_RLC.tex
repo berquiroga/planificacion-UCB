@@ -1,0 +1,98 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage[american]{circuitikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Guía Lab W13S2}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{warnred}{RGB}{180, 0, 0}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=warnred!5!white, colframe=warnred, title=\textbf{Pauta Experimental Estricta: NO ENERGIZAR SIN "GO" DOCUMENTADO}]
+    \centering \textbf{Laboratorio Integrado EC3 — Medición de Transitorios RC y RLC (W13S2)}
+\end{tcolorbox}
+
+\noindent\textbf{Estudiante/Grupo:} \hrulefill \quad \textbf{Estación:} \rule{2cm}{0.4pt} \quad \textbf{Fecha:} \rule{2.5cm}{0.4pt} \\
+\textbf{Modalidad:} [$\square$] Ejecutó / [$\square$] Compartió / [$\square$] Observó / [$\square$] Acceso Pendiente
+
+\section*{1. Verificación de Materiales por Grupo (PRE-GO)}
+\renewcommand{\arraystretch}{1.5}
+\noindent
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\hsize=0.8\hsize}X >{\RaggedRight\arraybackslash\hsize=1.2\hsize}X >{\centering\arraybackslash\hsize=0.5\hsize}X >{\RaggedRight\arraybackslash\hsize=1.5\hsize}X}
+\toprule
+\textbf{Material} & \textbf{Requisito Aprobado} & \textbf{¿Hay?} & \textbf{Observación Física / Medida} \\
+\midrule
+Inductor ($L$) & $10\,\text{mH}$, apta protoboard & {[$\square$]} & $R_{\text{DCR}} = $ \rule{1.5cm}{0.4pt} $\Omega$ \\
+Capacitor ($C$) & $1\,\mu\text{F}$ \textbf{No Polarizado}, $\ge 25\,\text{V}$ & {[$\square$]} & Etiqueta/Pieza: \rule{2.5cm}{0.4pt} \\
+Resistores RC & $10\,\text{k}\Omega$, $1/4\,\text{W}$, $\le 5\%$ & {[$\square$]} & $R_{\text{med}} = $ \rule{2cm}{0.4pt} $\Omega$ \\
+Resistores RLC & $47\,\Omega$, $100\,\Omega$, $330\,\Omega$ ($1/4\,\text{W}$) & {[$\square$]} & Inspección tolerancias \rule{1.5cm}{0.4pt} \\
+\bottomrule
+\end{tabularx}
+
+\vspace{0.2cm}
+\begin{tcolorbox}[colback=white, colframe=black, boxsep=2pt, left=4pt, right=4pt, top=2pt, bottom=2pt]
+\small\textbf{Peligro:} NUNCA use un capacitor electrolítico polarizado (con franja negativa) para el circuito RLC. Durante las oscilaciones, la tensión se invierte, lo que destruirá el componente.
+\end{tcolorbox}
+
+\section*{2. ETAPA A: Circuito RC (Montaje sin salida activa)}
+\begin{center}
+\begin{circuitikz}[scale=0.9, transform shape, thick]
+    \draw (0,0) to[sV, l_={Gen. $v_s(t)$}] (0,2.5)
+          to[short, -*] (1.0,2.5) node[above]{\texttt{in}}
+          to[R, l={$R_{\text{ext}}=10\,\text{k}\Omega$}] (4.5,2.5)
+          to[short, -*] (5.5,2.5) node[above]{\texttt{out}};
+    \draw (5.5,2.5) to[C, l={$C=1\,\mu\text{F}$}, v={$v_C$}] (5.5,0);
+    \draw[ucbblue] (1.0,2.5) to[short, *-o] (1.0,3.3) node[above]{\scriptsize CH1: $V(\text{in})$};
+    \draw[ucbblue] (5.5,2.5) to[short, *-o] (6.5,2.5) node[right]{\scriptsize CH2: $V(\text{out})$};
+    \draw (0,0) -- (6.5,0) node[right]{\scriptsize Retorno Común (GND)};
+    \draw (2.5,0) node[ground]{};
+\end{circuitikz}
+\end{center}
+
+\begin{enumerate}\setlength\itemsep{0.25cm}
+    \item \textbf{Predicción:} Con $R_{\text{gen}}$ teóricamente nula, calcule $\tau_{\text{pred}} = R_{\text{ext}} C = $ \rule{3cm}{0.4pt} ms.
+    \item \textbf{Seguridad:} Conecte las sondas de CH1 y CH2 referidas \textbf{exclusivamente al Retorno Común}. Solicite al docente inspeccionar el montaje. \textbf{No habilite el botón OUTPUT del generador.}
+    \item \textbf{Firma Docente y Autorización (GO RC):} \rule{5cm}{0.4pt} \quad Hora: \rule{2cm}{0.4pt}
+\end{enumerate}
+
+\section*{3. ETAPA A: Ejecución RC y Medición Paso a Paso}
+\begin{enumerate}\setlength\itemsep{0.25cm}
+    \item Con GO autorizado y la salida \texttt{ON}, verifique en CH1 el flanco de subida. Mida $t_s =$ \rule{2cm}{0.4pt}.
+    \item En CH2, estabilice y mida el valor inicial (previo al flanco) y final (meseta asintótica): \\
+    $V_i =$ \rule{2cm}{0.4pt} V \quad $V_f =$ \rule{2cm}{0.4pt} V.
+    \item Calcule el umbral para $1\tau$ de carga (63.2\% del salto real medido, no ideal): \\
+    $$V_{\tau} = V_i + 0.63212(V_f - V_i) = \rule{3cm}{0.4pt} \text{ V} $$
+    \item Use cursores sobre CH2, intercepte el voltaje $V_{\tau}$ y lea el tiempo absoluto $t_{\tau} =$ \rule{2cm}{0.4pt}.
+    \item Calcule el parámetro experimental: $\tau_{\text{med}} = t_{\tau} - t_s = $ \rule{2.5cm}{0.4pt} ms. Guarde la captura en flash.
+    \item Apague la salida del generador (\texttt{OUTPUT OFF}) antes de manipular componentes.
+\end{enumerate}
+
+\section*{4. ETAPA B: Circuito RLC (Etapa Condicional W13S2)}
+\noindent\textbf{Circuito a Ensamblar:} Generador $\to$ \texttt{in} $\to$ $R_{\text{ext}}$ $\to$ $L = 10\,\text{mH}$ $\to$ \texttt{out} $\to$ $C = 1\,\mu\text{F}$ $\to$ Retorno.
+\begin{enumerate}\setlength\itemsep{0.2cm}
+    \item Calcule la resistencia crítica $\left( R_{\text{crit,total}} = 2\sqrt{L/C} \right) \approx 200\,\Omega$.
+    \item Para lograr régimen \textit{Subamortiguado} considere que $R_{\text{tot}} \approx R_{\text{ext}} + R_{\text{gen}} + R_{\text{DCR}}$. Con $R_{\text{ext}}=47\,\Omega$, justifique analíticamente la clasificación. \rule{6.5cm}{0.4pt}
+    \item \textbf{GO RLC Estación (Firma):} \rule{4cm}{0.4pt} \quad Hora: \rule{2cm}{0.4pt}. No active salida sin GO.
+\end{enumerate}
+
+\end{document}

@@ -1,0 +1,90 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage[american]{circuitikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Laboratorio RC-RLC}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{warnred}{RGB}{180, 0, 0}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=warnred!5!white, colframe=warnred, title=\textbf{Pauta Experimental Estricta: NO ENERGIZAR SIN "GO" DOCUMENTADO}]
+    \centering \textbf{Práctica Integrada RC y RLC (Sesiones 26/10 y 28/10)}
+\end{tcolorbox}
+
+\noindent\textbf{Estudiante/Grupo:} \hrulefill \quad \textbf{Estación:} \rule{2cm}{0.4pt} \quad \textbf{Fecha:} \rule{2cm}{0.4pt}
+
+\section*{1. Componentes Autorizados (BOM del Estudiante)}
+Verifique contar con: 1 Inductor $10\,\text{mH}$, 1 Capacitor $1\,\mu\text{F}$ \textbf{No Polarizado} ($\ge 25\,\text{V}$), Resistores de $10\,\text{k}\Omega$, $47\,\Omega$, $100\,\Omega$ y $330\,\Omega$ (a $1/4\,\text{W}$). \textit{Atención: Traer o comprobar estos materiales en el banco NO equivale a tener autorización para encender la fuente de señal.}
+
+\section*{2. PRE-GO: Etapa A (Circuito RC)}
+\noindent\textbf{Circuito a Ensamblar (Sin energizar):} Generador $\to$ $R_{\text{ext}} = 10\,\text{k}\Omega$ $\to$ Nodo \texttt{out} $\to$ $C = 1\,\mu\text{F}$ $\to$ Retorno Común.
+
+\begin{center}
+\begin{circuitikz}[scale=0.9, transform shape, thick]
+    \draw (0,0) to[sV, l_={Gen. $v_s(t)$}] (0,2.5)
+          to[short, -*] (1.0,2.5) node[below]{\texttt{in}}
+          to[R, l={$R_{\text{ext}}=10\,\text{k}\Omega$}, i_={$i(t)$}] (4.5,2.5)
+          to[short, -*] (5.5,2.5) node[above]{\texttt{out}};
+    \draw (5.5,2.5) to[C, l={$C=1\,\mu\text{F}$}, v={$v_C$}] (5.5,0);
+    \draw[ucbblue] (1.0,2.5) to[short, *-o] (1.0,3.3) node[above]{\scriptsize CH1: $V(\text{in})$};
+    \draw[ucbblue] (5.5,2.5) to[short, *-o] (6.5,2.5) node[right]{\scriptsize CH2: $V(\text{out})$};
+    \draw (0,0) -- (6.5,0) node[right]{\scriptsize Retorno Común (GND)};
+    \draw (2.5,0) node[ground]{};
+\end{circuitikz}
+\end{center}
+
+\begin{enumerate}\setlength\itemsep{0.25cm}
+    \item Registre: $R_{\text{nom}} = 10\,\text{k}\Omega$; $R_{\text{med}} =$ \rule{2.5cm}{0.4pt} $\Omega$. $C_{\text{nom}} = 1\,\mu\text{F}$.
+    \item Considerando el generador ideal ($R_{\text{gen}} \approx 0$), la Constante de Tiempo nominal es:
+    $$ \tau_{\text{pred}} = R_{\text{ext}} C = (10\,000\,\Omega)(10^{-6}\,\text{F}) = \mathbf{10\,\text{ms}} $$
+    \item Para asegurar la carga completa ($5\tau \approx 50\,\text{ms}$), proponga una frecuencia inicial de ensayo para la onda cuadrada (ej. $f \le 10\,\text{Hz}$): \rule{3cm}{0.4pt} Hz.
+    \item \textbf{Verificación Docente y GO (Firma):} \rule{5cm}{0.4pt}
+\end{enumerate}
+
+\section*{3. Ejecución Experimental Etapa A (Con GO Autorizado)}
+\begin{enumerate}\setlength\itemsep{0.25cm}
+    \item Conecte \texttt{CH1} en \texttt{in} y \texttt{CH2} en \texttt{out}. Asegure las masas \textbf{solo en el retorno común}.
+    \item Ajuste el generador. Anote amplitud pico a pico real y offset: \rule{4cm}{0.4pt}
+    \item Con la señal estabilizada, ubique el flanco ascendente en \texttt{CH1}. Mida $t_s =$ \rule{2cm}{0.4pt}.
+    \item Mida en \texttt{CH2} el voltaje justo antes de subir ($V_i$) y en la meseta estabilizada final ($V_f$): \\
+    $V_i =$ \rule{2cm}{0.4pt} V, \quad $V_f =$ \rule{2cm}{0.4pt} V.
+    \item Calcule teóricamente su voltaje de umbral ($63.2\%$ de la transición \textbf{real}, no de un $9\,\text{V}$ ideal):
+    $$ V_{\tau} = V_i + 0.63212 \cdot (V_f - V_i) = \rule{3cm}{0.4pt} \text{ V} $$
+    \item Mueva los cursores al voltaje $V_{\tau}$ y lea el tiempo absoluto $t_{\tau} =$ \rule{2cm}{0.4pt}.
+    \item Calcule experimentalmente $\tau_{\text{med}} = t_{\tau} - t_s =$ \rule{3cm}{0.4pt}. Error Relativo: \rule{2cm}{0.4pt}\%.
+    \item Apague la salida del generador y guarde la captura en un flash memory.
+\end{enumerate}
+
+\section*{4. Etapa B (Circuito RLC) - Preparación (W13S2)}
+\noindent\textbf{Circuito a Ensamblar:} Generador $\to$ $R_{\text{ext}}$ $\to$ $L = 10\,\text{mH}$ $\to$ Nodo \texttt{out} $\to$ $C = 1\,\mu\text{F}$ $\to$ Retorno.
+
+\begin{enumerate}\setlength\itemsep{0.25cm}
+    \item Aplicando KVL ($v_s = R_{\text{tot}}i + L\frac{di}{dt} + v_C$) y sabiendo que $i = C\frac{dv_C}{dt}$ ($\implies \frac{di}{dt} = C\frac{d^2v_C}{dt^2}$):
+    $$ L C v_C'' + R_{\text{tot}} C v_C' + v_C = v_s(t) $$
+    \item Sabemos que $\omega_0 = \frac{1}{\sqrt{LC}} \approx 10,000\,\text{rad/s}$ ($f_0 \approx 1.59\,\text{kHz}$) y que $R_{\text{crit,tot}} = 2\sqrt{L/C} \approx 200\,\Omega$.
+    \item Si medimos que el inductor real tiene un $R_{\text{DCR}} = $ \rule{1.5cm}{0.4pt} y asumimos que el generador tiene $R_{\text{gen}} \approx 50\,\Omega$, determine qué resistor de la BOM debe conectar en $R_{\text{ext}}$ para buscar una respuesta lo más cercana a \textbf{subamortiguada} y calcule su $\zeta$: \\
+    $R_{\text{ext}} = $ \rule{1.5cm}{0.4pt}, $\zeta \approx $ \rule{2cm}{0.4pt}. \textit{No energice sin el segundo GO del Docente.}
+\end{enumerate}
+
+\end{document}

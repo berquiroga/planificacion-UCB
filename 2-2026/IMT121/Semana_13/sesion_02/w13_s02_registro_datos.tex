@@ -1,0 +1,94 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Hoja de Banco W13S2}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Artefacto A2: Hoja de Banco, Datos y Configuración Instrumental}]
+    \centering \textbf{Registro de Evidencias en Sesión (Completar con lápiz/tinta sin inventar datos)}
+\end{tcolorbox}
+
+\textbf{Grupo ID:} \rule{2cm}{0.4pt} \quad \textbf{Estación:} \texttt{E}\rule{1cm}{0.4pt} \quad \textbf{Fecha:} \rule{3cm}{0.4pt} \\
+\textbf{Estado Pre-Vuelo:} Kit Completo [Sí/No] \rule{1cm}{0.4pt} \quad Masa Segura en CH1/CH2 [Sí/No] \rule{1cm}{0.4pt}
+
+\section*{1. Estado Global por Etapa}
+\renewcommand{\arraystretch}{1.5}
+\noindent
+\begin{tabularx}{\textwidth}{
+  >{\bfseries\hsize=0.6\hsize}X 
+  >{\centering\arraybackslash\hsize=0.6\hsize}X 
+  >{\centering\arraybackslash\hsize=0.6\hsize}X 
+  >{\centering\arraybackslash\hsize=0.6\hsize}X 
+  >{\centering\arraybackslash\hsize=0.6\hsize}X 
+  >{\RaggedRight\arraybackslash\hsize=2.0\hsize}X}
+\toprule
+\textbf{Etapa} & \textbf{GO/NOGO} & \textbf{Midió} & \textbf{Observó} & \textbf{Pendiente} & \textbf{Motivo / Captura USB ID / Responsable} \\
+\midrule
+RC (A) & & & & & \\ \addlinespace
+RLC (B) & & & & & \\
+\bottomrule
+\end{tabularx}
+
+\section*{2. Registro Paramétrico RC (¡Dejar en blanco si hubo NO-GO!)}
+\renewcommand{\arraystretch}{1.4}
+\noindent
+\begin{tabularx}{\textwidth}{
+  >{\bfseries\RaggedRight\hsize=0.8\hsize}X 
+  >{\RaggedRight\arraybackslash\hsize=1.2\hsize}X 
+  >{\RaggedRight\arraybackslash\hsize=1.0\hsize}X 
+  >{\centering\arraybackslash\hsize=0.8\hsize}X 
+  >{\RaggedRight\arraybackslash\hsize=1.2\hsize}X}
+\toprule
+\textbf{Magnitud} & \textbf{Nominal / Calculado} & \textbf{Medido en Banco} & \textbf{Unidad} & \textbf{Método / Origen} \\
+\midrule
+$R_{\text{ext}}$ & $10\,\text{k}\Omega$ (nominal) & & $\Omega$ & Multímetro \\
+$C$ & $1\,\mu\text{F}$ (nominal) & & F & Etiqueta/LCR \\
+$R_{\text{gen}}$ & Por verificar & & $\Omega$ & Manual/Prueba \\
+$\tau$ & $\approx 10\,\text{ms}$ (Sin $R_{\text{gen}}$) & & ms & Calc / Lectura en OSC \\
+$V_i$ & Fórmula / Asumido & & V & Cursor 1 en CH2 \\
+$V_f$ & Fórmula / Asumido & & V & Cursor 2 en CH2 \\
+$V_{\tau}$ & Calc: & & V & Cálculo en hoja \\
+$t_s$ & -- & & ms & Flanco Subida en CH1 \\
+$t_{\tau}$ & -- & & ms & Intersección $V_{\tau}$ en CH2 \\
+$\tau_{\text{med}}$ & No aplica & & ms & Resta $t_{\tau} - t_s$ \\
+Error $\varepsilon_{\tau}$ & No aplica & & \% & $| \tau_{\text{med}} - \tau_{\text{pred}} | / \tau_{\text{pred}}$ \\
+\bottomrule
+\end{tabularx}
+
+\section*{3. Registro de Ajustes de Instrumentación}
+\begin{itemize}\setlength\itemsep{0.1cm}
+    \item \textbf{Generador:} Modelo/ID \rule{2cm}{0.4pt}; Función \rule{1.5cm}{0.4pt}; $f_{\text{out}}$ \rule{1.5cm}{0.4pt} Hz; Amplitud Vpp \rule{1.5cm}{0.4pt}; $V_{\text{offset}}$ \rule{1.5cm}{0.4pt}; Modo de Carga ($50\,\Omega$ / Hi-Z) \rule{1.5cm}{0.4pt}.
+    \item \textbf{Osciloscopio RC:} Modelo/ID \rule{2cm}{0.4pt}; CH1 \rule{1.5cm}{0.4pt}; CH2 \rule{1.5cm}{0.4pt}; Atenuación (1X/10X) \rule{1cm}{0.4pt}; Acoplamiento \rule{1cm}{0.4pt}; Time/Div \rule{1.5cm}{0.4pt}; Volt/Div \rule{1.5cm}{0.4pt}; Trigger \rule{2cm}{0.4pt}. Captura ID: \rule{2cm}{0.4pt}.
+\end{itemize}
+
+\section*{4. Matriz de Roles (Trazabilidad Individual)}
+\textit{No inventar asistencia ni duración si un integrante no operó instrumentalmente. Quien interpretó datos anota su labor analítica (No se penalizará esta alternancia).}
+\begin{itemize}
+    \item \textbf{ID Alumno 1:} \rule{3cm}{0.4pt} \quad Rol Físico Ejecutado: \rule{6.5cm}{0.4pt}
+    \item \textbf{ID Alumno 2:} \rule{3cm}{0.4pt} \quad Rol Físico Ejecutado: \rule{6.5cm}{0.4pt}
+    \item \textbf{ID Alumno 3:} \rule{3cm}{0.4pt} \quad Rol Físico Ejecutado: \rule{6.5cm}{0.4pt}
+\end{itemize}
+
+\end{document}
