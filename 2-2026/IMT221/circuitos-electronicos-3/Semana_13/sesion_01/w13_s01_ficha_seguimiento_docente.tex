@@ -1,0 +1,57 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Ficha Auditoría G1 (W13S01)}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Ficha Operativa de Seguimiento y Auditoría G1 — W13S01, 27 Octubre 2026[cite: 20]}]
+    \textbf{Regla de Seguridad:} Esta ficha NO constituye autorización de energización. Se requiere revisión completa y aprobación del responsable del laboratorio[cite: 20].
+\end{tcolorbox}
+
+\noindent \textbf{Grupo:} \rule{3cm}{0.15mm} \quad \textbf{Estudiantes:} \rule{8cm}{0.15mm} \quad \textbf{Responsable Revisión:} \rule{4cm}{0.15mm}
+
+\vspace{0.3cm}
+\renewcommand{\arraystretch}{1.8}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{4cm}|c|}
+\hline
+\rowcolor{gray!20}
+\textbf{Elemento a Auditar} & \textbf{Estado (Observado / Predicho / NO)} & \textbf{Evidencia / Archivo / URL} & \textbf{Error / Bloqueo Identificado} & \textbf{Acción Siguiente} \\ \hline
+Esquema E1 y Pinout (D,G,S,B)[cite: 20] & & & & \\ \hline
+Cálculos KVL (12V / 100$\Omega$)[cite: 20] & & & & \\ \hline
+LTspice: .cir/.asc y MDEMO\_E1[cite: 20] & & & & \\ \hline
+Trazas Simuladas $R_G$ 47 / 220 $\Omega$[cite: 20] & & & & \\ \hline
+NMOS IRFZ44N: Hoja primaria vs $V_{GS}=5\text{V}$[cite: 20] & & & & \\ \hline
+PMOS IRF4905: Rol futuro E4 y niveles Gate[cite: 20] & & & & \\ \hline
+BOM: Inventario / Cotización real[cite: 20] & & & & \\ \hline
+Potencia de la Carga térmica validada[cite: 20] & & & & \\ \hline
+Fuente de Poder con Límite de Corriente[cite: 20] & & & & \\ \hline
+Osciloscopio y Referencia de Tierra[cite: 20] & & & & \\ \hline
+Protección de Desconexión / Seguridad[cite: 20] & & & & \\ \hline
+\end{tabularx}
+
+\vspace{0.5cm}
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Declaración de Puerta de Seguridad G1 y Registro Individual[cite: 20]}]
+    \textbf{Estado Puerta G1:} $\square$ Pendiente \quad $\square$ Observado \quad $\square$ Listo para aprobación \quad $\square$ \textbf{AUTORIZADO por responsable}[cite: 20] \\[0.3cm]
+    \textbf{Autorización Física Definitiva:} Responsable \rule{4cm}{0.15mm} \quad Fecha/Hora \rule{3cm}{0.15mm} \quad Condiciones \hrulefill \\[0.3cm]
+    \textbf{Registro Individual Inédito:} El estudiante \rule{4cm}{0.15mm} explicó $V_{GS}$ \rule{1cm}{0.15mm}, $P_{load}$ vs $P_{MOS}$ \rule{1cm}{0.15mm}, Condición $R_{DS(on)}$ \rule{1cm}{0.15mm}. \\[0.1cm]
+    \textbf{Siguiente Tarea:} \hrulefill
+\end{tcolorbox}
+
+\end{document}

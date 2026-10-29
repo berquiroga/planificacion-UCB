@@ -1,0 +1,69 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Clave Docente IRLZ44N}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Material Reservado Docente: Clave E1 (IRLZ44N)[cite: 23]}]
+    \textbf{Privacidad:} NO distribuir con hoja de ejercicios[cite: 23]. 
+    \textbf{Checklist Formativo Sugerido:} Topología 25\%, Matemática 25\%, Datos condicionados 20\%, Interpretación LTspice 15\%, Riesgos G1 15\%[cite: 23].
+\end{tcolorbox}
+
+\section*{Resolución Analítica y Técnica[cite: 23]}
+
+\begin{enumerate}
+    \setlength\itemsep{0.5em}
+    \item \textbf{Cálculo Ideal (ON / OFF)[cite: 23]:}
+    \begin{align*}
+        I_{ON,ideal} &= \frac{12\,\text{V}}{100\,\Omega} = \mathbf{0.12\,\text{A} = 120\,\text{mA}} \quad \text{[cite: 23]} \\
+        P_{load,ideal} &= I_{ON}^2 \cdot 100\,\Omega = (0.12\,\text{A})^2 \cdot 100\,\Omega = \mathbf{1.44\,\text{W}} \quad \text{[cite: 23]} \\
+        P_{MOS,ideal} &= \mathbf{0\,\text{W}} \quad \text{(Dado que } V_{DS} = 0\,\text{V}\text{)} \quad \text{[cite: 23]}
+    \end{align*}
+    En OFF ideal: $I_D \approx 0\,\text{A}$, $V_{DS} \approx 12\,\text{V}$[cite: 23]. Diodo de cuerpo: Ánodo en Source, Cátodo en Drain[cite: 23].
+    
+    \item \textbf{Cálculo Resistivo (LVK con $R_{DS(on)}$)[cite: 23]:}
+    La ecuación de malla es $12\,\text{V} = I (100\,\Omega + R_{DS})$[cite: 23]. 
+    Tomando un valor ilustrativo condicionado de $R_{DS} = 25\,\text{m}\Omega$ a $5\,\text{V}$ (Condición: $I_D=25\,\text{A}$, pulso)[cite: 23]:
+    \begin{align*}
+        I_{ON} &= \frac{12\,\text{V}}{100\,\Omega + 0.025\,\Omega} = \frac{12}{100.025} \approx \mathbf{0.11997\,\text{A}} \quad \text{[cite: 23]} \\
+        P_{MOS,on} &= I_{ON}^2 \cdot R_{DS} \approx (0.11997\,\text{A})^2 \cdot 0.025\,\Omega \approx \mathbf{0.36\,\text{mW}} \quad \text{[cite: 23]} \\
+        P_{load} &\approx \mathbf{1.439\,\text{W}} \quad \text{[cite: 23]}
+    \end{align*}
+    
+    \item \textbf{Análisis Térmico de Carga[cite: 23]:}
+    Un resistor de $1/4\,\text{W}$ operando a $1.44\,\text{W}$ supera por $5.76\times$ su \textit{rating} continuo[cite: 23]. Se requiere uno de $3\,\text{W}$ a $5\,\text{W}$ validando su \textit{derating} y montaje seguro[cite: 23].
+    
+    \item \textbf{Análisis de Gate (Source Móvil)[cite: 23]:}
+    Si $V_G = 5\,\text{V}$ y $V_S = 0\,\text{V} \implies \mathbf{V_{GS} = 5\,\text{V}}$. 
+    Si $V_S = 2\,\text{V} \implies \mathbf{V_{GS} = 3\,\text{V}}$. La tabla de $R_{DS(on)}$ a $5\,\text{V}$ \textbf{ya no es aplicable}[cite: 23].
+    
+    \item \textbf{Auditoría de Datasheet IRLZ44NPbF[cite: 23]:}
+    $V_{DSS} = 55\,\text{V}$, $V_{GS(max)} = \pm 16\,\text{V}$, $V_{GS(th)} = 1-2\,\text{V}$ (A $250\,\mu\text{A}$)[cite: 23]. 
+    $R_{DS(max)} = 25\,\text{m}\Omega$ a $V_{GS}=5\,\text{V}$ ($I_D=25\,\text{A}$)[cite: 23]. $Q_{g(max)} = 48\,\text{nC}$[cite: 23]. 
+    El $Q_g$ tabular no impone la duración real de conmutación porque la corriente $I_D$ del banco es apenas $0.12\,\text{A}$, no los $25\,\text{A}$ de la ficha[cite: 23].
+    
+    \item \textbf{Criterio G1 (Bloqueos)[cite: 23]:}
+    No permitir avance a G1 si hay: pinout sin verificar, ausencia de limitación de corriente en fuente, resistor de $0.25\,\text{W}$, pinza de tierra de osciloscopio insegura, o compra sin identidad verificada[cite: 23].
+    
+    \item \textbf{Pregunta de Transferencia[cite: 23]:} 
+    Resistor $150\,\Omega$ a $12\,\text{V}$ $\implies I = \mathbf{0.08\,\text{A}}$, $P_{load} = \mathbf{0.96\,\text{W}}$[cite: 23]. Se usa para evitar copias del solucionario anterior[cite: 23].
+\end{enumerate}
+
+\end{document}

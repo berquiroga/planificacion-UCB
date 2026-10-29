@@ -1,0 +1,73 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Protocolo Medición E1}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Protocolo de Medición de Laboratorio E1 y Puerta G1[cite: 33]}]
+    \textbf{Regla Crítica:} No energizar sin la firma de autorización. Detener todo ante olor a quemado, ruido transitorio, corriente anómala o sondas mal conectadas[cite: 33].
+\end{tcolorbox}
+
+\section*{1. Checklist de Puerta G1 (Obligatorio Pre-Energización)[cite: 33]}
+\begin{itemize}
+    \item[$\square$] Pieza real y pinout / pestaña cotejados con ficha de fabricante[cite: 33].
+    \item[$\square$] Resistencia de $100\,\Omega$ con potencia, derating y montaje considerados[cite: 33].
+    \item[$\square$] Fuente $12\,\text{V}$ con \textbf{límite de corriente} y desconexión comprobados[cite: 33].
+    \item[$\square$] Control medido previamente \textbf{sin gate} y \textbf{con gate sin bus}[cite: 33].
+    \item[$\square$] Tierras y referencias de osciloscopio, fuente y generador inspeccionadas[cite: 33].
+    \item[$\square$] \textbf{Firma Autorización Responsable Laboratorio:} \rule{4cm}{0.15mm} \quad Fecha: \rule{2cm}{0.15mm}
+\end{itemize}
+
+\section*{2. Pasos de Medición Supervisada[cite: 33]}
+\textbf{M1.} Medir señales de control sin el bus encendido[cite: 33]. \\
+\textbf{M2.} Energizar bus. Comprobar OFF ($V_{DS} \approx 12\,\text{V}, I_D \approx 0$). Luego ON. No tocar resistencias calientes[cite: 33]. \\
+\textbf{M3.} Medir CH1 ($V_{GS}$) y CH2 ($V_{DS}$)[cite: 33]. \\
+\textbf{M4.} Documentar forma de onda transitoria[cite: 33]. \\
+\textbf{M5.} Desenergizar para comparar. No modificar conexiones bajo energía[cite: 33].
+
+\section*{3. Tabla de Resultados de Ensayo[cite: 33]}
+\par\vspace{0.2cm}\noindent
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\linewidth}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{3cm}|}
+\hline
+\rowcolor{gray!20}
+\textbf{Variable} & \textbf{Predicción / Cálculo} & \textbf{LTspice (.log/captura)} & \textbf{Medición Real (Unidad)} & \textbf{Discrepancia} \\ \hline
+$V_{bus}$ & 12 V objetivo[cite: 33] & & & \\ \hline
+$V_{GS}$ alto/bajo & 5/0 o 10/0 V[cite: 33] & & & \\ \hline
+Frecuencia y Duty & 100 Hz, 50\% obj.[cite: 33] & & & \\ \hline
+$I_D$ en ON & 0.120 A ideal[cite: 33] & & & \\ \hline
+$V_{DS}$ OFF & $\approx 12$ V ideal[cite: 33] & & & \\ \hline
+$V_{DS}$ ON & $\approx 0$ V ideal[cite: 33] & & & \\ \hline
+$P_{resistor}$ ON & 1.44 W ideal[cite: 33] & & & \\ \hline
+$P_{MOSFET}$ & (Depende $R_{DS}$)[cite: 33] & & & \\ \hline
+\end{tabularx}
+
+\section*{4. Preguntas de Cierre (Evaluación Formativa)[cite: 33]}
+\begin{enumerate}
+    \setlength\itemsep{0.3em}
+    \item ¿Por qué $V_{GS(th)}$ no demuestra conducción eficiente a $V_{GS}=5\,\text{V}$?[cite: 33]
+    \par\noindent\rule{\linewidth}{0.15mm}
+    \item ¿Por qué una medición de pocos milivoltios de $V_{DS(on)}$ en el osciloscopio no demuestra automáticamente concordancia exacta con la hoja de datos?[cite: 33]
+    \par\noindent\rule{\linewidth}{0.15mm}
+    \item ¿Qué cambios críticos exige la etapa E2 respecto al Driver?[cite: 33]
+    \par\noindent\rule{\linewidth}{0.15mm}
+\end{enumerate}
+
+\end{document}

@@ -1,0 +1,59 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Control de Seguridad G1}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Control G1 — IRLZ44N (Candidato) $\cdot$ Etapa E1[cite: 24]}]
+    \textbf{Regla Crítica:} Una foto de producto, un archivo \texttt{.cir}, o la posesión de esta hoja \textbf{NO} autorizan la energización física del banco[cite: 24].
+\end{tcolorbox}
+
+\noindent\textbf{Grupo:} \rule{2cm}{0.15mm} \quad \textbf{Estudiantes:} \rule{6cm}{0.15mm} \quad \textbf{Revisor:} \rule{3cm}{0.15mm} \quad \textbf{Fecha:} \rule{3cm}{0.15mm}
+
+\par\vspace{0.3cm}\noindent
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\linewidth}{|>{\raggedright\arraybackslash}p{4.5cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}X|p{2.5cm}|p{2cm}|}
+\hline
+\rowcolor{gray!20}
+\textbf{Requisito} & \textbf{Evidencia Verificable} & \textbf{Estado (Pendiente / Verificado / Autorizado)} & \textbf{Responsable} & \textbf{Fecha} \\ \hline
+Identidad IRLZ44N y cantidad[cite: 24] & Pieza, proveedor, marcado[cite: 24] & & & \\ \hline
+Pinout G/D/S y pestaña[cite: 24] & Datasheet, medición frío[cite: 24] & & & \\ \hline
+Esquema, pulldown y retorno[cite: 24] & Revisión de diagrama[cite: 24] & & & \\ \hline
+Carga $100\,\Omega$ térmicamente apta[cite: 24] & Rating, derating, ubicación[cite: 24] & & & \\ \hline
+$R_G 47/220\,\Omega$ y $R_{PD} 100\,\text{k}\Omega$[cite: 24] & Medición con multímetro[cite: 24] & & & \\ \hline
+Fuente $12\,\text{V}$ limitada[cite: 24] & Manual, límite configurado[cite: 24] & & & \\ \hline
+Fuente control $5\,\text{V}$ real[cite: 24] & Límite $I$, tierras y señales[cite: 24] & & & \\ \hline
+Multímetro / Oscilo / Sondas[cite: 24] & Manual, referencias GND[cite: 24] & & & \\ \hline
+Cables y desconexión[cite: 24] & Inspección desenergizada[cite: 24] & & & \\ \hline
+LTspice y Error documentado[cite: 24] & Archivos, trazas, .logs reales[cite: 24] & & & \\ \hline
+Plan de medición $V_{GS}/V_{DS}/I_D$[cite: 24] & Puntos y equipos definidos[cite: 24] & & & \\ \hline
+Criterios de Parada (Stop)[cite: 24] & Límites validados seguros[cite: 24] & & & \\ \hline
+\end{tabularx}
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Declaración de Estado G1 y Autorización de Medición[cite: 24]}]
+    \textbf{Estado G1:} $\square$ Bloqueado \quad $\square$ Documental revisado \quad $\square$ Apto para solicitud \quad $\square$ \textbf{AUTORIZADO para prueba concreta}[cite: 24] \\[0.3cm]
+    \textbf{Autoriza (Responsable habilitado):} \rule{4cm}{0.15mm} \quad \textbf{Fecha/hora:} \rule{3cm}{0.15mm} \quad \textbf{Fuente/Límites:} \hrulefill \\[0.3cm]
+    \textbf{Estado Mediciones:} $\square$ No realizadas \quad $\square$ Realizadas bajo autorización (Datos crudos adjuntos)[cite: 24].
+\end{tcolorbox}
+
+\textbf{Modificación de BOM Maestra:} En el CSV, incorpore IRLZ44N en ítem MOSFET N, dejando precio/stock "no verificado" hasta confirmación. Priorice rating térmico de resistencia $>1.44\,\text{W}$ con derating[cite: 24].
+
+\end{document}

@@ -1,0 +1,84 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Guía E1 (IRLZ44N)}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{E1: Diseño y Verificación con IRLZ44N — Guía de Estudiantes[cite: 22]}]
+    \textbf{Ventana propuesta:} 29-30 octubre 2026. \textbf{Condición:} Solo con Puerta G1 aprobada[cite: 22]. \\
+    \textbf{Problema:} Controlar carga resistiva de $100\,\Omega$ sobre bus de $12\,\text{V}$ mediante NMOS low-side usando entrada $0-5\,\text{V}$[cite: 22]. Candidato físico: \textbf{IRLZ44N}[cite: 22].
+\end{tcolorbox}
+
+\section*{Parte 1 — Antes de LTspice (Individual, Analítico)[cite: 22]}
+
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape, thick]
+        % Base NMOS
+        \draw (0,0) node[nigfete] (M1) {};
+        \node[above left=0.05cm] at (M1.G) {G};
+        \node[above right=0.05cm] at (M1.D) {D};
+        \node[below right=0.05cm] at (M1.S) {S};
+        
+        \coordinate (drain) at ($(M1.D) + (0, 0.8)$);
+        \coordinate (source) at ($(M1.S) + (0, -0.8)$);
+        \coordinate (gate) at ($(M1.G) + (-1.5, 0)$);
+        \coordinate (ctrl) at ($(gate) + (-2, 0)$);
+        
+        % Potencia
+        \draw (M1.D) -- (drain) to[R, l=$100\,\Omega$, a=$R_{LOAD}$] ++(0, 1.5) node[above]{$+12\,\text{V}$ (VBUS)};
+        \draw (M1.S) -- (source) node[ground]{};
+        \draw (M1.B) -- ++(0.6,0) |- (source); % Bulk
+        
+        % Control
+        \draw (M1.G) -- (gate) node[circle,fill,inner sep=1pt]{} node[above]{gate};
+        \draw (gate) to[R, l_=$R_G$] (ctrl) node[circle,fill,inner sep=1pt]{} node[above]{ctrl};
+        \draw (ctrl) to[V, l=$V_{CTRL}$] (ctrl |- source) node[ground]{};
+        \draw (gate) to[R, l=$R_{PD}$] (gate |- source) node[ground]{};
+        
+        % Diodo de cuerpo
+        \draw[blue, dashed] (M1.S) -- ++(2.2,0) coordinate(ds) to[D, l=Body Diode] (ds |- M1.D) -- (M1.D);
+    \end{circuitikz}
+\end{center}
+
+\begin{enumerate}
+    \item \textbf{Circuito:} Observe el esquema[cite: 27]. Rotule en su mente el camino de corriente ON. ¿Cuál es la orientación del diodo intrínseco y por qué está inversamente polarizado?[cite: 22]
+    \par\vspace{0.1cm}\noindent\rule{\linewidth}{0.15mm}
+    
+    \item \textbf{LVK (KVL):} Derive las ecuaciones ON ideal, ON con $R_{DS(on)}$, y OFF[cite: 22]. Calcule la corriente ideal y la potencia disipada en el resistor de $100\,\Omega$[cite: 22].
+    \par\vspace{0.1cm}\noindent\rule{\linewidth}{0.15mm}
+    \par\vspace{0.3cm}\noindent\rule{\linewidth}{0.15mm}
+    
+    \item \textbf{Térmica:} ¿Por qué no basta una resistencia de $1/4\,\text{W}$? Busque el rating adecuado justificando su selección, sin asumir que $3\,\text{W}/5\,\text{W}$ es automáticamente seguro[cite: 22].
+    \par\vspace{0.1cm}\noindent\rule{\linewidth}{0.15mm}
+    
+    \item \textbf{Tensión Relativa:} Para $V_G=5\,\text{V}$ y $V_S=0\,\text{V}$, determine $V_{GS}$[cite: 22]. Repita si el Source se eleva a $V_S=2\,\text{V}$[cite: 22]. Explique qué dato de catálogo deja de ser aplicable[cite: 22].
+    \par\vspace{0.1cm}\noindent\rule{\linewidth}{0.15mm}
+    
+    \item \textbf{Datasheet IRLZ44N:} Lea la ficha oficial (Infineon)[cite: 22]. Copie $V_{DSS}$, $V_{GS(max)}$, $V_{GS(th)}$, $R_{DS(on)}$ \textbf{a 5V}, $Q_g$, y SOA[cite: 22]. ¿Qué especificación \textbf{no} garantiza bajas pérdidas a pesar de sugerir conducción?[cite: 22]
+    \par\vspace{0.1cm}\noindent\rule{\linewidth}{0.15mm}
+\end{enumerate}
+
+\section*{Parte 2 y 3 — LTspice y Revisiones (Ver Documentación Adjunta)[cite: 22]}
+Predecir $V_{GS}, V_{DS}, I_D$ al ON/OFF. Ejecutar simulación con \texttt{MDEMO\_E1}[cite: 22]. Actualizar BOM maestra[cite: 22]. \textbf{Peligro:} No conectar motor ni puente H; no conectar pin GPIO directo sin comprobar capacidad transitoria[cite: 22].
+
+\end{document}

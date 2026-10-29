@@ -1,0 +1,114 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Guía Lab E1 (Prep)}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Hito 3 — Laboratorio E1: NMOS Low-Side con Carga Resistiva[cite: 33]}]
+    \textbf{Guía para estudiantes $\cdot$ 29–30 de octubre de 2026}[cite: 33] \\
+    \textbf{Estado:} Actividad experimental condicionada a la autorización de seguridad \textbf{G1}[cite: 33]. \\
+    \textbf{Objetivo:} Calcular, simular y medir un NMOS, comparando IRLZ44N vs IRFZ44N[cite: 33].
+\end{tcolorbox}
+
+\section*{1. Esquema E1 Obligatorio[cite: 33]}
+
+\begin{center}
+    \begin{circuitikz}[scale=1, transform shape, thick]
+        % Rama Potencia
+        \draw (0,4.5) node[above]{$+12\,\text{V}$ (Fuente Limitada)} to[R, l=$100\,\Omega$, a=$R_{LOAD}$] (0,2);
+        
+        % NMOS
+        \draw (0,0) node[nigfete] (M1) {};
+        \node[above left=0.05cm] at (M1.G) {G};
+        \node[above right=0.05cm] at (M1.D) {D};
+        \node[below right=0.05cm] at (M1.S) {S};
+        \node[below right=0.05cm] at (M1.B) {B};
+        
+        \coordinate (drain) at ($(M1.D) + (0, 0.6)$);
+        \coordinate (source) at ($(M1.S) + (0, -0.6)$);
+        \coordinate (gate) at ($(M1.G) + (-2, 0)$);
+        \coordinate (ctrl) at ($(gate) + (-3, 0)$);
+        
+        % Etiqueta del Transistor desplazada a la izquierda para evitar choques
+        \node[right=1.5cm, align=right] at (M1.S) {\textbf{IRLZ44N o} \\ \textbf{IRFZ44N}};
+        
+        % Conexiones D, S, B
+        \draw (M1.D) -- (drain) node[circle,fill,inner sep=1pt]{} -- (0,2);
+        \draw (M1.S) -- (source) node[ground]{};
+        \draw (M1.B) -- ++(0.7,0) |- (source);
+        
+        % Puntas de osciloscopio
+        \draw[->, red] (drain) -- ++(2.5,0) node[right]{CH2 Osc. ($V_{DS}$)};
+        \draw[->, red] (gate) -- ++(0,1.5) node[above]{CH1 Osc. ($V_{GS}$)};
+        
+        % Control Gate
+        \draw (M1.G) -- (gate) node[circle,fill,inner sep=1pt]{};
+        \draw (gate) to[R, l_=$R_G$] (ctrl) node[circle,fill,inner sep=1pt]{};
+        \node[above] at (ctrl) {CTRL PWM};
+        \draw (ctrl) to[V, l_={Generador o MCU}] (ctrl |- source) node[ground]{};
+        
+        % Pull-down
+        \draw (gate) to[R, l=$R_{PD}$ ($100\,\text{k}\Omega$)] (gate |- source) node[ground]{};
+        
+        % Retornos comunes (Nota de Seguridad) desplazados hacia abajo
+        \draw[dashed, blue] (ctrl |- source) ++(0,-0.8) coordinate(gnd_line) -- (source |- gnd_line) node[midway, below]{GND Común (¡Solo tras revisar tierras!)};
+        \draw[dashed, blue] (ctrl |- source) -- (ctrl |- gnd_line);
+        \draw[dashed, blue] (source) -- (source |- gnd_line);
+    \end{circuitikz}
+\end{center}
+\textit{Diodo intrínseco:} Su ánodo está en Source y cátodo en Drain. \textbf{No agregar diodo externo en E1}[cite: 33].
+
+\section*{2. Antes del Banco: Cálculo Predictivo[cite: 33]}
+\textbf{A. Estados Ideales (Switch perfecto)[cite: 33]:} \\
+Calcule $I_{\text{carga,ON}}$ y $P_{\text{resistor,ON}}$ a $12\,\text{V}/100\,\Omega$[cite: 33].
+\vspace{0.2cm}
+\hrule
+\vspace{0.3cm}
+¿Cómo cambia la potencia promedio a un \textit{duty} de 50\%?[cite: 33]
+\vspace{0.2cm}
+\hrule
+\vspace{0.4cm}
+
+\textbf{B. Modelo No Ideal (Con $R_{DS(on)}$)[cite: 33]:}
+\begin{equation*}
+    I_{ON} \approx \frac{V_{bus}}{R_{LOAD} + R_{DS(on)}} \quad , \quad V_{DS(on)} \approx I_{ON} R_{DS(on)} \quad , \quad P_{MOS,cond} \approx I_{ON}^2 R_{DS(on)} \quad \text{[cite: 33]}
+\end{equation*}
+
+\section*{3. Rutas de Control (Seleccione UNA)[cite: 33]}
+\begin{itemize}
+    \setlength\itemsep{0.3em}
+    \item \textbf{Ruta A (Generador):} Conectar SIN MOSFET. Ajustar 100Hz, 50\% duty. Medir que la salida sea \textbf{unipolar} ($0-5\,\text{V}$ o $0-10\,\text{V}$)[cite: 33]. ¡Un equipo que entrega $-5/+5\,\text{V}$ fallará y dañará el gate![cite: 33]
+    \item \textbf{Ruta B (Arduino UNO):} $5\,\text{V}$ lógicos. \textbf{No conectar $12\,\text{V}$ a la placa}[cite: 33]. Código base:
+\end{itemize}
+
+\begin{tcolorbox}[colback=black!5, colframe=black, fontupper=\ttfamily, sharp corners]
+const byte gatePin = 9;[cite: 33] \\
+void setup() \{ digitalWrite(gatePin, LOW); pinMode(gatePin, OUTPUT); \}[cite: 33] \\
+void loop() \{ digitalWrite(gatePin, HIGH); delay(5); digitalWrite(gatePin, LOW); delay(5); \}[cite: 33]
+\end{tcolorbox}
+
+\begin{itemize}
+    \item \textbf{Ruta D (Op-Amp):} LM358N o LM741. \textbf{No recomendados} como conexión improvisada debido al \textit{slew rate} y límites de modo común[cite: 33].
+\end{itemize}
+
+\end{document}

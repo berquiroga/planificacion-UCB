@@ -1,0 +1,83 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Concepto High-Side PMOS (E4)}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=orange!10, colframe=orange, title=\textbf{Análisis de Riesgo: El Componente Candidato IRF4905 (PMOS)[cite: 21]}]
+    \textbf{Objetivo:} Demostrar por qué el componente aportado no puede usarse directamente con pines lógicos de $5\,\text{V}$ en una arquitectura High-Side[cite: 21]. Este circuito NO está autorizado para ensamble, es puro análisis lógico previo para E4[cite: 21].
+\end{tcolorbox}
+
+\section*{El Problema de Adaptación de Niveles Lógicos en PMOS[cite: 21]}
+
+En una configuración High-Side con un transistor de canal P (PMOS), el Source se conecta típicamente al riel positivo de alimentación principal ($+12\,\text{V}$)[cite: 21]. El PMOS se enciende cuando su Gate es más negativo que su Source, es decir, cuando $\mathbf{V_{GS} < V_{GS(th)}}$ (un valor fuertemente negativo)[cite: 21].
+
+\vspace{0.4cm}
+\begin{center}
+    \begin{circuitikz}[scale=1.1, transform shape, thick]
+        % Source at +12V
+        \draw (0,3) node[above]{$+12\,\text{V}$} -- (0,1.5) coordinate (source_node);
+        
+        % PMOS (pigfete) - El P-Channel enhancement tiene Source arriba por defecto
+        \draw (0,0) node[pigfete] (M2) {};
+        
+        \node[right=0.1cm] at (M2.S) {S};
+        \node[right=0.1cm] at (M2.D) {D};
+        \node[above left=0.05cm] at (M2.G) {G};
+        \node[below right=0.05cm] at (M2.B) {B};
+        
+        % Conexiones Source y Drain
+        \draw (source_node) node[circle,fill,inner sep=1pt]{} -- (M2.S);
+        \draw (M2.D) -- (0,-1) coordinate (drain_node) node[circle,fill,inner sep=1pt]{};
+        
+        % Conexión del Bulk a Source (por la derecha)
+        \draw (M2.B) -- ++(0.6,0) |- (source_node);
+        
+        % Carga a tierra
+        \draw (drain_node) to[R, l=Carga ($100\,\Omega$)] (0,-3) node[ground]{};
+        
+        % Control Gate (Señal Absoluta 0/5V)
+        \draw (-3.5, 0) node[circle,fill,inner sep=1pt]{} node[above]{$V_G$} -- (M2.G);
+        \draw (-3.5, 0) to[V, l_={\parbox{2.5cm}{\centering Señal Lógica\\$0/5\,\text{V}$ absolutos}}] (-3.5, -3) node[ground]{};
+        
+        % Marcador V_GS
+        \draw[<->, red, thick] (-2.5, 0) -- (-2.5, 1.5) node[midway, left] {$V_{GS}$};
+        \draw[dashed, red] (source_node) -- (-2.5, 1.5);
+    \end{circuitikz}
+\end{center}
+
+\vspace{0.4cm}
+\textbf{Análisis de Estados Lógicos (Falla Crítica de Apagado):}
+\begin{enumerate}
+    \item \textbf{Intento de OFF (Apagar el Transistor)[cite: 21]:} \\
+    Usted envía un `1` lógico ($+5\,\text{V}$) desde su microcontrolador hacia el Gate ($V_G = 5\,\text{V}$ absolutos respecto a tierra)[cite: 21]. 
+    Dado que el Source está amarrado al bus principal de $+12\,\text{V}$ ($V_S = 12\,\text{V}$):
+    \begin{equation*}
+        V_{GS} = V_G - V_S = 5\,\text{V} - 12\,\text{V} = \mathbf{-7\,\text{V}} \quad \text{[cite: 21]}
+    \end{equation*}
+    Con $V_{GS} = -7\,\text{V}$, el PMOS \textbf{seguirá fuertemente ENCENDIDO}. ¡Un GPIO directo de $0-5\,\text{V}$ no puede apagar un PMOS referenciado a $12\,\text{V}$![cite: 21] 
+    
+    \item \textbf{Conclusión de Diseño (Puerta E4):} Para apagarlo (Lograr $V_{GS} \approx 0\,\text{V}$), el controlador del Gate tendría que empujar el voltaje de compuerta hasta los $+12\,\text{V}$ completos[cite: 21]. Se hace mandatorio diseñar un circuito \textit{Level Shifter} y un Driver (Ej. BJT o Bootstrap) antes de poder operar un PMOS o NMOS en configuración High-Side de forma segura[cite: 21].
+\end{enumerate}
+
+\end{document}

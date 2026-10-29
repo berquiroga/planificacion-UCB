@@ -1,0 +1,83 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Pasos LTspice y Validación}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Guía de LTspice: Preparación E1 con Candidato IRLZ44N[cite: 25]}]
+    \textbf{Niveles de Evidencia:} (1) Diseño Físico (Sin G1 aún). (2) Simulación Ficticia \texttt{MDEMO\_E1} (Para estudiar $R_G$). (3) Simulación de IRLZ44N (Solo lícita si se obtiene modelo oficial verificado). ¡No calibre a ciegas un NMOS ficticio![cite: 25]
+\end{tcolorbox}
+
+\section*{1. Conexiones de la Simulación E1 (Didáctica)[cite: 25]}
+
+\begin{center}
+    \begin{circuitikz}[scale=0.95, transform shape, thick]
+        % Rama Potencia
+        \draw (0,4) node[above]{$+12\,\text{V}$} to[R, l=$100\,\Omega$, a=\texttt{RLOAD}] (0,2);
+        \draw (0,1) node[nigfete] (M1) {};
+        \node[above left=0.05cm] at (M1.G) {G}; \node[above right=0.05cm] at (M1.D) {D};
+        \node[below right=0.05cm] at (M1.S) {S}; \node[below right=0.05cm] at (M1.B) {B};
+        
+        \coordinate (drain) at ($(M1.D) + (0, 0.4)$);
+        \coordinate (source) at ($(M1.S) + (0, -0.4)$);
+        \coordinate (gate) at ($(M1.G) + (-1.5, 0)$);
+        \coordinate (ctrl) at ($(gate) + (-2.5, 0)$);
+        
+        \draw (M1.D) -- (drain) node[circle,fill,inner sep=1pt]{} node[right=0.1cm]{\textbf{drain}} -- (0,2);
+        \draw (M1.S) -- (source) node[ground]{} node[right=0.2cm]{\textbf{0}};
+        \draw (M1.B) -- ++(0.6,0) |- (source);
+        
+        % Control
+        \draw (M1.G) -- (gate) node[circle,fill,inner sep=1pt]{} node[above]{\textbf{gate}};
+        \draw (gate) to[R, l_=\texttt{RGATE}] (ctrl) node[circle,fill,inner sep=1pt]{} node[above]{\textbf{ctrl}};
+        \draw (ctrl) to[V, l=\texttt{VPULSE}] (ctrl |- source) node[ground]{};
+        \draw (gate) to[R, l=\texttt{RPD}] (gate |- source) node[ground]{};
+        
+        % Capacitores Didácticos
+        \draw (gate) -- ++(0, -0.6) coordinate(cgs_g) to[C, l=\texttt{CGS\_EXT}] (cgs_g -| source) -- (source);
+        \draw (gate) -- ++(0, 1.8) coordinate(cgd_g) to[C, l=\texttt{CGD\_EXT}] (cgd_g -| drain) -- (drain);
+    \end{circuitikz}
+\end{center}
+
+\vspace{0.2cm}
+\section*{2. Código Netlist y Directivas[cite: 25]}
+Inserte este texto exacto usando la directiva \texttt{S} en LTspice[cite: 25]:
+\begin{tcolorbox}[colback=black!5, colframe=black, fontupper=\ttfamily, sharp corners]
+.param RG=47[cite: 25] \\
+V1 bus 0 12[cite: 25] \\
+RLOAD bus drain 100[cite: 25] \\
+VPULSE ctrl 0 PULSE(0 5 1m 1u 1u 2m 4m)[cite: 25] \\
+RGATE ctrl gate \{RG\}[cite: 25] \\
+RPD gate 0 100k[cite: 25] \\
+M1 drain gate 0 0 MDEMO\_E1[cite: 25] \\
+CGS\_EXT gate 0 10n[cite: 25] \\
+CGD\_EXT gate drain 2n[cite: 25] \\
+.model MDEMO\_E1 NMOS (LEVEL=1 VTO=2 KP=4 LAMBDA=0.01 RD=0.02 RS=0.02)[cite: 25] \\
+.step param RG list 47 220[cite: 25] \\
+.tran 0 8m 0 0.1u[cite: 25]
+\end{tcolorbox}
+
+\textbf{Procedimiento:} Ejecute (Run). Trace \texttt{V(ctrl)}, \texttt{V(gate)}, \texttt{V(drain)}. Grafique \texttt{I(RLOAD)}[cite: 25]. Para la potencia instantánea $p_D$, multiplique $V_{DS}$ por corriente verificada $D \to S$[cite: 25].
+\textbf{Si logra conseguir el modelo oficial IRLZ44N:} Deberá retirar \texttt{CGS\_EXT} y \texttt{CGD\_EXT} para no falsear los tiempos, usar \texttt{X} o \texttt{M} según sea \texttt{.SUBCKT} o \texttt{.MODEL}, respetando el orden de pines del fabricante[cite: 25].
+
+\end{document}

@@ -1,0 +1,87 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | LTspice E1 (Low-Side 100$\Omega$)}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{E1 — Guía de Simulación LTspice desde un Esquema Manual[cite: 15]}]
+    \textbf{Condición Restrictiva:} La única familia válida para esta entrega E1 es: $V_{bus}=12\,\text{V}$, Carga $100\,\Omega$, Pulso ideal $0-5\,\text{V}$, $R_G=\{47, 220\}\,\Omega$[cite: 15]. No use topologías anteriores.
+\end{tcolorbox}
+
+\section*{1. Diagrama de Conectividad para LTspice[cite: 15]}
+Construya el siguiente esquema en LTspice respetando estrictamente los nombres de los nodos (ctrl, gate, drain, bus) para que el análisis transitorio coincida con el Netlist[cite: 15].
+
+\vspace{0.3cm}
+\begin{center}
+    \begin{circuitikz}[scale=1, transform shape, thick]
+        % VBUS y Carga RLOAD
+        \draw (0,4) node[above]{$+12\,\text{V (bus)}$} to[R, l=$100\,\Omega$, a=RLOAD] (0,2);
+        
+        % Transistor NMOS
+        \draw (0,0.5) node[nigfete] (M1) {};
+        \node[above left=0.05cm] at (M1.G) {G};
+        \node[above right=0.05cm] at (M1.D) {D};
+        \node[below right=0.05cm] at (M1.S) {S};
+        \node[below right=0.05cm] at (M1.B) {B};
+        
+        % Nodos D y S
+        \draw (0,2) node[circle,fill,inner sep=1pt]{} node[right=0.1cm]{\textbf{drain}} -- (M1.D);
+        \draw (M1.S) -- (0,-1) node[ground]{};
+        \draw (M1.B) -- ++(0.6,0) |- (0,-1);
+        
+        % Gate y Control
+        \draw (-2.5, 0.5) node[circle,fill,inner sep=1pt]{} node[above]{\textbf{gate}} -- (M1.G);
+        \draw (-5.5, 0.5) node[circle,fill,inner sep=1pt]{} node[above]{\textbf{ctrl}} to[R, l=$R_G$ (47/220$\,\Omega$), a=RGATE] (-2.5, 0.5);
+        
+        % Fuente de Pulso y RPD
+        \draw (-5.5, 0.5) to[V, l_=VPULSE] (-5.5, -1) node[ground]{};
+        \draw (-2.5, 0.5) to[R, l=$R_{PD}$ ($100\,\text{k}\Omega$)] (-2.5, -1) node[ground]{};
+        
+        % Capacitores Parásitos Didácticos
+        \draw (-2.5, 0.5) -- (-2.5, -0.2) to[C, l_=CGS\_EXT (10nF)] (0, -0.2) node[circle,fill,inner sep=1pt]{};
+        \draw (-2.5, 0.5) -- (-2.5, 2.5) to[C, l=CGD\_EXT (2nF)] (0, 2.5) -- (0,2);
+    \end{circuitikz}
+\end{center}
+
+\section*{2. Netlist Propuesto de Configuración SPICE[cite: 15]}
+Asegúrese de usar el modelo exacto \texttt{MDEMO\_E1} y copiar estrictamente este código[cite: 15]:
+\begin{tcolorbox}[colback=black!5, colframe=black, fontupper=\ttfamily, sharp corners]
+* Hito 3 E1 - MODELADO DIDACTICO, NO MODELO COMERCIAL[cite: 15] \\
+.param RG=47[cite: 15] \\
+V1 bus 0 12[cite: 15] \\
+RLOAD bus drain 100[cite: 15] \\
+VPULSE ctrl 0 PULSE(0 5 1m 1u 1u 2m 4m)[cite: 15] \\
+RGATE ctrl gate \{RG\}[cite: 15] \\
+RPD gate 0 100k[cite: 15] \\
+M1 drain gate 0 0 MDEMO\_E1[cite: 15] \\
+CGS\_EXT gate 0 10n[cite: 15] \\
+CGD\_EXT gate drain 2n[cite: 15] \\
+.model MDEMO\_E1 NMOS (LEVEL=1 VTO=2 KP=4 LAMBDA=0.01 RD=0.02 RS=0.02)[cite: 15] \\
+.step param RG list 47 220[cite: 15] \\
+.tran 0 8m 0 0.1u[cite: 15] \\
+.end[cite: 15]
+\end{tcolorbox}
+
+\textbf{Análisis Requerido:} Mida $V(ctrl)$, $V_{GS}$, $V_{DS}$ e $I(RLOAD)$[cite: 15]. Aplique zoom en $t \approx 1\,\text{ms}$ y $t \approx 3.001\,\text{ms}$ para comparar el efecto de los dos valores de $R_G$[cite: 15].
+
+\end{document}

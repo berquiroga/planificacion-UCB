@@ -1,0 +1,57 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Guía Autónoma Low-Side E1}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Hito 3 $\cdot$ E1 — Guía Autónoma de Diseño Low-Side (ESTUDIANTES)[cite: 21]}]
+    Inicio 23 de octubre 2026. \textbf{ADVERTENCIA:} Etapa preparatoria \textbf{NO autorizada} para conexión física. 
+    Se requiere comandar una carga resistiva didáctica de $100\,\Omega$ con fuente de $12\,\text{V}$ DC, utilizando NMOS Low-Side y señal ideal de $0\,\text{V}$ a $5\,\text{V}$[cite: 21]. No use la topología de la clase pasada ($10\,\Omega/10\,\text{V}$)[cite: 21].
+\end{tcolorbox}
+
+\section*{A. Del Problema al Diagrama y Cálculo Analítico[cite: 21]}
+\begin{enumerate}
+    \item \textbf{Topología:} Dibuje la fuente de $12\,\text{V}$, resistencia $100\,\Omega$, $D/S/G/B$, $R_G, R_{PD}$ y retornos[cite: 21]. ¿Por dónde conduce el \textit{Body Diode} y por qué no debe conducir nominalmente en Low-Side?[cite: 21] \hrulefill
+    
+    \item \textbf{Cálculo Ideal ON y OFF:} Calcule la corriente máxima ideal ON (asumiendo MOSFET ideal). Calcule la potencia $P_{load}$. ¿Sirve una resistencia de $0.25\,\text{W}$? (Pista: Analice margen térmico)[cite: 21]. \hrulefill \\[0.2cm] \hrulefill
+    
+    \item \textbf{Estado Real ON ($R_{DS(on)}$):} Si $R_{DS(on)}$ es conocido, escriba la LVK: $I_{ON} = \frac{V_{bus}}{R_L + R_{DS(on)}}$[cite: 21]. Defina $P_{MOS,cond}$ y $P_L$. Explique por qué es crítico no confundir ambas magnitudes[cite: 21]. \hrulefill \\[0.2cm] \hrulefill
+    
+    \item \textbf{Pregunta Inédita de Diagnóstico:} Si debido a la carga el Source se eleva a $1.5\,\text{V}$ y el Gate permanece en $5\,\text{V}$ absolutos, ¿qué $V_{GS}$ tiene el NMOS? ¿Sería lícito utilizar el $R_{DS(on)}$ especificado a $V_{GS}=10\,\text{V}$ para calcular las pérdidas en este caso?[cite: 21] \hrulefill \\[0.2cm] \hrulefill
+\end{enumerate}
+
+\section*{B. Selección de Datasheet: Auditoría Comercial[cite: 21]}
+Se propusieron dos componentes comerciales anunciados localmente: \textbf{IRFZ44N} y \textbf{IRF4905}[cite: 21].
+Descargue la hoja de datos original (Infineon/International Rectifier) y responda:
+\begin{itemize}
+    \setlength\itemsep{0.1em}
+    \item El \textbf{IRFZ44N} es NMOS. Su ficha declara $R_{DS(on)} = 17.5\,\text{m}\Omega$ a $V_{GS}=10\,\text{V}$[cite: 21]. ¿Existe una garantía del fabricante para $V_{GS}=5\,\text{V}$ en la tabla principal? ¿Qué concluye para su circuito lógico?[cite: 21] \hrulefill
+    \item El \textbf{IRF4905} es PMOS. ¿Puede usarse directamente para reemplazar el Low-Side NMOS de E1?[cite: 21] \hrulefill
+\end{itemize}
+
+\section*{C. LTspice E1 (Condiciones Estrictas)[cite: 21]}
+Utilice EXCLUSIVAMENTE estos parámetros: $V_{bus}=12\,\text{V}$, $R_L=100\,\Omega$, $R_G = \{47, 220\}\,\Omega$, $R_{PD}=100\,\text{k}\Omega$, $C_{GS}=10\,\text{nF}$, $C_{GD}=2\,\text{nF}$ (capacidades didácticas externas) y el modelo genérico \texttt{MDEMO\_E1}[cite: 21].
+Use \texttt{PULSE(0 5 1m 1u 1u 2m 4m)}[cite: 21]. 
+Si simula, compare $V_{ctrl}, V_{GS}, V_{DS}$ e $I_D$ para ambos $R_G$. Extraiga conclusiones sobre transitorios[cite: 21]. Si no ejecuta, marque "Predicción"[cite: 21].
+
+\end{document}
