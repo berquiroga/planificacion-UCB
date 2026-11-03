@@ -1,0 +1,116 @@
+\documentclass[11pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342} | Robótica}
+\chead{Rúbrica de Corrección — EC2 Diferido Integrado}
+\rhead{Uso Exclusivo Docente}
+\lfoot{Especificación Evaluativa}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Rúbrica de Corrección — EC2 Diferido}}\\[0.2cm]
+\end{center}
+
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Principio General de Calificación Diferida}, left=1mm, right=1mm, top=1mm, bottom=1mm]
+    \small
+    El examen diferido evalúa las \textbf{mismas competencias} que EC2 mediante un caso progresivo con mayor énfasis en transferencia y auditoría[cite: 13]. La corrección debe aislar matemáticamente el error: un fallo temprano no anula automáticamente la evidencia posterior si el estudiante utiliza correctamente los \textit{checkpoints} de continuidad (ej. usar el valor del checkpoint para resolver bien la etapa dinámica otorga puntaje completo en esa etapa particular)[cite: 13].
+\end{tcolorbox}
+
+\vspace{0.2cm}
+{\small
+\renewcommand{\arraystretch}{1.4}
+\noindent
+\begin{tabularx}{\textwidth}{|>{\hsize=0.6\hsize\raggedright\arraybackslash}X|>{\hsize=1.2\hsize\raggedright\arraybackslash}X|>{\hsize=1.2\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!10} \textbf{Etapa (Puntaje Max.)} & \textbf{Desglose Estricto de Puntos} & \textbf{Reglas de Auditoría Crítica y Penalizaciones} \\ \hline
+
+\textbf{1. Pieper / IK (20 pts)}[cite: 13] & 
+\textbf{1.1} Fórmula (1), Álgebra vectorial (2), Resultado (1), Propósito $p_W$ (1). \newline
+\textbf{1.2} Lógica \texttt{atan2} (2), Datos correctos (1), Valor num. (1). \newline
+\textbf{1.3} Computa $\pm s_3$ (2), Ramas completas (2), Critica la falacia del coseno igual (2). \newline
+\textbf{1.4} Ecuación rotacional (2), Justifica separación (1), Valida mediante FK completa (2). & 
+Reducir puntaje si la auditoría en 1.3 se queda en un "es incorrecto" superficial sin explicar la distinción entre signos y ramas espaciales reales. Restar puntos en 1.4 si asume que FK evalúa solo vector de posición[cite: 13]. \\ \hline
+
+\textbf{2. Selección Rama (10 pts)}[cite: 13] & 
+\textbf{2.1} Selecciona Rama A (2), Compara desplazamientos con $\mathbf{q}_0$ (2), Justifica matemáticamente/energéticamente (2). \newline
+\textbf{2.2} Argumenta el límite cualitativo de la tolerancia FK (2), Proporciona dos criterios de trayectoria reales (límites articulares, colisiones, etc.) (2). & 
+Puntaje parcial mínimo en 2.1 si la respuesta se fundamenta puramente en "intuición" visual sin analizar la matriz o distancia euclidiana[cite: 13]. \\ \hline
+
+\textbf{3. LSPB (20 pts)}[cite: 13] & 
+\textbf{3.1} Calcula magnitud acc. min. (3), Declara factibilidad (2). \newline
+\textbf{3.2} Calcula $t_c$ usando signos consistentes (3), $\dot{q}_c$ (2). \newline
+\textbf{3.3} Identifica fase (2), $q(3.5)$ (2), $\dot{q}(3.5)$ (2), $\ddot{q}(3.5)$ (1). \newline
+\textbf{3.4} Rechaza afirmación (1), Explica dinámica de crucero (2). & 
+Sin penalidad en 3.3 y 3.4 si arrastra pequeños errores de redondeo pero las fórmulas y fases son estructuralmente correctas[cite: 13]. \\ \hline
+
+\textbf{4. Jacobiano (15 pts)}[cite: 13] & 
+\textbf{4.1} $r_1$ y producto cruz (3), $J_1$ (1). $r_2$ y producto cruz (2), $J_2$ y matriz ensamblada completa (2). \newline
+\textbf{4.2} Multiplicación (2), Separa $v_L$ (1) y $\omega$ (1). \newline
+\textbf{4.3} Rechaza falacia (1), Demuestra cancelación geométrica/algebraica de velocidad angular (2). & 
+El estudiante debe demostrar explícitamente el uso de productos vectoriales, ensamblajes de matrices solo con inspección pueden resultar en crédito parcial[cite: 13]. \\ \hline
+
+\textbf{5. Singularidad (15 pts)}[cite: 13] & 
+\textbf{5.1} Nota colinealidad (2), Rango=1 (1), Falla dim 2 (2). \newline
+\textbf{5.2} Vector perpendicular hallado y válido (2), Relación espacio columna (1), Significado físico (2). \newline
+\textbf{5.3} Selecciona B (1), Crítica del determinante vs matriz no cuadrada (1), Corrige 'inmovilidad total' demostrando movimiento residual (3). & 
+Severa penalidad en 5.3 si asumen que la caída del determinante implica parálisis física generalizada del robot en todas las direcciones del plano cartesiano[cite: 13]. \\ \hline
+
+\textbf{6. Dinámica (15 pts)}[cite: 13] & 
+\textbf{6.1} Plantea $L$ (1), $\partial/\partial \dot{q}$ y $d/dt$ (2), $\partial/\partial q$ y signos (2), Modelo E-L final coherente (1). \newline
+\textbf{6.2} Componente inercial (1), Gravitacional (2), Total y Uds. (2). \newline
+\textbf{6.3} Rechaza (1), Carga inercial cero (1), Demuestra carga estática gravitatoria persistente por trigonometría (2). & 
+Asignar puntaje completo a 6.2 si utilizó los valores del Checkpoint B, siempre que el procedimiento numérico de evaluación sea correcto[cite: 13]. \\ \hline
+
+\end{tabularx}
+}
+
+\newpage
+\section*{Matriz de Análisis de Competencias (Post-EC2 Diferido)}
+
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Instrucción de Registro Docente}, left=1mm, right=1mm, top=1mm, bottom=1mm]
+    \small Esta matriz es puramente \textbf{diagnóstica} y no sustituye la nota numérica alfabética del sistema universitario. Complete el estado de cada dominio indicando: \textbf{F (Fuerte)}, \textbf{P (Parcial)} o \textbf{D (Débil)} basándose en el análisis integral del desempeño procedimental de la prueba.
+\end{tcolorbox}
+
+\vspace{0.4cm}
+{\small
+\renewcommand{\arraystretch}{1.5}
+\noindent
+\begin{tabularx}{\textwidth}{|>{\hsize=1.2\hsize\raggedright\arraybackslash}X|>{\hsize=0.8\hsize\centering\arraybackslash}X|>{\hsize=0.8\hsize\centering\arraybackslash}X|>{\hsize=0.8\hsize\centering\arraybackslash}X|>{\hsize=0.8\hsize\centering\arraybackslash}X|>{\hsize=0.8\hsize\centering\arraybackslash}X|>{\hsize=0.8\hsize\centering\arraybackslash}X|>{\hsize=0.8\hsize\centering\arraybackslash}X|>{\hsize=1\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{gray!20} \textbf{Estudiante} & \textbf{Pieper} (Et.1) & \textbf{Validación} (Et.2) & \textbf{LSPB} (Et.3) & \textbf{Jacobiano} (Et.4) & \textbf{Singular.} (Et.5) & \textbf{Dinámica} (Et.6) & \textbf{Int. Critica} (Et.7) & \textbf{Observaciones} \\ \hline
+& F / P / D & F / P / D & F / P / D & F / P / D & F / P / D & F / P / D & F / P / D & \\ \hline
+& F / P / D & F / P / D & F / P / D & F / P / D & F / P / D & F / P / D & F / P / D & \\ \hline
+& F / P / D & F / P / D & F / P / D & F / P / D & F / P / D & F / P / D & F / P / D & \\ \hline
+& F / P / D & F / P / D & F / P / D & F / P / D & F / P / D & F / P / D & F / P / D & \\ \hline
+& F / P / D & F / P / D & F / P / D & F / P / D & F / P / D & F / P / D & F / P / D & \\ \hline
+\end{tabularx}
+}
+
+\vspace{0.6cm}
+\textbf{Criterio Fundamental para Evaluadores[cite: 13]:}
+\begin{itemize}
+    \item El crédito completo de las preguntas de "Auditoría Crítica" requiere que el estudiante: \textit{1) tome una postura, 2) identifique el concepto matemático clave subyacente, 3) utilice la evidencia numérica obtenida, 4) concluya la inferencia física real en el entorno robótico}[cite: 13].
+\end{itemize}
+
+\end{document}

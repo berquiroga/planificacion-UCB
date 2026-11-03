@@ -1,0 +1,155 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342} | Robótica}
+\chead{Solucionario EC2 Diferido}
+\rhead{Unidad II}
+\lfoot{Uso Docente / Estudiantil}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{red!80!black}{Solucionario — EC2 Diferido Integrado}}\\[0.2cm]
+\end{center}
+
+\section*{Etapa 1 — Cinemática Inversa / Pieper[cite: 14]}
+
+\textbf{1.1 Centro de muñeca}
+\begin{equation*}
+    {}^0p_W = {}^0p_6^d - d_6{}^0z_6^d = \begin{bmatrix} 1.20 \\ 0.80 \\ 1.40 \end{bmatrix} - 0.20 \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix} = \boxed{ \begin{bmatrix} 1.20 \\ 0.80 \\ 1.20 \end{bmatrix}\text{m} } \text{[cite: 14]}
+\end{equation*}
+\textit{Utilidad:} Permite desacoplar el problema de posición del brazo del problema de orientación de la muñeca esférica[cite: 14].
+
+\textbf{1.2 Ángulo base}
+\begin{equation*}
+    q_1 = \operatorname{atan2}(0.80, 1.20) \approx \boxed{ 0.588 \text{ rad} \approx 33.7^\circ } \text{[cite: 14]}
+\end{equation*}
+
+\textbf{1.3 Ramas}
+Dado $c_3 = 1/2$, por identidad pitagórica $s_3 = \pm\sqrt{1 - 1/4} = \pm\frac{\sqrt{3}}{2}$[cite: 14].
+\begin{align*}
+    q_3^{(1)} &= \operatorname{atan2}\left( \frac{\sqrt{3}}{2}, \frac{1}{2} \right) = \boxed{ \frac{\pi}{3} } \text{[cite: 14]}\\
+    q_3^{(2)} &= \operatorname{atan2}\left( -\frac{\sqrt{3}}{2}, \frac{1}{2} \right) = \boxed{ -\frac{\pi}{3} } \text{[cite: 14]}
+\end{align*}
+\textit{Evaluación:} La afirmación del estudiante es incorrecta. Igual valor de coseno no implica la misma configuración física; el signo del seno distingue ramas geométricas distintas (que deben preservarse con \texttt{atan2})[cite: 14].
+
+\textbf{1.4 Muñeca y verificación}
+Relación matricial de orientación: $\boxed{ {}^3R_6 = ({}^0R_3)^T {}^0R_6^d }$[cite: 14]. \\
+Una solución completa debe verificarse mediante cinemática directa (FK): $\boxed{ {}^0T_6(\mathbf{q}^{(k)}) \approx {}^0T_6^d }$ evaluando tanto la posición como la orientación de forma conjunta[cite: 14].
+
+\section*{Etapa 2 — Selección de Rama[cite: 14]}
+
+\textbf{2.1 Decisión}
+Calculando los desplazamientos gruesos respecto a $q_0 = [0.60, -0.20, 1.00, 0.35, -0.25, 0.15]^T$:
+El candidato $\mathbf{q}^{(A)}$ experimenta cambios muy pequeños, del orden de $\sim 0.05$ rad a $0.25$ rad máximo. El candidato $\mathbf{q}^{(B)}$ exige cambios drásticos (ej. en $q_2$ pasa de $-0.2$ a $1.1$, y $q_3$ de $1.0$ a $-1.047$). Por lo tanto, la elección razonable es $\boxed{ \mathbf{q}^{(A)} }$ bajo el criterio de menor desplazamiento articular y gasto energético[cite: 14].
+
+\textbf{2.2 Pensamiento crítico}
+El error de FK solo evalúa precisión estática de alcance numérico. Criterios vitales para trayectorias reales incluyen: proximidad a la postura actual, márgenes frente a límites articulares, evitación de singularidades a lo largo de la ruta, o evitación de colisiones[cite: 14].
+
+\section*{Etapa 3 — LSPB[cite: 14]}
+
+Datos: $\Delta q = 1.250 - (-0.250) = 1.50$ rad. $t_f = 4$ s. $\ddot{q}_c = 0.50$ rad/s$^2$[cite: 14].
+
+\textbf{3.1 Factibilidad}
+\begin{equation*}
+    |\ddot{q}_c|_{\min} = \frac{4|\Delta q|}{t_f^2} = \frac{4(1.50)}{16} = \boxed{ 0.375 \text{ rad/s}^2 } \text{[cite: 14]}
+\end{equation*}
+Como el diseño propone $0.50 > 0.375$, \textbf{el perfil es factible}[cite: 14].
+
+\textbf{3.2 Parámetros}
+\begin{align*}
+    t_c &= \frac{4}{2} - \frac{1}{2}\sqrt{ 16 - \frac{4(1.50)}{0.50} } = 2 - \frac{1}{2}\sqrt{16 - 12} = 2 - 1 = \boxed{ 1.00 \text{ s} } \text{[cite: 14]} \\
+    \dot{q}_c &= \ddot{q}_c t_c = (0.50)(1.00) = \boxed{ 0.50 \text{ rad/s} } \text{[cite: 14]}
+\end{align*}
+
+\textbf{3.3 Estado en $t^\star = 3.50$ s}
+Como $t_f - t_c = 3.00$ s, el instante $t^\star = 3.50$ s se encuentra en la \textbf{Fase de Deceleración}[cite: 14].
+\begin{align*}
+    q(3.50) &= q_f - \frac{1}{2}\ddot{q}_c(t_f - t)^2 = 1.25 - 0.5(0.50)(4 - 3.50)^2 = 1.25 - 0.0625 = \boxed{ 1.1875 \text{ rad} } \text{[cite: 14]} \\
+    \dot{q}(3.50) &= \ddot{q}_c(t_f - t) = 0.50(0.50) = \boxed{ 0.250 \text{ rad/s} } \text{[cite: 14]} \\
+    \ddot{q}(3.50) &= \boxed{ -0.500 \text{ rad/s}^2 } \text{[cite: 14]}
+\end{align*}
+
+\textbf{3.4 Auditoría}
+La afirmación es \textbf{falsa}. Durante el crucero $\ddot{q}=0$, pero la velocidad articular se mantiene constante y no nula ($\dot{q} = \dot{q}_c \neq 0$). Aceleración cero significa velocidad uniforme, no estatismo físico[cite: 14].
+
+\section*{Etapa 4 — Jacobiano[cite: 14]}
+
+\textbf{4.1 Construcción}
+Primera columna ($J_1$):
+\begin{equation*}
+    o_n - o_0 = \begin{bmatrix} 2 \\ 1 \\ 0 \end{bmatrix} \implies z_0 \times (o_n - o_0) = \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix} \times \begin{bmatrix} 2 \\ 1 \\ 0 \end{bmatrix} = \begin{bmatrix} -1 \\ 2 \\ 0 \end{bmatrix} \implies J_1 = \boxed{ \begin{bmatrix} -1 \\ 2 \\ 0 \\ 0 \\ 0 \\ 1 \end{bmatrix} } \text{[cite: 14]}
+\end{equation*}
+Segunda columna ($J_2$):
+\begin{equation*}
+    o_n - o_1 = \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix} \implies z_1 \times (o_n - o_1) = \begin{bmatrix} 0 \\ 1 \\ 0 \end{bmatrix} \implies J_2 = \boxed{ \begin{bmatrix} 0 \\ 1 \\ 0 \\ 0 \\ 0 \\ 1 \end{bmatrix} } \text{[cite: 14]}
+\end{equation*}
+Matriz Ensamblada: $J = \boxed{ \begin{bmatrix} -1 & 0 \\ 2 & 1 \\ 0 & 0 \\ 0 & 0 \\ 0 & 0 \\ 1 & 1 \end{bmatrix} }$.
+
+\textbf{4.2 Velocidad}
+\begin{equation*}
+    v_e = J\dot{q} = \begin{bmatrix} -1 & 0 \\ 2 & 1 \\ 0 & 0 \\ 0 & 0 \\ 0 & 0 \\ 1 & 1 \end{bmatrix} \begin{bmatrix} 0.25 \\ -0.10 \end{bmatrix} = \boxed{ \begin{bmatrix} -0.25 \\ 0.40 \\ 0 \\ 0 \\ 0 \\ 0.15 \end{bmatrix} } \implies v_L = \boxed{ \begin{bmatrix} -0.25 \\ 0.40 \\ 0 \end{bmatrix} \frac{\text{m}}{\text{s}} } \quad \omega = \boxed{ \begin{bmatrix} 0 \\ 0 \\ 0.15 \end{bmatrix} \frac{\text{rad}}{\text{s}} } \text{[cite: 14]}
+\end{equation*}
+
+\textbf{4.3 Auditoría}
+La afirmación es \textbf{falsa}. La velocidad angular resulta de la suma ponderada de las columnas, y puede haber cancelación algebraica. Aquí, $\omega_z = 0.25 + (-0.10) = 0.15$ rad/s, magnitud menor a la velocidad articular individual máxima probando cancelación parcial[cite: 14].
+
+\section*{Etapa 5 — Singularidad[cite: 14]}
+
+\textbf{5.1 Rango}
+La segunda columna de $J_p$ es matemáticamente el doble de la primera ($\begin{bmatrix} 2 \\ 4 \end{bmatrix} = 2\begin{bmatrix} 1 \\ 2 \end{bmatrix}$). Por tanto, los vectores son linealmente dependientes y $\boxed{\operatorname{rank}(J_p) = 1}$[cite: 14]. Como la tarea requiere dimensión 2, \textbf{existe singularidad}[cite: 14].
+
+\textbf{5.2 Dirección perdida}
+El espacio columna es generado por $\begin{bmatrix} 1 \\ 2 \end{bmatrix}$. Una dirección cartesiana perpendicular es $\boxed{ \mathbf{d} = \begin{bmatrix} -2 \\ 1 \end{bmatrix} }$ porque $[1, 2][-2, 1]^T = 0$[cite: 14]. Físicamente, el robot no puede generar ninguna velocidad instantánea pura a lo largo de esa línea recta en el plano cartesiano[cite: 14].
+
+\textbf{5.3 Comparación}
+La explicación del Estudiante B es superior. El Estudiante A falla conceptualmente: que el determinante sea cero indica singularidad, pero \textit{no implica parálisis total}; el robot todavía conserva un espacio columna (una dirección en la cual sí puede generar movimiento físico de traslación)[cite: 14].
+
+\section*{Etapa 6 — Dinámica[cite: 14]}
+
+\textbf{6.1 Euler-Lagrange}
+\begin{align*}
+    L &= \frac{1}{2}J\dot{q}^2 - mg\ell_c(1 - \cos q) \text{[cite: 14]} \\
+    \frac{\partial L}{\partial \dot{q}} &= J\dot{q} \implies \frac{d}{dt}\left(\frac{\partial L}{\partial \dot{q}}\right) = J\ddot{q} \text{[cite: 14]}\\
+    \frac{\partial L}{\partial q} &= -mg\ell_c\sin q \text{[cite: 14]}
+\end{align*}
+Formulando E-L: $J\ddot{q} - (-mg\ell_c\sin q) = \tau \implies \boxed{ \tau = J\ddot{q} + mg\ell_c\sin q }$[cite: 14].
+
+\textbf{6.2 Torque en $t^\star$} (Con $q=1.1875$ rad, $\ddot{q}=-0.50$ rad/s$^2$)
+\begin{align*}
+    \tau_{\text{inercial}} &= 0.35(-0.50) = \boxed{ -0.175 \text{ N}\cdot\text{m} } \text{[cite: 14]} \\
+    \tau_{\text{gravedad}} &= 1.10(9.81)(0.40)\sin(1.1875) \approx \boxed{ 4.003 \text{ N}\cdot\text{m} } \text{[cite: 14]} \\
+    \tau_{\text{total}} &= -0.175 + 4.003 = \boxed{ 3.828 \text{ N}\cdot\text{m} } \text{[cite: 14]}
+\end{align*}
+
+\textbf{6.3 Auditoría física}
+La afirmación es \textbf{falsa}. Si $\ddot{q}=0$, el término inercial desaparece, pero si la masa está suspendida horizontalmente ($q=\pi/2$), $\tau_g = mg\ell_c(1) \neq 0$. El motor debe entregar fuerza constante para compensar la carga estática[cite: 14].
+
+\section*{Etapa 7 — Juicio Integrado[cite: 14]}
+La afirmación generaliza erróneamente. 
+\begin{itemize}
+    \item La IK solo asegura \textit{alcanzabilidad} estática del punto final.
+    \item \textit{Trayectoria adecuada} requiere LSPB para comprobar restricciones de tiempo y aceleración factible.
+    \item La \textit{Singularidad} ocurre en el espacio diferencial ($J(\mathbf{q})$), y un punto puede ser alcanzable pero estar críticamente singular en su entorno.
+    \item \textit{Esfuerzo aceptable} se dictamina a través de la Dinámica ($\tau(t)$), y dependerá críticamente de los picos de $\ddot{q}$ y los pares gravitacionales. Alcanzabilidad $\not\Rightarrow$ Factibilidad dinámica[cite: 14].
+\end{itemize}
+
+\end{document}
