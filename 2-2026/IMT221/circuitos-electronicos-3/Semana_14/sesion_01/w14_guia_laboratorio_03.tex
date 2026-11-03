@@ -1,0 +1,185 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{arrows.meta, positioning, calc}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{enumitem}
+\usepackage{microtype} 
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{ucbgray}{RGB}{240, 244, 248}
+\definecolor{warnred}{RGB}{180, 20, 20}
+
+\begin{document}
+
+\noindent
+{\LARGE \textbf{\textcolor{ucbblue}{IMT-221 — Circuitos Electrónicos III}}}\\[0.15cm]
+{\Large \textbf{Hito 3: Guía Única E1 $\rightarrow$ E4 — Parte 3: Etapa E2 (Driver BJT Discreto: Adaptación + Push-Pull)}}\\[0.1cm]
+{\small \textbf{Versión de trabajo 1.0} $\cdot$ 3 de noviembre de 2026 $\cdot$ Condicionado a firma de Puerta G2}
+\par\vspace{0.2cm}\noindent\rule{\linewidth}{0.4pt}\vspace{0.3cm}
+
+\section*{4. Etapa E2 — Driver BJT Discreto: Adaptación de Niveles + Push-Pull}
+
+\subsection*{4.1 Formulación Física del Problema de Excitación de Compuerta}
+
+La compuerta del MOSFET exige transferencia rápida de carga $Q_g$ durante las transiciones:
+\begin{equation}
+    i_G(t) = \frac{dq_G(t)}{dt} \implies Q_g = \int_{t_a}^{t_b} i_G(t)\,dt \approx I_{G,\text{prom}} \cdot t_{\text{transfer}} \implies t_{\text{transfer}} \approx \frac{Q_g}{I_{G,\text{prom}}} \quad \left[\frac{\text{C}}{\text{A}} = \text{s}\right].
+\end{equation}
+Para un ejemplo \textbf{ficticio} con $Q_g = 40\,\text{nC} = 40 \times 10^{-9}\,\text{C}$:
+\begin{align}
+    I_{G,\text{prom}} = 10\,\text{mA} &\implies t_{\text{transfer},10} \approx \frac{40 \times 10^{-9}\,\text{C}}{10 \times 10^{-3}\,\text{A}} = 4.0 \times 10^{-6}\,\text{s} = 4.0\,\mu\text{s}, \\
+    I_{G,\text{prom}} = 40\,\text{mA} &\implies t_{\text{transfer},40} \approx \frac{40 \times 10^{-9}\,\text{C}}{40 \times 10^{-3}\,\text{A}} = 1.0 \times 10^{-6}\,\text{s} = 1.0\,\mu\text{s}.
+\end{align}
+\textit{Advertencia:} Estas son escalas matemáticas de transferencia de carga, \textbf{no tiempos medidos de caída de $V_{DS}$}, ya que la capacitancia no lineal Miller ($C_{GD}$), la dinámica de los BJTs y el cableado alteran la transición real.
+
+\paragraph{Por qué un seguidor de emisor directo sin adaptación de nivel no eleva $5\,\text{V}$ a $12\,\text{V}$:}
+Si se alimenta el colector de un NPN seguidor a $V_{\text{DRV}} = 12\,\text{V}$ pero su base recibe directamente $V_{\text{IN,H}} = 5\,\text{V}$ desde un microcontrolador, la unión base-emisor impone por KVL:
+\begin{equation}
+    V_{\text{OUT,H}} = V_{B,\text{H}} - V_{BE,\text{N}} \approx 5.0\,\text{V} - 0.7\,\text{V} = 4.3\,\text{V}.
+\end{equation}
+Por consiguiente, se requiere una \textbf{etapa previa de adaptación de nivel (\textit{level shifter})} de dos inversores NPN en cascada (\texttt{Q1} y \texttt{Q2}) para transformar la señal lógica $0/5\,\text{V}$ en un mando en fase de $0/12\,\text{V}$ antes de atacar las bases del par complementario \textit{push-pull} (\texttt{Q3} NPN / \texttt{Q4} PNP).
+
+\subsection*{4.2 Esquema Completo de Nodos E2 (Doble Inversor NPN + Push-Pull BJT)}
+
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{circuitikz}[scale=0.88, transform shape, thick]
+    \coordinate (gnd_line) at (0, -3.2);
+
+    % Alimentación DRV compartida y desacoplos (Clarificados a la izquierda superior)
+    \draw (-12, 4.5) node[above]{\textbf{$+12\,\text{V}_{\text{DRV}}$}} -- (-7.5, 4.5) coordinate (drv_rail);
+    \draw (-11.5, 4.5) to[pC, l_={$C_2$ ($10\,\mu\text{F}$)}] (-11.5, 2.0) -- (-11.5, 2.0 |- gnd_line) node[ground]{};
+    \draw (-9.5, 4.5) to[C, l={$C_1$ ($100\,\text{nF}$)}] (-9.5, 2.0) -- (-9.5, 2.0 |- gnd_line) node[ground]{};
+
+    % Entrada VIN y red de base Q1
+    \draw (-12, 0) to[V, l_={$V_{\text{IN}}$ ($0/5\,\text{V}$)}] (-12, 0 |- gnd_line) node[ground]{};
+    \draw (-12, 0) node[circle, fill, inner sep=1.5pt]{} node[above]{\texttt{in}} to[R, l={$R_{\text{IN}}$ ($2.2\,\text{k}\Omega$)}] (-9.2, 0) coordinate (b1);
+    \draw (b1) node[circle, fill, inner sep=1.5pt]{} node[above]{\texttt{b1}} to[R, l={$R_{\text{PDB1}}$ ($10\,\text{k}\Omega$)}] (b1 |- gnd_line) node[ground]{};
+
+    % Primer inversor NPN Q1
+    \draw (-7.5, 0) node[npn, anchor=B] (Q1) {};
+    \node[right=0.1cm] at (Q1.E) {\textbf{Q1}};
+    \draw (b1) -- (Q1.B);
+    \draw (Q1.E) -- (Q1.E |- gnd_line) node[ground]{};
+    \coordinate (nodeA) at ($(Q1.C) + (0, 1.0)$);
+    \draw (Q1.C) -- (nodeA) node[circle, fill, inner sep=1.5pt]{} node[left=0.1cm]{\textbf{A}};
+    \draw (nodeA) to[R, l_={$R_1$ ($4.7\,\text{k}\Omega$)}] (nodeA |- drv_rail);
+    
+    % Riel DRV se extiende
+    \draw (drv_rail) -- (-3.0, 4.5) coordinate (drv_rail2);
+
+    % Acoplamiento A -> R2 -> Base Q2
+    \draw (nodeA) to[R, l={$R_2$ ($4.7\,\text{k}\Omega$)}] ($(nodeA) + (3.2, 0)$) coordinate (b2_top);
+    \draw (-3.0, 0) node[npn, anchor=B] (Q2) {};
+    \node[right=0.1cm] at (Q2.E) {\textbf{Q2}};
+    \draw (b2_top) |- (Q2.B) node[above left=0.05cm]{\texttt{b2}};
+    \draw (Q2.E) -- (Q2.E |- gnd_line) node[ground]{};
+    \coordinate (nodeCMD) at ($(Q2.C) + (0, 1.0)$);
+    \draw (Q2.C) -- (nodeCMD) node[circle, fill, inner sep=1.5pt]{} node[left=0.1cm]{\textbf{CMD}};
+    \draw (nodeCMD) to[R, l_={$R_{\text{PU2}}$ ($2.2\,\text{k}\Omega$)}] (nodeCMD |- drv_rail2);
+    
+    % Riel DRV se extiende hasta Push-Pull
+    \draw (drv_rail2) -- (2.2, 4.5);
+
+    % Resistencia RB hacia bases del Push-Pull (Q3 / Q4)
+    \draw (nodeCMD) to[R, l_={$R_B$ ($470\,\Omega$)}] ($(nodeCMD) + (3.0, 0)$) coordinate (bout);
+    \filldraw (bout) circle (1.5pt) node[above left=0.05cm]{\texttt{bout}};
+
+    % Par complementario Q3 (NPN) y Q4 (PNP)
+    \draw (2.2, 3.0) node[npn] (Q3) {};
+    \node[right=0.1cm] at (Q3.C) {\textbf{Q3} (NPN)};
+    \draw (2.2, -0.4) node[pnp] (Q4) {};
+    \node[right=0.1cm] at (Q4.C) {\textbf{Q4} (PNP)};
+
+    \draw (Q3.B) -- (Q4.B);
+    \draw (bout) -- (bout -| Q3.B);
+    \draw (Q3.C) -- (2.2, 4.5); % Conecta al riel VDRV principal
+    \draw (Q4.C) -- (Q4.C |- gnd_line) node[ground]{};
+
+    % Salida OUT de emisores unidos hacia RG y MOSFET M1
+    \draw (Q3.E) -- (Q4.E) node[midway, circle, fill, inner sep=1.5pt] (out) {};
+    \node[left=0.08cm] at (out) {\textbf{OUT}};
+    \draw (out) to[R, l={$R_G$ ($220\,\Omega$)}] ++(3.2, 0) coordinate (gate_node);
+    \filldraw (gate_node) circle (1.5pt) node[above]{\textbf{GATE}};
+    \draw (gate_node) to[R, l={$R_{PD}$ ($100\,\text{k}\Omega$)}] (gate_node |- gnd_line) node[ground]{};
+
+    % MOSFET M1 y carga RLOAD
+    \draw (gate_node) -- ++(1.0, 0) node[nigfete, anchor=G] (M1) {};
+    \node[right=0.15cm] at (M1.D) {\textbf{M1}};
+    \draw (M1.S) -- (M1.S |- gnd_line) coordinate (gnd_m1) node[ground]{};
+    \draw (M1.B) -- ++(0.5, 0) |- (gnd_m1);
+    \draw (M1.D) to[R, l_={$R_L$ ($100\,\Omega$)}] ($(M1.D) + (0, 2.5)$) node[above]{\textbf{$+12\,\text{V}_{\text{BUS}}$}};
+\end{circuitikz}
+}
+\end{center}
+
+\paragraph{Cálculo de polarización de la etapa de adaptación (\texttt{Q1} y \texttt{Q2}):}
+Cuando $V_{\text{IN}} = 5.0\,\text{V}$ y la unión base-emisor de \texttt{Q1} conduce ($V_{B1} \approx 0.7\,\text{V}$):
+\begin{align}
+    I_{R_{\text{IN}}} &= \frac{V_{\text{IN}} - V_{B1}}{R_{\text{IN}}} = \frac{5.0\,\text{V} - 0.7\,\text{V}}{2.2\,\text{k}\Omega} \approx 1.955\,\text{mA}, \qquad I_{R_{\text{PDB1}}} = \frac{V_{B1}}{R_{\text{PDB1}}} = \frac{0.7\,\text{V}}{10\,\text{k}\Omega} = 0.070\,\text{mA}, \\
+    I_{B1} &= I_{R_{\text{IN}}} - I_{R_{\text{PDB1}}} \approx 1.955\,\text{mA} - 0.070\,\text{mA} = 1.885\,\text{mA}.
+\end{align}
+Con \texttt{Q1} saturado ($V_A = V_{CE1,\text{sat}} \approx 0.2\,\text{V}$), \texttt{Q2} permanece en corte y la corriente por $R_1$ es:
+\begin{equation}
+    I_{R1,\text{sat}} = \frac{V_{\text{DRV}} - V_{CE1,\text{sat}}}{R_1} = \frac{12.0\,\text{V} - 0.2\,\text{V}}{4.7\,\text{k}\Omega} = \frac{11.8\,\text{V}}{4700\,\Omega} \approx 2.511\,\text{mA}.
+\end{equation}
+Cuando $V_{\text{IN}} = 0\,\text{V}$, \texttt{Q1} entra en corte y la serie $R_1 + R_2$ inyecta corriente a la base de \texttt{Q2} ($V_{B2} \approx 0.7\,\text{V}$):
+\begin{equation}
+    I_{B2} = \frac{V_{\text{DRV}} - V_{B2}}{R_1 + R_2} = \frac{12.0\,\text{V} - 0.7\,\text{V}}{4.7\,\text{k}\Omega + 4.7\,\text{k}\Omega} = \frac{11.3\,\text{V}}{9.4\,\text{k}\Omega} \approx 1.202\,\text{mA}, \qquad I_{R_{\text{PU2}},\text{sat}} = \frac{12.0\,\text{V} - 0.2\,\text{V}}{2.2\,\text{k}\Omega} \approx 5.364\,\text{mA}.
+\end{equation}
+
+\par\vspace{0.1cm}\noindent
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\linewidth}{|l|l|l|X|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Nodo} & \textbf{$V_{\text{IN}} = 0\,\text{V}$} & \textbf{$V_{\text{IN}} = 5\,\text{V}$} & \textbf{Criterio Técnico a Comprobar} \\ \hline
+\textbf{A} & Alto & Bajo ($\approx V_{CE1,\text{sat}}$) & Primera inversión lógica (\texttt{Q1}) \\ \hline
+\textbf{CMD} & Bajo ($\approx V_{CE2,\text{sat}}$) & Alto ($\approx 12\,\text{V}$) & Segunda inversión lógica (\texttt{Q2}, restaura fase) \\ \hline
+\textbf{OUT} & Bajo ($\approx V_{CE2,\text{sat}} + |V_{BE4}|$) & Orden de $10\text{--}11.3\,\text{V}$ & Verificar driver y margen $V_{GS}$ \\ \hline
+\textbf{GATE} & Bajo / Apagado & Excitación efectiva medida & Verificar flancos y ausencia de sobreimpulso \\ \hline
+\textbf{DRAIN} & $\approx 12\,\text{V}$ & $\approx 0\,\text{V}$ (si \texttt{M1} conduce) & Medir y comparar frente a E1 directo \\ \hline
+\end{tabularx}
+
+\subsection*{4.3 Netlist LTspice E2 (Copiar a \texttt{E2\_estudio.cir})}
+\begin{verbatim}
+* E2: doble inversor + push-pull BJT - SOLO MODELOS FICTICIOS
+* No validado con modelos comerciales ni ensayado fisicamente
+VCC vcc 0 12
+VBUS bus 0 12
+RLOAD bus drain 100
+VIN in 0 PULSE(0 5 1m 1u 1u 5m 10m)
+RIN in b1 2.2k
+RPDB1 b1 0 10k
+Q1 a b1 0 NPN_DEMO
+R1 vcc a 4.7k
+R2 a b2 4.7k
+Q2 cmd b2 0 NPN_DEMO
+RPU2 vcc cmd 2.2k
+RB cmd bout 470
+Q3 vcc bout out NPN_DEMO
+Q4 0 bout out PNP_DEMO
+RG out gate 220
+RPD gate 0 100k
+M1 drain gate 0 0 NMOS_DEMO
+CGS gate 0 10n
+CGD gate drain 2n
+CDECO vcc 0 100n
+.model NPN_DEMO NPN (IS=1e-14 BF=100)
+.model PNP_DEMO PNP (IS=1e-14 BF=100)
+.model NMOS_DEMO NMOS (LEVEL=1 VTO=2 KP=4 LAMBDA=0.01 RD=0.02 RS=0.02)
+.tran 0 31m 0 0.1u
+.end
+\end{verbatim}
+
+\end{document}

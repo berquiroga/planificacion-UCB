@@ -1,0 +1,129 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, calc}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{enumitem}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{ucbgray}{RGB}{240, 244, 248}
+\definecolor{warnred}{RGB}{180, 20, 20}
+
+\begin{document}
+
+\noindent
+{\LARGE \textbf{\textcolor{ucbblue}{IMT-221 — Circuitos Electrónicos III}}}\\[0.15cm]
+{\Large \textbf{Hito 3: Guía Única de Desarrollo Experimental E1 $\rightarrow$ E4 — Índice y BOM}}\\[0.1cm]
+{\small \textbf{Versión de trabajo 1.0} $\cdot$ 3 de noviembre de 2026 $\cdot$ Universidad Católica Boliviana ``San Pablo'' Sede Tarija}
+\par\vspace{0.2cm}\noindent\rule{\linewidth}{0.4pt}\vspace{0.3cm}
+
+\noindent
+\textbf{Propósito general:} Diseñar, simular, construir, medir y documentar un sistema de accionamiento electrónico incremental: \textbf{E1 interruptor NMOS low-side resistivo $\rightarrow$ E2 driver BJT sourcing/sinking $\rightarrow$ E3 conmutación de carga inductiva protegida $\rightarrow$ E4 puente H físico con control de shoot-through, pérdidas y análisis térmico con Python}. Todos los equipos deben alcanzar la misma meta. Si un equipo está retrasado, recupera las etapas previas siguiendo esta misma guía y conserva sus evidencias; no existen rutas curriculares alternativas.
+
+\vspace{0.15cm}
+\noindent
+\textbf{\textcolor{warnred}{Alcance de seguridad:}} Esta guía \textbf{no autoriza energizar} ningún circuito. El docente o encargado verifica y firma \textbf{G1, G2, G3 y G4} de manera independiente sobre el montaje real. Los componentes aún no confirmados y los detalles de E3/E4 que dependen del motor, diodos y dispositivos comerciales deben dimensionarse y aprobarse antes de conectarlos. Un netlist genérico no sustituye un diseño físico validado.
+
+\section*{0. Índice de Trabajo, Entregables y Control de Avance}
+
+\begin{center}
+\resizebox{\linewidth}{!}{
+\begin{tikzpicture}[
+    node distance=1.6cm,
+    stage/.style={draw=ucbblue, very thick, fill=ucbgray, rounded corners=4pt, minimum width=4.6cm, minimum height=1.7cm, align=center},
+    gate/.style={draw=warnred, very thick, fill=red!10, circle, minimum size=1.0cm, font=\bfseries\color{warnred}}
+]
+    \node[stage] (E1) {\textbf{Etapa E1}\\NMOS Low-Side\\Carga Resistiva $100\,\Omega$};
+    \node[gate, right=0.8cm of E1] (G1) {G1};
+    \node[stage, right=0.8cm of G1] (E2) {\textbf{Etapa E2}\\Doble Inversor NPN +\\Push-Pull BJT ($0\text{-}5\,\text{V} \rightarrow 12\,\text{V}$)};
+    \node[gate, right=0.8cm of E2] (G2) {G2};
+    \node[stage, right=0.8cm of G2] (E3) {\textbf{Etapa E3}\\Carga Inductiva $L/R$ +\\Diodo Recirculación $D_F$};
+    \node[gate, right=0.8cm of E3] (G3) {G3};
+    \node[stage, right=0.8cm of G3] (E4) {\textbf{Etapa E4 (Hito 3)}\\Puente H Físico (PMOS/NMOS)\\Dead-Time + Térmica Python};
+    \node[gate, right=0.8cm of E4] (G4) {G4};
+
+    \draw[-{Stealth[length=3mm]}, very thick, ucbblue] (E1) -- (G1);
+    \draw[-{Stealth[length=3mm]}, very thick, warnred] (G1) -- (E2);
+    \draw[-{Stealth[length=3mm]}, very thick, ucbblue] (E2) -- (G2);
+    \draw[-{Stealth[length=3mm]}, very thick, warnred] (G2) -- (E3);
+    \draw[-{Stealth[length=3mm]}, very thick, ucbblue] (E3) -- (G3);
+    \draw[-{Stealth[length=3mm]}, very thick, warnred] (G3) -- (E4);
+    \draw[-{Stealth[length=3mm]}, very thick, ucbblue] (E4) -- (G4);
+\end{tikzpicture}
+}
+\end{center}
+
+\par\vspace{0.1cm}\noindent
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\linewidth}{|p{1.2cm}|p{6.2cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{7.5cm}|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Etapa} & \textbf{Resultado Exigido} & \textbf{Condición Obligatoria para Continuar} & \textbf{Evidencias Requeridas} \\ \hline
+\textbf{E1} & NMOS low-side conmuta carga resistiva & \textbf{G1} y diagnóstico de excitación; si no se autoriza la prueba, dejar bloqueo documentado & Esquema, cálculo, LTspice, valores reales $V_{GS}$, $V_{DS}$, $I_D$ si autorizados \\ \hline
+\textbf{E2} & Driver BJT con adaptación de $0\text{--}5\,\text{V}$ a excitación de gate, sourcing/sinking & \textbf{G2}, BJTs identificados, alimentación/arranque seguro y verificación de control sin bus & Esquema de nodos, cálculo de bases, LTspice, niveles y transitorios \\ \hline
+\textbf{E3} & NMOS de E2 conmuta una carga inductiva con trayectoria de recirculación verificada & \textbf{G3}, motor/bobina y diodo dimensionados, estrategia OFF documentada & Corriente y tensión transitoria, protección y análisis de energía \\ \hline
+\textbf{E4} & Puente H físico controlado y protegido, con mediciones y pérdidas/térmica & \textbf{G4}, drivers high-side y low-side, enclavamientos/dead time, control de estados, prueba en frío & Tabla de estados, LTspice, formas de onda, pruebas sin y con motor, Python e informe \\ \hline
+\end{tabularx}
+
+\vspace{0.3cm}
+\noindent
+\textbf{Fechas comunicadas:} Examen individual EC3: \textbf{06/11/2026}; Entrega Hito 3: \textbf{20/11/2026}; Recuperatorio U3/U4: \textbf{27/11/2026}. El examen escrito es independiente de la entrega física final.
+
+\subsection*{Convenciones de Notación y Trazabilidad}
+\begin{itemize}[noitemsep, topsep=2pt]
+    \item \textbf{Variables eléctricas:} $V_{BUS}$: tensión de potencia; $V_{DRV}$: alimentación de driver; $V_{IN}$: señal lógica; $G$: gate, $D$: drain, $S$: source; $V_{GS} = V_G - V_S$, $V_{DS} = V_D - V_S$.
+    \item \textbf{Parámetros de circuito:} $R_L$: carga resistiva E1/E2; $R_G$: resistor serie de gate; $R_{PD}$: pull-down gate--source; $Q_g$: carga total de gate \textbf{bajo condiciones de ficha}.
+    \item \textbf{Etiquetas de origen de datos:} Para \textbf{cada cifra} indicar su origen: \texttt{CALC} (calculado), \texttt{PRED} (predicho), \texttt{SIM} (simulado en LTspice, con archivo y log), \texttt{MED} (medido con instrumento) o \texttt{PEND} (pendiente). Prohibido copiar valores \texttt{CALC} como \texttt{MED}.
+    \item \textbf{Identificación física:} Registrar fabricante, código completo, encapsulado y fecha de consulta del datasheet del transistor montado. Un nombre impreso similar no garantiza el mismo pinout.
+\end{itemize}
+
+\newpage
+\section*{1. BOM Maestra Única (Por Equipo — Cantidades Acumulativas)}
+Esta tabla sustituye las listas dispersas. \textbf{\texttt{C}} significa candidato de diseño (no existencia ni compra confirmada); \textbf{\texttt{V}} exige verificación de pieza comercial exacta antes de la puerta G correspondiente. Anotar en copia adjunta: proveedor, precio, cantidad real, datasheet y estado (\texttt{disponible / solicitado / pendiente / reemplazado / aprobado}).
+
+\par\vspace{0.15cm}\noindent
+\renewcommand{\arraystretch}{1.2}
+{\footnotesize
+\begin{tabularx}{\linewidth}{|p{1.3cm}|p{2.2cm}|p{6.8cm}|c|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Etapa} & \textbf{Referencia} & \textbf{Elemento y Valor Inicial} & \textbf{Cant.} & \textbf{Estado / Condición de Aceptación} \\ \hline
+E1--E3 & \texttt{M1} & \textbf{IRLZ44N o IRFZ44N}, NMOS TO-220 & 1 & Dispositivo adquirido; pinout y fabricante \textbf{V} \\ \hline
+E1--E2 & \texttt{RL} & \textbf{$100\,\Omega$}, resistor de potencia; evaluar \textbf{$5\,\text{W}$} & 1 & La potencia en ON ideal es $1.44\,\text{W}$; derating y temperatura \textbf{V} \\ \hline
+E1--E3 & \texttt{RG} & \textbf{$220\,\Omega$} como punto inicial, $1/4\,\text{W}$ si rating apto & 1 & Revisar frente a fuente, $Q_g$ y transitorios \\ \hline
+E1--E3 & \texttt{RPD} & \textbf{$100\,\text{k}\Omega$}, gate--source & 1 & Estado OFF estable \textbf{V} \\ \hline
+E1--E4 & Alimentación & Fuente \textbf{$12\,\text{V}$ DC}, limitación corriente & 1 (comp.) & Límites, salida y tierras \textbf{V} \\ \hline
+E1--E4 & Señal & Generador $0-10\text{V}$ o Arduino Uno $5\,\text{V}$ & 1 & Medir $V_{min}$, $V_{max}$, $f$, duty \textbf{V} \\ \hline
+E1--E4 & Instrumentos & Osciloscopio, sondas, multímetro & comp. & Tierras y máximos \textbf{V} \\ \hline
+E2 & \texttt{Q1, Q2, Q3} & \textbf{P2N2222A} (NPN, candidato) & 3 & \textbf{C/V}; comprobar pinout, corrientes y térmica \\ \hline
+E2 & \texttt{Q4} & \textbf{PN2907A} (PNP, candidato) & 1 & \textbf{C/V}; comprobar pinout, corrientes y térmica \\ \hline
+E2 & \texttt{RIN, RPU2} & \textbf{$2.2\,\text{k}\Omega$} & 2 & \textbf{C}, cálculo y medición previos \\ \hline
+E2 & \texttt{R1, R2} & \textbf{$4.7\,\text{k}\Omega$} & 2 & \textbf{C}, corrientes y estados previos \\ \hline
+E2 & \texttt{RB} & \textbf{$470\,\Omega$} & 1 & \textbf{C}, carga dinámica y bases \textbf{V} \\ \hline
+E2 & \texttt{RPDB1} & \textbf{$10\,\text{k}\Omega$} & 1 & \textbf{C}, verifica arranque y apagado \\ \hline
+E2--E4 & \texttt{C1} & \textbf{$100\,\text{nF}$} cerámico, $\ge 25\,\text{V}$ & 1 mín/drv & \textbf{C}, colocar junto a transistores del driver \\ \hline
+E2--E4 & \texttt{C2} & \textbf{$10\,\mu\text{F}$} electrolítico, $\ge 25\,\text{V}$ & 1 mín. & \textbf{C}, polaridad y ripple \textbf{V} \\ \hline
+E2--E4 & Cableado & Placa, bornes, cables, conectores & s/diseño & Corrientes, conexiones \textbf{V}; protoboard no es apta E4 \\ \hline
+E3 & \texttt{L1/MOTOR} & Bobina o motor DC \textbf{según docente} & 1 & \textbf{PEND}: tensión, $I_{nom}$, inductancia, temperatura \\ \hline
+E3 & \texttt{DF} & Diodo de recirculación \textbf{a seleccionar} & 1 & \textbf{PEND}: $V_{RRM}$, $I_{max}$, disipación y polaridad \\ \hline
+E4 & \texttt{PH1, PH2} & \textbf{IRF4905}, PMOS high-side, \textbf{candidato} & 2 & \textbf{C/V}: $\pm V_{GS,max}$ y pinout; consultar stock \\ \hline
+E4 & \texttt{NL1, NL2} & \textbf{IRLZ44N o IRFZ44N}, NMOS low-side & 2 & \textbf{C/V}: disponer de 2 unidades \\ \hline
+E4 & Adaptación P & Transistores BJT level shift + resistencias & 2 canales & \textbf{PEND}: diseñar/simular con part numbers \\ \hline
+E4 & Drivers N & Etapas E2 adaptadas y revisadas por rama & 2 canales & \textbf{PEND}: coordinación, disipación y desconexión \\ \hline
+E4 & Control & Lógica de enclavamiento y dead time & 1 & \textbf{PEND}: tabla de estados y fallas \\ \hline
+\end{tabularx}
+}
+
+\vspace{0.3cm}
+\noindent
+\textbf{Regla de compras:} Ya se pueden consultar \texttt{P2N2222A}, \texttt{PN2907A} y los pasivos de E2. \textbf{No comprar por intuición} el diodo de E3 ni asumir que un \texttt{IRF4905} resuelve por sí solo el high-side de E4. La BOM para E4 es una especificación condicionada al motor y diseño final de los drivers.
+
+\end{document}
