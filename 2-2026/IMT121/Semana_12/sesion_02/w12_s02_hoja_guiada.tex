@@ -1,0 +1,109 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage[american]{circuitikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Worksheet EC3}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Hoja de Trabajo: Fundamentos de Segundo Orden RLC}]
+    \centering \textbf{Energía, Ecuación Diferencial y Clasificación de Respuestas}
+\end{tcolorbox}
+
+\textbf{Estudiante:} \hrulefill \quad \textbf{Fecha:} \hrulefill
+
+\vspace{0.4cm}
+\section*{Parte I: Elementos y Estados}
+Complete sin consultar apuntes:
+
+\vspace{0.2cm}
+\renewcommand{\arraystretch}{1.8}
+\noindent
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight}p{2.8cm} >{\RaggedRight\arraybackslash}X >{\RaggedRight\arraybackslash}X >{\RaggedRight\arraybackslash}X}
+\toprule
+\textbf{Elemento} & \textbf{Energía o Potencia Disipada} & \textbf{Variable de Estado ($0^-$ a $0^+$)} & \textbf{Ley Constitutiva} \\ 
+\midrule
+Capacitor (C) & \vspace{0.6cm} & & \\ \addlinespace
+Inductor (L)  & \vspace{0.6cm} & & \\ \addlinespace
+Resistor (R)  & No almacena energía (no tiene inercia) & No tiene estado inicial propio & $v_R = R \cdot i$ \\ 
+\bottomrule
+\end{tabularx}
+
+\vspace{0.4cm}
+\section*{Parte II: Relación Gráfica y Derivadas}
+Observe un transitorio suave hipotético $v_C(t)$ que parte de $0\,\text{V}$, asciende con pendiente positiva pero cada vez menos pronunciada, llega a un máximo global suave, y luego decae hacia un estado estacionario.
+\begin{enumerate}
+    \item Antes de llegar al pico, si la tensión sube, el signo de $v_C'$ es: \rule{2cm}{0.4pt}
+    \item Como la pendiente positiva es cada vez menor, el signo de $v_C''$ es: \rule{2cm}{0.4pt}
+    \item Exactamente en el punto de máxima tensión (el pico), $v_C'$ vale: \rule{2cm}{0.4pt}. \par
+    \vspace{0.1cm}
+    ¿Se deduce automáticamente que en ese mismo instante $v_C(t) = 0$? \rule{2cm}{0.4pt}
+\end{enumerate}
+
+\vspace{0.2cm}
+\section*{Parte III: Reconstruyendo el Modelo RLC}
+Para un lazo cerrado simple $v_s(t) \to R_{tot} \to L \to C \to \text{GND}$, con la corriente $i(t)$ circulando en serie. Complete los espacios para armar la EDO:
+
+\begin{enumerate}\setlength\itemsep{0.4cm}
+    \item Ley de voltajes (KVL): $v_s = \rule{1.5cm}{0.4pt} + \rule{1.5cm}{0.4pt} + \rule{1.5cm}{0.4pt}$
+    \item Sustituciones pasivas: $v_R = \rule{1.5cm}{0.4pt}$; \quad $v_L = \rule{1.5cm}{0.4pt}$; \quad $i = i_C = \rule{1.5cm}{0.4pt}$
+    \item Derivando la corriente para sustituir en $v_L$: $\frac{di}{dt} = \rule{2cm}{0.4pt}$
+    \item Sustituya 2 y 3 en la ecuación 1: \par
+    \vspace{0.1cm}
+    $v_s = R_{tot} (\rule{2cm}{0.4pt}) + L (\rule{2cm}{0.4pt}) + v_C$
+    \item Reordene a la forma estándar: \par
+    \vspace{0.1cm}
+    $\rule{1.5cm}{0.4pt} v_C'' + \rule{1.5cm}{0.4pt} v_C' + v_C = \rule{1.5cm}{0.4pt}$
+    \item ¿La ecuación del punto 5 es por sí sola una "curva trazable"? ¿Por qué? \par
+    \vspace{0.2cm}
+    \noindent\rule{\textwidth}{0.4pt}
+\end{enumerate}
+
+\vspace{0.2cm}
+\section*{Parte IV: Cálculo Predictivo de un Candidato Nominal}
+Tenemos un candidato para un futuro montaje físico: \textbf{$L = 10\,\text{mH}$ y $C = 1\,\mu\text{F}$}. 
+\begin{enumerate}\setlength\itemsep{0.3cm}
+    \item Calcule la frecuencia angular natural no amortiguada $\omega_0$ [rad/s]: \rule{3cm}{0.4pt}
+    \item Conviértala a frecuencia en Hertz $f_0$: \rule{3cm}{0.4pt}
+    \item Calcule la resistencia crítica total $R_{crit}$ límite del sistema: \rule{3cm}{0.4pt}
+    \item Si se utiliza un resistor externo de $100\,\Omega$, sabiendo que el generador aporta $50\,\Omega$ y el inductor tiene un DCR de $12\,\Omega$, determine: \par
+    \vspace{0.1cm}
+    $R_{tot} =$ \rule{2cm}{0.4pt} \hspace{1.5cm} Factor $\zeta =$ \rule{2cm}{0.4pt}
+    \item Prediga el régimen temporal de la curva: \rule{6cm}{0.4pt}
+\end{enumerate}
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=red!5!white, colframe=red!70!black, title=\textbf{Exit Ticket: Verificación Rápida de Comprensión}]
+1. ¿Cuáles son los dos estados matemáticos iniciales necesarios en el RLC serie? \rule{4cm}{0.4pt} \par
+\vspace{0.3cm}
+2. ¿Qué función física cumple $R_{tot}$ en el circuito? \rule{6cm}{0.4pt} \par
+\vspace{0.3cm}
+3. Un RLC responde a un escalón DC con fuerte sobreimpulso y varias oscilaciones atenuadas antes de descansar. Clasifíquelo y explique físicamente por qué ocurre. \par
+\vspace{0.2cm}
+\noindent\rule{\textwidth}{0.4pt} \par
+\vspace{0.3cm}
+\noindent\rule{\textwidth}{0.4pt}
+\end{tcolorbox}
+
+\end{document}

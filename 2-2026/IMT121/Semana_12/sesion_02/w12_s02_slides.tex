@@ -1,0 +1,215 @@
+% ARTEFACTO 1: Apoyo Visual Compacto RLC (Beamer)
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[american]{circuitikz}
+
+\title[Dinámica de Segundo Orden]{Unidad EC3: Sistemas de Segundo Orden (RLC)}
+\subtitle{Energía, Estados y Formas de Respuesta}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' --- Sede Tarija}
+\date{Semana 12}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{De RC a RLC: Doble Almacenamiento Energético}
+    En un circuito de primer orden (RC), la única "memoria" es el voltaje del capacitor ($v_C$). \\
+    Si introducimos un inductor ($L$) al lazo, la energía ahora puede "rebotar" entre los dos elementos, creando una dinámica de \textbf{segundo orden}.
+    
+    \vspace{0.4cm}
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{El Capacitor}]
+            \begin{itemize}
+                \item $w_C = \frac{1}{2} C v_C^2$ \quad [Joules]
+                \item Estado: Voltaje ($v_C$)
+                \item Por continuidad: $v_C(0^+) = v_C(0^-)$
+            \end{itemize}
+        \end{tcolorbox}
+
+        \column{0.5\textwidth}
+        \begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{El Inductor}]
+            \begin{itemize}
+                \item $w_L = \frac{1}{2} L i_L^2$ \quad [Joules]
+                \item Estado: Corriente ($i_L$)
+                \item Por continuidad: $i_L(0^+) = i_L(0^-)$
+            \end{itemize}
+        \end{tcolorbox}
+    \end{columns}
+    \vspace{0.4cm}
+    \textit{La resistencia ($R$) no almacena estado, puramente disipa: $p_R = R \cdot i^2$ [W].}
+\end{frame}
+
+\begin{frame}{Significado Físico de las Derivadas en el Tiempo}
+    La Ley de Ohm nos permitía usar álgebra simple ($v = i R$). Las leyes constitutivas de $L$ y $C$ nos obligan a usar la \textbf{tasa de cambio temporal} (la derivada).
+    
+    \begin{columns}
+        \column{0.45\textwidth}
+        \begin{center}
+        \begin{circuitikz}[scale=0.9, transform shape]
+            \draw (0,0) to[C, l_={$C$}, v^={$v_C$}, i_={$i_C$}] (2,0);
+        \end{circuitikz}
+        $$i_C = C \frac{dv_C}{dt}$$
+        \small \textit{Una corriente produce una variación en el voltaje.}
+        \end{center}
+
+        \column{0.1\textwidth}
+        \centering
+        \textbf{vs}
+
+        \column{0.45\textwidth}
+        \begin{center}
+        \begin{circuitikz}[scale=0.9, transform shape]
+            \draw (0,0) to[L, l_={$L$}, v^={$v_L$}, i_={$i_L$}] (2,0);
+        \end{circuitikz}
+        $$v_L = L \frac{di_L}{dt}$$
+        \small \textit{Un voltaje produce una variación en la corriente.}
+        \end{center}
+    \end{columns}
+    
+    \vspace{0.4cm}
+    \begin{itemize}
+        \item \textbf{Primera Derivada ($v_C'$):} Pendiente. ¿El voltaje sube o baja?
+        \item \textbf{Segunda Derivada ($v_C''$):} Tasa de cambio de la pendiente (curvatura). 
+    \end{itemize}
+    \textit{Nota: Que el voltaje alcance un "pico" ($v_C' = 0$) no significa que el sistema esté apagado. En ese instante, $i_C = 0$ pero la inercia del sistema sigue operando.}
+\end{frame}
+
+\begin{frame}{Construcción del Modelo Dinámico RLC Serie}
+    \begin{columns}[T]
+        \column{0.4\textwidth}
+        \begin{center}
+        \begin{circuitikz}[scale=0.85, transform shape]
+            \draw (0,0) to[V, v=$v_s(t)$, invert] (0,3) 
+                  to[R, l=$R_{total}$, i=$i(t)$, v=$v_R$] (3,3)
+                  to[L, l=$L$, v=$v_L$] (3,0)
+                  to[C, l=$C$, v=$v_C$] (0,0);
+        \end{circuitikz}
+        \end{center}
+        
+        \column{0.6\textwidth}
+        1. Aplicamos Ley de Voltajes de Kirchhoff (KVL):
+        $$v_s(t) = v_R(t) + v_L(t) + v_C(t)$$
+        
+        2. Sustituimos Ley de Ohm y Ley del Inductor:
+        $$v_s = R_{total} \cdot i + L \frac{di}{dt} + v_C$$
+        
+        3. Identificamos la corriente del lazo por la Ley del Capacitor ($i = i_C = C \frac{dv_C}{dt}$). Por tanto, la derivada de la corriente es:
+        $$\frac{di}{dt} = C \frac{d^2v_C}{dt^2}$$
+        
+        4. Reemplazamos en KVL para unificar variables:
+        $$v_s = R_{total} \left( C \frac{dv_C}{dt} \right) + L \left( C \frac{d^2v_C}{dt^2} \right) + v_C$$
+    \end{columns}
+\end{frame}
+
+\begin{frame}{La Ecuación Diferencial de Segundo Orden}
+    Reordenando y dividiendo toda la expresión entre $LC$ (asumiendo $L>0, C>0$), obtenemos la forma canónica de la EDO de un circuito RLC Serie:
+    
+    \begin{alertblock}{Modelo Matemático RLC Serie}
+        $$\frac{d^2v_C}{dt^2} + \left( \frac{R_{total}}{L} \right) \frac{dv_C}{dt} + \left( \frac{1}{LC} \right) v_C = \frac{1}{LC} v_s(t)$$
+    \end{alertblock}
+    
+    \vspace{0.3cm}
+    \textbf{Interpretación Física de los Términos:}
+    \begin{itemize}
+        \item Término de $\frac{d^2v_C}{dt^2}$: Inercia dinámica asociada al inductor (almacenamiento magnético).
+        \item Término de $\frac{dv_C}{dt}$ (con $R_{total}$): \textbf{Disipación} (Amortiguamiento de la energía en forma de calor por la resistencia de lazo).
+        \item Término $v_C$: Estado elástico de restitución asociado al capacitor.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Parámetros de Diseño: Frecuencia Natural y Amortiguamiento}
+    Para simplificar la ecuación, definimos dos parámetros fundamentales de control:
+    
+    \begin{columns}[T]
+        \column{0.5\textwidth}
+        \begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Frecuencia Natural no Amortiguada}]
+            $$\omega_0 = \frac{1}{\sqrt{LC}} \quad [\text{rad/s}]$$
+            \textit{¿A qué velocidad intercambiarían energía $L$ y $C$ si la resistencia del circuito fuera literalmente cero (sin pérdida de calor)?} \\
+            $f_0 = \frac{\omega_0}{2\pi} \quad [\text{Hz}]$
+        \end{tcolorbox}
+        
+        \column{0.5\textwidth}
+        \begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Factor de Amortiguamiento}]
+            $$\alpha = \frac{R_{total}}{2L} \quad [\text{s}^{-1}]$$
+            \textit{¿Qué tan rápido se disipa o "frena" la energía en la resistencia?}
+        \end{tcolorbox}
+    \end{columns}
+    
+    \vspace{0.4cm}
+    La EDO puede reescribirse elegantemente como:
+    $$v_C'' + 2\alpha v_C' + \omega_0^2 v_C = \omega_0^2 v_s(t)$$
+\end{frame}
+
+\begin{frame}{Regímenes de Amortiguamiento (Factor $\zeta = \alpha / \omega_0$)}
+    La relación entre pérdida resistiva ($\alpha$) y energía reactiva ($\omega_0$) define la forma de la respuesta:
+    
+    \vspace{0.2cm}
+    \begin{itemize}
+        \item \textbf{Subamortiguado ($\zeta < 1$):} Poca resistencia. La energía "rebota" entre el capacitor y el inductor causando \textbf{sobreimpulso} y \textbf{oscilaciones} decrecientes. 
+        \item \textbf{Crítico ($\zeta = 1$):} Ocurre en $R_{crit} = 2\sqrt{\frac{L}{C}}$. Es la resistencia de transición donde el sistema retorna al estado final sin oscilar.
+        \item \textbf{Sobreamortiguado ($\zeta > 1$):} Exceso de resistencia. El circuito es sumamente viscoso, no oscila, y llega asintóticamente a la meta (usualmente más lento que el crítico).
+    \end{itemize}
+    
+    \vspace{0.3cm}
+    \textit{Importante: ¡Tener inductores y capacitores juntos NO garantiza oscilación! Si $R_{total}$ es alta, el sistema aniquilará la oscilación antes de que empiece.}
+\end{frame}
+
+\begin{frame}{Clasificación Nominal (Ejemplo de Aplicación)}
+    Considere un circuito con $L = 10\,\text{mH}$ y $C = 1\,\mu\text{F}$. 
+    \begin{itemize}
+        \item Frecuencia natural: $\omega_0 = \frac{1}{\sqrt{0.01 \cdot 10^{-6}}} = 10,000\,\text{rad/s}$ ($f_0 \approx 1.59\,\text{kHz}$).
+        \item Resistencia crítica total: $R_{crit} = 2\sqrt{\frac{10\text{mH}}{1\mu\text{F}}} = \mathbf{200\,\Omega}$.
+    \end{itemize}
+
+    \vspace{0.1cm}
+    \begin{center}
+    \renewcommand{\arraystretch}{1.2}
+    \small
+    \begin{tabular}{cccc}
+    \toprule
+    \textbf{$R_{total}$ hipotética} & $\alpha = \frac{R_{total}}{2L}$ & $\zeta = \frac{R_{total}}{R_{crit}}$ & \textbf{Régimen} \\
+    \midrule
+    $50\,\Omega$ & $2500\,\text{s}^{-1}$ & $0.25$ & \textbf{Subamortiguado (Oscila)} \\
+    $200\,\Omega$ & $10000\,\text{s}^{-1}$ & $1.00$ & \textbf{Críticamente Amortiguado} \\
+    $400\,\Omega$ & $20000\,\text{s}^{-1}$ & $2.00$ & \textbf{Sobreamortiguado (Lento)} \\
+    \bottomrule
+    \end{tabular}
+    \end{center}
+    
+    \vspace{0.1cm}
+    \begin{tcolorbox}[colback=gray!5, colframe=black, title=Física del Mundo Real, boxsep=1pt, left=4pt, right=4pt, top=2pt, bottom=2pt]
+    \small
+    ¡Atención! $R_{total}$ es la resistencia total del lazo, no solo el resistor externo comprado. \\
+    $R_{total} = R_{externa} + R_{generador} + R_{DCR\_bobina} + R_{cables}$.
+    \end{tcolorbox}
+\end{frame}
+
+\end{document}

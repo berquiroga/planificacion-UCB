@@ -1,0 +1,115 @@
+% Archivo: w12_s03_auditoria_ltspice.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage[american]{circuitikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | W12S3 — Artefacto A2}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{warnred}{RGB}{180, 0, 0}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Artefacto A2: Hoja de Auditoría de Ejecución y Contraste LTspice (W12S3)}]
+    \centering \textbf{Verificación de Modelo, Barrido Paramétrico y Trazabilidad de Simulación}
+\end{tcolorbox}
+
+\noindent\textbf{Estudiante:} \hrulefill \quad \textbf{Pareja/Equipo (si aplica):} \rule{3.5cm}{0.4pt} \quad \textbf{Fecha:} 23/10/2026
+
+\vspace{0.2cm}
+\begin{tcolorbox}[colback=gray!5, colframe=gray!60, title=\textbf{Modalidad de Evidencia Computacional (Marque con precisión)}]
+{[$\square$]} \textbf{Ejecución individual observada:} Configuré y corrí LTspice en mi equipo.\par\vspace{0.1cm}
+{[$\square$]} \textbf{Ejecución compartida en pareja:} Acompañé la configuración; archivo compartido (explicación individual obligatoria).\par\vspace{0.1cm}
+{[$\square$]} \textbf{Observación de proyección docente:} Interpreté las curvas reales proyectadas en aula.\par\vspace{0.1cm}
+{[$\square$]} \textbf{Pendiente por acceso (\texttt{execution\_pending\_due\_to\_access}):} Sin PC en sesión; ruta de recuperación a coordinar.
+\end{tcolorbox}
+
+\section*{1. Setup de Referencia y Netlist de Control (T2)}
+\begin{minipage}[t]{0.52\textwidth}
+\vspace{0pt}
+\textbf{Netlist de Referencia:}
+\begin{verbatim}
+* IMT121 W12S3 — RLC serie IDEAL, barrido Rtot
+V1 in 0 PULSE(0 10 100u 1u 1u 5m 10m)
+R1 in n1 {Rtot}
+L1 n1 out 10m
+C1 out 0 1u
+.param Rtot=50
+.step param Rtot list 50 200 400
+.tran 0 3m 0 2u
+.end
+\end{verbatim}
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.45\textwidth}
+\vspace{0pt}
+\textbf{Checklist de Auditoría de Configuración:}
+\begin{itemize}\setlength\itemsep{0.1cm}
+    \item[{[$\square$]}] Nodo \texttt{out} ubicado entre $L_1$ y $C_1$ con terminal inferior de $C_1$ a tierra ($V(\text{out}) = v_C$).
+    \item[{[$\square$]}] Fuente \texttt{PULSE} inicia en $0\,\text{V}$ y sube a $10\,\text{V}$ en $t_s = 100\,\mu\text{s}$ con flanco de $1\,\mu\text{s}$.
+    \item[{[$\square$]}] \textbf{Sin} \texttt{.ic}, \textbf{sin} \texttt{uic} ni \texttt{startup}: punto de operación inicial ordinario en reposo ($v_C=0, i_L=0$).
+    \item[{[$\square$]}] Directiva \texttt{.step param Rtot list 50 200 400} representa tres corridas de modelos ideales distintos.
+\end{itemize}
+\end{minipage}
+
+\section*{2. Registro de Lecturas del Visor LTspice (Ejercicio E2)}
+\textit{Instrucción estricta: Complete las lecturas únicamente a partir de la gráfica real de LTspice (propia o proyectada). No invente datos ni los llene con valores teóricos.}
+
+\vspace{0.2cm}
+\renewcommand{\arraystretch}{1.65}
+\noindent
+\begin{tabularx}{\textwidth}{
+  >{\centering\arraybackslash\hsize=0.65\hsize}X
+  >{\centering\arraybackslash\hsize=0.65\hsize}X
+  >{\centering\arraybackslash\hsize=0.85\hsize}X
+  >{\centering\arraybackslash\hsize=1.05\hsize}X
+  >{\centering\arraybackslash\hsize=1.05\hsize}X
+  >{\centering\arraybackslash\hsize=0.75\hsize}X
+  >{\RaggedRight\arraybackslash\hsize=1.00\hsize}X}
+\toprule
+\textbf{Paso \texttt{Rtot}} & \textbf{$\zeta$ Teórico} & \textbf{Régimen Predicho} & \textbf{Pico $V(\text{out})$ Leído (V)} & \textbf{Instante Abs. $t_{\text{pico}}$ (ms)} & \textbf{Tiempo Rel. $s = t - 0.1\,\text{ms}$} & \textbf{¿Sobreimpulso? (Sí/No)} \\
+\midrule
+$50\,\Omega$  & $0.25$ & Subamortiguado   & & & & \\[0.3cm]
+$200\,\Omega$ & $1.00$ & Crítico          & & & & \\[0.3cm]
+$400\,\Omega$ & $2.00$ & Sobreamortiguado & & & & \\[0.3cm]
+\bottomrule
+\end{tabularx}
+
+\vspace{0.25cm}
+\noindent\textbf{Archivo / Evidencia Entregada:} Nombre de archivo \texttt{.asc} / captura: \hrulefill
+
+\section*{3. Preguntas de Auditoría Conceptual y Causal (E2, E4, E5)}
+\begin{enumerate}\setlength\itemsep{0.45cm}
+    \item \textbf{Contraste directo:} Explique una coincidencia concreta entre su predicción y la curva de LTspice, e indique qué causa una posible diferencia (ej. flanco finito de $1\,\mu\text{s}$ o paso de integración): \par\vspace{0.15cm}
+    \noindent\hrulefill
+
+    \item \textbf{Distinción de nodo y método:} ¿Por qué observar un máximo cercano a $10\,\text{V}$ sin sobreimpulso no basta por sí solo para asegurar que el circuito es crítico sin comparar con otra curva? ¿Qué mediría si coloca la sonda en \texttt{V(n1)}? \par\vspace{0.15cm}
+    \noindent\hrulefill
+
+    \item \textbf{Riesgo conceptual de diseño físico (E4):} \textit{«Compramos $R_{\text{ext}} = 200\,\Omega$ para un RLC con $R_{\text{crit,total}} = 200\,\Omega$. ¿Queda automáticamente en régimen crítico en el protoboard?»} Justifique físicamente: \par\vspace{0.15cm}
+    \noindent\hrulefill
+
+    \item \textbf{Exit Ticket de Logística y Seguridad (E5):} ¿Qué condiciones bloquean la energización del montaje el lunes 26/10 y qué actividad se realiza si el estado es \textbf{NO-GO}? \par\vspace{0.15cm}
+    \noindent\hrulefill
+\end{enumerate}
+
+\end{document}

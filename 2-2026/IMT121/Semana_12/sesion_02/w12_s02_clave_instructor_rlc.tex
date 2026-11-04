@@ -1,0 +1,56 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Clave Docente RLC}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Clave Exclusiva para el Instructor: Taller RLC (W12S2)}]
+    \centering \textbf{Solucionario y Criterios Formativos de Intervención}
+\end{tcolorbox}
+
+\section*{1. Soluciones: Hoja de Trabajo (Artefacto 1)}
+\textbf{Ejercicio 1 (Estados y Energías):} 
+1) C: Eléctrica; L: Magnética. 2) $w_C = \frac{1}{2}Cv_C^2$ [J]; $w_L = \frac{1}{2}Li_L^2$ [J]. 3) Continúan iguales: $v_C(0^+) = \mathbf{2\,\text{V}}$, $i_L(0^+) = \mathbf{15\,\text{mA}}$. 4) $w_C = 2\,\mu\text{J}$; $w_L = 1.125\,\mu\text{J}$. 5) Disipa energía irreversiblemente como calor, no puede devolverla.
+
+\textbf{Ejercicio 2 (Derivación EDO):} 
+1) $v_s = v_R + v_L + v_C$. 2) $v_R = \mathbf{R_{tot} \cdot i}$; $v_L = \mathbf{L \frac{di}{dt}}$; $i_C = \mathbf{C \frac{dv_C}{dt}}$. 3) $\frac{di}{dt} = \mathbf{C \frac{d^2v_C}{dt^2}}$. 4) $\mathbf{LC}v_C'' + \mathbf{R_{tot}C}v_C' + v_C = v_s$. 5) Inercia mag: $\mathbf{LCv_C''}$, Disipador: $\mathbf{R_{tot}Cv_C'}$. 6) No, es solo el modelo de comportamiento. Faltan definir la forma del excitador $v_s(t)$ y obligatoriamente dos estados de reposo inercial iniciales.
+
+\textbf{Ejercicio 3 (Clasificación Analítica Nominal):}
+Cálculos fijos: $\omega_0 = 10,000\,\text{rad/s}$, $f_0 \approx 1591.55\,\text{Hz}$, $R_{crit} = 2\sqrt{L/C} = \mathbf{200\,\Omega}$.
+\begin{itemize}
+    \item \textbf{Curva A:} Subamortiguada ($\zeta = 0.25$). Fija en $R_{tot} = \mathbf{50\,\Omega}$.
+    \item \textbf{Curva B:} Límite Crítico ($\zeta = 1.00$). Fija en $R_{tot} = \mathbf{200\,\Omega}$.
+    \item \textbf{Curva C:} Sobreamortiguada ($\zeta = 2.00$). Fija en $R_{tot} = \mathbf{400\,\Omega}$.
+    \item Modificar R no cambia en absoluto $\omega_0$, pero sí cambia $\zeta$ y modifica la "frecuencia aparente" real de oscilación visualizada ($\omega_d$).
+\end{itemize}
+
+\section*{2. Criterios de Evaluación y Simulación (Artefacto 2)}
+\begin{itemize}
+    \item \textbf{El Pulso SPICE:} Obligue a que los estudiantes configuren la fuente \texttt{PULSE} a partir de $100\,\mu\text{s}$. Esto es crucial; si usan \texttt{uic} en una fuente DC directa, o fuerzan nodos, LTspice no realizará el cálculo \texttt{.op} estacionario real de inercia y podría mostrar curvas ficticias.
+    \item \textbf{Verificación en Pantalla:} $\mathbf{V(out)}$ asume $v_C$. Para medir la inercia inductiva en el simulador sin crear errores de masa (GND), pida que evalúen la corriente del inductor \texttt{I(L1)} y noten cómo en $0^+$ ésta es absolutamente nula, permitiendo la caída libre temporal que eventualmente carga al capacitor.
+    \item \textbf{Respuesta Discrepancia Experimental:} Usar un resistor de banco de $200\,\Omega$ \textbf{garantiza un sistema sobreamortiguado}, porque la impedancia de salida de los generadores de señal (típicamente $50\,\Omega$) y la DCR de la bobina (ej. $12\,\Omega$) se suman a $R_{tot}$, ahogando el factor $\zeta$ por encima de 1.
+\end{itemize}
+
+\end{document}

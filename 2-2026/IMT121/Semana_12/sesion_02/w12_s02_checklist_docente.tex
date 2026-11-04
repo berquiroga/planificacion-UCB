@@ -1,0 +1,80 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Clave y Logística EC3}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{warnred}{RGB}{200, 0, 0}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Clave Docente de Auditoría RLC y Checklist Logístico}]
+    \centering \textbf{Soporte Operativo (W12-S02)}
+\end{tcolorbox}
+
+\section*{1. Solucionario de la Ficha Guiada (Worksheet A2)}
+\begin{itemize}
+    \item \textbf{Parte I:} $C$: $\frac{1}{2}Cv_C^2$, $v_C$, $i_C = C \frac{dv_C}{dt}$. $L$: $\frac{1}{2}Li_L^2$, $i_L$, $v_L = L \frac{di_L}{dt}$. $R$: $p_R = Ri^2$.
+    \item \textbf{Parte II:} Si sube $v_C' > 0$ (+). Si crece cada vez menos, $v_C'' < 0$ (-). En el pico máximo, $v_C' = 0$, lo que implica $i_C = 0$, pero no significa en absoluto que $v_C = 0$.
+    \item \textbf{Parte III:} EDO Final $\to \mathbf{LC v_C'' + R_{tot}C v_C' + v_C = v_s}$. La ecuación por sí misma NO traza una curva; necesita conocerse $v_s(t)$ y obligatoriamente dos estados de reposo inercial iniciales: $v_C(0^+)$ e $i_L(0^+)$ para poder resolverse matemáticamente.
+    \item \textbf{Parte IV (Candidato $10\,\text{mH}$ / $1\,\mu\text{F}$):} $\omega_0 = 10,000\,\text{rad/s}$, $f_0 \approx 1.59\,\text{kHz}$, $R_{crit} = \mathbf{200\,\Omega}$. \textbf{Trampa Experimental:} $R_{tot} = R_{ext} + R_{gen} + R_{DCR} = 100 + 50 + 12 = \mathbf{162\,\Omega}$. El Factor $\zeta = \frac{162}{200} = \mathbf{0.81}$. Sigue siendo \textbf{Subamortiguado}.
+    \item \textbf{Exit Ticket:} Los dos estados requeridos son $v_C(0^+)$ e $i_L(0^+)$. $R_{tot}$ funciona como disipador energético (absorbe energía para que no oscile ad infinitum). Un comportamiento subamortiguado surge porque la disipación resistiva es lo bastante baja como para permitir que la energía siga rebotando momentáneamente entre el campo eléctrico y el magnético antes de morir como calor.
+\end{itemize}
+
+\section*{2. Seguimiento Formativo de Comprensión (Cohorte)}
+\textit{Utilice esta matriz para auditar visualmente los conceptos aprehendidos en sala.}
+\vspace{0.2cm}
+
+\renewcommand{\arraystretch}{1.6}
+\noindent
+% La suma de los anchos de columna (\hsize) es exactamente 6: 1.5 + 0.8 + 0.8 + 0.9 + 0.9 + 1.1 = 6.0
+\begin{tabularx}{\textwidth}{
+  >{\RaggedRight\arraybackslash\hsize=1.5\hsize}X 
+  >{\centering\arraybackslash\hsize=0.8\hsize}X 
+  >{\centering\arraybackslash\hsize=0.8\hsize}X 
+  >{\centering\arraybackslash\hsize=0.9\hsize}X 
+  >{\centering\arraybackslash\hsize=0.9\hsize}X 
+  >{\centering\arraybackslash\hsize=1.1\hsize}X}
+\toprule
+\textbf{Estudiante} & \textbf{Energías \newline (S/P/N)} & \textbf{Derivadas \newline (S/P/N)} & \textbf{KVL a EDO \newline (S/P/N)} & \textbf{Regímenes \newline (S/P/N)} & \textbf{Acción (Status)} \\ 
+\midrule
+ & & & & & \\ \midrule
+ & & & & & \\ \midrule
+ & & & & & \\ \midrule
+ & & & & & \\ \midrule
+ & & & & & \\ 
+\bottomrule
+\end{tabularx}
+\vspace{0.4cm}
+
+\section*{3. Checklist Administrativo / Logístico para Práctica Integrada RLC}
+\begin{tcolorbox}[colback=warnred!5!white, colframe=warnred, title=\textbf{Puerta de Seguridad (GO / NO-GO) - NO AUTORIZAR SIN CHECKS}]
+Esta sesión no autoriza compras ni ensambles físicos hasta tildar:
+\begin{itemize}
+    \item[$\square$] \textbf{Generadores de Funciones:} 3 Operativos reales. Se verificó impedancia de salida interna y capacidad de onda cuadrada a $\sim 1.5\,\text{kHz}$.
+    \item[$\square$] \textbf{Osciloscopios:} 3 Equipos operativos comprobados con sondas calibradas y aislamiento galvanizado/tierras seguro.
+    \item[$\square$] \textbf{Inductancia Real:} Medido el DCR de las bobinas reales seleccionadas con multímetro para incluirlas matemáticamente en el modelo $\zeta$.
+    \item[$\square$] \textbf{Aprobación Institucional:} Fecha y protocolos aprobados. Modalidad en 3 tandas coordinada.
+\end{itemize}
+\end{tcolorbox}
+
+\end{document}

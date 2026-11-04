@@ -1,0 +1,89 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage[american]{circuitikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | LTspice RLC}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Práctica de Simulación y Análisis de Discrepancias: Red RLC Serie}]
+    \centering \textbf{Uso de Barridos Paramétricos (.step param)}
+\end{tcolorbox}
+
+\textbf{Estudiante:} \hrulefill \quad \textbf{Fecha:} \hrulefill
+
+\vspace{0.3cm}
+\begin{tcolorbox}[colback=gray!5, colframe=gray!50, title=\textbf{Modalidad de Evidencia Tecnológica}]
+\textit{Marque su escenario de ejecución para mantener trazabilidad:} \par\vspace{0.2cm}
+{[$\square$]} Ejecución Indiv. \quad {[$\square$]} Ejecución Compartida \quad {[$\square$]} Demostración \quad {[$\square$]} Acceso Pendiente.
+\end{tcolorbox}
+
+\section*{1. Representación del Circuito en SPICE}
+Dibuje el siguiente modelo de simulación utilizando $L=10\,\text{mH}$ y $C=1\,\mu\text{F}$. Para evaluar los 3 regímenes simultáneamente, parametrizaremos la resistencia total.
+\begin{itemize}
+    \item Parámetros fuente: \texttt{PULSE(0 10 100u 1u 1u 5m 10m)}
+    \item Resistencia parametrizada: Valor $\to$ \texttt{\{Rtot\}}
+    \item Directivas a incrustar en el plano: \\
+          \texttt{.param Rtot=50} \\
+          \texttt{.step param Rtot list 50 200 400} \\
+          \texttt{.tran 0 3m 0 2u}
+\end{itemize}
+\textit{Nota: No use comandos \texttt{uic} ni inicialice condensadores artificialmente. SPICE calculará el punto de operación pasivo en $0\,\text{V}$ antes del flanco de los $100\,\mu\text{s}$.}
+
+\section*{2. Tabla de Contraste Experimental}
+Ejecute la simulación. Añada la traza del voltaje en el nodo del capacitor \texttt{V(out)} y complétela:
+\vspace{0.3cm}
+
+\renewcommand{\arraystretch}{1.5}
+\noindent
+% Al usar \hsize matemáticamente distribuido, la suma es 6 (0.8*4 + 1.2 + 1.6 = 6). Garantiza ajuste exacto al \textwidth sin desbordes.
+\begin{tabularx}{\textwidth}{
+  >{\centering\arraybackslash\hsize=0.8\hsize}X 
+  >{\centering\arraybackslash\hsize=0.8\hsize}X 
+  >{\RaggedRight\arraybackslash\hsize=1.2\hsize}X 
+  >{\centering\arraybackslash\hsize=0.8\hsize}X 
+  >{\centering\arraybackslash\hsize=0.8\hsize}X 
+  >{\RaggedRight\arraybackslash\hsize=1.6\hsize}X}
+\toprule
+\textbf{$R_{total}$ Nom.} & \textbf{$\zeta$ Teórico} & \textbf{Régimen Predicho} & \textbf{¿Hay Sobreimpulso?} & \textbf{Lectura Pico Máximo} & \textbf{Observación Causal} \\ 
+\midrule
+$50\,\Omega$ & $0.25$ & & & & \\ \addlinespace
+$200\,\Omega$ & $1.00$ & & & & \\ \addlinespace
+$400\,\Omega$ & $2.00$ & & & & \\
+\bottomrule
+\end{tabularx}
+
+\section*{3. Discusión de Simulación vs. Mundo Real}
+Responda brevemente:
+\begin{enumerate}
+    \item ¿Por qué $v_C(0^+) = 0\,\text{V}$ incluso en la curva azul (Subamortiguada) que supera brutalmente los $10\,\text{V}$? \par
+    \vspace{0.2cm}
+    \noindent\hrulefill
+    
+    \item ¿Qué ocurriría si intentamos verificar esto en protoboard utilizando un resistor exacto de $200\,\Omega$ asumiendo que es crítico? ¿Qué componentes "ocultos" alterarán $\zeta$? \par
+    \vspace{0.2cm}
+    \noindent\hrulefill
+\end{enumerate}
+
+\end{document}

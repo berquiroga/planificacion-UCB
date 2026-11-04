@@ -1,0 +1,149 @@
+% ARTEFACTO A1: EXAMEN ESTUDIANTE (IMPRIMIBLE)
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[american]{circuitikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | EC3 — W13S3}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    \textbf{\Large EVALUACIÓN ESCRITA INDIVIDUAL — RC/RLC}
+\end{center}
+\vspace{0.2cm}
+\textbf{Nombre:} \rule{6cm}{0.4pt} \quad \textbf{Registro:} \rule{3cm}{0.4pt} \quad \textbf{Fecha:} \rule{2.5cm}{0.4pt} \\
+\textbf{Duración efectiva:} 75 min. \quad \textbf{Total:} 60 puntos. \quad \textbf{Calculadora científica:} Permitida. \\
+\textit{Instrucciones: No se permite LTspice, dispositivos conectados a Internet ni resultados de laboratorio propios. Mostrar procedimientos, unidades y justificación física en los espacios designados.}
+
+\vspace{0.3cm}
+\begin{tcolorbox}[colback=white, colframe=black, boxsep=1pt, title=\textbf{Formulario Común Autorizado}]
+\small
+\begin{itemize}\setlength\itemsep{0.1cm}
+    \item $v_C(0^+) = v_C(0^-)$ e $i_L(0^+) = i_L(0^-)$ en conmutaciones ordinarias no impulsivas.
+    \item $\tau = R_{eq} C$; para escalón en $t_s$: $v_C(t) = V_f + (V_i - V_f)e^{-(t-t_s)/\tau}$.
+    \item A una constante de tiempo se ha recorrido $1 - e^{-1} \approx 0.6321$ de la \textbf{variación total}.
+    \item $w_C = \frac{1}{2} C v_C^2$, \quad $w_L = \frac{1}{2} L i_L^2$, \quad $p_R = R_{total} i^2$.
+    \item RLC Serie: $\omega_0 = \frac{1}{\sqrt{LC}}$, \quad $f_0 = \frac{\omega_0}{2\pi}$, \quad $R_{crit,total} = 2\sqrt{\frac{L}{C}}$, \quad $\alpha = \frac{R_{total}}{2L}$, \quad $\zeta = \frac{R_{total}}{R_{crit,total}}$.
+    \item Regímenes: $\zeta < 1$ (Subamortiguado); $\zeta = 1$ (Crítico); $\zeta > 1$ (Sobreamortiguado).
+\end{itemize}
+\end{tcolorbox}
+
+\vspace{0.2cm}
+\section*{P1 — Circuito RC de Primer Orden (18 puntos; $\sim 22$ min)}
+
+\noindent\textbf{Diagrama D1:} Antes de $t=0$ el capacitor $C=40\,\mu\text{F}$ tiene $v_C(0^-) = +2\,\text{V}$ establecido por una red anterior. En $t=0$, el interruptor desconecta totalmente esa red anterior y conecta el capacitor al nodo $a$ del divisor resistivo.
+
+\vspace{0.2cm}
+\begin{center}
+\begin{circuitikz}[scale=0.95, transform shape, thick]
+    % Fuente y divisor
+    \draw (0,0) to[V, l_={$10\,\text{V}$}, invert] (0,3)
+          to[short] (1,3)
+          to[R, l={$R_1=3\,\text{k}\Omega$}] (4,3) node[above]{$a$};
+    \draw (4,3) to[R, l_={$R_2=6\,\text{k}\Omega$}] (4,0);
+    
+    % Capacitor y switch
+    \draw (4,3) to[short, *-o] (5.5,3);
+    \draw (6,3) to[C, l={$C=40\,\mu\text{F}$}, v={$v_C$}] (6,0);
+    \draw (6,3.8) node[above]{\small Red previa} to[short, o-] (6,3);
+    \node[right] at (6, 3.3) {\small $v_C(0^-) = +2\,\text{V}$};
+    
+    % Switch actions
+    \draw[thick] (5.5,3) -- (6,3.8); % Initial state
+    \draw[dashed, -Stealth] (5.8,3.7) arc (120:180:0.6) node[midway, left]{\small $t=0$};
+    
+    % Tierra
+    \draw (0,0) -- (6,0);
+    \draw (3,0) node[ground]{};
+\end{circuitikz}
+\end{center}
+
+\noindent\textbf{P1a (6 pts):} Determine y justifique físicamente $v_C(0^+)$ (3 pts) y $v_C(\infty)$ (3 pts). \par\vspace{0.1cm}
+
+\noindent\textbf{P1b (6 pts):} Obtenga $R_{eq}$ vista desde $C$ después de la conmutación mostrando cómo anula la fuente ideal (3 pts), y calcule $\tau$ asegurando el análisis dimensional (3 pts). \par\vspace{0.1cm}
+
+\noindent\textbf{P1c (4 pts):} Escriba la expresión temporal $v_C(t)$ para $t \ge 0$. Identifique los valores numéricos de $V_i, V_f$ y $\tau$ dentro de su expresión (1 pt identificación, 3 pts función). \par\vspace{0.1cm}
+
+\noindent\textbf{P1d (2 pts):} Calcule $v_C(\tau)$ utilizando el $63.2\%$ del recorrido de la señal, e indique si en ese instante preciso el capacitor ha alcanzado matemáticamente su valor asintótico final. \par\vspace{0.1cm}
+
+\section*{P2 — Circuito RLC Serie (24 puntos; $\sim 30$ min)}
+\noindent\textbf{Diagrama D2:} Circuito serie ideal, partiendo del reposo. $L=10\,\text{mH}$, $C=1\,\mu\text{F}$. Note que la resistencia proporcionada en los apartados ya será la $R_{total}$ del lazo (no es necesario adivinar ni restar valores perdidos).
+
+\vspace{0.2cm}
+\begin{center}
+\begin{circuitikz}[scale=0.9, transform shape, thick]
+    \draw (0,0) to[sV, l_={$v_s(t)$}] (0,2.5) 
+          to[short, i={$i(t)$}] (1.5,2.5)
+          to[R, l={$R_{total}$}, v={$v_R$}] (3.5,2.5)
+          to[L, l={$L=10\,\text{mH}$}, v={$v_L$}] (6,2.5)
+          to[short, -*] (7.5,2.5) node[above]{\texttt{out}};
+    \draw (7.5,2.5) to[C, l={$C=1\,\mu\text{F}$}, v={$v_C$}] (7.5,0);
+    \draw (0,0) -- (7.5,0);
+\end{circuitikz}
+\end{center}
+
+\noindent\textbf{P2a - Energía y Estados (6 pts):} Escriba las \textbf{dos variables de estado} que deben conocerse al iniciar un transitorio en el RLC (2 pts). Identifique qué componente almacena energía eléctrica, cuál magnética, y cuál disipa calor (3 pts). ¿Qué ocurre con los estados $0^-$ a $0^+$ en conmutación ordinaria? (1 pt). \par\vspace{0.1cm}
+
+\noindent\textbf{P2b - Construcción Guiada del Modelo (8 pts):} Partiendo del esquema: i) Escriba la KVL del lazo cerrado (2 pts); ii) Reemplace $v_R$ y $v_L$ por sus leyes de elemento (2 pts); iii) Derive la corriente para $v_L$ usando $i = C v_C'$ (2 pts); iv) Escriba la EDO final de segundo orden e indique por qué esto es solo un \textit{modelo} y no una gráfica resuelta (2 pts). \textit{No resuelva matemáticamente la EDO.} \par\vspace{0.1cm}
+
+\noindent\textbf{P2c - Parámetros y Regímenes (10 pts):} Con $L=10\,\text{mH}$ y $C=1\,\mu\text{F}$, calcule $\omega_0$ y $f_0$ (3 pts) y $R_{crit,total}$ (2 pts). Para un $R_{total} = \mathbf{50\,\Omega}$ y $R_{total} = \mathbf{400\,\Omega}$, calcule $\alpha$ y $\zeta$ (3 pts) y clasifique el régimen justificando por qué uno puede oscilar y el otro no (2 pts). \par\vspace{0.1cm}
+
+\section*{P3 — Interpretación de Señales y Evidencia (18 puntos; $\sim 23$ min)}
+\noindent\textbf{Figura S1:} Curvas sintéticas teóricas ante un escalón $0 \to 10\,\text{V}$ en $t_s=0\,\text{ms}$. Lazo RLC del Diagrama D2 ($10\,\text{mH}, 1\,\mu\text{F}$) partiendo del reposo. Las curvas provienen de evaluar tres valores distintos para $R_{total}$: $50\,\Omega, 200\,\Omega, 400\,\Omega$.
+
+\begin{center}
+\begin{tikzpicture}
+    \begin{axis}[
+        width=14cm, height=6.5cm,
+        xlabel={Tiempo desde el escalón $s$ (ms)}, ylabel={$v_C$ (V)},
+        xmin=0, xmax=1.2, ymin=0, ymax=16,
+        grid=major,
+        legend style={at={(0.95,0.95)}, anchor=north east, font=\footnotesize},
+        title={\textbf{Figura S1: Representación teórica sintética — NO EXPERIMENTAL}}
+    ]
+    % Curva A: 50 Ohms (Subamortiguado, zeta=0.25)
+    \addplot[black, ultra thick, domain=0:1.2, samples=200] {10 - 10*exp(-2.5*x)*(cos(deg(9.682*x)) + (2.5/9.682)*sin(deg(9.682*x)))};
+    \node[anchor=south west] at (axis cs:0.25, 12) {\textbf{\large A}};
+
+    % Curva B: 200 Ohms (Critico, zeta=1.0)
+    \addplot[black, thick, dashed, domain=0:1.2, samples=150] {10 - 10*(1 + 10*x)*exp(-10*x)};
+    \node[anchor=south west] at (axis cs:0.25, 6.5) {\textbf{\large B}};
+
+    % Curva C: 400 Ohms (Sobreamortiguado, zeta=2.0)
+    \addplot[black, thick, dotted, domain=0:1.2, samples=150] {10 - 10*(1.07735*exp(-2.6795*x) - 0.07735*exp(-37.32*x))};
+    \node[anchor=south west] at (axis cs:0.4, 6.0) {\textbf{\large C}};
+    
+    \addplot[gray, dashed, thick] coordinates {(0,10) (1.2,10)};
+    \end{axis}
+\end{tikzpicture}
+\end{center}
+
+\noindent\textbf{P3a - Rasgos Físicos (6 pts):} i) ¿Cuál es el valor inicial y final común? (2 pts). ii) ¿Cuál curva presenta sobreimpulso, y cuánto es el pico aproximado superior a la fuente? (2 pts). iii) ¿Por qué la amplitud de la curva \textbf{A} disminuye con el paso del tiempo? (2 pts). \par\vspace{0.1cm}
+
+\noindent\textbf{P3b - Causalidad (8 pts):} Empareje las letras \textbf{A, B, C} con las resistencias $50\,\Omega, 200\,\Omega, 400\,\Omega$ y su régimen correspondiente (3 pts para R, 3 pts régimen). Explique por qué modificando $R$ cambia tan radicalmente la forma si $\omega_0$ sigue siendo idéntico (2 pts). \par\vspace{0.1cm}
+
+\noindent\textbf{P3c - Evidencia Tecnológica (4 pts):} i) ¿Por qué esta figura no sirve para acreditar ejecución de laboratorio físico? (2 pts). ii) Mencione dos datos instrumentales obligatorios para considerar una captura como trazable y auténtica (2 pts). \par\vspace{0.1cm}
+
+\end{document}

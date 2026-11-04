@@ -1,0 +1,104 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage[american]{circuitikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Taller RLC}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Taller Individual: Circuito RLC de Segundo Orden}]
+    \centering \textbf{Estados, Modelado Matemático y Predicción Cualitativa}
+\end{tcolorbox}
+
+\textbf{Estudiante:} \hrulefill \quad \textbf{Fecha:} \hrulefill
+
+\vspace{0.3cm}
+\noindent \textbf{Convención Base:} El circuito RLC está en topología serie. La fuente $v_s(t)$ introduce un escalón ideal de $0 \to 10\,\text{V}$ en el instante $t_s = 0.10\,\text{ms}$. Defina su escala relativa como $s = t - t_s \ge 0$.
+
+\section*{Ejercicio 1: Estados Iniciales y Energía (10 min)}
+\begin{enumerate}\setlength\itemsep{0.5cm}
+    \item ¿Qué componente almacena energía eléctrica y cuál energía magnética? \par
+    \vspace{0.1cm}
+    \hrulefill
+    
+    \item Escriba las fórmulas para $w_C$ y $w_L$, indicando sus unidades: \par
+    \vspace{0.1cm}
+    \hrulefill
+    
+    \item Si justo \textit{antes} de conmutar se midió $v_C(t_s^-) = 2\,\text{V}$ y $i_L(t_s^-) = 15\,\text{mA}$, ¿Qué valores presentan \textit{inmediatamente después} en una conmutación ordinaria? \par
+    \vspace{0.1cm}
+    $v_C(t_s^+) = $ \rule{4cm}{0.4pt} \hfill $i_L(t_s^+) = $ \rule{4cm}{0.4pt}
+    
+    \item Calcule la energía retenida en cada elemento para $C=1\,\mu\text{F}$ y $L=10\,\text{mH}$ en ese instante: \par
+    \vspace{0.1cm}
+    $w_C(t_s^+) = $ \rule{4cm}{0.4pt} \hfill $w_L(t_s^+) = $ \rule{4cm}{0.4pt}
+    
+    \item ¿Por qué un resistor ideal \textit{no} es considerado una memoria del sistema? \par
+    \vspace{0.1cm}
+    \hrulefill
+\end{enumerate}
+
+\section*{Ejercicio 2: Origen de la Segunda Derivada (15 min)}
+Complete las leyes físicas sin resolver explícitamente la Ecuación Diferencial Ordinaria (EDO):
+\begin{enumerate}\setlength\itemsep{0.6cm}
+    \item Ley de Voltajes de Kirchhoff (KVL): \par
+    \vspace{0.1cm}
+    $v_s = $ \rule{2cm}{0.4pt} $+$ \rule{2cm}{0.4pt} $+$ \rule{2cm}{0.4pt}
+    
+    \item Leyes Elementales: \par
+    \vspace{0.1cm}
+    $v_R = $ \rule{2.5cm}{0.4pt}, \quad $v_L = $ \rule{2.5cm}{0.4pt}, \quad $i = i_C = $ \rule{2.5cm}{0.4pt}
+    
+    \item Dado que C es constante, deduzca la derivada de la corriente: \par
+    \vspace{0.1cm}
+    $\frac{di}{dt} = $ \hrulefill
+    
+    \item Reemplace en la KVL y reordene para obtener el modelo canónico del sistema: \par
+    \vspace{0.1cm}
+    \rule{2cm}{0.4pt} $v_C'' + $ \rule{2cm}{0.4pt} $v_C' + v_C = v_s$
+    
+    \item Encierre en un círculo el término de inercia magnética y subraye el término disipativo.
+    
+    \item ¿La ecuación del inciso 4 dibuja por sí misma una gráfica temporal $v_C(t)$? Explique. \par
+    \vspace{0.1cm}
+    \hrulefill
+\end{enumerate}
+
+\section*{Ejercicio 3: Clasificación Previa (15 min)}
+Para $L=10\,\text{mH}$ y $C=1\,\mu\text{F}$ partiendo del reposo ante el escalón de $10\,\text{V}$, clasifique emparejando la curva con la $R_{total}$ adecuada ($50\,\Omega, 200\,\Omega, 400\,\Omega$):
+\begin{itemize}\setlength\itemsep{0.5cm}
+    \item \textbf{Curva A:} Supera los $10\,\text{V}$ y oscila decrecientemente. \par
+    \vspace{0.1cm}
+    $\implies$ Régimen \rule{4cm}{0.4pt} ; \quad $R_{tot} =$ \rule{2cm}{0.4pt}
+    
+    \item \textbf{Curva B:} Límite exacto antes de oscilar. \par
+    \vspace{0.1cm}
+    $\implies$ Régimen \rule{4cm}{0.4pt} ; \quad $R_{tot} =$ \rule{2cm}{0.4pt}
+    
+    \item \textbf{Curva C:} Lento, no supera los $10\,\text{V}$. \par
+    \vspace{0.1cm}
+    $\implies$ Régimen \rule{4cm}{0.4pt} ; \quad $R_{tot} =$ \rule{2cm}{0.4pt}
+\end{itemize}
+
+\end{document}

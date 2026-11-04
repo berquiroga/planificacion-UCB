@@ -1,0 +1,82 @@
+% ARTEFACTO A2/A3: SOLUCIONARIO, RÚBRICA Y CHECKLIST DOCENTE
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Solucionario W13S3}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Artefacto A2: Solucionario, Rúbrica y Checklist Docente (W13S3)}]
+    \centering \textbf{Uso Exclusivo del Instructor — Contiene Claves de Corrección}
+\end{tcolorbox}
+
+\section*{1. Clave de Corrección: Examen RC/RLC}
+\textit{Política general: Se prioriza el razonamiento. Respete el "error de arrastre" si la metodología posterior al error aritmético inicial fue correcta.}
+
+\vspace{0.2cm}
+\noindent\textbf{P1a (6 pts):} $v_C(0^+) = \mathbf{2\,\text{V}}$ por continuidad física (3 pts). $v_C(\infty) = 10\left(\frac{6\text{k}}{3\text{k}+6\text{k}}\right) = \mathbf{6.667\,\text{V}}$ usando divisor resistivo ya que $C$ actúa como abierto en DC estacionaria (3 pts). \\
+\textbf{P1b (6 pts):} Cortocircuitando la fuente ideal de 10V, $R_{eq} = 3\text{k} \parallel 6\text{k} = \mathbf{2\,\text{k}\Omega}$ (3 pts). $\tau = R_{eq}C = (2000)(40\times 10^{-6}) = \mathbf{0.080\,\text{s}}$ u $80\,\text{ms}$ (3 pts). \\
+\textbf{P1c (4 pts):} Identificación: $V_i=2, V_f=20/3, \tau=0.08$ (1 pt). Ecuación: $\mathbf{v_C(t) = \frac{20}{3} - \frac{14}{3}e^{-t/0.080}\,\text{V}}$ para $t\ge 0$ (3 pts). \\
+\textbf{P1d (2 pts):} Evaluación estricta de recorrido de la señal (no de valor absoluto final): $v_C(\tau) = 2 + (6.667 - 2) \cdot 0.63212 = \mathbf{4.949\,\text{V}}$ (1 pt). No ha llegado al límite final en $1\tau$ (1 pt).
+
+\vspace{0.4cm}
+\noindent\textbf{P2a (6 pts):} Estados inerciales: $v_C$ e $i_L$ (2 pts). Energía $E$: $C$, Mag: $L$, Disipador: $R$ (3 pts). Son continuos, no saltan $v_C(0^+)=v_C(0^-)$ (1 pt). \\
+\textbf{P2b (8 pts):} i) $v_s = v_R + v_L + v_C$ (2 pts). ii) $v_s = R_{tot}i + L\frac{di}{dt} + v_C$ (2 pts). iii) $i = C\frac{dv_C}{dt} \implies \frac{di}{dt} = C\frac{d^2v_C}{dt^2}$ (2 pts). iv) $\mathbf{LCv_C'' + R_{tot}Cv_C' + v_C = v_s}$. Es modelo analítico general, porque sin entrada y condiciones iniciales no dibuja una curva temporal (2 pts). \\
+\textbf{P2c (10 pts):} $\omega_0 = 1/\sqrt{LC} = \mathbf{10,000\,\text{rad/s}}$; $f_0 \approx \mathbf{1591\,\text{Hz}}$ (3 pts). $R_{crit} = 2\sqrt{L/C} = \mathbf{200\,\Omega}$ (2 pts). Para $50\,\Omega$: $\alpha=2500\,\text{s}^{-1}$, $\zeta=\mathbf{0.25}$ (Régimen \textbf{Subamortiguado}). Para $400\,\Omega$: $\alpha=20000\,\text{s}^{-1}$, $\zeta=\mathbf{2.00}$ (Régimen \textbf{Sobreamortiguado}) (3 pts combinados). Oscila si la disipación (R) es lo suficientemente baja para dejar que la energía rebote; no oscila si es tan alta (muy viscoso) que frena al sistema de golpe (2 pts).
+
+\vspace{0.4cm}
+\noindent\textbf{P3a (6 pts):} $V_i = 0\,\text{V}$, $V_f = 10\,\text{V}$ (2 pts). La curva A tiene sobreimpulso con un pico superior de $\approx 4.3\,\text{V}$ (14.3V en total, $43\%$ overshoot) (2 pts). La amplitud decae porque la $R_{tot}$ disipa la energía inicial inyectada convirtiéndola en calor (2 pts). \\
+\textbf{P3b (8 pts):} \textbf{A} $= 50\,\Omega$ (Subamortiguado); \textbf{B} $= 200\,\Omega$ (Crítico); \textbf{C} $= 400\,\Omega$ (Sobreamortiguado) (6 pts). La forma temporal se modifica porque cambia el factor de amortiguamiento $\alpha$ (pérdidas), no la resonancia ideal teórica $\omega_0$ del LC (2 pts). \\
+\textbf{P3c (4 pts):} i) Falta ruido, resolución de DAC real e imperfecciones. Fue calculada algorítmicamente y no proviene de adquisición (2 pts). ii) Dos de: ID osciloscopio, V/div, Time/div, Acoplamiento, Grupo autor (2 pts).
+
+\section*{2. Artefacto A3: Tabla de Especificaciones (Control de Calidad)}
+\renewcommand{\arraystretch}{1.3}
+\noindent
+% Ajuste matemático de columnas X: 0.6 + 1.2 + 0.5 + 0.6 + 0.8 + 1.3 = 5.0
+\begin{tabularx}{\textwidth}{
+  >{\bfseries\hsize=0.6\hsize}X 
+  >{\RaggedRight\arraybackslash\hsize=1.2\hsize}X 
+  >{\centering\arraybackslash\hsize=0.5\hsize}X 
+  >{\centering\arraybackslash\hsize=0.6\hsize}X 
+  >{\centering\arraybackslash\hsize=0.8\hsize}X 
+  >{\RaggedRight\arraybackslash\hsize=1.3\hsize}X}
+\toprule
+\textbf{Reactivo} & \textbf{Competencia Evaluada} & \textbf{Pts} & \textbf{Tiempo} & \textbf{Dificultad} & \textbf{Prerrequisito Razonable} \\
+\midrule
+P1a & Continuidad y final RC & 6 & 6 min & Bás-Med & Divisor C abierto en DC \\
+P1b & R-equivalente y $\tau$ & 6 & 7 min & Media & Apagar fuente de Volt. \\
+P1c & Respuesta $v_C(t)$ & 4 & 6 min & Media & Ecuación general en HOJA \\
+P1d & Umbral de $63.2\%$ & 2 & 3 min & Básica & 63\% del recorrido total \\
+P2a & Estados Inerciales y E. & 6 & 6 min & Básica & Diferencia L y C \\
+P2b & Construcción EDO & 8 & 12 min & Media & Sustitución analítica simple \\
+P2c & Ecuaciones paramétricas & 10 & 12 min & Media & Fórmulas en min-hoja P1 \\
+P3a & Físico-Visualización & 6 & 7 min & Bás-Med & Sobreimpulso $43\%$ visual \\
+P3b & Categorización Empírica & 8 & 10 min & Media & $\zeta$ y $R_{tot}$ limitante \\
+P3c & Evidencia Científica & 4 & 6 min & Básica & LTspice vs Banco Real \\
+\midrule
+\multicolumn{2}{l}{\textbf{TOTAL ($18+24+18$)}} & \textbf{60} & \textbf{75 min} & & \\
+\bottomrule
+\end{tabularx}
+
+\end{document}

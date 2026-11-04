@@ -1,0 +1,208 @@
+% Archivo: w12_s03_ficha_prediccion_comparacion.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[american]{circuitikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | W12S3 — Artefacto A1}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{warnred}{RGB}{180, 0, 0}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Artefacto A1: Ficha Individual de Predicción y Comparación RLC (W12S3)}]
+    \centering \textbf{Predicción Analítica Previa al Simulador y Contraste con LTspice (23/10/2026)}
+\end{tcolorbox}
+
+\noindent\textbf{Estudiante:} \hrulefill \quad \textbf{Grupo:} \rule{2cm}{0.4pt} \quad \textbf{Fecha:} 23/10/2026
+
+\vspace{0.2cm}
+\begin{tcolorbox}[colback=gray!5, colframe=gray!60, title=\textbf{Trazabilidad de Evidencia Individual}]
+\textit{Marque su rol real en la sesión (la simulación es evidencia computacional, nunca medición física):}\par\vspace{0.15cm}
+{[$\square$]} Ejecuté solo en LTspice \hspace{0.8cm} {[$\square$]} Ejecuté en pareja \hspace{0.8cm} {[$\square$]} Interpreté gráfica proyectada \par\vspace{0.1cm}
+{[$\square$]} Acceso pendiente (\texttt{execution\_pending\_due\_to\_access})
+\end{tcolorbox}
+
+\section*{1. Modelo Físico y Convención Común (Visual 1)}
+Considere el lazo RLC serie ideal con corriente $i(t)$ circulando desde la fuente $v_s(t)$ hacia $R_{\text{total}}$, $L$ y el terminal positivo de $v_C$ en el nodo \texttt{out}. El estímulo aplica un escalón de $0\,\text{V}$ a $10\,\text{V}$ en el instante $t_s = 100\,\mu\text{s} = 0.10\,\text{ms}$ partiendo del reposo. Se define el tiempo relativo desde el evento como $s = t - t_s \ge 0$.
+
+\vspace{0.2cm}
+\begin{center}
+\begin{circuitikz}[scale=0.95, transform shape, thick]
+    \draw (0,0) to[V, l_={$v_s(t)$}, v^<={$V(\text{in})$}, invert] (0,2.8)
+          to[short, -*] (1.2,2.8) node[above]{\texttt{in}}
+          to[R, l={$R_{\text{total}}$}, i={$i(t)$}, v={$v_R$}] (4.2,2.8)
+          to[short, -*] (4.8,2.8) node[above]{\texttt{n1}}
+          to[L, l={$L=10\,\text{mH}$}, v={$v_L$}] (7.8,2.8)
+          to[short, -*] (9.0,2.8) node[above]{\texttt{out}};
+    \draw (9.0,2.8) to[C, l={$C=1\,\mu\text{F}$}, v={$v_C = V(\text{out})$}] (9.0,0);
+    \draw (0,0) -- (9.0,0);
+    \draw (4.5,0) node[ground]{};
+\end{circuitikz}
+\end{center}
+
+\section*{2. Parte A — Predicción Individual (COMPLETAR ANTES DE VER LA GRÁFICA)}
+Para los valores nominales $L = 10\,\text{mH} = 0.010\,\text{H}$ y $C = 1\,\mu\text{F} = 1\times 10^{-6}\,\text{F}$, partiendo del reposo en $t < t_s$:
+
+\begin{enumerate}\setlength\itemsep{0.35cm}
+    \item \textbf{Variables de estado y continuidad ordinaria no impulsiva:} \par\vspace{0.1cm}
+    $v_C(t_s^+) = v_C(t_s^-) =$ \rule{2.0cm}{0.4pt}\,\text{V} \hfill $i_L(t_s^+) = i_L(t_s^-) =$ \rule{2.0cm}{0.4pt}\,\text{A} \hfill $v_C(\infty) =$ \rule{2.0cm}{0.4pt}\,\text{V}
+    
+    \item \textbf{Parámetros naturales del modelo de segundo orden} ($LC v_C'' + R_{\text{total}}C v_C' + v_C = v_s$): \par\vspace{0.1cm}
+    $\omega_0 = \dfrac{1}{\sqrt{LC}} =$ \rule{2.0cm}{0.4pt}\,\text{rad/s} \hfill $f_0 = \dfrac{\omega_0}{2\pi} =$ \rule{2.0cm}{0.4pt}\,\text{Hz} \hfill $R_{\text{crit,total}} = 2\sqrt{\dfrac{L}{C}} =$ \rule{1.8cm}{0.4pt}\,$\Omega$
+
+    \item \textbf{Justificación física:} ¿Por qué cambia la forma de onda al variar $R_{\text{total}}$ sin que cambie $\omega_0$? \par\vspace{0.15cm}
+    \noindent\hrulefill
+\end{enumerate}
+
+\vspace{0.2cm}
+\section*{3. Parte B — Tabla de Predicción vs. Contraste en LTspice}
+\textit{Complete las tres primeras columnas ANTES de simular, y las columnas derechas DESPUÉS de observar las trazas de LTspice (no invente valores simulados; si no ejecutó, registre la lectura proyectada y su estado de acceso).}
+
+\vspace{0.2cm}
+{\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.65}
+\noindent
+\begin{tabularx}{\textwidth}{
+  >{\centering\arraybackslash\hsize=0.65\hsize}X
+  >{\centering\arraybackslash\hsize=0.75\hsize}X
+  >{\centering\arraybackslash\hsize=0.65\hsize}X
+  >{\RaggedRight\arraybackslash\hsize=1.15\hsize}X
+  >{\centering\arraybackslash\hsize=0.90\hsize}X
+  >{\centering\arraybackslash\hsize=0.80\hsize}X
+  >{\RaggedRight\arraybackslash\hsize=1.10\hsize}X}
+\toprule
+\textbf{$R_{\text{total}}$ ($\Omega$)} & \textbf{$\alpha$ pred. ($\text{s}^{-1}$)} & \textbf{$\zeta$ pred.} & \textbf{Régimen Predicho (Antes)} & \textbf{Pico $V(\text{out})$ LTspice} & \textbf{¿Sobre-impulso? (Sí/No)} & \textbf{Explicación / Contraste (Después)} \\
+\midrule
+$50$  & & & & & & \\[0.35cm]
+$200$ & & & & & & \\[0.35cm]
+$400$ & & & & & & \\[0.35cm]
+\bottomrule
+\end{tabularx}
+}
+
+\vspace{0.3cm}
+\section*{4. Bosquejo Previo de las Tres Curvas ($50\,\Omega$, $200\,\Omega$, $400\,\Omega$)}
+\noindent Ubique $t_s = 0.10\,\text{ms}$, el nivel inicial $0\,\text{V}$, el nivel final $10\,\text{V}$ y diferencie claramente qué curva presenta sobreimpulso:
+
+\vspace{0.2cm}
+\begin{center}
+\begin{tikzpicture}
+    \draw[thick, -Stealth] (0,0) -- (13.5,0) node[right]{\small $t$ (ms)};
+    \draw[thick, -Stealth] (0,0) -- (0,3.8) node[above]{\small $v_C(t) = V(\text{out})$ (V)};
+    \draw[dashed, gray] (0,2.5) -- (13.0,2.5) node[right, black]{\small $10\,\text{V}$};
+    \draw[dotted, gray] (1.5,0) -- (1.5,3.5) node[above, black]{\small $t_s = 0.1\,\text{ms}$};
+    \node[left] at (0,0) {\small $0\,\text{V}$};
+\end{tikzpicture}
+\end{center}
+
+\newpage
+% =====================================================================
+% SECCIÓN EXCLUSIVA PARA EL DOCENTE: CLAVE WE1, WE2 Y DERIVACIÓN COMPLETA
+% =====================================================================
+\begin{tcolorbox}[colback=warnred!5!white, colframe=warnred, title=\textbf{CLAVE DOCENTE EXCLUSIVA — NO DISTRIBUIR EN LA HOJA DEL ESTUDIANTE}]
+    \centering \textbf{Derivación Matemática Completa, Solución WE1 y Separación de Pérdidas Físicas WE2}
+\end{tcolorbox}
+
+\subsection*{A. Derivación Paso a Paso de la EDO de Segundo Orden (T1)}
+\begin{enumerate}\setlength\itemsep{0.15cm}
+    \item \textbf{Energías y Potencia Disipada:}
+    $$w_C(t) = \frac{1}{2} C v_C^2(t)\quad [\text{J}], \qquad w_L(t) = \frac{1}{2} L i_L^2(t)\quad [\text{J}], \qquad p_R(t) = R_{\text{total}} i^2(t)\quad [\text{W}]$$
+    \item \textbf{Leyes Constitutivas y Continuidad Ordinaria:}
+    Para elementos ideales constantes y excitación no impulsiva, las variables de estado no saltan:
+    $$v_C(t_s^+) = v_C(t_s^-), \qquad i_L(t_s^+) = i_L(t_s^-)$$
+    En el lazo serie: $i(t) = i_C(t) = i_L(t) = C\frac{dv_C}{dt}$ y $v_L(t) = L\frac{di}{dt}$.
+    \item \textbf{Aplicación de KVL y Sustitución Explícita:}
+    \begin{align*}
+        v_s(t) &= v_R(t) + v_L(t) + v_C(t) \\
+        v_s(t) &= R_{\text{total}}\,i(t) + L\frac{di(t)}{dt} + v_C(t)
+    \end{align*}
+    Sustituyendo $i(t) = C\frac{dv_C}{dt}$ y su derivada temporal $\frac{di}{dt} = C\frac{d^2v_C}{dt^2}$ (con $C$ constante):
+    \begin{align*}
+        v_s(t) &= R_{\text{total}} C \frac{dv_C}{dt} + L C \frac{d^2v_C}{dt^2} + v_C(t) \\
+        L C \frac{d^2v_C}{dt^2} + R_{\text{total}} C \frac{dv_C}{dt} + v_C(t) &= v_s(t)
+    \end{align*}
+    \item \textbf{Normalización Canónica y Parámetros:} Dividiendo por $LC > 0$:
+    $$\frac{d^2v_C}{dt^2} + \left(\frac{R_{\text{total}}}{L}\right)\frac{dv_C}{dt} + \left(\frac{1}{LC}\right)v_C(t) = \frac{1}{LC}v_s(t) \iff v_C'' + 2\alpha v_C' + \omega_0^2 v_C = \omega_0^2 v_s(t)$$
+    donde:
+    \begin{gather*}
+        \omega_0 = \frac{1}{\sqrt{LC}}\ [\text{rad/s}], \qquad f_0 = \frac{\omega_0}{2\pi}\ [\text{Hz}], \qquad \alpha = \frac{R_{\text{total}}}{2L}\ [\text{s}^{-1}] \\
+        \zeta = \frac{\alpha}{\omega_0} = \frac{R_{\text{total}}}{2\sqrt{L/C}}\ [\text{adimensional}], \qquad R_{\text{crit}} = 2\sqrt{\frac{L}{C}}\ [\Omega]
+    \end{gather*}
+\end{enumerate}
+
+\subsection*{B. Cálculos Verificados del Caso Nominal (WE1: $L=10\,\text{mH}$, $C=1\,\mu\text{F}$)}
+\begin{itemize}\setlength\itemsep{0.1cm}
+    \item Producto reactivo: $LC = (0.010\,\text{H})(1\times 10^{-6}\,\text{F}) = 10^{-8}\,\text{s}^2 \implies \sqrt{LC} = 10^{-4}\,\text{s}$.
+    \item Frecuencia natural: $\omega_0 = \frac{1}{10^{-4}\,\text{s}} = \mathbf{10\,000\,\text{rad/s}} \implies f_0 = \frac{10\,000}{2\pi} \approx \mathbf{1591.55\,\text{Hz}}$ ($T_0 \approx 0.628\,\text{ms}$).
+    \item Resistencia crítica total: $R_{\text{crit}} = 2\sqrt{\frac{0.010}{10^{-6}}} = 2\sqrt{10^4} = \mathbf{200\,\Omega}$ (totales).
+    \item Estados iniciales desde reposo: $v_C(t_s^+)=0\,\text{V}$, $i_L(t_s^+)=0\,\text{A}$, y estado final $v_C(\infty)=10\,\text{V}$.
+    \item Clasificación: Para $50\,\Omega \implies \alpha=2500\,\text{s}^{-1}, \zeta=0.25$ (\textbf{subamortiguado}, con sobreimpulso y oscilación decreciente); para $200\,\Omega \implies \alpha=10\,000\,\text{s}^{-1}, \zeta=1.00$ (\textbf{crítico}, sin oscilación); para $400\,\Omega \implies \alpha=20\,000\,\text{s}^{-1}, \zeta=2.00$ (\textbf{sobreamortiguado}, sin oscilación).
+\end{itemize}
+
+\subsection*{C. Visual 2 — Curvas Teóricas de Referencia y Nota WE2 sobre Resistencia Real}
+\noindent
+\begin{minipage}[t]{0.53\textwidth}
+\vspace{0pt}
+\begin{tikzpicture}
+    \begin{axis}[
+        width=0.98\textwidth, height=4.8cm,
+        xlabel={\footnotesize Tiempo absoluto $t$ (ms)}, ylabel={\footnotesize $v_C(t)$ Teórico (V)},
+        xmin=0, xmax=2.0, ymin=0, ymax=15,
+        grid=major,
+        tick label style={font=\scriptsize},
+        legend pos=south east,
+        legend style={font=\scriptsize},
+        title={\footnotesize \textbf{Predicción Teórica Ideal (No experimental)}}
+    ]
+    \addplot[blue, thick, domain=0.1:2.0, samples=250] {10 - 10*exp(-2.5*(x-0.1))*(cos(deg(9.682*(x-0.1))) + (2.5/9.682)*sin(deg(9.682*(x-0.1))))};
+    \addlegendentry{$R_{\text{total}}=50\,\Omega$ ($\zeta=0.25$)}
+    \addplot[black, thick, domain=0.1:2.0, samples=150] {10 - 10*(1 + 10*(x-0.1))*exp(-10*(x-0.1))};
+    \addlegendentry{$R_{\text{total}}=200\,\Omega$ ($\zeta=1.0$)}
+    \addplot[red, thick, domain=0.1:2.0, samples=150] {10 - 10*(1.07735*exp(-2.6795*(x-0.1)) - 0.07735*exp(-37.3205*(x-0.1)))};
+    \addlegendentry{$R_{\text{total}}=400\,\Omega$ ($\zeta=2.0$)}
+    \addplot[blue, thick] coordinates {(0,0) (0.1,0)};
+    \addplot[dashed, gray] coordinates {(0,10) (2.0,10)};
+    \end{axis}
+\end{tikzpicture}
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.44\textwidth}
+\vspace{0pt}
+\RaggedRight\small
+\textbf{Ejemplo Docente WE2 ($R_{\text{ext}}$ vs. $R_{\text{total}}$):}\par\vspace{0.1cm}
+Si en un ejercicio hipotético (no dato medido) se tuviera $R_{\text{gen}}=50\,\Omega$, $R_{\text{DCR}}=18\,\Omega$ y $R_{\text{otros}}\approx 0\,\Omega$:
+\begin{align*}
+R_{\text{ext,crit}} &\approx R_{\text{crit}} - R_{\text{gen}} - R_{\text{DCR}} \\
+&= 200 - 50 - 18 = \mathbf{132\,\Omega}
+\end{align*}
+\begin{itemize}\setlength\itemsep{0.05cm}
+    \item Con $R_{\text{ext}}=100\,\Omega$ (BOM): $R_{\text{total}}\approx 168\,\Omega \implies \zeta \approx 0.84$ (subamortiguado).
+    \item Con $R_{\text{ext}}=330\,\Omega$ (BOM): $R_{\text{total}}\approx 398\,\Omega \implies \zeta \approx 1.99$ (sobreamortiguado).
+\end{itemize}
+\end{minipage}
+
+\end{document}

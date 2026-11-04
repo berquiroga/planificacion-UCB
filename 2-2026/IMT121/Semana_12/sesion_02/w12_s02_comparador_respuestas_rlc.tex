@@ -1,0 +1,70 @@
+% ARTEFACTO 3: Comparador de respuestas RLC
+\documentclass[11pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Modelado Analítico}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Comparativa Sintética de Modos de Amortiguamiento RLC}]
+    \centering \textbf{Ilustración Teórica del Modelo Matemático --- NO SON DATOS EXPERIMENTALES}
+\end{tcolorbox}
+
+\begin{center}
+\begin{tikzpicture}
+    \begin{axis}[
+        width=20cm, height=12cm,
+        xlabel={Tiempo Relativo ($\text{ms}$)}, ylabel={Tensión $v_C(t)$ (V)},
+        xmin=0, xmax=2.0, ymin=0, ymax=9,
+        grid=major,
+        legend pos=north east,
+        legend style={font=\large}
+    ]
+    % Curva Subamortiguada: V_s=5, w0=10000, R_tot=100 -> alpha=5000, zeta=0.5, wd=8660.25
+    \addplot[blue, ultra thick, domain=0:2.0, samples=300] {5 - 5*exp(-5*x)* (cos(deg(8.66*x)) + (5/8.66)*sin(deg(8.66*x)))};
+    \addlegendentry{Régimen Subamortiguado ($\zeta = 0.5$)}
+    
+    % Curva Crítica: V_s=5, w0=10000, R_tot=200 -> alpha=10000, zeta=1
+    \addplot[black, ultra thick, domain=0:2.0, samples=200] {5 - 5*(1 + 10*x)*exp(-10*x)};
+    \addlegendentry{Régimen Crítico ($\zeta = 1.0$)}
+    
+    % Curva Sobreamortiguada: V_s=5, w0=10000, R_tot=400 -> alpha=20000, zeta=2
+    % s1 = -2.679, s2 = -37.320
+    \addplot[red, ultra thick, domain=0:2.0, samples=200] {5 - 5*(1.077*exp(-2.679*x) - 0.077*exp(-37.320*x))};
+    \addlegendentry{Régimen Sobreamortiguado ($\zeta = 2.0$)}
+    
+    % Asintota V_s = 5V
+    \addplot[dashed, gray, very thick] coordinates {(0,5) (2.0,5)};
+    \node[anchor=south east] at (axis cs:2.0,5) {\textbf{Tensión Asintótica de Fuente ($5\,\text{V}$)}};
+    \end{axis}
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.4cm}
+\textbf{Condiciones Paramétricas del Modelo Sintético:} 
+La gráfica asume un escalón ideal de fuente $v_s(t) = 5\,\text{V}$ para $t \ge 0$, con almacenamiento energético inicial nulo ($v_C(0^+) = 0\,\text{V}, i_L(0^+) = 0\,\text{A}$). La base pasiva constante para todas las curvas es $L = 10\,\text{mH}$ y $C = 1\,\mu\text{F}$ ($\omega_0 = 10^4\,\text{rad/s}$ y $R_{crit} = 200\,\Omega$). Las tres curvas se originan variando puramente $R_{total}$ a $100\,\Omega$, $200\,\Omega$ y $400\,\Omega$ respectivamente. \textbf{Cuidado:} En montajes experimentales, la resistencia de fuente y los cables pueden elevar artificialmente $\zeta$, ahogando la oscilación.
+
+\end{document}
