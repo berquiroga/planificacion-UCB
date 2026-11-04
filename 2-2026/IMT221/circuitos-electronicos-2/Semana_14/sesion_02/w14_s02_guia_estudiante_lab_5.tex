@@ -1,0 +1,112 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage[american]{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\setlength{\emergencystretch}{2em}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{neutralbg}{RGB}{247, 248, 250}
+\definecolor{warnbg}{RGB}{254, 246, 246}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Lab 5: Rectificación de Precisión (Rutas A y B)}
+\rhead{Semana 14 - Sesión 2}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\textbf{\textcolor{ucbblue}{Guía de Trabajo y Registro: Laboratorio 5 (Rectificación)}}} \\[0.1cm]
+    {\footnotesize\textbf{Objetivos:} 1. Diodo real/señal pequeña; 2. Superdiodo y estados; 3. Predecir límites; 4. Evidencia verificable.}
+\end{center}
+
+\section*{1. Modelado del Diodo Convencional y Superdiodo No Inversor (V1 y V3)}
+\begin{center}
+    \begin{circuitikz}[>=Stealth, thick, scale=0.85, transform shape]
+        % Diodo Convencional
+        \node[font=\bfseries, text=ucbblue] at (1.5, 3.2) {Convencional};
+        \draw (0,0) node[ground]{} to[sV, v={$v_i(t)$}] (0,2) to[short] (1,2) to[D, l=$D$, i=$i_D$] (3,2) to[short, -o] (4,2) node[right]{$v_{o,D}$};
+        \draw (3,2) to[R, l=$R_L$] (3,0) node[ground]{};
+        
+        % Superdiodo No Inversor
+        \node[font=\bfseries, text=ucbblue] at (9, 3.2) {De Precisión (Superdiodo)};
+        \draw (7,0) node[op amp] (op) {};
+        \draw (op.+) to[short, -o] ++(-1,0) node[left]{$v_i(t)$};
+        \draw (op.out) to[short, *-] ++(0.5,0) coordinate(va) node[above]{$v_a$} to[D, l=$D$] ++(2,0) coordinate(vo) to[short, *-o] ++(0.5,0) node[right]{$v_{o,P}$};
+        \draw (vo) to[R, l=$R_L$] ++(0,-1.5) node[ground]{};
+        \draw (op.-) -- ++(0,1) -| (vo);
+        \draw (op.up) -- ++(0,0.5) node[above]{\footnotesize $V_{S+}$};
+        \draw (op.down) -- ++(0,-0.5) node[below]{\footnotesize $V_{S-}$};
+    \end{circuitikz}
+\end{center}
+
+\textbf{Modelo de umbral (Convencional):} $v_o(t) \approx \max\{v_i(t) - V_\gamma, 0\}$. Falla con amplitudes menores o cercanas a $V_\gamma$. \\
+\textbf{Estados del Superdiodo (Precisión):}
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|P{2.2cm}|c|P{4.2cm}|X|X|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Condición} & \textbf{Estado Diodo} & \textbf{Estado del Lazo} & \textbf{Salida Rectificada ($v_{o,P}$)} & \textbf{Salida Interna ($v_a$)} \\ \hline
+    $v_i > 0$ (lineal) & Conduce & Cerrado ($v_- \approx v_+ = v_i$) & $v_o \approx v_i$ (Copia fiel) & $v_a \approx v_o + v_D$ \\ \hline
+    $v_i < 0$ & Bloquea & \textbf{Abierto} ($v_- \neq v_+$) & $v_o \approx 0$ (por $R_L$) & Tiende al límite negativo. \\ \hline
+    \end{tabularx}
+\end{table}
+
+\textbf{E1 / E3 (Diagnóstico Rápido):} Un diodo convencional con $V_\gamma = 0.40\,\text{V}$ ante un estímulo de $0.30\,\text{V}$ pico predice $0\,\text{V}$ de salida (no supera umbral). El superdiodo soluciona esto porque, al conducir, la realimentación fuerza a $v_a$ a sobreponerse a la caída del diodo. No asuma $v_- = v_+$ cuando el diodo bloquea (lazo abierto).
+
+\section*{2. Decisión Operativa (V5) y Cálculo de Error Experimental}
+\begin{center}
+    \begin{tikzpicture}[>=Stealth, thick, scale=0.85, transform shape]
+        \node[draw=ucbblue, rectangle, fill=ucbblue!8, text width=6.5cm, align=center, minimum height=0.9cm] (q) at (0,0) {\textbf{¿Esquema, modelo de CI, fuente y manuales verificados?}};
+        \node[draw=green!60!black, rectangle, fill=green!10, text width=4cm, align=center, minimum height=0.8cm] (rutaA) at (-3.8, -1.8) {\textbf{Ruta A: MEDIDO}\\Autorización a banco físico};
+        \node[draw=orange, rectangle, fill=orange!10, text width=5cm, align=center, minimum height=0.8cm] (rutaB) at (3.8, -1.8) {\textbf{Ruta B: SIMULADO / PREDICHO}\\La simulación no es laboratorio físico.};
+        \draw[->] (q) -- node[left, font=\scriptsize]{\textbf{SÍ}} (rutaA);
+        \draw[->] (q) -- node[right, font=\scriptsize]{\textbf{NO} (Faltan datos)} (rutaB);
+    \end{tikzpicture}
+\end{center}
+Para el cálculo de error (E6), la referencia ideal es $v_{\mathrm{ref}}(t) = \max\{v_i(t), 0\}$. El error punto a punto es $e(t) = v_o(t) - v_{\mathrm{ref}}(t)$. Defina $E_1 = \frac{1}{T_{\mathrm{obs}}} \int |e(t)|\, dt \quad [\mathrm{V}]$.
+
+\section*{3. Hoja de Registro (Completar con Datos Reales o Simulación Verificada)}
+\begin{table}[htbp]
+    \centering
+    \scriptsize
+    \renewcommand{\arraystretch}{1.45}
+    \begin{tabularx}{\textwidth}{|P{4.2cm}|Y|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Campo / Parámetro del Ensayo} & \textbf{Valor a Documentar, Archivo o Captura (Indicar unidades)} \\ \hline
+    Grupo / Versión y Autores & \textbf{Evidencia:} $\square$ MEDIDO \quad $\square$ SIMULADO \quad $\square$ PREDICHO \quad $\square$ NO OBTENIDO \\ \hline
+    Circuito / Op-Amp / Diodo / $R_L$ & \\ \hline
+    Alimentación $V_{S+}, V_{S-}$ y Tierra Instr. & \\ \hline
+    Fuente ($v_i$): Amplitud, $f$, offset & \\ \hline
+    Resultado Convencional ($v_{o,D}$) & \\ \hline
+    Resultado Precisión ($v_{o,P}$) y $v_a$ & \\ \hline
+    Predicción vs. Observación (Ej. $E_1$) & \\ \hline
+    Problema, Hipótesis y Próximo Test & \\ \hline
+    \end{tabularx}
+\end{table}
+\noindent\textbf{Preguntas de Reflexión (E9):} a) ¿Por qué el superdiodo rectifica señales $\ll 0.7\,\text{V}$? (Por la realimentación). b) ¿Limitación de implementación? (SR, GBW y saturación/recuperación). c) ¿Evidencia de Lab 6 no obtenida aquí? (Bode espectral)[cite: 12].
+
+\end{document}

@@ -1,0 +1,73 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.2cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | Documento Docente}
+\chead{Ficha Mínima de Seguimiento y Observación Directa}
+\rhead{Semana 14 - Sesión 2}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\textbf{\textcolor{ucbblue}{Ficha Mínima de Seguimiento de Laboratorio y Microverificación}}}[cite: 11]
+\end{center}
+
+\section*{1. Registro de Avance (Rutas A y B)[cite: 11]}
+\begin{table}[htbp]
+    \centering
+    \scriptsize
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabularx}{\textwidth}{|P{1.8cm}|c|P{2.2cm}|P{2.5cm}|P{2.0cm}|P{2.0cm}|P{3.5cm}|Y|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Grupo / Circuito} & \textbf{Ruta} & \textbf{Evidencia y Archivo LTspice} & \textbf{Verificación Alim / Inst (Pre-Power)} & \textbf{Predicción ($V_{o,\mathrm{pico}}$ o Estado)} & \textbf{Observado ($V_{o,\mathrm{med}}$ o $V_{o,\mathrm{sim}}$)} & \textbf{Discrepancia / Causal} & \textbf{Estado Físico Lab 5} \\ \hline
+     & A / B & & & & & & \\ \hline
+     & A / B & & & & & & \\ \hline
+     & A / B & & & & & & \\ \hline
+    \end{tabularx}
+\end{table}
+
+\section*{2. Microverificación Oral Individual (Formativa)[cite: 11]}
+\textit{No son defensas orales formales ni reemplazan el examen escrito EC2. "No observado" no es incompetencia.}
+\begin{table}[htbp]
+    \centering
+    \scriptsize
+    \renewcommand{\arraystretch}{1.35}
+    \begin{tabularx}{\textwidth}{|P{3.0cm}|P{4.0cm}|P{5.0cm}|c|Y|c|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Estudiante (Grupo)} & \textbf{Pregunta / Tema Diagnosticado} & \textbf{Respuesta y Evidencia Observable} & \textbf{Estado} & \textbf{Acción Docente} & \textbf{Rotación} \\ \hline
+     & Ej: "Distinga saturación de bloqueo." & & & & $\square$ \\ \hline
+     & Ej: "¿Por qué rectifica señales $\ll 0.7\,\text{V}$?" & & & & $\square$ \\ \hline
+     & Ej: "Tierra de osciloscopio en ref. virtual." & & & & $\square$ \\ \hline
+    \end{tabularx}
+\end{table}
+
+\section*{3. Traspaso Curricular y Decisiones[cite: 11]}
+\begin{tcolorbox}[colback=white, colframe=black]
+    \footnotesize
+    \textbf{Estado Hito 2 (In-Amp):} \rule{6.5cm}{0.4pt} \quad \textbf{Estado Lab 5 Físico:} \rule{6.5cm}{0.4pt} \\
+    \textbf{BOM Comunicada:} $\square$ SÍ \quad $\square$ NO \quad \textbf{Fecha envío:} \rule{3.0cm}{0.4pt} \quad \textbf{Informes H2/H3 (IEEE):} \texttt{PENDING AUTHORIZATION}. \\[0.15cm]
+    \textbf{Próxima acción:} \hrulefill \quad \textbf{Firma Docente:} \rule{4cm}{0.4pt}
+\end{tcolorbox}
+
+\end{document}

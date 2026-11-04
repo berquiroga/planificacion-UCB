@@ -1,0 +1,143 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, patterns}
+\usepackage[american]{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.8cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\setlength{\emergencystretch}{2em}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Guía de Estudio Autónomo: Diodo y Rectificación de Precisión}
+\rhead{Semana 14 - Sesión 2}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\textbf{\textcolor{ucbblue}{Guía de Estudio Autónomo — Del Semiconductor al Superdiodo}}}[cite: 15] \\[0.1cm]
+    {\footnotesize\textbf{Unidad 2 — Laboratorio 5.} Lectura complementaria, no certifica la práctica física.}
+\end{center}
+
+\section*{1. ¿Qué es un semiconductor y por qué importa? (V-EST1)[cite: 15]}
+\begin{center}
+    \begin{tikzpicture}[>=Stealth, thick]
+        % Bloque P
+        \draw[fill=blue!10] (0,0) rectangle (2.5,2);
+        \node[font=\bfseries, text=blue] at (1.25,2.3) {Tipo P};
+        \node[circle, draw=blue, fill=white, inner sep=1pt, font=\tiny] at (0.5,1.5) {+};
+        \node[circle, draw=blue, fill=white, inner sep=1pt, font=\tiny] at (1.5,1.0) {+};
+        \node[circle, draw=blue, fill=white, inner sep=1pt, font=\tiny] at (0.8,0.5) {+};
+        \node[font=\tiny] at (2.0,1.6) {-};
+        
+        % Bloque N
+        \draw[fill=red!10] (3,0) rectangle (5.5,2);
+        \node[font=\bfseries, text=red] at (4.25,2.3) {Tipo N};
+        \node[font=\tiny] at (3.5,1.5) {-};
+        \node[font=\tiny] at (4.5,1.0) {-};
+        \node[font=\tiny] at (3.8,0.5) {-};
+        \node[circle, draw=red, fill=white, inner sep=1pt, font=\tiny] at (5.0,1.6) {+};
+        
+        \node[font=\scriptsize, align=center] at (2.75,-0.6) {Las cargas mayoritarias determinan el tipo, pero\\ambas piezas son elétricamente neutras en reposo.};
+    \end{tikzpicture}
+\end{center}
+
+\section*{2. Unión p-n: Difusión, Agotamiento y Campo (V-EST2)[cite: 15]}
+Al unir regiones p y n, los electrones y huecos tienden inicialmente a difundirse debido al gradiente de concentración. Cerca de la unión se recombinan, dejando una zona de \textbf{agotamiento} (\textit{depletion region}) con iones dopantes fijos que establecen un campo eléctrico.
+\begin{center}
+    \begin{tikzpicture}[>=Stealth, thick]
+        \draw (0,0) rectangle (6,2);
+        \draw (3,0) -- (3,2);
+        \node[font=\bfseries] at (1.5, 2.3) {Región p};
+        \node[font=\bfseries] at (4.5, 2.3) {Región n};
+        % Agotamiento
+        \fill[gray!20] (2.2,0) rectangle (3.8,2);
+        \draw[dashed] (2.2,0) -- (2.2,2);
+        \draw[dashed] (3.8,0) -- (3.8,2);
+        \node[font=\scriptsize] at (2.6,1) {- - -};
+        \node[font=\scriptsize] at (3.4,1) {+ + +};
+        % Flechas
+        \draw[->, blue] (1.5, 0.5) -- (2.2, 0.5) node[midway, below, font=\tiny]{Difusión};
+        \draw[->, red] (4.5, 1.5) -- (3.8, 1.5) node[midway, above, font=\tiny]{Difusión};
+        \draw[<-, thick] (2.2, 1) -- (3.8, 1) node[midway, fill=gray!20, font=\scriptsize]{Campo $E$};
+    \end{tikzpicture}
+\end{center}
+
+\section*{3. Polarización Directa e Inversa (V-EST3)[cite: 15]}
+\begin{center}
+    \begin{circuitikz}[>=Stealth, thick, scale=0.85, transform shape]
+        \draw (0,0) node[font=\bfseries]{$v_D = v_A - v_K$};
+        \draw (3,0) to[D, l=$D$, v=$v_D>0$ (Directa), i=$i_D$] (5,0);
+        \draw (7,0) to[D, l=$D$, v=$v_D<0$ (Inversa)] (9,0);
+        \node[font=\scriptsize] at (3, -1.3) {Cátodo (K) negativo. Corriente fluye.};
+        \node[font=\scriptsize] at (9, -1.3) {Cátodo (K) positivo. Barrera se ensancha.};
+    \end{circuitikz}
+\end{center}
+
+\section*{4. Característica I-V: Modelos y Cuándo Usarlos (V-EST4)[cite: 15]}
+\begin{center}
+    \begin{tikzpicture}[>=Stealth, thick, scale=0.85]
+        \draw[->] (-2.5,0) -- (4,0) node[below] {$v_D$};
+        \draw[->] (0,-1) -- (0,3.5) node[left] {$i_D$};
+        
+        % Ideal
+        \draw[ucbblue, dashed, very thick] (-2,0) -- (0,0) -- (0,3) node[right, font=\scriptsize] {1. Ideal};
+        % Umbral
+        \draw[red, thick] (0,0) -- (1.5,0) -- (1.5,3) node[above, font=\scriptsize] {2. Umbral ($V_\gamma$)};
+        % Exponencial
+        \draw[green!60!black, thick] (-2,-0.1) to[out=0, in=250] (1.5,0.2) to[out=70, in=250] (2.2,3) node[right, font=\scriptsize] {3. Exponencial: $i_D \simeq I_S(e^{v_D/nV_T}-1)$};
+    \end{tikzpicture}
+\end{center}
+
+\section*{5. El Diodo NO decide su corriente por sí solo (V-EST5)[cite: 15]}
+En un circuito de fuente $V_S$ con resistencia $R$ en serie y diodo en directa, por Kirchhoff: $V_S = i_D R + v_D \implies i_D = \frac{V_S - v_D}{R}$ (Recta de carga). El resistor \textbf{limita la corriente}, por lo que el punto de trabajo es la intersección entre esta recta y la curva $I-V$ del diodo.
+
+\section*{6. De Señal Alterna a Media Onda: Convencional (V-EST6)[cite: 15]}
+Si $v_i(t) = V_p \sin(2\pi f t)$ y $V_p > V_\gamma$, la conducción ocurre cuando $V_p \sin(\theta) > V_\gamma$. Por tanto, el diodo \textbf{no} recorta instantáneamente, sino que reduce la amplitud en la región lineal.
+
+\section*{7. El Rectificador de Precisión (Superdiodo No Inversor - V-EST7 y V-EST8)[cite: 15]}
+\begin{center}
+    \begin{circuitikz}[>=Stealth, thick, scale=0.85, transform shape]
+        \draw (0,0) node[op amp] (op) {};
+        \draw (op.+) to[short, -o] ++(-1,0) node[left]{$v_i$};
+        \draw (op.out) to[short, *-] ++(0.5,0) coordinate(va) node[above]{$v_a \approx v_o + v_D$} to[D, l=$D$] ++(2,0) coordinate(vo) to[short, *-o] ++(0.5,0) node[right]{$v_o$};
+        \draw (vo) to[R, l=$R_L$] ++(0,-1.5) node[ground]{};
+        \draw (op.-) -- ++(0,1) -| (vo);
+    \end{circuitikz}
+\end{center}
+\textbf{Estado A ($v_i > 0$):} Lazo cerrado, $v_o \approx v_i$. La salida interna del op-amp $v_a$ compensa el $V_\gamma$. \\
+\textbf{Estado B ($v_i < 0$):} Diodo bloqueado, lazo \textbf{abierto}, $v_o \approx 0$ (por la carga $R_L$). El op-amp tiende a saturarse en negativo porque el lazo no puede corregir el error.
+
+\section*{8. Límites Físicos y 9. Verificación de Banco (V-EST9 y V-EST10)[cite: 15]}
+Debe comprobarse que el \textit{Slew Rate} ($\text{SR} > 2\pi f V_p$) sea compatible. En banco, evalúe $E_1 = \frac{1}{N}\sum |v_o[k] - v_{\mathrm{ref}}[k]|$. Nunca conecte la pinza del osciloscopio sin confirmar si comparte tierra física. Diferencie explícitamente los datos \texttt{PREDICHOS}, \texttt{SIMULADOS} y \texttt{MEDIDOS}.
+
+\section*{10. Rectificar, Amplificar y Filtrar: Transición Sistémica (V-EST11)[cite: 15]}
+\begin{center}
+    \begin{tikzpicture}[>=Stealth, thick, scale=0.75, transform shape]
+        \node[draw, fill=gray!20, text width=2.2cm, align=center] (h1) at (0,0) {H1: Puente Pasivo};
+        \node[draw, fill=ucbblue!15, text width=2.4cm, align=center] (h2) at (3.5,0) {H2: In-Amp\\(Amplificar)};
+        \node[draw, fill=green!15, text width=2.6cm, align=center] (h3) at (7.5,0) {H3: Filtro Activo\\(Filtrar 50Hz)};
+        \node[draw, fill=orange!20, text width=2.2cm, align=center] (l5) at (3.5,-1.8) {Lab 5: Superdiodo\\(Rectificar)};
+        \draw[->] (h1) -- (h2); \draw[->] (h2) -- (h3);
+        \draw[->, dashed] (l5) -- node[left, font=\scriptsize] {Conceptos Separados} (h2);
+    \end{tikzpicture}
+\end{center}
+Una función de transferencia $H(s)$ describe un sistema lineal. Un rectificador \textbf{no es lineal} en ese sentido, por lo que fotografiar una media onda no equivale a obtener el Diagrama de Bode de un filtro Sallen-Key (Lab 6).
+
+\end{document}

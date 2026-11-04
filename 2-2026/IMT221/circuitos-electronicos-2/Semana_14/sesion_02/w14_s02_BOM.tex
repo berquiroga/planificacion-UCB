@@ -1,0 +1,66 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | Documento Logístico}
+\chead{BOM Preventiva Lab 5 / 6 y Borrador de Comunicación LMS}
+\rhead{Semana 14 - Sesión 2}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\textbf{\textcolor{ucbblue}{BOM Preventiva (Labs 5 y 6) — Lista para Comunicación}}}[cite: 11]
+\end{center}
+
+\begin{tcolorbox}[colback=white, colframe=black, boxsep=1pt, top=2pt, bottom=2pt]
+    \footnotesize\raggedright
+    \textbf{Contexto Operativo:} Basado en borrador preventivo fechado el 28/10/2026. Especifica cantidades \textbf{por equipo, no por estudiante}. La presencia de valores de Lab 6 (ej. $15\,\text{k}\Omega$) \textbf{no prueba sintonía ni respuesta de cuarto orden} para Hito 3 sin diseño del grupo.
+\end{tcolorbox}
+
+\section*{1. Priorización de Componentes y Responsabilidades (Por Equipo)[cite: 11]}
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|P{3.5cm}|P{3.8cm}|c|Y|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Prioridad y Propósito} & \textbf{Ítem de la BOM Fuente} & \textbf{Cant. / Equipo} & \textbf{Tratamiento Técnico Docente} \\ \hline
+    \textbf{P1} · Prep. Lab 5 & IC LM358N, DIP-8 & \textbf{2} & Confirmar marca/rango en datasheet y no asumir rail-to-rail ideal.\\ \hline
+    \textbf{P1} · Prep. Lab 5 & Diodo señal 1N4148 & \textbf{4} & Identificar polaridad y $V_f$ en datasheet. \\ \hline
+    \textbf{P1} · Prep. Lab 5 (Banco) & Res. $1\text{k}, 4.7\text{k}, 10\text{k}, 22\text{k}, 47\text{k}, 100\text{k}\Omega$ ($1/4\,\text{W}$) & \textbf{4 c/u} (24) & Banco preventivo; la carga $R_L$ real se define según diseño. \\ \hline
+    \textbf{P2} · Reserva Lab 6 & Res. $15\,\text{k}\Omega$ y $16\,\text{k}\Omega$ ($1/4\,\text{W}$) & \textbf{2 c/u} & No demuestran sintonía o Q de Sallen-Key por sí solas. \\ \hline
+    \textbf{P2} · Reserva Lab 6 & Cap. $10\,\text{nF}, 100\,\text{nF}, 1\,\mu\text{F}$ \textbf{(no polarizados)} & \textbf{4 c/u} & El $1\,\mu\text{F}$ exige confirmación dimensional/coste en stock. \\ \hline
+    \textbf{P2} · Reserva Alimentación & Cap. electrolítico $10\,\mu\text{F}$ & \textbf{2} & El límite $\ge 16\,\text{V}$ sugerido debe validarse contra rieles reales. \\ \hline
+    \textbf{P1} · Reutilizables & Protoboard y Jumpers (15-20) & \textbf{1 kit} & Inspeccionar estado, ruidos y cortos. \\ \hline
+    \textbf{Resp. Universidad} & Fuente regulada, osciloscopio, multímetro, generador. & \textbf{1 kit/mesa} & Comprobar limitación de corriente, masas y operación real. \\ \hline
+    \end{tabularx}
+\end{table}
+
+\section*{2. Borrador de Mensaje Propuesto para LMS[cite: 11]}
+\begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{Mensaje Propuesto (Validar antes de enviar)}]
+    \small\raggedright
+    Para preparar Lab 5 (rectificador de precisión) y anticipar Lab 6 (filtro activo), comparto una \textbf{lista preventiva por equipo}; pueden reutilizar materiales que ya tengan. Prioridad Lab 5: \textbf{2 LM358N DIP-8}, \textbf{4 diodos 1N4148}, \textbf{4 resistencias de cada valor $1\,\text{k}\Omega, 4.7\,\text{k}\Omega, 10\,\text{k}\Omega, 22\,\text{k}\Omega, 47\,\text{k}\Omega$ y $100\,\text{k}\Omega$ ($1/4\,\text{W}$)}, \textbf{1 protoboard} y \textbf{15–20 jumpers}. Reserva para Lab 6: \textbf{2 resistencias de $15\,\text{k}\Omega$ y 2 de $16\,\text{k}\Omega$}, \textbf{4 capacitores de $10\,\text{nF}$}, \textbf{4 de $100\,\text{nF}$} y \textbf{4 de $1\,\mu\text{F}$ no polarizados}. La lista docente también contempla \textbf{2 electrolíticos de $10\,\mu\text{F}$} para alimentación, cuyo voltaje nominal y necesidad deben confirmarse para el montaje real. La universidad confirmará instrumentos, fuente regulada y materiales en inventario. Los valores definitivos y el esquema se validarán en la guía; \textbf{no compren componentes especiales para Labs 7 u 8} con base en esta lista. Dado que esta lista no se comunicó anticipadamente, \textbf{no se exigirá haberla traído el 4 de noviembre ni se penalizará su ausencia}. Si no hay componentes/equipos verificados, trabajaremos la ruta de simulación y mantendremos pendiente la ejecución física. Las actividades del 9 y 11 de noviembre permanecen propuestas hasta confirmación.
+\end{tcolorbox}
+\noindent\textbf{Control:} $\square$ Stock univ. verificado \quad $\square$ Datasheets auditados \quad \textbf{Fecha Envío LMS:} \hrulefill
+
+\end{document}

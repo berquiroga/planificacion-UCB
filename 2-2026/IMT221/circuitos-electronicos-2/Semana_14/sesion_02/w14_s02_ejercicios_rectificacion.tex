@@ -1,0 +1,133 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.8cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\setlength{\emergencystretch}{2em}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Guía de Ejercicios: Rectificación Convencional y Precisión}
+\rhead{Semana 14 - Sesión 2}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\textbf{\textcolor{ucbblue}{Cuadernillo de Ejercicios: Rectificación y Transición a Filtros}}}[cite: 12] \\[0.1cm]
+    {\footnotesize\textbf{Fecha de Referencia:} 4 de noviembre de 2026. \textbf{Estado:} Material de trabajo estudiantil.}
+\end{center}
+
+\begin{tcolorbox}[colback=white, colframe=black, boxsep=1pt, top=2pt, bottom=2pt, title=\textbf{Instrucciones para el Estudiante}]
+    \footnotesize\raggedright
+    Trabaje con una referencia eléctrica común; defina entrada $v_i(t)$, salida $v_o(t)$ y salida interna del op-amp $v_a(t)$. Muestre operaciones, unidades y un comentario físico breve. Indique expresamente si el dato es \textbf{SIMULADO}, \textbf{MEDIDO} o \textbf{HIPOTÉTICO}. Los números de los problemas son ilustrativos y no provienen de hojas de datos de su curso.[cite: 12]
+\end{tcolorbox}
+
+\section*{I. Modelos del Diodo[cite: 12]}
+\textbf{E1. Rectificación con señal pequeña — guiado:}\\
+Un rectificador de media onda positiva recibe $v_i(t) = 0.30 \sin(2\pi f t)\,\text{V}$. Compare (a) un diodo ideal y (b) el modelo de caída fija $V_\gamma = 0.40\,\text{V}$. Suponga carga resistiva. Determine el valor de pico de $v_o$ en cada caso. Explique por qué el segundo resultado no implica corriente real exactamente nula en un diodo comercial.
+
+\vspace{1.5cm}
+
+\noindent\textbf{E2. Ventana angular de conducción — semiguiado:}\\
+Use $v_i(t) = 1.20 \sin(\omega t)\,\text{V}$, $V_\gamma = 0.40\,\text{V}$. (a) Calcule el pico de salida; (b) obtenga la condición en $\theta = \omega t$ para que haya conducción en el semiciclo positivo; (c) determine los ángulos de encendido $\theta_{\mathrm{on}}$ y apagado $\theta_{\mathrm{off}}$; (d) explique qué cambiaría al utilizar un modelo exponencial y carga real.
+
+\vspace{2.0cm}
+
+\section*{II. Superdiodo y Realimentación[cite: 12]}
+\textit{Referencia (idealizada): La entrada no inversora recibe $v_i$; la salida interna $v_a$ alimenta el ánodo de un diodo $D$; el cátodo es $v_o$; la inversora sensa $v_o$. $R_L$ conecta $v_o$ a referencia.}
+
+\noindent\textbf{E3. Estados de operación — guiado:}\\
+Complete: ¿Qué sucede cuando $v_i > 0$ y cuando $v_i < 0$? Defina si el diodo conduce, si el lazo está abierto/cerrado, y los valores idealizados de $v_o$ y $v_a$. ¿Es correcto usar $v_- \approx v_+$ cuando $v_i < 0$?
+
+\vspace{1.5cm}
+
+\noindent\textbf{E4. Interpretación de una traza — semiguiado:}\\
+Una simulación muestra $v_o \approx 0$ durante $v_i < 0$, mientras $v_a$ se acerca al límite inferior del Op-Amp. (a) ¿Es una avería? (b) ¿Qué condición del lazo lo explica? (c) ¿Qué observaría en el cruce por cero para detectar recuperación lenta? (d) ¿Por qué no puede deducirse el tiempo de recuperación de un LM358N usando un op-amp ideal en simulación?
+
+\vspace{1.8cm}
+
+\section*{III. Diagnóstico y Evidencia Cuantitativa[cite: 12]}
+\textbf{E5. Hipótesis de falla y prueba segura — aplicación:}\\
+En un montaje, $v_o$ permanece cercano a cero cuando se espera salida positiva. Considere H\_A: diodo invertido; y H\_B: alimentación/referencia incompatible. Proponga dos pasos de diagnóstico seguros que distingan ambas hipótesis sin dañar el circuito.
+
+\vspace{1.8cm}
+
+\noindent\textbf{E6. Comparación de error sobre datos etiquetados — aplicación:}\\
+Considere los siguientes \textbf{DATOS HIPOTÉTICOS}:\\
+M1 ($v_i = -0.20\,\text{V}, v_{\mathrm{ref}} = 0.00\,\text{V}, v_{o,\mathrm{conv}} = 0.00\,\text{V}, v_{o,\mathrm{prec}} = 0.00\,\text{V}$)\\
+M2 ($v_i = +0.10\,\text{V}, v_{\mathrm{ref}} = 0.10\,\text{V}, v_{o,\mathrm{conv}} = 0.00\,\text{V}, v_{o,\mathrm{prec}} = 0.08\,\text{V}$)\\
+M3 ($v_i = +0.20\,\text{V}, v_{\mathrm{ref}} = 0.20\,\text{V}, v_{o,\mathrm{conv}} = 0.00\,\text{V}, v_{o,\mathrm{prec}} = 0.19\,\text{V}$)\\
+M4 ($v_i = -0.10\,\text{V}, v_{\mathrm{ref}} = 0.00\,\text{V}, v_{o,\mathrm{conv}} = 0.00\,\text{V}, v_{o,\mathrm{prec}} = 0.01\,\text{V}$)
+
+Calcule $E_1 = \frac{1}{N} \sum |v_o[k] - v_{\mathrm{ref}}[k]|$ para ambos circuitos. Señale tres razones por las que estos 4 puntos no acreditan caracterización suficiente del cruce por cero.
+
+\vspace{2.0cm}
+
+\section*{IV. Transición a Filtros y V. Comprobación Individual[cite: 12]}
+\textbf{E7. Rectificación no es respuesta en frecuencia:}\\
+¿Por qué una captura temporal del rectificador no es un diagrama de Bode? Proponga las magnitudes a registrar para obtener $|H(j\omega)|$ y fase de un filtro de 2do orden.
+
+\vspace{1.5cm}
+
+\noindent\textbf{E9. Explicación técnica breve:}\\
+Redacte: (a) por qué el superdiodo rectifica señales menores a la caída típica de un diodo solo; (b) una limitación del amplificador real cerca del cruce por cero; (c) una evidencia del Lab 6 que el Lab 5 no reemplaza.
+
+\newpage
+% =======================================================
+% CLAVE DOCENTE - SEPARACIÓN ESTRUCTURAL
+% =======================================================
+\lhead{\textbf{UCB Sede Tarija} | CLAVE DOCENTE EXCLUSIVA}
+\chead{Solucionario de Ejercicios: Rectificación y Transición}
+\rhead{Semana 14 - Sesión 2}
+\renewcommand{\headrulewidth}{0.8pt}
+
+\begin{center}
+    {\Large\textbf{\textcolor{red!70!black}{CLAVE DOCENTE — SEPARAR DEL CUADERNILLO DE ESTUDIANTES}}}[cite: 12] \\[0.1cm]
+    {\footnotesize\textbf{Aviso:} Este documento no asigna pesos nuevos ni sustituye una rúbrica aprobada. Su uso es formativo.}
+\end{center}
+
+\subsection*{Solución E1}
+Para diodo ideal: $v_o = \max(v_i, 0)$ y $V_{o,\mathrm{pico}} = 0.30\,\text{V}$. Para modelo de umbral: $v_o = \max(v_i - 0.40\,\text{V}, 0)$. Como $0.30 < 0.40$, $V_{o,\mathrm{pico}} = 0\,\text{V}$. Físicamente, un diodo real obedece una característica continua dependiente de corriente y temperatura; no presenta un corte absoluto, por lo que conducirá de forma parásita y suave.
+
+\subsection*{Solución E2}
+$V_{o,\mathrm{pico}} = 1.20 - 0.40 = 0.80\,\text{V}$. Conduce si $\sin\theta > 0.40/1.20 = 1/3$. Semiciclo positivo: $\theta_{\mathrm{on}} = \arcsin(1/3) \approx 19.47^\circ$ y $\theta_{\mathrm{off}} = 180^\circ - 19.47^\circ \approx 160.53^\circ$. En un modelo exponencial real no existe este límite abrupto universal.
+
+\subsection*{Solución E3}
+\textbf{$v_i > 0$:} Diodo conduce, realimentación negativa activa, $v_o \approx v_i$ y $v_a \approx v_o + v_D$. \textbf{$v_i < 0$:} Diodo bloquea, lazo abierto, $R_L$ aproxima $v_o$ a cero y $v_a$ puede tender a su límite inferior. \textbf{No corresponde} usar $v_- \approx v_+$ si $v_i < 0$ porque el lazo está abierto.
+
+\subsection*{Solución E4}
+No es una avería, es el estado posible (abierto) durante el semiciclo negativo. La conducción del diodo abre/cierra la realimentación. Para evaluar la recuperación lenta, debe registrarse temporalmente $v_i, v_a, v_o$ en el cruce. Un op-amp ideal carece de límites de swing, Slew Rate y dinámica de saturación, por lo que no puede predecir el tiempo de recuperación de un chip comercial (Ej. LM358N).
+
+\subsection*{Solución E5}
+\textbf{Paso 1 (Sin alimentación):} Identificar fabricante y pinout del CI, orientación visual del diodo y continuidad de realimentación. Si el ánodo va al revés, apoya H\_A. \textbf{Paso 2 (Seguridad):} Comprobar rieles efectivos y referencia. Si existe alimentación incompatible, offset de referencia excesivo o masa de osciloscopio en corto con referencia virtual, apoya H\_B. \textit{No atribuir causalidad sin pruebas seguras previas.}
+
+\subsection*{Solución E6}
+\textbf{Convencional:} $E_1 = (0 + 0.10 + 0.20 + 0) / 4 = 0.075\,\text{V}$. \textbf{Precisión:} $E_1 = (0 + 0.02 + 0.01 + 0.01) / 4 = 0.010\,\text{V}$. La diferencia ilustrativa es $0.065\,\text{V}$. \\
+\textbf{Insuficiencias:} Son muy pocos puntos; no hay resolución temporal en el cruce por cero; se ignoran dinámicas de ancho de banda y SR; no hay metadatos del CI ni del instrumento.
+
+\subsection*{Solución E7}
+Una traza temporal transitoria no entrega respuesta en frecuencia (magnitud y fase) ante estímulos senoidales continuos en múltiples frecuencias (Bode). Para Lab 6: debe registrar la frecuencia de entrada, amplitudes en régimen estable, desfase temporal/angular, y calcular $|H|=|V_{out}/V_{in}|$ y $G_{dB} = 20\log_{10}|H|$. Una sola sección Sallen-Key pasiva de 2do orden no garantiza la atenuación combinada de un filtro de 4to orden en Hito 3.
+
+\subsection*{Solución E8}
+\textbf{Prioridad Lab 5:} LM358N, 1N4148, banco de resistencias, protoboard y jumpers. \textbf{Reserva Lab 6:} Resistencias $15\,\text{k}\Omega / 16\,\text{k}\Omega$, capacitores $10\,\text{nF} / 100\,\text{nF} / 1\,\mu\text{F}$ no polarizados. Los electrolíticos de $10\,\mu\text{F}$ están sujetos a confirmación de voltaje de fuente. \\
+Las cantidades son \textit{preventivas por equipo}, no prueban que los valores correspondan al diseño Butterworth de cuarto orden. Antes de energizar, debe confirmarse el voltaje máximo de capacitores y la alimentación admisible del Op-Amp.
+
+\subsection*{Solución E9}
+(a) La realimentación obliga al Op-Amp a subir la tensión de salida interna ($v_a$) para vencer $V_\gamma$ mientras el lazo esté cerrado. (b) Saturación, tiempo de recuperación, límites de SR y GBW deforman la salida en el cruce por cero o alta frecuencia. (c) Lab 6 exige el diseño y trazado de la respuesta en frecuencia (Bode) de un filtro activo Sallen-Key; el superdiodo solo evalúa una rectificación no lineal de amplitud.
+
+\end{document}

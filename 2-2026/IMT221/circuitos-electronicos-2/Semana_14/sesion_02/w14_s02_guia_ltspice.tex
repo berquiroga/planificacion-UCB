@@ -1,0 +1,102 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.8cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{listings}
+
+\setlength{\headheight}{16pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\lstdefinestyle{pythonstyle}{
+    language=Python,
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue},
+    stringstyle=\color{red!70!black},
+    commentstyle=\color{green!60!black},
+    showstringspaces=false,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!5}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | Documento Instructor / Estudiante}
+\chead{Procedimiento LTspice (Ruta B) y Seguridad de Banco}
+\rhead{Semana 14 - Sesión 2}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\textbf{\textcolor{ucbblue}{Procedimiento de Simulador (Ruta B) y Validación Pre-Power}}}[cite: 11]\\[0.1cm]
+    {\footnotesize\textbf{Estado:} \texttt{PENDIENTE DE VALIDACIÓN}. No se provee archivo \texttt{.asc} dado que el modelo real del IC depende del inventario del grupo.}
+\end{center}
+
+\section*{1. Procedimiento de Construcción del Ensayo en LTspice (Ruta B)[cite: 11]}
+\begin{enumerate}
+    \setlength{\itemsep}{1pt}
+    \item \textbf{Generador y Convencional:} Dibuje fuente SINE (ej. $V_p = 0.5\,\text{V}, f = 100\,\text{Hz}$, etiquetada \texttt{Vin}). Conecte el ánodo de un diodo estándar a \texttt{Vin}, el cátodo a \texttt{Vconv} y una carga $R_{L1} = 10\,\text{k}\Omega$ a tierra.
+    \item \textbf{Precisión (Superdiodo):} Inserte un Op-Amp. Conecte \texttt{Vin} a la entrada (+). La salida se etiqueta \texttt{Va} y va al ánodo de un segundo diodo idéntico. El cátodo se etiqueta \texttt{Vprec} y va a la entrada ($-$) y a $R_{L2} = 10\,\text{k}\Omega$ hacia tierra.
+    \item \textbf{Límites del Modelo:} Inserte rieles de alimentación compatibles. \textbf{Advertencia:} Si usa un Op-Amp idealizado, \textbf{no deduja corriente disponible, recuperación, modo común o inmunidad al ruido.}
+    \item \textbf{Simulación (.tran):} Capture varios ciclos ($50\,\text{ms}$) con \textit{Maximum Timestep} pequeño ($10\,\mu\text{s}$) para evitar interpolación en el cruce por cero. Pruebe amplitudes distintas y evalúe distorsión.
+\end{enumerate}
+
+\section*{2. Script Python para Análisis de Error (Postprocesado Opcional)[cite: 11]}
+\textit{Utilice este script sobre muestras uniformes exportadas de LTspice o del osciloscopio digital.}
+\begin{lstlisting}[style=pythonstyle]
+import numpy as np
+
+# HIPOTETICO: sustituir por arrays de la misma adquisicion exportada
+t = np.array([0.0, 0.001, 0.002, 0.003])  # s
+vin = np.array([0.0, 0.2, 0.0, -0.2])     # V
+vout = np.array([0.0, 0.18, 0.01, 0.0])   # V
+
+assert t.ndim == vin.ndim == vout.ndim == 1 and len(t) >= 2
+assert np.all(np.diff(t) > 0), "Tiempos deben ser crecientes"
+
+vref = np.maximum(vin, 0.0) # Referencia ideal
+e = vout - vref
+abs_e = np.abs(e)
+
+# Integral trapezoidal sobre los tiempos registrados; unidades V*s.
+area_abs = np.trapezoid(abs_e, t)
+# Error absoluto medio temporal sobre toda la ventana registrada; unidades V.
+e_mean = area_abs / (t[-1] - t[0])
+e_max = np.max(abs_e)
+
+print(f"Error integral absoluto: {area_abs:.6g} V*s")
+print(f"Error absoluto medio temporal: {e_mean:.6g} V")
+print(f"Error absoluto maximo en muestras: {e_max:.6g} V")
+\end{lstlisting}
+
+\section*{3. Ficha de Control de Seguridad de Banco (Ruta A)[cite: 11]}
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabularx}{\textwidth}{|P{3.5cm}|X|c|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Requisito de Seguridad} & \textbf{Acción Real Inspeccionada en el Banco} & \textbf{Estado} \\ \hline
+    Integrado y Datasheet & Identificar fabricante exacto (Ej. LM358N). Datasheet físico verificado. & $\square$ OK $\square$ NO \\ \hline
+    Pinout y Entradas & Terminales $+V, -V, v_+, v_-, v_o$ correctos. Canales no usados protegidos. & $\square$ OK $\square$ NO \\ \hline
+    Alimentación Efectiva & Rieles $V_{S+}, V_{S-}$ medidos respecto a referencia elegida sin el IC. & $\square$ OK $\square$ NO \\ \hline
+    Masa de Instrumentos & Caimanes de osciloscopio referenciados a masa común. \textbf{No cortocircuitar $V_{REF}$ virtual}. & $\square$ OK $\square$ NO \\ \hline
+    Rangos Operativos & El estímulo senoidal $v_i$ respeta límites y rango común del CI. & $\square$ OK $\square$ NO \\ \hline
+    \end{tabularx}
+\end{table}
+
+\end{document}

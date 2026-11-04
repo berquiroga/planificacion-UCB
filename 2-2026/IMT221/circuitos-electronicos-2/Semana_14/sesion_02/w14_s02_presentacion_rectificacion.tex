@@ -1,0 +1,126 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage[american]{circuitikz}
+\usepackage[most]{tcolorbox}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{warnbg}{RGB}{254, 246, 246}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor{frametitle}{bg=ucbblue, fg=white}
+
+\title{\textbf{Rectificación de Precisión y Transición a Filtros}}
+\subtitle{Laboratorio 5 (Ruta A/B) e Interfaces con Hito 3}
+\author{IMT-221: Circuitos Electrónicos II}
+\institute{UCB Sede Tarija}
+\date{Semana 14 - Sesión 2}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% Unidad 1: Problema Señal Pequeña
+\begin{frame}{1. El Problema de Señal Pequeña (Modelos vs. Realidad)}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{center}
+                \begin{circuitikz}[>=Stealth, thick, scale=0.75, transform shape]
+                    \draw (0,0) node[ground]{} to[sV, v=$v_i(t)$] (0,2) to[short] (1,2) to[D, l=$D$ (Ánodo)] (3,2) to[short, -o] (4,2) node[right]{$v_o$ (Cátodo)};
+                    \draw (3,2) to[R, l=$R_L$] (3,0) node[ground]{};
+                \end{circuitikz}
+            \end{center}
+            Modelo de umbral (idealizado)[cite: 11]:
+            \begin{equation*}
+                v_o(t) \approx \max\{v_i(t) - V_\gamma, 0\}
+            \end{equation*}
+        \end{column}
+        \begin{column}{0.52\textwidth}
+            \begin{center}
+                \begin{tikzpicture}[>=Stealth, thick, scale=0.70, transform shape]
+                    \draw[->] (-2.5,0) -- (3.2,0) node[below] {$v_i$ (V)};
+                    \draw[->] (0,-0.5) -- (0,3) node[left] {$v_o$ (V)};
+                    % Ideal
+                    \draw[ucbblue, dashed, very thick] (0,0) -- (2.8,2.8) node[above right, font=\footnotesize] {Ideal};
+                    % Umbral aprox
+                    \draw[red, thick] (-2.5,0) -- (1,0) -- (3.0,2.0) node[right, font=\footnotesize] {Umbral};
+                    % Curva cualitativa
+                    \draw[green!60!black, thick] (0,0) to[out=0, in=225] (1,0.2) to[out=45, in=225] (3,1.7) node[below right, font=\footnotesize] {Real};
+                \end{tikzpicture}
+            \end{center}
+            \vspace{-0.3cm}
+            \footnotesize\textit{Mito: "Todo diodo cae siempre $0.7\,\text{V}$". Falso, depende de la corriente y la temperatura (modelo exponencial)[cite: 11].}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Unidad 2: Superdiodo
+\begin{frame}{2. Superdiodo No Inversor y Dinámica Temporal}
+    \begin{columns}[T]
+        \begin{column}{0.45\textwidth}
+            \begin{center}
+                \begin{circuitikz}[>=Stealth, thick, scale=0.85, transform shape]
+                    \draw (0,0) node[op amp] (op) {};
+                    \draw (op.+) to[short, -o] ++(-1,0) node[left]{$v_i$};
+                    \draw (op.out) to[short, *-] ++(0.5,0) coordinate(va) node[above]{$v_a$} to[D, l=$D$] ++(2,0) coordinate(vo) to[short, *-o] ++(0.5,0) node[right]{$v_o$};
+                    \draw (vo) to[R, l=$R_L$] ++(0,-1.5) node[ground]{};
+                    \draw (op.-) -- ++(0,1) -| (vo);
+                \end{circuitikz}
+            \end{center}
+            El Op-Amp "oculta" la caída exigiendo $v_a \approx v_o + v_D$[cite: 11].
+        \end{column}
+        \begin{column}{0.55\textwidth}
+            \textbf{Estados del Lazo[cite: 11]:}
+            \begin{itemize}
+                \item \textbf{$v_i > 0$:} Conduce. Lazo cerrado ($v_- = v_+ \implies v_o \approx v_i$).
+                \item \textbf{$v_i < 0$:} Bloqueado. Lazo abierto. $v_o \approx 0$.
+                \item \textbf{Cruce ($v_i \approx 0$):} $v_a$ se satura en semiciclo negativo; su \textbf{tiempo de recuperación} y Slew Rate limitan la fidelidad dinámica.
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Unidad 3: Decision
+\begin{frame}{3. Decisión Operativa de Laboratorio}
+    \begin{center}
+        \begin{tikzpicture}[>=Stealth, thick, scale=0.85, transform shape]
+            \node[draw=ucbblue, fill=ucbblue!10, text width=7cm, align=center, minimum height=0.9cm] (q) at (0,0) {¿Esquema, modelo de CI, fuente y manuales verificados?};
+            \node[draw=green!60!black, fill=green!10, text width=3.5cm, align=center, minimum height=0.8cm] (rA) at (-3.8, -2) {\textbf{SÍ} $\rightarrow$ Ruta A (MEDIDO)};
+            \node[draw=orange, fill=orange!10, text width=4.8cm, align=center, minimum height=0.8cm] (rB) at (3.8, -2) {\textbf{NO} $\rightarrow$ Ruta B (SIMULADO)};
+            \draw[->] (q) -- (rA); \draw[->] (q) -- (rB);
+        \end{tikzpicture}
+    \end{center}
+    \begin{tcolorbox}[colback=warnbg, colframe=red!80!black, title=Advertencia Pre-Power]
+        Un Op-Amp genérico de simulador no garantiza recuperación real. En banco: \textbf{no asuma} que osciloscopios o generadores tienen masa flotante si usan referencia virtual[cite: 11].
+    \end{tcolorbox}
+\end{frame}
+
+% Unidad 4: Puente
+\begin{frame}{4. Perspectiva Sistémica (No Confundir Rectificación con Filtrado)}
+    \begin{center}
+        \begin{tikzpicture}[>=Stealth, thick, scale=0.75, transform shape]
+            \node[draw, fill=gray!20, text width=2cm, align=center] (h1) at (0,0) {H1: Puente NTC + Pasivo};
+            \node[draw, fill=ucbblue!15, text width=2.5cm, align=center] (h2) at (3.5,0) {H2: Acondic. In-Amp};
+            \node[draw, fill=green!15, text width=2.8cm, align=center] (h3) at (7.5,0) {H3: Filtro Activo 4to Orden};
+            \node[draw, fill=orange!20, text width=2.5cm, align=center] (l5) at (3.5,-2) {Lab 5: Rectificación};
+            \node[draw, fill=orange!20, text width=2.8cm, align=center] (l6) at (7.5,-2) {Lab 6: Sección Filtro 2do Orden};
+            \draw[->] (h1) -- (h2); \draw[->] (h2) -- (h3);
+            \draw[->, dashed] (l5) -- node[left, font=\scriptsize] {Concepto} (h2);
+            \draw[->, dashed] (l6) -- node[left, font=\scriptsize] {Sección $\neq$ Sistema} (h3);
+        \end{tikzpicture}
+    \end{center}
+    \small \textbf{Requisito H3:} Atenuación $50\,\text{Hz} < -40\,\text{dB}$ en el \textit{sistema} ($20\log_{10}|V_{50,\text{out}}/V_{50,\text{in}}|$), preservando la señal útil. Una sección transitoria de Lab 6 no lo prueba por sí sola[cite: 11, 12].
+\end{frame}
+
+\end{document}
