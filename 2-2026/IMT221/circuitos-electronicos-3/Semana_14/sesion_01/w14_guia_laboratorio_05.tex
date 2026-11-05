@@ -1,0 +1,107 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{arrows.meta, positioning, calc}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{ucbgray}{RGB}{240, 244, 248}
+\definecolor{warnred}{RGB}{180, 20, 20}
+
+\begin{document}
+
+\noindent
+{\LARGE \textbf{\textcolor{ucbblue}{IMT-221 — Circuitos Electrónicos III}}}\\[0.15cm]
+{\Large \textbf{Hito 3: Guía Única E1 $\rightarrow$ E4 — Parte 5: Plan de Mediciones, Plantilla y Puertas G1--G4}}\\[0.1cm]
+{\small \textbf{Versión de trabajo 1.0} $\cdot$ 3 de noviembre de 2026 $\cdot$ Protocolo de Auditoría, Entrega Final y Fuentes}
+\par\vspace{0.2cm}\noindent\rule{\linewidth}{0.4pt}\vspace{0.3cm}
+
+\section*{7. Plan de Mediciones Unificado (Aplicable a Todas las Etapas)}
+
+Completar una tabla por etapa y condición, sin eliminar filas pendientes. El informe único de cada equipo debe contener como mínimo:
+
+\par\vspace{0.15cm}\noindent
+\renewcommand{\arraystretch}{1.28}
+\begin{tabularx}{\linewidth}{|c|p{4.8cm}|p{4.2cm}|X|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Etapa} & \textbf{Señales o Datos Registrados} & \textbf{Variable Controlada} & \textbf{Comparación Obligatoria} \\ \hline
+\textbf{E1} & $V_{\text{BUS}}$, $V_{GS}$, $V_{DS}$, $I_D$, $f$, duty, $R_L$ y calor & $0\text{--}5\,\text{V}$ vs.\ $0\text{--}10\,\text{V}$ según MOSFET y fuente & Ley de Ohm, conducción, nivel efectivo de gate \\ \hline
+\textbf{E2} & $V_{\text{IN}}$, \texttt{A}, \texttt{CMD}, \texttt{OUT}, $V_{GS}$, $V_{DS}$, $I_D$, $f$, duty & E1 directo frente a driver BJT con mismo MOSFET y carga & Nivel alto/bajo, tiempos de carga/descarga y pérdidas \\ \hline
+\textbf{E3} & $V_{GS}$, $V_{DS}$, $i_L$, $i_{DF}$, picos y temperatura & Sin/con protección \textbf{en simulación}; protección real aprobada en banco & Sobrevoltajes, continuidad de corriente y energía $\frac{1}{2}L i_L^2$ \\ \hline
+\textbf{E4} & $V_{GS}$ de 4 MOSFET, nodos A/B, $I_{\text{MOTOR}}$, $I_{\text{BUS}}$, $V_{\text{BUS}}$, tiempos muertos & Secuencia de estados y frecuencia PWM aprobadas & Estados válidos, ausencia de solapamiento, pérdidas y térmica \\ \hline
+\end{tabularx}
+
+\subsection*{Plantilla Trazable de Registro (Repetir por Magnitud Evaluada)}
+\par\vspace{0.1cm}\noindent
+\renewcommand{\arraystretch}{1.32}
+\begin{tabularx}{\linewidth}{|p{6.5cm}|X|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Campo de Auditoría} & \textbf{Anotación / Registro Trazable} \\ \hline
+Equipo / integrantes / integrante que explica & \\ \hline
+Fecha / etapa / estado de puerta G1--G4 & \\ \hline
+Pieza real, fabricante, datasheet y encapsulado & \\ \hline
+Instrumento, modelo, sonda/escala, conexión de referencia & \\ \hline
+Condición de tensión, carga, frecuencia y duty & \\ \hline
+Magnitud evaluada y unidad en el SI & \\ \hline
+\texttt{CALC} — Valor analítico y ecuación empleada & \\ \hline
+\texttt{SIM} — Valor, modelo, archivo \texttt{.cir/.asc}, \texttt{.log} y captura & \\ \hline
+\texttt{MED} — Valor y captura (\textbf{solo si fue medido físicamente}) & \\ \hline
+Diferencia absoluta / relativa (si el denominador no es $\approx 0$) & \\ \hline
+Incertidumbre / resolución instrumental y explicación física & \\ \hline
+Pendiente, anomalía o condición de parada activada & \\ \hline
+\end{tabularx}
+
+\section*{8. Puertas de Seguridad G1--G4 (Firmas Independientes Obligatorias)}
+\textbf{\textcolor{warnred}{Sin la firma correspondiente no se energiza.}} Una simulación exitosa en LTspice jamás representa aprobación de G1, G2, G3 o G4.
+
+\par\vspace{0.15cm}\noindent
+\renewcommand{\arraystretch}{1.45}
+\begin{tabularx}{\linewidth}{|c|X|p{5.2cm}|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Puerta} & \textbf{Requisitos Físicos y Documentales de Verificación en Frío} & \textbf{Resolución, Firma y Fecha} \\ \hline
+\textbf{G1 / E1} & Ficha real NMOS y pinout/pestaña; $100\,\Omega$ de potencia; source/tierras de fuente-generador-osciloscopio; control verificado sin bus; limitación de fuente; $R_G/R_{PD}$; estado OFF previo; instrumentos/corriente apropiados. & Estado: Aut.\ / Obs.\ / Bloq.\newline Firma: \rule{3.2cm}{0.4pt}\newline Fecha: \rule{3.2cm}{0.4pt} \\ \hline
+\textbf{G2 / E2} & Todo G1 aplicable + BJTs exactos/pinout (\texttt{Q1--Q4}), corrientes de base y colector, disipaciones, driver y niveles, startup OFF, pérdida de señal OFF, alimentación/desacoplo ($100\,\text{nF}$) y prueba previa sin potencia; netlist y \texttt{.log}; cero sobreimpulso sobre $V_{GS,\max}$. & Estado: Aut.\ / Obs.\ / Bloq.\newline Firma: \rule{3.2cm}{0.4pt}\newline Fecha: \rule{3.2cm}{0.4pt} \\ \hline
+\textbf{G3 / E3} & Todo G2 + motor/bobina real especificada, corriente y energía inductiva, diodo \texttt{DF} polaridad/rating, picos de tensión, limitación y método seguro de medición de corriente, temperatura y desconexión. & Estado: Aut.\ / Obs.\ / Bloq.\newline Firma: \rule{3.2cm}{0.4pt}\newline Fecha: \rule{3.2cm}{0.4pt} \\ \hline
+\textbf{G4 / E4} & Todo G3 pertinente + cuatro MOSFET y drivers físicos, pull-ups P/high-side a $+V_{\text{BUS}}$, referencia segura de $V_{GS}$ high-side (prohibido GND de sonda en $+V_{\text{BUS}}$), layout/potencia, enclavamiento y dead-time verificados, tabla de estados, no inversión brusca, fusibles y fallo seguro. & Estado: Aut.\ / Obs.\ / Bloq.\newline Firma: \rule{3.2cm}{0.4pt}\newline Fecha: \rule{3.2cm}{0.4pt} \\ \hline
+\end{tabularx}
+
+\section*{9. Entrega Final, Cuestionario Individual Mínimo y Fuentes}
+
+\noindent
+\textbf{Estructura del Informe Único Incremental Hito 3:} Entregar un solo expediente acumulativo con: (1) BOM final con costos comprobados, (2) cuatro esquemas/versiones E1--E4, (3) memoria de cálculo, (4) archivos y capturas LTspice con logs, (5) actas G1--G4 firmadas, (6) capturas reales de osciloscopio, (7) bitácora de problemas/modificaciones, (8) tabla de estados del puente H, (9) integración de pérdidas y modelo térmico en Python, y (10) defensa individual.
+
+\subsection*{Preguntas Individuales Mínimas de Defensa}
+\begin{enumerate}[noitemsep, topsep=2pt]
+    \item ¿Qué diferencia física y de especificación existe entre $V_{GS(\text{th})}$ y una tensión de compuerta de baja pérdida?
+    \item ¿Qué significa que el parámetro $R_{DS(\text{on})}$ sea condicionado?
+    \item ¿Por qué un seguidor de emisor BJT alimentado a $12\,\text{V}$ no convierte por sí solo un mando de $5\,\text{V}$ en $12\,\text{V}$?
+    \item ¿Por qué trayectoria circula la corriente al apagar una carga inductiva $L/R$ en E3?
+    \item ¿Cuál es el riesgo de aplicar $5\,\text{V}$ absolutos al gate de un PMOS high-side cuyo source está a $+12\,\text{V}$?
+    \item ¿Cómo se evita el solapamiento (\textit{shoot-through}) en una misma rama del puente H?
+    \item En su tabla de datos, ¿qué distingue rigurosamente un valor \texttt{CALC}, \texttt{SIM} y \texttt{MED}?
+\end{enumerate}
+
+\subsection*{10. Fuentes Primarias de Fabricantes para Verificación}
+\begin{itemize}[noitemsep, topsep=2pt]
+    \item \textbf{Infineon IRLZ44N:} \url{https://www.infineon.com/part/IRLZ44N} ($V_{GS,\max} = \pm 16\,\text{V}$; $R_{DS(\text{on})}$ especificado a nivel lógico).
+    \item \textbf{Infineon IRFZ44N:} \url{https://www.infineon.com/part/IRFZ44N} ($R_{DS(\text{on})} \le 17.5\,\text{m}\Omega$ garantizado a $V_{GS} = 10\,\text{V}$).
+    \item \textbf{Infineon IRF4905 (PMOS):} \url{https://www.infineon.com/assets/row/public/documents/24/49/infineon-irf4905-datasheet-en.pdf} ($R_{DS(\text{on})} \le 20\,\text{m}\Omega$ a $V_{GS} = -10\,\text{V}$).
+    \item \textbf{onsemi P2N2222A / PN2907A:} \url{https://www.onsemi.com/pdf/datasheet/p2n2222a-d.pdf} y \url{https://www.onsemi.com/download/data-sheet/pdf/pn2907a-d.pdf} (verificar orden físico de patillas C/B/E del encapsulado recibido).
+\end{itemize}
+
+\end{document}

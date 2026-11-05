@@ -1,0 +1,161 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{arrows.meta, positioning, calc}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{ucbgray}{RGB}{240, 244, 248}
+\definecolor{warnred}{RGB}{180, 20, 20}
+
+\begin{document}
+
+\noindent
+{\LARGE \textbf{\textcolor{ucbblue}{IMT-221 — Circuitos Electrónicos III}}}\\[0.15cm]
+{\Large \textbf{Hito 3: Guía Única E1 $\rightarrow$ E4 — Parte 4: Etapas E3 (Carga Inductiva) y E4 (Puente H y Python)}}\\[0.1cm]
+{\small \textbf{Versión de trabajo 1.0} $\cdot$ 3 de noviembre de 2026 $\cdot$ Condicionado a firmas independientes G3 y G4}
+\par\vspace{0.2cm}\noindent\rule{\linewidth}{0.4pt}\vspace{0.3cm}
+
+\section*{5. Etapa E3 — Inductancia Real y Recirculación de Corriente}
+
+\subsection*{5.1 Modelo Matemático y Trayectoria de Energía Magnética}
+Para una bobina de inductancia $L$ y resistencia interna $R$, durante el estado ON ideal ($V_{DS} \approx 0\,\text{V}$):
+\begin{equation}
+    V_{\text{BUS}} = R\,i_L(t) + L\frac{di_L(t)}{dt} \implies i_L(t) = \frac{V_{\text{BUS}}}{R}\left(1 - e^{-t/\tau}\right) + i_L(0)\,e^{-t/\tau}, \qquad \tau = \frac{L}{R}.
+\end{equation}
+La energía magnética almacenada en el campo de la inductancia en función de la corriente instantánea $i_L$ es:
+\begin{equation}
+    E_L = \int_0^{i_L} L\,i\,di = \frac{1}{2}L\,i_L^2 \quad [\text{J}].
+\end{equation}
+Al abrir el NMOS (\texttt{M1} pasa a OFF), la corriente $i_L$ no puede extinguirse instantáneamente ($\frac{di_L}{dt}$ finito). Sin vía de descarga, $v_L = L\frac{di_L}{dt}$ genera un pico destructivo sobre $V_{DS}$. El diodo de recirculación \texttt{DF} en antiparalelo (\textbf{cátodo a $+V_{\text{BUS}}$, ánodo a DRAIN}) fija la tensión de drenador durante la descarga a $V_{DS,\text{recirc}} \approx V_{\text{BUS}} + V_{F,\text{diodo}}$.
+
+\begin{center}
+\begin{circuitikz}[scale=0.9, transform shape, thick]
+    \draw (0, 4.4) node[above]{\textbf{$+12\,\text{V}_{\text{BUS}}$}} -- (0, 3.8) coordinate (bus_top);
+    \draw (bus_top) to[R, l={$R_{\text{bobina}}$}] (0, 2.4) to[L, l={$L_1$}, i={$i_L(t)$}] (0, 1.0) coordinate (drain);
+    \filldraw (bus_top) circle (1.5pt);
+    \filldraw (drain) circle (1.5pt) node[left=0.1cm]{\textbf{DRAIN}};
+
+    % Diodo de rueda libre DF en antiparalelo (ánodo en DRAIN, cátodo en +VBUS)
+    \draw (drain) -- (2.6, 1.0) to[D, l_={\textbf{DF} {\small (A $\rightarrow$ K)}}] (2.6, 3.8) -- (bus_top);
+
+    % NMOS M1 y Driver E2
+    \draw (0, -0.3) node[nigfete] (M1) {};
+    \node[right=0.15cm] at (M1.D) {\textbf{M1}};
+    \draw (drain) -- (M1.D);
+    \draw (M1.S) -- (0, -1.5) node[ground]{};
+    \draw (M1.B) -- ++(0.5,0) |- (0, -1.5);
+    \draw (-3.2, -0.3) node[draw=ucbblue, fill=ucbgray, rounded corners, inner sep=5pt] (drv) {\textbf{Driver BJT E2}};
+    \draw (drv.east) -- (M1.G);
+\end{circuitikz}
+\end{center}
+
+\section*{6. Etapa E4 — Puente H Físico, Accionamiento Bidireccional y Pérdidas}
+
+\subsection*{6.1 Arquitectura Funcional Propuesta (2 PMOS High-Side + 2 NMOS Low-Side)}
+\begin{center}
+\begin{circuitikz}[scale=0.88, transform shape, thick]
+    % Riel +VBUS
+    \draw (-4.5, 4.2) -- (4.5, 4.2) node[midway, above]{\textbf{$+V_{\text{BUS}}$ ($12\,\text{V}$)}};
+
+    % Rama Izquierda: PH1 (PMOS) y NL1 (NMOS)
+    \draw (-3.0, 2.7) node[pigfete] (PH1) {};
+    \node[left=0.1cm] at (PH1.S) {S}; \node[left=0.1cm] at (PH1.D) {D};
+    \node[above right=0.05cm] at (PH1.D) {\textbf{PH1} (IRF4905)};
+    \draw (-3.0, 4.2) node[circle, fill, inner sep=1.5pt]{} -- (PH1.S);
+    \draw (PH1.B) -- ++(0.5,0) |- (-3.0, 4.2);
+
+    \draw (-3.0, -1.2) node[nigfete] (NL1) {};
+    \node[left=0.1cm] at (NL1.D) {D}; \node[left=0.1cm] at (NL1.S) {S};
+    \node[below right=0.05cm] at (NL1.D) {\textbf{NL1} (NMOS)};
+    \draw (NL1.S) -- (-3.0, -2.6) node[ground]{};
+    \draw (NL1.B) -- ++(0.5,0) |- (-3.0, -2.6);
+
+    % Rama Derecha: PH2 (PMOS) y NL2 (NMOS)
+    \draw (3.0, 2.7) node[pigfete, xscale=-1] (PH2) {};
+    \node[right=0.1cm] at (PH2.S) {S}; \node[right=0.1cm] at (PH2.D) {D};
+    \node[above left=0.05cm] at (PH2.D) {\textbf{PH2} (IRF4905)};
+    \draw (3.0, 4.2) node[circle, fill, inner sep=1.5pt]{} -- (PH2.S);
+    \draw (PH2.B) -- ++(-0.5,0) |- (3.0, 4.2);
+
+    \draw (3.0, -1.2) node[nigfete, xscale=-1] (NL2) {};
+    \node[right=0.1cm] at (NL2.D) {D}; \node[right=0.1cm] at (NL2.S) {S};
+    \node[below left=0.05cm] at (NL2.D) {\textbf{NL2} (NMOS)};
+    \draw (NL2.S) -- (3.0, -2.6) node[ground]{};
+    \draw (NL2.B) -- ++(-0.5,0) |- (3.0, -2.6);
+
+    % Nodos centrales A y B y Motor DC
+    \draw (PH1.D) -- (NL1.D) node[midway, circle, fill, inner sep=1.5pt] (A) {};
+    \draw (PH2.D) -- (NL2.D) node[midway, circle, fill, inner sep=1.5pt] (B) {};
+    \node[left=0.15cm] at (A) {\textbf{A}};
+    \node[right=0.15cm] at (B) {\textbf{B}};
+    \draw (A) -- (-0.8, 0.75);
+    \draw (0, 0.75) circle (0.8cm) node{\textbf{MOTOR}};
+    \draw (0.8, 0.75) -- (B);
+
+    % Bloques de excitación
+    \node[draw=ucbblue, fill=ucbgray, rounded corners, align=center, font=\footnotesize] (ls1) at (-6.3, 2.7) {Level Shift\\High-Side 1};
+    \node[draw=ucbblue, fill=ucbgray, rounded corners, align=center, font=\footnotesize] (drv1) at (-6.3, -1.2) {Driver E2\\Low-Side 1};
+    \node[draw=ucbblue, fill=ucbgray, rounded corners, align=center, font=\footnotesize] (ls2) at (6.3, 2.7) {Level Shift\\High-Side 2};
+    \node[draw=ucbblue, fill=ucbgray, rounded corners, align=center, font=\footnotesize] (drv2) at (6.3, -1.2) {Driver E2\\Low-Side 2};
+    \draw[->] (ls1.east) -- (PH1.G);
+    \draw[->] (drv1.east) -- (NL1.G);
+    \draw[->] (ls2.west) -- (PH2.G);
+    \draw[->] (drv2.west) -- (NL2.G);
+\end{circuitikz}
+\end{center}
+
+\noindent
+\textbf{Condición de niveles en los PMOS High-Side ($V_S = +12\,\text{V}$):}
+Para apagar (\textbf{OFF}): $V_G = 12\,\text{V} \implies V_{GS} = V_G - V_S = 12\,\text{V} - 12\,\text{V} = 0\,\text{V}$ (requiere pull-up entre gate y source $+V_{\text{BUS}}$). Para encender (\textbf{ON}): $V_G = 0\,\text{V} \implies V_{GS} = -12\,\text{V}$ (verificar límite $\pm V_{GS,\max}$). Un GPIO de $0\text{-}5\,\text{V}$ directo produce $V_{GS} = 5 - 12 = -7\,\text{V}$ y \textbf{jamás apaga el PMOS}.
+
+\subsection*{6.2 Tabla de Control de Estados y Prevención de Shoot-Through}
+\par\vspace{0.1cm}\noindent
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\linewidth}{|l|c|c|c|c|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Función} & \textbf{PH1} & \textbf{NL1} & \textbf{PH2} & \textbf{NL2} & \textbf{Observación de Seguridad} \\ \hline
+Reposo seguro & OFF & OFF & OFF & OFF & Sin accionamiento; verificar transitorios \\ \hline
+Sentido $A \rightarrow B$ & ON & OFF & OFF & ON & Par diagonal activo \texttt{PH1 + NL2} \\ \hline
+Sentido $B \rightarrow A$ & OFF & ON & ON & OFF & Par diagonal activo \texttt{PH2 + NL1} \\ \hline
+Transición segura & OFF temp. & OFF temp. & OFF temp. & OFF temp. & \textbf{Dead-time / interbloqueo} obligatorio entre estados \\ \hline
+\textcolor{warnred}{\textbf{PROHIBIDO 1}} & \textcolor{warnred}{\textbf{ON}} & \textcolor{warnred}{\textbf{ON}} & -- & -- & \textbf{Cortocircuito directo de rama izquierda (\textit{shoot-through})} \\ \hline
+\textcolor{warnred}{\textbf{PROHIBIDO 2}} & -- & -- & \textcolor{warnred}{\textbf{ON}} & \textcolor{warnred}{\textbf{ON}} & \textbf{Cortocircuito directo de rama derecha (\textit{shoot-through})} \\ \hline
+\end{tabularx}
+
+\subsection*{6.3 Ecuaciones de Pérdidas, Modelo Térmico y Código Python}
+\begin{align}
+    P_{\text{cond,med}} &\approx \frac{1}{T}\int_0^T i_D(t)^2 R_{DS(\text{on})}(T_j, V_{GS})\,dt, \qquad E_{\text{on/off}} = \int_{\text{evento}} v_{DS}(t)\,i_D(t)\,dt, \\
+    P_{\text{sw}} &\approx f_{\text{sw}}\left(E_{\text{on}} + E_{\text{off}}\right), \qquad P_{\text{gate}} \approx Q_g V_{\text{drive}} f_{\text{sw}}, \qquad T_j \approx T_a + P_{\text{total}} R_{\theta JA}.
+\end{align}
+
+\begin{verbatim}
+import pandas as pd
+import numpy as np
+
+df = pd.read_csv('evento_medido.csv')
+t = df['t_s'].to_numpy(dtype=float)
+v = df['vds_V'].to_numpy(dtype=float)
+i = df['id_A'].to_numpy(dtype=float)
+if len(t) < 2 or not np.all(np.diff(t) > 0):
+    raise ValueError('Se requieren al menos dos tiempos crecientes')
+p = v * i
+E_J = np.trapz(p, t)
+print(f'Energia integrada en intervalo medido: {E_J:.6e} J')
+# Registrar intervalo exacto, calibracion, referencias, sincronizacion y error.
+# Para P_sw se necesita E_on+E_off y frecuencia aplicable.
+\end{verbatim}
+
+\end{document}
