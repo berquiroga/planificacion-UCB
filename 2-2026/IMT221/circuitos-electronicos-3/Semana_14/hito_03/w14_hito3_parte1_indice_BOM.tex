@@ -1,0 +1,169 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, calc}
+\usepackage[margin=1.4cm]{geometry}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+\emergencystretch=1.5em
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{ucbgray}{RGB}{240, 244, 248}
+\definecolor{warnred}{RGB}{180, 20, 20}
+
+\begin{document}
+
+\noindent
+{\LARGE \textbf{\textcolor{ucbblue}{IMT-221 — Circuitos Electrónicos III}}}\\[0.12cm]
+{\Large \textbf{Hito 3: Guía Única de Desarrollo Experimental E1 $\rightarrow$ E4 — Parte 1: Índice, Trazabilidad y BOM Maestra}}\\[0.08cm]
+{\small \textbf{Versión integrada 1.3} $\cdot$ Alternativas E2 (6 de noviembre de 2026) $\cdot$ Universidad Católica Boliviana ``San Pablo'' Sede Tarija}
+\par\vspace{0.15cm}\noindent\rule{\linewidth}{0.4pt}\vspace{0.2cm}
+
+\noindent
+\textbf{Propósito:} Diseñar, simular, construir, medir y documentar un sistema de accionamiento electrónico incremental: \textbf{E1 interruptor NMOS low-side resistivo $\rightarrow$ E2 driver BJT sourcing/sinking $\rightarrow$ E3 conmutación de carga inductiva protegida $\rightarrow$ E4 puente H físico con control de shoot-through, pérdidas y análisis térmico con Python}. Todos los equipos deben alcanzar la misma meta. Si un equipo está retrasado, recupera las etapas previas siguiendo \textbf{esta misma guía} y conserva sus evidencias; no hay rutas curriculares alternativas.
+
+\vspace{0.12cm}
+\noindent
+\textbf{\textcolor{warnred}{Alcance de seguridad:}} Esta guía \textbf{no autoriza energizar} ningún circuito. El docente/encargado verifica y firma \textbf{G1, G2, G3 y G4}, independientemente, sobre el montaje real. Los componentes aún no confirmados y los detalles de E3/E4 que dependen del motor, diodos y dispositivos comerciales deben dimensionarse y aprobarse antes de conectarlos. Un netlist genérico no sustituye un diseño físico validado.
+
+\vspace{0.12cm}
+\noindent
+\textbf{Actualización v1.3:} Se conservan Arduino Uno/ESP32, PNP \texttt{2N3906}/\texttt{BC557B} y se añaden NPN \textbf{\texttt{BC337}} y \textbf{\texttt{BC547}} con asignación por función y una variante condicionada de resistencia de descarga ($R_{G\_DN}$). La topología y los permisos G1--G4 se mantienen; no se declara validado el hardware.
+
+\section*{0. Índice de Trabajo, Entregables y Control de Avance}
+
+\begin{center}
+\resizebox{\linewidth}{!}{
+\begin{tikzpicture}[
+    node distance=1.4cm,
+    stage/.style={draw=ucbblue, very thick, fill=ucbgray, rounded corners=4pt, minimum width=4.8cm, minimum height=1.65cm, align=center},
+    gate/.style={draw=warnred, very thick, fill=red!10, circle, minimum size=0.95cm, font=\bfseries\color{warnred}}
+]
+    \node[stage] (E1) {\textbf{Etapa E1}\\NMOS Low-Side\\Carga Resistiva $100\,\Omega$};
+    \node[gate, right=0.7cm of E1] (G1) {G1};
+    \node[stage, right=0.7cm of G1] (E2) {\textbf{Etapa E2}\\Driver BJT ($0\text{--}5\,\text{V} / 3.3\,\text{V} \rightarrow 12\,\text{V}$)\\Sourcing / Sinking};
+    \node[gate, right=0.7cm of E2] (G2) {G2};
+    \node[stage, right=0.7cm of G2] (E3) {\textbf{Etapa E3}\\Carga Inductiva $L/R$ +\\Recirculación Verificada};
+    \node[gate, right=0.7cm of E3] (G3) {G3};
+    \node[stage, right=0.7cm of G3] (E4) {\textbf{Etapa E4 (Hito 3)}\\Puente H Físico (PMOS/NMOS)\\Dead-Time + Térmica Python};
+    \node[gate, right=0.7cm of E4] (G4) {G4};
+
+    \draw[-{Stealth[length=3mm]}, very thick, ucbblue] (E1) -- (G1);
+    \draw[-{Stealth[length=3mm]}, very thick, warnred] (G1) -- (E2);
+    \draw[-{Stealth[length=3mm]}, very thick, ucbblue] (E2) -- (G2);
+    \draw[-{Stealth[length=3mm]}, very thick, warnred] (G2) -- (E3);
+    \draw[-{Stealth[length=3mm]}, very thick, ucbblue] (E3) -- (G3);
+    \draw[-{Stealth[length=3mm]}, very thick, warnred] (G3) -- (E4);
+    \draw[-{Stealth[length=3mm]}, very thick, ucbblue] (E4) -- (G4);
+\end{tikzpicture}
+}
+\end{center}
+
+\par\vspace{0.1cm}\noindent
+\renewcommand{\arraystretch}{1.28}
+\begin{tabularx}{\linewidth}{|p{1.1cm}|>{\raggedright\arraybackslash}p{6.0cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{7.4cm}|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Etapa} & \textbf{Resultado Exigido} & \textbf{Condición para Continuar} & \textbf{Evidencias} \\ \hline
+\textbf{E1} & NMOS low-side conmuta carga resistiva & \textbf{G1} y diagnóstico de excitación; si no se autoriza la prueba, dejar bloqueo documentado & Esquema, cálculo, LTspice, valores reales $V_{GS}$, $V_{DS}$, $I_D$ si autorizados \\ \hline
+\textbf{E2} & Driver BJT con adaptación de $0\text{--}5\,\text{V}$ (o $3.3\,\text{V}$) a excitación de gate, sourcing/sinking & \textbf{G2}, BJTs identificados, alimentación/arranque seguro y verificación de control sin bus & Esquema de nodos, cálculo de bases, LTspice, niveles y transitorios \\ \hline
+\textbf{E3} & NMOS de E2 conmuta una carga inductiva con trayectoria de recirculación verificada & \textbf{G3}, motor/bobina y diodo dimensionados, estrategia OFF documentada & Corriente y tensión transitoria, protección y análisis de energía \\ \hline
+\textbf{E4} & Puente H físico controlado y protegido, con mediciones y pérdidas/térmica & \textbf{G4}, drivers high-side y low-side, enclavamientos/dead time, control de estados, prueba en frío & Tabla de estados, LTspice, formas de onda, pruebas sin y con motor, Python e informe \\ \hline
+\end{tabularx}
+
+\vspace{0.18cm}
+\noindent
+\textbf{Fechas comunicadas:} Examen individual EC3: \textbf{6/11/2026}; Entrega Hito 3: \textbf{20/11/2026}; Recuperatorio U3/U4: \textbf{27/11/2026}. El examen es distinto de la entrega física final. No transformar un calendario en permiso de energización.
+
+\subsection*{Convenciones y Trazabilidad}
+\begin{itemize}[noitemsep, topsep=2pt]
+    \item $V_{\text{BUS}}$: tensión de potencia; $V_{\text{DRV}}$: alimentación de driver; $V_{\text{IN}}$: señal lógica; $G$: gate, $D$: drain, $S$: source; $V_{GS} = V_G - V_S$, $V_{DS} = V_D - V_S$.
+    \item $R_L$: carga resistiva E1/E2; $R_G$: resistor serie de gate; $R_{PD}$: pull-down gate--source; $Q_g$: carga total de gate \textbf{bajo condiciones de ficha}.
+    \item Para \textbf{cada cifra} indicar origen: \texttt{CALC} (calculado), \texttt{PRED} (predicho), \texttt{SIM} (simulado en LTspice, con archivo y log), \texttt{MED} (medido, con instrumento) o \texttt{PEND} (pendiente). No copiar valores \texttt{CALC} como \texttt{MED}.
+    \item Escribir fabricante, código completo, encapsulado y fecha de consulta del datasheet del transistor montado. Un nombre impreso similar no garantiza el mismo pinout.
+\end{itemize}
+
+\newpage
+\section*{1. BOM Maestra Única — E2 con Arduino Uno o ESP32, PNP y NPN Alternativos (6 nov 2026)}
+
+\textbf{Prioridad:} Materiales de E1 reutilizados. \textbf{Todos los grupos terminan el mismo E2} y mantienen las mismas conexiones funcionales. Se autorizan para estudio las variantes de control \textbf{Arduino Uno ($5\,\text{V}$) o ESP32 ($3.3\,\text{V}$)}, de PNP \textbf{\texttt{2N3906} o \texttt{BC557B}}, y de NPN \textbf{\texttt{2N3904}, \texttt{2N2222A}, \texttt{BC337} o \texttt{BC547}} según posición y límites, tras cotejar fabricante y patillaje. \textbf{\texttt{PN2907A} no es requisito.} Estos son candidatos de diseño, no sustituciones físicas aprobadas. Las cantidades se indican por circuito E2, no por estudiante.
+
+\par\vspace{0.12cm}\noindent
+\renewcommand{\arraystretch}{1.15}
+{\footnotesize
+\begin{tabularx}{\linewidth}{|>{\raggedright\arraybackslash}p{2.3cm}|>{\raggedright\arraybackslash}p{2.3cm}|c|>{\raggedright\arraybackslash}p{7.8cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Bloque} & \textbf{Designador} & \textbf{Cant.} & \textbf{Valor / Parte y Tipo} & \textbf{Condición} \\ \hline
+Potencia E1/E2 & \texttt{M1} & 1 & \textbf{IRLZ44N} o \textbf{IRFZ44N} N-MOS TO-220 & Parte exacta, patillaje, pestaña/aislamiento \\ \hline
+Potencia E1/E2 & \texttt{RL} & 1 & $100\,\Omega$ \textbf{$5\,\text{W}$ recomendado como candidato térmico} & $\ge 1.44\,\text{W}$ en ON ideal continuo, montaje seguro \\ \hline
+Control E2 & \texttt{MCU} & 1 & \textbf{Arduino Uno Rev3 $5\,\text{V}$ (pin D9) o ESP32 $3.3\,\text{V}$, GPIO comprobado (ej.\ GPIO18 solo si aplica al modelo)} & Alimentado por USB; nunca $12\,\text{V}$ en GPIO/USB; GPIO de arranque/función se verifica \\ \hline
+Control E2 & \texttt{Q1, Q2} & 2 & NPN \textbf{2N3904 / 2N2222A / BC337 / BC547} & \texttt{Q1/Q2} son etapas de control de baja corriente; \texttt{BC547} permitido aquí tras revisar C/B/E y fabricante \\ \hline
+Driver E2 & \texttt{QH} & 1 & \textbf{2N3906 PNP o BC557B PNP} & Emisor $+V_{\text{DRV}}$; confirmar fabricante, E/B/C; \textbf{BC557B menor corriente máxima}, comprobar corriente y disipación; $|V_{EBO}| \le 5\,\text{V}$ según ficha del candidato \\ \hline
+Driver E2 & \texttt{QL} & 1 & \textbf{BC337 / 2N2222A preferidos; 2N3904 condicionado; BC547 solo variante conservadora} & Emisor GND; para \texttt{BC547} aumentar $R_{G\_DN}$ a $470\,\Omega$ o mayor tras estudio; revisar margen, pulsos y fabricante \\ \hline
+Control E2 & \texttt{RIN1, RIN2} & 2 & \textbf{$2.2\,\text{k}\Omega$, $1/4\,\text{W}$} como valor inicial en ambas MCU & Comprobar saturación \texttt{Q1/Q2} con $3.3\,\text{V}$; si no cumple, redimensionar y documentar antes de G2 \\ \hline
+Control E2 & \texttt{RPD1, RPD2} & 2 & \textbf{$10\,\text{k}\Omega$, $1/4\,\text{W}$} & Base \texttt{Q1/Q2} a GND, entrada flotante = OFF \\ \hline
+Driver alto & \texttt{RBH} & 1 & \textbf{$2.2\,\text{k}\Omega$, $1/4\,\text{W}$} & Colector \texttt{Q1} hacia base \texttt{QH} \\ \hline
+Driver alto & \texttt{RPUH} & 1 & \textbf{$10\,\text{k}\Omega$, $1/4\,\text{W}$} & Base \texttt{QH} a $+V_{\text{DRV}}$ \\ \hline
+Driver bajo & \texttt{RPU2} & 1 & \textbf{$1\,\text{k}\Omega$, $1/2\,\text{W}$} & $+V_{\text{DRV}}$ a nodo \texttt{LCTL} / colector \texttt{Q2} \\ \hline
+Driver bajo & \texttt{RBL} & 1 & \textbf{$1\,\text{k}\Omega$, $1/4\,\text{W}$} & \texttt{LCTL} hacia base \texttt{QL} \\ \hline
+Gate & \texttt{RG\_UP, RG\_DN} & 2 & \textbf{$R_{G\_UP}=220\,\Omega$ y $R_{G\_DN}=220\,\Omega$ (caso base); BC547 como QL: $R_{G\_DN}$ inicial $470\,\Omega$} & Dos caminos distintos: cambio a $470\,\Omega$ NO autoriza montaje sin medición y G2 \\ \hline
+Gate & \texttt{RPDG} & 1 & \textbf{$100\,\text{k}\Omega$, $1/4\,\text{W}$} & Gate a source \\ \hline
+Desacoplo & \texttt{CDEC} & 1 & \textbf{$100\,\text{nF}$, X7R cerámico $\ge 25\,\text{V}$} & Obligatorio junto al driver; \textbf{no electrolítico} \\ \hline
+Reserva alim. & \texttt{CBULK} & 1 & \textbf{$10\,\mu\text{F}$ $\ge 25\,\text{V}$} & Opcional, electrolítico polarizado ($+V_{\text{DRV}}$/GND) o cerámico \\ \hline
+Fuente & $+V_{\text{DRV}}, +V_{\text{BUS}}$ & 1 & \textbf{$12\,\text{V}$ regulada por grupo o bus común protegido}, o $8\times\text{AA}$ con fusible para ensayo corto & No son automáticamente intercambiables; medir tensión real y corriente disponible \\ \hline
+Protección & \texttt{F1} y \texttt{S1} & 1+1 & Fusible por rama e interruptor accesible, \textbf{dimensionados por responsable} & Obligatorio si no hay limitación electrónica de corriente; no asumir fusible $500\,\text{mA}$ adecuado sin revisar fuente/cables \\ \hline
+Instrumentación & Osc., mult., sondas & Comp. & Medir $V(\text{in})$, $V(\text{QH}_{\text{base}})$, $V(\text{LCTL})$, $V(\text{gate})$, $V(\text{drain})$, $V_{\text{bus}}$ y corriente & Tierra revisada antes de unir USB/fuente/osciloscopio \\ \hline
+E3 & Bobina/motor, diodo, shunt & Pend. & Por caracterizar & Mantener G3 independiente; no cambiar $R_L$ por motor sin rediseño \\ \hline
+E4 & 2 PMOS IRF4905 + 2 NMOS + drivers + prot. & Por diseñar & Control high-side, dead-time e interbloqueo pendientes & Mantener G4 independiente; \textbf{E2 no es un driver high-side} \\ \hline
+\end{tabularx}
+}
+
+\vspace{0.12cm}
+\noindent
+\textbf{Advertencia de vigencia:} La BOM previa con \texttt{PN2907A}/\texttt{P2N2222A} exclusivamente, un $R_G$ único y un seguidor complementario no es vigente para E2. No distribuir esas conexiones como alternativa. Los valores aquí son una propuesta verificable, no mediciones ni circuito aprobado por G2.
+
+\newpage
+\subsection*{1.1 Matriz de Alternativas NPN por Posición — NO son Equivalentes Automáticos}
+
+\par\vspace{0.1cm}\noindent
+\renewcommand{\arraystretch}{1.28}
+{\small
+\begin{tabularx}{\linewidth}{|>{\raggedright\arraybackslash}p{3.4cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{4.5cm}|>{\raggedright\arraybackslash}p{6.2cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Transistor NPN} & \textbf{Máx.\ Absoluto $I_C$ (Ficha de Ref.)} & \textbf{Q1/Q2: Control} & \textbf{QL: Descarga de Gate} & \textbf{Observación} \\ \hline
+\textbf{BC547} (familia BC547, onsemi) & \textbf{$100\,\text{mA}$} & \textbf{Preferido para control}, por corrientes objetivo de pocos mA (\texttt{Q2} $\approx 12\,\text{mA}$, cálculo preliminar) & \textbf{Solo variante restringida}; adoptar inicialmente $R_{G\_DN}=470\,\Omega$, calcular corriente y validar pulsos, márgenes y temperatura & No usar $220\,\Omega$ por simple sustitución. Confirmar sufijo A/B/C y encapsulado \\ \hline
+\textbf{2N3904} & \textbf{$200\,\text{mA}$}, según ficha y fabricante & Sí & Candidato, revisar corriente de base y saturación & No inferir mismo pinout que \texttt{BC547} \\ \hline
+\textbf{2N2222A / P2N2222A} & Hasta \textbf{$600\,\text{mA}$} para el P2N2222A de ref.\ onsemi; varía según presentación & Sí & \textbf{Preferido} & Verificar versión 2N2222A metálica/TO-92 y patillas particulares \\ \hline
+\textbf{BC337} & \textbf{$800\,\text{mA}$} según onsemi BC337-FSC & Sí & \textbf{Preferido} & Verificar versión \texttt{BC337}, \texttt{-16}, \texttt{-25} o \texttt{-40}, y fabricante/pinout \\ \hline
+\end{tabularx}
+}
+
+\vspace{0.2cm}
+\noindent
+\textbf{Criterios de ingeniería para la selección y dimensionamiento de variantes NPN:}
+\begin{itemize}[noitemsep, topsep=3pt]
+    \item \textbf{Límites absolutos frente a condiciones de diseño:} Los números de la tabla son límites máximos absolutos de familias y fichas concretas, \textbf{NO corrientes nominales recomendadas}, ni pruebas de aptitud a determinada frecuencia. En \texttt{Q1}, la corriente aproximada de la rama de base PNP es del orden de $5\,\text{mA}$ bajo los supuestos indicados en \S 4.4. En \texttt{Q2}, la carga estática impuesta por $R_{\text{PU2}}=1\,\text{k}\Omega$ puede rondar $12\,\text{mA}$. \texttt{QL} ve principalmente corriente transitoria de gate, \textbf{no} los $120\,\text{mA}$ que recorren $R_L$. Los candidatos para \texttt{QL} deben comprobarse con corriente de base disponible, $V_{CE(\text{sat})}$ en la condición relevante, temperatura y tiempos de almacenamiento. La corriente resistiva ideal para \texttt{QL} con $R_{G\_DN}=220\,\Omega$ es como máximo aproximadamente $12/220 = 54.5\,\text{mA}$; con \textbf{$470\,\Omega$}, $12/470 \approx 25.5\,\text{mA}$. Estas cotas ignoran caídas y parasitismos; \textbf{no son corrientes medidas}.
+    \item \textbf{Qué resistencias cambian:} Con \texttt{BC337} o \texttt{2N2222A} en \texttt{QL}, conservar provisionalmente $R_{G\_DN}=220\,\Omega$; con \texttt{2N3904}, empezar por $220\,\Omega$ solo si el cálculo/margen demuestra aptitud; con \texttt{BC547} en \texttt{QL}, \textbf{no copiar los $220\,\Omega$}: empezar el estudio con $R_{G\_DN}=470\,\Omega$ o mayor y aprobar el valor final tras simulación y medición. $R_{\text{IN1}}=R_{\text{IN2}}=2.2\,\text{k}\Omega$, $R_{\text{BH}}=2.2\,\text{k}\Omega$, $R_{\text{PU2}}=1\,\text{k}\Omega$, $R_{\text{BL}}=1\,\text{k}\Omega$, $R_{G\_UP}=220\,\Omega$, $R_{\text{PUH}}=10\,\text{k}\Omega$ y los resistores pull-down \textbf{no se cambian automáticamente} por la referencia NPN: se recalculan si cambian tensión de entrada, márgenes de saturación, forma de onda o topología. \textbf{No eliminar las resistencias de base.}
+    \item \textbf{Qué capacitores cambian:} Ninguno por la simple sustitución NPN. $C_{\text{DEC}}=100\,\text{nF}$ \textbf{cerámico} X7R, tensión nominal al menos $25\,\text{V}$, cerca del driver. $C_{\text{BULK}}=10\,\mu\text{F}$ adicional es \textbf{opcional}; puede ser electrolítico de $\ge 25\,\text{V}$ \textbf{con polaridad correctamente verificada} o cerámico adecuado. No colocar un electrolítico como sustituto del $100\,\text{nF}$ ni añadir condensador gate--source por imitación de los modelos de simulación.
+    \item \textbf{Qué alimentación cambia:} Ninguna por el tipo de NPN. $V_{\text{DRV}}=12\,\text{V}$ regulada/protegida sigue como condición de diseño para garantizar un gate alto próximo a $10\text{--}12\,\text{V}$ con ambos NMOS del proyecto; el MCU se alimenta independientemente por USB. Si se emplea batería y baja $V_{\text{DRV}}$, se mide el gate real y no se asegura idéntico resultado con \texttt{IRFZ44N}.
+    \item \textbf{Fuentes técnicas de comparación (comprobar la pieza concreta):}
+    \begin{itemize}[noitemsep, topsep=1pt]
+        \item \textbf{BC337, onsemi:} \url{https://www.onsemi.com/download/data-sheet/pdf/bc337-fsc-d.pdf}
+        \item \textbf{BC547, onsemi:} \url{https://www.onsemi.com/pdf/datasheet/bc546-d.pdf}
+        \item \textbf{BC337, Central Semiconductor:} \url{https://www.mouser.com/datasheet/2/68/bc337_series-461367.pdf}
+        \item \textbf{Verificación pendiente:} La referencia exacta de fabricación de cada pieza y, especialmente, la disposición física de pines \texttt{C/B/E} de cada encapsulado.
+    \end{itemize}
+\end{itemize}
+
+\end{document}

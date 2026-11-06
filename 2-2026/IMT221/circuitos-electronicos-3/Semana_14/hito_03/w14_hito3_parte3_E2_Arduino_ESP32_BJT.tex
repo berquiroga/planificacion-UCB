@@ -1,0 +1,257 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table]{xcolor}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{arrows.meta, positioning, calc}
+\usepackage[margin=1.4cm]{geometry}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+\emergencystretch=2em
+\tolerance=1000
+\hbadness=10000
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{ucbgray}{RGB}{240, 244, 248}
+\definecolor{warnred}{RGB}{180, 20, 20}
+
+\begin{document}
+
+\noindent
+{\LARGE \textbf{\textcolor{ucbblue}{IMT-221 — Circuitos Electrónicos III}}}\\[0.12cm]
+{\Large \textbf{Hito 3: Guía Única E1 $\rightarrow$ E4 — Parte 3: Etapa E2 (Arduino $5\,\text{V}$ / ESP32 $3.3\,\text{V}$ $\rightarrow$ Adaptación BJT $12\,\text{V}$)}}\\[0.08cm]
+{\small \textbf{Versión integrada 1.3} $\cdot$ 6 de noviembre de 2026 $\cdot$ PNP \texttt{2N3906}/\texttt{BC557B} y NPN \texttt{BC337}/\texttt{2N2222A}/\texttt{2N3904}/\texttt{BC547} $\cdot$ Sujeto a G2}
+\par\vspace{0.15cm}\noindent\rule{\linewidth}{0.4pt}\vspace{0.2cm}
+
+\section*{4. Etapa E2 — Arduino Uno $5\,\text{V}$ o ESP32 $3.3\,\text{V}$ $\rightarrow$ Adaptación BJT $12\,\text{V}$ $\rightarrow$ NMOS Low-Side}
+
+\subsection*{4.1 Objetivo y Alcance}
+El \textbf{mismo circuito E2} recibe \texttt{PWM} a \textbf{$0\text{--}5\,\text{V}$ desde Arduino Uno} o a \textbf{$0\text{--}3.3\,\text{V}$ desde ESP32} y entrega excitación de compuerta próxima a \textbf{$0\,\text{V}$ y $V_{\text{DRV}}$} para \textbf{IRLZ44N e IRFZ44N}; ambos conservan la carga $R_L$ de E1. El MOSFET de cada grupo se identifica en la tabla, pero \textbf{no se requiere distinto driver por modelo}. Limitar $V_{GS}$ a los máximos absolutos del dispositivo (para \texttt{IRLZ44N} de Infineon el máximo es $\pm 16\,\text{V}$; para \texttt{IRFZ44N} consultar ficha concreta; $12\,\text{V}$ nominal no garantiza ausencia de picos). Se usa $100\,\text{Hz}$ y duty $50\%$ para comparar con E1. El MCU se alimenta por \textbf{USB según su placa}; la red de potencia/driver usa \textbf{$12\,\text{V}$} independientes. Nunca conectar $12\,\text{V}$ a los GPIO, alimentación lógica ni USB.
+
+\subsection*{4.2 Esquema por Nodos E2 (Autoridad de Cableado para Simulación y Verificación en Frío)}
+
+\begin{center}
+\resizebox{\linewidth}{!}{
+\begin{circuitikz}[thick]
+    \ctikzset{bipoles/length=1.15cm, transistors/scale=1.05}
+
+    \coordinate (top_rail) at (0, 8.0);
+    \coordinate (gnd_rail) at (0, -4.4);
+
+    % Rieles principales +12 VDRV y GND común
+    \draw (0.0, 8.0) node[left]{\textbf{$+12\,\text{V}_{\text{DRV}}$}} -- (16.8, 8.0);
+    \draw (0.0, -4.4) node[left]{\textbf{GND común}} -- (24.0, -4.4);
+
+    % Capacitores de desacoplo CBULK (opcional) y CDEC (obligatorio) entre +12VDRV y GND
+    \draw (1.0, 8.0) node[circ]{} to[pC, l_={\shortstack[l]{$C_{\text{BULK}}$\\{\scriptsize $10\,\mu\text{F}$ (opc.)}}}] (1.0, -4.4) node[circ]{};
+    \draw (3.3, 8.0) node[circ]{} to[C, l_={\shortstack[l]{$C_{\text{DEC}}$\\{\scriptsize $100\,\text{nF}$ (cer.)}}}] (3.3, -4.4) node[circ]{};
+
+    % Entrada VIN PWM (Arduino D9 5V o ESP32 GPIO 3.3V)
+    \draw (5.8, 1.6) node[circ]{} node[left=0.15cm, align=right]{\textbf{VIN PWM}\\{\scriptsize Arduino D9 ($5\,\text{V}$)}\\[-2pt]{\scriptsize o ESP32 GPIO ($3.3\,\text{V}$)}} -- (6.6, 1.6) node[circ]{};
+
+    % Bifurcación hacia RIN1 (rama superior Q1) y RIN2 (rama inferior Q2)
+    \draw (6.6, 1.6) -- (6.6, 4.8) to[R, l={$R_{\text{IN1}} = 2.2\,\text{k}\Omega$}] (9.8, 4.8) coordinate (B1);
+    \draw (6.6, 1.6) -- (6.6, -1.4) to[R, l={$R_{\text{IN2}} = 2.2\,\text{k}\Omega$}] (9.8, -1.4) coordinate (B2);
+
+    % Nodo B1, RPD1 y transistor Q1 NPN (rama superior)
+    \filldraw (B1) circle (1.8pt) node[above=3pt]{\textbf{B1}};
+    \draw (B1) to[R, l_={\shortstack[r]{$R_{\text{PD1}}$\\{\scriptsize $10\,\text{k}\Omega$}}}] (9.8, 2.0) node[ground]{};
+    \draw (11.4, 4.8) node[npn, anchor=B] (Q1) {};
+    \node[above right=0.1cm and 0.15cm, align=left] at (Q1.E) {\textbf{Q1} {\scriptsize (NPN)}\\{\scriptsize 2N3904 / 2N2222A}\\{\scriptsize BC337 / BC547}};
+    \draw (B1) -- (Q1.B);
+    \draw (Q1.E) -- ++(0, -0.45) node[ground]{};
+
+    % Colector Q1 -> RBH -> Nodo BH -> Base QH (PNP 2N3906 / BC557B) y RPUH a +12VDRV
+    \draw (Q1.C) -- (11.4, 6.0) to[R, l={$R_{\text{BH}} = 2.2\,\text{k}\Omega$}] (15.2, 6.0) coordinate (BH);
+    \filldraw (BH) circle (1.8pt) node[below=3pt]{\textbf{BH}};
+    \draw (BH) to[R, l_={\shortstack[r]{$R_{\text{PUH}}$\\{\scriptsize $10\,\text{k}\Omega$}}}] (15.2, 8.0) node[circ]{};
+    \draw (16.8, 6.0) node[pnp, anchor=B] (QH) {};
+    \node[right=0.18cm, align=left] at (QH.E) {\textbf{QH} {\scriptsize (PNP)}\\{\scriptsize 2N3906 / BC557B}};
+    \draw (BH) -- (QH.B);
+    \draw (QH.E) -- (16.8, 8.0) node[circ]{};
+
+    % Nodo B2, RPD2 y transistor Q2 NPN (rama inferior)
+    \filldraw (B2) circle (1.8pt) node[above=3pt]{\textbf{B2}};
+    \draw (B2) to[R, l_={\shortstack[r]{$R_{\text{PD2}}$\\{\scriptsize $10\,\text{k}\Omega$}}}] (9.8, -4.4) node[circ]{};
+    \draw (11.4, -1.4) node[npn, anchor=B] (Q2) {};
+    \node[below right=0.05cm and 0.15cm, align=left] at (Q2.E) {\textbf{Q2} {\scriptsize (NPN)}\\{\scriptsize 2N3904 / 2N2222A}\\{\scriptsize BC337 / BC547}};
+    \draw (B2) -- (Q2.B);
+    \draw (Q2.E) -- (11.4, -4.4) node[circ]{};
+
+    % Nodo LCTL, RPU2 (1k 1/2W a +12VDRV) y RBL (1k) hacia Base QL (NPN)
+    \coordinate (LCTL) at (13.3, -0.3);
+    \draw (Q2.C) -- (11.4, -0.3) -- (LCTL) node[circ]{};
+    \node[below=3pt] at (LCTL) {\textbf{LCTL}};
+    \draw (LCTL) to[R, l={\shortstack[l]{$R_{\text{PU2}}$\\{\scriptsize $1\,\text{k}\Omega, \frac{1}{2}\,\text{W}$}}}] (13.3, 2.2) node[vcc]{\textbf{$+12\,\text{V}_{\text{DRV}}$}};
+    \draw (LCTL) to[R, l={$R_{\text{BL}} = 1\,\text{k}\Omega$}] (15.6, -0.3) coordinate (BL);
+    \filldraw (BL) circle (1.8pt) node[above=3pt]{\textbf{BL}};
+    \draw (16.8, -0.3) node[npn, anchor=B] (QL) {};
+    \node[below right=0.1cm and 0.18cm, align=left] at (QL.E) {\textbf{QL} {\scriptsize (NPN)}\\{\scriptsize BC337 / 2N2222A pref.}\\{\scriptsize 2N3904 / BC547* cond.}};
+    \draw (BL) -- (QL.B);
+    \draw (QL.E) -- (16.8, -4.4) node[circ]{};
+
+    % Caminos horizontales separados de carga (RG_UP) y descarga (RG_DN) hacia GATE
+    \draw (QH.C) -- (16.8, 4.2) to[R, l={$R_{G\_UP} = 220\,\Omega$}] (20.4, 4.2);
+    \draw (QL.C) -- (16.8, 0.8) to[R, l_={$R_{G\_DN} = 220\,\Omega\text{ (o }470\,\Omega^*\text{)}$}] (20.4, 0.8);
+    \draw (20.4, 4.2) -- (20.4, 0.8);
+    \coordinate (GATE) at (20.4, 2.5);
+    \filldraw (GATE) circle (2.0pt) node[left=0.15cm]{\textbf{GATE}};
+
+    % Pull-down de compuerta RPDG y MOSFET M1 con carga RL
+    \draw (GATE) -- (21.8, 2.5) coordinate (gate_m1);
+    \draw (21.8, 2.5) node[circ]{} to[R, l={\shortstack[l]{$R_{\text{PDG}}$\\{\scriptsize $100\,\text{k}\Omega$}}}] (21.8, -4.4) node[circ]{};
+    \draw (gate_m1) -- (23.4, 2.5) node[nigfete, anchor=G] (M1) {};
+    \node[right=0.2cm, align=left] at (M1.D) {\textbf{M1} {\scriptsize (NMOS)}\\{\scriptsize IRLZ44N / IRFZ44N}};
+    \draw (M1.S) -- (M1.S |- gnd_rail) node[circ]{} node[below=3pt]{\textbf{SOURCE / GND}};
+    \draw (M1.B) -- ++(0.55, 0) |- (M1.S |- gnd_rail);
+    \draw (M1.D) to[R, l_={\shortstack[r]{$R_L = 100\,\Omega$\\{\scriptsize ($5\,\text{W}$ cand.)}}}] (M1.D |- top_rail) node[above]{\textbf{$+12\,\text{V}_{\text{BUS}}$}};
+\end{circuitikz}
+}
+\end{center}
+
+\noindent
+\textbf{Aclaración crítica del esquema:} \texttt{RPUH} se conecta entre la base de \texttt{QH} (\texttt{BH}) y $+12\,\text{V}_{\text{DRV}}$. \texttt{RBH} se conecta entre el colector de \texttt{Q1} y la base de \texttt{QH} (\texttt{BH}). \texttt{RBL} conecta \texttt{LCTL} con la base de \texttt{QL} (\texttt{BL}), mientras que \texttt{Q2} drena \texttt{LCTL} hacia GND. $R_{G\_UP}$ y $R_{G\_DN}$ son componentes separados; jamás conectarlos en paralelo.
+
+\newpage
+\subsubsection*{Tabla de Conexiones Inequívoca E2 y Análisis de Estados}
+
+\par\vspace{0.08cm}\noindent
+\renewcommand{\arraystretch}{1.15}
+{\footnotesize
+\begin{tabularx}{\linewidth}{|>{\raggedright\arraybackslash}p{6.2cm}|>{\raggedright\arraybackslash}p{4.8cm}|>{\raggedright\arraybackslash}p{5.2cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Componente} & \textbf{Terminal 1} & \textbf{Terminal 2} & \textbf{Terminal 3 (si aplica)} \\ \hline
+\texttt{Q1} NPN (\texttt{2N3904/2N2222A/BC337/BC547}) & \textbf{C $\rightarrow$ RBH} & \textbf{B $\rightarrow$ B1} & \textbf{E $\rightarrow$ GND} \\ \hline
+\texttt{Q2} NPN (\texttt{2N3904/2N2222A/BC337/BC547}) & \textbf{C $\rightarrow$ LCTL} & \textbf{B $\rightarrow$ B2} & \textbf{E $\rightarrow$ GND} \\ \hline
+\texttt{QH} PNP (\texttt{2N3906/BC557B}) & \textbf{E $\rightarrow$ $+V_{\text{DRV}}$} & \textbf{B $\rightarrow$ BH} & \textbf{C $\rightarrow$ RG\_UP} \\ \hline
+\texttt{QL} NPN (\texttt{BC337/2N2222A} pref.; otros cond.) & \textbf{C $\rightarrow$ RG\_DN} & \textbf{B $\rightarrow$ BL} & \textbf{E $\rightarrow$ GND} \\ \hline
+\texttt{RIN1} $2.2\,\text{k}\Omega$ & \texttt{VIN} = D9 Arduino o GPIO ESP32 aprobado & \texttt{B1} & --- \\ \hline
+\texttt{RPD1} $10\,\text{k}\Omega$ & \texttt{B1} & \texttt{GND} & --- \\ \hline
+\texttt{RIN2} $2.2\,\text{k}\Omega$ & \texttt{VIN} = mismo pin PWM de \texttt{RIN1} & \texttt{B2} & --- \\ \hline
+\texttt{RPD2} $10\,\text{k}\Omega$ & \texttt{B2} & \texttt{GND} & --- \\ \hline
+\texttt{RBH} $2.2\,\text{k}\Omega$ & Colector de \texttt{Q1} & \texttt{BH} & --- \\ \hline
+\texttt{RPUH} $10\,\text{k}\Omega$ & \texttt{BH} & $+V_{\text{DRV}}$ & --- \\ \hline
+\texttt{RPU2} $1\,\text{k}\Omega$, $1/2\,\text{W}$ & $+V_{\text{DRV}}$ & \texttt{LCTL} & --- \\ \hline
+\texttt{RBL} $1\,\text{k}\Omega$ & \texttt{LCTL} & \texttt{BL} & --- \\ \hline
+\texttt{RG\_UP} $220\,\Omega$ & Colector de \texttt{QH} & \texttt{GATE} & --- \\ \hline
+\texttt{RG\_DN} $220\,\Omega$ (o \textbf{$470\,\Omega$ para BC547 en QL}) & \texttt{GATE} & Colector de \texttt{QL} & --- \\ \hline
+\texttt{RPDG} $100\,\text{k}\Omega$ & \texttt{GATE} & \texttt{GND} / source \texttt{M1} & --- \\ \hline
+\texttt{CDEC} $100\,\text{nF}$ cerámico & $+V_{\text{DRV}}$ & \texttt{GND} & --- \\ \hline
+\texttt{CBULK} $10\,\mu\text{F}$ (opcional) & $+V_{\text{DRV}}$ ($+$ si electrolítico) & \texttt{GND} ($-$ si electrolítico) & --- \\ \hline
+\texttt{M1} NMOS & \textbf{D $\rightarrow$ extremo inferior RL} & \textbf{G $\rightarrow$ GATE} & \textbf{S $\rightarrow$ GND} \\ \hline
+\texttt{RL} $100\,\Omega / 5\,\text{W}$ candidato & $+V_{\text{BUS}}$ & Drain de \texttt{M1} & --- \\ \hline
+\end{tabularx}
+}
+
+\vspace{0.12cm}
+\noindent
+\textbf{Funcionamiento por estados:} (1) \textbf{PWM LOW ($0\,\text{V}$):} \texttt{Q1} OFF, \texttt{QH} OFF; \texttt{Q2} OFF, \texttt{LCTL} sube por \texttt{RPU2}, \texttt{QL} ON $\rightarrow$ gate cerca de $0\,\text{V}$. (2) \textbf{PWM HIGH ($5\,\text{V}$ o $3.3\,\text{V}$):} \texttt{Q1} ON, \texttt{QH} ON, \texttt{Q2} ON (\texttt{LCTL} bajo), \texttt{QL} OFF $\rightarrow$ gate próximo a $V_{\text{DRV}}$, con caídas de transistor. (3) \textbf{Desconexión de VIN/PWM:} ambos NPN de mando quedan OFF por \texttt{RPD1/RPD2} y \texttt{QL} descarga el gate \textbf{si $+V_{\text{DRV}}$ está presente}; si no, \texttt{RPDG} mantiene el OFF lentamente. (4) \textbf{Riesgo de corriente cruzada transitoria:} $+V_{\text{DRV}} \rightarrow \text{QH} \rightarrow R_{G\_UP} \rightarrow \text{GATE} \rightarrow R_{G\_DN} \rightarrow \text{QL} \rightarrow \text{GND}$; dos resistencias de $220\,\Omega$ limitan la corriente resistiva aproximadamente a $V_{\text{DRV}}/440\,\Omega \approx 27.3\,\text{mA}$ (o $12/690\,\Omega \approx 17.4\,\text{mA}$ con $R_{G\_DN}=470\,\Omega$), pero la duración y disipación deben medirse o simularse, y ello \textbf{NO resuelve el shoot-through de E4}.
+
+\subsection*{4.2.1 Decisión Rápida para NPN Reales Antes del Cableado y 4.3 Opciones de Alimentación}
+\begin{enumerate}[noitemsep, topsep=2pt]
+    \item Elija \texttt{Q1} y \texttt{Q2} de entre \texttt{BC547}, \texttt{2N3904}, \texttt{2N2222A} y \texttt{BC337}. \textbf{\texttt{BC547} es suficiente como candidato para estas posiciones}, siempre que corriente y saturación sean verificadas.
+    \item Para \texttt{QL}, \textbf{prefiera \texttt{BC337} o \texttt{2N2222A}}. Puede estudiar \texttt{2N3904}. Si solo tiene \texttt{BC547}, \textbf{modifique el diseño a $R_{G\_DN}=470\,\Omega$ inicialmente}, mida/estime descarga y solicite aprobación de G2 (este cambio puede aumentar el tiempo de apagado y no constituye autorización automática).
+    \item Mantenga el PNP \texttt{QH} (\texttt{2N3906} o \texttt{BC557B}) sujeto a revisión de límites de corriente, ganancia forzada, $|V_{EB}|$ inverso y disipación; \textbf{BC337 y BC547 son NPN y jamás sustituyen al PNP}.
+    \item Compruebe físicamente las tres patillas con el dibujo del fabricante; registre en el informe: \texttt{MCU / GPIO / VIN\_high / Q1 / Q2 / QH / QL / RG\_UP / RG\_DN / VDRV / hoja de datos}.
+    \item \textbf{Opciones de alimentación $12\,\text{V}$:} \textbf{Opción A (preferida por equipo):} adaptador AC/DC regulado, aislado y certificado ($12\,\text{V}$, $\ge 0.5\,\text{A}$) con interruptor y protección de sobrecorriente verificada. \textbf{Opción B (centralizada):} fuente DC regulada de $12\,\text{V}$ con distribución en estrella y \textbf{fusible/interruptor individual por derivación} dimensionado por el docente. \textbf{Opción C (móvil temporal):} portapilas $8\times\text{AA}$ alcalinas nuevas e iguales con interruptor y \textbf{fusible en serie} junto al positivo (medir caída de $V_{\text{BUS}}/V_{\text{DRV}}$ bajo carga). \textbf{Prohibido:} pilas de $9\,\text{V}$, baterías Li-ion improvisadas o de automóvil, fuentes AC sin aislar.
+\end{enumerate}
+
+\newpage
+\subsection*{4.4 Cálculos Previsionales Paso a Paso (No Resultados Medidos)}
+
+\paragraph{1. Corriente de entrada desde el pin PWM (\texttt{VIN} = $5.0\,\text{V}$ en Arduino Uno vs.\ $3.3\,\text{V}$ en ESP32):}
+Cada resistencia $R_{\text{IN}} = 2.2\,\text{k}\Omega$ impone una cota ideal sin transistor de $I_{\text{in,máx}} = \frac{5.0\,\text{V}}{2.2\,\text{k}\Omega} \approx 2.273\,\text{mA}$ (suma de dos ramas $< 4.55\,\text{mA}$). Considerando $V_{BE} \approx 0.7\,\text{V}$ y el desvío por $R_{\text{PD1,2}} = 10\,\text{k}\Omega$ ($I_{R_{\text{PD}}} = \frac{0.7\,\text{V}}{10\,\text{k}\Omega} = 0.070\,\text{mA}$):
+\begin{align}
+    \text{Arduino Uno ($5.0\,\text{V}$):}\quad I_{R_{\text{IN}}} &= \frac{5.0\,\text{V} - 0.7\,\text{V}}{2.2\,\text{k}\Omega} \approx 1.955\,\text{mA} \implies I_{B1,2} = I_{R_{\text{IN}}} - I_{R_{\text{PD}}} \approx 1.955 - 0.070 = 1.885\,\text{mA}. \\
+    \text{ESP32 ($3.3\,\text{V}$):}\quad I_{R_{\text{IN}}} &= \frac{3.3\,\text{V} - 0.7\,\text{V}}{2.2\,\text{k}\Omega} \approx 1.182\,\text{mA} \implies I_{B1,2} = I_{R_{\text{IN}}} - I_{R_{\text{PD}}} \approx 1.182 - 0.070 = 1.112\,\text{mA}.
+\end{align}
+
+\paragraph{2. Rama Superior PNP (\texttt{QH} encendido cuando \texttt{Q1} satura, $V_{CE1,\text{sat}} \approx 0.2\,\text{V}$, $V_{EB,\text{QH}} \approx 0.7\,\text{V}$):}
+\begin{align}
+    I_{R_{\text{BH}}} &\approx \frac{V_{\text{DRV}} - V_{EB,\text{QH}} - V_{CE1,\text{sat}}}{R_{\text{BH}}} = \frac{12.0\,\text{V} - 0.7\,\text{V} - 0.2\,\text{V}}{2.2\,\text{k}\Omega} = \frac{11.1\,\text{V}}{2200\,\Omega} \approx 5.045\,\text{mA}, \\
+    I_{R_{\text{PUH}}} &\approx \frac{12.0\,\text{V} - 11.3\,\text{V}}{10\,\text{k}\Omega} = 0.070\,\text{mA} \implies I_{B,\text{QH}} = I_{R_{\text{BH}}} - I_{R_{\text{PUH}}} \approx 5.045 - 0.070 \approx 4.975\,\text{mA} \approx 4.9\text{--}5.0\,\text{mA}.
+\end{align}
+
+\paragraph{3. Rama Inferior NPN (\texttt{Q2} encendido vs.\ \texttt{Q2} apagado y tensión en \texttt{LCTL}):}
+Cuando \texttt{Q2} conduce en saturación ($V_{\text{LCTL}} = V_{CE2,\text{sat}} \approx 0.2\,\text{V}$), \texttt{QL} permanece en OFF y $R_{\text{PU2}} = 1\,\text{k}\Omega$ disipa su potencia máxima:
+\begin{equation}
+    I_{R_{\text{PU2}},\text{ON}} \approx \frac{12.0\,\text{V} - 0.2\,\text{V}}{1\,\text{k}\Omega} = 11.80\,\text{mA}, \qquad P_{R_{\text{PU2}},\text{ON}} = I_{R_{\text{PU2}},\text{ON}}^2 R_{\text{PU2}} = (0.0118\,\text{A})^2 \times 1000\,\Omega \approx 0.1392\,\text{W} \quad (\text{usar } 1/2\,\text{W}).
+\end{equation}
+Cuando \texttt{Q2} está apagado (OFF), la serie $R_{\text{PU2}} + R_{\text{BL}}$ alimenta la base de \texttt{QL} ($V_{BE,\text{QL}} \approx 0.7\,\text{V}$):
+\begin{align}
+    I_{B,\text{QL}} &\approx \frac{V_{\text{DRV}} - V_{BE,\text{QL}}}{R_{\text{PU2}} + R_{\text{BL}}} = \frac{12.0\,\text{V} - 0.7\,\text{V}}{1\,\text{k}\Omega + 1\,\text{k}\Omega} = \frac{11.3\,\text{V}}{2000\,\Omega} = 5.65\,\text{mA}, \\
+    V(\text{LCTL}) &\approx V_{BE,\text{QL}} + I_{B,\text{QL}} R_{\text{BL}} = 0.70\,\text{V} + (5.65\,\text{mA})(1\,\text{k}\Omega) = 6.35\,\text{V} \quad (\text{no alcanza } 12\,\text{V cuando QL está ON}).
+\end{align}
+
+\paragraph{4. Cotas resistivas de carga/descarga de compuerta:}
+Ignorando caídas en BJTs, la cota resistiva de corriente pico es $\frac{12\,\text{V}}{220\,\Omega} \approx 54.55\,\text{mA}$ (caso base) y $\frac{12\,\text{V}}{470\,\Omega} \approx 25.53\,\text{mA}$ (variante \texttt{BC547} en \texttt{QL}).
+
+\subsection*{4.6 Códigos de Control PWM (Escoger Arduino Uno o ESP32) y Tabla de Variantes}
+
+\begin{minipage}[t]{0.46\linewidth}
+\textbf{Opción MCU A — Arduino Uno ($5\,\text{V}$, D9, $100\,\text{Hz}$):}
+{\footnotesize
+\begin{verbatim}
+const byte PIN_PWM = 9;
+void setup() {
+  digitalWrite(PIN_PWM, LOW);
+  pinMode(PIN_PWM, OUTPUT);
+}
+void loop() {
+  digitalWrite(PIN_PWM, HIGH);
+  delayMicroseconds(5000);
+  digitalWrite(PIN_PWM, LOW);
+  delayMicroseconds(5000);
+}
+\end{verbatim}
+}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.52\linewidth}
+\textbf{Opción MCU B — ESP32 ($3.3\,\text{V}$, Core 3.x LEDC, $100\,\text{Hz}$):}
+{\footnotesize
+\begin{verbatim}
+const uint8_t PIN_PWM = 18; // Verificar GPIO en placa
+const uint32_t FREQ_HZ = 100; const uint8_t BITS = 10;
+void setup() {
+  digitalWrite(PIN_PWM, LOW); pinMode(PIN_PWM, OUTPUT);
+  if (!ledcAttach(PIN_PWM, FREQ_HZ, BITS)) {
+    while (true) { delay(1000); }
+  }
+  ledcWrite(PIN_PWM, 0); delay(1000);
+  ledcWrite(PIN_PWM, 512); // 50 % de 1024 niveles
+}
+void loop() {}
+\end{verbatim}
+}
+\end{minipage}
+
+\par\vspace{0.1cm}\noindent
+\renewcommand{\arraystretch}{1.15}
+{\footnotesize
+\begin{tabularx}{\linewidth}{|l|l|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{7.5cm}|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Selección} & \textbf{Componente} & \textbf{Qué Cambia} & \textbf{Qué Permanece Constante} \\ \hline
+MCU A & Arduino Uno $5\,\text{V}$, D9 & $V_{\text{IN,HIGH}} \approx 5\,\text{V}$; sketch Uno & $R_{\text{IN1,2}}=2.2\,\text{k}\Omega$ iniciales, resto del driver, $12\,\text{V}$, $R_L=100\,\Omega$ \\ \hline
+MCU B & ESP32 $3.3\,\text{V}$, GPIO aprobado & $V_{\text{IN,HIGH}} \approx 3.3\,\text{V}$; código LEDC; verificar saturación \texttt{Q1/Q2} & Mismos nodos, $100\,\text{Hz}$, duty $50\%$, $12\,\text{V}$ y carga \\ \hline
+PNP A / B & \texttt{2N3906} vs.\ \texttt{BC557B} & Patillaje y límite $I_C$ (\texttt{BC557B} $\approx 100\,\text{mA}$ vs.\ \texttt{2N3906} $200\,\text{mA}$) & Nodo \texttt{BH}, emisor $+V_{\text{DRV}}$, colector $R_{G\_UP}$ \\ \hline
+NPN A--D & \texttt{BC337/2N2222A/2N3904/BC547} & Pinout, $I_{C,\max}$, saturación; si \texttt{BC547} en \texttt{QL}, $R_{G\_DN}=470\,\Omega$ & \texttt{Q1/Q2/QL} cumplen las mismas funciones nodales \\ \hline
+\end{tabularx}
+}
+
+\vspace{0.1cm}
+\noindent
+\textbf{Checklist de variantes y Criterios G2 (\S 4.7--\S 4.8):} Registrar (1) placa y GPIO; (2) tensión HIGH medida ($3.3/5\,\text{V}$); (3) fabricante/encapsulado de \texttt{QH} y \texttt{Q1/Q2/QL}; (4) pinout cotejado; (5) simulación LTspice (\texttt{V(in), V(bh), V(lctl), V(gate), V(drain), I(RLOAD), I(VDRV)}, $V_{EB}$ de \texttt{QH} y estado OFF en desconexión); (6) $R_{\text{IN}}$ y $R_{G\_DN}$ montados; (7) fusible/límite de fuente. \textbf{Bloquear G2} si falta verificación de pinout, si $R_{\text{PU2}}$ calienta anormalmente, si entrada flotante enciende el gate, si hay conducción simultánea sostenida \texttt{QH/QL} o sobreimpulso sobre $V_{GS,\max}$. No incluir \texttt{LM358} ni \texttt{LM741} en E2.
+
+\end{document}

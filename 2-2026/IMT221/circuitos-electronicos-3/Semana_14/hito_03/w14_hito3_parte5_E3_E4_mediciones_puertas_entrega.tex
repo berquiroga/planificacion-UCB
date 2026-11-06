@@ -1,0 +1,104 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table]{xcolor} % Asegura que los comandos \rowcolor y \textcolor estén definidos
+\usepackage[margin=1.4cm]{geometry}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+% Ajustes tipográficos para prevenir Overfull/Underfull \hbox
+\emergencystretch=2em
+\tolerance=1000
+\hbadness=10000
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{ucbgray}{RGB}{240, 244, 248}
+\definecolor{warnred}{RGB}{180, 20, 20}
+
+\begin{document}
+
+\noindent
+{\LARGE \textbf{\textcolor{ucbblue}{IMT-221 — Circuitos Electrónicos III}}}\\[0.12cm]
+{\Large \textbf{Hito 3: Guía Única E1 $\rightarrow$ E4 — Parte 5: Plan de Mediciones, Plantilla, Puertas G1--G4 y Entrega Final}}\\[0.08cm]
+{\small \textbf{Versión integrada 1.3} $\cdot$ 6 de noviembre de 2026 $\cdot$ Protocolo de Auditoría, Entrega Incremental y Fuentes}
+\par\vspace{0.15cm}\noindent\rule{\linewidth}{0.4pt}\vspace{0.2cm}
+
+\section*{7. Plan de Mediciones Unificado (Aplicable a Todas las Etapas)}
+
+Completar una tabla por etapa y condición, sin borrar ninguna fila pendiente. El informe de cada equipo contendrá al menos:
+
+\par\vspace{0.1cm}\noindent
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{|c|>{\raggedright\arraybackslash}p{5.8cm}|>{\raggedright\arraybackslash}p{5.5cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Etapa} & \textbf{Señales o Datos que se Guardan} & \textbf{Variable Controlada} & \textbf{Comparación Obligatoria} \\ \hline
+\textbf{E1} & $V_{\text{BUS}}$, $V_{GS}$, $V_{DS}$, $I_D$, $f$, duty, $R_L$ y calor & $0\text{--}5\,\text{V}$ vs.\ $0\text{--}10\,\text{V}$ según MOSFET y fuente & Ley de Ohm, conducción, nivel de gate \\ \hline
+\textbf{E2} & $V_{\text{IN}}$, \texttt{B1/B2}, \texttt{BH}, \texttt{LCTL}, \texttt{GATE} ($V_{GS}$), $V_{DS}$, $I_D$, $f$, duty & E1 directo frente a BJT ($5\,\text{V}/3.3\,\text{V}$) con mismo MOSFET/carga & Nivel alto/bajo, carga/descarga y pérdidas \\ \hline
+\textbf{E3} & $V_{GS}$, $V_{DS}$, $i_L$, $i_{DF}$, picos, temperatura & Sin/con protección \textbf{en simulación}; protección real aprobada & Sobrevoltajes, continuidad de corriente, energía \\ \hline
+\textbf{E4} & $V_{GS}$ de 4 MOSFET, nodos A/B, $I_{\text{MOTOR}}$, $I_{\text{BUS}}$, $V_{\text{BUS}}$, tiempos muertos & Secuencia y frecuencia PWM aprobadas & Estados, no solapamiento, pérdidas/térmica \\ \hline
+\end{tabularx}
+
+\subsection*{Plantilla de Registro Trazable (Repetir por Magnitud)}
+\par\vspace{0.08cm}\noindent
+\renewcommand{\arraystretch}{1.28}
+{\small
+\begin{tabularx}{\linewidth}{|>{\raggedright\arraybackslash}p{7.8cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Campo} & \textbf{Anotación} \\ \hline
+Equipo / integrantes / integrante que explica & \\ \hline
+Fecha / etapa / G1--G4 & \\ \hline
+Pieza real, fabricante, datasheet y encapsulado (incl.\ variante MCU y BJTs) & \\ \hline
+Instrumento, modelo, sonda/escala, conexión de referencia & \\ \hline
+Condición de tensión, carga, frecuencia y duty & \\ \hline
+Magnitud y unidad & \\ \hline
+\texttt{CALC} — Valor y fórmula & \\ \hline
+\texttt{SIM} — Valor, modelo, archivo, log y captura & \\ \hline
+\texttt{MED} — Valor y captura (\textbf{solo si medido}) & \\ \hline
+Diferencia absoluta/relativa si es significativa & \\ \hline
+Incertidumbre/resolución y posible explicación & \\ \hline
+Pendiente, anomalía o condición de parada & \\ \hline
+\end{tabularx}
+}
+
+\newpage
+\section*{8. Puertas de Seguridad G1--G4 (Firmas Independientes)}
+\textbf{\textcolor{warnred}{Sin firma correspondiente no se energiza.}} Una ejecución de LTspice exitosa no representa aprobación de G2, G3 o G4.
+
+\par\vspace{0.1cm}\noindent
+\renewcommand{\arraystretch}{1.38}
+{\small
+\begin{tabularx}{\linewidth}{|c|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{4.8cm}|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Puerta} & \textbf{Requisitos de Verificación en Frío} & \textbf{Estado, Firma y Fecha} \\ \hline
+\textbf{G1 / E1} & Ficha real NMOS y pinout/pestaña; $100\,\Omega$ potencia; source/tierras de fuente-generador-osciloscopio; control verificado sin bus; limitación de fuente; $R_G/R_{PD}$; OFF previo; instrumentos/corriente apropiados. & Aut.\ / Obs.\ / Bloq.: \rule{1.5cm}{0.4pt}\newline Firma: \rule{2.7cm}{0.4pt}\newline Fecha: \rule{2.7cm}{0.4pt} \\ \hline
+\textbf{G2 / E2} & Todo G1 aplicable + BJT exactos/pinout (\texttt{2N3906/BC557B} y \texttt{BC337/2N2222A/2N3904/BC547}), corrientes de base y colector ($R_{G\_DN}=470\,\Omega$ si \texttt{BC547} en \texttt{QL}), disipaciones ($R_{\text{PU2}}$ $1/2\,\text{W}$), startup OFF, pérdida de señal OFF, desacoplo $100\,\text{nF}$ y prueba previa sin potencia; netlist y log; cero sobreimpulso sobre $V_{GS,\max}$. & Aut.\ / Obs.\ / Bloq.: \rule{1.5cm}{0.4pt}\newline Firma: \rule{2.7cm}{0.4pt}\newline Fecha: \rule{2.7cm}{0.4pt} \\ \hline
+\textbf{G3 / E3} & Todo G2 + motor/bobina real, corriente y energía inductiva, diodo \texttt{DF} polaridad/rating, picos de tensión, limitación y forma de medir corriente, temperatura y desconexión. & Aut.\ / Obs.\ / Bloq.: \rule{1.5cm}{0.4pt}\newline Firma: \rule{2.7cm}{0.4pt}\newline Fecha: \rule{2.7cm}{0.4pt} \\ \hline
+\textbf{G4 / E4} & Todo G3 pertinente + cuatro MOSFET y drivers físicos, pull-ups P/high-side, referencia segura de $V_{GS}$ high-side (no poner pinza GND en $+V_{\text{BUS}}$), layout/potencia, enclavamiento y dead-time verificados, tabla de estados, no inversión insegura, motor/bus/fusibles, apagado y fallo seguro. & Aut.\ / Obs.\ / Bloq.: \rule{1.5cm}{0.4pt}\newline Firma: \rule{2.7cm}{0.4pt}\newline Fecha: \rule{2.7cm}{0.4pt} \\ \hline
+\end{tabularx}
+}
+
+\section*{9. Entrega Final, Criterios y Responsabilidades}
+Entregar \textbf{un solo informe incremental del Hito 3}, no cuatro informes inconexos, incluyendo: BOM final con componentes realmente utilizados y costos \textit{solo comprobados}, cuatro esquemas/versiones, cálculo de diseño, archivos y capturas LTspice con modelos y logs, autorizaciones, métodos de medida y capturas reales, registro de problemas y modificaciones, tabla de control de puente H, pérdidas y estimación térmica/Python, valoración crítica de discrepancias y respuestas individuales cortas. Si falta hardware o autorización, presentar bloqueo trazable (\texttt{componente/modelo/medida faltante}, responsable, propuesta de sustitución y evidencia existente); nunca inventar curvas, corrientes, temperaturas ni certificaciones.
+
+\noindent\textbf{Preguntas individuales mínimas:} (1) ¿Qué diferencia existe entre $V_{GS(\text{th})}$ y gate de baja pérdida? (2) ¿Qué significa $R_{DS(\text{on})}$ condicionado? (3) ¿Por qué un seguidor de emisor no convierte $5\,\text{V}$ en $12\,\text{V}$? (4) ¿Qué corriente circula al apagar $L$? (5) ¿Cuál es el riesgo de gate PMOS a $5\,\text{V}$ con source $12\,\text{V}$? (6) ¿Cómo se evita solapamiento en un brazo H? (7) ¿Qué resultado es calculado, simulado o medido?
+
+\section*{10. Fuentes y Estado de Validación}
+\begin{itemize}[noitemsep, topsep=2pt]
+    \item \textbf{MOSFETs Infineon:} IRLZ44N (\url{https://www.infineon.com/part/IRLZ44N}), IRFZ44N (\url{https://www.infineon.com/part/IRFZ44N}), IRF4905 (\url{https://www.infineon.com/assets/row/public/documents/24/49/infineon-irf4905-datasheet-en.pdf}).
+    \item \textbf{BJTs onsemi / Central Semi:} P2N2222A (\url{https://www.onsemi.com/pdf/datasheet/p2n2222a-d.pdf}), PN2907A (\url{https://www.onsemi.com/download/data-sheet/pdf/pn2907a-d.pdf}), BC337 (\url{https://www.onsemi.com/download/data-sheet/pdf/bc337-fsc-d.pdf} y \url{https://www.mouser.com/datasheet/2/68/bc337_series-461367.pdf}), BC547 (\url{https://www.onsemi.com/pdf/datasheet/bc546-d.pdf}).
+    \item \textbf{API ESP32 LEDC y Generador:} \url{https://docs.espressif.com/projects/arduino-esp32/en/latest/api/ledc.html}; folleto SKMI SK3000 aportado (MAIN $50\,\Omega$, sin offset ajustable en SK3000).
+    \item \textbf{Sin verificar todavía:} Inventario/costos exactos BJTs y PMOS, modelo de motor/corriente inductiva, diodo E3, fuente/osciloscopio reales, ejecución de LTspice E2 con modelos comerciales y log, adaptación high-side, dead-time cuantificado y resultados físicos medidos.
+\end{itemize}
+
+\end{document}

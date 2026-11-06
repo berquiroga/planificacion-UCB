@@ -1,0 +1,86 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{arrows.meta, positioning, calc}
+\usepackage[margin=1.8cm]{geometry}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\definecolor{warnred}{RGB}{180, 20, 20}
+
+\begin{document}
+
+\noindent
+{\LARGE \textbf{\textcolor{warnred}{IMT-221 — Material Reservado Docente}}}\\[0.15cm]
+{\Large \textbf{Solucionario Banco de Problemas EC3 — Taller Pre-Examen}}\\[0.1cm]
+{\small \textbf{Privacidad:} No distribuir. Contiene rúbricas y criterios de crédito parcial.}
+\par\vspace{0.2cm}\noindent\rule{\linewidth}{0.4pt}\vspace{0.3cm}
+
+\section*{Solución a Ejercicios Guiados}
+
+\textbf{G1. Nodos y Potencias (Low-Side)}
+\begin{enumerate}[label=\alph*)]
+    \item \textbf{Esquema:} Debe mostrar la fuente de $9\,\text{V}$, carga $180\,\Omega$ conectada al Drain, Source a tierra.
+    \begin{center}
+        \begin{circuitikz}[scale=0.8, transform shape, thick]
+            \draw (0,3) node[above]{$+9\,\text{V}$} to[R, l=$180\,\Omega$, a=$R_L$, i>=$I_D$] (0,1);
+            \draw (0,0) node[nigfete] (M1) {};
+            \node[above right=0.05cm] at (M1.D) {D};
+            \node[below right=0.05cm] at (M1.S) {S};
+            \node[above left=0.05cm] at (M1.G) {G};
+            \draw (0,1) -- (M1.D);
+            \draw (M1.S) -- (0,-1) node[ground]{};
+            \draw (M1.B) -- ++(0.5,0) |- (0,-1);
+        \end{circuitikz}
+    \end{center}
+    \item \textbf{Cálculo Ideal:} 
+    $I_{\text{ON,ideal}} = \frac{V_{\text{BUS}}}{R_L} = \frac{9\,\text{V}}{180\,\Omega} = \mathbf{0.05\,\text{A} = 50\,\text{mA}}$. \\
+    $P_{L,\text{ideal}} = (0.05\,\text{A})^2 \times 180\,\Omega = \mathbf{0.45\,\text{W}}$.
+    
+    \item \textbf{Cálculo No Ideal (con $R_{DS(on)} = 0.10\,\Omega$):} 
+    \begin{align*}
+        I_D &= \frac{V_{\text{BUS}}}{R_L + R_{DS(on)}} = \frac{9\,\text{V}}{180\,\Omega + 0.10\,\Omega} = \frac{9}{180.1} \approx \mathbf{0.049972\,\text{A}} \approx \mathbf{49.97\,\text{mA}}. \\
+        V_{DS} &= I_D \cdot R_{DS(on)} = 0.049972\,\text{A} \times 0.10\,\Omega \approx \mathbf{0.004997\,\text{V}} \approx \mathbf{5.0\,\text{mV}}. \\
+        P_L &= I_D^2 R_L = (0.049972)^2 \times 180 \approx \mathbf{0.4495\,\text{W}}. \\
+        P_{\text{MOS,cond}} &= I_D^2 R_{DS(on)} = (0.049972)^2 \times 0.10 \approx \mathbf{0.000250\,\text{W}} = \mathbf{0.25\,\text{mW}}.
+    \end{align*}
+    \textit{Rúbrica:} 100\% si demuestra KVL correcta. 50\% si usa $V_{\text{BUS}} \times I_D$ para calcular la potencia del MOSFET (error conceptual grave).
+\end{enumerate}
+
+\textbf{G2. Dinámica de Compuerta ($Q_g = 36\,\text{nC}$)}
+\begin{enumerate}[label=\alph*)]
+    \item $t_1 = \frac{Q_g}{I_{G1}} = \frac{36 \times 10^{-9}\,\text{C}}{6 \times 10^{-3}\,\text{A}} = 6 \times 10^{-6}\,\text{s} = \mathbf{6\,\mu\text{s}}$.
+    \item $t_2 = \frac{Q_g}{I_{G2}} = \frac{36 \times 10^{-9}\,\text{C}}{24 \times 10^{-3}\,\text{A}} = 1.5 \times 10^{-6}\,\text{s} = \mathbf{1.5\,\mu\text{s}}$.
+    \item \textit{Rúbrica explicativa:} Estos son tiempos de transferencia matemática constante. En la realidad física, el efecto Miller (no linealidad de $C_{GD}$), las impedancias parásitas y las limitaciones de la fuente del driver alteran la forma de onda, impidiendo una correspondencia de tiempos 1:1.
+\end{enumerate}
+
+\section*{Solución a Ejercicios de Transferencia}
+
+\textbf{T1. Adaptación de Nivel BJT:}
+Por KVL en el seguidor de emisor NPN: $V_{\text{OUT}} = V_{\text{IN}} - V_{BE} = 5\,\text{V} - 0.7\,\text{V} = \mathbf{4.3\,\text{V}}$.
+El circuito \textbf{no logra} entregar los $10\,\text{V}$ necesarios porque el emisor está físicamente limitado por el potencial de la base. Se requiere un circuito adaptador de nivel previo.
+
+\textbf{T2. PMOS High-Side:}
+$V_{GS} = V_G - V_S = 5\,\text{V} - 12\,\text{V} = \mathbf{-7\,\text{V}}$.
+Al aplicar $5\,\text{V}$, el PMOS \textbf{no se apaga} (permanece encendido). Para apagarlo, es necesario que $V_{GS} = 0\,\text{V}$, lo cual implica elevar la compuerta a $12\,\text{V}$ netos.
+
+\section*{Solución Autocomprobación de Casa (H1-H5)}
+\begin{itemize}
+    \setlength\itemsep{0.2em}
+    \item \textbf{H1:} Los modelos oficiales comerciales ya incluyen la capacitancia interna parásita y sus características no lineales. Si agregamos capacitores externos ideales fijos, estaremos duplicando el efecto y falseando artificialmente los retardos.
+    \item \textbf{H2:} Significa que el valor óhmico garantizado solo ocurre si se respetan la tensión $V_{GS}$, la corriente de drenador y la temperatura declaradas en la tabla del fabricante. Extrapolarlo a otras tensiones anula la garantía de diseño.
+    \item \textbf{H3:} `CALC` proviene de fórmulas matemáticas ideales o supuestas; `SIM` proviene de la integración numérica del software con modelos equivalentes; `MED` debe proceder invariablemente del uso de un instrumento físico sobre el hardware en vivo. No, no se puede inventar la medida a partir del simulador.
+    \item \textbf{H4:} En la mayoría de TO-220, la pestaña metálica es el Drenador. Atornillarla directamente a un disipador conectado a tierra generará un cortocircuito masivo. Requiere aislamiento de mica/silicona o verificar que el disipador esté eléctricamente flotante.
+    \item \textbf{H5:} $\Delta Q = I_{prom} \cdot t = (15 \times 10^{-3}\,\text{A}) \times (2 \times 10^{-6}\,\text{s}) = 30 \times 10^{-9}\,\text{C} = \mathbf{30\,\text{nC}}$.
+\end{itemize}
+
+\end{document}

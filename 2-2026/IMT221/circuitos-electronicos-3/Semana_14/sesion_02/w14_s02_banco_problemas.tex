@@ -1,0 +1,65 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{arrows.meta, positioning, calc}
+\usepackage[margin=1.8cm]{geometry}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{ucbgray}{RGB}{240, 244, 248}
+
+\begin{document}
+
+\noindent
+{\LARGE \textbf{\textcolor{ucbblue}{IMT-221 — Circuitos Electrónicos III}}}\\[0.15cm]
+{\Large \textbf{Banco de Problemas EC3 — Taller Pre-Examen (ALUMNO)}}\\[0.1cm]
+{\small \textbf{Competencia:} Diseño analítico y diagnóstico de interruptores MOSFET y Drivers BJT.}
+\par\vspace{0.2cm}\noindent\rule{\linewidth}{0.4pt}\vspace{0.3cm}
+
+\section*{Parte I: Ejercicios Guiados en Aula}
+
+\textbf{G1. Nodos y Potencias (Low-Side):} Considere un circuito NMOS Low-Side con una fuente de bus $V_{\text{BUS}} = 9\,\text{V}$ y una resistencia de carga $R_L = 180\,\Omega$. 
+\begin{enumerate}[label=\alph*)]
+    \item Dibuje el esquema del circuito indicando la ruta de la corriente, y los nodos G, D, S.
+    \item Calcule la corriente ideal $I_{\text{ON,ideal}}$ y la potencia de la carga $P_{L,\text{ideal}}$.
+    \item Asuma (solo como hipótesis matemática) que el MOSFET opera con un $R_{DS(\text{on})} = 0.10\,\Omega$ válido. Calcule la corriente real $I_D$, la tensión $V_{DS}$, la potencia disipada por la carga $P_L$ y la potencia de conducción del MOSFET $P_{\text{MOS,cond}}$. ¡Muestre todas sus ecuaciones!
+\end{enumerate}
+\vspace{4cm}
+
+\textbf{G2. Dinámica de Compuerta:} Un MOSFET presenta una carga total de compuerta $Q_g = 36\,\text{nC}$. Si un driver inyecta una corriente media constante de $I_{G,\text{prom}} = 6\,\text{mA}$ al encender:
+\begin{enumerate}[label=\alph*)]
+    \item Estime el tiempo matemático de transferencia de carga $t_{\text{transfer}}$.
+    \item Repita el cálculo si la corriente aumenta a $I_{G,\text{prom}} = 24\,\text{mA}$.
+    \item Explique físicamente por qué este tiempo no es exactamente igual al tiempo medido de caída de $V_{DS}$.
+\end{enumerate}
+\vspace{3cm}
+
+\section*{Parte II: Ejercicios de Transferencia}
+
+\textbf{T1. Adaptación de Nivel BJT:} Un circuito seguidor de emisor (NPN) tiene su colector alimentado a $12\,\text{V}$. Su base recibe un comando lógico directo de un Arduino ($5\,\text{V}$). Calcule analíticamente la tensión de salida $V_{\text{OUT}}$ en el emisor. ¿Logra este circuito encender un MOSFET que requiere $10\,\text{V}$ de excitación?
+\vspace{3cm}
+
+\textbf{T2. PMOS High-Side:} Un PMOS está conectado como interruptor de potencia con su Source anclado a un riel de $+12\,\text{V}$. Usted aplica al Gate una tensión absoluta de $V_G = +5\,\text{V}$ (desde un pin lógico referenciado a tierra). Calcule rigurosamente la tensión $V_{GS}$. ¿Se apaga el PMOS con esta señal? Justifique.
+\vspace{3cm}
+
+\section*{Parte III: Autocomprobación de Casa (H1-H5)}
+\begin{itemize}
+    \setlength\itemsep{0.5em}
+    \item \textbf{H1:} En LTspice, ¿por qué agregar capacitores externos fijos $C_{GS}$ y $C_{GD}$ a un macromodelo comercial oficial puede generar resultados falsos?
+    \item \textbf{H2:} ¿Qué significa que el parámetro $R_{DS(\text{on})}$ especificado en un datasheet esté ``condicionado''?
+    \item \textbf{H3:} ¿Qué diferencia hay entre una potencia calculada (\texttt{CALC}), una simulada en LTspice (\texttt{SIM}) y una potencia medida (\texttt{MED})? ¿Se puede llenar la casilla \texttt{MED} si solo se simuló el circuito?
+    \item \textbf{H4:} En un encapsulado TO-220, ¿qué precauciones debe tomar respecto a la pestaña metálica posterior antes de atornillarla a un disipador común?
+    \item \textbf{H5:} Si usted debe descargar el Gate de un MOSFET (Sinking) con una corriente de $15\,\text{mA}$ durante $2\,\mu\text{s}$, ¿cuánta carga $\Delta Q$ extrajo del Gate? (Muestre cálculo y unidades).
+\end{itemize}
+
+\end{document}

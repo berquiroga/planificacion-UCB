@@ -1,0 +1,115 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{arrows.meta, positioning, calc}
+\usepackage[margin=1.6cm]{geometry}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\emergencystretch=2em
+\tolerance=1000
+\hbadness=10000
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{ucbgray}{RGB}{240, 244, 248}
+
+\begin{document}
+
+\noindent
+{\LARGE \textbf{\textcolor{ucbblue}{IMT-221 — Circuitos Electrónicos III}}}\\[0.12cm]
+{\Large \textbf{W14S03 — Práctica EC3 de clase y casa (ESTUDIANTE)}}\\[0.1cm]
+{\small \textbf{Nombre:} \rule{4cm}{0.4pt} \quad \textbf{Grupo:} \rule{2cm}{0.4pt} \quad \textbf{Fecha:} 6/11/2026}
+\par\vspace{0.15cm}\noindent\rule{\linewidth}{0.4pt}\vspace{0.2cm}
+
+\noindent \textbf{Nota de Programación:} \textbf{No es examen sumativo.} El examen escrito ha sido trasladado a \textbf{W15S01} (fecha civil por confirmar). \textbf{Todos los números de semiconductores en los problemas siguientes son HIPOTÉTICOS}, salvo las condiciones del circuito descritas como hipótesis del ejercicio. Material de práctica individual; no se requiere LTspice ni un equipo físico.
+
+\noindent \textbf{Cómo responder:} Bosquejar circuito, declarar hipótesis, escribir ecuaciones, sustituir valores con unidades, verificar coherencia dimensional y exponer una limitación de la predicción. $R_{DS}$ representa resistencia efectiva de canal \textbf{solo si} el enunciado declara que es válida a la polarización y temperatura usadas.
+
+\section*{A. Ejercicios para Clase (25 min)}
+
+\subsection*{C1 — Interruptor y disipación (8–10 min)}
+Un NMOS low-side enciende una carga resistiva de $R_L=75\,\Omega$ conectada a $V_{\text{bus}}=9\,\text{V}$. Para \textbf{este ejercicio exclusivamente}, se considera que en ON el MOSFET se comporta como $R_{DS}=0.080\,\Omega$ bajo la excitación y temperatura especificadas, y en OFF es un circuito abierto. El PWM tiene $D=40\%$ y transiciones despreciables.
+
+\begin{center}
+\begin{circuitikz}[scale=0.9, transform shape, thick]
+    \draw (0,2.5) node[above]{$+9\,\text{V}_{\text{BUS}}$} to[R, l={$R_L=75\,\Omega$}] (0,1) coordinate (D);
+    \draw (0,-0.5) node[nigfete] (M1) {};
+    \node[above left=0.05cm] at (M1.G) {G};
+    \node[above right=0.05cm] at (M1.D) {D};
+    \node[below right=0.05cm] at (M1.S) {S};
+    \draw (D) -- (M1.D);
+    \draw (M1.S) -- (0,-2) node[ground]{};
+    \draw (M1.B) -- ++(0.5,0) |- (0,-2);
+    \draw (M1.G) -- ++(-1.5,0) node[left]{\small Control respecto a S};
+\end{circuitikz}
+\end{center}
+
+\begin{enumerate}[label=\arabic*., noitemsep]
+    \item Aplicar KVL en ON y obtener $I_D$, $V_{RL}$, $V_{DS}$. Verificar que la suma de caídas recupera el bus.
+    \item Hallar potencia \textbf{en la resistencia} y \textbf{en el MOSFET} en ON. ¿Cuál es mayor? 
+    \item Calcular potencia promedio ideal en la resistencia con $D=0.40$ e indicar dos hipótesis necesarias para ese resultado.
+    \item En OFF ideal, estimar $I_D$, $V_{DS}$ y potencia del MOSFET. ¿Una tensión alta en drain significa automáticamente gran disipación?
+\end{enumerate}
+
+\subsection*{C2 — Datasheet, $V_{GS}$ y selección (8 min)}
+Un controlador eleva gate a $5.0\,\text{V}$ respecto de GND. En un montaje no low-side puro, el source está a $1.2\,\text{V}$ respecto de GND. Dos MOSFET \textbf{ficticios} tienen los siguientes datos garantizados (el resto de las condiciones se supone satisfecho):
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{0.85\linewidth}{|c|X|}
+\hline
+\rowcolor{ucbgray} \textbf{Dispositivo Ficticio} & \textbf{Dato Garantizado (Incluido en el ejercicio)} \\ \hline
+\textbf{M-A} & $R_{DS(\text{on})} \le 0.040\,\Omega$ con $V_{GS} = 4.5\,\text{V}$ \\ \hline
+\textbf{M-B} & $R_{DS(\text{on})} \le 0.030\,\Omega$ con $V_{GS} = 10\,\text{V}$ \\ \hline
+\end{tabularx}
+\end{center}
+
+\begin{enumerate}[label=\arabic*., noitemsep]
+    \item Calcular $V_{GS}$ real. ¿Puede declararse que \textbf{M-A} cumple necesariamente el dato indicado con esta polarización? ¿Y \textbf{M-B}? Justificar.
+    \item Si se lleva source a $0\,\text{V}$, ¿qué cambia? ¿Qué se puede concluir de ambos dispositivos a $V_{GS}=5\,\text{V}$ sin inventar una curva $R_{DS(\text{on})}$?
+    \item Explicar en una frase por qué $V_{GS(\text{th})}$ no equivale a plena conducción de baja pérdida.
+\end{enumerate}
+
+\subsection*{C3 — Carga de gate y energía (7 min)}
+Para \textbf{un MOSFET ficticio} en condiciones de estudio dadas, $Q_g = 30\,\text{nC}$. Dos drivers suministran corriente media aproximada durante la transferencia de carga: $I_1 = 6\,\text{mA}$ e $I_2 = 15\,\text{mA}$.
+\begin{enumerate}[label=\arabic*., noitemsep]
+    \item Estimar $t \approx Q_g/I$ con ambos drivers; convertir a microsegundos ($\mu\text{s}$).
+    \item Se declara para este ejercicio $E_{\text{on}}=4\,\mu\text{J}$, $E_{\text{off}}=3\,\mu\text{J}$ por periodo y $f=400\,\text{Hz}$. Hallar potencia media de switching.
+    \item ¿Por qué los tiempos estimados no equivalen al tiempo exacto de caída de $V_{DS}$ en osciloscopio?
+\end{enumerate}
+
+\section*{B. Transferencia Individual (13 min; sin solucionario)}
+\subsection*{T1 — Diagnóstico causal y seguridad}
+Un generador \texttt{SK3000} se configura para una salida cuadrada idealizada \textbf{$10\,\text{V}_{\text{pp}}$ sin offset}, con retorno nominal a GND. Un estudiante conecta esto al gate de un NMOS low-side y afirma: \textit{«recibe $0\text{--}10\,\text{V}$; el IRFZ44N estará plenamente encendido»}. 
+Otro estudiante conecta un seguidor de emisor NPN cuyo colector está a $+12\,\text{V}$ y su base controlada con PWM de $0\text{--}3.3\,\text{V}$; afirma: \textit{«la salida será $12\,\text{V}$»}. (Suponga $V_{BE} \approx 0.7\,\text{V}$).
+\begin{enumerate}[label=\arabic*., noitemsep]
+    \item Indicar niveles mínimo y máximo del generador y por qué la conclusión del primer estudiante es incorrecta.
+    \item Estimar el nivel alto máximo aproximado del seguidor y explicar su límite físico.
+    \item Escribir \textbf{una condición concreta} que impide energizar antes de G1/G2 (incluya método de verificación).
+    \item ¿Qué evidencias distinguirían una predicción (\texttt{PRED}) de un resultado medido (\texttt{MED})?
+\end{enumerate}
+
+\section*{C. Para Casa (Resolver antes del examen W15S01)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{H1 — Nuevo low-side y medición:} $V_{\text{bus}}=15\,\text{V}$, $R_L=180\,\Omega$, $R_{DS}=0.12\,\Omega$ (hipotética y válida). PWM $25\%$, transiciones ideales. Hallar $I_{\text{ON}}$, $V_{DS,\text{ON}}$, $P_{RL,\text{ON}}$, $P_{\text{MOS,ON}}$, $P_{RL,\text{prom}}$ y verificar KVL. ¿Qué mediría en osciloscopio para probar el gate? ¿Qué limitaría leer $V_{DS,\text{ON}}$ de pocos mV?
+    \item \textbf{H2 — Formas de onda:} Fuente da $V_G = 6\,\text{V}$ respecto a GND. Casos: (a) $V_S=0\,\text{V}$, (b) $V_S=2.5\,\text{V}$. Calcule $V_{GS}$. Luego, un generador da $8\,\text{V}_{\text{pp}}$ ideal con offset $-1\,\text{V}$: obtener máx.\ y mín. ¿Por qué es riesgoso sin ver $V_{GS,\max}$ de ficha?
+    \item \textbf{H3 — Modelo de conmutación:} MOSFET ficticio con $V_{\text{bus}}=18\,\text{V}$, $I_{\text{load}}=0.25\,\text{A}$, $f=2\,\text{kHz}$. \textbf{Aproximación:} producto $v \cdot i$ equivale a triángulo de base $t_{\text{on}}=6\,\mu\text{s}$ y $t_{\text{off}}=8\,\mu\text{s}$, altura $V_{\text{bus}} \cdot I_{\text{load}}$. Estime $E_{\text{on}}$, $E_{\text{off}}$ y $P_{\text{sw}}$. Aclare por qué es un modelo, no un dato medido.
+    \item \textbf{H4 — Resistencias de base:} NPN ficticio, $V_{\text{logic}}=3.3\,\text{V}$, $V_{BE} \approx 0.7\,\text{V}$, $R_B=3.3\,\text{k}\Omega$. Requiere absorber $I_C=8\,\text{mA}$. Calcule $I_B$ y la relación $I_C/I_B$. Si por diseño se exige $\beta_{\text{forzada}} \le 10$, ¿cumple? Calcule $R_{B,\max}$.
+    \item \textbf{H5 — Auditoría:} Grupo declara: «E1 listo: foto del cableado»; «E2: archivo .cir sin correr»; «G2 aprobado porque vecino lo logró». Identifique \textbf{cinco} evidencias faltantes y clasifique afirmaciones (CALC, SIM, MED, PEND). Proponga paso seguro.
+\end{itemize}
+
+\vspace{0.4cm}
+\noindent
+\textbf{Pauta Breve de Autocorrección (Para H1--H5):}
+\textit{C1/H1:} $I_D$ debe calcularse en Amperios; verificar $P_{load, ON}$ vs $P_{load, prom}$. \textit{C2/H2:} $V_{GS}$ es diferencia de potencial; tablas $R_{DS}$ aplican solo a su ensayo específico. \textit{C3:} nC/mA da $\mu\text{s}$. \textit{T1:} Amplitud $V_{pp}$ no fija el offset; emisor nunca supera a la base. \textit{H3:} Energía bajo triángulo = (base $\times$ altura)/2. \textit{H4:} Verifique $\beta_{\text{forzada}}$; no basta $h_{FE}$ teórica. \textit{H5:} Foto no es medida; SPICE sin log no es evidencia G2.
+
+\end{document}
