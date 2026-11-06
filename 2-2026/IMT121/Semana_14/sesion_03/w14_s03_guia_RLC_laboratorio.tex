@@ -1,0 +1,146 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage[american]{circuitikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Adenda RLC}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{warnred}{RGB}{180, 0, 0}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=warnred!5!white, colframe=warnred, title=\textbf{Pauta Estricta: NO ENERGIZAR SIN "GO" PARA RLC}]
+    \centering \textbf{Adenda Operativa: Segunda Etapa RLC (Para Grupos que Concluyeron RC)}
+\end{tcolorbox}
+
+\noindent\textit{El "GO" obtenido en la etapa RC no se hereda a esta etapa. Debe solicitar inspección de la nueva topología. Llene esta ficha solo en el banco de pruebas; registre "NO MEDIDO" si no obtuvo autorización (NO-GO) o tiempo.}
+
+\section*{1. Identificación y Control Previo (Desenergizado)}
+\begin{itemize}
+    \item \textbf{Grupo:} \rule{4cm}{0.4pt} \quad \textbf{Estación / IDs Instrumentos:} \rule{4cm}{0.4pt}
+    \item \textbf{GO RC Previo (Sí/No):} \rule{1.5cm}{0.4pt} \quad \textbf{GO RLC Nuevo (Firma/Hora):} \rule{3.5cm}{0.4pt}
+\end{itemize}
+
+\vspace{0.1cm}
+\renewcommand{\arraystretch}{1.5}
+\noindent
+\begin{tabularx}{\textwidth}{
+  >{\RaggedRight\arraybackslash\hsize=1.2\hsize}X 
+  >{\RaggedRight\arraybackslash\hsize=0.8\hsize}X 
+  >{\RaggedRight\arraybackslash\hsize=1.0\hsize}X}
+\toprule
+\textbf{Componente} & \textbf{Valor / Atributo Medido} & \textbf{Verificación Docente} \\ 
+\midrule
+Inductor (L) & $L_{\text{nom}}=$ \rule{1.5cm}{0.4pt}\,mH; \quad $R_{\text{DCR}}=$ \rule{1cm}{0.4pt}\,$\Omega$ & [ ] \textit{Inspección visual} \\
+Capacitor (C) & $C_{\text{nom}}=$ \rule{1.5cm}{0.4pt}\,$\mu$F; \quad \textbf{NO POLARIZADO} & [ ] \textit{No es electrolítico} \\
+Resistor ($R_{\text{ext}}$) & $R_{\text{med}}=$ \rule{1.5cm}{0.4pt}\,$\Omega$ & [ ] \textit{Límite de Potencia} \\
+Generador ($R_{\text{gen}}$) & Impedancia Salida: \rule{2cm}{0.4pt} & [ ] \textit{Manual de Equipo} \\
+\bottomrule
+\end{tabularx}
+
+\section*{2. Topología RLC Serie y Cálculo de Regímenes}
+\noindent Conecte: Salida Generador (\texttt{in}) $\to R_{\text{ext}} \to L \to$ Nodo \texttt{out} $\to C \to$ Retorno (GND). \\
+\textbf{Sondas:} \texttt{CH1} al nodo \texttt{in}. \texttt{CH2} al nodo \texttt{out}. \textbf{Masas: Exclusivamente al Retorno GND}.
+
+\vspace{0.2cm}
+\noindent
+\begin{minipage}[t]{0.45\textwidth}
+\vspace{0pt}
+\begin{circuitikz}[scale=0.85, transform shape, thick]
+    \draw (0,0) to[sV, l_={Gen. $v_s(t)$}] (0,2.5)
+          to[short, -*] (1.0,2.5) node[above]{\texttt{in}}
+          to[R, l={$R_{\text{ext}}$}] (3.5,2.5)
+          to[L, l={$L$}] (6.0,2.5)
+          to[short, -*] (6.5,2.5) node[above]{\texttt{out}};
+    \draw (6.5,2.5) to[C, l={$C$}, v={$v_C$}] (6.5,0);
+    \draw[ucbblue] (1.0,2.5) to[short, *-o] (1.0,3.3) node[above]{\scriptsize CH1};
+    \draw[ucbblue] (6.5,2.5) to[short, *-o] (7.5,2.5) node[right]{\scriptsize CH2};
+    \draw (0,0) -- (7.5,0) node[right]{\scriptsize Retorno (GND)};
+\end{circuitikz}
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.52\textwidth}
+\vspace{0pt}
+\textbf{Predicción Matemática} \\
+$f_0 = \frac{1}{2\pi\sqrt{LC}}$; \quad $R_{\text{crit,total}} = 2\sqrt{\frac{L}{C}}$ \\
+$R_{\text{total,est}} = R_{\text{ext}} + R_{\text{gen}} + R_{\text{DCR}} + R_{\text{otras}}$ \\
+$\zeta_{\text{pred}} = \frac{R_{\text{total,est}}}{R_{\text{crit,total}}}$.
+
+\vspace{0.1cm}
+\textit{Si $L=10\,\text{mH}$ y $C=1\,\mu\text{F}$, nominalmente:} \\
+$f_0 \approx 1.592\,\text{kHz}$; \quad $R_{\text{crit,total}} \approx 200\,\Omega$. \\
+\textit{Cuidado: Si $L=2\,\text{mH}$, $R_{\text{crit,total}} \approx 89.4\,\Omega$, limitando las opciones de $R_{\text{ext}}$ para lograr oscilación.}
+\end{minipage}
+
+\vspace{0.4cm}
+\renewcommand{\arraystretch}{1.5}
+\noindent
+\begin{tabularx}{\textwidth}{
+  >{\bfseries\RaggedRight\hsize=0.8\hsize}X 
+  >{\centering\arraybackslash\hsize=0.6\hsize}X 
+  >{\centering\arraybackslash\hsize=0.9\hsize}X 
+  >{\centering\arraybackslash\hsize=0.9\hsize}X 
+  >{\centering\arraybackslash\hsize=0.9\hsize}X 
+  >{\centering\arraybackslash\hsize=0.9\hsize}X 
+  >{\RaggedRight\arraybackslash\hsize=1.0\hsize}X}
+\toprule
+\textbf{Ensayo} & \textbf{$L_{\text{nom}}$} & \textbf{$R_{\text{ext}}$ med} & \textbf{$R_{\text{DCR}}$ med} & \textbf{$R_{\text{total}}$ est} & \textbf{$\zeta$ predicho} & \textbf{Régimen Predicho} \\ 
+\midrule
+RLC-1 & & & & & & \\ \addlinespace
+RLC-2 (Opc) & & & & & & \\ 
+\bottomrule
+\end{tabularx}
+
+\section*{3. Captura Física y Extracción de Datos}
+\textit{Configure el generador en onda cuadrada, con base de tiempo del orden de fracciones de ms/div (para $10\,\text{mH} \approx 0.1-0.2\,\text{ms/div}$). Trigger en flanco ascendente de CH1.}
+
+\vspace{0.2cm}
+\renewcommand{\arraystretch}{1.5}
+\noindent
+\begin{tabularx}{\textwidth}{
+  >{\bfseries\RaggedRight\hsize=0.9\hsize}X 
+  >{\RaggedRight\arraybackslash\hsize=1.05\hsize}X 
+  >{\RaggedRight\arraybackslash\hsize=1.05\hsize}X}
+\toprule
+\textbf{Registro Paramétrico} & \textbf{Ensayo RLC-1} & \textbf{Ensayo RLC-2} \\ 
+\midrule
+Señal Generador (CH1) & \rule{1.5cm}{0.4pt} Hz, \rule{1.5cm}{0.4pt} $V_{pp}$, \rule{1.5cm}{0.4pt} $V_{\text{off}}$ & \rule{1.5cm}{0.4pt} Hz, \rule{1.5cm}{0.4pt} $V_{pp}$, \rule{1.5cm}{0.4pt} $V_{\text{off}}$ \\ \addlinespace
+Ajustes Osciloscopio & \rule{1.5cm}{0.4pt} V/div, \rule{1.5cm}{0.4pt} ms/div & \rule{1.5cm}{0.4pt} V/div, \rule{1.5cm}{0.4pt} ms/div \\ \addlinespace
+$V_i$ y $V_f$ en CH2 (Niveles) & $V_i=$\rule{1.5cm}{0.4pt} V, $V_f=$\rule{1.5cm}{0.4pt} V & $V_i=$\rule{1.5cm}{0.4pt} V, $V_f=$\rule{1.5cm}{0.4pt} V \\ \addlinespace
+$t_s$ (Inicio flanco en CH1) & $t_s=$\rule{2cm}{0.4pt} ms & $t_s=$\rule{2cm}{0.4pt} ms \\ \addlinespace
+$V_{\text{pico}}$ en CH2 (Máximo abs.) & $V_{\text{pico}}=$\rule{2cm}{0.4pt} V & $V_{\text{pico}}=$\rule{2cm}{0.4pt} V \\ \addlinespace
+Sobreimpulso (\%) & $M_p = 100 \cdot \frac{V_{\text{pico}} - V_f}{|V_f - V_i|} = $ \rule{1.5cm}{0.4pt} \% & $M_p = 100 \cdot \frac{V_{\text{pico}} - V_f}{|V_f - V_i|} = $ \rule{1.5cm}{0.4pt} \% \\ \addlinespace
+¿Se observó oscilación? & [ ] Sí \quad [ ] No \quad [ ] Indet. & [ ] Sí \quad [ ] No \quad [ ] Indet. \\ \addlinespace
+Régimen Interpretado & \rule{4cm}{0.4pt} & \rule{4cm}{0.4pt} \\ \addlinespace
+ID Captura Real USB & \rule{4cm}{0.4pt} & \rule{4cm}{0.4pt} \\ \addlinespace
+Discrepancia vs Predicción & \rule{4cm}{0.4pt} & \rule{4cm}{0.4pt} \\ 
+\bottomrule
+\end{tabularx}
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Trazabilidad Individual y Cierre de Estación}]
+\textbf{Roles ejercidos:} Operó [$\square$] \quad Observó [$\square$] \quad Interpretó / Procesó datos [$\square$] \\
+\textbf{Estado Final:} \rule{10cm}{0.4pt} \\
+\textit{Apague y deshabilite el generador; retire las sondas con precaución; respete las normas de descarga institucional.}
+\end{tcolorbox}
+
+\end{document}
