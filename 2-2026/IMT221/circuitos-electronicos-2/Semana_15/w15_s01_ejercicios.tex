@@ -1,0 +1,83 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\setlength{\emergencystretch}{2em}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Hoja de Ejercicios W15-S01: Rectificación y Filtros}
+\rhead{Semana 15 - Sesión 1}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\textbf{\textcolor{ucbblue}{Ejercicios de Práctica: Rectificación y Transición a Filtros}}} \\[0.1cm]
+    {\footnotesize\textbf{Aviso:} Los datos numéricos son \textbf{HIPOTÉTICOS}. No aplicar a circuitos reales sin validar fabricante.}
+\end{center}
+
+\section*{I. Diagnóstico de Diodos y Superdiodo (Lab 5)}
+
+\textbf{X1. Diagnóstico E1 (Umbral):}\\
+Un rectificador recibe $v_i(t) = 0.30\sin(2\pi f t)\,\mathrm{V}$. Asuma el modelo de caída constante con $V_\gamma = 0.40\,\mathrm{V}$. Calcule el pico de salida convencional y el ideal preciso. Explique las limitaciones del modelo convencional frente a señales pequeñas.
+\vspace{1.5cm}
+
+\noindent\textbf{X2. Estados E3 (Superdiodo No Inversor):}\\
+Dibuje un superdiodo no inversor didáctico. Complete una tabla de 3 estados ($v_i>0, v_i<0, v_i \approx 0$) marcando el estado del diodo, si el lazo de realimentación está abierto o cerrado, y la salida interna $v_a$. ¿Cuándo es válido asumir $v_- \approx v_+$?
+\vspace{2cm}
+
+\noindent\textbf{X3. Error E6 (MAE):}\\
+Se tienen 4 muestras de salida hipotéticas frente a $v_{\mathrm{ref}} = \max(v_i, 0)$: $v_{\mathrm{ref}} = [0.00, 0.10, 0.20, 0.00]\,\mathrm{V}$.
+Para el rectificador convencional: $v_{o,\mathrm{conv}} = [0.00, 0.00, 0.00, 0.00]\,\mathrm{V}$. Para el superdiodo: $v_{o,\mathrm{prec}} = [0.00, 0.08, 0.19, 0.01]\,\mathrm{V}$. Calcule el Error Absoluto Medio (MAE) para ambos circuitos y especifique tres límites de esta evaluación.
+\vspace{2cm}
+
+\section*{II. Transición a Filtros Activos (Lab 6 e Hito 3)}
+
+\textbf{X4. Bode Canónico:}\\
+Dada la función de transferencia $H(s) = \frac{100}{s^2 + 10s + 100}$ (con $s$ en $\mathrm{s}^{-1}$). Halle la frecuencia natural $\omega_0$, el factor de calidad $Q$, $f_0$ en $\mathrm{Hz}$, la ganancia estática $K$, y la magnitud en decibelios a la frecuencia $f_0$ ($|H(j\omega_0)|$). ¿Implica $f_0$ que sea el punto de $-3\,\mathrm{dB}$?
+\vspace{2cm}
+
+\noindent\textbf{X5. Punto de Fase:}\\
+Para un filtro matemático de referencia con $K=1$, $f_0=10\,\mathrm{Hz}$ y $Q=1/\sqrt{2}$. En $f=f_0$, calcule la amplitud lineal, la ganancia en $\mathrm{dB}$ y el desfase $\varphi$.
+\vspace{1.5cm}
+
+\noindent\textbf{X6. Prediseño Condicional (Sallen-Key):}\\
+Para un esquema Sallen-Key de ganancia unitaria con $R_1=R_2=R=16\,\mathrm{k}\Omega$ y $C_1=C_2=C=1\,\mu\mathrm{F}$, calcule $f_0$, $Q$ y la respuesta de magnitud en $f_0$. ¿Coincide con un objetivo Butterworth ($Q \approx 0.707$)?
+\vspace{1.5cm}
+
+\noindent\textbf{X7. Barrido y Medición (Procedimiento):}\\
+Diseñe una tabla de al menos 5 frecuencias logarítmicamente distribuidas alrededor de $f_0$. Especifique qué amplitudes, fases y configuraciones deben medirse en el banco para validar linealidad.
+\vspace{1.5cm}
+
+\noindent\textbf{X8. Cascada de Filtros (Hito 3):}\\
+Dos secciones de filtro en cascada tienen atenuaciones hipotéticas de $-23\,\mathrm{dB}$ y $-22\,\mathrm{dB}$ a $50\,\mathrm{Hz}$. Calcule la atenuación total esperada. Explique por qué esto no acredita directamente una medición física de un sistema de 4to orden si no se considera la carga interfacial.
+\vspace{1.5cm}
+
+\noindent\textbf{X9. Distinción de Canales de Evaluación:}\\
+Defina brevemente la evidencia que debe registrarse para: (a) Lab 6, (b) Hito 3, (c) Examen EC2, (d) Final PFI.
+\vspace{1.5cm}
+
+\noindent\textbf{X10. Puente a Estabilidad:}\\
+¿Por qué la curva de fase $\varphi(f)$ de un filtro aislado no basta para encontrar el Margen de Fase (PM) de un sistema de control?
+\vspace{1.5cm}
+
+\end{document}

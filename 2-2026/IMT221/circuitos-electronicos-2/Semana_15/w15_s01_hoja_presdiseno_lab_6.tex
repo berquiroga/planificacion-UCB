@@ -1,0 +1,102 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage[american]{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Hoja de Prediseño: Filtro Activo Lab 6}
+\rhead{Semana 15 - Sesión 1}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\textbf{\textcolor{ucbblue}{Formulario de Prediseño: Filtro Activo de 2do Orden (Lab 6)}}} \\[0.1cm]
+    {\footnotesize\textbf{Estado:} \texttt{PENDIENTE DE VALIDACIÓN FÍSICA.} Los cálculos son preliminares y no constituyen autorización de circuito final.}
+\end{center}
+
+\section*{1. Ecuaciones Canónicas y Objetivos de Banda Útil}
+Función de Transferencia (Paso Bajo Canónico):
+\begin{equation}
+    H(s) = \frac{K\omega_0^2}{s^2 + (\omega_0/Q)s + \omega_0^2}, \qquad |H(j\omega)| = \frac{|K|}{\sqrt{(1-x^2)^2 + (x/Q)^2}} \quad \text{donde } x = \omega/\omega_0 = f/f_0
+\end{equation}
+\begin{tcolorbox}[colback=white, colframe=black, boxsep=1pt, top=2pt, bottom=2pt]
+    \textbf{Objetivo Filtro (Banda útil sensada):} \hrulefill \quad \textbf{Atenuación H3 Requerida:} $\mathbf{50\,\mathrm{Hz} < -40\,\mathrm{dB}}$ (Cascada)
+\end{tcolorbox}
+
+\section*{2. Topología Propuesta y Parámetros (Ej. Sallen-Key)}
+\begin{center}
+    \begin{circuitikz}[>=Stealth, thick, scale=0.9, transform shape]
+        \draw (0,0) node[op amp, yscale=-1] (opamp) {};
+        
+        \draw (opamp.+) to[short, -*] ++(-2,0) coordinate(y) node[above left] {$y$};
+        \draw (y) to[C, l_=$C_2$] ++(0,-2) node[ground]{};
+        \draw (y) to[R, l_=$R_2$, -*] ++(-2,0) coordinate(x) node[below] {$x$};
+        \draw (x) to[R, l_=$R_1$, -o] ++(-2,0) node[left] {$V_{\mathrm{in}}$};
+        
+        \draw (opamp.-) to[short, -*] ++(-0.5,0) coordinate(fb) node[below left] {$fb$};
+        \draw (fb) -- ++(0,-1) coordinate(rg_d) node[ground]{};
+        \draw (rg_d) -- ++(0,0) coordinate(rf_d) -- (rf_d -| opamp.out) -- (opamp.out);
+        
+        \draw (x) -- ++(0,1.5) coordinate(cf_up) to[C, l=$C_1$] (cf_up -| opamp.out) to[short, -*] (opamp.out);
+        \draw (opamp.out) to[short, -o] ++(1,0) node[right] {$V_{\mathrm{out}}$};
+
+        \node[font=\footnotesize, text=ucbblue, align=center] at (1.25,-2) {Topología Teórica Referencial\\(Sallen-Key Pasa Bajo de Ganancia Unitaria)};
+    \end{circuitikz}
+\end{center}
+
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{|P{2cm}|P{2cm}|P{2cm}|P{2cm}|P{3cm}|Y|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{$K$ (V/V)} & \textbf{$Q$ (factor)} & \textbf{$f_0$ (Hz)} & \textbf{$f_{-3\mathrm{dB}}$ (Hz)} & \textbf{Estado Valores} & \textbf{Valores Candidatos (R/C/Tol)} \\ \hline
+     & & & & $\square$ NOMINAL \newline $\square$ VERIFICADO & $R_1$: \quad $C_1$: \newline $R_2$: \quad $C_2$: \\ \hline
+    \end{tabularx}
+\end{table}
+
+\section*{3. Plan de Medición / Barrido AC (Criterio Suficiencia Lab 6)}
+\textit{Requisito: Amplitud segura para régimen lineal, mediciones fase/amplitud referenciadas y sin saturación (clipping).}
+
+\begin{table}[htbp]
+    \centering
+    \scriptsize
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabularx}{\textwidth}{|P{1.2cm}|P{1.5cm}|P{1.5cm}|P{1.2cm}|P{1.2cm}|P{1.5cm}|P{1.8cm}|Y|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{$f$ (Hz)} & \textbf{$V_{\mathrm{in}}$ (V)} & \textbf{$V_{\mathrm{out}}$ (V)} & \textbf{$G$ (dB)} & \textbf{$\varphi$ ($^\circ$)} & \textbf{Origen} & \textbf{Carga ($R_L$)} & \textbf{Observaciones / Límites del Op-Amp} \\ \hline
+     & & & & & & & \\ \hline
+     & & & & & & & \\ \hline
+     & & & & & & & \\ \hline
+     & & & & & & & \\ \hline
+     & & & & & & & \\ \hline
+    \end{tabularx}
+\end{table}
+\noindent\textit{Firma / Autorización para Montaje Lab 6:} \rule{4cm}{0.4pt}
+
+\end{document}

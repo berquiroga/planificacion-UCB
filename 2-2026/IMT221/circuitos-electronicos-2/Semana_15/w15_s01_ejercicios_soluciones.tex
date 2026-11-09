@@ -1,0 +1,78 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | Documento Docente}
+\chead{Clave Docente: Ejercicios W15-S01}
+\rhead{Semana 15 - Sesión 1}
+\renewcommand{\headrulewidth}{0.8pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\textbf{\textcolor{red!70!black}{CLAVE DOCENTE EXCLUSIVA — SEPARAR DE ALUMNOS}}} \\[0.1cm]
+    {\footnotesize\textbf{Aviso:} Cifras hipotéticas; no asigna pesos nuevos ni sustituye la rúbrica oficial.}
+\end{center}
+
+\subsection*{X1. Diagnóstico E1 (Umbral)}
+\textbf{Derivación:} Para un diodo ideal $v_o = \max(v_i, 0)$, el pico sería $V_{o,\mathrm{pico}} = 0.30\,\mathrm{V}$. Con el modelo de umbral aproximado, $v_o = \max(v_i - 0.40\,\mathrm{V}, 0)$. Dado que el pico de entrada ($0.30\,\mathrm{V}$) es menor que el umbral ($0.40\,\mathrm{V}$), el modelo predice $V_{o,\mathrm{pico}} = 0\,\mathrm{V}$.\\
+\textbf{Justificación:} Un diodo real tiene una curva I-V exponencial y no corta abruptamente; existirá una corriente parásita pequeña no contemplada por este modelo de umbral fijo.
+
+\subsection*{X2. Estados E3 (Superdiodo)}
+\textbf{Estado A ($v_i > 0$):} El diodo conduce. El lazo está cerrado. $v_o \approx v_i$ si las condiciones del CI son válidas. $v_a \approx v_o + v_D$. Sí es válido $v_+ \approx v_-$.\\
+\textbf{Estado B ($v_i < 0$):} El diodo se bloquea. El lazo está abierto. $v_o \approx 0\,\mathrm{V}$ (descargado por $R_L$). $v_a$ tiende a saturación negativa. No es válido $v_+ \approx v_-$.\\
+\textbf{Estado C ($v_i \approx 0$):} Transición. Existe retardo dependiendo del SR (Slew Rate) y la recuperación del Op-Amp.
+
+\subsection*{X3. Error E6 (MAE)}
+\textbf{Cálculo Convencional:} $E_{\mathrm{conv}} = \frac{|0-0| + |0-0.10| + |0-0.20| + |0-0|}{4} = \frac{0.30}{4} = \mathbf{0.075\,\mathrm{V}}$.\\
+\textbf{Cálculo Precisión:} $E_{\mathrm{prec}} = \frac{|0-0| + |0.08-0.10| + |0.19-0.20| + |0.01-0|}{4} = \frac{0 + 0.02 + 0.01 + 0.01}{4} = \mathbf{0.010\,\mathrm{V}}$.\\
+\textbf{Límites (inferenciales):} 1) 4 muestras son insuficientes y no resuelven el cruce por cero. 2) No hay datos físicos ni de ruido. 3) No se modelan saturaciones, capacitancias parásitas ni recuperación temporal.
+
+\subsection*{X4. Bode Canónico}
+\textbf{Derivación:} Forma canónica $H(s) = \frac{K\omega_0^2}{s^2 + (\omega_0/Q)s + \omega_0^2}$. Comparando con $\frac{100}{s^2 + 10s + 100}$:
+$\omega_0^2 = 100 \implies \omega_0 = 10\,\mathrm{rad/s}$. $f_0 = \omega_0 / 2\pi = 1.592\,\mathrm{Hz}$.
+$K\omega_0^2 = 100 \implies K(100) = 100 \implies K = 1$.
+$\omega_0/Q = 10 \implies 10/Q = 10 \implies Q = 1$.
+Evaluando en $\omega_0$: $|H(j\omega_0)| = |K|Q = (1)(1) = 1 \implies \mathbf{0\,\mathrm{dB}}$. $f_0$ NO implica el punto de $-3\,\mathrm{dB}$ (eso ocurre si $Q=1/\sqrt{2}$).
+
+\subsection*{X5. Punto de Fase}
+\textbf{Derivación:} $x = f/f_0 = 10/10 = 1$.
+$|H(j\omega)| = \frac{|K|}{\sqrt{(1-x^2)^2 + (x/Q)^2}} = \frac{1}{\sqrt{0 + (1/(1/\sqrt{2}))^2}} = \frac{1}{\sqrt{2}} \approx 0.707 \implies \mathbf{-3.0103\,\mathrm{dB}}$.
+Fase: $\varphi = -\operatorname{atan2}(x/Q, 1-x^2) = -\operatorname{atan2}(\sqrt{2}, 0) = \mathbf{-90^\circ}$.
+
+\subsection*{X6. Prediseño Condicional (Sallen-Key)}
+\textbf{Cálculo:} $f_0 = \frac{1}{2\pi R C} = \frac{1}{2\pi (16\times 10^3)(1\times 10^{-6})} \approx \mathbf{9.95\,\mathrm{Hz}}$.
+Para un Sallen-Key unitario estándar con $R_1=R_2, C_1=C_2$, $Q = \mathbf{0.5}$.
+Magnitud en $f_0$: $|H| = Q = 0.5 \implies \mathbf{-6.02\,\mathrm{dB}}$. \textbf{Conclusión:} No es un Butterworth (requeriría $Q \approx 0.707$), por tanto esta topología requeriría ajustar ganancias o razones de componentes.
+
+\subsection*{X7. Barrido y Medición}
+\textbf{Procedimiento:} Frecuencias sugeridas: $0.1f_0, 0.5f_0, f_0, 2f_0, 10f_0$. Para asegurar linealidad: mantener amplitudes bajas (ej. $100\,\mathrm{mV_{pp}}$ y $500\,\mathrm{mV_{pp}}$) para no inducir Slew Rate limits del CI, registrar $|V_{\mathrm{out}}|$, $|V_{\mathrm{in}}|$, diferencia de tiempo $\Delta t$ y calcular $\varphi = -360^\circ f \Delta t$.
+
+\subsection*{X8. Cascada (Hito 3)}
+\textbf{Cálculo:} $G_{\mathrm{total}} = -23\,\mathrm{dB} + (-22\,\mathrm{dB}) = \mathbf{-45\,\mathrm{dB}}$. En amplitud esto es $10^{-45/20} \approx 0.00562$ (menos del 1\%).\\
+\textbf{Justificación:} Un cálculo algebraico ideal asume aislamiento. Si en banco la segunda sección carga la impedancia de salida de la primera, el producto no se sostiene; debe medirse físicamente considerando la impedancia interfacial (buffers).
+
+\subsection*{X9. Distinción de Canales de Evaluación}
+(a) \textbf{Lab 6:} Sección de 2do orden y su diagrama de Bode validado. (b) \textbf{Hito 3:} Cascada completa de 4to orden y rechazo real de interferencia $50\,\mathrm{Hz}$. (c) \textbf{Examen EC2:} Razonamiento analítico individual escrito. (d) \textbf{Final PFI:} Integración en lazo cerrado y rediseño in situ (hardware funcional).
+
+\subsection*{X10. Puente a Estabilidad}
+El Margen de Fase (PM) requiere evaluar la fase del \textbf{lazo abierto} $L(s)$, evaluada exactamente en la frecuencia de cruce de ganancia unitaria $\omega_{gc}$ donde $|L(j\omega_{gc})| = 1$ ($0\,\mathrm{dB}$), añadiendo $180^\circ$. La fase de un solo bloque de filtro aislado no aporta este dato sistémico.
+
+\end{document}

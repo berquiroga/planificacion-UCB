@@ -1,0 +1,140 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage[most]{tcolorbox}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor{frametitle}{bg=ucbblue, fg=white}
+
+\title{\textbf{Filtros Activos: Prediseño y Transición}}
+\subtitle{De Lab 6 (2do Orden) a Hito 3 (4to Orden)}
+\author{IMT-221: Circuitos Electrónicos II}
+\institute{UCB Sede Tarija}
+\date{Semana 15 - Sesión 1}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% Diapositiva 1
+\begin{frame}{1. Rectificación vs. Filtrado Espectral}
+    \begin{itemize}
+        \item \textbf{Rectificar (Lab 5):} Proceso \textit{no lineal} que manipula semiciclos de voltaje (forma de onda).
+        \item \textbf{Filtrar (Lab 6):} Proceso \textit{lineal} que selecciona/rechaza espectralmente frecuencias (Magnitud y Fase).
+    \end{itemize}
+    \begin{center}
+        \begin{tikzpicture}[>=Stealth, thick, scale=0.8, transform shape]
+            \node[draw, fill=gray!20, text width=2cm, align=center] (h1) at (0,0) {H1: Sensor / Puente};
+            \node[draw, fill=ucbblue!15, text width=2cm, align=center] (h2) at (3.5,0) {H2: In-Amp};
+            \node[draw, fill=green!15, text width=3cm, align=center] (h3) at (7.5,0) {H3: Filtro Activo (4to Orden)};
+            \draw[->] (h1) -- (h2); \draw[->] (h2) -- (h3);
+            \node[draw, fill=orange!15, text width=2.5cm, align=center] (l6) at (7.5,-2) {Lab 6: Sección Activa de 2do Orden};
+            \draw[->, dashed] (l6) -- node[left, font=\scriptsize]{Transición} (h3);
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+% Diapositiva 2
+\begin{frame}{2. Forma Canónica de 2do Orden (Paso Bajo)}
+    Ecuación de transferencia en Laplace (Régimen Lineal):
+    \begin{equation}
+        H(s) = \frac{K\omega_0^2}{s^2 + (\omega_0/Q)s + \omega_0^2} = \frac{K}{(s/\omega_0)^2 + s/(Q\omega_0) + 1}
+    \end{equation}
+    \begin{itemize}
+        \item $s$: Variable compleja ($\mathrm{s}^{-1}$).
+        \item $\omega_0 = 2\pi f_0$: Frecuencia natural (rad/s). \textbf{OJO:} $f_0$ no siempre es el punto de $-3\,\mathrm{dB}$.
+        \item $Q$: Factor de calidad (determina realce o suavidad del codo).
+        \item $K$: Ganancia en continua ($\mathrm{V/V}$).
+    \end{itemize}
+\end{frame}
+
+% Diapositiva 3
+\begin{frame}{3. Magnitud, Fase y Diagrama de Bode}
+    Sustituyendo $s = j\omega$ y $x = f/f_0$:
+    \begin{equation}
+        |H(j\omega)| = \frac{|K|}{\sqrt{(1-x^2)^2 + (x/Q)^2}}, \qquad G_{\mathrm{dB}}(f) = 20\log_{10}|H(j2\pi f)|
+    \end{equation}
+    \begin{equation}
+        \varphi(\omega) = -\operatorname{atan2}(x/Q, 1-x^2) \quad (\text{Para } K > 0)
+    \end{equation}
+    \vspace{0.2cm}
+    \textbf{Asintóticamente:}
+    \begin{itemize}
+        \item Baja frecuencia ($x \ll 1$): $|H| \approx |K|$, Pendiente plana, $0^\circ$.
+        \item Alta frecuencia ($x \gg 1$): $|H| \approx |K|/x^2$, Pendiente $-40\,\mathrm{dB}/\text{década}$, $-180^\circ$.
+    \end{itemize}
+\end{frame}
+
+% Diapositiva 4
+\begin{frame}{4. Sallen-Key Estándar (Advertencia Topológica)}
+    Para un seguidor de ganancia unitaria donde se elija \textbf{matemáticamente} $R_1=R_2=R$ y $C_1=C_2=C$:
+    \begin{equation}
+        f_0 = \frac{1}{2\pi R C}, \qquad Q = 0.5, \qquad K = 1
+    \end{equation}
+    \vspace{0.2cm}
+    \begin{tcolorbox}[colback=white, colframe=red!70!black]
+        \textbf{¡Atención!} Esta igualdad genera $Q=0.5$. Un filtro Butterworth plano de 2do orden exige $Q \approx 0.707$ ($1/\sqrt{2}$). La BOM preventiva (con valores genéricos) no garantiza automáticamente la sintonía requerida sin el rediseño del grupo.
+    \end{tcolorbox}
+\end{frame}
+
+% Diapositiva 5
+\begin{frame}{5. Ejemplo: Comparando $Q=0.5$ vs $Q=0.707$ (Butterworth)}
+    Evaluando la magnitud exactamente en $f = f_0$ ($x=1$):
+    \begin{equation*}
+        |H(j\omega_0)| = |K|Q
+    \end{equation*}
+    \begin{itemize}
+        \item Si $Q = 0.5 \implies |H| = 0.5 \implies \mathbf{-6.02\,\mathrm{dB}}$ en $f_0$.
+        \item Si $Q = 0.707 \implies |H| = 1/\sqrt{2} \implies \mathbf{-3.01\,\mathrm{dB}}$ en $f_0$.
+    \end{itemize}
+    \vspace{0.5cm}
+    \textit{Conclusión: $f_0$ solo coincide con la frecuencia de corte real a $-3\,\mathrm{dB}$ cuando $Q = 1/\sqrt{2}$.}
+\end{frame}
+
+% Diapositiva 6
+\begin{frame}{6. ¿Cómo barrer frecuencias físicamente? (Procedimiento)}
+    \begin{enumerate}
+        \item \textbf{Asegurar régimen lineal:} Amplitud $V_{\mathrm{in}}$ pequeña, sin saturar ni recortar la salida.
+        \item \textbf{Barrido Logarítmico:} Medir en $0.1f_0$, $0.5f_0$, $f_0$, $2f_0$, $10f_0$.
+        \item \textbf{Cálculo de ganancia y fase:}
+        \begin{equation*}
+            G_{\mathrm{dB}} = 20\log_{10}\left|\frac{V_{\mathrm{out,pico}}}{V_{\mathrm{in,pico}}}\right|, \qquad \varphi = -360^\circ \times f \times \Delta t
+        \end{equation*}
+        \item \textbf{¡Cuidado!:} Un simulador AC asume linealidad infinita. El hardware real choca con los límites del \textit{Slew Rate}, el GBW y el voltaje de fuente del LM358N.
+    \end{enumerate}
+\end{frame}
+
+% Diapositiva 7
+\begin{frame}{7. De Lab 6 a Hito 3 (Cascada y Carga)}
+    El requisito oficial para el Hito 3 es atenuar $\mathbf{50\,\mathrm{Hz}}$ en más de $\mathbf{40\,\mathrm{dB}}$ preservando la señal útil.
+    \begin{itemize}
+        \item Dos secciones pasobajo de 2do orden pueden dar $-40\,\mathrm{dB/dec} \times 2 = -80\,\mathrm{dB/dec}$.
+        \item \textbf{Interacción de carga:} $H_{\mathrm{total}}(s) = H_1(s) \times H_2(s)$ \textbf{SOLO SI} la impedancia de entrada de la segunda etapa no deforma (carga) a la primera.
+        \item Aislar con buffers (o emplear diseño que contemple la interacción) es fundamental para garantizar el cumplimiento medido.
+    \end{itemize}
+\end{frame}
+
+% Diapositiva 8
+\begin{frame}{8. Adelanto a Unidad 4: Fase Hacia Margen de Fase (PM)}
+    La curva de fase $\varphi(f)$ obtenida en Lab 6 describe un bloque aislado.\\
+    \vspace{0.5cm}
+    En las siguientes semanas cerraremos el lazo de control PID. La estabilidad del sistema completo se evaluará mediante el \textbf{Margen de Fase (PM)} del sistema en Lazo Abierto $L(s)$, evaluado cuando la ganancia cruza por $0\,\mathrm{dB}$.
+    \begin{equation*}
+        PM = 180^\circ + \arg L(j\omega_{gc})
+    \end{equation*}
+    \textit{Este concepto se desarrollará formalmente en las sesiones del 16 y 18 de noviembre.}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,73 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb} % CORRECCIÓN: Paquetes matemáticos necesarios para el comando \square
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Log de Registro: Laboratorio 5 (Rutas A y B)}
+\rhead{Semana 15 - Sesión 1}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\textbf{\textcolor{ucbblue}{Formulario de Registro Experimental y Simulación (Lab 5)}}} \\[0.1cm]
+    {\footnotesize\textbf{Evidencia de trazabilidad:} Marcar origen claro (\texttt{PREDICHO / SIMULADO / MEDIDO}).}
+\end{center}
+
+\begin{center}
+    \begin{tikzpicture}[>=Stealth, thick, scale=0.85, transform shape]
+        \node[draw=ucbblue, fill=ucbblue!8, text width=6cm, align=center, minimum height=0.9cm] (q) at (0,0) {¿Esquema, modelo de CI, fuente y manuales verificados?};
+        \node[draw=green!60!black, fill=green!10, text width=4cm, align=center, minimum height=0.8cm] (rutaA) at (-3.5, -2) {\textbf{Ruta A: MEDIDO}\\Autorización a banco físico};
+        \node[draw=orange, fill=orange!10, text width=5.5cm, align=center, minimum height=0.8cm] (rutaB) at (4.0, -2) {\textbf{Ruta B: SIMULADO / PREDICHO}\\(Pendiente Laboratorio Físico)};
+        \draw[->] (q) -- node[left, font=\scriptsize]{\textbf{SÍ}} (rutaA);
+        \draw[->] (q) -- node[right, font=\scriptsize]{\textbf{NO}} (rutaB);
+    \end{tikzpicture}
+\end{center}
+
+\section*{Registro de Ensayo}
+\textit{Toda celda sin dato debe ser rellenada como \texttt{NO OBTENIDO} especificando el motivo.}
+
+\begin{table}[htbp]
+    \centering
+    \renewcommand{\arraystretch}{1.8}
+    \begin{tabularx}{\textwidth}{|P{4.5cm}|X|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Parámetro / Metadato} & \textbf{Valor / Evidencia / Archivo Generado} \\ \hline
+    Grupo / Fecha / Versión de Esquema & \\ \hline
+    \textbf{Ruta Escogida} & $\square$ Banco Físico (A) \quad $\square$ Simulación (B) \quad $\square$ No obtenida \\ \hline
+    Op-Amp y Diodo (Mfr / Modelo Exacto) & \\ \hline
+    Topología, $R_L$ y Nodos $v_i, v_a, v_o$ & \\ \hline
+    Rieles, Ref., Tierra, Intrumento/Carga & \\ \hline
+    Estímulo de Prueba ($A, f, \text{offset}$) & \\ \hline
+    $v_i$ PREDICHO / SIMULADO / MEDIDO & \textbf{P:} \hspace{2cm} \textbf{S:} \hspace{2cm} \textbf{M:} \\ \hline
+    $v_{o,\mathrm{conv}}$ PREDICHO / SIMULADO / MEDIDO & \textbf{P:} \hspace{2cm} \textbf{S:} \hspace{2cm} \textbf{M:} \\ \hline
+    $v_{o,\mathrm{prec}}$ PREDICHO / SIMULADO / MEDIDO & \textbf{P:} \hspace{2cm} \textbf{S:} \hspace{2cm} \textbf{M:} \\ \hline
+    Capturas / Archivos (Referencia) & \\ \hline
+    Cálculo de Error ($E_{\mathrm{MAE}}$) y Condiciones & \\ \hline
+    Problema / Hipótesis / Próxima Prueba & \\ \hline
+    Evidencia Física Pendiente / Firma & \\ \hline
+    \end{tabularx}
+\end{table}
+
+\end{document}
