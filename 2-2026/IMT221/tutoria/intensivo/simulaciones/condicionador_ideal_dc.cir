@@ -1,0 +1,20 @@
+* simulaciones/condicionador_ideal_dc.cir
+* IMT-221 - Laboratorio Intensivo Integrado (10-17 Nov 2026)
+* PROCEDENCIA: Modelo IDEALizado con fuente controlada (VCVS) para verificar topologia.
+* ADVERTENCIA: No posee pines de alimentacion, no satura y NO representa al LT1001 real.
+
+* Fuente de prueba (representa senal electrica de prueba, NO temperatura calibrada)
+Vsig sensor_in 0 DC 0.2
+
+* Amplificador operacional idealizado en lazo abierto (Ganancia diferencial = 1e6)
+* Nodo + : sensor_in | Nodo - : fb | Salida : conditioned_out | Referencia : 0
+EAMP conditioned_out 0 sensor_in fb 1e6
+
+* Red de realimentacion negativa no inversora (Av = 1 + Rf/Rg = 1 + 20k/10k = 3)
+Rf conditioned_out fb 20k
+Rg fb 0 10k
+
+* Barrido DC de entrada entre 0.2 V y 0.8 V con paso de 0.3 V (puntos: 0.2, 0.5, 0.8 V)
+.dc Vsig 0.2 0.8 0.3
+
+.end

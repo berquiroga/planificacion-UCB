@@ -1,0 +1,122 @@
+% student/w_intensivo_cuaderno_evidencias.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm} % <-- Añadido el paquete bm
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+% Solución a las advertencias de fuente Typewriter en negrita
+\renewcommand{\ttdefault}{lmtt}
+
+% Definición de columna X alineada a la izquierda para evitar Overfull/Underfull \hbox
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Cuaderno Único de Evidencias y Checkpoints}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{Cuaderno Único de Evidencias, Predicciones y Bitácora de Rediseño}}
+    \par\vspace{0.1cm}
+    \textit{IMT-221 — Laboratorio Intensivo Integrado (10 al 17 de noviembre de 2026)}
+\end{center}
+
+\noindent \textbf{Estudiante:} \rule{6.5cm}{0.4pt} \hfill \textbf{Ruta Autorizada (A/B/C):} \rule{1.5cm}{0.4pt} \hfill \textbf{Fecha:} \rule{2.8cm}{0.4pt}
+
+\section*{1. Matriz Maestra de Trazabilidad por Checkpoint}
+\begin{center}
+\begin{tabularx}{\textwidth}{@{} l l c c c L l @{}}
+\toprule
+\textbf{CP} & \textbf{Competencia Evaluada} & \textbf{CALC.} & \textbf{SIM.} & \textbf{MED.} & \textbf{Archivo / Evidencia Principal} & \textbf{Estado} \\ \midrule
+\texttt{CP1A} & Red RC, $H(s)$, Bode y fase & [ ] & [ ] & [ ] & & \texttt{PENDIENTE} \\ \addlinespace[4pt]
+\texttt{CP1B} & Calibración / Planta 1.er orden & [ ] & [ ] & [ ] & & \texttt{PENDIENTE} \\ \addlinespace[4pt]
+\texttt{CP2A} & Acondicionador no inversor & [ ] & [ ] & [ ] & & \texttt{PENDIENTE} \\ \addlinespace[4pt]
+\texttt{CP2B} & Calificación Op-Amp real (SR/GBW) & [ ] & [ ] & [ ] & & \texttt{SIN EVALUAR} \\ \addlinespace[4pt]
+\texttt{CP3A} & Filtro Sallen-Key Butterworth & [ ] & [ ] & [ ] & & \texttt{SIN EVALUAR} \\ \addlinespace[4pt]
+\texttt{CP3B} & Margen de fase, carga y red Wien & [ ] & [ ] & [ ] & & \texttt{SIN EVALUAR} \\ \addlinespace[4pt]
+\texttt{CP4A} & Diseño y comparación P / PI / PID & [ ] & [ ] & [ ] & & \texttt{SIN EVALUAR} \\ \addlinespace[4pt]
+\texttt{CP4B} & Interfaz de potencia y Clase AB & [ ] & [ ] & [ ] & & \texttt{SIN EVALUAR} \\ \addlinespace[4pt]
+\texttt{CP5}  & Integración de cadena y rediseño & [ ] & [ ] & [ ] & & \texttt{SIN EVALUAR} \\ \bottomrule
+\end{tabularx}
+\end{center}
+
+\section*{2. Tabla A — Cuatro Puntos de Respuesta en Frecuencia del Filtro Sallen-Key (CP3A)}
+\noindent Parámetros nominales evaluados: $R_1 = $ \rule{1.6cm}{0.4pt}, $R_2 = $ \rule{1.6cm}{0.4pt}, $C_1 = $ \rule{1.6cm}{0.4pt}, $C_2 = $ \rule{1.6cm}{0.4pt}, $R_g = $ \rule{1.6cm}{0.4pt}, $R_f = $ \rule{1.6cm}{0.4pt}.
+\par\vspace{0.15cm}
+\noindent Valores predichos antes de simular: \\
+$K = $ \rule{1.5cm}{0.4pt}, \quad $Q = $ \rule{1.5cm}{0.4pt}, \quad $f_0 = $ \rule{1.5cm}{0.4pt} Hz, \quad $20\log_{10}K = $ \rule{1.5cm}{0.4pt} dB.
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{} r L L L L @{}}
+\toprule
+$\bm{f}$ \textbf{[Hz]} & \textbf{CALCULADO ($|H|/K$, dB abs, $\phi$)} & \textbf{SIMULADO + Archivo Fuente} & \textbf{MEDIDO + Instrumento (o NO REALIZADO)} & \textbf{Discrepancia $\Delta$ y Explicación} \\ \midrule
+$10.0$ & & & & \\ \addlinespace[18pt]
+$\approx 99.5$ & & & & \\ \addlinespace[18pt]
+$1000.0$ & & & & \\ \addlinespace[18pt]
+$10000.0$ & & & & \\ \addlinespace[18pt] \bottomrule
+\end{tabularx}
+\end{center}
+
+\section*{3. Tabla B — Calificación y Decisión de Amplificador Operacional Real (CP2B)}
+\noindent Dispositivo y grado analizado: \rule{4.5cm}{0.4pt} \hfill Modelo SPICE local: \rule{4.5cm}{0.4pt}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{} l L L L L @{}}
+\toprule
+\textbf{Parámetro} & \textbf{Dato y Condición de Datasheet} & \textbf{Requisito Calculado} & \textbf{Simulación Comprobada} & \textbf{Decisión de Aptitud} \\ \midrule
+Alimentación / Rango & & & & \\ \addlinespace[16pt]
+$GBW$ y $f_{BW}$ ($A_v=3$) & & & & \\ \addlinespace[16pt]
+\textit{Slew Rate} ($1\,\text{kHz}$ / $10\,\text{kHz}$) & & & & \\ \addlinespace[16pt]
+Offset de entrada $V_{OS}$ & & & & \\ \addlinespace[16pt]
+Excursión salida / Carga & & & & \\ \addlinespace[16pt] \bottomrule
+\end{tabularx}
+\end{center}
+
+\newpage
+\section*{4. Tabla C — Bitácora Metodológica del Rediseño Antes / Después (Especificación V11 — CP5)}
+\begin{center}
+\begin{tabularx}{\textwidth}{@{} L L L L L L @{}}
+\toprule
+\textbf{Hipótesis Técnica} & \textbf{Parámetro (Antes $\to$ Después)} & \textbf{Predicción Analítica} & \textbf{Evidencia Antes (Archivo/Valor)} & \textbf{Evidencia Después (Archivo/Valor)} & \textbf{Conclusión y Límite de Validez} \\ \midrule
+ & & & & & \\ \addlinespace[45pt]
+ & & & & & \\ \addlinespace[45pt] \bottomrule
+\end{tabularx}
+\end{center}
+
+\section*{5. Registro Comparativo de Control P / PI / PID (CP4A)}
+\begin{center}
+\begin{tabularx}{\textwidth}{@{} l c c c c L @{}}
+\toprule
+\textbf{Controlador} & \textbf{Parámetros} & \textbf{Error Est. $e_\infty$} & \textbf{Sobreimpulso} & \textbf{Tiempo Estab.} & \textbf{Comportamiento ante Ruido / Saturación} \\ \midrule
+Proporcional (P) & $K_c = 1$ & & & & \\ \addlinespace[14pt]
+Prop.-Integral (PI) & $K_c = 1, K_i = 0.05$ & & & & \\ \addlinespace[14pt]
+PID Filtrado & Declarar en script & & & & \\ \addlinespace[14pt] \bottomrule
+\end{tabularx}
+\end{center}
+
+\section*{6. Registro Estructurado de Dudas y Diagnóstico de Fallas}
+\begin{center}
+\begin{tabularx}{\textwidth}{@{} l L L L L @{}}
+\toprule
+\textbf{Módulo / Paso} & \textbf{Qué Esperaba (Predicción)} & \textbf{Qué Ocurrió Realmente} & \textbf{Qué Intenté para Resolverlo} & \textbf{Pregunta Concreta al Docente} \\ \midrule
+ & & & & \\ \addlinespace[24pt]
+ & & & & \\ \addlinespace[24pt]
+ & & & & \\ \addlinespace[24pt] \bottomrule
+\end{tabularx}
+\end{center}
+
+\end{document}

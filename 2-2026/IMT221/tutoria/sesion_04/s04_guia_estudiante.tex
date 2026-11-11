@@ -1,0 +1,106 @@
+% student-guide.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Guía S04-S05 (CP2B \& CP3A)}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{Guía Autoinstruccional: Calificación de Op-Amp y Diseño de Filtro Activo}} \\
+    \vspace{0.2cm}
+    \textit{Sesiones 4 y 5/10 — Checkpoints: CP2B y CP3A}
+\end{center}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!80!black, title=\textbf{Declaración de Integridad}]
+    Esta guía utiliza valores \textbf{ILUSTRATIVOS}. Etiquete siempre la procedencia de sus resultados como \textbf{CALCULADO}, \textbf{SIMULADO}, \textbf{MEDIDO} (solo si fue autorizado en laboratorio) o \textbf{PENDIENTE}. No ejecute montaje físico sin permiso docente.
+\end{tcolorbox}
+
+\section{Bloque A: Revisión del Acondicionador (Sesión 3)}
+El circuito no inversor asume $V_- = V_{out} \frac{R_g}{R_f + R_g}$ y, en operación ideal, $V_+ \approx V_-$.
+{\centering $\displaystyle A_v = \frac{V_{out}}{V_{in}} \approx 1 + \frac{R_f}{R_g}$ \par}
+\vspace{0.2cm}
+Con resistores ilustrativos $R_f=20\,\text{k}\Omega$ y $R_g=10\,\text{k}\Omega$, la ganancia resistiva ideal es $3$. Pero, ¿qué pasa a altas frecuencias o con señales abruptas?
+
+\section{Bloque B: Limitaciones Reales del Op-Amp (CP2B)}
+
+\subsection{1. Ancho de Banda y Slew Rate}
+Para un amplificador de polo dominante, el \textbf{Ancho de Banda de Lazo Cerrado} ($f_{BW}$) es:
+{\centering $\displaystyle f_{BW} \approx \frac{GBW}{A_{noise}} \qquad \text{donde} \quad A_{noise} = 1 + \frac{R_f}{R_g}$ \par}
+
+El \textbf{Slew Rate} requerido para no distorsionar una sinusoide es la máxima derivada de la salida:
+{\centering $\displaystyle v_o(t) = V_{o,p}\sin(2\pi f t) \implies \left| \frac{dv_o}{dt} \right|_{\max} = 2\pi f V_{o,p}$ \par}
+
+\subsection{2. Calificación mediante \textit{Datasheet}}
+Extraiga del datasheet oficial del \textbf{LT1001C} (o su Op-Amp asignado):
+\begin{center}
+\begin{tabularx}{\textwidth}{@{} l X l l @{}}
+\toprule
+\textbf{Parámetro} & \textbf{Valor (Mín / Típico)} & \textbf{Unidades} & \textbf{Condición de Prueba} \\ \midrule
+$GBW$ & & MHz & \\ \addlinespace
+$SR$ & & V/$\mu$s & \\ \addlinespace
+$Swing$ Salida & & $\pm$ V & \\ \bottomrule
+\end{tabularx}
+\end{center}
+
+\textbf{Ejercicio de Calificación:} Si el sensor requiere enviar una sinusoide de $1\,\text{V}_\text{pico}$ a $100\,\text{kHz}$ por un acondicionador con ganancia $3$, calcule si el LT1001C presentará distorsión por $SR$. Muestre su cálculo predictivo antes de la simulación en LTspice.
+
+\vspace{3cm}
+
+\section{Bloque C y D: Filtro Sallen-Key (CP3A)}
+
+Se requiere atenuar ruido de $1\,\text{kHz}$ al menos $30\,\text{dB}$ relativos a la banda pasante ($0-10\,\text{Hz}$). Un Sallen-Key Butterworth de 2.º orden con $f_0 \approx 100\,\text{Hz}$ es una solución ilustrativa.
+
+\begin{center}
+    \begin{circuitikz}[thick, scale=0.9, transform shape]
+        \draw (0,0) node[op amp, yscale=-1] (opamp) {};
+        
+        \draw (opamp.+) to[short, -*] ++(-2,0) coordinate(y) node[above left] {$y$};
+        \draw (y) to[C, l_=$C_g$] ++(0,-2) node[ground]{};
+        \draw (y) to[R, l_=$R_2$, -*] ++(-2,0) coordinate(x) node[below] {$x$};
+        \draw (x) to[R, l_=$R_1$, -o] ++(-2,0) node[left] {$filter\_in$};
+        
+        \draw (opamp.-) to[short, -*] ++(-0.5,0) coordinate(fb) node[below left] {$fb$};
+        \draw (fb) to[R, l=$R_g$] ++(0,-2) coordinate(rg_d) node[ground]{};
+        \draw (rg_d) -- ++(0,0) coordinate(rf_d) to[R, l=$R_f$] (rf_d -| opamp.out) -- (opamp.out);
+        
+        \draw (x) -- ++(0,1.5) coordinate(cf_up) to[C, l=$C_f$] (cf_up -| opamp.out) to[short, -*] (opamp.out);
+        \draw (opamp.out) to[short, -o] ++(1,0) node[right] {$filter\_out$};
+    \end{circuitikz}
+\end{center}
+
+Con $C_g = C_f = C$ y $R_1 = R_2 = R$, las ecuaciones de diseño son:
+{\centering $\displaystyle f_0 = \frac{1}{2\pi RC} \qquad Q = \frac{1}{3-K} \qquad K = 1 + \frac{R_f}{R_g}$ \par}
+
+\subsection{Cálculos antes de LTspice (Predicción)}
+Para respuesta Butterworth, $Q = 1/\sqrt{2}$. Calcule $K$ nominal y la proporción $R_f / R_g$. \\
+Dado $R_1=R_2=16\,\text{k}\Omega$, $C=100\,\text{nF}$, $R_g=10\,\text{k}\Omega$, calcule el valor ideal de $R_f$, su aproximación ilustrativa comercial ($5.9\,\text{k}\Omega$) y $f_0$.
+
+\vspace{3cm}
+
+\subsection{Simulación del Filtro y Rediseño Independiente}
+En LTspice, implemente el esquema exacto de esta guía.
+\begin{enumerate}
+    \item Configure $V_{in}$ con \texttt{AC=1}. Use \texttt{.ac dec 50 1 100k}.
+    \item Llene la columna SIMULADO. \textbf{El $f_0$ y el rechazo en $1\,\text{kHz}$ deben contrastarse con sus cálculos}.
+    \item \textbf{Rediseño:} Cambie SOLO $R_1$ a $20\,\text{k}\Omega$. Calcule teóricamente cómo se moverá $f_0$ y $Q$ (necesitará las fórmulas completas, ¡la igualdad R1=R2 se rompió!). Verifique en un segundo esquema LTspice.
+\end{enumerate}
+
+\end{document}

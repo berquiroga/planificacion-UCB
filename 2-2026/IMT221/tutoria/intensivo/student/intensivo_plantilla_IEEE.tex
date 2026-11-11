@@ -1,0 +1,89 @@
+% student/w_intensivo_plantilla_ieee.tex
+\documentclass[conference, a4paper]{IEEEtran}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{tikz}
+
+\title{Diseño, Validación e Integración de un Sistema Analógico de Acondicionamiento, Filtrado y Regulación: Alcance Declarado}
+
+\author{\IEEEauthorblockN{[INSERTAR NOMBRE COMPLETO DEL ESTUDIANTE]}
+\IEEEauthorblockA{\textit{Departamento de Ciencias de la Tecnología e Innovación — Ingeniería Mecatrónica} \\
+\textit{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}\\
+Tarija, Bolivia \\
+{[INSERTAR CORREO INSTITUCIONAL]}}}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\textbf{[INSTRUCCIÓN: Reemplazar este texto declarando exactamente el problema abordado, la ruta autorizada (A, B o C), los métodos de cálculo/simulación/medición efectivamente ejecutados y el hallazgo cuantitativo principal. Prohibido presentar etapas solo simuladas como si hubieran sido construidas físicamente.]}
+\end{abstract}
+
+\begin{IEEEkeywords}
+acondicionamiento de señal, amplificador operacional, filtro Sallen-Key Butterworth, control PI analógico, trazabilidad experimental.
+\end{IEEEkeywords}
+
+\section{Introducción y Delimitación de Alcance}
+En este artículo se documenta el desarrollo del proyecto integrador de la asignatura \textit{IMT-221 Circuitos Electrónicos II}. El alcance ejecutado corresponde a la \textbf{Ruta [INSERTAR A, B o C]}, autorizada en fecha [INSERTAR FECHA]. Se distingue explícitamente entre resultados con etiqueta \texttt{CALCULADO}, \texttt{SIMULADO}, \texttt{MEDIDO}, \texttt{ILUSTRATIVO} y \texttt{PENDIENTE}.
+
+\section{Requisitos y Arquitectura del Sistema}
+Documentar la cadena funcional desde la variable de entrada hasta la salida regulada, especificando qué bloques corresponden a señales eléctricas de prueba y cuáles a modelos de planta.
+
+\begin{table}[htbp]
+\caption{Especificación de Requisitos y Procedencia de Datos}
+\centering
+\begin{tabularx}{\columnwidth}{@{} l X l @{}}
+\toprule
+\textbf{Subsistema} & \textbf{Parámetro / Rango} & \textbf{Procedencia} \\ \midrule
+Entrada de prueba & $[0.20, 0.80]\,\text{V}$ & \texttt{[INDICAR ORIGEN]} \\
+Acondicionador & $A_v = 3\,\text{V/V}$ & \texttt{[CALC/SIM/MED]} \\
+Filtro Sallen-Key & $f_0 \approx 99.47\,\text{Hz}, K=1.59$ & \texttt{[CALC/SIM/MED]} \\
+Modelo de Planta & $G_p(s) = 2/(20s+1)$ & \texttt{[ILUSTRATIVO / REAL]} \\ \bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Fundamentos Matemáticos y Diseño de Subsistemas}
+\subsection{Acondicionador No Inversor y Calificación de Op-Amp}
+Presentar la derivación de $A_v = 1 + R_f/R_g$, las hipótesis de operación lineal y el contraste cuantitativo con el datasheet del dispositivo seleccionado ($GBW$, $SR_{\text{req}} = 2\pi f V_p$, $V_{OS}$ y excursión de salida).
+
+\subsection{Filtro Activo Sallen-Key de Segundo Orden}
+Presentar las ecuaciones nodales en $a$ y $b$, la función de transferencia $H(s)$, la elección de $K, Q, f_0$ y la distinción entre ganancia absoluta en dB y atenuación relativa a la banda de paso.
+
+\subsection{Planta, Lazo de Control P/PI/PID y Microcasos}
+Incluir las funciones de transferencia en lazo cerrado $T_P(s)$ y $T_{\text{PI}}(s)$, el análisis de integrador con fuga, derivada filtrada, saturación de mando, así como los microcasos de estabilidad, red puente de Wien y etapa de potencia Clase AB.
+
+\section{Metodología de Simulación y Medición}
+Detallar los archivos editables empleados (\texttt{.asc}, \texttt{.cir}, \texttt{.py}), las directivas de análisis (\texttt{.dc}, \texttt{.ac}, \texttt{.tran}) y, únicamente si el montaje físico fue autorizado y ejecutado, los instrumentos empleados y la verificación de tierras comunes.
+
+\section{Resultados, Discrepancias y Rediseño}
+Incluir las tablas comparativas de los cuatro puntos de frecuencia del filtro, la respuesta de los controladores y la bitácora del rediseño antes/después modificando un único parámetro de forma controlada.
+
+\begin{figure}[htbp]
+\centering
+\fbox{\parbox{0.9\columnwidth}{\centering \vspace{0.8cm} \texttt{[INSERTAR GRÁFICA EXPORTADA DE LTSPICE / PYTHON]} \vspace{0.8cm}}}
+\caption{Ejemplo de leyenda válida: Respuesta en frecuencia \textbf{simulada} del filtro Sallen-Key ($R=16\,\text{k}\Omega, C=100\,\text{nF}, K=1.59$); archivo fuente \texttt{filtro\_sk\_ideal\_ac.cir} con modelo ideal VCVS; sin medición física.}
+\end{figure}
+
+\section{Discusión, Limitaciones e Incertidumbres}
+Discutir las causas técnicas de las discrepancias entre el modelo ideal y el comportamiento observado, declarando qué partes del sistema térmico o de potencia quedaron en estado \texttt{PENDIENTE}.
+
+\section{Conclusiones}
+Sintetizar los hallazgos cuantitativos demostrados dentro de la ruta ejecutada.
+
+\section*{Apéndice de Reproducibilidad}
+Listar todos los archivos incluidos en la carpeta \texttt{IMT221\_INTENSIVO/} indicando el comando o procedimiento exacto para reproducir cada tabla y figura del informe.
+
+\begin{thebibliography}{9}
+\bibitem{ti_sloa024b} J. Karki, ``Analysis of the Sallen-Key Architecture,'' Texas Instruments, Application Report SLOA024B, 2002.
+\bibitem{adi_lt1001} Analog Devices, ``LT1001 Precision Operational Amplifier Datasheet,'' Rev. C.
+\bibitem{adi_ltspice} Analog Devices, ``LTspice Getting Started Guide,'' 2025.
+\end{thebibliography}
+
+\end{document}

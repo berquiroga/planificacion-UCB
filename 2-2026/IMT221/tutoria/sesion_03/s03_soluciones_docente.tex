@@ -1,0 +1,69 @@
+% instructor-solutions.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Clave del Instructor (S03)}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\section*{Solucionario Docente: CP2A (Acondicionamiento y Op-Amps)}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Nota Crítica de Fallback (Restricción Hardware)}]
+Los datos y límites de este documento son \textbf{ILUSTRATIVOS / SINTÉTICOS}. El dimensionamiento real del op-amp exige componentes físicos confirmados, características reales del sensor, y límites de alimentación del laboratorio que aquí se consideran \textbf{PENDIENTES}.
+\end{tcolorbox}
+
+\subsection*{W1. Mapeo Analítico}
+Pares: $(V_{s,min}, V_{o,min}) = (0.2, 0.6)\,\text{V}$ y $(V_{s,max}, V_{o,max}) = (0.8, 2.4)\,\text{V}$. \\
+Pendiente (Ganancia requerida):
+{\centering $\displaystyle a = \frac{2.4 - 0.6}{0.8 - 0.2} = \frac{1.8}{0.6} = 3\,\text{V/V}$ \par}
+Desplazamiento (Offset requerido):
+{\centering $\displaystyle b = 0.6 - 3(0.2) = 0\,\text{V}$ \par}
+\textit{Conclusión Docente:} Al ser $b=0$, la topología básica no inversora satisface la conversión matemática (pendiente condicional a las limitaciones de corriente y polarización reales). Si hubiésemos pedido $0.5 \to 0\,\text{V}$ y $1.5 \to 3\,\text{V}$, $b = -1.5\,\text{V}$, lo que invalidaría el uso aislado de esta topología.
+
+\subsection*{W2. Derivación de Ganancia de Tensión Ideal}
+Si asumimos un modelo ideal $i_- \approx 0$, aplicamos la regla de KCL o el divisor de tensión directamente en el terminal inversor:
+{\centering $\displaystyle v_- = v_o \frac{R_g}{R_f + R_g}$ \par}
+Por retroalimentación negativa asintóticamente estable (zona lineal): $v_+ = v_-$. \\
+Sabiendo que $v_s = v_+$:
+{\centering $\displaystyle v_s = v_o \frac{R_g}{R_f + R_g} \implies \frac{v_o}{v_s} = \frac{R_f + R_g}{R_g} = 1 + \frac{R_f}{R_g}$ \par}
+
+\subsection*{W3. Tres Puntos y Limitación Física ($VCC = \pm5\text{V}$)}
+Para $A_v = 3$ y $V_s \in \{0.2, 0.5, 0.8\}$, la salida lineal ideal es $V_o \in \{0.6, 1.5, 2.4\}\,\text{V}$. \\
+\textbf{Límite de Saturación:} Si $V_s = 2.0\,\text{V}$, la ecuación predice $V_o = 6.0\,\text{V}$. Con alimentación a rieles de $+5\,\text{V}$, el hardware se saturará \textit{antes} de $5\,\text{V}$ (típicamente entre $3.5\text{V}$ y $4.8\text{V}$ dependiendo del \textit{Output Swing} del modelo de op-amp). \\
+\textbf{Fallo Común Simulador:} Si el modelo universal en LTspice entrega $6.0\,\text{V}$ ignorando los rieles, el estudiante \textbf{debe diagnosticar que el modelo es deficiente} y no representativo de la realidad de hardware.
+
+\subsection*{W4. Rediseño del Condicionador}
+Se modifica $R_f$ de $20\,\text{k}\Omega \to 10\,\text{k}\Omega$, conservando $R_g = 10\,\text{k}\Omega$. \\
+Nueva ganancia ideal: $A_v = 1 + 10\text{k}/10\text{k} = 2$. \\
+A $0.8\,\text{V}$ de entrada, la salida debe ser $1.6\,\text{V}$ \textit{(El simulador deberá corroborarlo)}.
+
+\subsection*{W5. Conflicto $H(s)$ Estático vs Dinámico}
+$H_{ideal}(s) = 3$ carece de la variable de Laplace $s$. Es un mapeo estático asintótico de DC. El $H_{RC}(s) = \frac{1}{1+sRC}$ es intrínsecamente dinámico. \\
+Medir que $0.5\,\text{V} \to 1.5\,\text{V}$ es un ensayo estático (\texttt{.op} o \texttt{.dc}). \textbf{No demuestra ancho de banda infinito.} El Op-Amp real posee un polo dominante (producto ganancia-banda GBW), que se revisará analíticamente en la Sesión 4, operando en la realidad más como un filtro activo de baja frecuencia en altas ganancias.
+
+\subsection*{Rúbrica de Aceptación Rápida (`ACCEPTED`)}
+\begin{itemize}
+    \item Archivos \texttt{.asc} no tiran error \texttt{unknown subcircuit} (estudiante supo buscar un modelo o instalarlo adecuadamente).
+    \item Las predicciones están llenas a mano \textbf{antes} de los datos de LTspice.
+    \item Diagnosticó la saturación de los $6\,\text{V}$ contra un riel de $+5\,\text{V}$ correctamente.
+    \item El rediseño entrega efectivamente $1.6\,\text{V}$ y se fundamenta analíticamente.
+\end{itemize}
+\textit{No avalar el CP2A si las predicciones fueron borradas/modificadas para coincidir con el software sin comentario.}
+
+\end{document}

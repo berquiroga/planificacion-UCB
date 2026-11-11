@@ -1,0 +1,89 @@
+% instructor/w_intensivo_guion_defensa.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+
+% Definición de columna X alineada a la izquierda para evitar Underfull \hbox
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Guion de Defensa y Matriz de Aceptación Final}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{Guion de Defensa Individual y Matriz de Aceptación Final}}
+    \par\vspace{0.15cm}
+    \textit{IMT-221 — Circuitos Electrónicos II | Defensa Prevista: Martes 17 de noviembre de 2026}
+\end{center}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Nota Institucional sobre la Evaluación Final}]
+    Este documento estructura el acto de defensa técnica y la auditoría de checkpoints del proyecto integrador. Los tiempos propuestos (25--35 minutos totales) y la ponderación de calificaciones están sujetos a la normativa vigente de la Universidad Católica Boliviana ``San Pablo'' y a las disposiciones del tribunal designado. Completar el informe IEEE no acredita la asignatura si el estudiante no demuestra comprensión autónoma durante el desafío en vivo.
+\end{tcolorbox}
+
+\section*{1. Estructura Temporal de la Defensa Individual}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{} l c L L @{}}
+\toprule
+\textbf{Fase de la Defensa} & \textbf{Duración Sug.} & \textbf{Actividad del Estudiante} & \textbf{Verificación del Tribunal / Docente} \\ \midrule
+\textbf{Fase 1:} Exposición Técnica & 8--10 min & Presentar el diagrama de arquitectura con alcance real (Ruta A, B o C), justificar el diseño del acondicionador ($A_v$), calificación del op-amp ($SR, GBW$), diseño Sallen-Key ($K, Q, f_0$) y selección del controlador PI. & Verificar que no se reclamen como \texttt{MEDIDOS} bloques que fueron únicamente \texttt{SIMULADOS} o \texttt{ILUSTRATIVOS}. \\ \addlinespace[5pt]
+\textbf{Fase 2:} Demostración Ordenada & 5--10 min & Ejecutar en vivo los archivos editables (\texttt{.asc}/\texttt{.cir}/\texttt{.py}) y, si se aprobó Ruta A o B, mostrar la operación segura del prototipo físico en osciloscopio en dos frecuencias. & Comprobar reproducibilidad entre los archivos de la carpeta \texttt{IMT221\_INTENSIVO/} y las figuras del informe IEEE. \\ \addlinespace[5pt]
+\textbf{Fase 3:} Interrogatorio y Rediseño en Vivo (\textbf{E11}) & 10--15 min & Recibir un cambio de parámetro no ensayado previamente, calcular y predecir en papel la dirección del cambio \textbf{antes} de simular, y contrastar en LTspice/Python. & Evaluar autonomía real: capacidad de usar $H(s)$, $Q$ general, $SR$ y lazo cerrado sin depender de recetas memorizadas. \\ \bottomrule
+\end{tabularx}
+\end{center}
+
+\section*{2. Pauta de Preparación para el Estudiante (Sin Preguntas Reservadas)}
+Para superar la defensa, asegúrate de poder responder sin leer apuntes:
+\begin{enumerate}[noitemsep]
+    \item ¿Por qué el punto de frecuencia natural $f_0 \approx 99.47\,\text{Hz}$ del filtro Sallen-Key muestra $+1.04\,\text{dB}$ en la gráfica de magnitud absoluta pero corresponde a $-2.98\,\text{dB}$ de atenuación relativa a la banda de paso?
+    \item ¿Por qué cumplir el criterio de ancho de banda ($f \ll GBW/A_v$) no impide que una señal de gran amplitud sufra distorsión por \textit{Slew Rate}?
+    \item ¿Qué sucede físicamente y matemáticamente si el capacitor $C_1$ del filtro Sallen-Key se conecta a tierra en lugar de conectarse a la salida del amplificador operacional?
+    \item ¿Por qué el controlador proporcional P deja un error estacionario de $1/3$ ante el escalón en la planta ilustrativa y cómo lo elimina el término integral del PI?
+\end{enumerate}
+
+\section*{3. Matriz Única de Auditoría Continua y Aceptación Final (Registro Docente)}
+
+\begin{center}
+\footnotesize
+\begin{tabularx}{\textwidth}{@{} l l c c L c @{}}
+\toprule
+\textbf{CP / Hito} & \textbf{Sesión Ref.} & \textbf{Alcance Real} & \textbf{Autonomía} & \textbf{Archivo / Evidencia Auditada y Observaciones} & \textbf{Dictamen} \\ \midrule
+\texttt{CP1A} (RC / Bode) & S1 & \texttt{CALC/SIM/MED} & Alta/Med/Baja & & [ \quad ] \\ \addlinespace[5pt]
+\texttt{CP1B} (Planta 1.er ord.) & S2 & \texttt{ILUST/REAL} & Alta/Med/Baja & & [ \quad ] \\ \addlinespace[5pt]
+\texttt{CP2A} (Acondicionador) & S3 & \texttt{CALC/SIM/MED} & Alta/Med/Baja & & [ \quad ] \\ \addlinespace[5pt]
+\texttt{CP2B} (Op-Amp Real) & S4 & \texttt{CALC/SIM/MED} & Alta/Med/Baja & & [ \quad ] \\ \addlinespace[5pt]
+\texttt{CP3A} (Filtro Sallen-Key) & S5 & \texttt{CALC/SIM/MED} & Alta/Med/Baja & & [ \quad ] \\ \addlinespace[5pt]
+\texttt{CP3B} (Estab. / Wien) & S6 & \texttt{CALC/SIM} & Alta/Med/Baja & & [ \quad ] \\ \addlinespace[5pt]
+\texttt{CP4A} (Control P/PI/PID) & S7 & \texttt{CALC/SIM} & Alta/Med/Baja & & [ \quad ] \\ \addlinespace[5pt]
+\texttt{CP4B} (Potencia / AB) & S8 & \texttt{CALC/SIM} & Alta/Med/Baja & & [ \quad ] \\ \addlinespace[5pt]
+\texttt{CP5} (Integr. y Rediseño) & S9 & \texttt{Ruta A/B/C} & Alta/Med/Baja & & [ \quad ] \\ \addlinespace[5pt]
+\textbf{Defensa y Desafío E11} & S10 & \texttt{Vivo (17/11)} & Alta/Med/Baja & Variante E11 aplicada: & [ \quad ] \\ \bottomrule
+\end{tabularx}
+\end{center}
+\footnotesize \textit{Claves de Dictamen por Checkpoint:} \texttt{ACEPTADO (A)} | \texttt{ACEPTADO CON CORRECCIONES (AC)} | \texttt{INCOMPLETO / NO DEMOSTRADO (I)}.
+
+\par\vspace{0.5cm}
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Constancia de Cierre de Revisión Técnica}]
+    \textbf{Ruta finalmente defendida:} \rule{2.5cm}{0.4pt} \hfill \textbf{Normativa/Ponderación institucional verificada:} [ \ ] Sí \ [ \ ] Pendiente
+    \par\vspace{0.8cm}
+    \textbf{Firma del Docente / Miembro de Tribunal:} \rule{6cm}{0.4pt} \hfill \textbf{Fecha:} \rule{3cm}{0.4pt}
+\end{tcolorbox}
+
+\end{document}

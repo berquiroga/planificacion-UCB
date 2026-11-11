@@ -1,0 +1,27 @@
+* simulaciones/filtro_sk_ideal_ac.cir
+* IMT-221 - Laboratorio Intensivo Integrado (10-17 Nov 2026)
+* Topologia Sallen-Key Pasa-Bajos de 2do Orden (Aproximacion Butterworth: K=1.59, Q=0.7092, f0=99.47 Hz)
+* PROCEDENCIA: Modelo ideal VCVS para verificacion de funcion de transferencia H(s).
+
+* Fuente de entrada para barrido AC (amplitud unitaria de pequena senal)
+Vin in 0 DC 0 AC 1
+
+* Ramas serie resistivas: in -> R1 -> nodo a -> R2 -> nodo b
+R1 in a 16k
+R2 a b 16k
+
+* Capacitores de la topologia Sallen-Key:
+* C1 conecta nodo intermedio 'a' con la salida 'out' (NO a tierra)
+* C2 conecta nodo 'b' (entrada no inversora) a tierra '0'
+C1 a out 100n
+C2 b 0 100n
+
+* Bloque amplificador no inversor idealizado (K = 1 + Rf/Rg = 1.59)
+EAMP out 0 b fb 1e6
+Rf out fb 5.9k
+Rg fb 0 10k
+
+* Barrido AC por decadas: 50 puntos/decada desde 1 Hz hasta 100 kHz
+.ac dec 50 1 100k
+
+.end

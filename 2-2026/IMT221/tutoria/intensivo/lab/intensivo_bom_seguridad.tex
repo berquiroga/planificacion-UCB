@@ -1,0 +1,80 @@
+% lab/w_intensivo_bom_seguridad.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | BOM, Inventario y Gate de Seguridad}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{Lista de Materiales (BOM), Inventario y Gate de Seguridad}}
+    \par\vspace{0.15cm}
+    \textit{IMT-221 — Laboratorio Intensivo Integrado (Gate Inicial: 10/11/2026 | Freeze Físico: 13/11/2026)}
+\end{center}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!80!black, title=\textbf{Regla Estricta de Seguridad y Prohibición de Suposiciones}]
+    \textbf{1.} Solo el osciloscopio y el generador de señales se encuentran inicialmente confirmados. No cambies ningún ítem de \texttt{POR CONFIRMAR} a \texttt{CONFIRMADO} sin inspección física real y hoja de datos verificada.
+    \par\vspace{0.1cm}
+    \textbf{2.} Está terminantemente prohibido inferir el orden de pines (\textit{pinout}) o los límites de tensión de alimentación a partir de nombres genéricos.
+    \par\vspace{0.1cm}
+    \textbf{3.} Sin la firma de autorización docente en este documento, el estudiante permanece obligatoriamente en \textbf{Ruta C (Solo Simulación)} y tiene prohibido energizar hardware.
+\end{tcolorbox}
+
+\section*{1. Matriz de Inventario y Verificación Técnica (BOM Preliminar)}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{} l c c X l @{}}
+\toprule
+\textbf{Ítem / Subsistema} & \textbf{Cant. Est.} & \textbf{Estado Base} & \textbf{Verificación Requerida (Modelo, Rango, Pinout, Fuente)} & \textbf{Verificado} \\ \midrule
+Osciloscopio de 2 canales & 1 & \texttt{CONFIRMADO} & Marca/modelo, aislamiento de tierras de chasis, escalas & [ \quad ] \\ \addlinespace[4pt]
+Generador de funciones & 1 & \texttt{CONFIRMADO} & Marca/modelo, impedancia de salida, masa común & [ \quad ] \\ \addlinespace[4pt]
+Fuente DC regulada ($\pm V$) & 1 & \texttt{POR CONFIRMAR} & Tensión máx., límite de corriente activo, referencia 0 V & [ \quad ] \\ \addlinespace[4pt]
+Multímetro digital & 1 & \texttt{POR CONFIRMAR} & Medición previa de rieles DC y continuidad & [ \quad ] \\ \addlinespace[4pt]
+Op-Amp (ej. ref. LT1001 u otro) & 2 & \texttt{POR CONFIRMAR} & Código exacto impreso, encapsulado, datasheet y pinout & [ \quad ] \\ \addlinespace[4pt]
+Resistores acondicionador & 2 & \texttt{POR CONFIRMAR} & $R_g = 10\,\text{k}\Omega, R_f = 20\,\text{k}\Omega$ (y $30\,\text{k}\Omega$), medidos en $\Omega$ & [ \quad ] \\ \addlinespace[4pt]
+Resistores filtro Sallen-Key & 4 & \texttt{POR CONFIRMAR} & $R_1=R_2=16\,\text{k}\Omega, R_g=10\,\text{k}\Omega, R_f=5.9\,\text{k}\Omega$ (o serie eq.) & [ \quad ] \\ \addlinespace[4pt]
+Capacitores filtro Sallen-Key & 2--4 & \texttt{POR CONFIRMAR} & $C_1=C_2=100\,\text{nF}$ (y $200\,\text{nF}$), tensión nominal segura & [ \quad ] \\ \addlinespace[4pt]
+Protoboard, cables y sondas & 1 lote & \texttt{POR CONFIRMAR} & Continuidad de rieles, puntas $\times 1/\times 10$, pinzas de masa & [ \quad ] \\ \addlinespace[4pt]
+Sensor térmico y referencia & 1 & \texttt{OPCIONAL} & Naturaleza de salida, rango seguro, instrumento patrón & [ \quad ] \\ \addlinespace[4pt]
+Actuador / Interfaz baja pot. & 1 & \texttt{OPCIONAL} & Solo Ruta B: corriente máx., disipación, nunca red 220 V & [ \quad ] \\ \bottomrule
+\end{tabularx}
+\end{center}
+
+\section*{2. Lista de Comprobación de Seguridad Previa a Energizar (Gate 2)}
+\begin{enumerate}
+    \item [ \quad ] \textbf{Hoja de datos en mano:} Se dispone del diagrama de pines oficial del fabricante para el código exacto del circuito integrado presente en la mesa.
+    \item [ \quad ] \textbf{Inspección en frío (sin energía):} Los rieles $V_+$ y $V_-$ no están invertidos ni en cortocircuito con tierra ($\text{GND}$) o con la salida del amplificador.
+    \item [ \quad ] \textbf{Tierras de instrumentación:} Las pinzas de referencia (cocodrilos negros) del generador de señales y de los canales CH1/CH2 del osciloscopio están unidas \textbf{exclusivamente} al nodo común $\text{GND}$ ($0\,\text{V}$).
+    \item [ \quad ] \textbf{Ajuste previo de fuentes:} La fuente de alimentación DC se encendió en vacío (desconectada del protoboard), se midió su tensión con voltímetro y se fijó la limitación de corriente.
+\end{enumerate}
+
+\section*{3. Dictamen de Ruta y Firma de Autorización (Gate 10/11 y Freeze 13/11)}
+\textbf{Ruta Asignada:} \quad [ \quad ] \textbf{Ruta A} (Acondicionador + Filtro Físicos; Control Simulado) \quad [ \quad ] \textbf{Ruta B} (Híbrido Ampliado) \quad [ \quad ] \textbf{Ruta C} (Solo Simulación)
+
+\par\vspace{0.3cm}
+\begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{Registro de Autorización Docente}]
+    \textbf{Componentes y alimentación autorizados:} \rule{9.5cm}{0.4pt}
+    \par\vspace{0.4cm}
+    \textbf{Restricciones operativas impuestas:} \rule{10.5cm}{0.4pt}
+    \par\vspace{0.8cm}
+    \textbf{Firma del Estudiante:} \rule{4.5cm}{0.4pt} \hfill \textbf{Firma del Docente:} \rule{4.5cm}{0.4pt} \hfill \textbf{Fecha:} \rule{2.5cm}{0.4pt}
+\end{tcolorbox}
+
+\end{document}

@@ -1,0 +1,19 @@
+* simulaciones/wien_red_ac.cir
+* IMT-221 - Laboratorio Intensivo Integrado (10-17 Nov 2026)
+* Microcaso CP3B: Red selectiva pasiva Puente de Wien (beta(jw))
+* Con R=10k y C=10n -> f0 = 1/(2*pi*10k*10n) = 1591.55 Hz, |beta(jw0)| = 1/3 (-9.54 dB), fase = 0 deg.
+
+Vin wien_in 0 DC 0 AC 1
+
+* Rama serie: R1 + C1 entre entrada y nodo de salida de la red selectiva
+R1 wien_in n_mid 10k
+C1 n_mid wien_out 10n
+
+* Rama paralelo: R2 || C2 entre salida de la red selectiva y tierra
+R2 wien_out 0 10k
+C2 wien_out 0 10n
+
+* Barrido AC para identificar frecuencia de fase cero y atenuacion 1/3
+.ac dec 100 10 100k
+
+.end

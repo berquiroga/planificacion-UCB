@@ -1,0 +1,59 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Clave Docente E2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Material Reservado Docente: Clave E2 y Microficha Formativa EC3[cite: 32]}]
+    Evaluación de razonamiento sobre el Buffer BJT y limitaciones lógicas. No distribuir a estudiantes[cite: 32].
+\end{tcolorbox}
+
+\section*{1. Clave de Resultados y Expectativas E2[cite: 33]}
+\begin{itemize}
+    \setlength\itemsep{0.5em}
+    \item \textbf{Error de Adaptación Lógica (Falla Push-Pull):} Si se alimenta el par BJT a $+12\,\text{V}$ pero el pin del Microcontrolador en las bases entrega solo $5\,\text{V}$ ($V_{cmd,high} = 5\,\text{V}$)[cite: 33].
+    El Seguidor de Emisor arroja teóricamente $V_{OUT} \approx 5\,\text{V} - V_{BE} \approx \mathbf{4.3\,\text{V}}$[cite: 33].
+    \textbf{Física Fundamental:} El voltaje de emisor \textbf{nunca} puede superar el voltaje de base en un BJT NPN polarizado en activa. ¡El NMOS recibirá solo $4.3\,\text{V}$, no $12\,\text{V}$![cite: 33]. Se requiere una topología inversora de nivel (Level Shifter) previa al Push-Pull.
+    
+    \item \textbf{Generador Señal Bipolar (El riesgo $\pm 5\,\text{V}$):} Si el generador sin offset indica $10\,\text{V}_{pp}$, entrega $-5\,\text{V}$ en el semiciclo negativo[cite: 33]. Inyectar $-5\,\text{V}$ al Gate puede exceder el SOA o causar comportamientos parasitarios si no se acopla correctamente. Exija $0-10\,\text{V}$ unipolares[cite: 33].
+    
+    \item \textbf{Carga de Gate (Estimación):} $Q_g = 40\,\text{nC}$. Con $I_{prom} = 10\,\text{mA} \implies t \approx 4\,\mu\text{s}$. Con $I_{prom} = 40\,\text{mA} \implies t \approx 1\,\mu\text{s}$[cite: 33]. \textit{Limitaciones:} Efecto Miller (Variación de Capacitancia), $R_{DS}$ de los BJTs, e Inductancias de pista reales[cite: 33].
+\end{itemize}
+
+\section*{2. Clave Microficha EC3 (Evaluación Rápida 5 min)[cite: 32]}
+\begin{enumerate}
+    \item \textbf{NMOS Ideal ON ($12\,\text{V}$, $150\,\Omega$)[cite: 32]:}
+    $I = \frac{12}{150} = \mathbf{0.08\,\text{A} = 80\,\text{mA}}$[cite: 32]. 
+    $P_L = I^2 R_L = (0.08)^2 \cdot 150 = \mathbf{0.96\,\text{W}}$[cite: 32]. Se disipa enteramente en la resistencia de carga, el NMOS ideal disipa $0\,\text{W}$ ($V_{DS}=0$)[cite: 32].
+    
+    \item \textbf{$R_{DS(on)}$ Ficha vs $5\,\text{V}$[cite: 32]:}
+    No puede concluirse matemáticamente el $R_{DS(on)}$ a $5\,\text{V}$ si la ficha garantiza solo para $10\,\text{V}$[cite: 32]. Operará a ciegas arriesgando alta disipación térmica.
+    
+    \item \textbf{Generador $-5\,\text{V}$ a $+5\,\text{V}$[cite: 32]:}
+    No es apropiada. Entregar voltajes negativos a un Gate low-side no es la técnica estándar para NMOS de nivel lógico y la amplitud positiva es de solo $5\,\text{V}$, insuficiente para obtener los $10\,\text{V}$ requeridos para asegurar el $R_{DS(on)}$ mínimo de un dispositivo no lógico[cite: 32].
+    
+    \item \textbf{Par BJT con Lógica $5\,\text{V}$[cite: 32]:}
+    No. El NPN de salida cortará en $\sim 4.3\,\text{V}$. Falta un bloque \textbf{Level Shifter} (Adaptador de niveles lógicos, p.ej. con un NPN en configuración emisor común) antes del push-pull[cite: 32].
+    
+    \item \textbf{Condición de Bloqueo G1/G2[cite: 32]:}
+    Tierras de osciloscopio en un nodo flotante, falta de disipación adecuada calculada para la carga, sin hoja de datos del BJT. (El docente evalúa la pertinencia física de la respuesta)[cite: 32].
+\end{enumerate}
+
+\end{document}

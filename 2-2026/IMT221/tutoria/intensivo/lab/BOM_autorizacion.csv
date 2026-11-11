@@ -1,0 +1,13 @@
+item_id,subsistema,descripcion,valor_referencia_ilustrativo,cantidad_estimada,estado_inicial,modelo_real_confirmado,rango_tension_corriente,fuente_datasheet,autorizado_montaje_fisico,observaciones
+1,Instrumentacion,Osciloscopio 2 canales,CH1/CH2 con referencia comun,1,CONFIRMADO,PENDIENTE_REGISTRAR,Verificar aislamiento GND,Manual del equipo,CONDICIONAL_GATE2,Confirmado en especificacion; verificar tierras antes de conectar
+2,Instrumentacion,Generador de senales,Senoidal/cuadrada baja tension,1,CONFIRMADO,PENDIENTE_REGISTRAR,Verificar impedancia salida,Manual del equipo,CONDICIONAL_GATE2,Confirmado en especificacion; mantener amplitud dentro de rango
+3,Alimentacion,Fuente DC regulada dual o simple,+-15V (estudio LT1001) o +-5V,1,POR_CONFIRMAR,SIN_CONFIRMAR,PENDIENTE,Manual de fuente,NO,Bloquea montaje fisico hasta verificar polaridad y limite de corriente
+4,Instrumentacion,Multimetro digital,Medicion DC y resistencias,1,POR_CONFIRMAR,SIN_CONFIRMAR,PENDIENTE,Manual del equipo,NO,Requerido para verificar rieles antes de energizar protoboard
+5,Acondicionador_Filtro,Amplificador Operacional,LT1001 (referencia documental),2,POR_CONFIRMAR,SIN_CONFIRMAR,Segun datasheet exacto,Datasheet fabricante,NO,Prohibido inferir pinout sin codigo exacto de encapsulado
+6,Acondicionador,Resistor de ganancia a tierra Rg,10 kOhm,1,POR_CONFIRMAR,SIN_CONFIRMAR,>= 0.25 W,Medicion multimetro,NO,Valor ilustrativo para ganancia Av=3
+7,Acondicionador,Resistor de realimentacion Rf,20 kOhm (y 30 kOhm prueba),2,POR_CONFIRMAR,SIN_CONFIRMAR,>= 0.25 W,Medicion multimetro,NO,Valor ilustrativo para ganancia Av=3 y redisenio Av=4
+8,Filtro_Sallen_Key,Resistores de red pasiva R1 y R2,16 kOhm,2,POR_CONFIRMAR,SIN_CONFIRMAR,>= 0.25 W,Medicion multimetro,NO,Para f0 aproximada 99.47 Hz con C=100 nF
+9,Filtro_Sallen_Key,Capacitores de filtrado C1 y C2,100 nF (y 200 nF prueba),4,POR_CONFIRMAR,SIN_CONFIRMAR,>= 25 V,Medicion LCR/codigo,NO,C1 va del nodo intermedio a la salida Vout; C2 va a GND
+10,Filtro_Sallen_Key,Resistores de ganancia K (Rg_sk y Rf_sk),10 kOhm y 5.9 kOhm,2,POR_CONFIRMAR,SIN_CONFIRMAR,>= 0.25 W,Medicion multimetro,NO,Produce K=1.59 y Q=0.7092 (aproximacion Butterworth)
+11,Montaje,Protoboard cables y sondas BNC,Conexionado de baja tension,1,POR_CONFIRMAR,SIN_CONFIRMAR,Baja tension,Inspeccion visual,NO,Verificar continuidad de pistas y pinzas de masa
+12,Planta_Termica,Sensor y planta termica o dataset,Gp(s)=2/(20s+1) ilustrativo,1,OPCIONAL,SIN_CONFIRMAR,PENDIENTE,Registro autentico,NO,Sin datos reales se emplea modelo ilustrativo declarado en simulacion

@@ -1,0 +1,55 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Plantilla Trazabilidad E1-E2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Plantilla Única de Trazabilidad E1 y E2[cite: 31]}]
+    Documento para consolidar datos calculados, simulados y medidos. No invente medidas ni complete celdas de hardware sin haber superado G1 y G2[cite: 31].
+\end{tcolorbox}
+
+\noindent\textbf{Grupo:} \rule{1.5cm}{0.15mm} \quad \textbf{Fecha Efectiva:} \rule{2cm}{0.15mm} \quad \textbf{MOSFET Comercial:} \rule{3cm}{0.15mm} \quad \textbf{Fuente Control:} \rule{2.5cm}{0.15mm}
+
+\vspace{0.2cm}
+\renewcommand{\arraystretch}{1.8}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{gray!20}
+\textbf{Variable / Evidencia} & \textbf{E1 Calculado / Predicho} & \textbf{E1 Simulado (.log/arch)} & \textbf{E1 Medido (Equipo/Escala)} & \textbf{E2 Calculado / Predicho} & \textbf{E2 Simulado (.log/arch)} & \textbf{E2 Medido (Requiere G2)} \\ \hline
+Comando $V_{min}/V_{max}$, $f$, Duty[cite: 31] & & & & & & \\ \hline
+Fuente y Tierra Común[cite: 31] & & & & & & \\ \hline
+$R_G / R_{PD} / R_B$[cite: 31] & & & & & & \\ \hline
+$V_{GS}$ High / Low[cite: 31] & & & & & & \\ \hline
+$V_{DS}$ ON / OFF[cite: 31] & & & & & & \\ \hline
+$I_D$ de Carga (Método)[cite: 31] & & & & & & \\ \hline
+$P_{load}, P_{MOS}$ (Teórica)[cite: 31] & & & & & & \\ \hline
+Tiempo Subida/Bajada[cite: 31] & & & & & & \\ \hline
+\end{tabularx}
+
+\vspace{0.4cm}
+\textbf{Análisis de Discrepancia:} ¿Qué parámetro eléctrico o lógico se mantuvo constante entre E1 y E2 y cuál varió dramáticamente? \hrulefill \\[0.2cm] \hrulefill
+
+\vspace{0.3cm}
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Registro Individual de Competencia (Firmado por estudiante)[cite: 31]}]
+    Estudiante: \rule{4cm}{0.15mm} \quad Mi cálculo crítico: \rule{3cm}{0.15mm} \quad Mi riesgo detectado: \rule{3cm}{0.15mm} \\[0.2cm]
+    Lo que NO pude verificar experimentalmente por falta de equipo/autorización: \hrulefill
+\end{tcolorbox}
+
+\end{document}

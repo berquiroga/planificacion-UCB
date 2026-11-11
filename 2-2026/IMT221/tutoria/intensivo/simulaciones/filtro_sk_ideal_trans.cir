@@ -1,0 +1,23 @@
+* simulaciones/filtro_sk_ideal_trans.cir
+* IMT-221 - Laboratorio Intensivo Integrado (10-17 Nov 2026)
+* Ensayo transitorio de filtrado: senal util de 10 Hz + perturbacion de 1000 Hz
+* PROCEDENCIA: Simulacion idealizada (ILUSTRATIVO).
+
+* Suma de componente util (0.5 Vp a 10 Hz) y perturbacion (0.5 Vp a 1000 Hz)
+Vutil n_util 0 SINE(0 0.5 10)
+Vpert in n_util SINE(0 0.5 1000)
+
+* Red Sallen-Key (R1=R2=16k, C1=C2=100n, Rg=10k, Rf=5.9k)
+R1 in a 16k
+R2 a b 16k
+C1 a out 100n
+C2 b 0 100n
+
+EAMP out 0 b fb 1e6
+Rf out fb 5.9k
+Rg fb 0 10k
+
+* Simulacion temporal durante 300 ms (3 ciclos de la senal util de 10 Hz)
+.tran 0 300m 0 50u
+
+.end

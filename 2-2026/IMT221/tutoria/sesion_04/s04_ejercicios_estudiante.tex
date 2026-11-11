@@ -1,0 +1,68 @@
+% workbook.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Registro S04-S05 (CP2B, CP3A)}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!80!black, title=\textbf{Trazabilidad Documental}]
+    Todo dato escrito aquí que no declare explícitamente su fuente (\textit{Calculado}, \textit{Datasheet}, \textit{Simulado LTspice}) invalidará el entregable por falta de trazabilidad ingenieril.
+\end{tcolorbox}
+
+\section{CP2B: Calificación Real del Op-Amp}
+
+\textbf{1. Condiciones SPICE Empleadas:} \\
+Modelo de LTspice (ej. LT1001C): \rule{5cm}{0.4pt} \quad Rieles usados en simulación ($\pm V$): \rule{3cm}{0.4pt}
+
+\vspace{0.3cm}
+\textbf{2. Límite Matemático de Excursión (Swing):} \\
+Si un acondicionador tiene $A=3$ y el sensor inyecta $5\,\text{V}$ en DC, la salida ideal es $15\,\text{V}$. Justifique, leyendo la ficha técnica del fabricante, por qué esto es incompatible con una alimentación física de $\pm15\,\text{V}$. Escriba su observación del simulador.
+\vspace{3cm}
+
+\textbf{3. Límite de Velocidad (Slew Rate):} \\
+Para una sinusoide de $1\,\text{V}_\text{pico}$ a $100\,\text{kHz}$, calcule el $SR_\text{req}$. Contraste con el valor Mínimo del Datasheet y explique su dictamen de viabilidad.
+\vspace{3cm}
+
+
+\section{CP3A: Filtro Activo Sallen-Key (Butterworth)}
+
+\textbf{1. Fórmulas Generales (No Restringidas):} \\
+Si $R_1 \neq R_2$, defina la constante $Q$ general:
+\vspace{2cm}
+
+\textbf{2. Comparativa Bode (Modelo Matemático vs Simulado):} \\
+Utilice $R_1=R_2=16\,\text{k}\Omega, C=100\,\text{nF}, R_g=10\,\text{k}\Omega, R_f=5.9\,\text{k}\Omega$.
+\begin{center}
+\begin{tabularx}{\textwidth}{@{} c | X | X | X | X @{}}
+\toprule
+$f$ \textbf{(Hz)} & \textbf{CALCULADO} $G$ (dB abs) & \textbf{CALCULADO} $\phi$ ($^\circ$) & \textbf{SIMULADO} $G$ (dB) & \textbf{SIMULADO} $\phi$ ($^\circ$) \\ \midrule
+10 & & & & \\ \addlinespace[10pt]
+$f_0 \approx 99.47$ & & & & \\ \addlinespace[10pt]
+300 & & & & \\ \addlinespace[10pt]
+1000 & & & & \\ \bottomrule
+\end{tabularx}
+\end{center}
+
+\textbf{3. Rediseño Desbalanceado ($R_1 = 20\,\text{k}\Omega$):} \\
+Muestre su cálculo del nuevo $f_0'$ y $Q'$. Explique con texto qué cambió en el diagrama de Bode comparado con la simulación anterior.
+\vspace{4cm}
+
+\end{document}

@@ -1,0 +1,66 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Esquema LTspice E2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=orange!10, colframe=orange, title=\textbf{Referencia E2: Simulación Pedagógica de Buffer (NO FABRICABLE)[cite: 38]}]
+    \textbf{Límite Técnico:} El nivel de mando $0-12\,\text{V}$ es ficticio. Un MCU real ($0-5\,\text{V}$) requerirá una etapa previa de adaptación de voltaje (Level Shifter) que todavía no hemos diseñado. Esta simulación aísla únicamente el comportamiento dinámico del Buffer Push-Pull[cite: 38].
+\end{tcolorbox}
+
+\section*{1. Procedimiento de Simulación Comparativa[cite: 38]}
+Debe comparar dos topologías de excitación manteniendo \textbf{idéntico} el NMOS, la carga, el bus y la fuente de control[cite: 38].
+\begin{itemize}
+    \setlength\itemsep{0.2em}
+    \item \textbf{Topología Directa (E1 base):} Fuente \texttt{DRV\_CMD} ($0-12\,\text{V}$) $\to R_G$ ($220\,\Omega$) $\to$ Gate.
+    \item \textbf{Topología E2 (Buffer):} \texttt{DRV\_CMD} ($0-12\,\text{V}$) $\to R_B$ ($220\,\Omega$) $\to$ Par BJT Complementario $\to R_G$ ($220\,\Omega$) $\to$ Gate.
+\end{itemize}
+
+\section*{2. Parámetros y Netlist SPICE[cite: 38]}
+Utilice el archivo \texttt{03\_E2\_pushpull\_modelo\_DIDACTICO.cir}. No reescriba ni invente modelos comerciales. Registre estrictamente las variables: \texttt{V(cmd)}, \texttt{V(out)}, \texttt{V(gate)}, \texttt{V(drain)} e \texttt{I(RLOAD)}[cite: 38].
+Si la simulación arroja un error de sintaxis, \textbf{guarde el mensaje de error literal}; no invente curvas a mano haciéndolas pasar por simulación[cite: 38].
+
+\vspace{0.4cm}
+\begin{center}
+    \begin{circuitikz}[scale=1, transform shape, thick]
+        % Sourcing and Sinking explanation
+        \node[draw, fill=blue!10, align=center, rounded corners] (src) at (0,3) {\textbf{Estado ALTO (12V)}\\ QN Suministra Carga (\textit{Sourcing}) \\ Corriente de $V_{DRV}$ hacia el Gate};
+        \node[draw, fill=red!10, align=center, rounded corners] (snk) at (0,-3) {\textbf{Estado BAJO (0V)}\\ QP Extrae Carga (\textit{Sinking}) \\ Corriente del Gate hacia Tierra};
+        
+        \draw (4,0) node[npn] (QN) {QN};
+        \draw (4,-2) node[pnp] (QP) {QP};
+        
+        \draw (QN.E) -- (QP.E) coordinate[midway] (out);
+        \draw (QN.B) -- (QP.B) coordinate[midway] (base);
+        
+        \draw[->, blue, ultra thick, dashed] (4,2) node[above]{$V_{DRV}$} -- (QN.C) -- (QN.E) -- (out) -- ++(2,0) node[right]{Hacia Gate};
+        \draw[<-, red, ultra thick, dashed] (4,-4) node[below]{GND} -- (QP.C) -- (QP.E) -- (out) -- ++(2,0);
+        
+        \draw (base) to[R, l=$R_B$] ++(-2,0) node[left]{\texttt{DRV\_CMD}};
+    \end{circuitikz}
+\end{center}
+
+\vspace{0.3cm}
+\textbf{Reflexión Teórica:} Observe el esquemático. Durante la transición (Conmutación), existe un minúsculo instante donde $V_{cmd}$ cruza la "zona muerta" de $\sim \pm 0.7\,\text{V}$. Si ambos BJT condujeran simultáneamente (falla de diseño térmico), el riel de $12\,\text{V}$ se cortocircuitaría directamente a tierra (\textit{Shoot-through}).
+
+\end{document}

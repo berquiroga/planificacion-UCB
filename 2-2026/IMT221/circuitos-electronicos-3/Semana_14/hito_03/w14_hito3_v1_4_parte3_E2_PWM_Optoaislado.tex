@@ -1,0 +1,203 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{tabularx}
+\usepackage[table]{xcolor}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{arrows.meta, positioning, calc}
+\usepackage[margin=1.4cm]{geometry}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+\emergencystretch=2em
+\tolerance=1000
+\hbadness=10000
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{ucbgray}{RGB}{240, 244, 248}
+\definecolor{warnred}{RGB}{180, 20, 20}
+
+\begin{document}
+
+\noindent
+{\LARGE \textbf{\textcolor{ucbblue}{IMT-221 — Circuitos Electrónicos III}}}\\[0.12cm]
+{\Large \textbf{Hito 3: Guía Única E1 $\rightarrow$ E4 — Parte 3: Etapa E2 (Driver BJT con Entrada PWM Optoaislada)}}\\[0.08cm]
+{\small \textbf{Versión integrada 1.4} $\cdot$ 6 de noviembre de 2026 $\cdot$ Aislamiento galvánico con \texttt{PC817} y \texttt{7805} $\cdot$ Sujeto a G2}
+\par\vspace{0.15cm}\noindent\rule{\linewidth}{0.4pt}\vspace{0.2cm}
+
+\section*{4. Etapa E2 — PWM Optoaislado (Versión 1.4, sustituye diseño BJT directo previo)}
+
+\subsection*{4.1 Objetivo Físico: Dos Dominios Eléctricos sin Tierra Común}
+El optoacoplador \texttt{PC817} aísla el \textbf{Lado A} (\texttt{GND\_MCU}, Arduino/ESP32, computador USB) del \textbf{Lado B} (\texttt{GND\_PWR}, potencia a $12\,\text{V}$, MOSFET). Aísla la \textbf{señal PWM}, pero no excita directamente el Gate. El regulador \texttt{LM7805} (alimentado desde $+12\,\text{V}_{\text{PWR}}$) genera un sub-riel local de $+5\,\text{V}_{\text{ISO}}$ exclusivo para alimentar el receptor óptico y un NPN restaurador lógico (\texttt{Q0}). Las etapas de \textit{Sourcing} (\texttt{QH}) y \textit{Sinking} (\texttt{QL}) de las versiones anteriores se conservan, pero ahora son gobernadas galvánicamente. \textbf{Bajo ninguna circunstancia interconectar las masas \texttt{GND\_MCU} y \texttt{GND\_PWR}.} 
+
+\subsection*{4.2 Esquema Eléctrico por Nodos (Autoridad para Ensamblaje Físico y Simulación LTspice)}
+
+\begin{center}
+\resizebox{\linewidth}{!}{
+\begin{circuitikz}[thick]
+    \ctikzset{bipoles/length=1.0cm, transistors/scale=1.0}
+    
+    % ================= LADO A (MCU) =================
+    \node[draw=ucbblue, dashed, rounded corners, minimum width=4.5cm, minimum height=8.5cm, align=left] at (0, 3) {};
+    \node[ucbblue] at (0, 7) {\textbf{DOMINIO A (MCU)}};
+    
+    \draw (-1.5, 4.5) node[circ]{} node[left, align=right]{\textbf{MCU PWM}\\($3.3\,\text{V}$ o $5\,\text{V}$)} -- (0, 4.5) to[R, l={$R_{\text{LED}}$}] (2, 4.5);
+    \draw (-1.5, 1.5) node[circ]{} node[left]{\textbf{GND\_MCU}} -- (2, 1.5);
+    \node[above=0.1cm] at (1, 4.7) {\footnotesize ($330\,\Omega$ o $560\,\Omega$)};
+    
+    % Optoacoplador PC817 central
+    \draw (2, 4.5) -- (3, 4.5) node[currarrow]{};
+    \draw (2, 1.5) -- (3, 1.5);
+    
+    % Símbolo de LED interno
+    \draw (3, 4.5) to[leDo] (3, 1.5);
+    \draw (4.2, 4.5) node[npn, photo, anchor=C] (OPTO) {};
+    
+    \draw[dashed, warnred, very thick] (3.6, -1) -- (3.6, 7.5) node[above]{\textbf{Barrera Galvánica}};
+    
+    % ================= LADO B (POTENCIA) =================
+    \node[draw=warnred, dashed, rounded corners, minimum width=19cm, minimum height=11.5cm, align=left] at (14.5, 1.5) {};
+    \node[warnred] at (14.5, 6.8) {\textbf{DOMINIO B (POTENCIA A 12V Y 5V LOCAL)}};
+
+    \coordinate (PWR_12V) at (5, 6.0);
+    \coordinate (PWR_5V) at (5, 4.5);
+    \coordinate (PWR_GND) at (5, -3.5);
+
+    % Regulador LM7805
+    \draw (5, 6.0) node[left]{\textbf{$+12\,\text{V}_{\text{PWR}}$}} -- (7, 6.0);
+    \node[draw, fill=ucbgray, minimum width=1.5cm, minimum height=1cm] (REG) at (8, 5.25) {\textbf{7805}};
+    \draw (7, 6.0) |- (REG.120); % IN
+    \draw (REG.240) -| (8, -3.5); % GND
+    \draw (REG.30) -| (9, 4.5); % OUT
+    \draw (5, 4.5) node[left]{\textbf{$+5\,\text{V}_{\text{ISO}}$}} -- (11, 4.5);
+    
+    % Desacoplos del regulador (C_IN5 y C_OUT5) y C_BULK
+    \draw (6, 6.0) to[C, l_={$330\,\text{nF}$}] (6, -3.5);
+    \draw (9, 4.5) to[C, l_={$100\,\text{nF}$}] (9, -3.5);
+    \draw (5.5, 6.0) to[pC, l_={$10\,\mu\text{F}$}] (5.5, -3.5);
+    
+    % Rieles extendidos
+    \draw (5, -3.5) node[left]{\textbf{GND\_PWR}} -- (23.5, -3.5);
+    \draw (7, 6.0) -- (18, 6.0);
+
+    % Fototransistor (PC817 Receptor) y Q0 (Restaurador Lógico)
+    \draw (OPTO.C) -- (5.5, 4.5); % Conecta al +5V_ISO (Error en diagrama de nodos textual, corregido a Pull-Up abajo)
+    % CORRECCIÓN DE OPTO SEGÚN GUIA TEXTUAL:
+    % OPTO_C -- OPTO_N -- ROP -- +5V_ISO. OPTO_E -- GND_PWR.
+    \draw (OPTO.C) -- (11.5, 4.5) coordinate (OPTO_N);
+    \draw (11.5, 4.5) to[R, l_={$R_{\text{OP}}=10\,\text{k}\Omega$}] (11.5, 6.0); % Pull up simulado hacia 12V? NO, debe ser 5V. 
+    % Redibujo limpio de opto_n
+    
+    % Para hacerlo más claro:
+    \draw (OPTO.E) |- (PWR_GND);
+    \draw (OPTO.C) -- (11, 4.0) coordinate (OPTO_N);
+    \filldraw (OPTO_N) circle (1.5pt) node[below]{\texttt{OPTO\_N}};
+    \draw (OPTO_N) to[R, l={$R_{\text{OP}}=10\,\text{k}\Omega$}] (11, 4.5); % Pull up al 5V_ISO
+
+    % NPN Q0 Inversor
+    \draw (OPTO_N) to[R, l={$R_{B0}=10\,\text{k}\Omega$}] (12.5, 4.0) coordinate (B0);
+    \draw (13.5, 4.0) node[npn, anchor=B] (Q0) {}; \node[right] at (Q0.E) {\textbf{Q0} (NPN)};
+    \draw (B0) -- (Q0.B);
+    \draw (Q0.E) -- (Q0.E |- PWR_GND) node[circ]{};
+    \draw (Q0.C) -- (13.5, 4.5) coordinate (V_IN_ISO);
+    \filldraw (V_IN_ISO) circle (1.5pt) node[above]{\textbf{$V_{\text{IN\_ISO}}$}};
+    \draw (V_IN_ISO) to[R, l_={$R_{\text{PU0}}=1\,\text{k}\Omega$}] (12, 4.5); % Pull up al 5V_ISO
+
+    % Bifurcación Q1 y Q2
+    \draw (V_IN_ISO) -- (13.5, 2.5) -- (14.5, 2.5);
+    \draw (14.5, 2.5) -- (14.5, 3.5) to[R, l={$R_{\text{IN1}}=2.2\,\text{k}\Omega$}] (16.5, 3.5) coordinate (B1);
+    \draw (14.5, 2.5) -- (14.5, 0.5) to[R, l={$R_{\text{IN2}}=2.2\,\text{k}\Omega$}] (16.5, 0.5) coordinate (B2);
+
+    % Q1
+    \draw (B1) to[R, l_={$10\,\text{k}\Omega$}] (B1 |- PWR_GND) node[circ]{};
+    \draw (17.5, 3.5) node[npn, anchor=B] (Q1) {}; \node[right] at (Q1.E) {\textbf{Q1}};
+    \draw (B1) -- (Q1.B); \draw (Q1.E) -- (Q1.E |- PWR_GND) node[circ]{};
+    \draw (Q1.C) -- (17.5, 4.5) to[R, l={$R_{\text{BH}}=2.2\,\text{k}\Omega$}] (19, 4.5) coordinate (BH);
+    
+    % QH PNP Sourcing
+    \filldraw (BH) circle (1.5pt) node[below]{\texttt{BH}};
+    \draw (BH) to[R, l={$10\,\text{k}\Omega$}] (19, 6.0) node[circ]{};
+    \draw (20, 4.5) node[pnp, anchor=B] (QH) {}; \node[right] at (QH.E) {\textbf{QH} (PNP)};
+    \draw (BH) -- (QH.B); \draw (QH.E) -- (QH.E |- 6.0, 6.0) node[circ]{};
+    
+    % Q2 y QL Sinking
+    \draw (B2) to[R, l_={$10\,\text{k}\Omega$}] (B2 |- PWR_GND) node[circ]{};
+    \draw (17.5, 0.5) node[npn, anchor=B] (Q2) {}; \node[right] at (Q2.E) {\textbf{Q2}};
+    \draw (B2) -- (Q2.B); \draw (Q2.E) -- (Q2.E |- PWR_GND) node[circ]{};
+    \coordinate (LCTL) at (17.5, 1.5);
+    \draw (Q2.C) -- (LCTL) node[circ]{} node[above left]{\texttt{LCTL}};
+    \draw (LCTL) to[R, l_={$R_{\text{PU2}}=1\,\text{k}\Omega\,1/2\,\text{W}$}] (LCTL |- 6.0, 6.0) node[circ]{};
+    \draw (LCTL) to[R, l={$R_{\text{BL}}=1\,\text{k}\Omega$}] (19, 1.5) coordinate (BL);
+    \draw (20, 1.5) node[npn, anchor=B] (QL) {}; \node[right] at (QL.E) {\textbf{QL}};
+    \draw (BL) -- (QL.B); \draw (QL.E) -- (QL.E |- PWR_GND) node[circ]{};
+
+    % Gates R_UP y R_DN
+    \draw (QH.C) -- (20, 3.5) to[R, l={$R_{G\_UP}=220\,\Omega$}] (21.5, 3.5) coordinate (GATE);
+    \draw (QL.C) -- (20, 2.5) to[R, l_={$R_{G\_DN}=220\,\Omega$}] (21.5, 2.5);
+    \draw (21.5, 3.5) -- (21.5, 2.5);
+    \filldraw (GATE) circle (1.5pt) node[left]{\textbf{GATE}};
+
+    % M1 MOSFET
+    \draw (GATE) -- (22.5, 3.0) node[nigfete, anchor=G] (M1) {}; \node[right=0.15cm] at (M1.D) {\textbf{M1} (NMOS)};
+    \draw (22.5, 3.0) node[circ]{} to[R, l={$100\,\text{k}\Omega$}] (22.5, -3.5);
+    \draw (M1.S) -- (M1.S |- PWR_GND) node[circ]{};
+    \draw (M1.B) -- ++(0.5, 0) |- (M1.S |- PWR_GND);
+    \draw (M1.D) to[R, l_={$R_L=100\,\Omega$ ($5\,\text{W}$)}] (M1.D |- 6.0, 6.0) node[above]{\textbf{$+12\,\text{V}_{\text{BUS}}$}};
+
+\end{circuitikz}
+}
+\end{center}
+
+\newpage
+\subsection*{4.3 Tabla Lógica de Operación y Averías (Aislamiento Galvánico)}
+El fototransistor del \texttt{PC817} posee una arquitectura de colector abierto que inherentemente invierte la lógica. El NPN \texttt{Q0} efectúa una segunda inversión, restaurando la fase de la señal PWM original hacia las bases de control del driver ($V_{\text{IN\_ISO}}$).
+
+\par\vspace{0.1cm}\noindent
+\renewcommand{\arraystretch}{1.2}
+{\footnotesize
+\begin{tabularx}{\linewidth}{|l|c|c|c|c|c|c|X|}
+\hline
+\rowcolor{ucbgray}
+\textbf{MCU (Dominio A) / Condición} & \textbf{LED PC817} & \textbf{\texttt{OPTO\_N}} & \textbf{NPN \texttt{Q0}} & \textbf{\texttt{$V_{\text{IN\_ISO}}$} Lógico} & \textbf{PNP \texttt{QH}} & \textbf{NPN \texttt{QL}} & \textbf{GATE y Diagnóstico Físico} \\ \hline
+\textbf{LOW ($0\,\text{V}$)} & OFF & Alto ($+5\,\text{V}_{\text{ISO}}$) & \textbf{ON} & Bajo ($< 0.5\,\text{V}$) & OFF & \textbf{ON} & $\approx 0\,\text{V}$ (MOSFET OFF). \\ \hline
+\textbf{HIGH ($3.3\,\text{V}$ o $5\,\text{V}$)} & \textbf{ON} & Bajo ($< 0.5\,\text{V}$) & OFF & Alto ($\sim 2.75\,\text{V}$ cargado) & \textbf{ON} & OFF & $\approx 12\,\text{V}$ nominal. (Revisar pico y $V_{GS,\max}$). \\ \hline
+GPIO desconectado / MCU apagado & OFF (Ruta sin I) & Alto ($+5\,\text{V}_{\text{ISO}}$) & \textbf{ON} & Bajo & OFF & \textbf{ON} & Seguro, \texttt{GATE} retenido en $0\,\text{V}$ por \texttt{QL}. \\ \hline
+Fuente Lado B desconectada & Indistinto & Sin voltaje & OFF & $0\,\text{V}$ (indefinido) & OFF & OFF & Seguro, \texttt{RPDG} descarga la compuerta a GND. \\ \hline
+Falla temporal / Transitorios & Depende & \textbf{No garant.} & Depende & Depende & Depende & Depende & Riesgo transitorio de $V_{EB}$ inverso en \texttt{QH} al arrancar. \\ \hline
+\end{tabularx}
+}
+
+\subsection*{4.4 Previsiones Aritméticas Paso a Paso (Para Dominio A y Dominio B)}
+
+\paragraph{1. Corriente IF del Optoacoplador (Dominio A):}
+Si la caída directa típica del LED infrarrojo es $V_F \approx 1.2\,\text{V}$:
+\begin{align}
+    \text{Para MCU a } 5\,\text{V} \text{ (Arduino), } R_{\text{LED}} = 560\,\Omega: \quad I_F &\approx \frac{5.0\,\text{V} - 1.2\,\text{V}}{560\,\Omega} = \frac{3.8\,\text{V}}{560\,\Omega} \approx 6.79\,\text{mA}. \\
+    \text{Para MCU a } 3.3\,\text{V} \text{ (ESP32), } R_{\text{LED}} = 330\,\Omega: \quad I_F &\approx \frac{3.3\,\text{V} - 1.2\,\text{V}}{330\,\Omega} = \frac{2.1\,\text{V}}{330\,\Omega} \approx 6.36\,\text{mA}.
+\end{align}
+Ambos valores son seguros para los pines de I/O digitales genéricos ($\le 20\,\text{mA}$).
+
+\paragraph{2. Restauración Lógica $V_{\text{IN\_ISO}}$ (Dominio B a $5\,\text{V}_{\text{ISO}}$):}
+Cuando \texttt{Q0} está apagado (OFF), la resistencia $R_{\text{PU0}} = 1\,\text{k}\Omega$ alimenta en paralelo a las bases de \texttt{Q1} y \texttt{Q2} a través de $R_{\text{IN1}}$ y $R_{\text{IN2}}$ (cada una de $2.2\,\text{k}\Omega$). El nodo $V_{\text{IN\_ISO}}$ queda bajo un divisor de tensión dinámico. Considerando $V_{BE} \approx 0.7\,\text{V}$:
+\begin{align*}
+    R_{\text{equivalente\_bases}} &= \frac{R_{\text{IN}}}{2} = \frac{2.2\,\text{k}\Omega}{2} = 1.1\,\text{k}\Omega \implies V_{\text{IN\_ISO}} \approx 0.7\,\text{V} + (5.0\,\text{V} - 0.7\,\text{V}) \frac{1.1\,\text{k}\Omega}{1\,\text{k}\Omega + 1.1\,\text{k}\Omega} \approx 2.95\,\text{V}. \\
+    I_{\text{Base\_Q1\_Q2}} &\approx \frac{2.95\,\text{V} - 0.7\,\text{V}}{2.2\,\text{k}\Omega} = 1.02\,\text{mA} \text{ por cada transistor (\texttt{Q1} y \texttt{Q2})}. 
+\end{align*}
+\textbf{Conclusión física:} $V_{\text{IN\_ISO}}$ \textbf{nunca alcanzará $5.0\,\text{V}$} en el estado alto porque está fuertemente cargado por la corriente base de los controladores. Se medirá $\sim 2.95\,\text{V}$, pero será suficiente para saturar \texttt{Q1} y \texttt{Q2}.
+
+\subsection*{4.5 Procedimientos G2 Obligatorios (Prueba de Aislamiento)}
+\begin{enumerate}[noitemsep, topsep=2pt]
+    \item \textbf{Verificación en frío:} Identificar todos los pines de \texttt{PC817}, \texttt{LM7805} y BJTs. Verificar que no exista continuidad óhmica entre $GND_{\text{MCU}}$ y $GND_{\text{PWR}}$.
+    \item \textbf{Test de MCU:} Desconectar Dominio B. Cargar código ($100\,\text{Hz}, 50\%$). Medir oscilación en $R_{\text{LED}}$ y confirmar amplitud $3.3\,\text{V}/5.0\,\text{V}$.
+    \item \textbf{Test Dominio B (sin M1/Carga):} Alimentar $+12\,\text{V}_{\text{PWR}}$. Medir que $C_{\text{OUT5}}$ entregue exactamente $+5.0\,\text{V}$ respecto a $GND_{\text{PWR}}$. 
+    \item \textbf{Regla de Sondas:} \textbf{Prohibido} usar dos sondas del mismo osciloscopio de banco si sus caimanes de tierra tocan Dominios diferentes, ya que el chasis del equipo los cortocircuitará internamente. Usar técnica de una sonda por dominio por turno, aislar el MCU (ej. alimentado por PowerBank), o usar sondas diferenciales certificadas.
+\end{enumerate}
+
+\end{document}

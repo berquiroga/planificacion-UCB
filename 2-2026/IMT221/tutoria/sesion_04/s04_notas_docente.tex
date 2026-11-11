@@ -1,0 +1,92 @@
+% instructor-notes.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Soluciones e Instructor Notes (S04-S05)}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\section*{Solucionario Docente: CP2B y CP3A}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{Alerta Pedagógica para Autorización de Hardware}]
+    No exija mediciones empíricas de Slew Rate (SR) si no ha autorizado formalmente el uso de generadores, osciloscopios y fuentes reguladas con sus respectivas tierras (Gate de Seguridad). Si no se provee un op-amp físico, el estudiante debe reportar el estado de los componentes como \textbf{PENDIENTES} y el modo de ensayo como \textbf{SOLO SIMULACIÓN}.
+\end{tcolorbox}
+
+\subsection*{CP2B: Calificación Real (LT1001C)}
+\begin{itemize}
+    \item \textbf{Cálculo Ideal Acondicionador:} $V_{out} = V_{in}(1 + 20\text{k}/10\text{k}) = 3 V_{in}$.
+    \item \textbf{Swing Saturation:} Si $V_{in} = 5\,\text{V}$, $V_{out, ideal} = 15\,\text{V}$. Con rieles simulados de $\pm15\,\text{V}$, el dispositivo real y el modelo universal no pueden dar $15\,\text{V}$. El \textit{swing} del LT1001 con $R_L \ge 2\text{k}\Omega$ garantiza solo $\pm13\,\text{V}$ y típicamente $\pm14\,\text{V}$. Un modelo SPICE de alta calidad recortará la sinusoide. El alumno debe declarar el régimen como \textit{FUERA DE REGIÓN IDEAL}.
+    \item \textbf{Slew Rate (SR):} Señal de $1\,\text{V}_\text{pico}$ a $100\,\text{kHz} \implies V_{o,p} = 3\,\text{V}$. \\
+    $SR_{req} = 2\pi (10^5) (3) \approx 1.885 \times 10^6\,\text{V/s} = 1.885\,\text{V/}\mu\text{s}$. \\
+    La ficha técnica garantiza un mínimo de $0.1\,\text{V/}\mu\text{s}$ (y típico $0.25\,\text{V/}\mu\text{s}$). El requerimiento supera $\sim18$ veces el mínimo. \textbf{El dispositivo presentará severa distorsión.}
+    \item \textbf{Ancho de Banda (GBW):} $GBW_{\text{mín}} = 0.4\,\text{MHz}$. El ancho de banda en lazo cerrado es $f_{BW} \approx 0.4\,\text{MHz} / 3 \approx 133\,\text{kHz}$. Aunque $100\,\text{kHz}$ entra "teóricamente" en la banda, el SR es el cuello de botella dominante. El estudiante debe distinguir estas dos mecánicas de limitación.
+\end{itemize}
+
+\subsection*{CP3A: Sallen-Key Filtro Butterworth}
+Para aproximar Butterworth ($Q \approx 0.707$), $K = 3 - \sqrt{2} \approx 1.585$. \\
+Si $R_g=10\,\text{k}\Omega \implies R_f \approx 5.858\,\text{k}\Omega$. Un resistor ilustrativo de $5.9\,\text{k}\Omega$ da $K = 1.59$ y $Q \approx 0.7092$.
+Para $R = 16\,\text{k}\Omega$ y $C = 100\,\text{nF}$:
+{\centering $\displaystyle f_0 = \frac{1}{2\pi(16\text{k})(100\text{n})} \approx 99.47\,\text{Hz}$ \par}
+
+\textbf{Tabla de Predicción Calculada (Valores para Contrastar Simulación):}
+\begin{itemize}
+    \item $10\,\text{Hz}$: $|H| = 1.59$, $G_{dB} \approx +4.03\,\text{dB}$, $\phi \approx -8.15^\circ$
+    \item $99.47\,\text{Hz} (f_0)$: $|H| \approx 1.127$, $G_{dB} \approx +1.04\,\text{dB}$, $\phi = -90^\circ$ \textit{(Nótese que en $f_0$, el filtro tiene -3 dB relativos a la banda de paso, ¡no -3 dB absolutos!)}
+    \item $300\,\text{Hz}$: $|H| \approx 0.174$, $G_{dB} \approx -15.19\,\text{dB}$, $\phi \approx -152.3^\circ$
+    \item $1000\,\text{Hz}$: $|H| \approx 0.0157$, $G_{dB} \approx -36.06\,\text{dB}$, $\phi \approx -171.9^\circ$ \textit{(La atenuación a 1kHz es de $\approx-40\,\text{dB}$ relativa a los $+4\,\text{dB}$ de la banda pasante, cumpliendo el requisito de -30 dB de rechazo).}
+\end{itemize}
+
+\textbf{Rediseño Sallen-Key (Rompiendo $R_1=R_2$):} \\
+Solo se cambia $R_1$ a $20\,\text{k}\Omega$.
+\begin{align*}
+    f_0' &= \frac{1}{2\pi \sqrt{(20\text{k})(16\text{k})(100\text{n})^2}} \approx 88.97\,\text{Hz} \\
+    Q' &= \frac{\sqrt{R_1 R_2} \cdot C}{(R_1 + R_2)C + R_1 C (1-K)} = \frac{\sqrt{320}}{(36) + (20)(-0.59)} \approx 0.739
+\end{align*}
+El estudiante debió notar que modificar un solo componente corrió el corte $f_0$ hacia abajo y cambió la forma del filtro (cambió el amortiguamiento $Q$).
+
+\newpage
+\section*{Checklist Docente de Aceptación}
+
+\begin{tabularx}{\textwidth}{@{} X p{2cm} p{2cm} @{}}
+\toprule
+\textbf{Hito: CP2B (Calificación Op-Amp Real)} & \textbf{Evidencia} & \textbf{Estado} \\ 
+\midrule
+1. Muestra hoja de ficha (datasheet) interpretada (GBW, SR, Rieles). & & \\ \addlinespace
+2. Cálculo explícito del requerimiento de $SR$ a $1\,\text{V}_\text{pico}$ y $100\,\text{kHz}$. & & \\ \addlinespace
+3. Detecta incompatibilidad de swing para $5\,\text{V}_\text{DC}$ de entrada y lo verifica. & & \\ \addlinespace
+4. Diagnostica simulador si este omitió recortes de saturación real. & & \\ 
+\midrule
+\textbf{Hito: CP3A (Construcción del Filtro Sallen-Key)} & \textbf{Evidencia} & \textbf{Estado} \\ 
+\midrule
+5. Deriva e identifica topología esquemática ($C_f$ a la salida, no a tierra). & & \\ \addlinespace
+6. Calcula predicciones de dB y Fase previas a correr `.ac`. & & \\ \addlinespace
+7. Entrega simulaciones donde $|H_{rel}|$ cumple el rechazo de $\ge30\,\text{dB}$ a $1\,\text{kHz}$. & & \\ \addlinespace
+8. Interpreta discrepancias (Bode no cruza -3 dB absolutos en $f_0$). & & \\ \addlinespace
+9. Predice, calcula y simula el rediseño ($R_1 = 20\,\text{k}\Omega$) analizando el efecto en $Q$. & & \\ \addlinespace
+10. La trazabilidad diferencia lo CALCULADO de lo SIMULADO/MEDIDO. & & \\
+\bottomrule
+\end{tabularx}
+
+\vspace{1cm}
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Veredicto Institucional}]
+\textbf{Dictamen Conjunto:} \hspace{0.5cm} ACEPTADO \hspace{0.5cm} / \hspace{0.5cm} CON CONDICIONES \hspace{0.5cm} / \hspace{0.5cm} INCOMPLETO \\
+\textit{Firma y Sello Docente:} \vspace{2.5cm}
+\end{tcolorbox}
+
+\end{document}

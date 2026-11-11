@@ -1,0 +1,603 @@
+% student/w_intensivo_guia_estudiante.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Guía Autónoma de Laboratorio Intensivo}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{Guía Autónoma de Laboratorio Intensivo: Sistema de Acondicionamiento, Filtrado y Regulación Analógica}}
+    \par\vspace{0.2cm}
+    {\large \textbf{IMT-221 — Circuitos Electrónicos II | 10 al 16 de noviembre de 2026}}
+    \par\vspace{0.1cm}
+    \textit{Proyecto: Analog Thermal Regulation and Signal-Conditioning System — Defensa prevista: martes 17/11/2026}
+\end{center}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!80!black, title=\textbf{Advertencia Crítica de Seguridad, Procedencia y Alcance}]
+    \textbf{1. Prohibición de energización no autorizada:} No construyas ni energices ningún circuito en domicilio ni en banco sin autorización escrita del docente en la hoja de Gate de Seguridad. Solo se encuentran confirmados el osciloscopio y el generador de señales; fuentes, amplificadores operacionales, resistores, capacitores, sensores y actuadores requieren verificación física previa.
+    \par\vspace{0.15cm}
+    \textbf{2. Etiquetas obligatorias de trazabilidad:} Todo valor, tabla o curva debe rotularse explícitamente como \texttt{CALCULADO}, \texttt{SIMULADO}, \texttt{MEDIDO}, \texttt{DATO EXTERNO}, \texttt{ILUSTRATIVO} o \texttt{PENDIENTE}. Los parámetros numéricos de esta guía son \textbf{ILUSTRATIVOS} para el aprendizaje y no representan mediciones de un sensor térmico real.
+    \par\vspace{0.15cm}
+    \textbf{3. Regla metodológica:} Cada etapa exige cumplir estrictamente la secuencia \textbf{requisito + procedencia $\to$ ecuación $\to$ predicción $\to$ simulación $\to$ medición física (solo si está autorizada) $\to$ discrepancia $\to$ rediseño $\to$ evidencia reproducible}. Resuelve siempre las predicciones antes de pulsar \textit{Run} en LTspice o ejecutar scripts.
+\end{tcolorbox}
+
+\section*{Objetivos de Aprendizaje del Laboratorio Integrado}
+Al concluir este laboratorio y superar la defensa individual, serás capaz de:
+\begin{enumerate}[noitemsep, leftmargin=*]
+    \item Delimitar una especificación de sistema, entradas/salidas y rangos con unidades y procedencia explícita.
+    \item Explicar la relación entre función de transferencia $H(s)$ y respuesta temporal/frecuencial para redes RC, filtros activos y modelos de planta.
+    \item Diseñar una etapa de acondicionamiento con realimentación negativa y verificar ganancia, offset, alimentación y rangos operativos.
+    \item Calificar un amplificador operacional real mediante su hoja de datos (\textit{datasheet}) y al menos un ensayo reproducible de limitación (GBW, \textit{Slew Rate}, offset o saturación).
+    \item Diseñar y validar un filtro activo Butterworth de segundo orden Sallen-Key, defendiendo $f_0$, $Q$ y la atenuación relativa de perturbaciones.
+    \item Identificar un modelo continuo de planta a partir de datos auténticos o declarar y emplear explícitamente un modelo didáctico de primer orden sin presentarlo como identificación empírica real.
+    \item Diseñar y simular controladores P, PI y PID de forma comparativa, seleccionando una realización práctica PI justificada y reconociendo límites de integración y derivación.
+    \item Explicar estabilidad, margen de fase operativo, efecto de carga entre etapas y condición de oscilación (puente de Wien) mediante microcasos verificables.
+    \item Dimensionar conceptualmente la interfaz de actuación y calcular límites de tensión, corriente y disipación térmica sobre carga definida.
+    \item Validar la cadena integrada en el alcance autorizado (Ruta A, B o C), diagnosticar una discrepancia, ejecutar un rediseño controlado y presentar evidencia antes/después.
+    \item Redactar un informe técnico en formato IEEE con trazabilidad completa y defender el diseño ante modificaciones imprevistas.
+\end{enumerate}
+
+\section*{Organización de Entregables de la Semana}
+Debes estructurar una carpeta única llamada \texttt{IMT221\_INTENSIVO/} con las siguientes subcarpetas:
+\begin{itemize}[noitemsep]
+    \item \texttt{10\_requisitos/}: Inventario \texttt{BOM-autorizacion.csv}, Gate de Seguridad y definición de ruta (A, B o C).
+    \item \texttt{11\_opamp/}: Esquemas \texttt{.asc}/\texttt{.cir} del acondicionador (CP2A) y calificación con datasheet (CP2B).
+    \item \texttt{12\_filtro/}: Cálculos previos, esquemas y barridos AC/transitorios del filtro Sallen-Key (CP3A).
+    \item \texttt{13\_control/}: Comparación P/PI/PID, scripts ejecutados y análisis de planta/saturación (CP1B / CP4A).
+    \item \texttt{14\_integracion/}: Microcasos de estabilidad/Wien/potencia (CP3B / CP4B) y pruebas antes/después (CP5).
+    \item \texttt{15\_informe/}: Informe único en formato IEEE y figuras vectoriales/capturas con leyendas de procedencia.
+    \item \texttt{16\_defensa/}: Presentación breve de apoyo (si aplica) y bitácora consolidada de dudas y rediseño.
+\end{itemize}
+
+\newpage
+\section{Bloque 1 y Módulo 0 — Arquitectura, Requisitos, Seguridad y Trazabilidad}
+
+\subsection{Arquitectura Funcional y Delimitación de Alcance (Especificación V1)}
+La temperatura física $T\,[^\circ\text{C}]$ no es una tensión eléctrica. En un sistema de regulación, un sensor transduce la variable térmica en una señal eléctrica $V_s$, el acondicionador adapta su escala a un nivel útil $V_c$, y el filtro activo entrega una señal limpia $V_f$ hacia el nodo comparador frente a la consigna $r$. El controlador procesa el error para generar la acción $u_c$, que a través de la interfaz de potencia actúa sobre la planta.
+
+\begin{center}
+    \textbf{Especificación Visual V1: Arquitectura del Sistema y Delimitación de Rutas (A / B / C)}
+    \par\vspace{0.2cm}
+    \begin{tikzpicture}[node distance=0.3cm and 0.3cm, thick,
+        phys/.style={draw=ucbblue, line width=1.0pt, rounded corners, fill=blue!8, text width=1.5cm, align=center, minimum height=1.0cm, font=\scriptsize},
+        sim/.style={draw=orange!80!black, dashed, line width=1.0pt, rounded corners, fill=orange!8, text width=1.5cm, align=center, minimum height=1.0cm, font=\scriptsize},
+        pend/.style={draw=red!80!black, dotted, line width=1.0pt, rounded corners, fill=red!5, text width=1.5cm, align=center, minimum height=1.0cm, font=\scriptsize}]
+        
+        \node (r) [font=\scriptsize] {Cons. $r$};
+        \node[draw, circle, right=0.25cm of r, inner sep=1.2pt] (sum) {\tiny $\Sigma$};
+        \node[sim, right=1cm of sum] (ctrl) {Controlador P/PI/PID (SIMULADO)};
+        \node[pend, right=1cm of ctrl] (act) {Interfaz $u(t)$ (PENDIENTE)};
+        \node[sim, right=1cm of act] (plant) {Planta $G_p(s)$ (ILUST.)};
+        
+        \node[pend, below=0.6cm of plant] (sens) {Sensor Real $T \to V_s$ (PENDIENTE)};
+        \node[phys, left=1cm of sens] (cond) {Acondic. $V_c = 3V_s$ (RUTA A/C)};
+        \node[phys, left=1cm of cond] (filt) {Filtro Act. $V_f$ (RUTA A/C)};
+        
+        \draw[->] (r) -- node[above, font=\tiny]{$+$} (sum);
+        \draw[->] (sum) -- node[above, font=\tiny]{$e$} (ctrl);
+        \draw[->] (ctrl) -- node[above, font=\tiny]{$u_c$} (act);
+        \draw[->] (act) -- node[above, font=\tiny]{$u$} (plant);
+        \draw[->] (plant) -- node[right, font=\tiny]{$T\,[{}^\circ\text{C}]$} (sens);
+        \draw[->] (sens) -- node[above, font=\tiny]{$V_s\,[\text{V}]$} (cond);
+        \draw[->] (cond) -- node[above, font=\tiny]{$V_c\,[\text{V}]$} (filt);
+        \draw[->] (filt) -| node[pos=0.92, left, font=\tiny]{$-$} node[pos=0.25, above, font=\tiny]{$V_f\,[\text{V}]$} (sum);
+    \end{tikzpicture}
+\end{center}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{} l X l l @{}}
+\toprule
+\textbf{Requisito / Variable} & \textbf{Ejemplo Ilustrativo} & \textbf{Procedencia del Dato Real} & \textbf{Estado} \\ \midrule
+Señal sensor $V_s$ & $0.20\text{--}0.80\,\text{V}$ & Calibración auténtica pdte. & \texttt{ILUST.} \\
+Acondicionador $V_c$ & $V_c=3V_s \implies 0.6\text{--}2.4\,\text{V}$ & Diseño resistivo ejemplo & \texttt{CALC.} \\
+Banda útil & $0\text{--}10\,\text{Hz}$ & Planta/sensor no caract. & \texttt{ILUST.} \\
+Perturbación & $1000\,\text{Hz}$ & No id. experimentalmente & \texttt{ILUST.} \\
+Frec. de corte $f_0$ & $\approx 100\,\text{Hz}$ ($99.47\,\text{Hz}$) & Compromiso didáctico & \texttt{ILUST.} \\
+Planta $G_p(s)$ & $G_p(s) = \frac{2}{20s + 1}$ & Sin datos térmicos genuinos & \texttt{ILUST.} \\
+Actuador / Interfaz & Por definir según inventario & Datasheet/inventario pdtes. & \texttt{PENDIENTE} \\ \bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{Regla de Congelamiento de Alcance (Gate 10/11 y Freeze 13/11)}
+Al cierre del martes 10/11 se fija una de las tres rutas operativas:
+\begin{itemize}[noitemsep]
+    \item \textbf{Ruta A (Física parcial + integración simulada — Preferida):} Acondicionador y filtro activo implementados y medidos físicamente (tras aprobar Gate de Seguridad); planta y control P/PI/PID validados en simulación.
+    \item \textbf{Ruta B (Híbrido ampliado):} Ruta A más realización física de control PI y actuador de baja potencia, únicamente si el inventario y las pruebas de subsistema se aprueban antes del viernes 13/11.
+    \item \textbf{Ruta C (Solo simulación verificada):} Si no existen componentes o condiciones seguras verificadas, se desarrolla la cadena completa en simulación reproducible declarando explícitamente la ausencia de validación experimental.
+\end{itemize}
+
+\subsection{Desarrollo Matemático: Mapeo Lineal Afín}
+Dados dos puntos extremos de diseño $(V_{s,\min}, V_{c,\min})$ y $(V_{s,\max}, V_{c,\max})$, la transformación lineal más general entre la entrada $V_s$ y la salida acondicionada $V_c$ es un mapeo afín:
+\begin{equation}
+    V_c = a V_s + b
+\end{equation}
+Evaluando en ambos extremos del intervalo y restando miembro a miembro:
+\begin{align}
+    V_{c,\max} - V_{c,\min} &= a(V_{s,\max} - V_{s,\min}) \implies a = \frac{V_{c,\max} - V_{c,\min}}{V_{s,\max} - V_{s,\min}} \quad \left[\frac{\text{V}}{\text{V}}\right] \\
+    b &= V_{c,\min} - a V_{s,\min} \quad [\text{V}]
+\end{align}
+\textbf{Condición de realizabilidad topológica:} Solo cuando el término de desplazamiento es nulo ($b = 0\,\text{V}$) y la pendiente cumple $a \ge 1$, un amplificador no inversor simple referenciado a tierra puede realizar el mapeo directamente (sujeto a límites de rieles y modo común).
+\begin{itemize}[noitemsep]
+    \item \textbf{Caso 1 (Sin offset):} Mapear $V_s \in [0.20, 0.80]\,\text{V}$ a $V_c \in [0.60, 2.40]\,\text{V}$:
+    \[
+        a = \frac{2.40 - 0.60}{0.80 - 0.20} = \frac{1.80}{0.60} = 3\,\text{V/V}, \qquad b = 0.60 - 3(0.20) = 0\,\text{V}
+    \]
+    \item \textbf{Caso 2 (Con offset no nulo):} Mapear $V_s \in [0.20, 0.80]\,\text{V}$ a $V_c \in [0.00, 3.00]\,\text{V}$:
+    \[
+        a = \frac{3.00 - 0.00}{0.80 - 0.20} = 5\,\text{V/V}, \qquad b = 0.00 - 5(0.20) = -1.00\,\text{V}
+    \]
+    Aquí $b = -1.00\,\text{V} \neq 0$, por lo que una ganancia no inversora simple $V_c = (1+R_f/R_g)V_s$ es incapaz de satisfacer el mapeo sin una red adicional de desplazamiento de referencia.
+\end{itemize}
+
+\newpage
+\section{Bloque 2 y Módulos 1 y 2 — Recuperación de $H(s)$, Acondicionador y LTspice}
+
+\subsection{Derivación de la Red RC Pasa-Bajos (Especificación V3)}
+En el dominio de Laplace con condiciones iniciales nulas, la impedancia de un resistor es $Z_R(s) = R$ y la de un capacitor es $Z_C(s) = \frac{1}{sC}$. Tomando la salida sobre el capacitor hacia tierra, por divisor de impedancias:
+\begin{equation}
+    H_{RC}(s) = \frac{V_{out}(s)}{V_{in}(s)} = \frac{Z_C(s)}{Z_R(s) + Z_C(s)} = \frac{\frac{1}{sC}}{R + \frac{1}{sC}} = \frac{1}{1 + sRC} = \frac{1}{1 + s\tau}
+\end{equation}
+donde $\tau = RC\,[\text{s}]$ es la constante de tiempo y $f_c = \frac{1}{2\pi RC}\,[\text{Hz}]$ es la frecuencia de corte. En régimen sinusoidal permanente ($s = j\omega = j2\pi f$):
+\begin{align}
+    H_{RC}(j\omega) &= \frac{1}{1 + j(f/f_c)} \\ 
+    |H_{RC}(j\omega)| &= \frac{1}{\sqrt{1 + (f/f_c)^2}} \\
+    \phi(f) &= -\arctan\left(\frac{f}{f_c}\right)
+\end{align}
+
+\begin{center}
+    \textbf{Especificación Visual V3: Respuesta Temporal al Escalón y Bode de Magnitud del Filtro RC ($R=10\,\text{k}\Omega, C=100\,\text{nF}$)}
+    \par\vspace{0.2cm}
+    \begin{tikzpicture}
+        \begin{axis}[
+            name=rc_time,
+            width=6.2cm, height=3.6cm,
+            xlabel={$t$ [ms]}, ylabel={$v_{out}(t)$ [V]},
+            xmin=0, xmax=5, ymin=0, ymax=1.15,
+            grid=both,
+            label style={font=\footnotesize}, tick label style={font=\scriptsize},
+            title={\footnotesize Respuesta al Escalón Unitario ($\tau = 1\,\text{ms}$)}
+        ]
+            \addplot[thick, ucbblue, domain=0:5, samples=100] {1 - exp(-x)};
+            \draw[dashed, red] (axis cs:1,0) -- (axis cs:1,0.632) -- (axis cs:0,0.632);
+            \node[right, font=\scriptsize, red] at (axis cs:1.05,0.55) {$(1\,\text{ms}, 0.632\,\text{V})$};
+        \end{axis}
+        \begin{semilogxaxis}[
+            at={(rc_time.south east)}, anchor=south west, xshift=1.8cm,
+            width=6.2cm, height=3.6cm,
+            xlabel={$f$ [Hz]}, ylabel={$20\log_{10}|H|$ [dB]},
+            xmin=10, xmax=10000, ymin=-35, ymax=5,
+            grid=both,
+            label style={font=\footnotesize}, tick label style={font=\scriptsize},
+            title={\footnotesize Magnitud Bode ($f_c \approx 159.15\,\text{Hz}$)}
+        ]
+            \addplot[thick, ucbblue, domain=10:10000, samples=100] {-10*log10(1 + (x/159.155)^2)};
+            \addplot[mark=*, red, mark size=1.5pt] coordinates {(159.155, -3.01)};
+            \node[below left, font=\scriptsize, red] at (axis cs:159.155,-3.5) {$-3.01\,\text{dB}$};
+        \end{semilogxaxis}
+    \end{tikzpicture}
+\end{center}
+
+\subsection{Derivación del Amplificador No Inversor y Condiciones de Validez (Especificación V2)}
+En la topología no inversora, la señal de entrada $V_{in}$ se aplica al terminal no inversor ($+$). El divisor resistivo formado por $R_f$ (entre la salida y el terminal inversor $-$) y $R_g$ (entre el terminal $-$ y tierra) muestrea la tensión de salida. Si la corriente de entrada al terminal inversor es despreciable ($i_- \approx 0$):
+\begin{equation}
+    V_- = V_{out} \frac{R_g}{R_g + R_f}
+\end{equation}
+\textbf{Hipótesis de operación lineal:} Únicamente cuando existe realimentación negativa estable, alimentación válida dentro de especificaciones, modo común de entrada respetado, ausencia de saturación en la salida y frecuencia de operación muy inferior al ancho de banda de lazo cerrado, la elevada ganancia en lazo abierto fuerza $V_- \approx V_+ = V_{in}$. Sustituyendo:
+\begin{equation}
+    V_{in} \approx V_{out} \frac{R_g}{R_g + R_f} \implies A_v = \frac{V_{out}}{V_{in}} = 1 + \frac{R_f}{R_g}
+\end{equation}
+Con $R_g = 10\,\text{k}\Omega$ y $R_f = 20\,\text{k}\Omega$, resulta $A_v = 1 + \frac{20\,\text{k}\Omega}{10\,\text{k}\Omega} = 3\,\text{V/V}$. Observar el cociente $\frac{V_{out}}{V_{in}} = 3$ en corriente continua (DC) \textbf{no demuestra} que la función de transferencia sea $H(j\omega) = 3$ para toda frecuencia $\omega$.
+
+\begin{center}
+    \textbf{Especificación Visual V2: Topología del Acondicionador No Inversor con Nodos Explícitos}
+    \par\vspace{0.2cm}
+    \begin{circuitikz}[thick, scale=0.9, transform shape]
+        \draw (0,0) node[op amp, yscale=-1] (U1) {};
+        \draw (U1.+) to[short, -o] ++(-1.8,0) node[left] {\texttt{sensor\_in} ($V_{in}$)};
+        \draw (U1.-) to[short, -*] ++(-1.5,0) coordinate(fb) node[above left, font=\footnotesize] {\texttt{fb} ($V_-$)};
+        \draw (fb) to[R, l=$R_g$, a=$10\,\text{k}\Omega$] ++(0,-2.0) coordinate(fg) ++(0,0.0) node[ground]{};
+        \draw (fg) -- ++(0,0) coordinate(rf_line) to[R, l=$R_f$, a=$20\,\text{k}\Omega$] (rf_line -| U1.out) -- (U1.out);
+        \draw (U1.out) to[short, *-o] ++(1.4,0) node[right] {\texttt{cond\_out} ($V_{out}$)};
+        \draw (U1.down) -- ++(0,0.45) node[above, font=\scriptsize] {$V_+$ (Riel $+$, solo modelo real)};
+        \draw (U1.up) -- ++(0,-0.45) node[below, font=\scriptsize] {$V_-$ (Riel $-$, solo modelo real)};
+    \end{circuitikz}
+\end{center}
+
+\subsection{Procedimiento Operativo en LTspice (Módulos 1 y 2)}
+\begin{enumerate}[noitemsep]
+    \item \textbf{Vía de inicio con netlist controlado (\texttt{condicionador\_ideal\_dc.cir}):} Abre el archivo en LTspice mediante \texttt{File $\to$ Open}. Este archivo utiliza una fuente controlada por tensión (\texttt{EAMP}) sin pines de alimentación para verificar la topología ideal. Ejecuta \texttt{Run}, añade las trazas \texttt{V(sensor\_in)} y \texttt{V(cond\_out)} y registra las lecturas en $0.2, 0.5$ y $0.8\,\text{V}$ como \texttt{SIMULADO EN MODELO IDEAL}.
+    \item \textbf{Construcción de esquema propio (\texttt{acondicionador\_propio.asc}):} Crea un nuevo esquema (\texttt{File $\to$ New Schematic}), coloca $R_g = 10\text{k}$, $R_f = 20\text{k}$, la fuente \texttt{Vsig} y un amplificador operacional con subcircuito real disponible en tu biblioteca local (verificando sus pines funcionales $+$, $-$, salida y rieles $V_+/V_-$ en su documentación). Etiqueta los cables \texttt{sensor\_in} y \texttt{cond\_out} usando \texttt{Label Net}.
+    \item \textbf{Simulación de punto de operación y barrido DC:} Ejecuta primero \texttt{.op} con $V_{sig} = 0.2\,\text{V}$ y verifica los potenciales nodales. Luego configura \texttt{.dc Vsig 0.2 0.8 0.3} para obtener los tres puntos de diseño.
+\end{enumerate}
+
+\newpage
+\section{Bloque 3 y Módulo 3 — Calificación de un Amplificador Operacional Real (CP2B)}
+
+\subsection{Modelado de Limitaciones Dinámicas y Estáticas}
+\begin{enumerate}[noitemsep]
+    \item \textbf{Ancho de banda de lazo cerrado ($f_{BW}$):} Para un amplificador compensado con un polo dominante de producto ganancia-ancho de banda $GBW$, el ancho de banda de pequeña señal en configuración no inversora se aproxima por:
+    \begin{equation}
+        f_{BW} \approx \frac{GBW}{A_{\text{noise}}}, \qquad A_{\text{noise}} = 1 + \frac{R_f}{R_g}
+    \end{equation}
+    Para el LT1001 con $GBW_{\min} = 0.4\,\text{MHz}$ y $A_{\text{noise}} = 3$, resulta $f_{BW,\min} \approx \frac{400\,\text{kHz}}{3} \approx 133.3\,\text{kHz}$.
+    \item \textbf{Requisito de velocidad de respuesta (\textit{Slew Rate}, $SR$):} Sea una tensión de salida sinusoidal de amplitud pico $V_p$ y frecuencia $f$:
+    \begin{equation}
+        v_o(t) = V_p \sin(2\pi f t) \implies \frac{dv_o(t)}{dt} = 2\pi f V_p \cos(2\pi f t)
+    \end{equation}
+    La pendiente máxima ocurre en el cruce por cero ($\cos(2\pi f t) = 1$). Para evitar distorsión por limitación de pendiente (triangularización de la onda), el dispositivo debe cumplir:
+    \begin{equation}
+        SR_{\text{device}} \ge \left|\frac{dv_o}{dt}\right|_{\max} = 2\pi f V_p
+    \end{equation}
+    \begin{itemize}[noitemsep]
+        \item \textbf{Caso 1 ($V_p = 2\,\text{V}, f = 1\,\text{kHz}$):} $SR_{\text{req}} = 2\pi(1000)(2) = 12\,566.4\,\text{V/s} \approx 0.01257\,\text{V/}\mu\text{s} < 0.1\,\text{V/}\mu\text{s}$ (cumple el mínimo garantizado del LT1001 bajo condiciones de ficha).
+        \item \textbf{Caso 2 ($V_p = 2\,\text{V}, f = 10\,\text{kHz}$):} $SR_{\text{req}} = 2\pi(10000)(2) = 125\,663.7\,\text{V/s} \approx 0.12566\,\text{V/}\mu\text{s} > 0.1\,\text{V/}\mu\text{s}$ (supera el mínimo garantizado de $0.1\,\text{V/}\mu\text{s}$, aunque es inferior al valor típico de $0.25\,\text{V/}\mu\text{s}$; \textbf{no se puede garantizar} operación sin distorsión para cualquier unidad fabricada).
+    \end{itemize}
+    \item \textbf{Tensión de offset y excursión (\textit{Swing}):} El offset de entrada $V_{OS}$ se amplifica en la salida según $V_{out,\text{offset}} \approx A_{\text{noise}} V_{OS}$ (más el efecto de las corrientes de polarización $I_B$). Asimismo, tanto el voltaje de entrada en modo común $V_{CM}$ como la salida $V_{out}$ están restringidos por los márgenes a los rieles bajo la carga $R_L$ declarada.
+\end{enumerate}
+
+\begin{center}
+    \textbf{Especificación Visual V4: Extracto Documental de Referencia del Datasheet LT1001 (Condición $V_S = \pm 15\,\text{V}, T_A = 25^\circ\text{C}$)}
+    \par\vspace{0.15cm}
+    \begin{tabularx}{\textwidth}{@{} l c c c X l @{}}
+    \toprule
+    \textbf{Parámetro} & \textbf{Mín.} & \textbf{Típ.} & \textbf{Máx.} & \textbf{Condiciones en Ficha} & \textbf{Unidad} \\ \midrule
+    $GBW$ & $0.4$ & $0.8$ & --- & $f_o = 100\,\text{kHz}$ (Diseño) & $\text{MHz}$ \\
+    \textit{Slew Rate} ($SR$) & $0.1$ & $0.25$ & --- & $R_L \ge 2\,\text{k}\Omega$ & $\text{V/}\mu\text{s}$ \\
+    Excursión de salida & $\pm 13.0$ & $\pm 14.0$ & --- & $R_L \ge 2\,\text{k}\Omega$ & $\text{V}$ \\
+    Rango modo común & $\pm 13.0$ & $\pm 14.0$ & --- & Prueba de CMRR & $\text{V}$ \\
+    Offset de Entrada & --- & \multicolumn{2}{c}{\textit{Según grado}} & Ver tabla (ej. LT1001C) & $\mu\text{V}$ \\ \bottomrule
+    \end{tabularx}
+\end{center}
+
+\section{Bloque 4 y Módulo 4 — Filtro Activo Sallen-Key Butterworth de 2.º Orden (CP3A)}
+
+\subsection{Topología Estricta y Derivación Completa por KCL (Especificación V5)}
+Se adopta exclusivamente la siguiente topología de paso bajo Sallen-Key: la señal de entrada $V_{in}$ atraviesa $R_1$ hacia el nodo intermedio $a$, y luego $R_2$ hacia el nodo $b$ conectado a la entrada no inversora ($+$) del op-amp. El capacitor $C_1$ conecta el nodo $a$ con la salida $V_{out}$ del op-amp (\textbf{no a tierra}), mientras que $C_2$ conecta el nodo $b$ a tierra ($\text{GND}$). El divisor $R_f, R_g$ en la entrada inversora ($-$) fija la ganancia de banda de paso $K = 1 + \frac{R_f}{R_g}$.
+
+\begin{center}
+    \textbf{Especificación Visual V5: Esquema Inequívoco del Filtro Sallen-Key de Segundo Orden}
+    \par\vspace{0.2cm}
+    \begin{circuitikz}[thick, scale=0.8, transform shape]
+        \draw (0,0) node[op amp, yscale=-1] (U1) {};
+        \draw (U1.+) to[short, -*] ++(-3.0,0) coordinate(b) node[above right, font=\footnotesize] {$b\,(V_b)$};
+        \draw (b) to[C, l=$C_2$, a=$100\,\text{nF}$] ++(0,-2.1) node[ground]{};
+        \draw (b) to[R, l=$R_2$, a=$16\,\text{k}\Omega$, -*] ++(-2.2,0) coordinate(a) node[below, font=\footnotesize] {$a\,(V_a)$};
+        \draw (a) to[R, l=$R_1$, a=$16\,\text{k}\Omega$, -o] ++(-2.0,0) node[left] {$V_{in}$ (\texttt{in})};
+        
+        \draw (a) -- ++(0,1.5) coordinate(c1_left) to[C, l=$C_1$, a=$100\,\text{nF}$] (c1_left -| U1.out) to[short, -*] (U1.out);
+        
+        \draw (U1.-) to[short, -*] ++(-0.6,0) coordinate(fb) node[below left, font=\footnotesize] {\texttt{fb}};
+        \draw (fb) to[R, l=$R_g$, a=$10\,\text{k}\Omega$] coordinate(fg) ++(0,-2) node[ground]{};
+        \draw (fg) -- ++(0,0) coordinate(rf_line) to[R, l=$R_f$, a=$5.9\,\text{k}\Omega$] (rf_line -| U1.out) -- (U1.out);
+        
+        \draw (U1.out) to[short, *-o] ++(1.3,0) node[right] {$V_{out}$ (\texttt{out})};
+    \end{circuitikz}
+\end{center}
+
+\textbf{Desarrollo paso a paso por Ley de Corrientes de Kirchhoff (KCL):}
+\begin{enumerate}[noitemsep]
+    \item En régimen lineal ideal del bloque amplificador, la salida se relaciona con el nodo $b$ mediante:
+    \begin{equation}
+        V_o(s) = K V_b(s) \implies V_b(s) = \frac{V_o(s)}{K}, \qquad K = 1 + \frac{R_f}{R_g}
+    \end{equation}
+    \item Aplicando KCL en el nodo $b$ (con corriente nula hacia la entrada $+$ del op-amp):
+    \begin{equation}
+        \frac{V_b - V_a}{R_2} + sC_2 V_b = 0 \implies V_a = V_b(1 + sR_2 C_2)
+    \end{equation}
+    \item Aplicando KCL en el nodo $a$:
+    \begin{equation}
+        \frac{V_a - V_{in}}{R_1} + \frac{V_a - V_b}{R_2} + sC_1(V_a - V_o) = 0
+    \end{equation}
+    Multiplicando por $R_1$ y agrupando términos en $V_a$:
+    \begin{equation}
+        V_a\left(1 + \frac{R_1}{R_2} + sR_1 C_1\right) - \frac{R_1}{R_2}V_b - sR_1 C_1 V_o = V_{in}
+    \end{equation}
+    \item Sustituyendo $V_a = V_b(1 + sR_2 C_2)$ y $V_b = \frac{V_o}{K}$:
+    \begin{align}
+        \frac{V_o}{K}\left[(1 + sR_2 C_2)\left(1 + \frac{R_1}{R_2} + sR_1 C_1\right) - \frac{R_1}{R_2} - sR_1 C_1 K\right] &= V_{in} \\
+        \frac{V_o}{K}\left[1 + s\left(R_1 C_2 + R_2 C_2 + R_1 C_1(1 - K)\right) + s^2 R_1 R_2 C_1 C_2\right] &= V_{in}
+    \end{align}
+    \item Despejando la función de transferencia general $H(s) = \frac{V_o(s)}{V_{in}(s)}$ y comparando con la forma canónica de segundo orden:
+    \begin{equation}
+        H(s) = \frac{K}{1 + s\left[R_1 C_2 + R_2 C_2 + R_1 C_1(1 - K)\right] + s^2 R_1 R_2 C_1 C_2} = \frac{K}{1 + \frac{s}{Q\omega_0} + \left(\frac{s}{\omega_0}\right)^2}
+    \end{equation}
+    de donde se identifican la pulsación natural $\omega_0$ y el factor de calidad $Q$:
+    \begin{equation}
+        \omega_0 = \frac{1}{\sqrt{R_1 R_2 C_1 C_2}}, \qquad Q = \frac{\sqrt{R_1 R_2 C_1 C_2}}{R_1 C_2 + R_2 C_2 + R_1 C_1(1 - K)}
+    \end{equation}
+    \item \textbf{Simplificación de componentes iguales ($R_1 = R_2 = R$ y $C_1 = C_2 = C$):}
+    \begin{equation}
+        \omega_0 = \frac{1}{RC}, \qquad f_0 = \frac{1}{2\pi RC}, \qquad Q = \frac{RC}{RC(2 + 1 - K)} = \frac{1}{3 - K}
+    \end{equation}
+    Para una respuesta \textbf{Butterworth} máximamente plana en segundo orden se exige $Q = \frac{1}{\sqrt{2}} \approx 0.7071$:
+    \begin{equation}
+        \frac{1}{3 - K} = \frac{1}{\sqrt{2}} \implies K = 3 - \sqrt{2} \approx 1.585786
+    \end{equation}
+    \item \textbf{Diseño nominal ilustrativo:} Con $R = 16\,\text{k}\Omega$, $C = 100\,\text{nF}$, $R_g = 10\,\text{k}\Omega$ y $R_f = 5.9\,\text{k}\Omega$ (redondeo práctico frente a $5.858\,\text{k}\Omega$):
+    \begin{align}
+        K &= 1 + \frac{5.9}{10} = 1.59 \quad (+4.028\,\text{dB}) \\
+        Q &= \frac{1}{3 - 1.59} \approx 0.70922 \\
+        f_0 &= \frac{1}{2\pi(16\,\text{k}\Omega)(100\,\text{nF})} \approx 99.47\,\text{Hz}
+    \end{align}
+    \item \textbf{Magnitud y fase en función de la frecuencia normalizada $x = f/f_0$:}
+    \begin{equation}
+        \frac{|H(j\omega)|}{K} = \frac{1}{\sqrt{(1 - x^2)^2 + (x/Q)^2}}, \qquad \phi(f) = -\operatorname{atan2}\left(\frac{x}{Q},\, 1 - x^2\right)
+    \end{equation}
+\end{enumerate}
+
+\begin{center}
+    \textbf{Especificación Visual V6: Diagrama de Bode Calculado del Filtro Sallen-Key ($K=1.59, f_0=99.47\,\text{Hz}, Q=0.709$)}
+    \par\vspace{0.15cm}
+    \begin{tikzpicture}
+        \begin{semilogxaxis}[
+            name=sk_mag,
+            width=12cm, height=3.3cm,
+            ylabel={Magnitud [dB]},
+            xticklabel=\empty,
+            xmin=1, xmax=10000, ymin=-45, ymax=10,
+            ytick={-40, -30, -20, -10, 0, 4.03},
+            grid=both,
+            label style={font=\footnotesize}, tick label style={font=\scriptsize},
+            legend style={at={(0.02,0.12)}, anchor=south west, font=\scriptsize}
+        ]
+            \addplot[thick, ucbblue, domain=1:10000, samples=150] {20*log10(1.59 / sqrt((1 - (x/99.4718)^2)^2 + ((x/99.4718)/0.70922)^2))};
+            \addlegendentry{Absoluta $20\log_{10}|H|$ (\texttt{CALCULADO})}
+            \addplot[thick, dashed, red, domain=1:10000, samples=150] {20*log10(1 / sqrt((1 - (x/99.4718)^2)^2 + ((x/99.4718)/0.70922)^2))};
+            \addlegendentry{Relativa $20\log_{10}(|H|/K)$ (\texttt{CALCULADO})}
+            \addplot[only marks, mark=*, black, mark size=1.5pt] coordinates {(10,4.03) (99.47,1.04) (1000,-36.06)};
+        \end{semilogxaxis}
+        \begin{semilogxaxis}[
+            at={(sk_mag.south west)}, anchor=north west, yshift=-0.2cm,
+            width=12cm, height=2.9cm,
+            xlabel={Frecuencia $f$ [Hz]}, ylabel={Fase $\phi$ [$^\circ$]},
+            xmin=1, xmax=10000, ymin=-185, ymax=5,
+            ytick={0, -45, -90, -135, -180},
+            grid=both,
+            label style={font=\footnotesize}, tick label style={font=\scriptsize}
+        ]
+            \addplot[thick, ucbblue, domain=1:10000, samples=150] {-atan2((x/99.4718)/0.70922, 1 - (x/99.4718)^2)};
+            \addplot[only marks, mark=*, black, mark size=1.5pt] coordinates {(10,-8.15) (99.47,-90) (1000,-171.94)};
+        \end{semilogxaxis}
+    \end{tikzpicture}
+\end{center}
+
+\newpage
+\section{Bloque 5 y Módulo 5 — Modelo de Planta, Control P/PI/PID y Realización Analógica (CP4A)}
+
+\subsection{Modelo de Planta de Primer Orden y Estructura de Lazo Cerrado (Especificación V7)}
+En ausencia de series temporales térmicas medidas con trazabilidad verificada, se utiliza el modelo de primer orden declarado como \textbf{ILUSTRATIVO}:
+\begin{equation}
+    G_p(s) = \frac{K_{p,\text{plant}}}{\tau s + 1} = \frac{2}{20s + 1}
+\end{equation}
+Si existieran datos reales de respuesta al escalón sin retardo significativo, la ganancia estática se obtendría como $K_{p,\text{plant}} = \frac{y_\infty - y_0}{u_1 - u_0}$ y la constante de tiempo como $\tau \approx t_{63} - t_0$.
+
+El controlador paralelo general con derivada filtrada tiene la función de transferencia:
+\begin{equation}
+    C_{\text{PID}}(s) = K_c + \frac{K_i}{s} + \frac{K_d s}{1 + T_f s}, \qquad C_{\text{PI}}(s) = K_c\left(1 + \frac{1}{T_i s}\right) = K_c + \frac{K_i}{s}, \quad T_i = \frac{K_c}{K_i}
+\end{equation}
+Con realimentación negativa unitaria, la ganancia de lazo es $L(s) = C(s)G_p(s)$, la transferencia complementaria es $T(s) = \frac{Y(s)}{R(s)} = \frac{L(s)}{1 + L(s)}$, y la sensibilidad (error a referencia) es $S(s) = \frac{E(s)}{R(s)} = \frac{1}{1 + L(s)}$.
+
+\begin{center}
+    \textbf{Especificación Visual V7: Lazo de Control P / PI / PID con Saturación de Actuación}
+    \par\vspace{0.2cm}
+    \begin{tikzpicture}[node distance=0.5cm and 0.6cm, thick,
+        block/.style={draw=ucbblue, rounded corners, fill=blue!8, text width=2.5cm, align=center, minimum height=1.0cm, font=\scriptsize}]
+        \node (ref) [font=\footnotesize] {$r(t)$};
+        \node[draw, circle, right=0.5cm of ref, inner sep=1.5pt] (sum) {\tiny $\Sigma$};
+        \node[block, right=0.6cm of sum] (pid) {Controlador\\$C(s) = K_c + \frac{K_i}{s} + \frac{K_d s}{1+T_f s}$};
+        \node[block, fill=orange!10, right=0.6cm of pid] (sat) {Saturación No Lineal\\$u_{\min} \le u(t) \le u_{\max}$};
+        \node[block, right=0.6cm of sat] (plant) {Planta\\$G_p(s) = \frac{2}{20s + 1}$};
+        \node[right=0.6cm of plant, font=\footnotesize] (out) {$y(t)$};
+        
+        \draw[->] (ref) -- node[above, font=\scriptsize]{$+$} (sum);
+        \draw[->] (sum) -- node[above, font=\scriptsize]{$e(t)$} (pid);
+        \draw[->] (pid) -- node[above, font=\scriptsize]{$u_c(t)$} (sat);
+        \draw[->] (sat) -- node[above, font=\scriptsize]{$u(t)$} (plant);
+        \draw[->] (plant) -- (out);
+        \draw[->] ($(plant.east)+(0.25,0)$) -- ++(0,-1.1) -| node[pos=0.92, left, font=\scriptsize]{$-$} (sum);
+    \end{tikzpicture}
+\end{center}
+
+\subsection{Derivación Comparativa: Control P vs. Control PI}
+\begin{enumerate}[noitemsep]
+    \item \textbf{Control Proporcional ($K_c = 1$):}
+    \begin{equation}
+        L_P(s) = \frac{2}{20s + 1} \implies T_P(s) = \frac{\frac{2}{20s+1}}{1 + \frac{2}{20s+1}} = \frac{2}{20s + 3} = \frac{2/3}{\frac{20}{3}s + 1}
+    \end{equation}
+    Ante un escalón unitario $R(s) = 1/s$, el valor final es $y(\infty) = \lim_{s\to 0} s T_P(s) \frac{1}{s} = \frac{2}{3} \approx 0.6667$, dejando un \textbf{error estacionario permanente} $e_\infty = 1 - \frac{2}{3} = \frac{1}{3} \approx 0.3333$, con constante de tiempo cerrada $\tau_{CL,P} = \frac{20}{3} \approx 6.67\,\text{s}$.
+    \item \textbf{Control Proporcional-Integral ($K_c = 1, K_i = 0.05\,\text{s}^{-1} \implies T_i = 20\,\text{s}$):}
+    \begin{equation}
+        C_{\text{PI}}(s) = 1 + \frac{0.05}{s} = \frac{20s + 1}{20s} \implies L_{\text{PI}}(s) = \frac{20s + 1}{20s} \cdot \frac{2}{20s + 1} = \frac{1}{10s}
+    \end{equation}
+    La transferencia de lazo cerrado resulta:
+    \begin{equation}
+        T_{\text{PI}}(s) = \frac{\frac{1}{10s}}{1 + \frac{1}{10s}} = \frac{1}{10s + 1}
+    \end{equation}
+    El error estacionario se anula ($e_\infty = 0$) y la respuesta temporal al escalón unitario es $y(t) = 1 - e^{-t/10}$, monótona sin sobreimpulso y con constante de tiempo $\tau_{CL,\text{PI}} = 10\,\text{s}$. \textbf{Advertencia de robustez:} La cancelación polo-cero es sensible a errores en $\tau$, retardos no modelados y saturación del actuador (\textit{integrator windup}).
+    \item \textbf{Realización analógica de integrador con fuga:} Un integrador inversor ideal tiene $H_{\text{int}}(s) = -\frac{1}{s R_{in} C}$. Para evitar que el corriente de polarización u offset sature al amplificador en DC, se coloca un resistor de fuga $R_{f,\text{leak}}$ en paralelo con $C$:
+    \begin{equation}
+        H_{\text{int,leak}}(s) = -\frac{R_{f,\text{leak}} \parallel \frac{1}{sC}}{R_{in}} = -\frac{\frac{R_{f,\text{leak}}}{R_{in}}}{1 + s R_{f,\text{leak}} C}
+    \end{equation}
+\end{enumerate}
+
+\begin{center}
+    \textbf{Especificación Visual V8: Respuesta al Escalón Unitario del Modelo Sintético (P vs. PI vs. PID Filtrado)}
+    \par\vspace{0.15cm}
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=12cm, height=4.0cm,
+            xlabel={Tiempo $t$ [s]}, ylabel={Salida Normalizada $y(t)$},
+            xmin=0, xmax=50, ymin=0, ymax=1.18,
+            grid=both,
+            label style={font=\footnotesize}, tick label style={font=\scriptsize},
+            legend style={at={(0.98,0.12)}, anchor=south east, font=\scriptsize}
+        ]
+            \addplot[dashed, black, domain=0:50] {1};
+            \addlegendentry{Referencia $r(t) = 1$}
+            \addplot[thick, red, domain=0:50, samples=100] {0.6667*(1 - exp(-x/6.6667))};
+            \addlegendentry{Control P ($K_c=1, e_\infty=1/3$) [\texttt{CALCULADO}]}
+            \addplot[thick, ucbblue, domain=0:50, samples=100] {1 - exp(-x/10)};
+            \addlegendentry{Control PI ($K_c=1, K_i=0.05$) [\texttt{CALCULADO}]}
+            \addplot[thick, green!60!black, dashdotted, domain=0:50, samples=100] {1 - 1.05*exp(-x/5.5)*cos(deg(0.18*x))};
+            \addlegendentry{PID Filtrado (Ilustrativo) [\texttt{SIMULADO}]}
+        \end{axis}
+    \end{tikzpicture}
+\end{center}
+
+\newpage
+\section{Bloque 6 y Módulo 6 — Estabilidad, Carga, Oscilador de Wien y Potencia (CP3B / CP4B)}
+
+\subsection{Margen de Fase, Efecto de Carga y Puente de Wien (Especificación V9)}
+\begin{enumerate}[noitemsep]
+    \item \textbf{Margen de fase operativo ($PM$):} Sea $\omega_c$ la frecuencia de cruce de ganancia donde $|L(j\omega_c)| = 1$ ($0\,\text{dB}$). El margen de fase es:
+    \begin{equation}
+        PM = 180^\circ + \arg L(j\omega_c)
+    \end{equation}
+    Una carga capacitiva $C_L$ en la salida demanda $i_C(t) = C_L \frac{dv_o}{dt}$ e interactúa con la resistencia de salida del op-amp añadiendo retraso de fase adicional, lo que reduce $PM$ y puede inducir oscilación o sobreimpulso.
+    \item \textbf{Red selectiva Puente de Wien:} Compuesta por una rama serie $Z_s(s) = R + \frac{1}{sC} = \frac{1+sRC}{sC}$ y una rama paralelo $Z_p(s) = R \parallel \frac{1}{sC} = \frac{R}{1+sRC}$. La función de transferencia de la red de realimentación positiva $\beta(s)$ es:
+    \begin{equation}
+        \beta(s) = \frac{Z_p(s)}{Z_s(s) + Z_p(s)} = \frac{\frac{R}{1+sRC}}{\frac{1+sRC}{sC} + \frac{R}{1+sRC}} = \frac{sRC}{(1 + sRC)^2 + sRC} = \frac{sRC}{1 + 3sRC + s^2 R^2 C^2}
+    \end{equation}
+    Evaluando en $s = j\omega$:
+    \begin{equation}
+        \beta(j\omega) = \frac{j\omega RC}{(1 - \omega^2 R^2 C^2) + j3\omega RC}
+    \end{equation}
+    En la frecuencia de oscilación $\omega_0 = \frac{1}{RC}$ ($f_0 = \frac{1}{2\pi RC}$), el término real del denominador se anula ($1 - \omega_0^2 R^2 C^2 = 0$), resultando fase cero y atenuación exacta de un tercio:
+    \begin{equation}
+        \beta(j\omega_0) = \frac{j1}{0 + j3} = \frac{1}{3} \angle 0^\circ
+    \end{equation}
+    Por el criterio de Barkhausen ($A\beta = 1\angle 0^\circ$), el amplificador no inversor requiere ganancia $A = 3$ para sostener oscilaciones, y ligeramente mayor ($A > 3$) con control no lineal de amplitud para arrancar y estabilizar la onda.
+\end{enumerate}
+
+\begin{center}
+    \textbf{Especificación Visual V9: Red Selectiva Puente de Wien y Condición de Fase Cero ($\beta(j\omega_0) = 1/3$)}
+    \par\vspace{0.2cm}
+    \begin{circuitikz}[thick, scale=0.88, transform shape]
+        \draw (0,2.2) node[left] {$V_{osc}$ (\texttt{wien\_in})} to[short, o-] (0.8,2.2) to[R, l=$R_1$, a=$10\,\text{k}\Omega$] (2.8,2.2) to[C, l=$C_1$, a=$10\,\text{nF}$] (4.8,2.2) to[short, -*] (6.0,2.2) coordinate(wout);
+        \draw (wout) to[short, -o] (6.8,2.2) node[right] {$V_{\beta}$ (\texttt{wien\_out})};
+        \draw (6.0,2.2) -- (6.0,1.6) -- (4.7,1.6) to[R, l=$R_2$, a=$10\,\text{k}\Omega$] (4.7,0) -- (6.5,0);
+        \draw (6.0,1.6) -- (7.3,1.6) to[C, l=$C_2$, a=$10\,\text{nF}$] (7.3,0) -- (6.0,0) node[ground]{};
+    \end{circuitikz}
+\end{center}
+
+\subsection{Cálculo de Interfaz de Potencia y Etapa Clase AB (CP4B)}
+Para una carga resistiva definida $R_{\text{load}}$ sometida a una tensión $V_{\text{load}}$, la corriente y potencia entregadas son:
+\begin{equation}
+    I_{\text{load}} = \frac{V_{\text{load}}}{R_{\text{load}}}, \qquad P_{\text{load}} = \frac{V_{\text{rms}}^2}{R_{\text{load}}}
+\end{equation}
+En el caso hipotético $R_{\text{load}} = 100\,\Omega$ y $V_{\text{load}} = 5\,\text{V}$ DC:
+\begin{equation}
+    I_{\text{load}} = \frac{5\,\text{V}}{100\,\Omega} = 50\,\text{mA}, \qquad P_{\text{load}} = \frac{5^2}{100} = 0.25\,\text{W} = 250\,\text{mW}
+\end{equation}
+\textbf{Advertencia:} Un op-amp de señal como el LT1001 no está diseñado para entregar $50\,\text{mA}$ directos a una carga de $100\,\Omega$ sin caer en limitación de corriente o degradación térmica. En una etapa de salida en serie DC simplificada, la disipación en el elemento de paso es $P_{\text{device}} \approx (V_{\text{supply}} - V_{\text{load}})I_{\text{load}}$.
+
+\section{Bloque 7 y Módulo 7 — Integración, Instrumentación y Rediseño (Especificaciones V10, V11)}
+
+\begin{center}
+    \textbf{Especificación Visual V10: Conexión Segura de Instrumental (Solo Autorizado)}
+    \par\vspace{0.3cm}
+    \begin{tikzpicture}[thick, scale=0.9, transform shape,
+        box/.style={draw=ucbblue, rounded corners, fill=gray!10, minimum width=3.2cm, minimum height=1.5cm, align=center, font=\footnotesize}]
+        
+        % Definición de los tres bloques principales
+        \node[box] (gen) {Generador de Señales\\(Baja Tensión)};
+        \node[box, right=2.0cm of gen, fill=blue!8] (dut) {Circuito Prueba\\(Acond./Filtro)};
+        \node[box, right=2.0cm of dut] (osc) {Osciloscopio\\CH1(In) / CH2(Out)};
+        
+        % Conexiones de Señal Positiva (Activas)
+        % Del Generador al Circuito (Línea Roja)
+        \draw[->, red!80!black, line width=1.2pt] 
+            (gen.east |- {$(gen.east) + (0, 0.3cm)$}) -- 
+            node[above, font=\scriptsize]{Señal + CH1} 
+            (dut.west |- {$(dut.west) + (0, 0.3cm)$});
+            
+        % Del Circuito al Osciloscopio (Línea Azul)
+        \draw[->, ucbblue, line width=1.2pt] 
+            (dut.east |- {$(dut.east) + (0, 0.3cm)$}) -- 
+            node[above, font=\scriptsize]{CH2 ($V_{out}$)} 
+            (osc.west |- {$(osc.west) + (0, 0.3cm)$});
+        
+        % Bus de Masa Común (GND) enrutado limpiamente por debajo
+        % Nodos de salida GND de los equipos
+        \coordinate (gen_gnd) at (gen.east |- {$(gen.east) - (0, 0.3cm)$});
+        \coordinate (dut_gnd) at (dut.south);
+        \coordinate (osc_gnd) at (osc.west |- {$(osc.west) - (0, 0.3cm)$});
+        
+        % Línea de bus inferior
+        \draw[line width=1.2pt] (gen_gnd) -- ++(0.5,0) |- ++(0,-1.0) coordinate(bus_start);
+        \draw[line width=1.2pt] (osc_gnd) -- ++(-0.5,0) |- ++(0,-1.0) -- (bus_start);
+        
+        % Conexión del DUT al bus de GND
+        \draw[line width=1.2pt] (dut_gnd) -- (dut_gnd |- bus_start) node[circ]{} node[ground, below]{};
+        
+        % Texto de advertencia posicionado claramente debajo del bus
+        \node[below, font=\scriptsize, red!80!black] at (dut_gnd |- {$(bus_start) - (0, 0.8cm)$}) 
+        {\textbf{Riel único de masa común ($\text{GND}$): Prohibido conectar pinzas de masa a nodos activos}};
+        
+    \end{tikzpicture}
+\end{center}
+
+\subsection{Métricas de Validación Experimental / Simulada}
+\begin{align}
+    G &= \frac{V_{out,\text{amp}}}{V_{in,\text{amp}}} \quad (\text{mismo criterio: pico, Vpp o RMS}) \\
+    \phi &= -360^\circ f \Delta t \quad (\Delta t = t_{\max,out} - t_{\max,in} > 0) \\
+    e_{\%} &= 100 \frac{\text{valor}_{\text{sim/med}} - \text{valor}_{\text{cal}}}{\text{valor}_{\text{cal}}} \quad (\text{si } \text{valor}_{\text{cal}} \neq 0)
+\end{align}
+
+\section{Bloque 8 y Módulo 8 — Estructura Documental del Informe IEEE (Especificación V12)}
+
+\begin{center}
+    \textbf{Especificación Visual V12: Trazabilidad entre Archivos Fuente, Leyendas de Procedencia e Informe IEEE}
+    \par\vspace{0.15cm}
+    \begin{tikzpicture}[node distance=0.5cm and 0.8cm, thick,
+        stepbox/.style={draw=ucbblue, rounded corners, fill=blue!5, text width=3.4cm, align=center, minimum height=1.0cm, font=\scriptsize}]
+        \node[stepbox] (src) {\textbf{1. Archivo Fuente Editable}\\Ej. \texttt{filtro\_sk\_ideal\_ac.cir}\\Parámetros: $R=16\text{k}, C=100\text{n}$};
+        \node[stepbox, right=of src] (tab) {\textbf{2. Cuaderno de Evidencias}\\Tabla con prefijos explícitos:\\\texttt{CALCULADO} vs. \texttt{SIMULADO}};
+        \node[stepbox, right=of tab] (fig) {\textbf{3. Figura en Informe IEEE}\\Leyenda obligatoria con origen,\\condiciones y alcance real};
+        \draw[->] (src) -- (tab);
+        \draw[->] (tab) -- (fig);
+    \end{tikzpicture}
+\end{center}
+
+\newpage
+\section{Secuencia de Ejercicios Obligatorios (E0 a E10)}
+
+\begin{enumerate}[label=\textbf{E\arabic*.}, start=0, leftmargin=*]
+    \item \textbf{Diagnóstico de arranque (10/11):} Deriva paso a paso $H_{RC}(s)$ y calcula $f_c$ para $R=10\,\text{k}\Omega, C=100\,\text{nF}$. En el esquema de tu op-amp, señala los terminales $+$, $-$, salida y rieles de alimentación, explicando por qué la realimentación es negativa. Registra qué soporte utilizaste.
+    \item \textbf{Acondicionador no inversor (CP2A):} Para $R_f = 20\,\text{k}\Omega$ y $R_g = 10\,\text{k}\Omega$, predice $V_{out}$ ante entradas de $0.20, 0.50$ y $0.80\,\text{V}$. Ejecuta la simulación \texttt{.dc} en LTspice. Luego modifica $R_f$ a $30\,\text{k}\Omega$, predice la nueva ganancia y la salida para $0.80\,\text{V}$ antes de simular, y contrasta. Finalmente, responde qué salida ideal solicitaría una entrada de $1.50\,\text{V}$ y qué ocurriría frente a los rieles reales.
+    \item \textbf{Calificación de Op-Amp real (CP2B):} Extrae de la hoja de datos del LT1001 (indicando grado y condiciones de prueba): alimentación, rango de modo común, excursión de salida bajo carga, $V_{OS}$, $GBW$ y $SR$. Calcula $SR_{\text{req}}$ para una salida de $V_p = 2\,\text{V}$ en $f = 1\,\text{kHz}$ y $f = 10\,\text{kHz}$, y estima $f_{BW} \approx GBW/3$. Simula con el modelo oficial si está disponible en tu biblioteca local e identifica qué limitaciones reproduce y cuáles no.
+    \item \textbf{Justificación de requisitos de filtrado:} Justifica la elección didáctica de $f_{\text{útil},\max} = 10\,\text{Hz}$, $f_{\text{pert}} = 1000\,\text{Hz}$ y $f_0 \approx 100\,\text{Hz}$. Argumenta físicamente por qué elegir una frecuencia de corte de $2\,\text{Hz}$ sería contraproducente para la señal útil.
+    \item \textbf{Derivación y validación del filtro Sallen-Key (CP3A):} Deriva $H(s)$ por KCL en los nodos $a$ y $b$. Con $R_1=R_2=16\,\text{k}\Omega, C_1=C_2=100\,\text{nF}, R_g=10\,\text{k}\Omega, R_f=5.9\,\text{k}\Omega$, calcula $K, Q$ y $f_0$. Predice magnitud relativa $|H|/K$, magnitud absoluta en dB y fase en $10, 99.5, 1000$ y $10000\,\text{Hz}$ antes de ejecutar \texttt{filtro\_sk\_ideal\_ac.cir} y \texttt{filtro\_sk\_ideal\_trans.cir}.
+    \item \textbf{Rediseño del filtro:} En una copia del esquema, cambia únicamente $R_f$ de $5.9\,\text{k}\Omega$ a $10\,\text{k}\Omega$ manteniendo el resto constante. Deduce los nuevos valores de $K$ y $Q$ antes de ejecutar, anticipa si aparecerá un pico de resonancia cerca de $f_0$ y compruébalo en LTspice. Restaura luego los valores nominales.
+    \item \textbf{Modelado de planta (CP1B):} Clasifica la diferencia entre datos de escalón reales y sintéticos. En ausencia de datos térmicos medidos, declara $G_p(s) = \frac{2}{20s+1}$ con etiqueta \texttt{ILUSTRATIVO}, calcula su respuesta analítica al escalón y detalla qué mediciones e instrumentos se requerirían para identificar una planta térmica real.
+    \item \textbf{Diseño y comparación de control P / PI / PID (CP4A):} Deduce algebraicamente $T(s)$ y $e_\infty$ para $C_P(s) = 1$ y $C_{\text{PI}}(s) = 1 + \frac{0.05}{s}$ sobre $G_p(s) = \frac{2}{20s+1}$. Ejecuta \texttt{planta\_control\_comparacion.py}, compara error estacionario, sobreimpulso, tiempo de establecimiento y esfuerzo de control (incluyendo PID con derivada filtrada y saturación), y justifica la elección práctica del controlador PI.
+    \item \textbf{Estabilidad y microcaso de Wien (CP3B):} Define el margen de fase sobre $L(j\omega)$ y explica el efecto desestabilizante de una carga capacitiva. Ejecuta \texttt{wien\_red\_ac.cir} y \texttt{microcasos\_wien\_claseAB.py} para verificar la frecuencia de fase cero, la atenuación $\beta = 1/3$, el arranque con $A > 3$ y la estabilización no lineal de amplitud.
+    \item \textbf{Interfaz de potencia y Clase AB (CP4B):} Calcula corriente y potencia sobre la carga hipotética de $100\,\Omega$ a $5\,\text{V}$ DC y explica por qué no debe conectarse directamente al LT1001. Analiza mediante \texttt{microcasos\_wien\_claseAB.py} la distorsión de cruce por cero entre una etapa Clase B y una Clase AB.
+    \item \textbf{Integración y tabla Antes/Después (CP5 — Especificación V11):} Integra los bloques dentro del alcance autorizado (Ruta A, B o C). Selecciona un parámetro de diseño que explique una discrepancia o mejore el desempeño, registra tu hipótesis previa, ejecuta el cambio aislado y documenta la comparativa completa en la Tabla C del Cuaderno de Evidencias.
+\end{enumerate}
+
+\end{document}

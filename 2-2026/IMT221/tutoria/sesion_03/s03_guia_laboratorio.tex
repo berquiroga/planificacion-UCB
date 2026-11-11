@@ -1,0 +1,148 @@
+% lab-guide.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Guía Asincrónica (S03)}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{Acondicionamiento de Señal: Amplificador No Inversor}} \\
+    \vspace{0.2cm}
+    \textit{Sesión 3/10 — Checkpoint: CP2A (Acondicionador)}
+\end{center}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!80!black, title=\textbf{Ruta Esencial y Trazabilidad de Evidencia}]
+    Para validar las competencias, debe etiquetar rigurosamente sus datos como \textbf{CALCULADO}, \textbf{SIMULADO}, \textbf{MEDIDO} (si tiene hardware real) o \textbf{PENDIENTE} (si falta información física). Los números de esta guía son \textbf{ILUSTRATIVOS}. Prediga matemáticamente todo resultado \textbf{antes} de ejecutar LTspice.
+\end{tcolorbox}
+
+\section{Bloque 1: Problema de Acondicionamiento (Teoría)}
+
+La cadena de medida es:
+\begin{center}
+    Temperatura [$^\circ$C] $\to$ Sensor (Señal Eléctrica) $\to$ \textbf{Acondicionador} $\to$ Filtro / ADC
+\end{center}
+
+Si el rango del sensor es $[V_{s,\min}, V_{s,\max}]$ y el rango útil deseado es $[V_{o,\min}, V_{o,\max}]$, el mapeo afín será $V_o = aV_s + b$, donde:
+
+{\centering $\displaystyle a = \frac{V_{o,\max} - V_{o,\min}}{V_{s,\max} - V_{s,\min}} \qquad \qquad b = V_{o,\min} - aV_{s,\min}$ \par}
+
+\vspace{0.3cm}
+\noindent \textbf{Ejemplo Ilustrativo:} Deseamos mapear entradas de $[0.20, 0.80]$ V a salidas de $[0.60, 2.40]$ V.
+Obtenemos $a=3$ y $b=0$. Como el \textit{offset} requerido es nulo ($b=0$) y $a > 1$, la \textbf{topología no inversora} convencional es ideal. \textbf{Advertencia:} Si $b \neq 0$, esta topología simple sería insuficiente.
+
+\section{Bloque 2 y 3: Análisis del Op-Amp Ideal}
+
+\begin{center}
+    \begin{circuitikz}[thick, scale=0.9, transform shape]
+        % Op-Amp con pines invertidos (no inversor arriba, inversor abajo)
+        \draw (0,0) node[op amp, yscale=-1] (opamp) {};
+        
+        % Entrada no inversora (+) [ahora arriba debido al yscale]
+        \draw (opamp.+) to[short, -o] ++(-1.5,0) node[left] {$sensor\_in$};
+        
+        % Entrada inversora (-) [ahora abajo]
+        \draw (opamp.-) to[short, -*] ++(-0.5,0) coordinate(fb_node) node[above left, font=\footnotesize] {$feedback$};
+        
+        % Resistor Rg hacia GND (baja directamente, sin cruces)
+        \draw (fb_node) to[R, l_=$R_g$ (10k)] ++(0, -2) node[ground]{};
+        
+        % Resistor Rf de realimentación (baja, cruza a la derecha y sube a la salida)
+        \draw (fb_node) -- ++(0, -1.5) coordinate(rf_down) 
+              to[R, l_=$R_f$ (20k)] (rf_down -| opamp.out) 
+              -- (opamp.out);
+        
+        % Salida
+        \draw (opamp.out) to[short, *-o] ++(1,0) node[right] {$conditioned\_out$};
+        
+        % Alimentaciones (invertidas en código debido al yscale=-1)
+        \draw (opamp.down) -- ++(0,0.5) node[above, font=\footnotesize] {$VCC (+)$};
+        \draw (opamp.up) -- ++(0,-0.5) node[below, font=\footnotesize] {$VEE (-)$};
+    \end{circuitikz}
+\end{center}
+
+\subsection{Derivación Matemática y Predicción}
+Bajo realimentación negativa estable y régimen no saturado, asumimos $v_- \approx v_+$ y corrientes de entrada nulas ($i_- \approx 0$). Mediante divisor de tensión en el nodo de realimentación:
+
+{\centering $\displaystyle v_- = v_o \frac{R_g}{R_f + R_g}$ \par}
+
+\vspace{0.2cm}
+Sabiendo que $v_+ = v_s$ (señal del sensor) y $v_- = v_+$:
+
+{\centering $\displaystyle v_s = v_o \frac{R_g}{R_f + R_g} \quad \implies \quad \frac{v_o}{v_s} = A_v = 1 + \frac{R_f}{R_g}$ \par}
+
+\vspace{0.4cm}
+Si elegimos resistores \textbf{ilustrativos} $R_g = 10\,\text{k}\Omega$ y $R_f = 20\,\text{k}\Omega$, la ganancia ideal será $A_v = 3$. \\
+\textbf{Acción del Estudiante:} Complete la tabla predictiva \textbf{antes} de simular.
+
+\begin{center}
+\begin{tabularx}{0.9\textwidth}{@{} c X X X @{}}
+\toprule
+$V_s$ \textbf{ILUSTRATIVO} & $A_v$ \textbf{CALCULADO} & $V_o$ \textbf{CALCULADO (V)} & $V_o$ \textbf{SIMULADO (V)} \\ \midrule
+$0.20$ V & $3$ & $0.60$ V & \\ \addlinespace
+$0.50$ V & $3$ & & \\ \addlinespace
+$0.80$ V & $3$ & & \\ \bottomrule
+\end{tabularx}
+\end{center}
+
+\newpage
+\section{Bloque 4: Construcción en LTspice Paso a Paso}
+
+Siga el procedimiento estricto. Marque cada paso al verificar la condición ``\textbf{Compruebe que...}''.
+
+\begin{enumerate}
+    \item \textbf{Selección de Modelo Realista:} No use símbolos abstractos universales sin subcircuito. Vaya a \texttt{Edit $\to$ Component} y seleccione un Op-Amp que provea un archivo de ejemplo oficial. (O asegure que \texttt{UniversalOpamp2} funciona correctamente en su versión).
+    
+    \item \textbf{Colocación Resistiva:} Inserte $R_f=20\,\text{k}\Omega$ entre la salida y la entrada inversora (-). Inserte $R_g=10\,\text{k}\Omega$ entre la entrada inversora y tierra (\texttt{GND}). \par
+    \textit{Compruebe que: La realimentación llegue al pin NEGATIVO, no al positivo.}
+    
+    \item \textbf{Fuente de Sensor:} Inserte una fuente \texttt{V} con polo positivo al pin \texttt{(+)} y negativo a GND. Etiquete el cable \texttt{sensor\_in}. Asigne \texttt{DC = 0.2V} para la prueba inicial.
+    
+    \item \textbf{Rieles de Alimentación (Límites):} Inserte dos fuentes DC independientes. $VCC=5\,\text{V}$ (polo + al pin de alimentación positiva del op-amp, polo - a GND) y $VEE=5\,\text{V}$ (polo + a GND, polo - al pin de alimentación negativa). \par
+    \textit{Compruebe que: Ha respetado rigurosamente los polos para generar $+5\text{V}$ y $-5\text{V}$ simétricos.}
+    
+    \item \textbf{Análisis de Punto de Operación:} Aplique la directiva \texttt{.op} (Operating Point) y presione \texttt{Run}.
+    
+    \item \textbf{Prueba de Tres Puntos:} Cambie la fuente del sensor manualmente a $0.50\,\text{V}$ y $0.80\,\text{V}$, registrando los resultados de \texttt{.op} en su tabla.
+\end{enumerate}
+
+\subsection{Prueba de Límite y Diagnóstico Analítico}
+\textbf{Saturación:} Prediga matemáticamente qué voltaje de salida se obtendría si $V_s = 2.0\,\text{V}$. Explique por qué físicamente esto es imposible con un riel de $+5\,\text{V}$. Simule y anote qué entrega su modelo de LTspice. ¿Respeta su modelo de software los rieles físicos?
+
+\vspace{2cm}
+\textbf{Rediseño Autónomo:} Guarde una copia como \texttt{CP2A\_redesign.asc}. Cambie $R_f$ a $10\,\text{k}\Omega$ manteniendo $R_g=10\,\text{k}\Omega$. Calcule la nueva ganancia y prediga la salida para $0.80\,\text{V}$. Contraste con el simulador.
+
+\section{Bloque 5: Microverificación Matemática de $H(s)$}
+\textbf{Pregunta Clave:} El circuito resistivo ideal de esta sesión tiene $H_{ideal}(s) = 3$. En la sesión 1, su filtro tenía $H_{RC}(s) = \frac{1}{1+sRC}$. \par
+Si el simulador midió $0.5\,\text{V} \to 1.5\,\text{V}$ en DC, ¿esto \textit{demuestra} que el Op-Amp real mantendrá una ganancia de 3 a cualquier frecuencia ($\omega \to \infty$)? Argumente físicamente comparando los dos $H(s)$.
+
+\vspace{3.5cm}
+
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Inventario de Evidencia para Entrega (CP2A)}]
+    \begin{itemize}
+        \item Archivo \texttt{CP2A\_base.asc} ejecutable (Y el nombre del modelo op-amp escogido).
+        \item Archivo \texttt{CP2A\_redesign.asc} ejecutable.
+        \item Derivaciones explícitas de este cuadernillo con predicciones matemáticas.
+        \item Tabla de resultados y respuestas de límite y frecuencia (Bloque 5).
+        \item Tres dudas fundamentadas documentadas según el protocolo de la Sesión 2.
+    \end{itemize}
+\end{tcolorbox}
+
+\end{document}

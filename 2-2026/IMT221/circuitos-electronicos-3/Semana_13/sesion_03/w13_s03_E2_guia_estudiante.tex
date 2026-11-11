@@ -1,0 +1,97 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Guía Estudiante E2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5, colframe=ucbblue, title=\textbf{IMT-221 — Guía de Diseño E2: Buffer BJT Push-Pull (Estudiantes)[cite: 28]}]
+    \textbf{Condición de uso:} Solo diseño y simulación (LTspice). El montaje energizado queda \textbf{estrictamente bloqueado} hasta obtener la autorización \textbf{G2} del responsable[cite: 28].
+\end{tcolorbox}
+
+\section*{1. Problema de Ingeniería y Diagnóstico E1[cite: 28]}
+Un pin de microcontrolador o generador estándar no siempre puede suministrar la corriente dinámica requerida para cargar y descargar rápidamente la compuerta capacitiva de un MOSFET de potencia. En E2, analizaremos una etapa Buffer BJT (\textit{Push-Pull}) para lograr un \textit{Sourcing} y \textit{Sinking} agresivos[cite: 28].
+\begin{itemize}
+    \item Recupere sus datos de E1: ¿Cuál fue su $V_{bus}$, $R_L$, y MOSFET candidato?[cite: 28] \hrulefill
+    \item Defina $V_{GS}$ \textit{high} objetivo y $V_{GS}$ \textit{low} objetivo[cite: 28]. \hrulefill
+    \item ¿Por qué la señal $0-5\,\text{V}$ de su Arduino NO es suficiente para garantizar la conducción de baja pérdida en un IRFZ44N típico?[cite: 28] \hrulefill
+\end{itemize}
+
+\section*{2. Cálculo Hipotético del Gate Charge ($Q_g$)[cite: 28]}
+Asuma un valor \textbf{exclusivamente ficticio} de $Q_g = 40\,\text{nC}$. Calcule el tiempo transitorio de carga orientativo si la corriente media disponible del Gate ($I_{G,prom}$) fuera de $10\,\text{mA}$ y $40\,\text{mA}$[cite: 28]. 
+\par\vspace{0.2cm}\noindent\rule{\linewidth}{0.15mm}
+Explique por qué este tiempo matemático NO es automáticamente el tiempo medido de caída de $V_{DS}$[cite: 28]. 
+\par\vspace{0.2cm}\noindent\rule{\linewidth}{0.15mm}
+
+\section*{3. Arquitectura del Buffer BJT (Estudio Conceptual)[cite: 29]}
+El siguiente esquema muestra un par complementario Seguidor de Emisor. Observe que la señal de entrada \texttt{DRV\_CMD} es una señal ideal de $0-12\,\text{V}$ para este primer estudio[cite: 29]. 
+
+\par\vspace{0.4cm}\noindent
+\begin{center}
+    \begin{circuitikz}[scale=0.9, transform shape, thick]
+        % Transistores Push-Pull
+        \draw (0,2) node[npn] (QN) {}; \node[right=0.1cm] at (QN.E) {QN};
+        \draw (0,-2) node[pnp] (QP) {}; \node[right=0.1cm] at (QP.E) {QP};
+        
+        % Colectores y Rieles de alimentación del Driver
+        \draw (QN.C) -- ++(0,1) node[above]{$+12\,\text{V}$ ($V_{DRV}$)};
+        \draw (QP.C) -- ++(0,-1) node[ground]{};
+        
+        % Unión de Emisores (OUT) y Ruta Horizontal a la Compuerta
+        \draw (QN.E) -- (QP.E) node[midway, circle,fill,inner sep=1pt] (OUT) {};
+        \draw (OUT) -- ++(0.5,0) to[R, l=$R_G$] ++(2.5,0) coordinate (gate_node) node[circle,fill,inner sep=1pt]{};
+        
+        % MOSFET (M1)
+        \draw (gate_node) node[above]{GATE} -- ++(1,0) node[nigfete, anchor=G] (M1) {};
+        \draw (M1.S) -- ++(0,-1) coordinate (gnd_mos) node[ground]{};
+        \draw (M1.B) -- ++(0.6,0) |- (gnd_mos);
+        
+        % Carga de Potencia (R_LOAD) - Ruta Vertical
+        \draw (M1.D) -- ++(0,0.5) to[R, l_=$R_{LOAD}$] ++(0,2) node[above]{$+12\,\text{V}$};
+        
+        % Pull-down R_PD (Alineada con gnd_mos)
+        \draw (gate_node) to[R, l=$R_{PD}$] (gate_node |- gnd_mos) node[ground]{};
+        
+        % Unión de Bases y Ruta Horizontal a la Entrada
+        \draw (QN.B) -- (QP.B) node[midway, circle,fill,inner sep=1pt] (BASENODO) {};
+        \draw (BASENODO) -- ++(-0.5,0) to[R, l_=$R_B$] ++(-2.5,0) coordinate (ctrl_node) node[circle,fill,inner sep=1pt]{} node[above]{DRV\_CMD};
+        
+        % Generador Ideal (Alineado con gnd_mos)
+        \draw (ctrl_node) to[V, l_=$0-12\,\text{V}$ (Ideal)] (ctrl_node |- gnd_mos) node[ground]{};
+    \end{circuitikz}
+\end{center}
+
+\vspace{0.2cm}
+\textbf{Análisis de Compatibilidad Lógica:} Si alimentamos los colectores a $12\,\text{V}$ ($V_{DRV}$), pero sustituimos la fuente ideal \texttt{DRV\_CMD} por un microcontrolador real de $0-5\,\text{V}$, ¿se obtendrán $11-12\,\text{V}$ en el nodo OUT? Justifique su respuesta basándose en $V_{OUT} \approx V_{cmd} - V_{BE}$[cite: 29]. 
+\par\vspace{0.2cm}\noindent\rule{\linewidth}{0.15mm}
+\par\vspace{0.2cm}\noindent\rule{\linewidth}{0.15mm}
+
+\section*{4. Entregables y Cuestionario (Ticket)[cite: 28]}
+\begin{enumerate}
+    \setlength\itemsep{0.2em}
+    \item Sobre el esquema, dibuje el recorrido de la corriente de \textit{Sourcing} (encendido) y \textit{Sinking} (apagado)[cite: 28].
+    \item ¿Por qué 5V de mando en la base de QN no equivalen a 10V en la compuerta del NMOS?[cite: 28]
+    \item Enumere 5 datos (Límites) críticos que buscará en el Datasheet de un BJT comercial antes de soldarlo[cite: 28].
+    \item Precise una condición de falla severa que mantendría la Puerta G2 \textbf{bloqueada} para su grupo[cite: 30].
+\end{enumerate}
+
+\end{document}

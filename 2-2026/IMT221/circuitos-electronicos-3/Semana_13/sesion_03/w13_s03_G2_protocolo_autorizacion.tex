@@ -1,0 +1,60 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Protocolo Puerta G2}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{G2 — Puerta Técnica y de Seguridad para Etapa BJT Buffer (Sin Energización)[cite: 30]}]
+    \textbf{Prohibición Absoluta:} Está prohibido conectar pines GPIO directos, LM358 o LM741 a la etapa de potencia sin la validación documental estricta de sus rangos de corriente transitoria. \textbf{No modifique circuitos con energía viva}[cite: 30].
+\end{tcolorbox}
+
+\noindent \textbf{Grupo:} \rule{3cm}{0.15mm} \quad \textbf{Fecha:} \rule{2cm}{0.15mm} \quad \textbf{Estado G1 (Previa):} $\square$ Aprobado \quad $\square$ Pendiente[cite: 30]
+
+\section*{1. Verificación Documental (Auditoría Técnica)[cite: 30]}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{6.5cm}|c|>{\raggedright\arraybackslash}X|p{2.5cm}|}
+\hline
+\rowcolor{gray!20}
+\textbf{Requisito a Verificar} & \textbf{Estado} & \textbf{Evidencia o Datasheet Observado} & \textbf{Bloqueo} \\ \hline
+E1 Documentado: Circuito, Fuente, Gate, G1 Aprobada[cite: 30] & SÍ/NO & & Detener G2[cite: 30] \\ \hline
+MOSFET Comercial y sus Condiciones $V_{GS}$ validadas[cite: 30] & SÍ/NO & & No ensayar[cite: 30] \\ \hline
+BJT NPN/PNP (Ej. TIP31/32, 2N2222/2907). $V_{CEO}$, $I_C$, SOA[cite: 30] & SÍ/NO & & No ensayar[cite: 30] \\ \hline
+Interfaz MCU Comprobada: Limitación GPIO vs Driver $12\text{V}$[cite: 30] & SÍ/NO & El nivel de Mando $5\text{V}$ NO se convierte a $12\text{V}$ solo[cite: 30]. & Falla control[cite: 30] \\ \hline
+Cálculo de $Q_g/I_G$, resistencias base/gate y Sourcing/Sinking[cite: 30] & SÍ/NO & & Falla diseño[cite: 30] \\ \hline
+Simulación LTspice con modelos y \texttt{.logs} trazables[cite: 30] & SÍ/NO & NO confundir con validación de Hardware[cite: 30]. & Falla teórica[cite: 30] \\ \hline
+Procedimiento de medición en Frio y Tierras Aisladas[cite: 30] & SÍ/NO & & Riesgo Corto[cite: 30] \\ \hline
+\end{tabularx}
+
+\vspace{0.4cm}
+\section*{2. Plan de Medición Estricto (NO EJECUTAR SIN FIRMA)[cite: 30]}
+\begin{enumerate}
+    \setlength\itemsep{0.2em}
+    \item Revisar driver BJT con alimentación limitada y \textbf{sin MOSFET/carga}[cite: 30]. Comprobar niveles de salida y consumo estático[cite: 30].
+    \item Conectar transistor de potencia pero mantener el \textbf{BUS APAGADO} ($V_{bus} = 0\,\text{V}$). Medir $V_{GS}$ y asegurar que apaga a cero[cite: 30].
+    \item \textbf{Solo si G2 está firmado:} Energizar bus principal. Registrar $V_{GS}, V_{DS}, I_D$ y transitorios. Mantener las mismas escalas que en E1[cite: 30].
+\end{enumerate}
+
+\vspace{0.3cm}
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Resolución Administrativa de Puerta G2[cite: 30]}]
+    \textbf{Estado G2:} $\square$ Sin Revisar \quad $\square$ En Revisión \quad $\square$ Documentación Suficiente \quad $\square$ \textbf{AUTORIZADO EXPRESAMENTE}[cite: 30] \\[0.3cm]
+    \textbf{Firma Autoridad Responsable:} \rule{4cm}{0.15mm} \quad \textbf{Fecha / Hora:} \rule{3cm}{0.15mm}
+\end{tcolorbox}
+
+\end{document}
