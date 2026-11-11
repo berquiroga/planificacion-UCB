@@ -1,0 +1,106 @@
+\PassOptionsToPackage{table}{xcolor}
+\documentclass[10pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-noshorthands]{babel}
+\usepackage{tgpagella}
+\usepackage{amsmath,amssymb,booktabs,tabularx,array,longtable,enumitem,multicol}
+\usepackage{xcolor,tikz}
+\usepackage[american]{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.65cm,headheight=16pt,headsep=9pt]{geometry}
+\usepackage{fancyhdr,lastpage,hyperref}
+\usetikzlibrary{arrows.meta,positioning,calc}
+\definecolor{ucbblue}{RGB}{0,51,102}
+\definecolor{muted}{RGB}{241,245,249}
+\definecolor{alert}{RGB}{140,57,39}
+\hypersetup{colorlinks=true,linkcolor=ucbblue,urlcolor=ucbblue}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newtcolorbox{note}[1][]{colback=muted,colframe=ucbblue!50,boxrule=.4pt,arc=1mm,#1}
+\newtcolorbox{caution}[1][]{colback=red!3,colframe=alert,boxrule=.7pt,arc=1mm,#1}
+\setlength{\parskip}{4pt}
+\setlength{\parindent}{0pt}
+\setlist{nosep,leftmargin=*}
+\pagestyle{fancy}\fancyhf{}\lhead{\textbf{UCB Tarija} | IMT-221}\rhead{Guía experimental revisada}\cfoot{\thepage}\renewcommand{\headrulewidth}{0.4pt}
+\newcommand{\status}{\textbf{Estado:} diseño didáctico propuesto; verificar la fuente y el fabricante del CI antes de energizar.}
+\begin{document}
+
+\begin{center}
+{\Large\bfseries\textcolor{ucbblue}{Laboratorio 5 — Rectificación de precisión}}\\[2mm]
+{\large Guía de montaje, medición y análisis: diodo 1N4148 frente a superdiodo LM358N}\\
+\small IMT-221 · Circuitos Electrónicos II · Documento ampliado desde W14-S02 y W15-S01
+\end{center}
+\begin{note}\status\ Esta guía define un \emph{montaje de referencia} para facilitar la práctica. Las medidas, el fabricante y la alimentación de cada equipo se registran en banco; las predicciones indicadas no son resultados experimentales. Se mantiene el informe IEEE y la evidencia \textbf{MEDIDO/SIMULADO/PREDICHO}.\end{note}
+\section{Objetivos y criterios de logro}
+Al terminar, el equipo deberá: (1) construir un rectificador de media onda convencional y un superdiodo de media onda no inversor; (2) identificar cuándo el diodo y el lazo de realimentación conducen; (3) comparar las salidas para entradas pequeñas; (4) explicar saturación y recuperación; (5) entregar datos identificables para Lab 5 en su informe IEEE. La simulación no se registra como ejecución física. Ningún montaje de este documento ha sido declarado ensayado o validado en banco.
+\section{Materiales y condiciones de prueba}
+\begin{tabularx}{\linewidth}{@{}P{3.2cm}Y@{}}\toprule
+Elemento por equipo & Uso previsto \\ \midrule
+LM358N DIP-8 (1 de los 2 disponibles) & Amplificador A del superdiodo; segundo canal sin usar, tratar de acuerdo con datasheet/ficha de laboratorio.\\
+1N4148 (2 de los 4) & Uno por rectificador.\\
+Resistencias de $10\,\mathrm{k}\Omega$ (2) & $R_L$ de cada circuito; comprobar su valor real.\\
+Protoboard, puentes; 100 nF (desacoplo si la configuración lo requiere) & Montaje y desacoplo en la proximidad del CI, bajo revisión docente.\\
+Fuente de laboratorio regulada y limitada en corriente, generador, osciloscopio, multímetro & A proporcionar o confirmar por laboratorio. \\ \bottomrule\end{tabularx}
+\begin{caution}\textbf{No conectar todavía.} Se propone una alimentación \emph{bipolar regulada} de $V_{S+}=+5\,\mathrm{V}$ y $V_{S-}=-5\,\mathrm{V}$ respecto a GND \textbf{únicamente como condición nominal del ensayo de referencia}, sujeta a aprobación. Si el banco no dispone de esta fuente o el fabricante exacto del LM358N no ha sido comprobado, ejecutar primero la ruta de simulación y \emph{no} aplicar señales negativas con fuente simple referida a tierra. Los límites de modo común y excursión de salida no son rail-to-rail y deben verificarse.\end{caution}
+\section{Identificación del LM358N DIP-8 y referencias}
+Vista superior del encapsulado, con muesca orientada hacia arriba (confirmar con ficha del componente recibido):
+\begin{center}\begin{tabular}{@{}cl|cl@{}}\toprule 1 & Salida A & 8 & $V_{S+}$ \\2 & Entrada inversora A ($-$) & 7 & Salida B \\3 & Entrada no inversora A ($+$) & 6 & Entrada inversora B \\4 & $V_{S-}$ & 5 & Entrada no inversora B \\ \bottomrule\end{tabular}\end{center}
+\textbf{Referencia de medida:} GND significa el punto común de la fuente y del generador. Confirmar cómo se conecta la pinza de masa del osciloscopio (normalmente unida a tierra de protección): no colocarla arbitrariamente en $-5\,\mathrm{V}$ ni sobre un nodo de señal. Identificar el fabricante/código completo del chip antes del encendido.
+\section{Esquemas definitivos de referencia y conexiones}
+\subsection*{Circuito A — media onda convencional}
+\begin{center}\begin{circuitikz}[scale=.95,transform shape]
+\draw (0,0) node[ground]{} to[sV,l_={$v_i$}] (0,2.2) to[D,l=$D_1$] (3.3,2.2) to[short,-o] (4.1,2.2) node[right]{$v_{o,D}$};
+\draw (3.3,2.2) to[R,l={$R_L=10\,\mathrm{k}\Omega$}] (3.3,0) node[ground]{};
+\end{circuitikz}\end{center}
+\textbf{Conexiones:} positivo de generador al ánodo de $D_1$; cátodo (lado de la banda) al nodo $v_{o,D}$; $R_L$ desde $v_{o,D}$ a GND; negativo/referencia del generador a GND. Canal CH1 del osciloscopio a $v_i$, CH2 a $v_{o,D}$, ambas masas a GND verificado.
+\subsection*{Circuito B — media onda de precisión no inversora}
+\begin{center}\begin{circuitikz}[scale=.95,transform shape]
+\node[op amp] (op) at (0,0) {};
+\draw (op.+) to[short,-o] ++(-1.0,0) node[left]{$v_i$ (pin 3)};
+\draw (op.out) to[short,*-] ++(0.6,0) coordinate(va) node[above]{$v_a$ (pin 1)} to[D,l=$D_2$] ++(2.2,0) coordinate(vo) to[short,*-o] ++(.8,0) node[right]{$v_{o,P}$};
+\draw (vo) to[R,l={$10\,\mathrm{k}\Omega$}] ++(0,-2) node[ground]{};
+\draw (op.-) -- ++(0,2.0) -| (vo);
+\draw (op.up) -- ++(0,.35) node[above]{$V_{S+}$ (pin 8)};
+\draw (op.down) -- ++(0,-.35) node[below]{$V_{S-}$ (pin 4)};
+\end{circuitikz}\end{center}
+\textbf{Conexiones:} pin 3 recibe $v_i$; pin 1 es $v_a$ y conecta al ánodo de $D_2$; el cátodo es $v_{o,P}$; conectar pin 2 directamente a $v_{o,P}$; $R_L=10\,\mathrm{k}\Omega$ desde $v_{o,P}$ a GND; pin 8 a $V_{S+}$, pin 4 a $V_{S-}$. No unir el pin 2 con GND. Si se utiliza solo el canal A, conectar el canal B como seguidor en reposo (pin 5 a GND, pin 6 al pin 7), previa comprobación del fabricante; no dejar entradas flotantes. CH1 mide entrada y CH2 la salida respecto a GND. Para medir $v_a$, mover una sonda de punta tras desconectar alimentación y verificar que la referencia no cambió.
+\section{Predicción por estados}
+El rectificador convencional con modelo de umbral predice $v_{o,D}\approx\max(v_i-V_\gamma,0)$. $V_\gamma$ es una aproximación dependiente de corriente, temperatura y diodo; no existe un valor fijo universal.
+
+Para el superdiodo: en el semiciclo positivo y mientras el op-amp opera linealmente, $D_2$ conduce, se cierra el lazo y $v_{o,P}\approx v_i$, aunque la salida interna requiere $v_a\approx v_{o,P}+v_D$. En el negativo, $D_2$ bloquea, $v_{o,P}\approx0$ a través de $R_L$, el lazo se abre y la salida interna puede acercarse al límite negativo. No usar $v_+=v_-$ en el estado abierto. La recuperación de saturación y el cruce por cero pueden distorsionar la señal.
+\begin{center}\begin{tabularx}{\linewidth}{@{}P{1.7cm}P{2cm}P{2.5cm}Y@{}}\toprule
+Entrada & Diodo $D_2$ & Realimentación & Salida esperada y precaución \\ \midrule
+$v_i>0$ & Conduce, si hay margen & Cerrada & $v_{o,P}\simeq v_i$ en región lineal; verificar $v_a$.\\
+$v_i<0$ & Bloquea & Abierta & $v_{o,P}\simeq0$; salida interna puede saturar.\\
+Cruce $v_i\approx0$ & Cambia de estado & Se abre/cierra & Buscar retardo/distorsión, offset y recuperación. \\ \bottomrule\end{tabularx}\end{center}
+\section{Montaje progresivo: lista de autorización}
+\begin{enumerate}[label=\textbf{Paso \arabic*.}]
+\item \textbf{Sin alimentación:} fotografiar componentes, identificar bandas de diodos, muesca y pines del CI; comprobar con multímetro $R_L$ y ausencia de cortocircuito entre rieles.
+\item Montar primero el convencional. Comprobar continuidad y orientación. Conectar generador y osciloscopio a GND común.
+\item Montar el superdiodo \emph{sin energizar}. Revisar pin 2 unido exclusivamente al cátodo/salida, pin 3 al generador, pin 1 al ánodo; alimentar 8/4 según rieles aprobados.
+\item Antes de encender: documentar tensión/corriente limitada, rango de modo común del datasheet exacto, rango previsto de $v_a$ y condiciones de seguridad del instrumento. Solicitar visto bueno del docente.
+\item Encender fuente con generador inicialmente apagado y observar consumo/salida DC. Ante calentamiento o lectura incoherente, apagar y revisar, no manipular cables con el circuito energizado.
+\item Aplicar senoidal de $100\,\mathrm{Hz}$, offset $0\,\mathrm{V}$ y amplitudes pico \emph{propuestas} $0.10$, $0.30$ y $0.80\,\mathrm{V}$, \textbf{solo tras verificar compatibilidad del banco}. Si se especifica Vpp en el generador, convertir $V_{pp}=2V_p$ y verificar la amplitud real sobre la carga de salida del generador.
+\item Registrar simultáneamente $v_i$ y $v_o$ para ambas configuraciones; repetir una entrada a otra frecuencia opcional (p.ej. $1\,\mathrm{kHz}$) y justificar variaciones. Señales y capturas deben mostrar escala, acoplamiento, cero y origen MEDIDO/SIMULADO.
+\end{enumerate}
+\section{Plan mínimo de medidas}
+\begin{tabularx}{\linewidth}{@{}P{1.4cm}P{1.5cm}P{1.7cm}P{1.6cm}P{1.6cm}Y@{}}\toprule
+$V_{i,p}$ & $f$ & $V_{o,D,p}$ & $V_{o,P,p}$ & Fuente dato & Forma de onda, cruce por cero, archivo \\ \midrule
+0.10 V & 100 Hz & & & & \\ \midrule
+0.30 V & 100 Hz & & & & \\ \midrule
+0.80 V & 100 Hz & & & & \\ \midrule
+Elegido & Elegido & & & & \\ \bottomrule\end{tabularx}
+\textbf{Datos:} colocar unidades en todas las casillas; si no hay dato, escribir \texttt{NO OBTENIDO} y motivo. Estas amplitudes son candidatos de prueba, no resultados ni condiciones impuestas cuando no sean seguras.
+\section{Análisis y pregunta individual}
+Definir $v_{\mathrm{ref}}(t)=\max(v_i(t),0)$, $e(t)=v_o(t)-v_{\mathrm{ref}}(t)$ y $E_{\mathrm{MAE}}=(1/T)\int_{t_0}^{t_0+T}|e(t)|\,dt$ [V]. Para muestras uniformes, $E_{\mathrm{MAE}}\approx N^{-1}\sum_{k=1}^N |e_k|$. Comparar \emph{la misma ventana, el mismo estímulo y la misma escala} en ambos circuitos. Distinguir error por umbral de error por saturación/offset/dinámica.
+\begin{enumerate}
+\item Explicar por qué el superdiodo aproxima la media onda ideal solo durante la conducción y dentro de límites del CI.
+\item Identificar un punto de la señal donde la hipótesis de lazo cerrado deja de cumplirse.
+\item Proponer una prueba para comprobar si la distorsión cerca de cero proviene del estado de salida interna o del osciloscopio.
+\end{enumerate}
+\section{Entregables IEEE y condiciones de aceptación}
+Esquema real anotado, BOM efectivamente usada, foto del montaje, ficha de fabricante, protocolo de alimentación, tabla de señales con archivos, cálculo de error, discusión de saturación/cruce por cero y conclusión restringida a datos. Se adjunta la hoja W15-S01 de registro como apéndice opcional. \textbf{La práctica física se registra únicamente si fue ejecutada y supervisada}; la ruta simulada debe quedar identificada como tal.
+\section*{Referencias y control de versión}
+Basado en los archivos suministrados \texttt{w14\_s02\_guia\_estudiante\_lab\_5.tex} y \texttt{w15\_s01\_hoja\_registro\_lab\_5.tex}; materiales según BOM comunicada. Límites/pinout: verificar hoja de datos del \emph{LM358N del fabricante exacto}; como referencia técnica: TI, \emph{LMx58-N Low-Power Dual Operational Amplifiers}, \url{https://www.ti.com/lit/ds/symlink/lm358-n.pdf}. Las cifras de ensayos son propuestas, no mediciones realizadas.
+\end{document}

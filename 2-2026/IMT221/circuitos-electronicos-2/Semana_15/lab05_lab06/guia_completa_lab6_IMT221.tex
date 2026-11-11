@@ -1,0 +1,117 @@
+\PassOptionsToPackage{table}{xcolor}
+\documentclass[10pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-noshorthands]{babel}
+\usepackage{tgpagella}
+\usepackage{amsmath,amssymb,booktabs,tabularx,array,longtable,enumitem,multicol}
+\usepackage{xcolor,tikz}
+\usepackage[american]{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.65cm,headheight=16pt,headsep=9pt]{geometry}
+\usepackage{fancyhdr,lastpage,hyperref}
+\usetikzlibrary{arrows.meta,positioning,calc}
+\definecolor{ucbblue}{RGB}{0,51,102}
+\definecolor{muted}{RGB}{241,245,249}
+\definecolor{alert}{RGB}{140,57,39}
+\hypersetup{colorlinks=true,linkcolor=ucbblue,urlcolor=ucbblue}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newtcolorbox{note}[1][]{colback=muted,colframe=ucbblue!50,boxrule=.4pt,arc=1mm,#1}
+\newtcolorbox{caution}[1][]{colback=red!3,colframe=alert,boxrule=.7pt,arc=1mm,#1}
+\setlength{\parskip}{4pt}
+\setlength{\parindent}{0pt}
+\setlist{nosep,leftmargin=*}
+\pagestyle{fancy}\fancyhf{}\lhead{\textbf{UCB Tarija} | IMT-221}\rhead{Guía experimental revisada}\cfoot{\thepage}\renewcommand{\headrulewidth}{0.4pt}
+\newcommand{\status}{\textbf{Estado:} diseño didáctico propuesto; verificar la fuente y el fabricante del CI antes de energizar.}
+\begin{document}
+
+\begin{center}
+{\Large\bfseries\textcolor{ucbblue}{Laboratorio 6 — Filtro activo Sallen–Key}}\\[2mm]
+{\large Guía de prediseño, montaje y caracterización de una sección pasa-bajos de segundo orden}\\
+\small IMT-221 · Circuitos Electrónicos II · Documento ampliado desde W15-S01
+\end{center}
+\begin{note}\status\ Esta guía sustituye el \textbf{esquema erróneo} de la ficha original: la entrada inversora \textbf{debe conectarse directamente a la salida, sin conexión a tierra}. Una sección Lab 6 no demuestra por sí sola la respuesta de 4.º orden de Hito 3.\end{note}
+\section{Objetivos y producto esperado}
+Obtener un circuito pasa-bajos Sallen–Key de segundo orden de ganancia unitaria, calcular $f_0$ y $Q$, predecir/medir magnitud y fase en un barrido, comparar teoría/simulación/banco y documentar límites de alimentación y carga. Este es el \emph{experimento de Lab 6}, no la evaluación completa de Hito 3.
+\section{BOM aplicada a esta práctica}
+\begin{tabularx}{\linewidth}{@{}P{3.4cm}Y@{}}\toprule
+Componente & Propuesta de uso \\ \midrule
+LM358N DIP-8, un canal & Seguidor de ganancia unitaria; comprobar datasheet/fabricante y pines.\\
+$R_1=R_2=16\,\mathrm{k}\Omega$ (2 de las 2 resistencias de 16 k$\Omega$ disponibles) & Red pasa-bajos, comprobar valores reales/tolerancia.\\
+$C_1=C_2=1\,\mu\mathrm{F}$ \textbf{no polarizados} (2 de 4) & Red de frecuencia, medir o consultar tolerancia.\\
+$R_L=100\,\mathrm{k}\Omega$ (opcional) & Carga de salida definida para estudio; no conectar sin comprobar compatibilidad.\\
+Protoboard, puentes, 100 nF (según revisión) & Conexión y desacoplo de alimentación.\\
+Fuente regulada limitada en corriente, generador, osciloscopio, multímetro & Confirmar recursos del laboratorio. \\ \bottomrule\end{tabularx}
+\begin{caution}\textbf{Alimentación:} se propone $+5\,\mathrm{V}$ y $-5\,\mathrm{V}$ respecto a GND solo como \emph{condición candidata}, condicionada a banco/fabricante. Para un filtro alimentado con fuente simple y señal referida a GND, debe diseñarse y comprobarse una referencia DC adecuada antes del montaje. No aplicar entrada negativa con respecto al riel inferior sin verificar la hoja de datos. Confirmar tierras del osciloscopio y no hacer cambios energizado.\end{caution}
+\section{Circuito de referencia CORREGIDO}
+\begin{center}\begin{circuitikz}[scale=.95,transform shape]
+\node[op amp] (op) at (4.0,0) {};
+\draw (op.+) to[short,-*] ++(-.8,0) coordinate(y) node[above]{$y$};
+\draw (y) to[C,l_=$C_2$] ++(0,-1.9) node[ground]{};
+\draw (y) to[R,l_=$R_2$,-*] ++(-2.4,0) coordinate(x) node[below]{$x$};
+\draw (x) to[R,l_=$R_1$,-o] ++(-2.3,0) node[left]{$v_i$};
+\draw (x) -- ++(0,2.2) to[C,l=$C_1$] ($(op.out)+(0,1.7)$) -- (op.out);
+\draw (op.-) -- ++(0,1.0) -| (op.out);
+\draw (op.out) to[short,-o] ++(1.2,0) node[right]{$v_o$};
+\draw (op.up) -- ++(0,.35) node[above]{$V_{S+}$};
+\draw (op.down) -- ++(0,-.35) node[below]{$V_{S-}$};
+\end{circuitikz}\end{center}
+\textbf{Conexiones precisas (LM358N canal A):} $v_i\rightarrow R_1\rightarrow x\rightarrow R_2\rightarrow y\rightarrow$ pin 3 (+); $C_2$ de $y$ a GND; $C_1$ de $x$ a $v_o$; pin 1 (salida) es $v_o$; pin 2 (entrada $-$) conectado \textbf{directamente a pin 1}; pin 8 a $V_{S+}$; pin 4 a $V_{S-}$. \textbf{No conectar pin 2 a GND.} La masa del generador y las masas del osciloscopio se conectan a GND de referencia, no a un riel de alimentación.
+\section{Desarrollo matemático para este circuito}
+Para un operacional ideal con realimentación negativa y ganancia unitaria, $v_o=v_y$ y la corriente de entrada no inversora es aproximadamente cero. En el nodo $y$:
+\begin{equation}
+\frac{v_y-v_x}{R_2}+sC_2v_y=0\quad\Rightarrow\quad v_x=v_y(1+sR_2C_2).
+\end{equation}
+En el nodo $x$:
+\begin{equation}
+\frac{v_x-v_i}{R_1}+\frac{v_x-v_y}{R_2}+sC_1(v_x-v_o)=0.
+\end{equation}
+Sustituyendo $v_o=v_y$ y el resultado anterior:
+\begin{equation}
+\frac{v_o}{v_i}=H(s)=\frac{1}{1+sC_2(R_1+R_2)+s^2R_1R_2C_1C_2}.
+\end{equation}
+Comparando con $H(s)=K\omega_0^2/[s^2+(\omega_0/Q)s+\omega_0^2]$:
+\begin{equation}
+K=1,\quad \omega_0=\frac{1}{\sqrt{R_1R_2C_1C_2}},\quad Q=\frac{\sqrt{R_1R_2C_1C_2}}{C_2(R_1+R_2)}.
+\end{equation}
+\begin{note}\textbf{Ejemplo nominal ilustrativo:} $R_1=R_2=16\,\mathrm{k}\Omega$, $C_1=C_2=1\,\mu\mathrm{F}$. Entonces $f_0=1/(2\pi RC)\approx9.95\,\mathrm{Hz}$ y $Q=1/2$. Para este caso $H(s)=1/(1+sRC)^2$, de modo que $|H(j\omega)|=1/(1+(f/f_0)^2)$, $\varphi=-2\arctan(f/f_0)$, y $f_{-3\mathrm{dB}}=f_0\sqrt{\sqrt2-1}\approx6.40\,\mathrm{Hz}$. El filtro \textbf{no} es Butterworth; en $f_0$ su ganancia es $-6.02\,\mathrm{dB}$, no $-3\,\mathrm{dB}$.\end{note}
+\section{Preparación LTspice / predicción reproducible}
+\begin{enumerate}[label=\textbf{Paso \arabic*.}]
+\item Dibujar exactamente el circuito corregido, incluyendo rieles, referencia y fuente de estímulo; elegir modelo explícito del CI (fabricante/modelo de la biblioteca o subcircuito importado), y documentarlo. Si se usa un amplificador \emph{ideal}, etiquetar resultados como idealizados.
+\item Para \texttt{.ac}, definir la fuente de excitación con magnitud AC conocida (por ejemplo \texttt{AC 1}). Simular una barrida logarítmica que incluya $1$, $2$, $5$, $6.4$, $10$, $20$, $50$, $100\,\mathrm{Hz}$; elegir suficientes puntos por década para una curva suave.
+\item Graficar $20\log_{10}|V(v_o)/V(v_i)|$ y fase de $V(v_o)/V(v_i)$; anotar valores previstos y posibles desviaciones. En el análisis AC las amplitudes son linealizaciones alrededor del punto de operación, no reemplazan la prueba de saturación en el dominio temporal.
+\item Para \texttt{.tran}, usar una senoide centrada en el punto de operación permitido, con amplitud sugerida $0.1\,\mathrm{V}_p$ y frecuencias de referencia; comprobar ausencia de clipping y distorsión, sin atribuir modelos genéricos al LM358N físico.
+\end{enumerate}
+\section{Inspección y montaje de banco}
+\begin{enumerate}[label=\textbf{Paso \arabic*.}]
+\item Verificar pinout del LM358N real: 1 salida A, 2 entrada $-$ A, 3 entrada $+$ A, 4 riel inferior, 8 riel superior. Identificar GND y limitación en corriente antes de energizar.
+\item Sin suministro, colocar dos resistencias en serie $v_i$–$R_1$–$x$–$R_2$–$y$; comprobar ambas con multímetro. Conectar $C_2$ no polarizado de $y$ a GND y $C_1$ de $x$ a la salida pin 1.
+\item Cablear $y$ a pin 3; pin 2 a pin 1 por el camino más corto posible. Inspeccionar que \textbf{no} hay puente pin 2–GND, salida–GND ni riel–GND no previsto.
+\item Conectar fuente regulada, generador y osciloscopio con referencias compatibles; aplicar señal pequeña solo tras aprobación de tensión y rangos. Verificar en DC consumo, polarización y salida próxima al nivel esperado.
+\item Hacer un barrido de frecuencias con entrada medida y amplitud similar en todos los puntos. Registrar amplitud $V_{i}$ y $V_o$ con \emph{la misma definición} (pico o RMS) y retardo temporal $\Delta t$ para fase: $\varphi=-360^\circ f\,\Delta t$ si la salida retrasa a la entrada en la rama de fase elegida. Distinguir alias de fase y errores de lectura.
+\end{enumerate}
+\section{Barrido mínimo y Bode}
+\begin{tabularx}{\linewidth}{@{}P{1.5cm}P{1.6cm}P{1.6cm}P{1.7cm}P{1.5cm}Y@{}}\toprule
+$f$ (Hz) & $V_i$ & $V_o$ & $G$ (dB) & $\varphi$ ($^\circ$) & Observaciones/origen de dato \\ \midrule
+1 & & & & & \\ \midrule
+2 & & & & & \\ \midrule
+5 & & & & & \\ \midrule
+6.4 & & & & & \\ \midrule
+10 & & & & & \\ \midrule
+20 & & & & & \\ \midrule
+50 & & & & & \\ \midrule
+100 & & & & & \\ \bottomrule\end{tabularx}
+$G(f)=20\log_{10}(V_o/V_i)$ y fase en grados bajo referencia común. Las frecuencias son puntos de \emph{plan propuesto}, no medidas tomadas. Agregar puntos para resolver mejor el cambio de fase. Analizar tolerancias de los capacitores y el efecto de carga.
+\section{Preguntas de análisis e integración futura}
+\begin{enumerate}
+\item Explicar por qué con componentes iguales $Q=0.5$ y la frecuencia de $-3$ dB es inferior a $f_0$.
+\item Identificar qué medida respalda realmente la atenuación a $50\,\mathrm{Hz}$ y si una sola sección cumple o no lo exigido para Hito 3. No atribuir a Lab 6 el requisito final de $-40\,\mathrm{dB}$ como si ya estuviera demostrado.
+\item ¿Cómo cambia la medición si se conecta una carga y el operacional no es ideal? Comparar simulación con/sin carga bajo condiciones documentadas.
+\item Describir cómo una segunda sección en cascada modifica la función de transferencia solo bajo supuestos válidos de impedancias y de operación lineal.
+\end{enumerate}
+\section{Informe IEEE de Lab 6 y estado de validación}
+Incluir objetivo, esquema corregido y pinout real, tabla de valores medidos de $R$/$C$, cálculo $H(s)$, $f_0$, $Q$ y $f_{-3\mathrm{dB}}$, modelo LTspice, barrido por frecuencia, gráficos de Bode con unidades, análisis de error y atribución inequívoca PREDICHO/SIMULADO/MEDIDO. Conservar la hoja W15-S01 como evidencia de prediseño, \textbf{corrigiendo su esquema}. La práctica requiere autorización eléctrica previa; un circuito simulado no se declara físicamente verificado.
+\section*{Fuentes y control de versión}
+Basado en \texttt{w15\_s01\_hoja\_presdiseno\_lab\_6.tex} y BOM distribuida; se corrige su conexión de realimentación. Para la topología y fórmulas: Texas Instruments, \emph{Op Amps for Everyone}, sección ``Active Filter Design Techniques'', figuras de Sallen–Key con ganancia unitaria; \url{https://web.eng.fiu.edu/arellano/3303/project/slod006b.pdf}. Para límites y pinout reales: hoja de datos del fabricante exacto del LM358N; referencia TI \url{https://www.ti.com/lit/ds/symlink/lm358-n.pdf}.
+\end{document}
