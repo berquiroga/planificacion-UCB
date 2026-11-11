@@ -1,0 +1,79 @@
+% ARTEFACTO A1: Matriz Docente de Auditoría EC3 y Diagnóstico RLC
+\documentclass[11pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Auditoría EC3}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Artefacto A1: Matriz de Evidencia y Diagnóstico Operativo (EC3)}]
+    \centering \textbf{Registro Estricto de Capturas y Viabilidad Física — Sesión W14S3}
+\end{tcolorbox}
+
+\noindent\textit{Instrucciones: Documente la existencia real de capturas instrumentales trazables. Si no hay evidencia, marque "Pendiente". Diferencie claramente un fallo técnico comprobado de una hipótesis de error.}
+
+\vspace{0.3cm}
+{\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.5}
+\noindent
+\begin{tabularx}{\textwidth}{
+  >{\bfseries\RaggedRight\hsize=0.6\hsize}X 
+  >{\RaggedRight\arraybackslash\hsize=0.8\hsize}X 
+  >{\centering\arraybackslash\hsize=0.6\hsize}X 
+  >{\centering\arraybackslash\hsize=0.7\hsize}X 
+  >{\RaggedRight\arraybackslash\hsize=0.8\hsize}X 
+  >{\centering\arraybackslash\hsize=0.6\hsize}X 
+  >{\centering\arraybackslash\hsize=0.6\hsize}X 
+  >{\centering\arraybackslash\hsize=0.7\hsize}X 
+  >{\centering\arraybackslash\hsize=0.5\hsize}X 
+  >{\RaggedRight\arraybackslash\hsize=1.2\hsize}X 
+  >{\centering\arraybackslash\hsize=0.7\hsize}X 
+  >{\RaggedRight\arraybackslash\hsize=1.2\hsize}X}
+\toprule
+\textbf{Grupo / Nombres} & \textbf{Captura RC ID} & \textbf{$\tau_{\text{med}}$ [ms] o NO MED} & \textbf{RC Estado} & \textbf{Captura RLC ID} & \textbf{$L_{\text{nom}}$ [mH]} & \textbf{DCR med [$\Omega$]} & \textbf{RLC Estado} & \textbf{GO Topol.} & \textbf{Problema: Causa Conf. / Hipótesis} & \textbf{Acceso Pendiente} & \textbf{Acción / Resp / Fecha} \\
+\midrule
+ & & & & & & & & & & & \\ \addlinespace
+ & & & & & & & & & & & \\ \addlinespace
+ & & & & & & & & & & & \\ \addlinespace
+ & & & & & & & & & & & \\ \addlinespace
+ & & & & & & & & & & & \\ 
+\bottomrule
+\end{tabularx}
+}
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Checklist Rápido de Causalidad RLC (Para rellenar columna Problema)}]
+\begin{itemize}
+    \item (a) Cortocircuito de Tierra (CH1/CH2 GND conectados en nodos distintos al retorno común).
+    \item (b) Falla/Polaridad del Capacitor (Ej. Uso de $470\,\mu\text{F}$ electrolítico polarizado en circuito oscilatorio).
+    \item (c) DCR y Tolerancia Inductiva excediendo límite crítico $R_{\text{crit}} = 2\sqrt{L/C}$ (Sistema sobreamortiguado accidental).
+    \item (d) $R_{\text{gen}}$ excesiva (Carga Hi-Z vs $50\,\Omega$) enlenteciendo el sistema.
+    \item (e) Sondas 1X/10X atenuando y modificando capacitancia parásita.
+    \item (f) Escala / Trigger erróneo (Buscando frecuencia de kHz en una ventana de ms/div inadecuada).
+\end{itemize}
+\end{tcolorbox}
+
+\end{document}

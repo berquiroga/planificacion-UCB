@@ -1,0 +1,88 @@
+% ARTEFACTO A3: Mini-Lección EC4 Estudiantil (Fasores)
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage[american]{circuitikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT121}}
+\chead{}
+\rhead{Worksheet EC4 (Estudiante)}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Artefacto A3: Introducción a EC4 (Fasores, Impedancia y Senoides)}]
+    \centering \textbf{Worksheet Estudiantil — Régimen Permanente Sinusoidal}
+\end{tcolorbox}
+
+\textbf{Estudiante:} \hrulefill \quad \textbf{Fecha:} \hrulefill
+
+\vspace{0.4cm}
+\noindent \textbf{Nota de Transición:} En EC3 analizamos cómo reacciona la inercia (L y C) cuando prendemos/apagamos una fuente DC. En EC4 el transitorio ya pasó. Evaluaremos la respuesta forzada bajo una onda oscilatoria \textbf{infinita} y sostenida senoidal/cosenoidal usando álgebra compleja ($j = \sqrt{-1}$).
+
+\section*{Q1. Activación Diagnóstica (2 min)}
+Si la señal de voltaje sostenido del generador es $v(t) = 3\cos(100\pi t + \pi/6)\,\text{V}$, identifique: \\
+Amplitud pico ($V_m$): \rule{2cm}{0.4pt} \quad Frecuencia Angular ($\omega$): \rule{2cm}{0.4pt} \quad Frecuencia Hz ($f$): \rule{2cm}{0.4pt} \\
+Período ($T$): \rule{2cm}{0.4pt} \quad Fase Inicial ($\phi$): \rule{2cm}{0.4pt}
+
+\section*{Q2. Transformación Fasorial (4 min)}
+El Fasor captura \textbf{solo la Amplitud Pico y la Fase} asumiendo la función coseno y aislando el tiempo. \\
+Escriba el fasor para $v_1 = 5\cos(400\pi t)$ y $v_2 = 2\cos(400\pi t - \pi/2)$: \\
+$\tilde{V}_1 =$ \rule{4cm}{0.4pt} \quad $\tilde{V}_2 =$ \rule{4cm}{0.4pt} \\
+¿Cuál señal presenta retraso respecto a la otra? \rule{6cm}{0.4pt}
+
+\section*{Q3 y Q4. Impedancias de Elementos AC (5 min)}
+Recordando que derivar un fasor equivale a multiplicarlo por $j\omega$ ($\frac{d}{dt} \iff j\omega$): \\
+De $v_L = L \frac{di}{dt}$ obtenemos $\tilde{V}_L = L(j\omega\tilde{I})$. De $i_C = C \frac{dv_C}{dt}$ obtenemos $\tilde{I}_C = C(j\omega\tilde{V}_C)$. \\
+La impedancia es la Ley de Ohm Compleja $Z = \tilde{V} / \tilde{I}$.
+
+\vspace{0.2cm}
+\renewcommand{\arraystretch}{1.8}
+\noindent
+\begin{tabularx}{\textwidth}{
+  >{\bfseries\RaggedRight\hsize=0.6\hsize}X 
+  >{\centering\arraybackslash\hsize=0.8\hsize}X 
+  >{\centering\arraybackslash\hsize=1.2\hsize}X 
+  >{\centering\arraybackslash\hsize=0.8\hsize}X 
+  >{\RaggedRight\arraybackslash\hsize=1.6\hsize}X}
+\toprule
+\textbf{Elemento} & \textbf{Ley Constitutiva} & \textbf{Impedancia (Z) $[\Omega]$} & \textbf{Fase ($V/I$)} & \textbf{¿Qué le pasa al Módulo $|Z|$ si duplicamos la frecuencia $f$?} \\
+\midrule
+Resistor & $v_R = Ri$ & $Z_R = R$ & $0^\circ$ & \\ \addlinespace
+Inductor & $v_L = L \frac{di}{dt}$ & $Z_L = j\omega L$ & $+90^\circ$ & \\ \addlinespace
+Capacitor & $i_C = C \frac{dv}{dt}$ & $Z_C = \frac{1}{j\omega C} = \frac{-j}{\omega C}$ & $-90^\circ$ & \\
+\bottomrule
+\end{tabularx}
+
+\section*{Q5. Divisor de Voltaje AC (RC Pasabajos)}
+Si tenemos un divisor serie compuesto por $R$ y $Z_C$, donde la salida es la caída en el capacitor:
+Escriba la función de transferencia $\mathbf{H(j\omega) = \frac{\tilde{V}_{\text{out}}}{\tilde{V}_{\text{in}}} = \frac{Z_C}{R + Z_C}}$. Simplifique y escriba qué ocurre matemáticamente con la magnitud de salida si $f \to \infty$: \par\vspace{0.2cm}
+\noindent\rule{\textwidth}{0.4pt} \par\vspace{0.2cm}
+\noindent\rule{\textwidth}{0.4pt}
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=red!5!white, colframe=red!70!black, title=\textbf{Exit Ticket (Individual)}]
+\small
+(a) ¿Qué operación algebraica y de giro de fase representa el factor $j\omega$ al derivar un fasor? \rule{3.5cm}{0.4pt} \par
+(b) En un filtro RC con salida en el capacitor, si aplico una senoide de $\omega = 10^9\,\text{rad/s}$, ¿la salida será casi idéntica a la fuente o casi $0\,\text{V}$? \rule{3cm}{0.4pt} Explique por qué mirando $Z_C$. \par\vspace{0.2cm}
+\noindent\hrulefill
+\end{tcolorbox}
+
+\end{document}

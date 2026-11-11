@@ -1,0 +1,72 @@
+% ARTEFACTO A2: Hoja de Ruta y Comunicación Oficial EC3
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Comunicación Oficial EC3}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{warnred}{RGB}{180, 0, 0}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Artefacto A2: Estructuración Documental e Informe IEEE EC3}]
+    \centering \textbf{Borrador Administrativo y Pauta de Jerarquía de Evidencia}
+\end{tcolorbox}
+
+\section*{1. Jerarquía y Procedencia de Evidencia (Para el Informe IEEE)}
+El informe debe declarar explícitamente de dónde proviene cada número. \textbf{Es inaceptable reportar una cifra simulada en la columna de medición.}
+
+\vspace{0.2cm}
+\renewcommand{\arraystretch}{1.5}
+\noindent
+\begin{tabularx}{\textwidth}{
+  >{\bfseries\RaggedRight\hsize=1.0\hsize}X 
+  >{\centering\arraybackslash\hsize=0.8\hsize}X 
+  >{\centering\arraybackslash\hsize=0.8\hsize}X 
+  >{\centering\arraybackslash\hsize=0.8\hsize}X 
+  >{\centering\arraybackslash\hsize=0.6\hsize}X 
+  >{\RaggedRight\arraybackslash\hsize=2.0\hsize}X}
+\toprule
+\textbf{Parámetro} & \textbf{Nominal / Analítico} & \textbf{Simulado (LTspice)} & \textbf{Medido (Osciloscopio)} & \textbf{Estado} & \textbf{Limitación / Justificación} \\
+\midrule
+RC $\tau$ & $10\,\text{ms}$ & $9.8\,\text{ms}$ & NO MEDIDO & NO-GO & \textit{Falta de acceso al banco / Equipo con falla de aislamiento.} \\
+RLC $\zeta$ & $1.00$ & $0.98$ & INFERIDO & GO & \textit{Se deduce amortiguamiento por ausencia de sobreimpulso, falta certificar $R_{\text{DCR}}$.} \\
+\bottomrule
+\end{tabularx}
+\vspace{0.2cm}
+
+Las opciones válidas de origen son: \texttt{OSCILOSCOPIO}, \texttt{LTspice}, \texttt{GRÁFICA TEÓRICA}. Si no hubo acceso o hubo un bloqueo por seguridad, el campo exige colocar \textbf{NO MEDIDO}.
+
+\section*{2. Borrador de Comunicación Institucional a Estudiantes}
+\textit{Este mensaje contiene una propuesta de fecha (17 de noviembre). NO debe enviarse por canales oficiales hasta garantizar mediante ratificación docente que existirá oportunidad de medición física al menos hasta el 12 de noviembre.}
+
+\vspace{0.2cm}
+\begin{tcolorbox}[colback=gray!5, colframe=black, title=\textbf{Mensaje de Actualización EC3 (Sujeto a Ratificación)}]
+Estimados estudiantes: \\
+La evaluación escrita individual de la unidad EC3 se realizó el pasado 2 de noviembre (con un peso del 50\%). La práctica integrada de osciloscopio (20\%) y la entrega del informe técnico IEEE (30\%) continúan \textbf{abiertos y pendientes de cierre}.
+
+Cada grupo debe estructurar su documento respetando la jerarquía de evidencia: resultados analíticos, simulaciones y capturas físicas. Si un parámetro no se obtuvo, debe indicarse como "NO MEDIDO" explicando técnicamente la falla o restricción instrumental.
+
+Estamos programando una instancia de \textbf{recuperación supervisada} (tentativamente del 10 al 12 de noviembre) para aquellos grupos con mediciones trabadas, dependiente de la autorización de laboratorio (GO). Debido a esto, la fecha límite original del 6 de noviembre a las 23:59 para el informe IEEE ha sido aplazada. La \textbf{nueva fecha propuesta de entrega} será el 17 de noviembre a las 23:59. El inicio de la unidad EC4 se mantiene vigente.
+\end{tcolorbox}
+
+\end{document}

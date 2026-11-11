@@ -1,0 +1,69 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Comunicación Oficial EC3}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{warnred}{RGB}{180, 0, 0}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Artefacto A2: Estructuración Documental e Informe IEEE EC3}]
+    \centering \textbf{Borrador Administrativo y Pauta de Jerarquía de Evidencia}
+\end{tcolorbox}
+
+\section*{1. Jerarquía y Procedencia de Evidencia (Para el Informe IEEE)}
+El informe debe declarar explícitamente de dónde proviene cada número. \textbf{Es inaceptable reportar una cifra simulada en la columna de medición.}
+
+\vspace{0.2cm}
+\renewcommand{\arraystretch}{1.5}
+\noindent
+\begin{tabularx}{\textwidth}{
+  >{\bfseries\RaggedRight\hsize=1.0\hsize}X 
+  >{\centering\arraybackslash\hsize=0.8\hsize}X 
+  >{\centering\arraybackslash\hsize=0.8\hsize}X 
+  >{\centering\arraybackslash\hsize=0.8\hsize}X 
+  >{\centering\arraybackslash\hsize=0.6\hsize}X 
+  >{\RaggedRight\arraybackslash\hsize=2.0\hsize}X}
+\toprule
+\textbf{Parámetro} & \textbf{Nominal / Analítico} & \textbf{Simulado (LTspice)} & \textbf{Medido (Osciloscopio)} & \textbf{Estado} & \textbf{Limitación / Justificación} \\
+\midrule
+RC $\tau$ & $10\,\text{ms}$ & $9.8\,\text{ms}$ & NO MEDIDO & NO-GO & \textit{Falta de acceso al banco / Equipo con falla de aislamiento.} \\
+RLC $\zeta$ & $1.00$ & $0.98$ & INFERIDO & GO & \textit{Se deduce amortiguamiento por ausencia de sobreimpulso, falta certificar $R_{\text{DCR}}$.} \\
+\bottomrule
+\end{tabularx}
+\vspace{0.2cm}
+
+Las opciones válidas de origen son: \texttt{OSCILOSCOPIO}, \texttt{LTspice}, \texttt{GRÁFICA TEÓRICA}. Si no hubo acceso o hubo un bloqueo por seguridad, el campo exige colocar \textbf{NO MEDIDO}.
+
+\section*{2. Borrador de Comunicación Institucional a Estudiantes}
+\textit{Este mensaje contiene una propuesta de fecha. NO debe enviarse por canales oficiales hasta garantizar mediante ratificación docente que existirá oportunidad de medición física al menos hasta el 12 de noviembre.}
+
+\vspace{0.2cm}
+\begin{tcolorbox}[colback=gray!5, colframe=black, title=\textbf{Mensaje de Actualización EC3 (Sujeto a Ratificación)}]
+Estimados estudiantes: \\
+Se informa que el equipo docente está verificando las condiciones de las estaciones de medición y las evidencias pendientes de la práctica RC–RLC de EC3. La fecha definitiva del informe IEEE y las condiciones de recuperación se comunicarán por el canal oficial una vez comprobadas las oportunidades de acceso experimental y aprobada la programación. 
+
+Las simulaciones y predicciones deberán identificarse como tales; no se deben presentar como mediciones físicas. Hasta esta confirmación, no asumir que se ha otorgado una prórroga específica. Se propone tentativamente el 17 de noviembre a las 23:59 para la entrega digital, sujeto a ratificación.
+\end{tcolorbox}
+
+\end{document}

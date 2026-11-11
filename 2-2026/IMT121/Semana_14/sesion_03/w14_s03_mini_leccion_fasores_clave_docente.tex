@@ -1,0 +1,64 @@
+% ARTEFACTO A3_DOCENTE: Clave de Corrección de la Mini-Lección
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Clave Worksheet EC4}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{warnred}{RGB}{180, 0, 0}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=warnred!5!white, colframe=warnred, title=\textbf{Clave Docente Exclusiva: Worksheet EC4 (Fasores e Impedancias)}]
+    \centering \textbf{Respuestas Analíticas e Indicadores Formativos Cualitativos}
+\end{tcolorbox}
+
+\section*{Solucionario Guiado}
+\begin{itemize}\setlength\itemsep{0.2cm}
+    \item \textbf{Q1:} $V_m = \mathbf{3\,\text{V}}$, $\omega = \mathbf{100\pi\,\text{rad/s}}$, $f = \frac{100\pi}{2\pi} = \mathbf{50\,\text{Hz}}$, $T = \frac{1}{50} = \mathbf{20\,\text{ms}}$, $\phi = \mathbf{+\pi/6}$ ($+30^\circ$).
+    \item \textbf{Q2:} $\tilde{V}_1 = \mathbf{5\angle 0^\circ\,\text{V}}$, $\tilde{V}_2 = \mathbf{2\angle -90^\circ\,\text{V}}$. El fasor 2 retrasa al fasor 1 por 90 grados y tiene menor amplitud pico.
+    \item \textbf{Q4 (Tabla):}
+    \begin{itemize}
+        \item Resistor: $|Z|$ \textbf{Se mantiene igual} ($R$ es constante y no depende de $\omega$).
+        \item Inductor: $|Z|$ \textbf{Se duplica} ($|Z_L| = \omega L$, al doble de $\omega$, doble reactancia).
+        \item Capacitor: $|Z|$ \textbf{Se reduce a la mitad} ($|Z_C| = \frac{1}{\omega C}$, es inversamente proporcional a la frecuencia).
+    \end{itemize}
+    \item \textbf{Q5:}
+    $$ H(j\omega) = \frac{\frac{1}{j\omega C}}{R + \frac{1}{j\omega C}} = \frac{1}{1 + j\omega RC} $$
+    Si $f \to \infty$, entonces $\omega \to \infty$, el denominador tiende al infinito, por lo que $H(j\omega) \to 0$. \textbf{El voltaje de salida se hace cero (Actúa como Filtro Pasabajos).}
+    \item \textbf{Exit Ticket:} 
+    \begin{itemize}
+        \item (a) Multiplicar por $j\omega$ significa escalar la amplitud pico multiplicándola por $\omega$, y adelantar/rotar la fase agregando \textbf{+90 grados} ($j$).
+        \item (b) Será casi $0\,\text{V}$. Porque $Z_C = \frac{1}{j\omega C}$, a alta frecuencia el capacitor se comporta (idealmente en estado estacionario AC) como un cortocircuito, mandando la señal a tierra.
+    \end{itemize}
+\end{itemize}
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=gray!5, colframe=black, title=\textbf{Rúbrica Cualitativa (Formato Diagnóstico)}]
+\begin{itemize}
+    \item \textbf{Logrado:} Identifica correctamente convenciones, desfases $\pm 90^\circ$ y entiende la causa del filtro capacitivo (frecuencia alta anula el módulo de $Z_C$).
+    \item \textbf{Parcial:} Logra las fórmulas puras de álgebra compleja, pero tiene errores de unidades (confunde rad/s con Hz) o no interpreta físicamente la atenuación.
+    \item \textbf{No Observado:} No hay respuesta escrita o la respuesta demuestra incomprensión de que ya no se analiza un transitorio exponencial.
+\end{itemize}
+\end{tcolorbox}
+
+\end{document}

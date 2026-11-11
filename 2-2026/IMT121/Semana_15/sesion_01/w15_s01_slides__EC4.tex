@@ -1,0 +1,481 @@
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{warnred}{RGB}{180, 0, 0}
+
+\setbeamercolor{structure}{fg=ucbblue}
+\setbeamercolor*{palette primary}{fg=white,bg=ucbblue}
+\setbeamercolor*{palette secondary}{fg=white,bg=ucbblue!80}
+\setbeamercolor*{palette tertiary}{fg=white,bg=ucbblue!90}
+\setbeamercolor{title}{fg=white, bg=ucbblue}
+\setbeamercolor{frametitle}{fg=white, bg=ucbblue}
+\setbeamercolor{item}{fg=ucbblue}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usefonttheme{serif}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[american]{circuitikz}
+
+\title[Fasores e Impedancias]{Unidad EC4: Régimen Sinusoidal Permanente}
+\subtitle{Del transitorio a la senoide: representación fasorial e impedancia}
+\author[B. Quiroga Turdera]{M.Sc. Ing. Bernardo Quiroga Turdera}
+\institute[UCB Tarija]{Universidad Católica Boliviana ``San Pablo'' --- Sede Tarija}
+\date{Semana 15}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% --- SECCIÓN: INTRODUCCIÓN ---
+\section{Introducción}
+\begin{frame}{¿Qué preguntamos ahora? Transitorio vs. Permanente}
+    \begin{columns}[T]
+        \column{0.48\textwidth}
+        \begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{Unidad EC3: Transitorio}]
+            \begin{itemize}
+                \item Fuente: \textbf{Escalón} o pulso DC.
+                \item Pregunta: ¿Cómo evoluciona el sistema desde las \textbf{condiciones iniciales} hasta el nuevo equilibrio?
+                \item Parámetros clave: $\tau$ (RC), $\zeta, \omega_0$ (RLC).
+                \item Resultado: Funciones exponenciales.
+            \end{itemize}
+        \end{tcolorbox}
+        
+        \column{0.48\textwidth}
+        \begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{Unidad EC4: Permanente AC}]
+            \begin{itemize}
+                \item Fuente: \textbf{Senoide infinita sostenida}.
+                \item Pregunta: Una vez que el transitorio "murió", ¿con qué \textbf{amplitud y fase} oscila la salida?
+                \item Condición: Frecuencia $f$ constante.
+                \item Resultado: Funciones sinusoidales.
+            \end{itemize}
+        \end{tcolorbox}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Representación Visual: El Transitorio se Extingue}
+    \begin{center}
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=14cm, height=5.5cm,
+            xlabel={Tiempo}, ylabel={$v_C(t)$},
+            xmin=0, xmax=20, ymin=-2.5, ymax=2.5,
+            axis lines=middle,
+            xtick=\empty, ytick=\empty,
+            enlargelimits=true,
+            clip=false
+        ]
+        % Entrada senoide sostenida
+        \addplot[gray, dashed, domain=0:20, samples=200] {2*sin(deg(2*x))};
+        
+        % Respuesta transitoria + forzada
+        \addplot[ucbblue, thick, domain=0:20, samples=200] {1.5*sin(deg(2*x - 1)) - 1.5*exp(-0.3*x)*sin(deg(-1))};
+        
+        % Etiquetado conceptual
+        \draw [decorate,decoration={brace,amplitude=5pt,mirror},yshift=-2mm]
+          (axis cs:0,-2.5) -- (axis cs:6,-2.5) node [black,midway,yshift=-0.4cm] {\footnotesize Zona de Transitorio (Depende de $v_C(0)$)};
+          
+        \draw [decorate,decoration={brace,amplitude=5pt,mirror},yshift=-2mm]
+          (axis cs:6,-2.5) -- (axis cs:20,-2.5) node [black,midway,yshift=-0.4cm] {\footnotesize Régimen Permanente (Señal AC estable)};
+          
+        \node[above, gray] at (axis cs: 10, 2.1) {Fuente (Escala arbitraria)};
+        \node[above, ucbblue] at (axis cs: 14, 1.6) {Respuesta $v_C$ (Atenuada y desfasada)};
+        \end{axis}
+    \end{tikzpicture}
+    \end{center}
+    \textit{Nos concentraremos exclusivamente en la zona de Régimen Permanente.}
+\end{frame}
+
+% --- SECCIÓN: SENOIDES ---
+\section{Senoides}
+\begin{frame}{Anatomía de una Señal Sinusoidal Pura}
+    Forma canónica de voltaje (usando el \textbf{coseno} como referencia para nuestro curso):
+    \begin{alertblock}{La Ecuación Sinusoidal}
+        $$ v(t) = V_m \cos(\omega t + \phi) \quad \text{[V]} $$
+    \end{alertblock}
+    
+    \begin{columns}
+        \column{0.5\textwidth}
+        \begin{itemize}
+            \item \textbf{$V_m$ (Amplitud Pico):} Valor máximo absoluto. No es V RMS. Para una senoide pura (sin offset): $V_{rms} = V_m / \sqrt{2}$.
+            \item \textbf{$\omega$ (Frec. Angular):} Rapidez de rotación en [rad/s].
+        \end{itemize}
+        \column{0.5\textwidth}
+        \begin{itemize}
+            \item \textbf{$\phi$ (Fase Inicial):} Desplazamiento respecto al origen temporal [rad o grados].
+            \item \textbf{Relaciones Temporales:} $\omega = 2\pi f$; $T = \frac{1}{f}$.
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Visualización de la Senoide Parametrizada}
+    \begin{center}
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=12cm, height=5.5cm,
+            xlabel={Tiempo $t$}, ylabel={Amplitud},
+            xmin=-0.5, xmax=5.5, ymin=-3.5, ymax=3.5,
+            axis lines=middle,
+            xtick=\empty, ytick={-3, 3},
+            yticklabels={$-V_m$, $+V_m$},
+            grid=both,
+            clip=false
+        ]
+        % Coseno puro (Referencia)
+        \addplot[gray, dashed, domain=-0.5:5.5, samples=150] {3*cos(deg(2*x))};
+        \node[above, gray] at (axis cs: 0, 3.2) {Ref: $\cos(\omega t)$};
+        
+        % Coseno desfasado
+        \addplot[ucbblue, very thick, domain=-0.5:5.5, samples=150] {3*cos(deg(2*x + 1.2))};
+        
+        % Anotaciones
+        \draw[<->, red, thick] (axis cs: -0.6, 2.5) -- (axis cs: 0, 2.5) node[right, below] {$+\phi$};
+        \draw[<->, black, thick] (axis cs: -0.6, -3.6) -- (axis cs: 2.54, -3.6) node[midway, below] {Periodo $T$};
+        \end{axis}
+    \end{tikzpicture}
+    \end{center}
+    \textit{Si $\phi > 0$ (positivo), la señal se desplaza a la \textbf{izquierda} (ocurre antes). Está \textbf{adelantada} respecto a la referencia.}
+\end{frame}
+
+\begin{frame}{Verificación Rápida: Extracción de Parámetros}
+    Dada la señal: 
+    $$v(t) = 5 \cos(200\pi t - \pi/4) \text{ V}$$
+    
+    \vspace{0.3cm}
+    \begin{columns}[T]
+        \column{0.48\textwidth}
+        \textbf{¿Qué podemos extraer directamente?}
+        \begin{itemize}
+            \item Amplitud Pico ($V_m$) = $\mathbf{5\,\text{V}}$
+            \item Voltaje Pico a Pico ($V_{pp}$) = $\mathbf{10\,\text{V}}$
+            \item Fase inicial ($\phi$) = $\mathbf{-\pi/4}$ rad ($\mathbf{-45^\circ}$). (Retraso).
+        \end{itemize}
+        
+        \column{0.48\textwidth}
+        \textbf{Cálculo de Tiempos y Frecuencias:}
+        \begin{itemize}
+            \item Frecuencia Angular ($\omega$) = $\mathbf{200\pi\,\text{rad/s}}$
+            \item Frecuencia Hz ($f$) = $\frac{200\pi}{2\pi} = \mathbf{100\,\text{Hz}}$
+            \item Período ($T$) = $\frac{1}{100} = \mathbf{10\,\text{ms}}$
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+% --- SECCIÓN: FASORES ---
+\section{Fasores}
+\begin{frame}{El Problema Algebraico y la Solución Compleja}
+    Para calcular corrientes y voltajes con KVL y KCL usando senoides, tendríamos que sumar y derivar trigonométricamente: 
+    $L \frac{d}{dt}[I_m \cos(\omega t + \phi_1)] + R[I_m \cos(\omega t + \phi_1)] = V_m \cos(\omega t + \phi_2)$.
+    
+    \vspace{0.2cm}
+    \textbf{Es algebraicamente intratable.} 
+    \vspace{0.2cm}
+    
+    La solución de ingeniería es la \textbf{Identidad de Euler}:
+    $$ e^{j\theta} = \cos\theta + j\sin\theta $$
+    Podemos expresar nuestra señal temporal como la \textbf{parte real} de un número complejo rotante:
+    $$ V_m \cos(\omega t + \phi) = \Re\{ V_m e^{j(\omega t + \phi)} \} = \Re\{ \underbrace{V_m e^{j\phi}}_{\text{Fasor}} \cdot e^{j\omega t} \} $$
+\end{frame}
+
+\begin{frame}{¿Qué es un Fasor?}
+    Dado que en un circuito lineal estable TODAS las señales oscilan a la misma frecuencia $\omega$ de la fuente, el término temporal $e^{j\omega t}$ es \textbf{común a todo el circuito}. 
+    
+    \vspace{0.2cm}
+    Lo podemos obviar temporalmente y quedarnos solo con la Amplitud y la Fase. 
+    
+    \begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{Definición del Fasor (Convención Pico)}]
+        El fasor es un vector en el plano complejo que codifica amplitud pico y fase inicial.
+        $$ \tilde{V} = V_m \angle \phi = V_m e^{j\phi} = V_m \cos\phi + j V_m \sin\phi $$
+    \end{tcolorbox}
+    \begin{itemize}
+        \item Magnitud = Amplitud Pico $V_m$ (No RMS para nuestra convención actual).
+        \item Ángulo = Fase $\phi$ respecto al coseno puro a la misma $\omega$.
+        \item $j^2 = -1$ (unidad imaginaria, usamos $j$ para no confundir con corriente $i$).
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Representación Visual: El Plano Complejo}
+    Las ecuaciones sinusoidales se convierten en vectores estáticos en un plano bidimensional.
+    \begin{columns}
+        \column{0.5\textwidth}
+        \begin{center}
+        \begin{tikzpicture}[scale=0.9]
+            % Ejes
+            \draw[->, thick] (-3,0) -- (3,0) node[right] {Re};
+            \draw[->, thick] (0,-3) -- (0,3) node[above] {Im ($j$)};
+            
+            % Circulo unitario referencial
+            \draw[gray, dashed] (0,0) circle (2.5cm);
+            
+            % Vector Fasor 1
+            \draw[->, ucbblue, ultra thick] (0,0) -- (2.165, 1.25) node[right] {$\tilde{V}_1 = 2.5\angle 30^\circ$};
+            % Vector Fasor 2
+            \draw[->, warnred, ultra thick] (0,0) -- (1.5, -2.0) node[right] {$\tilde{V}_2 = 2.5\angle -53^\circ$};
+            
+            % Ángulos
+            \draw[->, ucbblue] (0.8,0) arc (0:30:0.8) node[midway, right] {\small $+30^\circ$};
+            \draw[->, warnred] (0.5,0) arc (0:-53:0.5) node[midway, right] {\small $-53^\circ$};
+        \end{tikzpicture}
+        \end{center}
+        
+        \column{0.5\textwidth}
+        \textbf{Reglas del Plano Complejo:}
+        \begin{itemize}
+            \item \textbf{Eje Real (+):} Fase $0^\circ$ (Coseno puro).
+            \item \textbf{Eje Imag (+j):} Fase $+90^\circ$ (Menos Seno). Multiplicar por $j$ rota el fasor $90^\circ$ en sentido antihorario.
+            \item \textbf{Eje Imag (-j):} Fase $-90^\circ$ (Seno puro). Dividir por $j$ (o multiplicar por $-j$) rota el fasor $-90^\circ$ (retraso).
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Ejemplo Obligatorio (E2): Fasores y Desfase Temporal}
+    $v_1(t) = 5\cos(400\pi t)\,\text{V}$ \quad y \quad $v_2(t) = 2\cos(400\pi t - \pi/2)\,\text{V}$
+    
+    \vspace{0.2cm}
+    \textbf{1. Frecuencia compartida:} $\omega = 400\pi\,\text{rad/s} \implies f = 200\,\text{Hz} \implies T = 5\,\text{ms}$. \\
+    \textbf{2. Transformación Fasorial (Pico):}
+    \begin{itemize}
+        \item $\tilde{V}_1 = 5 \angle 0^\circ\,\text{V} = \mathbf{5 + j0\,\text{V}}$
+        \item $\tilde{V}_2 = 2 \angle -90^\circ\,\text{V} = \mathbf{0 - j2\,\text{V}}$
+    \end{itemize}
+    \textbf{3. Interpretación Relativa:}
+    \begin{itemize}
+        \item La fase relativa es $\Delta\phi = -90^\circ - 0^\circ = -90^\circ$. $v_2$ \textbf{retrasa} a $v_1$ por $90^\circ$.
+        \item En tiempo absoluto, ¿cuánto es ese retraso? \\
+        $\Delta t = \frac{|\Delta\phi|\text{ en rad}}{\omega} = \frac{\pi/2}{400\pi} = \mathbf{1.25\,\text{ms}}$ (Un cuarto del período).
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Dualidad Dominio del Tiempo vs Plano Fasorial}
+    \begin{center}
+    \begin{tikzpicture}
+        % PLANO FASORIAL
+        \begin{scope}[shift={(0,0)}]
+            \node[above] at (0,2.5) {\textbf{Plano Complejo (Fasores)}};
+            \draw[->, thick] (-2,0) -- (2,0) node[right] {Re};
+            \draw[->, thick] (0,-2.5) -- (0,2) node[above] {Im ($j$)};
+            
+            \draw[->, ucbblue, ultra thick] (0,0) -- (2,0) node[above left] {$\tilde{V}_1 = 5\angle 0^\circ$};
+            \draw[->, warnred, ultra thick] (0,0) -- (0,-1.5) node[right] {$\tilde{V}_2 = 2\angle -90^\circ$};
+            \draw[->] (0.5,0) arc (0:-90:0.5) node[midway, right] {\small $-90^\circ$};
+        \end{scope}
+        
+        % DOMINIO TEMPORAL
+        \begin{scope}[shift={(5,0)}]
+            \node[above] at (4,2.5) {\textbf{Dominio Temporal (Misma $\omega$)}};
+            \begin{axis}[
+                width=8cm, height=5cm,
+                xmin=0, xmax=5, ymin=-6, ymax=6,
+                xlabel={$t$ (ms)},
+                axis lines=middle,
+                xtick={0, 1.25, 2.5, 3.75, 5},
+                grid=major,
+                legend pos=north east, legend style={font=\tiny}
+            ]
+            \addplot[ucbblue, thick, domain=0:5, samples=150] {5*cos(deg(400*pi*x/1000))};
+            \addlegendentry{$v_1(t)$}
+            \addplot[warnred, thick, domain=0:5, samples=150] {2*cos(deg(400*pi*x/1000 - pi/2))};
+            \addlegendentry{$v_2(t)$}
+            
+            % Flecha de retraso
+            \draw[->, thick, black] (axis cs: 0, 2) -- (axis cs: 1.25, 2) node[midway, above] {\small $\Delta t = 1.25\,\text{ms}$};
+            \end{axis}
+        \end{scope}
+    \end{tikzpicture}
+    \end{center}
+    \textit{Note cómo el máximo de $v_2$ ocurre \textbf{después} (retraso en el tiempo = ángulo negativo).}
+\end{frame}
+
+% --- SECCIÓN: IMPEDANCIAS ---
+\section{Impedancias}
+\begin{frame}{La Magia del Fasor: La Derivada se vuelve Multiplicación}
+    ¿Qué ocurre si derivamos una señal temporal expresada como la proyección de un fasor rotante?
+    $$ v(t) = \Re \{ \tilde{V} e^{j\omega t} \} $$
+    $$ \frac{d}{dt} v(t) = \Re \left\{ \frac{d}{dt} \left( \tilde{V} e^{j\omega t} \right) \right\} = \Re \{ \tilde{V} \cdot \mathbf{j\omega} \cdot e^{j\omega t} \} $$
+    
+    \begin{alertblock}{Equivalencia Operacional AC}
+        \centering $\mathbf{\dfrac{d}{dt} \iff j\omega}$
+    \end{alertblock}
+    \vspace{0.2cm}
+    \textbf{Físicamente:} En régimen permanente sinusoidal, derivar una señal es equivalente a:
+    \begin{enumerate}
+        \item Escalar (multiplicar) su amplitud por $\omega$.
+        \item Adelantar (rotar) su fase exactamente $+90^\circ$ (representado por $j$).
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{Impedancia de Elementos Ideales (1/2)}
+    La \textbf{Impedancia ($Z$)} es la extensión de la Ley de Ohm al dominio complejo. Relaciona Fasor de Voltaje y Fasor de Corriente: $\mathbf{\tilde{V} = Z \tilde{I}}$. (Medida en Ohmios $[\Omega]$).
+    
+    \vspace{0.3cm}
+    \textbf{1. Resistor Ideal}
+    \begin{itemize}
+        \item Ley en el tiempo: $v_R(t) = R \cdot i(t)$
+        \item En Fasores: $\tilde{V}_R = R \cdot \tilde{I} \implies \mathbf{Z_R = R}$
+        \item Módulo $|Z_R| = R$. Fase: $0^\circ$. El voltaje y la corriente están \textbf{en fase}.
+    \end{itemize}
+    
+    \vspace{0.2cm}
+    \textbf{2. Inductor Ideal}
+    \begin{itemize}
+        \item Ley en el tiempo: $v_L(t) = L \frac{di}{dt}$
+        \item Sustituyendo derivada: $\tilde{V}_L = L (j\omega \tilde{I}) \implies \mathbf{Z_L = j\omega L}$
+        \item Módulo $|Z_L| = \omega L$. Fase: $+90^\circ$. El voltaje en $L$ \textbf{adelanta} $90^\circ$ a la corriente.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Impedancia de Elementos Ideales (2/2)}
+    \textbf{3. Capacitor Ideal}
+    \begin{itemize}
+        \item Ley en el tiempo: $i_C(t) = C \frac{dv_C}{dt}$
+        \item Fasores: $\tilde{I} = C (j\omega \tilde{V}_C) \implies \tilde{V}_C = \frac{1}{j\omega C} \tilde{I}$
+        \item Por tanto: $\mathbf{Z_C = \frac{1}{j\omega C} = \frac{-j}{\omega C}}$
+        \item Módulo $|Z_C| = \frac{1}{\omega C}$. Fase: $-90^\circ$. El voltaje en $C$ \textbf{retrasa} $90^\circ$ a la corriente.
+    \end{itemize}
+    
+    \vspace{0.3cm}
+    \renewcommand{\arraystretch}{1.5}
+    % Uso de tabular estandar para compatibilidad en Beamer
+    \begin{center}
+    \begin{tabular}{l c c c l}
+    \toprule
+    \textbf{Elemento} & \textbf{$Z$} & \textbf{$|Z|$} & \textbf{Fase} & \textbf{Si duplicamos $f$ ($\omega$)} \\
+    \midrule
+    Resistor ($R$) & $R$ & $R$ & $0^\circ$ & No cambia su resistencia \\
+    Inductor ($L$) & $j\omega L$ & $\omega L$ & $+90^\circ$ & $|Z|$ \textbf{se duplica} (Opone más) \\
+    Capacitor ($C$) & $-j/(\omega C)$ & $1/(\omega C)$ & $-90^\circ$ & $|Z|$ \textbf{cae a la mitad} (Deja pasar) \\
+    \bottomrule
+    \end{tabular}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Ejemplo Numérico e Interpretación Límite}
+    Tomemos: $f = 1\,\text{kHz} \implies \omega = 2\pi(1000) \approx 6283.2\,\text{rad/s}$. \\
+    Sean $R = 1\,\text{k}\Omega$, $L = 10\,\text{mH}$, y $C = 1\,\mu\text{F}$.
+    \begin{itemize}
+        \item $Z_R = 1000 + j0\,\Omega = \mathbf{1000\angle 0^\circ\,\Omega}$
+        \item $Z_L = j(6283.2)(0.010) = \mathbf{j62.8\,\Omega} = \mathbf{62.8\angle +90^\circ\,\Omega}$
+        \item $Z_C = \frac{-j}{(6283.2)(10^{-6})} = \mathbf{-j159.2\,\Omega} = \mathbf{159.2\angle -90^\circ\,\Omega}$
+    \end{itemize}
+    
+    \vspace{0.2cm}
+    \begin{alertblock}{Límites Físicos en AC}
+        \begin{itemize}
+            \item Si $f \to 0$ (Cerca de DC): $Z_L \to 0$ (Cortocircuito), $Z_C \to \infty$ (Circuito Abierto).
+            \item Si $f \to \infty$ (Altísima frecuencia): $Z_L \to \infty$ (Abierto), $Z_C \to 0$ (Cortocircuito).
+        \end{itemize}
+    \end{alertblock}
+\end{frame}
+
+% --- SECCIÓN: APLICACIÓN RC ---
+\section{Aplicación RC}
+\begin{frame}{El Divisor de Voltaje Complejo (RC Pasabajos)}
+    Retomemos el circuito RC que usamos para cargar escalones en el laboratorio, pero alimentémoslo con nuestra senoide permanente AC.
+    
+    \begin{columns}
+        \column{0.45\textwidth}
+        \begin{center}
+        \begin{circuitikz}[scale=0.9, transform shape, thick]
+            \draw (0,0) to[sV, l_={$\tilde{V}_{\text{in}}$}] (0,3)
+                  to[R, l={$R$}, i=$\tilde{I}$] (3,3)
+                  to[short, -*] (4,3) node[above]{\texttt{out}};
+            \draw (4,3) to[C, l={$Z_C$}, v={$\tilde{V}_C$}] (4,0);
+            \draw (0,0) -- (4,0);
+            \draw (2,0) node[ground]{};
+            \draw[->, thick, ucbblue] (5, 3) -- (5, 0) node[midway, right]{$\tilde{V}_{\text{out}}$};
+        \end{circuitikz}
+        \end{center}
+        
+        \column{0.55\textwidth}
+        La regla del divisor de voltaje se mantiene con impedancias complejas:
+        $$ \tilde{V}_{\text{out}} = \tilde{V}_C = \tilde{V}_{\text{in}} \frac{Z_C}{R + Z_C} $$
+        Definimos la Función de Transferencia Armónica $\mathbf{H(j\omega)}$:
+        $$ H(j\omega) = \frac{\tilde{V}_{\text{out}}}{\tilde{V}_{\text{in}}} = \frac{Z_C}{R + Z_C} $$
+        Sustituyendo $Z_C = \frac{1}{j\omega C}$:
+        $$ H(j\omega) = \frac{\frac{1}{j\omega C}}{R + \frac{1}{j\omega C}} = \mathbf{ \frac{1}{1 + j\omega RC} } $$
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Comportamiento Asintótico del Filtro Pasabajos}
+    $H(j\omega)$ es un número complejo que nos dice cómo cambia la Magnitud ($|H|$) y la Fase ($arg(H)$) de la señal de salida frente a la entrada. \\
+    $$ H(j\omega) = \frac{1}{1 + j(\omega RC)} $$
+    \vspace{0.1cm}
+    \begin{itemize}\setlength\itemsep{0.2cm}
+        \item \textbf{A Frecuencias Muy Bajas ($\omega RC \ll 1$):} \\
+        $H(j\omega) \approx \frac{1}{1 + j0} = 1\angle 0^\circ$. \\
+        La salida es casi idéntica a la entrada ($|V_{\text{out}}| \approx |V_{\text{in}}|$). \textbf{Pasan los bajos}. Físicamente, $|Z_C|$ es inmensa y acapara todo el voltaje frente a R.
+        
+        \item \textbf{A Frecuencias Muy Altas ($\omega RC \gg 1$):} \\
+        El denominador explota imaginariamente. $|H| \to 0$, Fase $\to -90^\circ$. \\
+        La salida se aniquila ($|V_{\text{out}}| \approx 0\,\text{V}$). \textbf{Atenúa los altos}. Físicamente, $|Z_C| \to 0$ operando como corto a masa.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{El Punto Característico ($\omega RC = 1$)}
+    ¿Qué pasa cuando la frecuencia de excitación de la senoide hace exactamente que $\omega = \frac{1}{RC}$? 
+    \vspace{0.2cm}
+    
+    $$ H(j\omega) = \frac{1}{1 + j(1)} = \frac{1}{1 + j} $$
+    
+    Racionalizando (multiplicando numerador y denominador por el conjugado $1-j$):
+    $$ H(j\omega) = \frac{1-j}{1^2 - (j)^2} = \frac{1-j}{2} = \mathbf{0.5 - j0.5} $$
+    
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{Magnitud:} 
+        $$ |H| = \sqrt{0.5^2 + (-0.5)^2} = \sqrt{0.5} = \mathbf{0.7071} $$
+        \column{0.5\textwidth}
+        \textbf{Fase:}
+        $$ \text{Fase} = \text{atan2}(-0.5, 0.5) = \mathbf{-45^\circ} $$
+    \end{columns}
+    
+    \vspace{0.3cm}
+    \textit{Si inyectamos una señal pico de $2\,\text{V}$ a esta frecuencia, el capacitor entregará $2 \times 0.7071 = 1.414\,\text{V}$ pico, desfasados $45^\circ$ (retraso) respecto a la fuente.}
+\end{frame}
+
+% --- SECCIÓN: CIERRE ---
+\section{Cierre}
+\begin{frame}{Camino de Competencias y Próximos Pasos}
+    \begin{center}
+    \begin{tikzpicture}[
+        node distance=0.6cm and 0.4cm,
+        box/.style={draw=ucbblue, thick, rounded corners=2pt, fill=ucbblue!5, align=center, font=\footnotesize, minimum height=1cm, inner sep=3pt},
+        arr/.style={-Stealth, thick, ucbblue}
+    ]
+        % HOY
+        \node[box] (n1) {\textbf{Hoy:}\\Senoide y Fasores};
+        \node[box, right=of n1] (n2) {\textbf{Hoy:}\\$Z$ e $H(j\omega)$ límite};
+        
+        % MAÑANA
+        \node[box, fill=gray!10, draw=gray, right=of n2] (n3) {\textbf{Luego:}\\$|H|$ y fase vs Frec.};
+        \node[box, fill=gray!10, draw=gray, right=of n3] (n4) {\textbf{Luego:}\\Diag. de Bode y .AC};
+        
+        \draw[arr] (n1) -- (n2);
+        \draw[arr, gray] (n2) -- (n3);
+        \draw[arr, gray] (n3) -- (n4);
+    \end{tikzpicture}
+    \end{center}
+    
+    \vspace{0.4cm}
+    \textbf{Para recordar antes de irnos:}
+    \begin{itemize}
+        \item En régimen estacionario AC, la Ecuación Diferencial se volvió Álgebra de Impedancias gracias a la conversión de la derivada: $\frac{d}{dt} \to j\omega$.
+        \item Un Fasor pierde la información de un transitorio abrupto. Asume estado de repetición infinita y estable.
+        \item Un Capacitor es un circuito abierto en DC ($\omega=0$) y un corto en muy altas frecuencias ($\omega \to \infty$). Un Inductor es exactamente lo contrario.
+    \end{itemize}
+\end{frame}
+
+\end{document}

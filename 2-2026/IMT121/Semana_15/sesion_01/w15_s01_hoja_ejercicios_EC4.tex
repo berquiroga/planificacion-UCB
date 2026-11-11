@@ -1,0 +1,116 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage[american]{circuitikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Worksheet EC4}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{warnred}{RGB}{180, 0, 0}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Artefacto A3: Introducción a EC4 (Fasores, Impedancia y Senoides)}]
+    \centering \textbf{Worksheet Estudiantil — Régimen Permanente Sinusoidal}
+\end{tcolorbox}
+
+\textbf{Estudiante:} \hrulefill \quad \textbf{Fecha:} \hrulefill
+
+\vspace{0.2cm}
+\noindent \textbf{Nota de Transición:} En EC3 analizamos transitorios al conectar una fuente DC. En EC4 el transitorio ya se extinguió. Evaluaremos la respuesta forzada bajo una onda sinusoidal \textbf{infinita y sostenida} usando fasores (amplitud pico y fase respecto al coseno).
+
+\section*{Q1. Activación Diagnóstica (2 min)}
+Si la señal de voltaje sostenido del generador es $v(t) = 3\cos(100\pi t + \pi/6)\,\text{V}$, identifique: \\
+Amplitud pico ($V_m$): \rule{2cm}{0.4pt} \quad Frecuencia Angular ($\omega$): \rule{2cm}{0.4pt} \quad Frecuencia Hz ($f$): \rule{2cm}{0.4pt} \\
+Período ($T$): \rule{2cm}{0.4pt} \quad Fase Inicial en grados ($\phi$): \rule{2cm}{0.4pt} \quad Valor Pico a Pico: \rule{2cm}{0.4pt}
+
+\section*{Q2. Transformación Fasorial (4 min)}
+El Fasor captura \textbf{solo la Amplitud Pico y la Fase}. Escriba la forma fasorial polar y rectangular de: \\
+$v_1(t) = 5\cos(400\pi t)\,\text{V} \implies \tilde{V}_1 = $ \rule{6cm}{0.4pt} \\
+$v_2(t) = 2\cos(400\pi t - \pi/2)\,\text{V} \implies \tilde{V}_2 = $ \rule{6cm}{0.4pt} \\
+¿Cuál señal presenta retraso respecto a la otra? \rule{6cm}{0.4pt}
+
+\section*{Q3 y Q4. Impedancias de Elementos AC (5 min)}
+Recordando que derivar un fasor equivale a multiplicarlo por $j\omega$ ($\frac{d}{dt} \iff j\omega$): \\
+Complete la tabla para el régimen sinusoidal permanente:
+
+\vspace{0.2cm}
+\renewcommand{\arraystretch}{1.8}
+\noindent
+\begin{tabularx}{\textwidth}{
+  >{\bfseries\RaggedRight\hsize=0.6\hsize}X 
+  >{\centering\arraybackslash\hsize=0.8\hsize}X 
+  >{\centering\arraybackslash\hsize=1.2\hsize}X 
+  >{\centering\arraybackslash\hsize=0.8\hsize}X 
+  >{\RaggedRight\arraybackslash\hsize=1.6\hsize}X}
+\toprule
+\textbf{Elemento} & \textbf{Ley Temporal} & \textbf{Impedancia ($Z$) $[\Omega]$} & \textbf{Fase ($\tilde{V}/\tilde{I}$)} & \textbf{¿Qué le pasa al Módulo $|Z|$ si duplicamos la frecuencia $f$?} \\
+\midrule
+Resistor & $v_R = Ri$ & $Z_R = R$ & $0^\circ$ & \\ \addlinespace
+Inductor & $v_L = L \frac{di}{dt}$ & & & \\ \addlinespace
+Capacitor & $i_C = C \frac{dv_C}{dt}$ & & & \\
+\bottomrule
+\end{tabularx}
+
+\section*{Q5. Divisor de Voltaje AC (RC Pasabajos)}
+En un circuito RC serie con salida en el capacitor: \\
+Deduzca la función de transferencia $\mathbf{H(j\omega) = \frac{\tilde{V}_{\text{C}}}{\tilde{V}_{\text{in}}} = \frac{Z_C}{R + Z_C}}$. Escríbala en función de $R$, $C$ y $\omega$: \par\vspace{0.2cm}
+\noindent\rule{\textwidth}{0.4pt} \par\vspace{0.2cm}
+¿Qué ocurre con la magnitud de la salida si $\omega \to \infty$? Justifique usando $|Z_C|$: \par\vspace{0.2cm}
+\noindent\rule{\textwidth}{0.4pt}
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=red!5!white, colframe=red!70!black, title=\textbf{Exit Ticket (Individual)}]
+\small
+(a) ¿Qué operación algebraica y de giro de fase representa el factor $j\omega$ al derivar un fasor en régimen permanente, y por qué no representa todo un transitorio? \rule{3.5cm}{0.4pt} \par
+\vspace{0.2cm}
+(b) ¿Por qué al aumentar mucho la frecuencia disminuye la salida en el capacitor en un circuito RC pasabajos? \rule{3cm}{0.4pt} \par\vspace{0.2cm}
+\noindent\hrulefill
+\end{tcolorbox}
+
+\newpage
+% =====================================================================
+% CLAVE DOCENTE EXCLUSIVA
+% =====================================================================
+\begin{tcolorbox}[colback=warnred!5!white, colframe=warnred, title=\textbf{CLAVE DOCENTE EXCLUSIVA — NO DISTRIBUIR EN LA HOJA DEL ESTUDIANTE}]
+    \centering \textbf{Worksheet EC4 (Fasores e Impedancias)}
+\end{tcolorbox}
+
+\section*{Solucionario Guiado}
+\begin{itemize}\setlength\itemsep{0.2cm}
+    \item \textbf{Q1:} $V_m = \mathbf{3\,\text{V}}$, $\omega = \mathbf{100\pi\,\text{rad/s}}$, $f = \mathbf{50\,\text{Hz}}$, $T = \mathbf{20\,\text{ms}}$, $\phi = \mathbf{+30^\circ}$, $V_{pp} = \mathbf{6\,\text{V}}$.
+    \item \textbf{Q2:} $\tilde{V}_1 = \mathbf{5\angle 0^\circ\,\text{V} = 5 + j0\,\text{V}}$, $\tilde{V}_2 = \mathbf{2\angle -90^\circ\,\text{V} = -j2\,\text{V}}$. El fasor 2 retrasa al fasor 1 por $90^\circ$.
+    \item \textbf{Q3 y Q4 (Tabla):}
+    \begin{itemize}
+        \item Inductor: $Z_L = \mathbf{j\omega L}$; Fase $\mathbf{+90^\circ}$; $|Z|$ \textbf{Se duplica}.
+        \item Capacitor: $Z_C = \mathbf{\frac{1}{j\omega C} = \frac{-j}{\omega C}}$; Fase $\mathbf{-90^\circ}$; $|Z|$ \textbf{Se reduce a la mitad}.
+    \end{itemize}
+    \item \textbf{Q5:}
+    $$ H(j\omega) = \frac{\frac{1}{j\omega C}}{R + \frac{1}{j\omega C}} = \mathbf{\frac{1}{1 + j\omega RC}} $$
+    Si $\omega \to \infty$, entonces $|Z_C| \to 0$ (se comporta como corto en AC), el denominador de $H$ tiende al infinito, por lo que $H(j\omega) \to 0$. \textbf{El voltaje de salida se atenúa (Filtro Pasabajos).}
+    \item \textbf{Exit Ticket:} 
+    \begin{itemize}
+        \item (a) Multiplicar por $j\omega$ escala la amplitud por $\omega$ y adelanta la fase $+90^\circ$. No describe un transitorio porque asume una excitación sinusoidal infinita y estable, sin condiciones iniciales.
+        \item (b) Disminuye porque $|Z_C| = \frac{1}{\omega C}$. A mayor frecuencia, menor impedancia presenta el capacitor, recibiendo una fracción cada vez menor del divisor de tensión frente a $R$.
+    \end{itemize}
+\end{itemize}
+
+\end{document}
