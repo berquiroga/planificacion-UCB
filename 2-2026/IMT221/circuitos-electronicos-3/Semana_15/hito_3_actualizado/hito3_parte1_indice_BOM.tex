@@ -1,0 +1,143 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table]{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, calc}
+\usepackage[margin=1.4cm]{geometry}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+\emergencystretch=2em
+\tolerance=1000
+\hbadness=10000
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{ucbgray}{RGB}{240, 244, 248}
+\definecolor{warnred}{RGB}{180, 20, 20}
+
+\begin{document}
+
+\noindent
+{\LARGE \textbf{\textcolor{ucbblue}{IMT-221 — Circuitos Electrónicos III}}}\\[0.12cm]
+{\Large \textbf{Hito 3: Guía Única de Desarrollo Experimental E1 $\rightarrow$ E4 — Parte 1: Índice, Trazabilidad y BOM Maestra (v1.5)}}\\[0.08cm]
+{\small \textbf{Versión integrada 1.5} $\cdot$ E2 optoaislado con migración y alimentación escalonada (12 de noviembre de 2026) $\cdot$ UCB ``San Pablo'' Sede Tarija}
+\par\vspace{0.15cm}\noindent\rule{\linewidth}{0.4pt}\vspace{0.2cm}
+
+\noindent
+\textbf{Propósito:} Diseñar, simular, construir, medir y documentar un sistema de accionamiento electrónico incremental: \textbf{E1 interruptor NMOS low-side resistivo $\rightarrow$ E2 driver BJT sourcing/sinking con entrada PWM optoaislada $\rightarrow$ E3 conmutación de carga inductiva protegida $\rightarrow$ E4 puente H físico con control de shoot-through, pérdidas y análisis térmico con Python}. Todos los equipos deben alcanzar la misma meta. Si un equipo está retrasado, recupera las etapas previas siguiendo \textbf{esta misma guía} y conserva sus evidencias; no hay rutas curriculares alternativas.
+
+\vspace{0.1cm}
+\noindent
+\textbf{\textcolor{warnred}{Alcance de seguridad:}} Esta guía \textbf{no autoriza energizar} ningún circuito. El docente/encargado verifica y firma \textbf{G1, G2, G3 y G4}, independientemente, sobre el montaje real. Los componentes aún no confirmados y los detalles de E3/E4 que dependen del motor, diodos y dispositivos comerciales deben dimensionarse y aprobarse antes de conectarlos. Un netlist genérico no sustituye un diseño físico validado.
+
+\vspace{0.1cm}
+\noindent
+\textbf{Historial v1.3 $\rightarrow$ v1.5:} Se conservan Arduino Uno/ESP32, PNP \texttt{2N3906}/\texttt{BC557B} y NPN \textbf{\texttt{BC337}}, \textbf{\texttt{BC547}}, \textbf{\texttt{2N3904}} y \textbf{\texttt{2N2222A}} con asignación por función, incorporando en v1.4/v1.5 la barrera galvánica con \textbf{\texttt{PC817}}, regulador \textbf{\texttt{LM7805}} en el dominio B, inversor restaurador \textbf{\texttt{Q0}}, resistor pull-down de entrada \textbf{\texttt{RPD\_PWM = 47 k$\Omega$}} y el protocolo obligatorio de primera energización escalonada (Fases 0 a E). No se declara validado el hardware.
+
+\section*{0. Índice de Trabajo, Entregables y Control de Avance}
+
+\begin{center}
+\resizebox{\linewidth}{!}{
+\begin{tikzpicture}[
+    node distance=1.35cm,
+    stage/.style={draw=ucbblue, very thick, fill=ucbgray, rounded corners=4pt, minimum width=4.8cm, minimum height=1.65cm, align=center},
+    gate/.style={draw=warnred, very thick, fill=red!10, circle, minimum size=0.95cm, font=\bfseries\color{warnred}}
+]
+    \node[stage] (E1) {\textbf{Etapa E1}\\NMOS Low-Side\\Carga Resistiva $100\,\Omega$};
+    \node[gate, right=0.65cm of E1] (G1) {G1};
+    \node[stage, right=0.65cm of G1] (E2) {\textbf{Etapa E2 (Rev.\ 1.5)}\\PWM Optoaislado (\texttt{PC817}) +\\Driver BJT ($12\,\text{V}$) Escalonado};
+    \node[gate, right=0.65cm of E2] (G2) {G2};
+    \node[stage, right=0.65cm of G2] (E3) {\textbf{Etapa E3}\\Carga Inductiva $L/R$ +\\Recirculación Verificada};
+    \node[gate, right=0.65cm of E3] (G3) {G3};
+    \node[stage, right=0.65cm of G3] (E4) {\textbf{Etapa E4 (Hito 3)}\\Puente H Físico (PMOS/NMOS)\\Dead-Time + Térmica Python};
+    \node[gate, right=0.65cm of E4] (G4) {G4};
+
+    \draw[-{Stealth[length=3mm]}, very thick, ucbblue] (E1) -- (G1);
+    \draw[-{Stealth[length=3mm]}, very thick, warnred] (G1) -- (E2);
+    \draw[-{Stealth[length=3mm]}, very thick, ucbblue] (E2) -- (G2);
+    \draw[-{Stealth[length=3mm]}, very thick, warnred] (G2) -- (E3);
+    \draw[-{Stealth[length=3mm]}, very thick, ucbblue] (E3) -- (G3);
+    \draw[-{Stealth[length=3mm]}, very thick, warnred] (G3) -- (E4);
+    \draw[-{Stealth[length=3mm]}, very thick, ucbblue] (E4) -- (G4);
+\end{tikzpicture}
+}
+\end{center}
+
+\par\vspace{0.08cm}\noindent
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{|p{1.1cm}|>{\raggedright\arraybackslash}p{6.0cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{7.4cm}|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Etapa} & \textbf{Resultado Exigido} & \textbf{Condición para Continuar} & \textbf{Evidencias} \\ \hline
+\textbf{E1} & NMOS low-side conmuta carga resistiva & \textbf{G1} y diagnóstico de excitación; si no se autoriza la prueba, dejar bloqueo documentado & Esquema, cálculo, LTspice, valores reales $V_{GS}$, $V_{DS}$, $I_D$ si autorizados \\ \hline
+\textbf{E2} & Driver BJT optoaislado con adaptación de $0\text{--}5\,\text{V}$ ($3.3\,\text{V}$) a gate, sourcing/sinking & \textbf{G2}, separación A/B verificada, BJTs identificados, Fases 0--D superadas sin unir tierras & Esquema de 2 dominios, inventario diferencial, LTspice + log, registro G2 y medidas \\ \hline
+\textbf{E3} & NMOS de E2 conmuta una carga inductiva con trayectoria de recirculación verificada & \textbf{G3}, motor/bobina y diodo dimensionados, estrategia OFF documentada & Corriente y tensión transitoria, protección y análisis de energía \\ \hline
+\textbf{E4} & Puente H físico controlado y protegido, con mediciones y pérdidas/térmica & \textbf{G4}, drivers high-side y low-side, enclavamientos/dead time, control de estados, prueba en frío & Tabla de estados, LTspice, formas de onda, pruebas sin y con motor, Python e informe \\ \hline
+\end{tabularx}
+
+\vspace{0.14cm}
+\noindent
+\textbf{Calendario administrativo actualizado:} Examen EC3 previsto prioritariamente para \textbf{W15S02} (\textbf{W15S03} solicitado, sujeto a ratificación docente); entrega Hito 3: \textbf{20/11/2026}; recuperatorio U3/U4: \textbf{27/11/2026}. El examen es distinto de la entrega física final. No transformar un calendario en permiso de energización.
+
+\subsection*{Convenciones y Trazabilidad}
+\begin{itemize}[noitemsep, topsep=2pt]
+    \item $V_{\text{BUS}}$: tensión de potencia; $V_{\text{DRV}}$: alimentación de driver; $V_{\text{IN}}$: señal lógica; $G$: gate, $D$: drain, $S$: source; $V_{GS} = V_G - V_S$, $V_{DS} = V_D - V_S$.
+    \item $R_L$: carga resistiva E1/E2; $R_G$: resistor serie de gate; $R_{PD}$: pull-down gate--source; $Q_g$: carga total de gate \textbf{bajo condiciones de ficha}.
+    \item Para \textbf{cada cifra} indicar origen: \texttt{CALC} (calculado), \texttt{PRED} (predicho), \texttt{SIM} (simulado en LTspice, con archivo y log), \texttt{MED} (medido, con instrumento) o \texttt{PEND} (pendiente). No copiar valores \texttt{CALC} como \texttt{MED}.
+    \item Escribir fabricante, código completo, encapsulado y fecha de consulta del datasheet del transistor montado. Un nombre impreso similar no garantiza el mismo pinout.
+\end{itemize}
+
+\newpage
+\section*{1. BOM Maestra Única — Revisión 1.5 E2 Optoaislado (12 nov 2026)}
+
+\textbf{Configuración de referencia de estudio:} Arduino Uno $5\,\text{V}$ \textbf{o} ESP32 $3.3\,\text{V}$ $\rightarrow$ LED del \textbf{\texttt{PC817}} $\rightarrow$ barrera galvánica $\rightarrow$ fototransistor y NPN \texttt{Q0} alimentados desde regulador \textbf{\texttt{7805} independiente del lado de potencia} $\rightarrow$ etapas \texttt{Q1/Q2} $\rightarrow$ PNP \texttt{QH} / NPN \texttt{QL} $\rightarrow$ gate NMOS de E1. \textbf{\textcolor{warnred}{No interconectar \texttt{GND\_MCU} y \texttt{GND\_PWR}}}. El controlador se alimenta por su USB; el \texttt{7805} \textbf{NO alimenta el Arduino/ESP32}. Se conserva $12\,\text{V}_{\text{DRV}}$, $R_L=100\,\Omega$, PWM $100\,\text{Hz}$ $50\%$. La topología optoaislada reemplaza E2 de v1.3; NO conectar las entradas \texttt{RIN1/RIN2} al GPIO ni a $12\,\text{V}$.
+
+\par\vspace{0.1cm}\noindent
+\renewcommand{\arraystretch}{1.14}
+{\footnotesize
+\begin{tabularx}{\linewidth}{|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}p{2.2cm}|c|>{\raggedright\arraybackslash}p{7.4cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Bloque} & \textbf{ID} & \textbf{Cant.} & \textbf{Referencia Candidata} & \textbf{Comentario / Verificación Obligatoria} \\ \hline
+Control & \texttt{MCU} & 1 & Arduino Uno D9 \textbf{o} ESP32 GPIO apto (p.\ ej.\ 18 según placa) & $5\,\text{V}$ o $3.3\,\text{V}$, alimentación USB exclusiva del Dominio A \\ \hline
+Aislamiento & \texttt{UOP} (\texttt{U1}) & 1 & \textbf{PC817 DIP-4} & Sawers cód.\ \texttt{01400}; fototransistor (pin 1 A, 2 K, 3 E, 4 C), NO driver de gate \\ \hline
+LED opto & \texttt{RLED} & 1 & \textbf{$560\,\Omega$} (Uno $5\,\text{V}$) \textbf{o $330\,\Omega$} (ESP32 $3.3\,\text{V}$), $1/4\,\text{W}$ & Seleccionar según MCU, verificar corriente GPIO y CTR con lote concreto \\ \hline
+Apagado MCU & \texttt{RPD\_PWM} & 1 & \textbf{$47\,\text{k}\Omega$, $1/4\,\text{W}$} (recomendado añadido v1.5) & De \texttt{GPIO\_PWM} a \texttt{GND\_MCU}; define OFF durante arranque en alta impedancia \\ \hline
+LED opto & \texttt{DREV} & 0--1 & \textbf{1N4148} en antiparalelo con LED opto (opcional rec.) & Cátodo a pin 1, ánodo a pin 2; protege inversión accidental limitada; no sustituye \texttt{RLED} \\ \hline
+5V aislado B & \texttt{UREG} (\texttt{U2}) & 1 & \textbf{LM7805 / L7805} TO-220 real o variante revisada & Entrada $+12\,\text{V}_{\text{PWR}}$, salida $+5\,\text{V}_{\text{ISO}}$ ($+5\,\text{V}_{\text{B}}$), \texttt{GND\_PWR}; no conectar a MCU \\ \hline
+Desacoplo reg. & \texttt{CIN5 / COUT5} & 1+1 & \textbf{$330\,\text{nF}$} entrada y \textbf{$100\,\text{nF}$} salida, cerámicos $\ge 25\,\text{V}$ & Valores sujetos a datasheet de \texttt{UREG}; colocar junto a pines (NO electrolíticos) \\ \hline
+Desacoplo 12V & \texttt{C12 / CBULK} & 1+0--1 & \textbf{$100\,\text{nF}$ cerámico} + \textbf{$10\,\mu\text{F} \ge 25\,\text{V}$} (electrolítico o cerámico) & Entre $+12\,\text{V}_{\text{B}}$ y \texttt{GND\_PWR}; verificar polaridad si $10\,\mu\text{F}$ es electrolítico \\ \hline
+Receptor PC817 & \texttt{ROP} & 1 & \textbf{$10\,\text{k}\Omega$, $1/4\,\text{W}$} & Pull-up de colector del fototransistor (pin 4, \texttt{OPTO\_N}) a $+5\,\text{V}_{\text{ISO}}$ \\ \hline
+Restauración lóg. & \texttt{Q0} & 1 & \textbf{BC547 / 2N3904 / BC337 / 2N2222A} (NPN) & Inversor para restituir fase (\texttt{PWM HIGH} $\rightarrow$ \texttt{VIN\_ISO HIGH}); comprobar E/B/C \\ \hline
+Restauración lóg. & \texttt{RB0 / RPU0} & 1+1 & \textbf{$10\,\text{k}\Omega$ / $1\,\text{k}\Omega$, $1/4\,\text{W}$} (provisional v1.4/1.5) & Base \texttt{Q0} desde \texttt{OPTO\_N}; colector \texttt{Q0} (\texttt{VIN\_ISO}) a $+5\,\text{V}_{\text{ISO}}$; comprobar saturación \\ \hline
+Control driver & \texttt{Q1, Q2} & 2 & NPN \textbf{BC547, 2N3904, BC337 o 2N2222A} & Verificar saturación, encapsulado, $I_B/I_C$ y $V_{EBO}$ \\ \hline
+Bases control & \texttt{RIN1, RIN2} & 2 & \textbf{$2.2\,\text{k}\Omega$, $1/4\,\text{W}$} & Conectadas desde \texttt{VIN\_ISO} ($0\text{--}5\,\text{V}$ cargado), \textbf{jamás desde GPIO directo} \\ \hline
+Bases control & \texttt{RPD1, RPD2} & 2 & \textbf{$10\,\text{k}\Omega$, $1/4\,\text{W}$} & Bases \texttt{Q1/Q2} hacia \texttt{GND\_PWR} \\ \hline
+Salida sourcing & \texttt{QH} & 1 & PNP \textbf{2N3906 / BC557B} & Emisor $+12\,\text{V}_{\text{DRV}}$, base \texttt{BH}, colector \texttt{RG\_UP}; revisar $I_C$, $V_{EBO}$ y transitorios \\ \hline
+Base sourcing & \texttt{RBH / RPUH} & 1+1 & \textbf{$2.2\,\text{k}\Omega$ / $10\,\text{k}\Omega$, $1/4\,\text{W}$} & $\texttt{Q1}_{\text{C}} \rightarrow \texttt{BH}$ / $\texttt{BH} \rightarrow +12\,\text{V}_{\text{B}}$; verificar $V_{EB}$ directo e inverso \\ \hline
+Salida sinking & \texttt{QL} & 1 & NPN \textbf{BC337 / 2N2222A preferidos} (\texttt{2N3904/BC547} cond.) & Emisor a \texttt{GND\_PWR}; evaluar capacidad de descarga y transitorios \\ \hline
+Base sinking & \texttt{RPU2 / RBL} & 1+1 & \textbf{$1\,\text{k}\Omega$, $1/2\,\text{W}$ / $1\,\text{k}\Omega$, $1/4\,\text{W}$} & $+12\,\text{V}_{\text{B}} \rightarrow \texttt{LCTL}$ / $\texttt{LCTL} \rightarrow \text{Base }\texttt{QL}$; vigilar calentamiento en \texttt{RPU2} \\ \hline
+Compuerta & \texttt{RG\_UP / RG\_DN} & 1+1 & \textbf{$220\,\Omega$ / $220\,\Omega$} cand.; \textbf{$470\,\Omega$ \texttt{RG\_DN}} para \texttt{BC547} (en rev.) & Dos caminos separados; no modificar ciegamente; evaluar corriente cruzada \\ \hline
+Compuerta & \texttt{RPDG} & 1 & \textbf{$100\,\text{k}\Omega$, $1/4\,\text{W}$} & Gate a source de \texttt{M1} (\texttt{GND\_PWR}); mantiene OFF residual \\ \hline
+Potencia E1/E2 & \texttt{M1 / RL} & 1+1 & \textbf{IRLZ44N o IRFZ44N} / \textbf{$100\,\Omega \ge 5\,\text{W}$} & Motor prohibido en E2; la resistencia puede calentarse ($1.44\,\text{W}$ en ON) \\ \hline
+Protección pot. & \texttt{F1, SW} & 1+1 & Fusible y portafusible por rama + interruptor & Calibre coordinado con conductor/fuente; no asumir stock ni adivinar calibre \\ \hline
+Alimentación B & \texttt{VDRV / VBUS} & 1 & \textbf{$12\,\text{V}$ DC regulada y aislada de red} & Con limitación ajustable; si es fuente central, rama protegida por equipo \\ \hline
+Instrumentación & \texttt{DMM, Osc.} & Comp. & Multímetro y osciloscopio/sondas apropiadas & Plan de referencias aprobado; \textbf{no puentear barrera A/B con clips de tierra} \\ \hline
+E3 / E4 & Motor, DF, PMOS & Pend. & Pendiente de validación específica (G3/G4) & \textbf{El PC817 no sustituye el dead-time ni la recirculación inductiva} \\ \hline
+\end{tabularx}
+}
+
+\vspace{0.12cm}
+\noindent
+{\footnotesize \textbf{Disponibilidad publicada por Sawers (consulta 06/11/2026; no es inventario reservado):} \texttt{PC817} DIP cód.\ \texttt{01400} (\url{https://tienda.sawers.com.bo/optoacoplador-pc817}), \texttt{LM7805} cód.\ \texttt{00224} (\url{https://tienda.sawers.com.bo/fuentes-de-energia/reguladores-de-voltaje-y-corriente/7805-regulador-de-voltaje-5v-}), portafusible PCB cód.\ \texttt{01350} (\url{https://tienda.sawers.com.bo/componentes/capacitores-y-fusibles/portafusible-}), diodo \texttt{1N4148} cód.\ \texttt{01876} (\url{https://tienda.sawers.com.bo/componentes/diodos-ir-y-led/1n4148-diodo-recuperacion-rapida-100v-0-2a-smd}) y \texttt{6N137} cód.\ \texttt{00310}. \textbf{Subsección 1.1 Reglas de alternativas:} (1) \textbf{NPN:} \texttt{Q0/Q1/Q2} admiten \texttt{BC547/2N3904/BC337/2N2222A}; para \texttt{QL} preferir \texttt{BC337/2N2222A} (\texttt{BC547} exige estudio con $R_{G\_DN}=470\,\Omega$). (2) \textbf{PNP:} \texttt{QH} \texttt{2N3906} o \texttt{BC557B} verificando patillas y pulso. (3) \textbf{Arduino/ESP32:} solo cambia \texttt{RLED} ($560\,\Omega$ para $5\,\text{V}$; $330\,\Omega$ para $3.3\,\text{V}$). (4) \textbf{PC817 vs.\ 6N137:} \texttt{6N137} NO es reemplazo pin a pin.}
+
+\end{document}

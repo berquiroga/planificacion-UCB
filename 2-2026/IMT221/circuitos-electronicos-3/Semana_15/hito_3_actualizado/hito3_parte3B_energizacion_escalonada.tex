@@ -1,0 +1,157 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table]{xcolor}
+\usepackage[margin=1.35cm]{geometry}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+\emergencystretch=2em
+\tolerance=1000
+\hbadness=10000
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{ucbgray}{RGB}{240, 244, 248}
+\definecolor{warnred}{RGB}{180, 20, 20}
+
+\begin{document}
+
+\noindent
+{\LARGE \textbf{\textcolor{ucbblue}{IMT-221 — Circuitos Electrónicos III}}}\\[0.12cm]
+{\Large \textbf{Hito 3: Guía Única E1 $\rightarrow$ E4 — Parte 3B: Protocolo de Energización Escalonada (Fases 0--E) y Registro G2}}\\[0.08cm]
+{\small \textbf{Revisión técnica propuesta 1.5} $\cdot$ 12 de noviembre de 2026 $\cdot$ Procedimiento operativo de banco y hoja de auditoría presencial G2}
+\par\vspace{0.15cm}\noindent\rule{\linewidth}{0.4pt}\vspace{0.2cm}
+
+\section*{4.6 Alimentación Escalonada y Puntos de Parada (Procedimiento Operativo de Banco)}
+\textbf{\textcolor{warnred}{No realizar la secuencia sin supervisión o sin revisión de fuente/osciloscopio.}} Cambiar cableado solo con fuentes \textbf{apagadas y descargadas}.
+
+\begin{minipage}[t]{0.49\linewidth}
+\subsection*{Fase 0 — Inspección en Frío (Sin Fuentes Conectadas)}
+\begin{itemize}[label=$\square$, noitemsep, topsep=2pt]
+    \item Esquema E2 optoaislado recibido y coincidencia terminal a terminal verificada.
+    \item Inventario de \texttt{U1/U2/Q0/Q1/Q2/QH/QL/M1} por part number y fabricante; \texttt{E/B/C}, pines \texttt{U1/U2} y orientación verificadas.
+    \item Resistor de $100\,\Omega$ con potencia $\ge 5\,\text{W}$; protoboard, calibre y firmeza de cables sin hilos pelados ni puentes accidentales.
+    \item Continuidad correcta en B y \textbf{ausencia de cable A $\leftrightarrow$ B}; desconectar todas las sondas que puedan crear unión no prevista.
+    \item Condensadores, polaridad de $10\,\mu\text{F}$, posición de fusible/disyuntor, interruptor y referencia de fuente; ninguna conexión de $12\,\text{V}$ a USB/GPIO.
+    \item Desconexión independiente del bus y del micro verificada (\texttt{PEND} si no se demuestra).
+\end{itemize}
+\noindent\textbf{\textcolor{warnred}{PARADA 0:}} Si falta pinout, protección de rama, conexión inequívoca o el esquema coincide solo parcialmente, \textbf{no conectar $12\,\text{V}$}.
+
+\subsection*{Fase A — MCU y LED Óptico Solos, SIN Dominio B Conectado}
+\begin{enumerate}[noitemsep, topsep=2pt]
+    \item Alimentar el MCU \textbf{solo desde su USB}; driver B, MOSFET y carga físicamente desconectados (sin adaptadores externos simultáneos en el MCU).
+    \item Cargar PWM con modo \texttt{LOW} permanente al arranque, y controlar manualmente tres modos: \texttt{LOW} fijo, \texttt{HIGH} fijo y $100\,\text{Hz}/50\%$.
+    \item Medir $V(\text{GPIO}, \texttt{GND\_MCU})$: LOW $\approx 0\,\text{V}$, HIGH $\approx 5\,\text{V}$ (Uno) o $\approx 3.3\,\text{V}$ (ESP32); medir frecuencia/duty con retorno exclusivamente en A.
+    \item Medir caída en $R_{\text{LED}}$ para estimar $I_{\text{LED}} = V_{R_{\text{LED}}}/R_{\text{LED}}$; comprobar que se apaga en LOW/reset/desconexión de MCU. Jamás introducir $12\,\text{V}$ en A.
+\end{enumerate}
+\noindent\textbf{\textcolor{warnred}{PARADA A:}} GPIO equivocado, niveles anómalos, corriente de LED fuera de diseño, estado alto al reset o incertidumbre del retorno USB.
+
+\subsection*{Fase B — Solo Alimentación B y 7805, SIN MCU, SIN M1 ni RL}
+\begin{enumerate}[noitemsep, topsep=2pt]
+    \item Fuente CC $12\,\text{V}$ regulada y \textbf{aislada de red}, con protección de corriente y corte accesible. Verificar polaridad y tensión en bornes. MCU y LED de \texttt{U1} desconectados.
+    \item Alimentar exclusivamente \texttt{U2} (\texttt{7805}) y sus capacitores. Comprobar $+5\,\text{V}_{\text{B}}$ estable respecto a \texttt{GND\_PWR}, sin calentamiento anormal. Medir $12\,\text{V}$ y consumo.
+    \item Añadir receptor \texttt{PC817/Q0} y resto de driver en frío; repetir con LED \texttt{U1} OFF y \textbf{gate sin M1}. Medir \texttt{OPTO\_N}, \texttt{VIN\_ISO}, \texttt{BH}, \texttt{LCTL}, \texttt{GATE} (debe ser OFF). Iniciar con límite de corriente de prueba del orden de $50\,\text{mA}$ (solo para control).
+\end{enumerate}
+\noindent\textbf{\textcolor{warnred}{PARADA B:}} $+5\,\text{V}_{\text{B}}$ fuera de tolerancia, \texttt{QH} ON sin comando, gate elevado, polarización B--E insegura, sobrecorriente o tierra dudosa.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\linewidth}
+\subsection*{Fase C — Transferencia de PWM por PC817, SIN M1 ni RL}
+\begin{enumerate}[noitemsep, topsep=2pt]
+    \item Apagar ambos lados; conectar únicamente los 4 terminales aislados del \texttt{PC817}. Verificar con DMM ausencia de continuidad entre \texttt{GND\_MCU} y \texttt{GND\_PWR} con todo apagado y \textbf{sin sondas}.
+    \item Encender B \textbf{con MCU PWM en LOW}; medir en B \texttt{OPTO\_N}, \texttt{VIN\_ISO}, \texttt{BH}, \texttt{LCTL} y \texttt{GATE}. \textbf{No usar dos clips de masa del osciloscopio entre A y B.}
+    \item Probar comando HIGH estático y luego LOW con una sola referencia \texttt{GND\_PWR}; volver a LOW y desconectar PWM (verificar OFF).
+    \item Ejecutar $100\,\text{Hz}/50\%$: medir mín/máx de $V_{GS}$, tiempos, corriente $12\,\text{V}$ y calor en BJT/resistencias. Probar reconexión de $12\,\text{V}$ con MCU en LOW y arranque del MCU (si aparece pulso HIGH no solicitado, \textbf{G2 bloqueada}).
+\end{enumerate}
+\noindent\textbf{\textcolor{warnred}{PARADA C:}} Gate ON inesperado, GPIO/USB afectado, tierra puenteada, sobreimpulso excesivo, conducción cruzada sostenida o calentamiento.
+
+\subsection*{Fase D — MOSFET Conectado, SIN RL / SIN Bus de Carga}
+\begin{enumerate}[noitemsep, topsep=2pt]
+    \item Apagar y descargar B; conectar \texttt{M1} (\texttt{GATE} a salida, \texttt{SOURCE} a \texttt{GND\_PWR}) y \textbf{mantener DRAIN sin conexión a $+12\,\text{V}$ por carga}.
+    \item Controlar PWM estático OFF $\rightarrow$ ON $\rightarrow$ OFF y luego $100\,\text{Hz}$; medir $V_{GS}$ respecto a \textit{source}. Confirmar que jamás supera $V_{GS,\max}$ y retorna a OFF en reset/desconexión.
+\end{enumerate}
+\noindent\textbf{\textcolor{warnred}{PARADA D:}} $V_{GS}$ fuera del límite permitido, OFF que no retorne a $0\,\text{V}$ o falla de protección.
+
+\subsection*{Fase E — Carga E1 de $100\,\Omega, 5\,\text{W}$ (SOLO tras G2 Firmado)}
+\begin{enumerate}[noitemsep, topsep=2pt]
+    \item Con fuentes apagadas, conectar $+12\,\text{V}_{\text{BUS}} \rightarrow R_L \rightarrow \text{DRAIN}(\texttt{M1})$; $\text{SOURCE} \rightarrow \texttt{GND\_PWR}$. Exige \textbf{permiso G2 físico independiente firmado}.
+    \item Corriente ideal esperada: $I_{\text{ON}} \approx 0.12\,\text{A}$, $P_{RL,\text{ON}} \approx 1.44\,\text{W}$ ($P_{RL,\text{prom}} \approx 0.72\,\text{W}$ al $50\%$). Iniciar en OFF con corriente limitada (punto de análisis $\approx 0.25\,\text{A}$).
+    \item Medir estados estáticos acotados y luego $100\,\text{Hz}$: registrar $V_{GS(\text{ON/OFF})}$, $V_{DS(\text{ON/OFF})}$, $I_{RL}$ (DMM en serie o shunt calibrado), $f$, duty, $V_{\text{BUS}}$ y temperatura. \textbf{Prohibido conectar motor en E2.}
+\end{enumerate}
+\end{minipage}
+
+\newpage
+\section*{4.7 Plan de Medición sin Perder Aislamiento y 4.8 Ensayo de Fallas Antes de G2}
+
+\par\vspace{0.06cm}\noindent
+\renewcommand{\arraystretch}{1.15}
+{\footnotesize
+\begin{tabularx}{\linewidth}{|l|l|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{7.8cm}|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Magnitud} & \textbf{Referencia} & \textbf{Método Permitido (Sujeto a Revisión)} & \textbf{Prohibición Típica (Anula Aislamiento o Cortocircuita)} \\ \hline
+\texttt{PWM} & \texttt{GND\_MCU} (A) & Osciloscopio con solo canal en Dominio A & Unir \texttt{GND\_MCU} con B mediante una segunda pinza de tierra \\ \hline
+Corriente LED \texttt{PC817} & Sobre \texttt{RLED} (A) & DMM en voltios, $V_{\text{RLED}}/R_{\text{LED}}$; referido a A & Aplicar $12\,\text{V}$ al LED de \texttt{U1} \\ \hline
+$+5\,\text{V}_{\text{B}}$, \texttt{OPTO\_N}, \texttt{VIN\_ISO} & \texttt{GND\_PWR} (B) & DMM o sonda en B \textbf{tras desconectar sondas de A} & Medir \texttt{GND\_MCU} con pinza de referencia en B \\ \hline
+\texttt{BH}, \texttt{LCTL}, \texttt{GATE} & \texttt{GND\_PWR} (B) & Osciloscopio solo en B; comprobar escalas/máximos & Usar \texttt{GATE} o \texttt{DRAIN} como clip de masa \\ \hline
+$V_{GS}$ y $V_{DS}$ & \texttt{SOURCE M1} (B) & Punta en \texttt{GATE} o \texttt{DRAIN}, masa en \texttt{SOURCE} validada & Confundir $V(\text{GATE}, \texttt{GND\_MCU})$ con $V_{GS}$ o poner pinza en \texttt{DRAIN} \\ \hline
+Corriente $R_L$ & Serie / shunt (B) & DMM en serie (cambiar con fuente apagada) o shunt & Conectar DMM en modo amperímetro en paralelo a $R_L$ o al bus \\ \hline
+\end{tabularx}
+}
+
+\par\vspace{0.12cm}\noindent
+\renewcommand{\arraystretch}{1.15}
+{\footnotesize
+\begin{tabularx}{\linewidth}{|>{\raggedright\arraybackslash}p{5.5cm}|>{\raggedright\arraybackslash}p{6.8cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Falla / Condición Funcional Evaluada (4.8)} & \textbf{Resultado Requerido antes de Otorgar G2} & \textbf{Evidencia Registrada} \\ \hline
+MCU apagado / USB desconectado & Sin corriente en LED \texttt{PC817} ni encendido de \texttt{M1} & Observación de \texttt{GATE} en B ($0\,\text{V}$), registro escrito \\ \hline
+PWM LOW estático ($0\,\text{V}$) / HIGH estático & LOW: $\texttt{GATE} \approx 0\,\text{V}$ $\cdot$ HIGH: \texttt{GATE} alto dentro de $V_{GS,\max}$ & Medición en B energizado protegido y cotejo con ficha NMOS \\ \hline
+PWM desconectado / reset de MCU & \texttt{GATE} pasa a OFF sin pulso ON inesperado & Captura temporal de transitorio y estado seguro \\ \hline
+$12\,\text{V}$ B reaparece con LED apagado / Flancos PWM & Arranque sin encendido espurio; sin $V_{BE}$ inversa ni cruce excesivo & Simulación realista + captura de arranque $\texttt{GATE}/12\,\text{V}$ \\ \hline
+Continuidad directa A $\leftrightarrow$ B / Protección fuente B & \textbf{No debe existir continuidad A--B}; si fuente limita, detener & Inspección con DMM (todo apagado) y registro de consumo \\ \hline
+\end{tabularx}
+}
+
+\section*{4.9 Formato de Registro Presencial G2 (Una Hoja por Grupo) y 4.10 Entregables E2}
+
+\noindent
+\textbf{Equipo:} \rule{4.5cm}{0.4pt} \quad \textbf{Integrantes:} \rule{7.5cm}{0.4pt} \quad \textbf{Fecha:} \rule{2.8cm}{0.4pt} \quad \textbf{Revisor:} \rule{4.0cm}{0.4pt}
+
+\par\vspace{0.08cm}\noindent
+\renewcommand{\arraystretch}{1.18}
+{\footnotesize
+\begin{tabularx}{\linewidth}{|>{\raggedright\arraybackslash}p{9.2cm}|>{\centering\arraybackslash}p{2.8cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Punto de Control de Auditoría G2 (Revisión 1.5)} & \textbf{OK / BLOQ / PEND} & \textbf{Evidencia Observable y Valor Real Registrado} \\ \hline
+1. Fuente B $12\,\text{V}$ aislada de red, límite de corriente / fusible \texttt{F1} / interruptor \texttt{SW} & & \\ \hline
+2. Barrera galvánica A $\leftrightarrow$ B sin ningún otro enlace físico ni tierra común & & \\ \hline
+3. \texttt{PC817} pinout (1--4), $R_{\text{LED}}$, $R_{\text{PD\_PWM}}$ ($47\,\text{k}\Omega$), fabricante y CTR revisados & & \\ \hline
+4. Regulador \texttt{7805} y capacitores ($330\,\text{nF} / 100\,\text{nF}$) correctos; $+5\,\text{V}_{\text{B}}$ medido & & \\ \hline
+5. \texttt{Q0/Q1/Q2/QH/QL}: disposición física \texttt{E/B/C} y hojas de datos confirmadas & & \\ \hline
+6. Resistencias y disipación verificadas, especialmente $R_{\text{PU2}}$ ($1\,\text{k}\Omega, 1/2\,\text{W}$) & & \\ \hline
+7. LTspice efectivamente ejecutado con modelos declarados y archivo \texttt{.log} & & \\ \hline
+8. Fase A: MCU PWM LOW / HIGH / $100\,\text{Hz}$ verificado sin conectar Dominio B & & \\ \hline
+9. Fases B--C: Estado OFF confirmado con PWM perdido, MCU en reset y $12\,\text{V}$ reconectado & & \\ \hline
+10. $V_{GS,\max}$, $V_{BE}$ directo/inverso en todos los BJT y corriente cruzada revisados & & \\ \hline
+11. Esquema de conexión de sondas de osciloscopio que conserva el aislamiento A/B & & \\ \hline
+12. Fases A--D ejecutadas y autorizadas secuencialmente con registro de valores & & \\ \hline
+13. Plan de Fase E con $R_L = 100\,\Omega$ ($\ge 5\,\text{W}$), límite de fuente ($\approx 0.25\,\text{A}$) y método de $I_D$ & & \\ \hline
+\end{tabularx}
+}
+
+\vspace{0.12cm}
+\noindent
+\textbf{Decisión G2 para E2 con $R_L$ resistiva:} \quad $\square$ \textbf{AUTORIZADO} con condiciones: \rule{5.5cm}{0.4pt} \quad $\square$ \textbf{OBSERVADO} \quad $\square$ \textbf{BLOQUEADO} \\[0.08cm]
+\textbf{Firma presencial del responsable:} \rule{5.0cm}{0.4pt} \quad \textbf{Hora:} \rule{2.5cm}{0.4pt} \quad (\textit{G2 no habilita E3 ni E4. Entregar: (1) pág.\ de variante/fotos/esquema 2 dominios, (2) inventario diferencial v1.3$\rightarrow$v1.5, (3) LTspice+log, (4) esta ficha G2 y (5) tabla CALC/SIM/MED.})
+
+\end{document}

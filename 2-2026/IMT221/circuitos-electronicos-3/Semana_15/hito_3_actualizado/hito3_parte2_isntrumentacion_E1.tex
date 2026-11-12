@@ -1,0 +1,139 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table]{xcolor}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{arrows.meta, positioning, calc}
+\usepackage[margin=1.4cm]{geometry}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\emergencystretch=2em
+\tolerance=1000
+\hbadness=10000
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{ucbgray}{RGB}{240, 244, 248}
+\definecolor{warnred}{RGB}{180, 20, 20}
+
+\begin{document}
+
+\noindent
+{\LARGE \textbf{\textcolor{ucbblue}{IMT-221 — Circuitos Electrónicos III}}}\\[0.12cm]
+{\Large \textbf{Hito 3: Guía Única E1 $\rightarrow$ E4 — Parte 2: Instrumentación y Etapa E1 (NMOS Low-Side Resistivo)}}\\[0.08cm]
+{\small \textbf{Versión integrada 1.5} $\cdot$ 12 de noviembre de 2026 $\cdot$ Condicionado a firma independiente de Puerta G1}
+\par\vspace{0.15cm}\noindent\rule{\linewidth}{0.4pt}\vspace{0.2cm}
+
+\section*{2. Esquema Común e Instrumentación}
+
+\subsection*{2.1 Circuito E1 (Mantenido también como carga en E2)}
+
+\begin{center}
+\begin{circuitikz}[scale=0.92, transform shape, thick]
+    \draw (0,4.4) node[above]{\textbf{$+12\,\text{V}_{\text{BUS}}$} (Fuente limitada)} to[R, l={$R_L = 100\,\Omega$}, a={\small Potencia verificada}, i={$I_D$}] (0,2.0);
+
+    \draw (0,0.2) node[nigfete] (M1) {};
+    \node[above left=0.05cm] at (M1.G) {G};
+    \node[above right=0.05cm] at (M1.D) {D};
+    \node[below right=0.05cm] at (M1.S) {S};
+    \node[below right=0.05cm] at (M1.B) {B};
+
+    \coordinate (drain) at ($(M1.D) + (0, 0.55)$);
+    \coordinate (source) at ($(M1.S) + (0, -0.75)$);
+    \coordinate (gate) at ($(M1.G) + (-2.2, 0)$);
+    \coordinate (ctrl) at ($(gate) + (-3.0, 0)$);
+    \coordinate (gnd_ctrl) at (ctrl |- source);
+    \coordinate (gnd_bus) at ($(gnd_ctrl) + (0, -0.75)$);
+
+    \draw (0,2.0) -- (drain) node[circle, fill, inner sep=1.5pt]{} -- (M1.D);
+    \draw (M1.S) -- (source) node[ground]{};
+    \draw (M1.B) -- ++(0.6,0) |- (source);
+
+    \draw[blue, dashed] (M1.S) -- ++(2.2,0) coordinate (db_s) to[D, l_={\small Diodo intrínseco}] (db_s |- M1.D) -- (M1.D);
+
+    \draw[-{Stealth[length=2.5mm]}, warnred, very thick] (drain) -- ++(3.2,0) node[right]{\textbf{CH2}: Punta en D, ref.\ en S ($V_{DS}$)};
+    \draw[-{Stealth[length=2.5mm]}, warnred, very thick] (gate) -- ++(0,1.5) node[above]{\textbf{CH1}: Punta en G, ref.\ en S ($V_{GS}$)};
+
+    \draw (M1.G) -- (gate) node[circle, fill, inner sep=1.5pt]{};
+    \draw (gate) to[R, l_={$R_G = 220\,\Omega$}] (ctrl) node[circle, fill, inner sep=1.5pt]{} node[above]{\textbf{Control}};
+    \draw (ctrl) to[V, l_={\small $0\text{--}5\,\text{V}$ / $0\text{--}10\,\text{V}$}] (gnd_ctrl) node[ground]{};
+    \draw (gate) to[R, l={$R_{PD} = 100\,\text{k}\Omega$}] (gate |- source) node[ground]{};
+
+    \draw[dashed, ucbblue] (gnd_bus) -- (source |- gnd_bus) node[midway, below]{\small Retorno común GND potencia / control en E1 directo (en E2 v1.5 existe barrera galvánica A/B)};
+\end{circuitikz}
+\end{center}
+
+\noindent
+\textbf{Reglas de instrumentación física:} \textbf{Revisar físicamente G/D/S y pestaña TO-220 antes de cablear.} Identificar qué tierra está conectada a protección; un osciloscopio de banco suele tener las masas de las sondas conectadas a tierra. \textbf{CH1:} punta gate, referencia source, mide $V_{GS}$ en low-side. \textbf{CH2:} punta drain, referencia source, mide $V_{DS}$. \textbf{\textcolor{warnred}{No conectar la pinza de tierra al drain ni al lado superior de la carga.}} Medir la corriente mediante instrumento/método aprobado; un multímetro en modo amperímetro va \textbf{en serie}, no en paralelo. Registrar escala, atenuación, acoplamiento y límites.
+
+\subsection*{2.2 Secuencia Universal Antes de una Energización (Todas las Etapas)}
+\begin{enumerate}[noitemsep, topsep=2pt]
+    \item Dibujar circuito y comprobar continuidad con \textbf{todas las fuentes apagadas}.
+    \item Identificar componentes reales, pinout y límite de cada fuente, conductor y sonda.
+    \item Preparar LTspice: guardar esquema, modelo/fuente, tiempo de transitorio y log.
+    \item Verificar \textbf{señal de control aislada de la potencia} en osciloscopio (mínimo, máximo, frecuencia, duty y flancos).
+    \item Unir tierras \textbf{solo después} de revisar si hay conexión a tierra física y la topología (en E2 optoaislado \textbf{jamás} se unen \texttt{GND\_MCU} y \texttt{GND\_PWR}).
+    \item Comprobar que el gate tiene estado OFF definido al desconectar señal, y que no se excede $V_{GS(\max)}$.
+    \item Presentar la puerta G correspondiente al docente; anotar \texttt{autorizado / observado / bloqueado}, fecha y firma.
+    \item \textbf{Solo si autorizado:} limitar corriente de fuente, comenzar en estado OFF, avanzar por estados aprobados, medir, detener ante calor/corriente/tensión fuera de rango.
+    \item Apagar alimentación y descargar nodos antes de modificar cables. Guardar evidencia y discrepancias.
+\end{enumerate}
+
+\newpage
+\section*{3. Etapa E1 — Interruptor NMOS Low-Side Resistivo}
+
+\subsection*{3.1 Predicción Matemática Mínima (Derivación Paso a Paso)}
+
+\paragraph{1. Estado ON Ideal ($R_{DS(\text{on})} \rightarrow 0\,\Omega$, $V_{DS,\text{ON}}^{\text{ideal}} = 0\,\text{V}$):}
+Para el ejemplo de estudio $V_{\text{BUS}} = 12\,\text{V}$, $R_L = 100\,\Omega$, NMOS ideal:
+\begin{align}
+    I_{D,\text{ON}}^{\text{ideal}} &= \frac{V_{\text{BUS}}}{R_L} = \frac{12\,\text{V}}{100\,\Omega} = 0.12\,\text{A} = 120\,\text{mA}, \qquad P_{RL,\text{ON}}^{\text{ideal}} = \left(I_{D,\text{ON}}^{\text{ideal}}\right)^2 R_L = (0.12\,\text{A})^2 \times 100\,\Omega = 1.44\,\text{W}.
+\end{align}
+
+\paragraph{2. Estado OFF Ideal y Régimen Periódico PWM ($100\,\text{Hz}$, duty $D = 0.50$):}
+En OFF, $I_D \approx 0\,\text{A}$ y $V_{DS} \approx 12\,\text{V}$; en ON ideal $V_{DS} \approx 0\,\text{V}$. A $f = 100\,\text{Hz}$, $D = 0.5$, $T = 10\,\text{ms}$, $t_{\text{ON}} \approx t_{\text{OFF}} \approx 5\,\text{ms}$; la potencia \textbf{media ideal} de la carga es:
+\begin{equation}
+    P_{RL,\text{med}}^{\text{ideal}} \approx D \times P_{RL,\text{ON}}^{\text{ideal}} = 0.50 \times 1.44\,\text{W} = 0.72\,\text{W}.
+\end{equation}
+La resistencia debe soportar también transitorios, temperatura y posibles estados ON continuos; \textbf{$1/4\,\text{W}$ es inadecuada}.
+
+\paragraph{3. Estado ON No Ideal (con dato $R_{DS(\text{on})}$ aplicable a ese $V_{GS}$ y temperatura):}
+\begin{equation}
+    I_D \approx \frac{V_{\text{BUS}}}{R_L + R_{DS(\text{on})}}, \qquad V_{DS,\text{on}} \approx I_D R_{DS(\text{on})}, \qquad P_{\text{MOS,cond}} \approx I_D^2 R_{DS(\text{on})}.
+\end{equation}
+Para $R_{DS(\text{on})} = 25\,\text{m}\Omega = 0.025\,\Omega$ \textbf{hipotético y condicionado}: $I_D \approx \frac{12}{100.025} \approx 0.119970\,\text{A}$, $V_{DS,\text{on}} \approx 3.00\,\text{mV}$ y $P_{\text{MOS,cond}} \approx 0.36\,\text{mW}$. \textbf{No presentar $3\,\text{mV}$ como lectura garantizada:} puede quedar debajo de la incertidumbre de instrumentos de aula. \textbf{IRLZ44N:} Infineon especifica conducción a niveles lógicos ($R_{DS(\text{on})}$ máx.\ a $4.5\,\text{V}$). \textbf{IRFZ44N:} el $R_{DS(\text{on})}$ máximo de $17.5\,\text{m}\Omega$ se publica a $V_{GS}=10\,\text{V}$; con gate a $5\,\text{V}$ \textbf{puede conducir} esta carga, pero esa ficha no garantiza la misma resistencia. $V_{GS(\text{th})}$ tampoco significa transistor completamente encendido.
+
+\subsection*{3.2 Señal de Control, 3.3 LTspice E1 y 3.4 Construcción y Medición E1}
+\begin{itemize}[noitemsep, topsep=2pt]
+    \item \textbf{Generador principal:} $100\,\text{Hz}$, cuadrada, $50\%$. Para \texttt{IRLZ44N} buscar \textbf{$0\text{--}5\,\text{V}$}; para \texttt{IRFZ44N} buscar \textbf{$0\text{--}10\,\text{V}$} ($10\,\text{V}_{\text{pp}}$ y $+5\,\text{V}$ offset sujeto a escala y carga). Medir siempre sin gate y luego con gate. Si un \texttt{SKMI SK3000} entrega señal bipolar $-5/+5\,\text{V}$ y no tiene offset ajustable (MAIN $50\,\Omega$), \textbf{no} conectarlo como si fuera $0/10\,\text{V}$.
+    \item \textbf{Arduino Uno $5\,\text{V}$ (opcional en E1):} $100\,\text{Hz}$, duty $50\%$, con $R_G$ inicial \textbf{$330\,\Omega$} sujeto a verificación de corriente GPIO y flancos, $R_{PD}=100\,\text{k}\Omega$, tierra común revisada. Para \texttt{IRLZ44N} puede probarse con G1; para \texttt{IRFZ44N} es solo ensayo diagnóstico a $5\,\text{V}$. \textbf{ESP32 $3.3\,\text{V}$ no es ruta obligatoria para E1.} No improvisar un LM741/LM358 de gate.
+    \item \textbf{LTspice E1:} (1) \texttt{VBUS=12}, \texttt{RL=100}, NMOS y GND. (2) \texttt{PULSE(0 5 1m 1u 1u 5m 10m)} o \texttt{0 10}; \texttt{RG=220}, \texttt{RPD=100k}. (3) Si se usa \texttt{MDEMO}, marcarlo \textbf{modelo ficticio}. (4) \texttt{.tran 0 31m 0 1u}; graficar \texttt{V(ctrl)}, \texttt{V(gate)}, \texttt{V(drain)}, \texttt{I(RL)}. (5) Registrar retardo y $p_D(t)=V_{DS}I_D$.
+    \item \textbf{Construcción E1:} Paso 1: montar low-side sin tensión. Paso 2: comprobar generador solo y con gate sin bus. Paso 3: solicitar \textbf{G1}. Paso 4: verificar OFF y luego ON con corriente limitada; luego $100\,\text{Hz}$. Paso 5: medir $V_{GS(\text{ON/OFF})}$, $V_{DS(\text{ON/OFF})}$, $I_{D(\text{ON})}$, $f$, duty y calor. Paso 6: confrontar con cálculo y LTspice.
+\end{itemize}
+
+\begin{verbatim}
+const byte PIN_GATE=9;
+void setup(){ digitalWrite(PIN_GATE,LOW); pinMode(PIN_GATE,OUTPUT); }
+void loop(){ digitalWrite(PIN_GATE,HIGH); delay(5); digitalWrite(PIN_GATE,LOW); delay(5); }
+\end{verbatim}
+
+\par\vspace{0.08cm}\noindent
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\linewidth}{|>{\raggedright\arraybackslash}X|c|c|c|c|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Estado (Tabla de Referencia E1 — Ideal, NO Experimental)} & \textbf{$V_{GS}$ Ideal} & \textbf{$V_{DS}$ Ideal} & \textbf{$I_D$ Ideal} & \textbf{$P_{RL}$ Instantánea Ideal} \\ \hline
+OFF & $0\,\text{V}$ & $12\,\text{V}$ & $0\,\text{A}$ & $0\,\text{W}$ \\ \hline
+ON, \texttt{IRLZ44N} & $5\,\text{V}$ & $\approx 0\,\text{V}$ & $\approx 120\,\text{mA}$ & $\approx 1.44\,\text{W}$ \\ \hline
+ON, \texttt{IRFZ44N} & $10\,\text{V}$ & $\approx 0\,\text{V}$ & $\approx 120\,\text{mA}$ & $\approx 1.44\,\text{W}$ \\ \hline
+\end{tabularx}
+
+\end{document}

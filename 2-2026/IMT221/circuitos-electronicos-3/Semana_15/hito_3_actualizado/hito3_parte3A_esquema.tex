@@ -1,0 +1,280 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table]{xcolor}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{arrows.meta, positioning, calc}
+\usepackage[margin=1.35cm]{geometry}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{hyperref}
+
+\emergencystretch=2em
+\tolerance=1000
+\hbadness=10000
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{ucbgray}{RGB}{240, 244, 248}
+\definecolor{warnred}{RGB}{180, 20, 20}
+
+\begin{document}
+
+\noindent
+{\LARGE \textbf{\textcolor{ucbblue}{IMT-221 — Circuitos Electrónicos III}}}\\[0.12cm]
+{\Large \textbf{Hito 3: Guía Única E1 $\rightarrow$ E4 — Parte 3A: Etapa E2 Optoaislada, Esquema Nodal y Migración v1.3 $\rightarrow$ v1.5}}\\[0.08cm]
+{\small \textbf{Revisión técnica propuesta 1.5} $\cdot$ 12 de noviembre de 2026 $\cdot$ Reemplaza primera energización de E2 v1.3 y complementa v1.4 $\cdot$ \textbf{\textcolor{warnred}{NO constituye autorización G2}}}
+\par\vspace{0.15cm}\noindent\rule{\linewidth}{0.4pt}\vspace{0.2cm}
+
+\section*{4. E2 — Migración Obligatoria a Entrada PWM Optoaislada (Revisión 1.5)}
+
+\subsection*{4.1 Meta, Límites y Puntos de Seguridad Esenciales}
+Usar PWM de \textbf{Arduino Uno $0\text{--}5\,\text{V}$} o \textbf{ESP32 $0\text{--}3.3\,\text{V}$} a \textbf{$100\,\text{Hz}$, $50\%$}, con optoacoplador \texttt{PC817} entre el microcontrolador/USB (\textbf{Dominio A}) y el driver BJT/MOSFET alimentado a \textbf{$12\,\text{V}$ CC} (\textbf{Dominio B}). Mantener \textbf{IRLZ44N o IRFZ44N} como \texttt{M1} y \textbf{resistencia de carga $100\,\Omega$, mínimo $5\,\text{W}$}, sin motor. El objetivo en E2 es \textbf{$V_{GS}$ cercano a cero en OFF} y \textbf{excitación alta adecuada en ON}, sin eventos de fallo ($12\,\text{V}$ nominal no garantiza ausencia de picos sobre $V_{GS}$ permitido).
+\begin{itemize}[noitemsep, topsep=2pt]
+    \item El \texttt{PC817} \textbf{aísla la señal} solo si \textbf{no existe ninguna otra ruta conductora} entre A y B. El regulador \texttt{7805} \textbf{no es aislador}; se ubica exclusivamente en B.
+    \item \textbf{\textcolor{warnred}{Nunca interconectar \texttt{GND\_MCU} y \texttt{GND\_PWR}}}; tampoco unirlos con el osciloscopio, laptop, tierra de banco, cables secundarios o fuentes compartidas.
+    \item El circuito sin opto de E2 v1.3 \textbf{no es eléctricamente el mismo}: no energizarlo bajo este procedimiento; desmontar enlaces directos y verificar la conversión primero.
+    \item El \texttt{PC817} no sustituye driver de compuerta, fusible, recirculación inductiva, protección contra sobrevoltajes ni interbloqueo. Los números aquí calculados son \texttt{CALC/PRED}, nunca \texttt{SIM/MED}.
+\end{itemize}
+
+\subsection*{4.2 Diagrama Funcional de Bloques y Barrera Galvánica}
+\begin{center}
+\resizebox{\linewidth}{!}{
+\begin{tikzpicture}[
+    boxA/.style={draw=ucbblue, very thick, fill=ucbgray, rounded corners=3pt, minimum height=1.1cm, align=center, inner sep=5pt},
+    boxB/.style={draw=warnred!80!black, very thick, fill=red!5, rounded corners=3pt, minimum height=1.1cm, align=center, inner sep=5pt}
+]
+    \node[boxA] (mcu) at (0, 0) {\textbf{Arduino D9 ($5\,\text{V}$) / ESP32 GPIO ($3.3\,\text{V}$)}\\Alimentación exclusiva USB $\cdot$ Referencia \texttt{GND\_MCU}};
+    \node[boxA, right=1.0cm of mcu] (rled) {\textbf{Red Entrada LED}\\$R_{\text{LED}}$ ($560/330\,\Omega$)\\$R_{\text{PD\_PWM}}$ ($47\,\text{k}\Omega$) + $D_{\text{REV}}$};
+    \node[draw=black, very thick, fill=yellow!15, minimum width=2.4cm, minimum height=1.8cm, right=1.0cm of rled, align=center] (opto) {\textbf{U1: PC817}\\LED $\rightarrow$ Fototr.};
+
+    \draw[dashed, warnred, line width=1.8pt] (opto.north) ++(0, 0.45) -- ++(0, -2.7) node[below, font=\bfseries\footnotesize\color{warnred}]{BARRERA GALVÁNICA (SIN CABLE GND A $\leftrightarrow$ B)};
+
+    \node[boxB, right=1.1cm of opto] (q0) {\textbf{Receptor + Inversor Q0}\\Nodo \texttt{OPTO\_N} $\rightarrow$ \texttt{VIN\_ISO}\\Alim.\ $+5\,\text{V}_{\text{B}}$ (\texttt{U2: 7805})};
+    \node[boxB, right=1.0cm of q0] (q12) {\textbf{Mando Q1 / Q2}\\$R_{\text{IN1,2}}=2.2\,\text{k}\Omega$\\Ref.\ \texttt{GND\_PWR}};
+    \node[boxB, right=1.0cm of q12] (qhql) {\textbf{Etapa Salida}\\PNP \texttt{QH} ($R_{G\_UP}$)\\NPN \texttt{QL} ($R_{G\_DN}$)};
+    \node[boxB, right=1.0cm of qhql] (mos) {\textbf{Potencia E1/E2}\\\texttt{M1} NMOS + $R_L$ ($100\,\Omega, 5\,\text{W}$)\\$+12\,\text{V}_{\text{BUS}}$ y \texttt{GND\_PWR}};
+
+    \draw[-{Stealth[length=2.8mm]}, very thick, ucbblue] (mcu) -- (rled);
+    \draw[-{Stealth[length=2.8mm]}, very thick, ucbblue] (rled) -- (opto);
+    \draw[-{Stealth[length=2.8mm]}, very thick, warnred!80!black] (opto) -- (q0);
+    \draw[-{Stealth[length=2.8mm]}, very thick, warnred!80!black] (q0) -- (q12);
+    \draw[-{Stealth[length=2.8mm]}, very thick, warnred!80!black] (q12) -- (qhql);
+    \draw[-{Stealth[length=2.8mm]}, very thick, warnred!80!black] (qhql) -- (mos);
+\end{tikzpicture}
+}
+\end{center}
+
+\subsection*{4.3 Justificación Matemática de Entrada PWM y Restitución Lógica}
+Con caída de LED infrarrojo \textbf{ilustrativa} $V_F \approx 1.2\,\text{V}$:
+\begin{equation}
+    I_{F(\text{UNO})} \approx \frac{5.0\,\text{V} - 1.2\,\text{V}}{560\,\Omega} = \frac{3.8\,\text{V}}{560\,\Omega} \approx 6.79\,\text{mA}, \qquad
+    I_{F(\text{ESP32})} \approx \frac{3.3\,\text{V} - 1.2\,\text{V}}{330\,\Omega} = \frac{2.1\,\text{V}}{330\,\Omega} \approx 6.36\,\text{mA}.
+\end{equation}
+Si el \texttt{PC817} presenta $\text{CTR}_{\min} = 50\%$ a $I_F = 5\,\text{mA}$, ello \textbf{no asegura por sí solo saturación en cualquier receptor ni temperatura}; comprobar hoja del fabricante real y la corriente que debe hundir desde $R_{\text{OP}} = 10\,\text{k}\Omega$. En el receptor, $R_{\text{OP}} = 10\,\text{k}\Omega$ y $R_{B0} = 10\,\text{k}\Omega$ forman una ruta serie hacia la base de \texttt{Q0}: cuando el fototransistor está en OFF, $I_{B,\text{Q0}} = \frac{5.0\,\text{V} - V_{BE0}}{R_{\text{OP}} + R_{B0}} \approx \frac{4.3\,\text{V}}{20\,\text{k}\Omega} = 0.215\,\text{mA}$. Asimismo, con $R_{\text{PU0}} = 1\,\text{k}\Omega$ y \texttt{Q0} en OFF, el nodo \texttt{VIN\_ISO} alimenta simultáneamente dos ramas $R_{\text{IN1}} = R_{\text{IN2}} = 2.2\,\text{k}\Omega$ ($1.1\,\text{k}\Omega$ en paralelo hacia $V_{BE1,2} \approx 0.7\,\text{V}$), por lo que su nivel alto cargado cae a $\approx 2.75\text{--}2.95\,\text{V}$, no $5.00\,\text{V}$.
+
+\newpage
+\subsection*{4.4 Esquema Eléctrico Completo por Nodos E2 Optoaislado (Dominio A y Dominio B)}
+
+\vspace{0.15cm}
+\begin{center}
+\resizebox{\linewidth}{!}{%
+\begin{circuitikz}[thick]
+    \ctikzset{bipoles/length=1.08cm, transistors/scale=1.0}
+
+    % ==================== DOMINIO A (IZQUIERDA) ====================
+    \draw[draw=ucbblue, dashed, very thick, rounded corners=6pt] (-9.8, -4.5) rectangle (-1.3, 8.3);
+    \node[ucbblue, font=\bfseries, anchor=north west] at (-9.6, 8.1) {DOMINIO A — MCU / USB (Ref.\ exclusivamente \texttt{GND\_MCU})};
+
+    % Nota de seguridad aislada en la zona superior libre del Dominio A
+    \node[draw=ucbblue, fill=ucbgray, rounded corners=3pt, align=left, font=\scriptsize, inner sep=5pt, anchor=north west] at (-9.4, 7.1) {
+        \textbf{Reglas del Dominio A:}\\
+        $\bullet$ Alimentar MCU solo por USB.\\
+        $\bullet$ $R_{\text{LED}} = 560\,\Omega$ (Uno $5\,\text{V}$) o $330\,\Omega$ (ESP32 $3.3\,\text{V}$).\\
+        $\bullet$ Jamás unir \texttt{GND\_MCU} con \texttt{GND\_PWR}.
+    };
+
+    % Entrada GPIO_PWM con etiqueta a la izquierda (libre de cables)
+    \coordinate (PWM_IN) at (-8.0, 2.4);
+    \draw (PWM_IN) node[circ]{} node[left=4pt, align=right]{\textbf{GPIO\_PWM}\\{\scriptsize D9 ($5\,\text{V}$) / GPIO ($3.3\,\text{V}$)}} -- (-7.0, 2.4) node[circ]{};
+
+    % RPD_PWM 47k a GND_MCU (etiqueta solo a la izquierda)
+    \draw (-7.0, 2.4) to[R, l_={\shortstack[r]{\scriptsize $R_{\text{PD\_PWM}}$\\[-1pt]\scriptsize $47\,\text{k}\Omega$}}] (-7.0, -1.6) node[ground]{} node[below=15pt]{\scriptsize\texttt{GND\_MCU}};
+
+    % RLED horizontal hacia nodo de ánodo (etiqueta solo arriba)
+    \draw (-7.0, 2.4) to[R, l={\shortstack[c]{\scriptsize $R_{\text{LED}}$\\[-1pt]\scriptsize $560\,\Omega$ / $330\,\Omega$}}] (-4.2, 2.4) coordinate (DREV_TOP);
+    \filldraw (DREV_TOP) circle (1.8pt);
+
+    % DREV 1N4148 opcional en antiparalelo (etiqueta solo a la izquierda)
+    \coordinate (DREV_BOT) at (-4.2, -1.6);
+    \filldraw (DREV_BOT) circle (1.8pt);
+    \draw (DREV_BOT) to[D, l={\shortstack[r]{\scriptsize $D_{\text{REV}}$\\[-1pt]\scriptsize 1N4148}}] (DREV_TOP);
+
+    % Conexión al LED interno de U1 PC817 (Pines 1 y 2)
+    \draw (DREV_TOP) -- (-2.3, 2.4) node[above=2pt]{\scriptsize\textbf{Pin 1 (A)}} to[leDo, l_={\scriptsize\textbf{U1 LED}}] (-2.3, -1.6) node[below=2pt]{\scriptsize\textbf{Pin 2 (K)}} -- (DREV_BOT);
+    \draw (DREV_BOT) -- (-4.2, -2.2) node[ground]{} node[below=15pt]{\scriptsize\texttt{GND\_MCU}};
+
+    % ==================== BARRERA GALVÁNICA ====================
+    \draw[warnred, dashed, line width=2.2pt] (-0.85, -4.5) -- (-0.85, 8.3);
+    \draw[warnred, dashed, line width=2.2pt] (-0.55, -4.5) -- (-0.55, 8.3);
+    \node[warnred, font=\bfseries\footnotesize, rotate=90, fill=white, inner sep=3pt] at (-0.70, 1.9) {BARRERA GALVÁNICA PC817 — PROHIBIDO UNIR GND\_MCU Y GND\_PWR};
+
+    % ==================== DOMINIO B (DERECHA) ====================
+    \draw[draw=warnred!80!black, dashed, very thick, rounded corners=6pt] (-0.1, -4.5) rectangle (25.2, 8.3);
+    \node[warnred!80!black, font=\bfseries, anchor=north west] at (0.1, 8.1) {DOMINIO B — Regulador 7805 ($+5\,\text{V}_{\text{B}}$), Driver BJT ($+12\,\text{V}_{\text{B}}$) y Potencia (Ref.\ exclusivamente \texttt{GND\_PWR})};
+
+    % --- ZONA SUPERIOR IZQUIERDA (y = 4.7 a 7.2): Regulador U2 (LM7805) ---
+    \draw (0.6, 6.8) node[circ]{} node[above=2pt]{\textbf{$+12\,\text{V}_{\text{B}}$}} -- (3.9, 6.8);
+    \draw (1.1, 6.8) node[circ]{} to[eC, l_={\shortstack[r]{\scriptsize $C_{\text{BULK}}$\\[-1pt]\scriptsize $10\,\mu\text{F}$}}] (1.1, 4.8) node[ground]{};
+    \draw (2.9, 6.8) node[circ]{} to[C, l_={\shortstack[r]{\scriptsize $C_{\text{IN5}}$\\[-1pt]\scriptsize $330\,\text{nF}$}}] (2.9, 4.8) node[ground]{};
+
+    \node[draw=black, very thick, fill=ucbgray, minimum width=1.6cm, minimum height=0.85cm, align=center] (U2) at (4.7, 6.8) {\textbf{U2: 7805}\\{\scriptsize IN \quad OUT}};
+    \draw (U2.south) -- (4.7, 4.8) node[ground]{} node[right=2pt]{\scriptsize\texttt{GND\_PWR}};
+    \draw (U2.east) -- (7.5, 6.8) node[circ]{} node[above=2pt]{\textbf{$+5\,\text{V}_{\text{B}}$ ($+5\,\text{V}_{\text{ISO}}$)}};
+    \draw (7.0, 6.8) node[circ]{} to[C, l={\shortstack[l]{\scriptsize $C_{\text{OUT5}}$\\[-1pt]\scriptsize $100\,\text{nF}$}}] (7.0, 4.8) node[ground]{};
+
+    % --- ZONA INFERIOR IZQUIERDA (y = -3.8 a 3.4): Fototransistor PC817 y Q0 ---
+    \draw (1.2, 0.2) node[npn, photo, anchor=C] (OPTOTR) {};
+    \node[left=3pt] at (OPTOTR.C) {\scriptsize\textbf{Pin 4 (C)}};
+    \node[left=3pt] at (OPTOTR.E) {\scriptsize\textbf{Pin 3 (E)}};
+    \draw (OPTOTR.E) -- (1.2, -3.8) node[circ]{};
+
+    \coordinate (OPTO_N) at (2.5, 0.6);
+    \draw (OPTOTR.C) -- (1.2, 0.6) -- (OPTO_N) node[circ]{};
+    \node[below=3pt] at (OPTO_N) {\textbf{OPTO\_N}};
+    \draw (OPTO_N) to[R, l={\shortstack[r]{\scriptsize $R_{\text{OP}}$\\[-1pt]\scriptsize $10\,\text{k}\Omega$}}] (2.5, 2.8) node[vcc]{\textbf{$+5\,\text{V}_{\text{B}}$}};
+
+    \draw (OPTO_N) to[R, l={\shortstack[c]{\scriptsize $R_{B0}$\\[-1pt]\scriptsize $10\,\text{k}\Omega$}}] (5.0, 0.6) coordinate (B0);
+    \draw (6.0, 0.6) node[npn, anchor=B] (Q0) {};
+    \node[below right=1pt and 3pt, align=left] at (Q0.E) {\textbf{Q0}\\{\scriptsize NPN}};
+    \draw (B0) -- (Q0.B);
+    \draw (Q0.E) -- (6.0, -3.8) node[circ]{};
+
+    \coordinate (VIN_ISO) at (6.0, 1.6);
+    \draw (Q0.C) -- (VIN_ISO) node[circ]{};
+    \node[left=3pt] at (VIN_ISO) {\textbf{VIN\_ISO}};
+    \draw (VIN_ISO) to[R, l={\shortstack[r]{\scriptsize $R_{\text{PU0}}$\\[-1pt]\scriptsize $1\,\text{k}\Omega$}}] (6.0, 3.4) node[vcc]{\textbf{$+5\,\text{V}_{\text{B}}$}};
+
+    % --- RIELES PRINCIPALES DE POTENCIA Y DRIVER EN DOMINIO B ---
+    \coordinate (top_rail) at (0, 7.0);
+    \coordinate (gnd_rail) at (0, -3.8);
+    \draw (9.2, 7.0) node[circ]{} node[above=2pt]{\textbf{$+12\,\text{V}_{\text{B}}$}} -- (19.6, 7.0);
+    \draw (0.6, -3.8) node[above right=1pt]{\textbf{\texttt{GND\_PWR}}} -- (24.4, -3.8);
+
+    % Bifurcación limpia desde VIN_ISO hacia RIN1 y RIN2 (SIN cruce de C12)
+    \draw (VIN_ISO) -- (7.8, 1.6) node[circ]{};
+    \draw (7.8, 1.6) -- (7.8, 4.6) to[R, l={\shortstack[c]{\scriptsize $R_{\text{IN1}}$\\[-1pt]\scriptsize $2.2\,\text{k}\Omega$}}] (11.0, 4.6) coordinate (B1);
+    \draw (7.8, 1.6) -- (7.8, -1.4) to[R, l={\shortstack[c]{\scriptsize $R_{\text{IN2}}$\\[-1pt]\scriptsize $2.2\,\text{k}\Omega$}}] (11.0, -1.4) coordinate (B2);
+
+    % --- RAMA SUPERIOR: B1, RPD1, Q1, RBH, RPUH, QH ---
+    \filldraw (B1) circle (1.8pt) node[above=3pt]{\textbf{B1}};
+    \draw (B1) to[R, l_={\shortstack[r]{\scriptsize $R_{\text{PD1}}$\\[-1pt]\scriptsize $10\,\text{k}\Omega$}}] (11.0, 2.0) node[ground]{};
+    \draw (12.6, 4.6) node[npn, anchor=B] (Q1) {};
+    \node[below right=1pt and 3pt] at (Q1.E) {\textbf{Q1} {\scriptsize (NPN)}};
+    \draw (B1) -- (Q1.B);
+    \draw (Q1.E) -- ++(0, -0.45) node[ground]{};
+
+    \draw (Q1.C) -- (12.6, 5.7) to[R, l={\shortstack[c]{\scriptsize $R_{\text{BH}}$\\[-1pt]\scriptsize $2.2\,\text{k}\Omega$}}] (16.0, 5.7) coordinate (BH);
+    \filldraw (BH) circle (1.8pt) node[below=3pt]{\textbf{BH}};
+    \draw (BH) to[R, l={\shortstack[r]{\scriptsize $R_{\text{PUH}}$\\[-1pt]\scriptsize $10\,\text{k}\Omega$}}] (16.0, 7.0) node[circ]{};
+    \draw (17.6, 5.7) node[pnp, anchor=B] (QH) {};
+    \node[above right=19pt and 3pt, align=left] at (QH.E) {\textbf{QH} {\scriptsize (PNP)}\\{\scriptsize 2N3906 / BC557B}};
+    \draw (BH) -- (QH.B);
+    \draw (QH.E) -- (17.6, 7.0) node[circ]{};
+
+    % Desacoplo local C12 junto al emisor de QH (libre de cruces)
+    \draw (19.6, 7.0) node[circ]{} to[C, l={\shortstack[l]{\scriptsize $C_{12}$\\[-1pt]\scriptsize $100\,\text{nF}$}}] (19.6, 5.0) node[ground]{};
+
+    % --- RAMA INFERIOR: B2, RPD2, Q2, LCTL, RPU2, RBL, QL ---
+    \filldraw (B2) circle (1.8pt) node[above=3pt]{\textbf{B2}};
+    \draw (B2) to[R, l_={\shortstack[r]{\scriptsize $R_{\text{PD2}}$\\[-1pt]\scriptsize $10\,\text{k}\Omega$}}] (11.0, -3.8) node[circ]{};
+    \draw (12.6, -1.4) node[npn, anchor=B] (Q2) {};
+    \node[below right=1pt and 3pt] at (Q2.E) {\textbf{Q2} {\scriptsize (NPN)}};
+    \draw (B2) -- (Q2.B);
+    \draw (Q2.E) -- (12.6, -3.8) node[circ]{};
+
+    \coordinate (LCTL) at (14.2, -0.4);
+    \draw (Q2.C) -- (12.6, -0.4) -- (LCTL) node[circ]{};
+    \node[below=3pt] at (LCTL) {\textbf{LCTL}};
+    \draw (LCTL) to[R, l={\shortstack[r]{\scriptsize $R_{\text{PU2}}$\\[-1pt]\scriptsize $1\,\text{k}\Omega, \frac{1}{2}\text{W}$}}] (14.2, 2.2) node[vcc]{\textbf{$+12\,\text{V}_{\text{B}}$}};
+    \draw (LCTL) to[R, l={\shortstack[c]{\scriptsize $R_{\text{BL}}$\\[-1pt]\scriptsize $1\,\text{k}\Omega$}}] (16.4, -0.4) coordinate (BL);
+    \filldraw (BL) circle (1.8pt) node[above=3pt]{\textbf{BL}};
+    \draw (17.6, -0.4) node[npn, anchor=B] (QL) {};
+    \node[below right=2pt and 4pt, align=left] at (QL.E) {\textbf{QL} {\scriptsize (NPN)}\\{\scriptsize BC337 / 2N2222A}};
+    \draw (BL) -- (QL.B);
+    \draw (QL.E) -- (17.6, -3.8) node[circ]{};
+
+    % --- CAMINOS SEPARADOS RG_UP Y RG_DN HACIA GATE ---
+    \draw (QH.C) -- (17.6, 3.8) to[R, l={\scriptsize $R_{G\_UP} = 220\,\Omega$}] (21.2, 3.8);
+    \draw (QL.C) -- (17.6, 1.0) to[R, l_={\scriptsize $R_{G\_DN} = 220\,\Omega\text{ (o }470\,\Omega^*\text{)}$}] (21.2, 1.0);
+    \draw (21.2, 3.8) -- (21.2, 1.0);
+    \coordinate (GATE) at (21.2, 2.4);
+    \filldraw (GATE) circle (2.0pt) node[left=3pt]{\textbf{GATE}};
+
+    % --- ETAPA DE POTENCIA: RPDG, M1 Y CARGA RL ---
+    \draw (GATE) -- (22.4, 2.4) coordinate (gate_m1);
+    \draw (22.4, 2.4) node[circ]{} to[R, l={\shortstack[l]{\scriptsize $R_{\text{PDG}}$\\[-1pt]\scriptsize $100\,\text{k}\Omega$}}] (22.4, -3.8) node[circ]{};
+    \draw (gate_m1) -- (23.8, 2.4) node[nigfete, anchor=G] (M1) {};
+    \node[right=4pt, align=left] at (M1.D) {\textbf{M1}\\{\scriptsize NMOS}};
+    \draw (M1.S) -- (23.8, -3.8) node[circ]{} node[below=2pt]{\scriptsize\textbf{SOURCE / \texttt{GND\_PWR}}};
+    \draw (M1.B) -- ++(0.5, 0) |- (23.8, -3.8);
+    \draw (M1.D) to[R, l_={\shortstack[r]{\scriptsize $R_L = 100\,\Omega$\\[-1pt]\scriptsize ($\ge 5\,\text{W}$)}}] (23.8, 7.0) node[above=2pt]{\textbf{$+12\,\text{V}_{\text{BUS}}$ (con \texttt{F1} + \texttt{SW})}};
+\end{circuitikz}%
+}
+\end{center}
+
+\newpage
+\subsection*{4.4.1 Conexión Terminal a Terminal y Protocolo de Desmontaje Controlado de v1.3}
+
+\noindent
+\begin{minipage}[t]{0.48\linewidth}
+\sloppy
+\textbf{Conexiones Terminal a Terminal (Autoridad de Cableado):}
+\begin{itemize}[noitemsep, topsep=2pt]
+    \item \textbf{Dominio A (Ref.\ \texttt{GND\_MCU}):} \texttt{GPIO\_PWM} $\rightarrow$ \texttt{RLED} ($560\,\Omega$ Uno / $330\,\Omega$ ESP32) $\rightarrow$ \texttt{U1} pin 1 (ánodo LED); \texttt{GND\_MCU} $\rightarrow$ \texttt{U1} pin 2 (cátodo LED); \texttt{GPIO\_PWM} $\rightarrow$ \texttt{RPD\_PWM} ($47\,\text{k}\Omega$) $\rightarrow$ \texttt{GND\_MCU}; \texttt{DREV} (si se usa): cátodo a pin 1, ánodo a pin 2.
+    \item \textbf{Dominio B — Regulador y Opto (Ref.\ \texttt{GND\_PWR}):} $+12\,\text{V}_{\text{B}} \rightarrow \texttt{U2}$ (\texttt{7805}) IN; $\texttt{GND\_PWR} \rightarrow \texttt{U2}$ GND; $\texttt{U2}\text{ OUT} \rightarrow +5\,\text{V}_{\text{B}}$; $C_{\text{IN5}}$ ($330\,\text{nF}$), $C_{12}$ ($100\,\text{nF}$) y $C_{\text{BULK}}$ ($10\,\mu\text{F}$) entre $+12\,\text{V}_{\text{B}}$ y \texttt{GND\_PWR}; $C_{\text{OUT5}}$ ($100\,\text{nF}$) entre $+5\,\text{V}_{\text{B}}$ y \texttt{GND\_PWR}. $+5\,\text{V}_{\text{B}} \rightarrow R_{\text{OP}}$ ($10\,\text{k}\Omega$) $\rightarrow \texttt{OPTO\_N} \rightarrow \texttt{U1}$ pin 4 (colector); $\texttt{GND\_PWR} \rightarrow \texttt{U1}$ pin 3 (emisor); $\texttt{OPTO\_N} \rightarrow R_{B0}$ ($10\,\text{k}\Omega$) $\rightarrow$ Base \texttt{Q0}; Emisor $\texttt{Q0} \rightarrow \texttt{GND\_PWR}$; Colector $\texttt{Q0} \rightarrow \texttt{VIN\_ISO} \rightarrow R_{\text{PU0}}$ ($1\,\text{k}\Omega$) $\rightarrow +5\,\text{V}_{\text{B}}$.
+    \item \textbf{Dominio B — Driver BJT y Potencia:} $\texttt{VIN\_ISO} \rightarrow R_{\text{IN1,2}}$ ($2.2\,\text{k}\Omega$) $\rightarrow$ Bases \texttt{Q1, Q2} (con $R_{\text{PD1,2}}$ $10\,\text{k}\Omega$ a \texttt{GND\_PWR}). Colector $\texttt{Q1} \rightarrow R_{\text{BH}}$ ($2.2\,\text{k}\Omega$) $\rightarrow \texttt{BH} \rightarrow$ Base \texttt{QH} (con $R_{\text{PUH}}$ $10\,\text{k}\Omega$ a $+12\,\text{V}_{\text{B}}$); Emisor $\texttt{QH} \rightarrow +12\,\text{V}_{\text{B}}$; Colector $\texttt{QH} \rightarrow R_{G\_UP}$ ($220\,\Omega$) $\rightarrow \texttt{GATE}$. $+12\,\text{V}_{\text{B}} \rightarrow R_{\text{PU2}}$ ($1\,\text{k}\Omega, 0.5\,\text{W}$) $\rightarrow \texttt{LCTL} \rightarrow$ Colector \texttt{Q2}; $\texttt{LCTL} \rightarrow R_{\text{BL}}$ ($1\,\text{k}\Omega$) $\rightarrow$ Base \texttt{QL}; Colector $\texttt{QL} \rightarrow R_{G\_DN}$ ($220/470\,\Omega$) $\rightarrow \texttt{GATE}$.
+\end{itemize}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\linewidth}
+\sloppy
+\textbf{Desmontaje Controlado de la Versión 1.3 (6 Pasos Obligatorios):}
+\begin{enumerate}[noitemsep, topsep=2pt]
+    \item \textbf{Apagar y desconectar} la fuente $12\,\text{V}$ y el cable USB; descargar capacitores y verificar ausencia de tensión con DMM.
+    \item Etiquetar el circuito existente como \texttt{E2 v1.3 SIN AISLAR} y fotografiarlo; identificar el cable $\texttt{GPIO\_PWM} \rightarrow R_{\text{IN1}}/R_{\text{IN2}}$ y el puente $\texttt{GND\_MCU} \leftrightarrow \texttt{GND\_PWR}$.
+    \item \textbf{Retirar físicamente} ambos enlaces directos. No reutilizar dos tierras unidas como si hubiera barrera. Verificar ausencia de continuidad directa entre dominios con fuentes desconectadas y sondas retiradas (chequeo de cableado, no prueba dieléctrica).
+    \item Montar el \texttt{PC817} y el receptor \texttt{Q0}/\texttt{7805}; conectar \texttt{VIN\_ISO} exclusivamente a $R_{\text{IN1}}$ y $R_{\text{IN2}}$ existentes. Retirar cualquier otro cable $\text{MCU} \leftrightarrow \text{B}$.
+    \item Revisar toda la topología BJT (\texttt{Q1/Q2/QH/QL}) según el esquema terminal a terminal, sin asumir que el montaje original coincide.
+    \item \textbf{Mantener \texttt{M1} y $R_L$ desconectados} hasta superar las Fases 0--C y obtener autorización para avanzar.
+\end{enumerate}
+\end{minipage}
+
+\subsection*{4.5 Análisis Obligatorio Antes de la Primera Energía y Requisitos Mínimos de LTspice}
+
+\par\vspace{0.08cm}\noindent
+\renewcommand{\arraystretch}{1.18}
+{\footnotesize
+\begin{tabularx}{\linewidth}{|>{\raggedright\arraybackslash}p{4.5cm}|c|c|c|c|c|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Condición (Estados Predichos — NO Medidos)} & \textbf{LED PC817} & \textbf{\texttt{OPTO\_N}} & \textbf{\texttt{Q0}} & \textbf{\texttt{VIN\_ISO}} & \textbf{\texttt{QH / QL}} & \textbf{Gate Esperado} \\ \hline
+\textbf{GPIO LOW estable ($0\,\text{V}$)} & OFF & Alto (cond.\ a $+5\,\text{V}_{\text{B}}$) & ON & LOW (si \texttt{Q0} satura) & \texttt{QH} OFF / \texttt{QL} ON & $\approx 0\,\text{V}$ \\ \hline
+\textbf{GPIO HIGH estable ($3.3/5\,\text{V}$)} & ON & Bajo (si \texttt{PC817} satura) & OFF & HIGH \textbf{cargado} ($\approx 2.75\,\text{V}$) & \texttt{QH} ON / \texttt{QL} OFF & Cercano a $12\,\text{V}$ (\textbf{por verificar}) \\ \hline
+\textbf{GPIO desconectado / reset} & OFF (con $R_{\text{PD\_PWM}}$) & Alto & ON & LOW & \texttt{QH} OFF / \texttt{QL} ON & OFF ($\approx 0\,\text{V}$) \\ \hline
+\textbf{12 V falla o reinicia} & Puede seguir activo en A & Indefinido sin $+5\,\text{V}_{\text{B}}$ & Indef. & Indefinido & Indefinido & \texttt{RPDG} intenta descarga; \textbf{falla dinámica pend.} \\ \hline
+\end{tabularx}
+}
+
+\vspace{0.1cm}
+\noindent
+{\footnotesize \textbf{Resultados mínimos requeridos del LTspice del grupo:} (1) Archivo \texttt{.asc/.cir} ejecutado, \texttt{.log}, modelos identificados y captura con escala temporal. (2) Señales: \texttt{PWM\_A}, \texttt{OPTO\_N}, \texttt{VIN\_ISO}, \texttt{BH}, \texttt{LCTL}, \texttt{VGS}, \texttt{VDS}, \texttt{I(RL)}, \texttt{I(V12)}, corriente de LED y $V_{BE}$ de \texttt{Q0/Q1/Q2/QH/QL} (definir signo $V_B - V_E$ en ON y OFF). (3) Casos separados: $0\%$ PWM, $100\%$ PWM, $100\,\text{Hz}/50\%$, MCU desconectado, arranque de $12\,\text{V}$ con LED OFF, caída y reconexión de $12\,\text{V}$ con rampa. Un modelo ideal de interruptor óptico no demuestra CTR, tiempos de almacenamiento, ruptura inversa $V_{EB}$ ni aislamiento real.}
+
+\end{document}

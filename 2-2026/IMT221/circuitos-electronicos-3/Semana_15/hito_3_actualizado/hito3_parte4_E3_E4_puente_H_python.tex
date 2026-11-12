@@ -1,0 +1,172 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table]{xcolor}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{arrows.meta, positioning, calc}
+\usepackage[margin=1.4cm]{geometry}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\emergencystretch=2em
+\tolerance=1000
+\hbadness=10000
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{ucbgray}{RGB}{240, 244, 248}
+\definecolor{warnred}{RGB}{180, 20, 20}
+
+\begin{document}
+
+\noindent
+{\LARGE \textbf{\textcolor{ucbblue}{IMT-221 — Circuitos Electrónicos III}}}\\[0.12cm]
+{\Large \textbf{Hito 3: Guía Única E1 $\rightarrow$ E4 — Parte 4: Etapas E3 (Carga Inductiva) y E4 (Puente H Físico y Python)}}\\[0.08cm]
+{\small \textbf{Versión integrada 1.5} $\cdot$ 12 de noviembre de 2026 $\cdot$ Condicionado a firmas independientes G3 y G4}
+\par\vspace{0.15cm}\noindent\rule{\linewidth}{0.4pt}\vspace{0.2cm}
+
+\section*{5. Etapa E3 — Inductancia Real y Recirculación de Corriente}
+
+\begin{minipage}[t]{0.54\linewidth}
+\subsection*{5.1 Modelo Matemático y Trayectoria de Energía}
+Para una bobina de inductancia $L$ y resistencia serie $R$, durante el estado ON ideal ($V_{DS} \approx 0\,\text{V}$):
+\begin{align}
+    V_{\text{BUS}} &= R\,i_L(t) + L\frac{di_L(t)}{dt}, \qquad \tau = \frac{L}{R}, \\
+    i_L(t) &= \frac{V_{\text{BUS}}}{R}\left(1 - e^{-t/\tau}\right) + i_L(0)\,e^{-t/\tau}, \\
+    E_L &= \int_0^{i_L} L\,i\,di = \frac{1}{2}L\,i_L^2 \quad [\text{J}].
+\end{align}
+Al abrir el NMOS, la corriente no puede caer instantáneamente. Para la topología de bobina DC de una sola dirección, un diodo de recirculación \texttt{DF} se conecta en antiparalelo con la carga (\textbf{cátodo a $+V_{\text{BUS}}$, ánodo al nodo DRAIN}). No confundir el diodo intrínseco del NMOS con el diodo externo \texttt{DF}. Esta disposición no se traslada sin análisis al puente H de E4.
+
+\subsection*{5.2 Pasos Obligatorios E3 (7 Pasos)}
+\begin{enumerate}[noitemsep, topsep=2pt]
+    \item Registrar carga real: motor/bobina, tensión, corriente nominal, corriente de arranque/bloqueo, $R$, $L$ y temperatura admisible.
+    \item Calcular $I_{\text{estacionaria}} \approx V_{\text{BUS}}/R$ o analizar la fuerza contraelectromotriz del motor declarando hipótesis.
+    \item Dimensionar \texttt{DF} ($I_F$, $V_{RRM}$, tiempo de recuperación y térmica) con ficha comercial.
+    \item Simular primero sin y luego con protección ($V_{DS}(t), i_L(t), i_{DF}(t), E_L$).
+    \item Montar con fuente apagada, comprobar polaridad de \texttt{DF}, driver E2 y presentar \textbf{G3}.
+    \item Con \textbf{G3} aprobado, ensayar a menor energía con pulsos supervisados; medir $V_{GS}, V_{DS}, i_L$, sobretensión y temperatura.
+    \item Comparar ON/OFF, estimación de $\tau$ y discutir por qué $V_{DS} > V_{\text{BUS}}$ durante recirculación.
+\end{enumerate}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.43\linewidth}
+\vspace{0.2cm}
+\begin{center}
+\begin{circuitikz}[scale=0.88, transform shape, thick]
+    \draw (0, 4.2) node[above]{\textbf{$+12\,\text{V}_{\text{BUS}}$}} -- (0, 3.6) coordinate (bus_top);
+    \draw (bus_top) to[R, l={$R_{\text{carga}}$}] (0, 2.2) to[L, l={$L_1$}, i={$i_L(t)$}] (0, 0.8) coordinate (drain);
+    \filldraw (bus_top) circle (1.5pt);
+    \filldraw (drain) circle (1.5pt) node[left=0.1cm]{\textbf{DRAIN}};
+
+    \draw (drain) -- (2.6, 0.8) to[D, l_={\textbf{DF} {\footnotesize (A $\rightarrow$ K)}}] (2.6, 3.6) -- (bus_top);
+
+    \draw (0, -0.5) node[nigfete] (M1) {};
+    \node[right=0.15cm] at (M1.D) {\textbf{M1}};
+    \draw (drain) -- (M1.D);
+    \draw (M1.S) -- (0, -1.7) node[ground]{};
+    \draw (M1.B) -- ++(0.5,0) |- (0, -1.7);
+    \draw (-3.1, -0.5) node[draw=ucbblue, fill=ucbgray, rounded corners, inner sep=5pt] (drv) {\textbf{Driver E2 (v1.5)}};
+    \draw (drv.east) -- (M1.G);
+\end{circuitikz}
+\end{center}
+\end{minipage}
+
+\newpage
+\section*{6. Etapa E4 — Puente H Físico, Accionamiento Bidireccional y Pérdidas}
+
+\begin{minipage}[t]{0.48\linewidth}
+\subsection*{6.1 Esquema Funcional (2 PMOS High-Side + 2 NMOS Low-Side)}
+\begin{center}
+\begin{circuitikz}[scale=0.80, transform shape, thick]
+    \draw (-4.2, 3.8) -- (4.2, 3.8) node[midway, above]{\textbf{$+V_{\text{BUS}}$ ($12\,\text{V}$)}};
+
+    \draw (-2.8, 2.3) node[pigfete] (PH1) {};
+    \node[above right=0.04cm] at (PH1.D) {\textbf{PH1} {\footnotesize (IRF4905)}};
+    \draw (-2.8, 3.8) node[circle, fill, inner sep=1.5pt]{} -- (PH1.S);
+    \draw (PH1.B) -- ++(0.5,0) |- (-2.8, 3.8);
+
+    \draw (-2.8, -1.1) node[nigfete] (NL1) {};
+    \node[below right=0.04cm] at (NL1.D) {\textbf{NL1} {\footnotesize (NMOS)}};
+    \draw (NL1.S) -- (-2.8, -2.5) node[ground]{};
+    \draw (NL1.B) -- ++(0.5,0) |- (-2.8, -2.5);
+
+    \draw (2.8, 2.3) node[pigfete, xscale=-1] (PH2) {};
+    \node[above left=0.04cm] at (PH2.D) {\textbf{PH2} {\footnotesize (IRF4905)}};
+    \draw (2.8, 3.8) node[circle, fill, inner sep=1.5pt]{} -- (PH2.S);
+    \draw (PH2.B) -- ++(-0.5,0) |- (2.8, 3.8);
+
+    \draw (2.8, -1.1) node[nigfete, xscale=-1] (NL2) {};
+    \node[below left=0.04cm] at (NL2.D) {\textbf{NL2} {\footnotesize (NMOS)}};
+    \draw (NL2.S) -- (2.8, -2.5) node[ground]{};
+    \draw (NL2.B) -- ++(-0.5,0) |- (2.8, -2.5);
+
+    \draw (PH1.D) -- (NL1.D) node[midway, circle, fill, inner sep=1.5pt] (A) {};
+    \draw (PH2.D) -- (NL2.D) node[midway, circle, fill, inner sep=1.5pt] (B) {};
+    \node[left=0.12cm] at (A) {\textbf{A}}; \node[right=0.12cm] at (B) {\textbf{B}};
+    \draw (A) -- (-0.75, 0.6); \draw (0, 0.6) circle (0.75cm) node{\textbf{MOTOR}}; \draw (0.75, 0.6) -- (B);
+
+    \node[draw=ucbblue, fill=ucbgray, rounded corners, align=center, font=\scriptsize] (ls1) at (-5.8, 2.3) {Level Shift\\High-Side 1};
+    \node[draw=ucbblue, fill=ucbgray, rounded corners, align=center, font=\scriptsize] (drv1) at (-5.8, -1.1) {Driver E2\\Low-Side 1};
+    \node[draw=ucbblue, fill=ucbgray, rounded corners, align=center, font=\scriptsize] (ls2) at (5.8, 2.3) {Level Shift\\High-Side 2};
+    \node[draw=ucbblue, fill=ucbgray, rounded corners, align=center, font=\scriptsize] (drv2) at (5.8, -1.1) {Driver E2\\Low-Side 2};
+    \draw[->] (ls1.east) -- (PH1.G); \draw[->] (drv1.east) -- (NL1.G);
+    \draw[->] (ls2.west) -- (PH2.G); \draw[->] (drv2.west) -- (NL2.G);
+\end{circuitikz}
+\end{center}
+\noindent
+{\footnotesize \textbf{Advertencia High-Side:} Para PMOS con $V_S = +12\,\text{V}$, $V_G = 12\,\text{V} \implies V_{GS}=0\,\text{V}$ (OFF, exige pull-up a $+V_{\text{BUS}}$); $V_G = 0\,\text{V} \implies V_{GS}=-12\,\text{V}$ (ON). GPIO $0\text{--}5\,\text{V}$ directo al gate PMOS da $V_{GS}=-7\,\text{V}$ y \textbf{jamás asegura OFF}. Prohibido colocar pinza GND de osciloscopio en $+V_{\text{BUS}}$.}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.50\linewidth}
+\subsection*{6.2 Tabla de Control de Estados y Dead-Time}
+\par\vspace{0.05cm}\noindent
+\renewcommand{\arraystretch}{1.15}
+{\footnotesize
+\begin{tabularx}{\linewidth}{|l|c|c|c|c|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Función} & \textbf{PH1} & \textbf{NL1} & \textbf{PH2} & \textbf{NL2} & \textbf{Observación} \\ \hline
+Reposo seguro & OFF & OFF & OFF & OFF & Sin accionamiento; verificar transitorios \\ \hline
+Sentido $A \rightarrow B$ & ON & OFF & OFF & ON & Par diagonal \texttt{PH1 + NL2} \\ \hline
+Sentido $B \rightarrow A$ & OFF & ON & ON & OFF & Par diagonal \texttt{PH2 + NL1} \\ \hline
+Transición & OFF temp. & OFF temp. & OFF temp. & OFF temp. & \textbf{Dead-time / interbloqueo} entre estados \\ \hline
+\textcolor{warnred}{\textbf{PROHIBIDO}} & \textcolor{warnred}{\textbf{ON}} & \textcolor{warnred}{\textbf{ON}} & cualq. & cualq. & \textbf{Corto de rama izquierda} \\ \hline
+\textcolor{warnred}{\textbf{PROHIBIDO}} & cualq. & cualq. & \textcolor{warnred}{\textbf{ON}} & \textcolor{warnred}{\textbf{ON}} & \textbf{Corto de rama derecha} \\ \hline
+\end{tabularx}
+}
+
+\subsection*{6.3 Diseño Obligatorio Antes de G4 (8 Requisitos)}
+{\footnotesize
+(1) Seleccionar 4 MOSFET reales y datasheets (\texttt{PH1/PH2}, \texttt{NL1/NL2}). (2) Diseñar por completo drivers high-side (level-shifter, pull-up a $+V_{\text{BUS}}$, arranque/fallo). (3) Dimensionar drivers low-side (E2 adaptado). (4) Implementar interbloqueo y \textit{dead-time} superior a los tiempos reales de apagado/almacenamiento. (5) Comprobar motor, corriente de bloqueo, fusible y desacoplo. (6) Simular estados en LTspice (OFF, adelante, OFF, reversa y barrido de \textit{dead-time}). (7) Prueba sin motor ni bus primero; referencia diferencial segura para $V_{GS}$ high-side. (8) Ensayos físicos bajo \textbf{G4} sin inversión brusca ni shoot-through.
+}
+\end{minipage}
+
+\subsection*{6.4 Estimación de Pérdidas / Análisis Térmico en Python}
+\begin{equation}
+    P_{\text{cond,med}} \approx \frac{1}{T}\int_0^T i_D(t)^2 R_{DS(\text{on})}(T_j, V_{GS})\,dt, \quad E_{\text{on/off}} = \int_{\text{evento}} v_{DS}(t)\,i_D(t)\,dt, \quad P_{\text{sw}} \approx f_{\text{sw}}(E_{\text{on}} + E_{\text{off}}), \quad P_{\text{gate}} \approx Q_g V_{\text{drive}} f_{\text{sw}}, \quad T_j \approx T_a + P_{\text{total}} R_{\theta JA}.
+\end{equation}
+
+{\footnotesize
+\begin{verbatim}
+import pandas as pd
+import numpy as np
+
+df = pd.read_csv('evento_medido.csv')
+t = df['t_s'].to_numpy(dtype=float)
+v = df['vds_V'].to_numpy(dtype=float)
+i = df['id_A'].to_numpy(dtype=float)
+if len(t) < 2 or not np.all(np.diff(t) > 0):
+    raise ValueError('Se requieren al menos dos tiempos crecientes')
+p = v * i
+E_J = np.trapz(p, t)
+print(f'Energia integrada en intervalo medido: {E_J:.6e} J')
+# Registrar intervalo exacto, calibracion, referencias, sincronizacion y error. Para P_sw se necesita E_on+E_off y frecuencia aplicable.
+\end{verbatim}
+}
+
+\end{document}
