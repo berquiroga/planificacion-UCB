@@ -1,0 +1,138 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Ficha W15S3}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Artefacto A1: Hoja de Taller EC4 — Del divisor fasorial al filtro RC}]
+    \centering \textbf{Evaluación Formativa W15S3 — Sesión Analítica}
+\end{tcolorbox}
+
+\noindent\textbf{Nombre:} \hrulefill \quad \textbf{Registro:} \rule{2.5cm}{0.4pt} \quad \textbf{Fecha:} \rule{2.5cm}{0.4pt}
+
+\vspace{0.1cm}
+\noindent\textit{Convención obligatoria: Referencia coseno, fasores de amplitud \textbf{pico}; $j^2 = -1$; $\omega = 2\pi f$. Trabaje con unidades, procedimiento visible y signos explícitos. NO utilice resultados experimentales previos.}
+
+\section*{A1.1 Diagnóstico Inicial (10 min — INDIVIDUAL)}
+\textbf{D1.} Sea $v(t) = 3\cos(100\pi t + \pi/6)\,\text{V}$. Identifique: \par\vspace{0.1cm}
+$V_m$ (pico): \rule{1.5cm}{0.4pt} \quad $\omega$: \rule{2cm}{0.4pt} \quad $f$: \rule{2cm}{0.4pt} \quad $T$: \rule{2cm}{0.4pt} \quad $\phi$ ($^\circ$): \rule{1.5cm}{0.4pt} \par\vspace{0.2cm}
+Escriba $\tilde{V}$ en forma polar: \rule{3cm}{0.4pt}. ¿El fasor describe la carga transitoria completa? \rule{3cm}{0.4pt} \par\vspace{0.3cm}
+
+\noindent\textbf{D2.} Sea $v_b(t) = 4\cos(200\pi t - \pi/3)\,\text{V}$. Escriba $\tilde{V}_b$ en polar y rectangular: \par\vspace{0.1cm}
+Polar: \rule{3cm}{0.4pt} \quad Rectangular: \rule{4cm}{0.4pt}. \par\vspace{0.2cm}
+¿Es correcto afirmar que $v_b$ retrasa $90^\circ$ a $v$ del inciso D1? Justifique en una frase: \par
+\noindent\rule{\textwidth}{0.4pt} \par\vspace{0.3cm}
+
+\noindent\textbf{D3.} Escriba $Z_C$ de un capacitor ideal en régimen AC y sus unidades: \rule{4cm}{0.4pt}. \par
+Explique qué ocurre con $\vert{}Z_C\vert{}$ al duplicar la frecuencia de la fuente: \par
+\noindent\rule{\textwidth}{0.4pt}
+
+\section*{A1.2 Fasores e Impedancias (20 min — PAREJAS, registro individual)}
+\textbf{I1.} Dos senoides a igual frecuencia: $v_a = 5\cos(400\pi t)\,\text{V}$ y $v_b = 2\cos(400\pi t - \pi/2)\,\text{V}$. \par\vspace{0.1cm}
+$\tilde{V}_a =$ \rule{2.5cm}{0.4pt} \quad $\tilde{V}_b =$ \rule{2.5cm}{0.4pt} \quad ¿Cuál adelanta y cuál retrasa? \rule{3.5cm}{0.4pt}. \par\vspace{0.1cm}
+Desfase en grados: \rule{2cm}{0.4pt} \quad Retraso temporal equivalente ($\Delta t$) en ms: \rule{2cm}{0.4pt}. \par
+Dibuje ambas flechas en el plano complejo indicando sus ángulos: \par\vspace{1.5cm}
+
+\noindent\textbf{I2.} Complete la tabla de impedancias:
+\vspace{0.1cm}
+
+\renewcommand{\arraystretch}{1.5}
+\noindent
+\begin{tabularx}{\textwidth}{|c|X|c|c|c|X|}
+\hline
+\textbf{Elem.} & \textbf{Ley Temporal} & \textbf{$Z(\omega)$ [$\Omega$]} & \textbf{$\vert{}Z\vert{}$ [$\Omega$]} & \textbf{$\arg Z$} & \textbf{Al duplicar $f$} \\
+\hline
+R & & & & & \\
+\hline
+L & & & & & \\
+\hline
+C & & & & & \\
+\hline
+\end{tabularx}
+
+\vspace{0.2cm}
+\noindent\textbf{I3.} Para $R=1\,\text{k}\Omega$, $L=10\,\text{mH}$, $C=1\,\mu\text{F}$ a $f=1\,\text{kHz}$: \par
+$\omega =$ \rule{3cm}{0.4pt} \quad $Z_R =$ \rule{2.5cm}{0.4pt} \quad $Z_L =$ \rule{2.5cm}{0.4pt} \quad $Z_C =$ \rule{2.5cm}{0.4pt}. \par
+Repita \textbf{SOLO los módulos} si la frecuencia es $f=2\,\text{kHz}$: \par
+$\vert{}Z_R\vert{}=$ \rule{1.5cm}{0.4pt} \quad $\vert{}Z_L\vert{}=$ \rule{1.5cm}{0.4pt} \quad $\vert{}Z_C\vert{}=$ \rule{1.5cm}{0.4pt}. \par\vspace{0.3cm}
+
+\noindent\textbf{I4.} Desde $i_C = C \frac{dv_C}{dt}$ y $v_C(t) = \Re\{\tilde{V}_C e^{j\omega t}\}$, obtenga $Z_C$. ¿Por qué $j\omega C$ NO es la impedancia? \par
+\noindent\rule{\textwidth}{0.4pt} \par\vspace{0.3cm}
+\noindent\rule{\textwidth}{0.4pt}
+
+\newpage
+\section*{A1.3 Circuito RC y Función de Transferencia (20 min — GUIADO)}
+\textbf{R1.} Dibuje el circuito eléctrico: Generador AC ideal entre \texttt{in} y \texttt{GND}; Resistor de $10\,\text{k}\Omega$ entre \texttt{in} y \texttt{out}; Capacitor de $1\,\mu\text{F}$ entre \texttt{out} y \texttt{GND}. Identifique $\tilde{I}$, $Z_R$, $Z_C$, $\tilde{V}_{\text{in}}$, $\tilde{V}_{\text{out}}$ y polaridades. \par\vspace{2.5cm}
+
+\noindent\textbf{R2.} Deducción del Divisor fasorial: \par
+$\tilde{V}_{\text{in}} = \tilde{I} ($ \rule{2cm}{0.4pt} $+$ \rule{2cm}{0.4pt} $) \implies \tilde{V}_{\text{out}} = \tilde{I} \cdot$ \rule{2cm}{0.4pt} \par
+$H(j\omega) = \frac{\tilde{V}_{\text{out}}}{\tilde{V}_{\text{in}}} = \frac{\rule{2cm}{0.4pt}}{\rule{3cm}{0.4pt}} =$ \rule{4cm}{0.4pt}. \par\vspace{0.2cm}
+
+\noindent\textbf{R3.} Defina $x = \omega RC$. Multiplique $H$ por su conjugado para obtener su forma rectangular, su módulo $\vert{}H\vert{}$ y fase $\arg H$. ¿Por qué $H$ es adimensional? \par\vspace{0.1cm}
+\noindent\rule{\textwidth}{0.4pt} \par\vspace{0.3cm}
+\noindent\rule{\textwidth}{0.4pt} \par\vspace{0.2cm}
+
+\noindent\textbf{R4.} Analice el límite de la ganancia. Si $f \to 0$: \rule{3cm}{0.4pt}. Si $f \to \infty$: \rule{3cm}{0.4pt}. \par
+La salida medida sobre el capacitor actúa como filtro: [ ] Pasabajos \quad [ ] Pasaaltas.
+
+\section*{A1.4 Taller Numérico de Frecuencia (20 min)}
+\textbf{F1.} Con $R=10\,\text{k}\Omega$ y $C=1\,\mu\text{F}$, calcule con unidades: \par
+$\tau = RC =$ \rule{2cm}{0.4pt} \quad $\omega_c = \frac{1}{RC} =$ \rule{2cm}{0.4pt} \quad $f_c = \frac{\omega_c}{2\pi} =$ \rule{2.5cm}{0.4pt}. \par\vspace{0.2cm}
+
+\noindent\textbf{F2.} Complete la tabla de predicción ideal (use al menos 4 decimales para $\vert{}H\vert{}$):
+\vspace{0.1cm}
+
+\renewcommand{\arraystretch}{1.5}
+\noindent
+\begin{tabularx}{\textwidth}{|c|c|c|X|X|X|}
+\hline
+\textbf{Condición} & \textbf{$f$ (Hz) calc.} & \textbf{$x = \omega RC$} & \textbf{Módulo $\vert{}H\vert{}$} & \textbf{Fase $\phi_H$ ($^\circ$)} & \textbf{Interpretación Física} \\
+\hline
+$0.1 f_c$ & & $0.1$ & & & \\
+\hline
+$f_c$ & & $1.0$ & & & \\
+\hline
+$10 f_c$ & & $10.0$ & & & \\
+\hline
+\end{tabularx}
+
+\vspace{0.3cm}
+\noindent\textbf{F3.} Si en $f = f_c$ la fuente inyecta $\tilde{V}_{\text{in}} = 2\angle 0^\circ\,\text{V}$ (Amplitud pico), determine el fasor $\tilde{V}_{\text{out}}$ y escriba la señal temporal correspondiente $v_{\text{out}}(t)$: \par\vspace{0.1cm}
+\noindent\rule{\textwidth}{0.4pt} \par\vspace{0.2cm}
+
+\noindent\textbf{F4.} ¿La frecuencia de la senoide de salida cambia al aumentar la $f$ de la fuente? \rule{3cm}{0.4pt}
+
+\section*{A1.5 Anticipo y A1.6 Exit Ticket (5 min — INDIVIDUAL)}
+\textbf{B1.} Usando $G_{dB} = 20 \log_{10} \vert{}H\vert{}$: ¿A qué valor dB equivale $\vert{}H\vert{}=1$? \rule{2cm}{0.4pt} ¿Y $\vert{}H\vert{}=1/\sqrt{2}$? \rule{2cm}{0.4pt} \par\vspace{0.2cm}
+
+\noindent\textbf{XT1.} Para el RC con salida en el capacitor en $\omega RC = 1$: Determine $\vert{}H\vert{} =$ \rule{1.5cm}{0.4pt} y $\phi_H =$ \rule{1.5cm}{0.4pt}. Describa en una frase qué ocurre con la amplitud y fase de la salida: \par
+\noindent\rule{\textwidth}{0.4pt} \par\vspace{0.2cm}
+
+\noindent\textbf{XT2.} Explique físicamente mediante $Z_C$ por qué $\vert{}\tilde{V}_{\text{out}} / \tilde{V}_{\text{in}}\vert{} \to 0$ cuando $\omega \to \infty$. \par\vspace{0.1cm}
+\noindent\rule{\textwidth}{0.4pt} \par\vspace{0.3cm}
+\textit{Duda para la siguiente clase:} \rule{10cm}{0.4pt}
+
+\end{document}
