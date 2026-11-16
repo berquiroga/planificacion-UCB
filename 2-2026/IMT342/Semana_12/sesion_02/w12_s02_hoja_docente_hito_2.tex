@@ -1,0 +1,86 @@
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=1.4cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342}}
+\chead{Hoja Docente: Auditoría y Cierre Operativo de Hito 2}
+\rhead{Semana 12 - Sesión 2}
+\lfoot{Control de Defensa Individual y Condición para Recuperatorio W13}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Hoja de Control Docente: Cierre Operativo de Hito 2 y Dependencia del Recuperatorio W13}}[cite: 16]
+\end{center}
+
+\section*{1. Flujo de Decisión Operativa en el Segmento 5 (Visual 6)[cite: 16]}
+El Hito 2 \textbf{no} se fusiona con el Hito 3 ni traslada su nota[cite: 16]. Su cierre formal (con entregables validados y evidencia de defensa individual conforme a la rúbrica original) junto a la calificación de EC1/EC2 es requisito previo para consolidar las Unidades I y II y convocar el recuperatorio de W13[cite: 16].
+
+\begin{center}
+% Visual 6: Gestión operativa Hito 2
+\begin{tikzpicture}[
+    box/.style={rectangle, draw=ucbblue, thick, fill=ucbblue!5, rounded corners, text width=4.6cm, align=center, font=\scriptsize, minimum height=1.1cm},
+    decbox/.style={rectangle, draw=orange!80!black, thick, fill=yellow!10, rounded corners, text width=5.2cm, align=center, font=\scriptsize, minimum height=1.1cm},
+    recbox/.style={rectangle, draw=green!60!black, thick, fill=green!10, rounded corners, text width=4.8cm, align=center, font=\scriptsize, minimum height=1.1cm},
+    arrow/.style={-Stealth, very thick, ucbblue}
+]
+    \node[box] (e1) at (0, 0) {\textbf{1. Verificación de Entregables}\\$\square$ \texttt{.ipynb} ejecutable verificado\\$\square$ Informe PDF IEEE recibido[cite: 16]};
+    \node[box] (e2) at (5.8, 0) {\textbf{2. Auditoría de Módulos Unidad II}\\Pieper, FK, LSPB, Jacobiano, Singularidad, Dinámica 1R[cite: 16]};
+    \node[decbox] (e3) at (11.9, 0) {\textbf{3. Decisión al Cierre del Segmento 5}\\(a) Defensa hoy con evidencia individual, o\\(b) Convocatoria externa fechada, o\\(c) Bloqueo concreto + responsable[cite: 16]};
+    \node[recbox] (e4) at (18.2, 0) {\textbf{4. Consolidación Unidades I–II}\\Cierre Hito 2 + Corrección EC1/EC2\\$\implies$ Habilita Recuperatorio W13[cite: 16]};
+
+    \draw[arrow] (e1) -- (e2);
+    \draw[arrow] (e2) -- (e3);
+    \draw[arrow] (e3) -- (e4);
+\end{tikzpicture}
+\end{center}
+
+\section*{2. Matriz de Registro por Grupo (Segmento 5 — 20 min)[cite: 16]}
+\begin{center}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.55}
+% Suma de \hsize = 0.45 + 1.15 + 0.70 + 0.95 + 0.70 + 0.75 + 0.95 + 0.65 + 1.10 + 1.60 = 9.0 para las 9 columnas X (+ 1 col c)
+\begin{tabularx}{\textwidth}{|c|>{\hsize=1.15\hsize\raggedright\arraybackslash}X|>{\hsize=0.75\hsize\centering\arraybackslash}X|>{\hsize=0.95\hsize\centering\arraybackslash}X|>{\hsize=0.75\hsize\centering\arraybackslash}X|>{\hsize=0.75\hsize\centering\arraybackslash}X|>{\hsize=1.00\hsize\centering\arraybackslash}X|>{\hsize=0.70\hsize\centering\arraybackslash}X|>{\hsize=1.20\hsize\raggedright\arraybackslash}X|>{\hsize=1.75\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Grp.}[cite: 16] & \textbf{Integrantes}[cite: 16] & \textbf{\texttt{.ipynb} Recibido}[cite: 16] & \textbf{Reproducibilidad} (\texttt{verif. / no verif. / falló})[cite: 16] & \textbf{IEEE PDF Recibido}[cite: 16] & \textbf{Listo para Defensa}[cite: 16] & \textbf{Evidencia Indiv. Registrada}[cite: 16] & \textbf{Duración Acordada}[cite: 16] & \textbf{Día / Hora de Convocatoria}[cite: 16] & \textbf{Bloqueo Identificado + Responsable y Fecha Límite}[cite: 16] \\ \hline
+G1 & & sí / no & & sí / no & sí / no & sí / no & & & \\ \hline
+G2 & & sí / no & & sí / no & sí / no & sí / no & & & \\ \hline
+G3 & & sí / no & & sí / no & sí / no & sí / no & & & \\ \hline
+G4 & & sí / no & & sí / no & sí / no & sí / no & & & \\ \hline
+G5 & & sí / no & & sí / no & sí / no & sí / no & & & \\ \hline
+G6 & & sí / no & & sí / no & sí / no & sí / no & & & \\ \hline
+\end{tabularx}
+\end{center}
+
+\vspace{0.2cm}
+\begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Regla de Integridad Evaluativa para Hito 2} {[cite: 16]}, left=2mm, right=2mm, top=1mm, bottom=1mm]
+    \scriptsize\raggedright
+    No confundir \textit{«se entregó el notebook»} con \textit{«cada integrante demostró dominio individual»}[cite: 16]. Tampoco asumir que el archivo PDF acredita una fuente LaTeX si no está documentada[cite: 16]. La microdefensa dentro de la sesión solo procede si se registra evidencia individual rubricada sin comprometer la supervisión del aula/laboratorio; en caso contrario, debe quedar firmada la fecha de convocatoria externa o el bloqueo concreto[cite: 16].
+\end{tcolorbox}
+
+\end{document}

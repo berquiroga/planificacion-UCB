@@ -1,0 +1,193 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table]{xcolor}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{arrows.meta, positioning, calc}
+\usepackage[margin=1.6cm]{geometry}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\emergencystretch=2em
+\tolerance=1000
+\hbadness=10000
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{ucbgray}{RGB}{240, 244, 248}
+\definecolor{warnred}{RGB}{180, 20, 20}
+
+\begin{document}
+
+\noindent
+{\LARGE \textbf{\textcolor{warnred}{IMT-221 — EC3 — SOLUCIONARIO Y RÚBRICA — RESERVADO DOCENTE}}}\\[0.12cm]
+{\Large \textbf{W15S03 — Viernes 13 de noviembre de 2026 (40 puntos internos, 75 min, SIN CALCULADORA)}}\\[0.08cm]
+{\small \textbf{PROHIBIDA SU DISTRIBUCIÓN ANTES DE LA EVALUACIÓN.} Correspondencia con \texttt{01\_examen\_EC3\_ESTUDIANTE\_P5\_BJT.tex} y \texttt{01B\_examen\_EC3\_ESTUDIANTE\_P5\_SIN\_BJT.tex}.}
+\par\vspace{0.15cm}\noindent\rule{\linewidth}{0.6pt}\vspace{0.2cm}
+
+\section*{Resolución de Problema 1 (12 puntos; 20 min)}
+
+\begin{minipage}[t]{0.42\linewidth}
+\textbf{1. Esquema del lazo low-side (2 pt):}\\
+Circuito: $+10\,\text{V}_{\text{BUS}} \rightarrow R_L = 9\,\Omega \rightarrow \text{D} \rightarrow \text{NMOS} \rightarrow \text{S} = \text{GND}$; corriente convencional $I_D$ desciende desde el positivo del bus hacia GND.
+\begin{center}
+\begin{circuitikz}[scale=0.88, transform shape, thick]
+    \draw (0, 3.8) node[above]{\textbf{$+V_{\text{BUS}} = 10\,\text{V}$}} to[R, l={$R_L = 9\,\Omega$}, i={$I_D$}] (0, 1.6) coordinate (Dnode);
+    \filldraw (Dnode) circle (1.5pt) node[right=2pt]{\textbf{D}};
+    \draw (0, 0.2) node[nigfete] (M1) {};
+    \node[above left=2pt] at (M1.G) {\textbf{G}};
+    \draw (Dnode) -- (M1.D);
+    \draw (M1.S) -- (0, -1.2) coordinate (Snode) node[ground]{};
+    \filldraw (0, -0.7) circle (1.5pt) node[right=2pt]{\textbf{S (GND)}};
+    \draw (M1.B) -- ++(0.5, 0) |- (0, -0.7);
+    \draw (M1.G) -- ++(-1.4, 0) node[circ]{} node[left]{\small $V_G$ (ref.\ a S)};
+    \draw[<->, ucbblue, thick] (1.1, 1.5) -- (1.1, -0.7) node[midway, right]{\small $V_{DS}$};
+\end{circuitikz}
+\end{center}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.55\linewidth}
+\textbf{2. KVL, corriente y tensiones en ON (4 pt):}\\
+Con $R_{DS(\text{on})} = 1\,\Omega$ declarado válido en ON:
+\begin{align*}
+    V_{\text{BUS}} &= I_D R_L + I_D R_{DS(\text{on})} \implies 10\,\text{V} = I_D(9\,\Omega + 1\,\Omega) \\
+    I_D &= \frac{10\,\text{V}}{10\,\Omega} = \mathbf{1\,\text{A}}, \\
+    V_{RL} &= I_D R_L = (1\,\text{A})(9\,\Omega) = \mathbf{9\,\text{V}}, \\
+    V_{DS} &= I_D R_{DS(\text{on})} = (1\,\text{A})(1\,\Omega) = \mathbf{1\,\text{V}}.
+\end{align*}
+\textit{Verificación KVL:} $V_{RL} + V_{DS} = 9\,\text{V} + 1\,\text{V} = 10\,\text{V} = V_{\text{BUS}}$.
+
+\vspace{0.15cm}
+\textbf{3. Potencias en ON (3 pt):}
+\begin{align*}
+    P_{L,\text{ON}} &= I_D^2 R_L = (1\,\text{A})^2 \times 9\,\Omega = \mathbf{9\,\text{W}} \quad (\text{en resistor } R_L), \\
+    P_{\text{MOS,cond,ON}} &= I_D^2 R_{DS(\text{on})} = (1\,\text{A})^2 \times 1\,\Omega = \mathbf{1\,\text{W}} \quad (\text{en canal NMOS}).
+\end{align*}
+
+\textbf{4. Potencia promedio PWM con $D = 1/2$ (2 pt):}
+\[
+    P_{L,\text{avg}} = D \cdot P_{L,\text{ON}} = \frac{1}{2} \times 9\,\text{W} = \mathbf{4.5\,\text{W}}.
+\]
+\textit{Hipótesis:} carga puramente resistiva, potencia nula en OFF y transiciones/fugas despreciables.
+
+\vspace{0.1cm}
+\textbf{5. Estado OFF ideal (1 pt):} $I_D = \mathbf{0\,\text{A}}$, caída en $R_L$ nula, $V_{DS} = \mathbf{10\,\text{V}}$, $P_{\text{MOS,OFF}} = V_{DS}\cdot I_D = 10\,\text{V}\times 0\,\text{A} = \mathbf{0\,\text{W}}$. Tensión alta no implica disipación sin corriente.
+\end{minipage}
+
+\vspace{0.15cm}
+\noindent\textbf{Rúbrica P1:} Esquema: 2 pt; KVL + $I_D$: 2 pt, $V_{RL}$: 1 pt, $V_{DS}$ y chequeo: 1 pt; $P_L$: 1.5 pt, $P_{\text{MOS}}$: 1.5 pt; promedio: 2 pt; OFF: 1 pt. \textit{Error crítico:} usar $10\,\text{V}\cdot 1\,\text{A} = 10\,\text{W}$ como potencia del MOSFET en ON sin descontar la caída de la carga. Si el estudiante desarrolla método correcto y comete un error numérico aislado, no retirar crédito por pasos posteriores coherentes.
+
+\section*{Resolución de Problema 2 (7 puntos; 12 min)}
+
+\begin{minipage}[t]{0.62\linewidth}
+\begin{enumerate}[label=\arabic*., noitemsep, topsep=2pt]
+    \item \textbf{Cálculo de $V_{GS}$ real (2 pt):}
+    \[
+        V_{GS} = V_G - V_S = 10\,\text{V} - 4\,\text{V} = \mathbf{6\,\text{V}}.
+    \]
+    Conocer únicamente $V_G = 10\,\text{V}$ respecto a GND no basta porque el terminal \textit{source} no está a $0\,\text{V}$, sino elevado a $4\,\text{V}$.
+    \item \textbf{Validez de garantías de tabla (3 pt):} La garantía del modelo \textbf{X} ($R_{DS(\text{on})} \le 0.20\,\Omega$) está especificada exactamente a $V_{GS} = 6\,\text{V}$, por lo que \textbf{sí puede invocarse} (1.5 pt). La garantía del modelo \textbf{Y} ($\le 0.10\,\Omega$) exige $V_{GS} = 10\,\text{V}$, por lo que \textbf{no queda garantizada} a $V_{GS} = 6\,\text{V}$; no puede afirmarse que Y tenga menor pérdida en este punto (1.5 pt).
+    \item \textbf{Interpretación de $V_{GS(\text{th})} = 2\,\text{V}$ (2 pt):} $V_{GS(\text{th})}$ se define a una corriente muy pequeña de inicio de conducción y \textbf{no garantiza} baja resistencia de canal ($R_{DS(\text{on})}$) a $V_{GS} = 6\,\text{V}$.
+\end{enumerate}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.35\linewidth}
+\vspace{0pt}
+\begin{center}
+\begin{tikzpicture}[scale=0.9, transform shape, thick]
+    \draw (0,0) node[ground]{} -- (3.2,0) node[right]{\small GND ($0\,\text{V}$)};
+    \draw[fill=ucbblue] (0.8, 2.4) circle (2pt) node[left=3pt]{\textbf{G} ($V_G = 10\,\text{V}$)};
+    \draw[fill=warnred] (2.2, 1.0) circle (2pt) node[right=3pt]{\textbf{S} ($V_S = 4\,\text{V}$)};
+    \draw[->, dashed, ucbblue] (0.8, 0) -- (0.8, 2.3);
+    \draw[->, dashed, warnred] (2.2, 0) -- (2.2, 0.9);
+    \draw[<->, very thick, black] (1.3, 1.0) -- (1.3, 2.4) node[midway, right=2pt]{\small $V_{GS} = 6\,\text{V}$};
+\end{tikzpicture}
+\end{center}
+\end{minipage}
+
+\newpage
+\section*{Resolución de Problema 3 (9 puntos; 16 min)}
+
+\begin{enumerate}[label=\arabic*., noitemsep, topsep=2pt]
+    \item \textbf{Tiempo estimado de transferencia de carga (3 pt, incluyendo unidades):}
+    \[
+        i_G(t) = \frac{dq_G}{dt} \implies t_{\text{transfer}} \approx \frac{Q_g}{I_G} = \frac{48\,\text{nC}}{12\,\text{mA}} = \frac{48 \times 10^{-9}\,\text{C}}{12 \times 10^{-3}\,\text{A}} = 4 \times 10^{-6}\,\text{s} = \mathbf{4\,\mu\text{s}}.
+    \]
+    \item \textbf{Energías por evento bajo hipótesis triangular (3 pt; 1.5 pt c/u):}
+    \begin{align*}
+        E_{\text{on}} &= \frac{1}{2} \times (4\,\mu\text{s}) \times (2\,\text{W}) = \frac{1}{2} \times (4 \times 10^{-6}\,\text{s}) \times (2\,\text{W}) = 4 \times 10^{-6}\,\text{J} = \mathbf{4\,\mu\text{J}}, \\
+        E_{\text{off}} &= \frac{1}{2} \times (6\,\mu\text{s}) \times (1\,\text{W}) = \frac{1}{2} \times (6 \times 10^{-6}\,\text{s}) \times (1\,\text{W}) = 3 \times 10^{-6}\,\text{J} = \mathbf{3\,\mu\text{J}}.
+    \end{align*}
+    \item \textbf{Potencia media de conmutación a $f = 1000\,\text{Hz}$ (2 pt):}
+    \[
+        P_{\text{sw}} = f \cdot (E_{\text{on}} + E_{\text{off}}) = 1000\,\text{s}^{-1} \times (4 + 3)\times 10^{-6}\,\text{J} = 7 \times 10^{-3}\,\text{W} = \mathbf{7\,\text{mW}}.
+    \]
+    (\textit{No aceptar $P_{\text{sw}} = 7\,\mu\text{J}$ por error dimensional ni declarar los triángulos como resultados medidos.})
+    \item \textbf{Razón física de discrepancia entre $Q_g/I_G$ y caída real de $V_{DS}$ (1 pt):} Distribución no uniforme de $Q_g$, meseta de Miller ($C_{GD}$ no lineal dependiente de tensión), corriente $i_G(t)$ no constante durante el flanco, inductancias/efectos parásitos y retardo propio del driver.
+\end{enumerate}
+
+\section*{Resolución de Problema 4 (6 puntos; 12 min)}
+
+\begin{minipage}[t]{0.56\linewidth}
+\begin{enumerate}[label=\arabic*., noitemsep, topsep=2pt]
+    \item \textbf{Niveles de la onda cuadrada simétrica (2 pt):}
+    \begin{align*}
+        V_{\max} &= V_{\text{offset}} + \frac{V_{\text{pp}}}{2} = +1\,\text{V} + \frac{6\,\text{V}}{2} = \mathbf{+4\,\text{V}}, \\
+        V_{\min} &= V_{\text{offset}} - \frac{V_{\text{pp}}}{2} = +1\,\text{V} - \frac{6\,\text{V}}{2} = \mathbf{-2\,\text{V}}.
+    \end{align*}
+    La descripción «$0\text{ a }6\,\text{V}$» es \textbf{falsa} (la señal es bipolar entre $-2\,\text{V}$ y $+4\,\text{V}$).
+    \item \textbf{Diagnóstico de cortocircuito por pinza de masa en D (2 pt):} La pinza de masa del osciloscopio une directamente el drenador D a la tierra de protección (PE). Como el GND del bus ya está unido a PE, se crea un \textbf{cortocircuito directo entre D y el retorno GND del bus} (puenteando el MOSFET), lo que fuerza corriente permanente por $R_L$/fuente/cables de sonda y puede dañar el equipo.
+    \item \textbf{Dos acciones verificables previas al ensayo (2 pt; 1 pt c/u):} (a) Con fuentes apagadas, verificar continuidad del retorno PE y conectar la pinza de referencia únicamente al nodo GND seguro; (b) verificar en osciloscopio la señal del generador en vacío antes de conectarla al gate, o medir $V_G$ y $V_S$ con referencias comunes seguras aplicando matemática $V_G - V_S$ (o sonda diferencial) con fuente limitada y aprobación G1.
+\end{enumerate}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.41\linewidth}
+\vspace{0pt}
+\begin{center}
+\begin{circuitikz}[scale=0.82, transform shape, thick]
+    \node[font=\scriptsize\bfseries, text=warnred] at (1.4, 4.1) {DIAGNÓSTICO DE CASO INSEGURO (PROHIBIDO)};
+    \draw (0, 3.4) node[above]{\small $+V_{\text{BUS}}$} to[R, l={$R_L$}] (0, 1.5) coordinate (D);
+    \filldraw (D) circle (1.5pt) node[left=2pt]{\textbf{D}};
+    \draw (0, 0.2) node[nigfete] (M1) {};
+    \draw (D) -- (M1.D);
+    \draw (M1.S) -- (0, -1.0) coordinate (GND_BUS) node[ground]{};
+    \node[left=2pt] at (0, -0.8) {\small GND Bus};
+
+    % Ruta de cortocircuito por PE
+    \draw[warnred, ultra thick, ->] (D) -- (2.6, 1.5) node[above, midway]{\scriptsize Pinza GND Osc.} -- (2.6, -1.8) node[ground]{} node[right=2pt]{\scriptsize Tierra PE};
+    \draw[warnred, ultra thick] (0, -1.0) -- (0, -1.8) -- (2.6, -1.8);
+    \node[fill=red!10, draw=warnred, rounded corners=2pt, font=\scriptsize\bfseries, text=warnred] at (1.5, -2.5) {Cortocircuito D $\rightarrow$ PE $\rightarrow$ GND};
+\end{circuitikz}
+\end{center}
+\end{minipage}
+
+\section*{Resolución de Problema 5A (6 puntos; 15 min — SOLO SI BJT FUE ENSEÑADO)}
+\begin{enumerate}[label=\arabic*., noitemsep, topsep=2pt]
+    \item \textbf{Tensión máxima aproximada de salida en el emisor (2 pt):}
+    \[
+        V_E \approx V_B - V_{BE} \approx 3.3\,\text{V} - 0.7\,\text{V} = \mathbf{2.6\,\text{V}}.
+    \]
+    \item \textbf{Por qué el colector a $+12\,\text{V}$ no eleva el gate a $12\,\text{V}$ (2 pt):} En un seguidor de emisor NPN, el colector a $+12\,\text{V}$ aporta corriente y fija el margen colector-emisor, pero el potencial de emisor queda restringido por KVL a seguir a la base menos $V_{BE}$. Por tanto, $2.6\,\text{V} < 10\,\text{V}$ y \textbf{no se cumple} el requisito de $10\,\text{V}$ para el gate.
+    \item \textbf{Sourcing vs.\ Sinking y función faltante (2 pt):} \textbf{Sourcing:} inyectar corriente hacia la compuerta para cargar $Q_g$ (encendido). \textbf{Sinking:} extraer corriente desde la compuerta hacia retorno para descargar $Q_g$ (apagado). El circuito requiere una \textbf{etapa previa de adaptación de nivel (\textit{level shifter})} de $0\text{--}3.3\,\text{V}$ a $0\text{--}12\,\text{V}$ junto con capacidad de carga y descarga verificada.
+\end{enumerate}
+
+\section*{Resolución de Problema 5B (6 puntos; 15 min — SI BJT FUE EXCLUIDO)}
+\begin{enumerate}[label=\arabic*., noitemsep, topsep=2pt]
+    \item \textbf{Clasificación de los 5 elementos (2 pt):} (i) Hoja con $I_D = 0.20\,\text{A}$ por Ley de Ohm con datos supuestos = \textbf{\texttt{CALC}} (predicción analítica condicionada, no medida); (ii) archivo \texttt{.cir} no ejecutado = \textbf{\texttt{PEND}} (no es \texttt{SIM} sin corrida ni log); (iii) fotografía de protoboard = evidencia visual de montaje, \textbf{NO es \texttt{MED}} (\texttt{PEND} de medición); (iv) afirmar $V_{GS}=5\,\text{V}$ sin medir $V_S$ = \textbf{\texttt{PEND} / no sustentado}; (v) autorización G1 de otro grupo = \textbf{\texttt{PEND} / inválida} (G1 es intransferible).
+    \item \textbf{Requisito para declarar $V_{GS}$ medido válido (2 pt):} Se requiere medir o referenciar simultáneamente $V_G$ y $V_S$ respecto a una referencia segura ($V_{GS} = V_G - V_S$), indicando instrumento, escala de sonda, acoplamiento DC y condiciones reales; leer solo la pantalla del generador ($V_G$) ignora el potencial real de $S$ y la caída/carga de la conexión.
+    \item \textbf{Dos comprobaciones en frío antes de G1 y autoridad (2 pt):} (1) Cotejar en frío el pinout físico G/D/S y pestaña TO-220 contra datasheet y verificar ausencia de cortos con multímetro y fuentes apagadas; (2) verificar la señal del generador en vacío en el osciloscopio, el vataje de $R_L$ y el límite de corriente de la fuente. Debe autorizarlo presencialmente el \textbf{docente / encargado de laboratorio} mediante firma G1 para ese montaje específico.
+\end{enumerate}
+
+\section*{Reglas de Corrección, Códigos de Retroalimentación y Auditoría Aritmética}
+\begin{itemize}[noitemsep, topsep=2pt]
+    \item \textbf{Pauta transversal orientativa:} $25\%$ modelo/supuestos, $35\%$ procedimiento, $25\%$ resultados/unidades, $15\%$ interpretación. No aplicar mecánicamente cuando el inciso ya tiene desglose propio; evitar doble penalización por arrastre coherente.
+    \item \textbf{Códigos de retroalimentación individual:} \texttt{M} modelado/hipótesis, \texttt{U} unidades, \texttt{A} aritmética, \texttt{D} datasheet/condiciones, \texttt{F} física de conmutación, \texttt{S} seguridad instrumental, \texttt{E} trazabilidad de evidencia.
+    \item \textbf{Auditoría aritmética manual (SIN CALCULADORA):} P1: $10/(9+1)=1\,\text{A}$, $1\cdot 9 + 1\cdot 1 = 10\,\text{V}$, $1^2\cdot 9 = 9\,\text{W}$, $1^2\cdot 1 = 1\,\text{W}$, $9/2 = 4.5\,\text{W}$. P2: $10 - 4 = 6\,\text{V}$. P3: $48/12 = 4\,\mu\text{s}$; $0.5\cdot 4\cdot 2 = 4\,\mu\text{J}$; $0.5\cdot 6\cdot 1 = 3\,\mu\text{J}$; $1000\cdot 7\times 10^{-6} = 7\,\text{mW}$. P4: $1 \pm 3 = -2\,\text{V}, +4\,\text{V}$. P5A: $3.3 - 0.7 = 2.6\,\text{V}$.
+\end{itemize}
+
+\end{document}

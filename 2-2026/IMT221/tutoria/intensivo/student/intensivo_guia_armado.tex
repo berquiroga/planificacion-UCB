@@ -1,0 +1,326 @@
+% student/w_intensivo_guia_armado.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+
+% Solución a las advertencias de fuente Typewriter en negrita
+\renewcommand{\ttdefault}{lmtt}
+
+% Definición de columna X alineada a la izquierda para evitar Underfull/Overfull \hbox
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Guía de Armado Físico (LM358N)}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{Guía de Armado del Circuito Físico Final}}
+    \par\vspace{0.2cm}
+    {\large \textbf{Proyecto: Acondicionador No Inversor + Filtro Activo Butterworth/Sallen-Key}}
+    \par\vspace{0.1cm}
+    \textit{Revisión: 10/11/2026 | Estado: Diseño de referencia, montaje y medidas aún no ejecutados.}
+\end{center}
+
+\section{0. ¿Qué vas a construir exactamente?}
+Se implementará una cadena \textbf{física de dos bloques} en un integrado LM358N DIP-8 (que contiene dos amplificadores internos): \textbf{generador $\to$ acondicionador U1A $\to$ filtro activo U1B $\to$ osciloscopio}[cite: 8]. 
+
+El sensor y la planta térmica \textbf{no} forman parte del montaje físico descrito aquí; el lazo P/PI/PID continúa en simulación hasta contar con caracterización y autorización[cite: 8]. El generador sustituye de forma explícita la señal del sensor[cite: 8].
+
+\textbf{Salida esperada, caso didáctico:} con entrada DC \texttt{sensor\_in = 0.20--0.80 V}, el acondicionador entrega \texttt{cond\_out = 0.60--2.40 V}; a DC el filtro amplifica $\approx 1.593$, de manera que \texttt{filt\_out $\approx$ 0.956--3.823 V}[cite: 8]. La cadena completa tiene ganancia de baja frecuencia $\approx 4.779\,\text{V/V}$, siempre que opere linealmente[cite: 8].
+
+\begin{tcolorbox}[colback=red!5, colframe=red!80!black, title=\textbf{ATENCIÓN: Criterio de Seguridad de Energización}]
+    El protocolo de la guía intensiva prohíbe energizar sin autorización del docente[cite: 8]. Este documento especifica qué montar, \textbf{no} sustituye el \textit{gate} de seguridad[cite: 8]. Las fuentes aisladas deberán comprobarse realmente como tales antes de conectarlas en serie[cite: 8]. \textbf{No conectar cargas de potencia, calefactores ni red de 220 V}[cite: 8].
+\end{tcolorbox}
+
+\section{1. Materiales del Montaje}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{} l c L @{}}
+\toprule
+\textbf{Elemento} & \textbf{Cant.} & \textbf{Forma de obtenerlo / Especificación} \\ \midrule
+LM358N DIP-8 & 1 & 2 op-amps en el mismo integrado (repuestos aconsejables)[cite: 8]. \\ \addlinespace[4pt]
+Resistencias $10\,\text{k}\Omega$ & 4 & $R_{gA}$: 1; $R_{fA}$: 2 en serie; $R_{gB}$: 1[cite: 8]. \\ \addlinespace[4pt]
+Resistencias $15\,\text{k}\Omega$ & 2 & Parte de $R_1$ y $R_2$[cite: 8]. \\ \addlinespace[4pt]
+Resistencias $1\,\text{k}\Omega$ & 2 & Completar $R_1$ y $R_2$ a $16\,\text{k}\Omega$[cite: 8]. \\ \addlinespace[4pt]
+Resistencias $5.6\,\text{k}\Omega$ + $330\,\Omega$ & 1 c/u & $R_{fB} \approx 5.93\,\text{k}\Omega$ en serie[cite: 8]. \\ \addlinespace[4pt]
+Capacitores película $100\,\text{nF}$ & 2 & $C_1, C_2$ del filtro[cite: 8]. \\ \addlinespace[4pt]
+Cerámicos $100\,\text{nF}$ & 2 & Desacoplo de $+9\,\text{V}$ y $-9\,\text{V}$ hacia GND[cite: 8]. \\ \addlinespace[4pt]
+Electrolíticos $10\,\mu\text{F}, \ge 25\,\text{V}$ & 2 & (Opcionales) Desacoplo adicional: polaridad correcta[cite: 8]. \\ \addlinespace[4pt]
+Protoboard y cables & 1--2 & Usar buses identificados de $+9 / 0 / -9\,\text{V}$[cite: 8]. \\ \addlinespace[4pt]
+Salidas DC aisladas de $9\,\text{V}$ & 2 & Verificar que admitan conexión en serie[cite: 8]. \\ \addlinespace[4pt]
+Gen., Osciloscopio, Multímetro & 1 c/u & Confirmados gen/osc; multímetro por verificar[cite: 8]. \\ \bottomrule
+\end{tabularx}
+\end{center}
+
+\textbf{Trimmers 3296:} no son necesarios para el armado inicial[cite: 8]. Primero usa valores fijos y valida el filtro[cite: 8]. Un trimmer puede añadirse después \textbf{en serie con resistencia fija} y bajo supervisión, evitando una ganancia que lleve el filtro a oscilación[cite: 8].
+
+\newpage
+\section{2. Pinout: LM358N DIP-8 (Mirando desde ARRIBA)}
+
+Con muesca arriba: lado izquierdo pines 1, 2, 3, 4 de arriba a abajo; lado derecho pines 8, 7, 6, 5 de arriba a abajo[cite: 9]. \textbf{No girar mentalmente el chip} ni confundir dibujo del fabricante visto desde arriba con vista por debajo[cite: 9].
+
+\begin{center}
+    \begin{circuitikz}[scale=1.1, transform shape]
+        % Uso del componente nativo dipchip de circuitikz
+        \node[dipchip, num pins=8, hide numbers, no topmark, external pins width=0.0] (U) at (0,0) {\begin{tabular}{c}\textbf{LM358N}\\ \scriptsize DIP-8\end{tabular}};
+        \node[above, font=\scriptsize] at (U.n) {Vista superior};
+        \fill (U.nw) ++(0.35, -0.35) circle (2.5pt); % Muesca/Punto indicador Pin 1
+        
+        % Pines Izquierdos
+        \draw (U.bpin 1) -- ++(-0.6,0) node[left, font=\footnotesize\ttfamily] {1 OUT A (\texttt{cond\_out})};
+        \draw (U.bpin 2) -- ++(-0.6,0) node[left, font=\footnotesize\ttfamily] {2 - IN A};
+        \draw (U.bpin 3) -- ++(-0.6,0) node[left, font=\footnotesize\ttfamily] {3 + IN A (\texttt{sensor\_in})};
+        \draw (U.bpin 4) -- ++(-0.6,0) node[left, font=\footnotesize\ttfamily] {4 V- (-9 V)};
+        
+        % Pines Derechos
+        \draw (U.bpin 8) -- ++(0.6,0) node[right, font=\footnotesize\ttfamily] {8 V+ (+9 V)};
+        \draw (U.bpin 7) -- ++(0.6,0) node[right, font=\footnotesize\ttfamily] {7 OUT B (\texttt{filt\_out})};
+        \draw (U.bpin 6) -- ++(0.6,0) node[right, font=\footnotesize\ttfamily] {6 - IN B};
+        \draw (U.bpin 5) -- ++(0.6,0) node[right, font=\footnotesize\ttfamily] {5 + IN B};
+    \end{circuitikz}
+\end{center}
+
+\textbf{Resumen inequívoco de conexiones:}
+\begin{itemize}[noitemsep, leftmargin=*]
+    \item \texttt{sensor\_in} $\to$ \textbf{pin 3}[cite: 9].
+    \item \textbf{pin 1} $\to$ $R_{fA}$ ($20\,\text{k}\Omega$) $\to$ \textbf{pin 2} $\to$ $R_{gA}$ ($10\,\text{k}\Omega$) $\to$ \texttt{GND}[cite: 9].
+    \item \textbf{pin 1} $\to$ $R_1$ ($16\,\text{k}\Omega$) $\to$ \texttt{nodo a} $\to$ $R_2$ ($16\,\text{k}\Omega$) $\to$ \texttt{nodo b} $\to$ \textbf{pin 5}[cite: 9].
+    \item \texttt{nodo a} $\to$ $C_1$ ($100\,\text{nF}$) $\to$ \textbf{pin 7} \textbf{($C_1$ NO va a GND)}[cite: 9].
+    \item \texttt{nodo b} $\to$ $C_2$ ($100\,\text{nF}$) $\to$ \texttt{GND}[cite: 9].
+    \item \textbf{pin 7} $\to$ $R_{fB}$ ($5.93\,\text{k}\Omega$) $\to$ \textbf{pin 6} $\to$ $R_{gB}$ ($10\,\text{k}\Omega$) $\to$ \texttt{GND}[cite: 9].
+    \item \textbf{pin 8} $\to$ $+9\,\text{V}$, \textbf{pin 4} $\to$ $-9\,\text{V}$, y punto medio de fuentes $\to$ \texttt{GND}[cite: 9].
+\end{itemize}
+
+\section{3. Alimentación $\pm 9\,\text{V}$ con DOS Fuentes Aisladas}
+
+\begin{enumerate}[noitemsep, leftmargin=*]
+    \item Ambas fuentes \textbf{APAGADAS}; verifica con el multímetro las salidas y que el fabricante permite conexión en serie[cite: 9]. Ajusta cada fuente a $9.0\,\text{V}$; configura limitación de corriente prudente[cite: 9].
+    \item Denomina \textbf{fuente superior} a la que aportará $+9\,\text{V}$: borne \texttt{+} será $+9$; borne \texttt{-} será futuro \texttt{GND}[cite: 9].
+    \item Denomina \textbf{fuente inferior} a la que aportará $-9\,\text{V}$: borne \texttt{+} será futuro \texttt{GND}; borne \texttt{-} será $-9$[cite: 9].
+    \item Une \textbf{negativo de fuente superior} con \textbf{positivo de fuente inferior}: este punto es el único \textbf{GND/0 V} del circuito[cite: 9].
+\end{enumerate}
+
+\begin{center}
+    \begin{circuitikz}[thick, scale=0.9, transform shape]
+        \draw (0,2.5) to[battery1, l_={$9\,\text{V}$}, -*] (0,0) node[ground]{} node[right=0.2cm]{\texttt{GND (0V común)}}
+              to[battery1, l_={$9\,\text{V}$}] (0,-2.5);
+        \draw (0,2.5) to[short, -o] (2,2.5) node[right] {$+9\,\text{V}$ (Al \textbf{pin 8})};
+        \draw (0,-2.5) to[short, -o] (2,-2.5) node[right] {$-9\,\text{V}$ (Al \textbf{pin 4})};
+    \end{circuitikz}
+\end{center}
+
+\begin{enumerate}[noitemsep, leftmargin=*, resume]
+    \item Con el conjunto energizado \textbf{solo después del gate y sin LM358 insertado}, el docente debe verificar: $+9\,\text{V}$ en riel superior y $-9\,\text{V}$ en inferior respecto a \texttt{GND}[cite: 9]. Entre extremos deben existir $\approx 18\,\text{V}$[cite: 9].
+    \item Apaga nuevamente, conecta riel positivo al \textbf{pin 8} y negativo al \textbf{pin 4}[cite: 9]. \textbf{Nunca} conectar $-9\,\text{V}$ a la pinza \texttt{GND} del osciloscopio o del generador[cite: 9].
+    \item Coloca capacitores cerámicos de $100\,\text{nF}$ entre pin 8 y \texttt{GND} y pin 4 y \texttt{GND}, muy cerca del integrado[cite: 10].
+    \item No asumas que \texttt{GND} de dos instrumentos coincide arbitrariamente[cite: 10]. Comprobar chasis antes de unir masas[cite: 10]. Las masas de CH1 y CH2 deben conectarse \textbf{únicamente a GND}[cite: 10].
+\end{enumerate}
+
+\section{4. Preparación de la Protoboard (Sin Alimentación)}
+\begin{enumerate}[noitemsep, leftmargin=*]
+    \item Coloca el LM358N atravesando la \textbf{ranura central}, muesca visible arriba[cite: 10]. Confirma que los pines no compartan tira conductora con sus vecinos[cite: 10].
+    \item Asigna buses separados y rotulados \texttt{+9}, \texttt{GND}, \texttt{-9}[cite: 10]. Comprueba continuidad longitudinal de los buses[cite: 10].
+    \item Construye cada grupo resistivo en serie \textbf{midiendo su valor final}:
+    \begin{itemize}[noitemsep, leftmargin=*]
+        \item $R_{fA} = 10\,\text{k} + 10\,\text{k} = 20\,\text{k}\Omega$[cite: 10]
+        \item $R_1 = 15\,\text{k} + 1\,\text{k} = 16\,\text{k}\Omega$[cite: 10]
+        \item $R_2 = 15\,\text{k} + 1\,\text{k} = 16\,\text{k}\Omega$[cite: 10]
+        \item $R_{fB} = 5.6\,\text{k} + 330\,\Omega = 5.93\,\text{k}\Omega$[cite: 10]
+    \end{itemize}
+    \item Documenta las resistencias medidas, no solo los códigos de colores[cite: 10].
+\end{enumerate}
+
+\section{5. Etapa A: Acondicionador No Inversor (Montar Primero)}
+
+\begin{center}
+    \begin{circuitikz}[thick, scale=0.9, transform shape]
+        % Nodo de entrada
+        \draw (-4, 0) node[left] {\texttt{sensor\_in}} -- (-1.8, 0) node[above, align=center] {\footnotesize $0.2 \text{ a } 0.8\,\text{V DC}$};
+        
+        % Amplificador U1A (Pin 3 es entrada +, Pin 2 es entrada -)
+        \draw (0, -1.5) node[op amp, yscale=-1] (U1A) {};
+        \node[font=\footnotesize] at (U1A.center) {\begin{tabular}{c}U1A\\LM358N\end{tabular}};
+        
+        % Conexión entrada +
+        \draw (-1.8, 0) |- (U1A.+);
+        \node[below left, font=\scriptsize] at (U1A.+) {pin 3};
+        
+        % Conexión entrada -
+        \draw (U1A.-) to[short, -*] ++(-0.65,0) coordinate(fb_a);
+        \node[above left, font=\scriptsize] at (U1A.-) {pin 2};
+        
+        % Divisor de realimentación (Ojo: Valores entre llaves para evitar errores de parseo de TikZ)
+        \draw (fb_a) to[R, l_={$R_{gA}$ ($10\,\text{k}\Omega$)}] ++(0, -2.5) coordinate(ground) ++(0,0) node[ground]{};
+        \draw (ground) -- ++(0, 0) coordinate(rf_line) to[R, l={$R_{fA} = 20\,\text{k}\Omega$}] (rf_line -| U1A.out) -- (U1A.out);
+        
+        % Salida
+        \draw (U1A.out) to[short, *-o] ++(2,0) node[above] {\texttt{cond\_out}};
+        \node[above, font=\scriptsize] at (U1A.out) {pin 1};
+        
+        % Nota Inferior
+        \node[align=left, font=\scriptsize, right] at (-1.5, -5.0) {$R_{fA}$: 10k + 10k en serie. El pin 2 NO va directamente a tierra.};
+    \end{circuitikz}
+\end{center}
+
+\begin{enumerate}[noitemsep, leftmargin=*]
+    \item Con la alimentación desconectada, coloca $R_{gA} = 10\,\text{k}\Omega$ entre \textbf{pin 2} y \texttt{GND}[cite: 10].
+    \item Coloca $R_{fA} = 20\,\text{k}\Omega$ entre \textbf{pin 1} y \textbf{pin 2}. Usa 10k + 10k en serie[cite: 10].
+    \item Lleva el vivo del generador al \textbf{pin 3}[cite: 10]. \textbf{La masa del generador solo al GND común}, después de la comprobación de tierras[cite: 10].
+    \item Reserva un punto de prueba en pin 1 con etiqueta \texttt{cond\_out}[cite: 10].
+    \item Con autorización, aplica DC positivo \textbf{0.20 V} (comprueba con multímetro)[cite: 10].
+    \item Energiza y mide pin 1 respecto a GND: predicción $0.60\,\text{V}$[cite: 10]. Repite con $0.50\,\text{V}$ (esperado $1.50\,\text{V}$) y $0.80\,\text{V}$ (esperado $2.40\,\text{V}$). Conserva las mediciones[cite: 10].
+    \item Si falla, \textbf{apaga antes de reconectar}: comprueba pin 2, tierra de $R_{gA}$, entradas y rieles[cite: 10].
+\end{enumerate}
+
+\textbf{Ecuación a defender:} \texttt{cond\_out} $= (1 + R_{fA}/R_{gA}) \times \texttt{sensor\_in} = 3 \times \texttt{sensor\_in}$, válida con realimentación negativa y funcionamiento lineal[cite: 10].
+
+\newpage
+\section{6. Etapa B: Filtro Activo Sallen-Key de Segundo Orden}
+
+Esta etapa corresponde al esquema de la guía intensiva: \textbf{$R_1$ y $R_2$ en serie hacia la entrada +; $C_1$ desde el nodo intermedio a hasta SALIDA; $C_2$ desde el nodo b a tierra.} No intercambiar $C_1$ y $C_2$[cite: 11].
+
+\begin{center}
+    \begin{circuitikz}[thick, scale=0.9, transform shape]
+        % Amplificador U1B
+        \draw (0, 0) node[op amp, yscale=-1] (U1B) {};
+        \node[font=\footnotesize] at (U1B.center) {U1B};
+        
+        % Nodos de entrada y realimentación positiva
+        \draw (U1B.+) to[short, -*] ++(-2,0) coordinate(b) node[above left, font=\footnotesize] {b};
+        \node[above left, font=\scriptsize] at (U1B.+) {pin 5};
+        
+        % Ojo: Usar llaves para etiquetas que contienen "="
+        \draw (b) to[R, l_={$R_2 = 16\,\text{k}\Omega$}, -*] ++(-2.5,0) coordinate(a) node[below right, font=\footnotesize] {a};
+        \draw (b) to[C, l={$C_2$}, a={$100\,\text{nF}$}] ++(0, -2) node[ground]{};
+        
+        \draw (a) to[R, l={$R_1 = 16\,\text{k}\Omega$}, -o] ++(-2.5,0) node[above] {\texttt{cond\_out}};
+        
+        % Capacitor C1 de realimentación
+        \draw (a) -- ++(0, 1.8) coordinate(c1_a) to[C, l={$C_1 = 100\,\text{nF}$ (a OUT)}] (c1_a -| U1B.out) -- (U1B.out);
+        
+        % Realimentación negativa (Ganancia K)
+        \draw (U1B.-) to[short, -*] ++(-0.5,0) coordinate(fb_b);
+        \node[above left, font=\scriptsize] at (U1B.-) {pin 6};
+        
+        \draw (fb_b) to[R, l={$R_{gB}$}, a={$10\,\text{k}\Omega$}] ++(0, -2) coordinate(ground) ++(0,0) node[ground]{};
+        \draw (ground) -- ++(0, 0) coordinate(rfb_line) to[R, l_={$R_{fB} = 5.93\,\text{k}\Omega$}] (rfb_line -| U1B.out) -- (U1B.out);
+        
+        % Salida
+        \draw (U1B.out) to[short, *-o] ++(1.5,0) node[above] {\texttt{filt\_out}};
+        \node[above, font=\scriptsize] at (U1B.out) {pin 7};
+        
+        % Notas
+        \node[align=left, font=\scriptsize, right] at (-4, -3.8) {$R_1$ y $R_2$: 15k + 1k (serie). $R_{fB}$: 5.6k + 330$\Omega$ (serie).};
+    \end{circuitikz}
+\end{center}
+
+\begin{enumerate}[noitemsep, leftmargin=*]
+    \item Desde \textbf{pin 1}, conecta $R_1 = 16\,\text{k}\Omega$ ($15\,\text{k}\Omega+1\,\text{k}\Omega$ en serie) hasta un nuevo nodo \texttt{a}[cite: 11].
+    \item Desde \texttt{a}, conecta $R_2 = 16\,\text{k}\Omega$ ($15\,\text{k}\Omega+1\,\text{k}\Omega$ en serie) hasta nodo \texttt{b}[cite: 11].
+    \item Conecta \texttt{b} directamente a \textbf{pin 5} de LM358N[cite: 11].
+    \item Conecta $C_2 = 100\,\text{nF}$ entre \texttt{b} y \texttt{GND}[cite: 11].
+    \item Conecta $C_1 = 100\,\text{nF}$ entre \texttt{a} y \textbf{pin 7}. \textbf{Revisión crucial: $C_1$ NO va a GND}[cite: 11].
+    \item Conecta $R_{gB} = 10\,\text{k}\Omega$ entre \textbf{pin 6} y \texttt{GND}[cite: 11].
+    \item Conecta $R_{fB} = 5.93\,\text{k}\Omega$ ($5.6\,\text{k}\Omega+330\,\Omega$ en serie) entre \textbf{pin 7} y \textbf{pin 6}[cite: 11].
+    \item Etiqueta \texttt{filt\_out} en \textbf{pin 7}. Revisa cada nodo según la tabla antes de energizar[cite: 11].
+    \item \textbf{No} conectes cargas de baja resistencia a pin 7. Usa osciloscopio de alta impedancia[cite: 11].
+\end{enumerate}
+
+Valores teóricos con componentes nominales: $K_B = 1 + 5.93\,\text{k}\Omega/10\,\text{k}\Omega = 1.593$, y $f_0 = 1/(2\pi \cdot 16\,\text{k}\Omega \cdot 100\,\text{nF}) \approx 99.47\,\text{Hz}$, con factor $Q = 1/(3-K_B) \approx 0.7107$[cite: 11]. Butterworth ideal exige $Q = 0.7071$; esta implementación es muy cercana[cite: 11].
+
+\section{7. Primera Energización de la Cadena Completa}
+\begin{enumerate}[noitemsep, leftmargin=*]
+    \item Mantén generador en señal segura y estable, por ejemplo DC \textbf{0.20 V} medidos. \textbf{No uses todavía una senoide de gran amplitud}[cite: 11].
+    \item Inspección apagado: LM358, pin 8/4, $R_{fA}/R_{gA}$, $R_1/R_2$, $C_1/C_2$, $R_{fB}/R_{gB}$ y GND[cite: 11].
+    \item Tras autorización, enciende alimentación y confirma los rieles frente a GND[cite: 11].
+    \item Mide entrada pin 3, salida intermedia pin 1 y salida final pin 7[cite: 11].
+    \item Para entradas DC de $0.20$, $0.50$ y $0.80\,\text{V}$, compara con tabla (estos son resultados nominales de diseño, no mediciones; no copies los valores a columnas MEDIDO)[cite: 11, 12]:
+\end{enumerate}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{} c c c L L @{}}
+\toprule
+\textbf{\texttt{sensor\_in} [V]} & \textbf{CALC. \texttt{cond\_out}} & \textbf{CALC. \texttt{filt\_out}} (DC) & \textbf{MEDIDO \texttt{cond\_out}} & \textbf{MEDIDO \texttt{filt\_out}} \\ \midrule
+$0.20$ & $0.60\,\text{V}$ & $0.956\,\text{V}$ & & \\ \addlinespace[4pt]
+$0.50$ & $1.50\,\text{V}$ & $2.390\,\text{V}$ & & \\ \addlinespace[4pt]
+$0.80$ & $2.40\,\text{V}$ & $3.823\,\text{V}$ & & \\ \bottomrule
+\end{tabularx}
+\end{center}
+
+\section{8. Prueba de Frecuencia con Generador y Osciloscopio}
+\begin{enumerate}[noitemsep, leftmargin=*]
+    \item Comprobar conexión de tierra con equipo apagado. El generador no debe crear tensión negativa que exceda el rango del circuito[cite: 12].
+    \item Establece la senoide de entrada con \textbf{offset DC = 0.50 V}, \textbf{amplitud pico $\approx 0.10$ V} ($\approx 0.20$ Vpp)[cite: 12]. Verifica en el osciloscopio \texttt{sensor\_in}; ajusta según la tensión efectivamente medida[cite: 12].
+    \item Al iniciar, usa $10\,\text{Hz}$, después $\sim 100\,\text{Hz}$, $300\,\text{Hz}$ y $1\,\text{kHz}$. Mantén la amplitud real de entrada aproximadamente constante[cite: 12].
+    \item Para caracterizar la etapa B, mide \textbf{CH1 en pin 1 (\texttt{cond\_out})} y \textbf{CH2 en pin 7 (\texttt{filt\_out})}; pinzas de masa al único GND autorizado[cite: 12].
+    \item Registra $V_{pp,cond}$, $V_{pp,filt}$, $|H_B| = V_{pp,filt}/V_{pp,cond}$ y $20\log_{10}(|H_B|)$; para la fase, usa $\phi = -360^\circ f \Delta t$ si la salida retrasa a la entrada[cite: 12].
+    \item En $1\,\text{kHz}$ la salida alterna puede estar cerca del ruido instrumental. Registra ``no resuelto instrumentalmente'' cuando no sea fiable; no inventes una fase[cite: 12].
+\end{enumerate}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{} r L L L L L @{}}
+\toprule
+$\bm{f}$ \textbf{[Hz]} & \textbf{$V_{pp,cond}$ [MED.]} & \textbf{$V_{pp,filt}$ [MED.]} & $\mathbf{|H_B|}$ \textbf{[MED.]} & \textbf{Fase $\phi$ [MED.]} & \textbf{Observaciones} \\ \midrule
+$10$ & & & & & \\ \addlinespace[8pt]
+$100$ & & & & & \\ \addlinespace[8pt]
+$300$ & & & & & \\ \addlinespace[8pt]
+$1000$ & & & & & \\ \bottomrule
+\end{tabularx}
+\end{center}
+
+Predicción orientativa de ganancia relativa del filtro: a $1\,\text{kHz}$, cercano a $0.01$[cite: 12]. Las frecuencias son aproximadas y la ganancia relativa se define como $|H_B|/K_B$, \textbf{no} como $|H_B|$ absoluto[cite: 12].
+
+\section{9. Diagnóstico si el Resultado no Coincide}
+\begin{center}
+\begin{tabularx}{\textwidth}{@{} L L @{}}
+\toprule
+\textbf{Síntoma Observado} & \textbf{Primera Hipótesis a Comprobar} \\ \midrule
+Pin 1 no amplifica & $R_{fA}/R_{gA}$ invertidos, pin 2 sin realimentación o pin 3 sin señal[cite: 12]. \\ \addlinespace[4pt]
+Pin 7 plano en un riel & Alimentación incorrecta, pin 6 abierto, $C_1/C_2$ mal conectados, saturación[cite: 12]. \\ \addlinespace[4pt]
+No hay caída a alta frecuencia & $C_1$ mal conectado a GND, $C_2$ ausente, nodos \texttt{a/b} confundidos[cite: 12]. \\ \addlinespace[4pt]
+La señal parece muy pequeña & Escala vertical, $50\,\Omega$/alta impedancia, punto de prueba incorrecto[cite: 12]. \\ \addlinespace[4pt]
+La etapa oscila espontáneamente & Revisar $R_{fB}$, $C_1$, disposición física y desacoplo; apagar y consultar[cite: 12]. \\ \addlinespace[4pt]
+Fuente en sobrecorriente o chip caliente & \textbf{APAGAR INMEDIATAMENTE}, revisar polaridad y cortos[cite: 12]. \\ \bottomrule
+\end{tabularx}
+\end{center}
+
+\section{10. Registro y Defensa}
+\begin{itemize}[noitemsep, leftmargin=*]
+    \item Fotografía del montaje con rieles y pines identificables; diagrama de conexionado actualizado[cite: 12].
+    \item Tabla de \texttt{CALCULADO}, \texttt{SIMULADO} y \texttt{MEDIDO} independiente; mediciones originales sin retocar[cite: 13].
+    \item Capturas de CH1/CH2 a $10$, $100$, $300$ y $1000\,\text{Hz}$ cuando la medición sea resoluble[cite: 13].
+    \item Una modificación de diseño autorizada, predicha antes de realizarla, con tabla antes/después[cite: 13].
+    \item Explicación oral: qué construiste, cuál fue el límite del LM358N y qué partes siguen solo simuladas[cite: 13].
+    \item \textbf{No} marcar CP1B ni la regulación de temperatura como demostrados por este montaje[cite: 13].
+\end{itemize}
+
+\textbf{Fuentes y alcance:}
+\begin{itemize}[noitemsep, leftmargin=*]
+    \item Texas Instruments, \textit{LMx58-N Low-Power Dual Operational Amplifiers}, documentación oficial LM358-N (pinout y límites del componente)[cite: 13].
+    \item Texas Instruments, \textit{Sallen-Key low-pass filter design}, recurso de topología (la versión aquí descrita se corresponde con el desarrollo matemático de la guía intensiva)[cite: 13].
+\end{itemize}
+\textbf{Nota:} Este documento implementa una ruta A propuesta de acondicionador+filtro físicos[cite: 13]. Su montaje no constituye aún una integración física de controlador, actuador o planta[cite: 13]. La aceptación de la ruta y la energización requieren autorización docente y verificación de los equipos reales[cite: 13].
+
+\end{document}

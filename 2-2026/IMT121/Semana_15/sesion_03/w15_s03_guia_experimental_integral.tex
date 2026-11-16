@@ -1,0 +1,85 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage[american]{circuitikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Guía Experimental EC4 (W16)}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{warnred}{RGB}{180, 0, 0}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=warnred!5!white, colframe=warnred, title=\textbf{Artefacto A3: Guía Experimental Integral EC4 (Filtro RC Pasabajos AC)}]
+    \centering \textbf{Instrucción Operativa — NO ENERGIZAR SIN "GO" POR ESTACIÓN Y MONTAJE}
+\end{tcolorbox}
+
+\noindent\textbf{Sesión/Fecha:} \rule{4cm}{0.4pt} \quad \textbf{Estación ID:} \texttt{E}\rule{2cm}{0.4pt} \quad \textbf{Grupo:} \rule{2cm}{0.4pt} \\
+\textbf{Integrantes/Roles:} 1) \rule{3.5cm}{0.4pt} \quad 2) \rule{3.5cm}{0.4pt} \quad 3) \rule{3.5cm}{0.4pt} \\
+\textbf{Objetivos Observables:} Ensamblar el filtro con seguridad, adquirir amplitud/fase a 3 frecuencias de interés comparativas con la frecuencia de corte, y contrastar con cálculos.
+
+\section*{1. Lista de Materiales Aprobados y Verificación Física (PRE-GO)}
+\renewcommand{\arraystretch}{1.5}
+\noindent
+\begin{tabularx}{\textwidth}{>{\bfseries\RaggedRight\hsize=1.0\hsize}X >{\RaggedRight\arraybackslash\hsize=0.8\hsize}X >{\centering\arraybackslash\hsize=0.4\hsize}X >{\RaggedRight\arraybackslash\hsize=1.8\hsize}X}
+\toprule
+\textbf{Elemento Material} & \textbf{Requisito Autorizado} & \textbf{Hay} & \textbf{Verificación Operativa y Técnica} \\
+\midrule
+Resistor $R$ & $10\,\text{k}\Omega$, $\ge 1/4\,\text{W}$, $\le 5\%$ & {[$\square$]} & $R_{\text{med}} = $ \rule{2.5cm}{0.4pt} $\Omega$ (Evite pot. inestable) \\ \addlinespace
+Capacitor $C$ & $1\,\mu\text{F}$ \textbf{NO polarizado}, $\ge 25\,\text{V}$ & {[$\square$]} & Inspección tipo/voltaje: \rule{4cm}{0.4pt} \\ \addlinespace
+Protoboard / Jumpers & Contactos probados & {[$\square$]} & Rieles continuos sin cortos [Sí/No] \\ \addlinespace
+Gen. Sinusoidal y Osciloscopio & Estación institucional asignada & {[$\square$]} & Modelos/IDs: \rule{5.5cm}{0.4pt} \\
+\bottomrule
+\end{tabularx}
+
+\section*{2. Topología Experimental del Filtro Pasabajos}
+\textbf{Advertencia Tierra GND:} El nodo de retorno del generador y las masas de las sondas CH1 y CH2 \textbf{deben ir unidos a una sola línea GND} de la protoboard. ¡NO conecte pinzas de masa a los extremos de la resistencia o generará un cortocircuito a través del chasis de los equipos!
+
+\begin{center}
+\begin{circuitikz}[scale=0.9, transform shape, thick]
+    \draw (0,0) to[sV, l_={Gen AC $\tilde{V}_{\text{in}}$}] (0,3)
+          to[short, -*] (1.5,3) node[above]{\texttt{IN (Punta CH1)}}
+          to[R, l={$R_{\text{ext}} = 10\,\text{k}\Omega$}] (5,3)
+          to[short, -*] (6.5,3) node[above]{\texttt{OUT (Punta CH2)}};
+    \draw (6.5,3) to[C, l={$C_{\text{np}} = 1\,\mu\text{F}$}, v=$\tilde{V}_{\text{out}}$] (6.5,0);
+    \draw (0,0) -- (8.5,0) node[right]{\textbf{\small Retorno GND (Gen(-) y Masas CH1/CH2)}};
+    \draw (4.5,0) node[ground]{};
+\end{circuitikz}
+\end{center}
+
+\begin{tcolorbox}[colback=gray!5, colframe=black, boxsep=2pt, left=4pt, right=4pt, top=2pt, bottom=2pt]
+\small\textbf{Firma de Inspección y GO:} Con el \textbf{generador apagado (OUTPUT OFF)}, el Docente evaluará el montaje desenergizado, el estado de las sondas, la amplitud del piloto y emitirá el permiso. \par\vspace{0.1cm}
+\textbf{GO Estación:} \rule{4cm}{0.4pt} \quad \textbf{Docente/Técnico:} \rule{4cm}{0.4pt} \quad \textbf{Hora:} \rule{2cm}{0.4pt}
+\end{tcolorbox}
+
+\section*{3. Ajustes y Procedimiento de Adquisición}
+\begin{itemize}\setlength\itemsep{0.1cm}
+    \item \textbf{Cálculo Específico:} Con los valores medidos, recalcule $f_c = \frac{1}{2\pi R_{\text{med}}C_{\text{med}}}$.
+    \item \textbf{Generador (SUJETO A PILOTO):} Onda Senoidal. Amplitud e impedancia de salida fijada por el docente para esta estación. Acoplamiento de CH1/CH2 en DC.
+    \item \textbf{Medición Temporal:} Para cada $f$, estabilice la onda. Mida $V_{\text{in,pp}}$ (CH1) y $V_{\text{out,pp}}$ (CH2).
+    \item \textbf{Desfase $\Delta t$:} Mida la distancia en ms entre un cruce por cero ascendente de CH1 y el siguiente cruce homólogo de CH2 (Retraso).
+\end{itemize}
+
+\section*{4. Cierre y Contingencias (NO-GO)}
+\textit{Si ocurre un NO-GO (ej. ruido masivo, sondas dañadas):} Consigne el motivo aquí y exija un procedimiento analítico de compensación. Motivo: \rule{8cm}{0.4pt} \\
+\textit{Cierre Seguro:} Deshabilite el generador (OFF), devuelva los componentes desenergizados, y garantice que las fotos de captura USB tengan ID de grupo.
+
+\end{document}

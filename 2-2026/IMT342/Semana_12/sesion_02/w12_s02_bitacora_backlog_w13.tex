@@ -1,0 +1,71 @@
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.4cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342}}
+\chead{Bitácora Reproducible, Backlog W13 y Exit Ticket}
+\rhead{Semana 12 - Sesión 2}
+\lfoot{Compromisos Verificables hacia W13}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Bitácora de Decisiones, Backlog hacia W13 (Máx. 3 Tareas) y Exit Ticket Individual}}[cite: 16]
+\end{center}
+
+\section*{1. Backlog de Pruebas Reproducibles hacia W13 (Máximo 3 Tareas por Equipo)[cite: 16]}
+El producto del trabajo autónomo no es \textit{«investigar algo»}, sino producir una decisión reproducible respaldada por un archivo versionado, captura autorizada con origen, log fechado, tabla reproducible o enlace a commit concreto[cite: 16]. Si no existe acceso autorizado al ABB, toda prueba en hardware permanece \texttt{BLOCKED} y el equipo avanza en documentación comparativa, stack ROS local y ejecución de Gate 2 offline[cite: 16].
+
+\begin{center}
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.55}
+% Suma de \hsize = 1.05 + 0.80 + 0.90 + 1.15 + 1.05 + 0.85 + 1.00 + 1.20 = 8.0 para las 8 columnas X (+ 1 col c)
+\begin{tabularx}{\textwidth}{|c|>{\hsize=1.05\hsize\raggedright\arraybackslash}X|>{\hsize=0.80\hsize\raggedright\arraybackslash}X|>{\hsize=0.90\hsize\raggedright\arraybackslash}X|>{\hsize=1.15\hsize\raggedright\arraybackslash}X|>{\hsize=1.05\hsize\raggedright\arraybackslash}X|>{\hsize=0.85\hsize\centering\arraybackslash}X|>{\hsize=1.00\hsize\raggedright\arraybackslash}X|>{\hsize=1.20\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{\#}[cite: 16] & \textbf{Hipótesis Técnica a Someter a Prueba}[cite: 16] & \textbf{Responsable y Suplente}[cite: 16] & \textbf{Dependencia / Permiso Requerido}[cite: 16] & \textbf{Procedimiento Permitido (Sin Mov. Físico)}[cite: 16] & \textbf{Evidencia Verificable (Archivo / Commit / Log)}[cite: 16] & \textbf{Criterio} (\texttt{PASS} / \texttt{FAIL} / \texttt{BLOCKED})[cite: 16] & \textbf{Incertidumbre Remanente}[cite: 16] & \textbf{Siguiente Decisión según Resultado}[cite: 16] \\ \hline
+\rowcolor{gray!10}
+\textbf{Ej.}[cite: 16] & Identificar el modelo exacto de controlador y asociarlo al manual de su versión[cite: 16]. & Coord. HW / Suplente SW[cite: 16] & Permiso de operador autorizado del lab.[cite: 16] & Inspección visual / foto de placa autorizada o solicitud formal si no hay acceso[cite: 16]. & Foto fechada + ficha actualizada + PDF manual (o cargo de solicitud)[cite: 16]. & \texttt{PASS} si hay placa y manual; \texttt{BLOCKED} sin acceso[cite: 16]. & Opciones de software internas aún no leídas[cite: 16]. & Habilitar cruce de versión con Ruta A/B en W13[cite: 16]. \\ \hline
+\textbf{1}[cite: 16] & & & & & & & \\[0.6cm] \hline
+\textbf{2}[cite: 16] & & & & & & & \\[0.6cm] \hline
+\textbf{3}[cite: 16] & & & & & & & \\[0.6cm] \hline
+\end{tabularx}
+\end{center}
+
+\vspace{0.2cm}
+\section*{2. Exit Ticket Individual de Cierre (Segmento 6 — 10 min)[cite: 16]}
+\begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{Verificación Individual de Salida — Estudiante:} \rule{7cm}{0.15mm} \textbf{Grupo:} \rule{2cm}{0.15mm} {[cite: 16]}, left=2mm, right=2mm, top=1.5mm, bottom=1.5mm]
+    \scriptsize\raggedright
+    \textbf{1. Indique un dato concreto del controlador ABB ya verificado con fuente, o el bloqueo exacto que impide conocerlo y quién debe autorizar el acceso[cite: 16]:}\\[0.35cm]
+    \rule{\textwidth}{0.15mm}\\[0.25cm]
+    \textbf{2. Describa una prueba de comunicación sin movimiento (Gate 1) y cuál es su observable exacto que distingue un estado real de una simulación[cite: 16]:}\\[0.35cm]
+    \rule{\textwidth}{0.15mm}\\[0.25cm]
+    \textbf{3. Enuncie una condición obligatoria de \texttt{NO-GO} vigente hoy antes de cualquier ensayo físico en el robot[cite: 16]:}\\[0.35cm]
+    \rule{\textwidth}{0.15mm}\\[0.25cm]
+    \textbf{4. Explique una razón geométrica por la cual dos modelos de Cinemática Directa (FK) correctos pueden diferir numéricamente debido a los marcos $\{B\}$ o $\{TCP\}$[cite: 16]:}\\[0.35cm]
+    \rule{\textwidth}{0.15mm}
+\end{tcolorbox}
+
+\end{document}

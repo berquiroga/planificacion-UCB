@@ -1,0 +1,70 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Clave Solucionario W15S3}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{warnred}{RGB}{180, 0, 0}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=warnred!5!white, colframe=warnred, title=\textbf{Artefacto A2: Clave Docente y Rúbrica Formativa (EC4 / W15S3)}]
+    \centering \textbf{Registro de Diagnóstico Docente — USO RESERVADO. NO DISTRIBUIR.}
+\end{tcolorbox}
+
+\section*{Solucionario Guiado (D1 a XT2)}
+\begin{itemize}\setlength\itemsep{0.15cm}
+    \item \textbf{D1:} $V_m = 3\,\text{V}$, $\omega = 100\pi\,\text{rad/s}$, $f = 50\,\text{Hz}$, $T = 0.020\,\text{s}$, $\phi = +30^\circ$, Fasor: $\tilde{V} = 3\angle 30^\circ\,\text{V}$. El fasor asume régimen permanente; \textbf{no} describe transitorios.
+    \item \textbf{D2:} $\tilde{V}_b = 4\angle -60^\circ\,\text{V} = 2 - j3.464\,\text{V}$. \textbf{Falso:} No se pueden comparar fases relativas directamente si las frecuencias son distintas ($100\,\text{Hz}$ vs $50\,\text{Hz}$).
+    \item \textbf{D3:} $Z_C = \frac{1}{j\omega C} = \frac{-j}{\omega C}$ [$\Omega$]. Al duplicar la frecuencia, $|Z_C|$ se reduce a la mitad.
+    \item \textbf{I1:} $\tilde{V}_a = 5\angle 0^\circ\,\text{V}$; $\tilde{V}_b = 2\angle -90^\circ\,\text{V} = -j2\,\text{V}$. $v_a$ adelanta, $v_b$ retrasa. Desfase $90^\circ$. A $\omega = 400\pi$ ($200\,\text{Hz}$), $T = 5\,\text{ms}$, el retraso es $\Delta t = T/4 = \mathbf{1.25\,\text{ms}}$.
+    \item \textbf{I2:} Fases V respecto a I: R ($0^\circ$), L ($+90^\circ$), C ($-90^\circ$). Módulos al duplicar $f$: R (Igual), L (Doble), C (Mitad).
+    \item \textbf{I3:} $\omega = 2\pi(1000) \approx 6283.18\,\text{rad/s}$. $Z_R = 1000\,\Omega$, $Z_L = j62.83\,\Omega$, $Z_C = -j159.15\,\Omega$. A $2\,\text{kHz}$ módulos: $1000\,\Omega, 125.66\,\Omega, 79.58\,\Omega$.
+    \item \textbf{I4:} $\tilde{I}_C = j\omega C \tilde{V}_C \implies Z_C = \frac{\tilde{V}_C}{\tilde{I}_C} = \frac{1}{j\omega C}$. El término $j\omega C$ es \textbf{Admitancia} ($Y_C$ en Siemens).
+    \item \textbf{R2:} KVL: $\tilde{V}_{\text{in}} = \tilde{I}(R + Z_C)$. $\tilde{V}_{\text{out}} = \tilde{I}Z_C$. División: $H(j\omega) = \frac{Z_C}{R+Z_C} = \mathbf{\frac{1}{1 + j\omega RC}}$.
+    \item \textbf{R3:} $H = \frac{1-jx}{1+x^2}$. $|H| = \frac{1}{\sqrt{1+x^2}}$, $\arg H = -\arctan(x)$. $x = \omega RC$ es adimensional ($[s^{-1}] \times [s] = 1$).
+    \item \textbf{R4:} Si $f \to 0$, $H \to 1$. Si $f \to \infty$, $H \to 0$. Es un Filtro \textbf{Pasabajos}.
+    \item \textbf{F1:} $RC = \mathbf{0.010\,\text{s}}$. $\omega_c = \mathbf{100\,\text{rad/s}}$. $f_c = 100/2\pi \approx \mathbf{15.9155\,\text{Hz}}$.
+    \item \textbf{F2 (Valores teóricos clave):} 
+    \begin{itemize}
+        \item $0.1f_c \implies f \approx 1.59\,\text{Hz}, x=0.1, |H| \approx \mathbf{0.9950}, \phi_H \approx \mathbf{-5.71^\circ}$. (Pasa casi toda la señal).
+        \item $f_c \implies f \approx 15.9\,\text{Hz}, x=1, |H| \approx \mathbf{0.7071}, \phi_H = \mathbf{-45^\circ}$. (Frecuencia de corte).
+        \item $10f_c \implies f \approx 159\,\text{Hz}, x=10, |H| \approx \mathbf{0.0995}, \phi_H \approx \mathbf{-84.29^\circ}$. (Alta atenuación).
+    \end{itemize}
+    \item \textbf{F3:} $\tilde{V}_{\text{out}} = (2\angle 0^\circ) \cdot (0.7071\angle -45^\circ) = \mathbf{1.4142\angle -45^\circ\,\text{V pico}}$. $\implies v_{\text{out}}(t) = 1.4142\cos(100t - \pi/4)\,\text{V}$.
+    \item \textbf{F4:} \textbf{No.} La frecuencia en estado estacionario AC lineal es idéntica a la entrada.
+    \item \textbf{B1:} $20\log_{10}(1) = \mathbf{0\,\text{dB}}$. $20\log_{10}(1/\sqrt{2}) \approx \mathbf{-3.01\,\text{dB}}$.
+    \item \textbf{XT1:} $|H| = 0.7071$, $\phi_H = -45^\circ$. La salida se reduce al $70.7\%$ de la amplitud y retrasa $45^\circ$.
+    \item \textbf{XT2:} Al aumentar $\omega$, el módulo $|Z_C| = \frac{1}{\omega C} \to 0$. El capacitor retiene una porción nula del voltaje del divisor frente a la resistencia $R$, atenuando la salida.
+\end{itemize}
+
+\vspace{0.2cm}
+\begin{tcolorbox}[colback=gray!5, colframe=black, title=\textbf{Rúbrica Cualitativa y Errores (Diagnóstico Formativo)}]
+\small
+\begin{itemize}
+    \item \textbf{D1/D2:} Anotan $\omega = 100\pi\,\text{Hz}$ $\implies$ Aclarar unidades físicas $\text{rad/s}$ vs $\text{Hz}$.
+    \item \textbf{I4:} Escriben $Z_C = j\omega C$. $\implies$ Recalcar que es Admitancia. Mostrar $V/I$.
+    \item \textbf{R1/R2:} Toman salida en $R$. $\implies$ Señalar nodo B físico; la salida sobre $R$ es un Pasaaltas.
+    \item \textbf{Evaluación de Cierre (XT):} Logrado si calcula $1/\sqrt{2}$ exacto, asocia retraso capacitivo y evoca $|Z_C| \to 0$.
+\end{itemize}
+\end{tcolorbox}
+
+\end{document}

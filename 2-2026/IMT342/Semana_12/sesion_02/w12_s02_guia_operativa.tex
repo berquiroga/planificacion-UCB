@@ -1,0 +1,119 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342}}
+\chead{Guía Operativa de Taller — W12-S02}
+\rhead{22 de octubre de 2026}
+\lfoot{Diagnóstico Documental ROS–ABB y Cierre Hito 2}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Guía Operativa W12-S02: Taller de Evidencia Gate 0 ROS–ABB y Cierre Operativo de Hito 2}}[cite: 16]\\[0.15cm]
+    \normalsize\textbf{Sesión:} Jueves 22 de octubre de 2026, 16:00–17:45 (105 min)[cite: 16]
+\end{center}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!80!black, title=\textbf{Regla Operativa Estricta: NO-GO para Movimiento Físico} {[cite: 16]}, left=2mm, right=2mm, top=1mm, bottom=1mm]
+    \small\raggedright
+    Esta sesión es un taller de diagnóstico documental, verificación de hipótesis y toma de decisiones; \textbf{sin movimiento físico del ABB IRB120}[cite: 16]. Este documento \textbf{no} autoriza conexiones ni accesos no aprobados[cite: 16]. El ensayo Gate 1 únicamente se diseña hoy; su futura ejecución en hardware requiere aprobación previa del responsable del laboratorio y comprobación de condiciones de seguridad[cite: 16].
+\end{tcolorbox}
+
+\section{Narrativa Técnica y Propósito de la Sesión[cite: 16]}
+En W12-S01 se compartieron los instrumentos iniciales de Gate 0, pero aún no existe evidencia documentada de una interfaz ROS–ABB operativa en el laboratorio[cite: 16]. El propósito de W12-S02 es transformar esa exploración inicial en un \textbf{diagnóstico auditable}[cite: 16]. El criterio de éxito hoy no es mover el robot, sino producir una decisión técnica verificable sobre el siguiente ensayo \textbf{sin movimiento}[cite: 16].
+
+\subsection*{Visual 1: Mapa de Evidencia del Sistema y Barrera de Autorización[cite: 16]}
+Cada equipo debe auditar la siguiente cadena identificando qué eslabón está \texttt{CONFIRMADO}, cuál sigue \texttt{PENDIENTE} y cuál resulta \texttt{INCOMPATIBLE}[cite: 16]:
+
+\begin{center}
+\begin{tikzpicture}[
+    node distance=0.5cm,
+    box/.style={rectangle, draw=ucbblue, thick, fill=ucbblue!5, text width=2.1cm, align=center, rounded corners, font=\scriptsize, minimum height=1.15cm},
+    statebox/.style={rectangle, draw=gray!80!black, fill=gray!10, rounded corners, font=\tiny, text width=2.1cm, align=center, inner sep=1.5pt},
+    cmd/.style={-Stealth, very thick, red!80!black},
+    fb/.style={-Stealth, very thick, ucbblue, dashed}
+]
+    \node[box] (n1) at (0, 0) {\textbf{1. Modelo}\\URDF / FK / IK / $J$[cite: 16]};
+    \node[box] (n2) at (2.8, 0) {\textbf{2. Entorno ROS}\\Nodos / Paquetes[cite: 16]};
+    \node[box] (n3) at (5.6, 0) {\textbf{3. Interfaz Cand.}\\Ruta A / Ruta B[cite: 16]};
+    \node[box, fill=yellow!15, draw=orange!80!black] (n4) at (8.8, 0) {\textbf{4. Controlador}\\ABB Local[cite: 16]};
+    \node[box, fill=yellow!15, draw=orange!80!black] (n5) at (11.6, 0) {\textbf{5. Estado Real}\\Observable[cite: 16]};
+    \node[box, fill=red!10, draw=red!80!black] (n6) at (14.4, 0) {\textbf{6. Movimiento}\\Físico (\textbf{NO-GO})[cite: 16]};
+
+    % Etiquetas de estado debajo de cada eslabón
+    \node[statebox] at (0, -0.95) {\texttt{CONFIRMADO /}\\ \texttt{PENDIENTE}[cite: 16]};
+    \node[statebox] at (2.8, -0.95) {\texttt{CONFIRMADO /}\\ \texttt{PENDIENTE}[cite: 16]};
+    \node[statebox] at (5.6, -0.95) {\texttt{PENDIENTE /}\\ \texttt{INCOMPATIBLE}[cite: 16]};
+    \node[statebox] at (8.8, -0.95) {\texttt{PENDIENTE}\\(Auditar hoy)[cite: 16]};
+    \node[statebox] at (11.6, -0.95) {\texttt{PENDIENTE}\\(Diseño Gate 1)[cite: 16]};
+    \node[statebox, fill=red!15, draw=red!80!black] at (14.4, -0.95) {\textbf{\texttt{NO-GO}}\\Bloqueado hoy[cite: 16]};
+
+    % Línea roja simbólica de autorización previa al hardware
+    \draw[red!80!black, line width=2pt, dashed] (7.2, 1.1) -- (7.2, -1.35);
+    \node[fill=red!10, draw=red!80!black, rounded corners, font=\tiny\bfseries, text=red!80!black, inner sep=2pt] at (7.2, 1.35) {BARRERA DE AUTORIZACIÓN LAB.[cite: 16]};
+
+    % Flechas de comando (arriba) y feedback (abajo)
+    \draw[cmd] ([yshift=2.5mm]n1.east) -- ([yshift=2.5mm]n2.west);
+    \draw[cmd] ([yshift=2.5mm]n2.east) -- ([yshift=2.5mm]n3.west);
+    \draw[cmd] ([yshift=2.5mm]n3.east) -- ([yshift=2.5mm]n4.west);
+    \draw[cmd] ([yshift=2.5mm]n4.east) -- ([yshift=2.5mm]n5.west);
+    \draw[cmd] ([yshift=2.5mm]n5.east) -- ([yshift=2.5mm]n6.west);
+
+    \draw[fb] ([yshift=-2.5mm]n5.west) -- ([yshift=-2.5mm]n4.east);
+    \draw[fb] ([yshift=-2.5mm]n4.west) -- ([yshift=-2.5mm]n3.east);
+    \draw[fb] ([yshift=-2.5mm]n3.west) -- ([yshift=-2.5mm]n2.east);
+    \draw[fb] ([yshift=-2.5mm]n2.west) -- ([yshift=-2.5mm]n1.east);
+\end{tikzpicture}
+\end{center}
+
+\section{Estructura Cronometrada del Taller (105 Minutos)[cite: 16]}
+\begin{center}
+\footnotesize
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{\textwidth}{|c|>{\hsize=0.85\hsize\raggedright\arraybackslash}X|c|>{\hsize=1.35\hsize\raggedright\arraybackslash}X|>{\hsize=0.80\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Tramo}[cite: 16] & \textbf{Actividad del Segmento}[cite: 16] & \textbf{Tiempo}[cite: 16] & \textbf{Instrucción Operativa}[cite: 16] & \textbf{Producto Verificable}[cite: 16] \\ \hline
+1 & Evidencias iniciales o ausencia de evidencia[cite: 16] & 10 min[cite: 16] & Cada equipo presenta \textbf{una} prueba fechada de investigación previa o declara explícitamente qué falta. No se aprueba Gate 0 por exposición oral[cite: 16]. & Registro: \texttt{afirmación | prueba | grado | próxima comprobación}[cite: 16]. \\ \hline
+2 & Inventario y auditoría Gate 0[cite: 16] & 25 min[cite: 16] & Completar/corregir Ficha Gate 0 (controlador, RobotWare, opciones, ROS, SO, red, ajedrez, interfaz, responsable). Señalar el \textbf{dato de mayor poder discriminante}[cite: 16]. & Ficha Gate 0 actualizada con fuentes o bloqueos documentados[cite: 16]. \\ \hline
+3 & Arquitecturas A/B y diseño de Gate 1[cite: 16] & 20 min[cite: 16] & Contrastar Ruta A y Ruta B. Diseñar la primera prueba \textbf{solo lectura} (Gate 1) definiendo permiso, origen de estado y criterios \texttt{PASS/FAIL/BLOCKED}[cite: 16]. & Matriz A/B y protocolo de ensayo Gate 1 sin ejecutar en hardware[cite: 16]. \\ \hline
+4 & Comparación cinemática offline y dualidad[cite: 16] & 20 min[cite: 16] & Fijar metadatos ($B$, $TCP$, URDF, orden, unidades), diseñar casos R1/R2/S1 y analizar diferencia finita y dualidad $\tau_{ext}=J^T F$ vs. torque dinámico[cite: 16]. & Matriz de diseño Gate 2 offline y respuestas al microejemplo[cite: 16]. \\ \hline
+5 & Resolución operativa de defensa Hito 2[cite: 16] & 20 min[cite: 16] & El docente audita entregables Hito 2 (\texttt{.ipynb} e IEEE PDF) y fija defensa o convocatoria externa. En paralelo, los equipos avanzan en Gate 0/2[cite: 16]. & Hoja docente de cierre Hito 2 con decisión o bloqueo fechados[cite: 16]. \\ \hline
+6 & Cierre, NO-GO y backlog W13[cite: 16] & 10 min[cite: 16] & Declarar \texttt{NO-GO} de movimiento físico, fijar máximo 3 tareas por equipo hacia W13 y completar el \textit{Exit Ticket} individual[cite: 16]. & Backlog W13 (máx. 3 tareas) y \textit{Exit Ticket} individual entregado[cite: 16]. \\ \hline
+\end{tabularx}
+\end{center}
+
+\section{Ejemplo Guiado 1: Trazabilidad de Compatibilidad (No Dato Real)[cite: 16]}
+Para evitar transformar una característica genérica de un repositorio en un hallazgo falso del laboratorio, aplique la siguiente separación documental[cite: 16]:
+\begin{itemize}
+    \item \textbf{Afirmación analizada:} \textit{«El driver candidato requiere la opción de controlador X»}[cite: 16].
+    \item \textbf{Soporte documental:} Archivo \texttt{README} del repositorio candidato indicando versión y sección exactas[cite: 16].
+    \item \textbf{Estado del requisito documental del driver:} \texttt{CONFIRMADO}[cite: 16].
+    \item \textbf{Estado de la opción en el controlador ABB de Tarija:} \texttt{PENDIENTE} (hasta verificar licencia/opción instalada mediante operador autorizado)[cite: 16].
+    \item \textbf{Decisión técnica sobre la interfaz:} \texttt{PENDIENTE}, sin ejecutar prueba física[cite: 16].
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,155 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage[most]{tcolorbox}
+\usepackage{enumitem}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+% ==============================================================================
+% CUADERNILLO 1: BLOQUE C-U1
+% ==============================================================================
+\lhead{\textbf{IMT-342} | Robótica}
+\chead{Recuperatorio Conjunto U1+U2 (Bloque C-U1)}
+\rhead{Sesión W14-S02}
+\lfoot{Evaluación de Unidad I}
+\rfoot{Página \thepage}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Recuperatorio Combinado — BLOQUE C-U1 (Unidad I)}}
+\end{center}
+
+\vspace{0.2cm}
+\noindent\begin{tabular}{ll}
+\textbf{Nombre:} \rule{7cm}{0.15mm} \\
+\textbf{Fecha:} \rule{4cm}{0.15mm} & \textbf{Tiempo neto C-U1:} 45 minutos
+\end{tabular}
+
+\vspace{0.3cm}
+\begin{tcolorbox}[colback=red!5, colframe=red!80!black, left=2mm, right=2mm, top=1mm, bottom=1mm]
+    \small\textbf{Advertencia de Recursos C-U1:} Escrito individual. \textbf{NO} se permite el uso de calculadora ni formulario durante este primer bloque. Este cuadernillo debe ser entregado obligatoriamente antes de recibir el Bloque C-U2.
+\end{tcolorbox}
+
+\vspace{0.3cm}
+\noindent\textbf{\large C-U1 $\cdot$ Problema 1 — Marcos y D-H (20 puntos)}
+
+Dadas las transformaciones homogéneas espaciales:
+\begin{equation*}
+    {}^0T_1=\begin{bmatrix}0&-1&0&1\\1&0&0&0\\0&0&1&0\\0&0&0&1\end{bmatrix},\qquad
+    {}^1T_2=\begin{bmatrix}1&0&0&2\\0&1&0&0\\0&0&1&0\\0&0&0&1\end{bmatrix}
+\end{equation*}
+
+\begin{enumerate}
+    \item \textbf{(4 pts)} Describa la fórmula de composición matemática correcta de los marcos para ir del origen al efector.
+    \item \textbf{(8 pts)} Calcule numéricamente la matriz ${}^0T_2$ y extraiga explícitamente su vector de posición cartesiana.
+    \item \textbf{(4 pts)} Explique geométricamente por qué ${}^1T_2{}^0T_1$ \textbf{no} es la cadena semántica correcta.
+    \item \textbf{(4 pts)} Para un eslabón (joint) revoluto que siga la convención D-H estándar, nombre la variable articular libre y declare alrededor de qué eje se produce la rotación.
+\end{enumerate}
+
+\vspace{0.4cm}
+\noindent\textbf{\large C-U1 $\cdot$ Problema 2 — Cinemática Directa y Validación (30 puntos)}
+
+Considere dos juntas revolutas planares con longitudes de eslabón $a_1=1\;\mathrm{m}$ y $a_2=2\;\mathrm{m}$, siendo sus parámetros de desplazamiento y torsión nulos ($d=\alpha=0$). La configuración instantánea a evaluar es $q_1=0$ y $q_2=\pi/2$.
+
+\begin{enumerate}
+    \item \textbf{(10 pts)} Escriba las matrices intermedias ${}^0T_1$ y ${}^1T_2$ evaluadas en dicha postura.
+    \item \textbf{(10 pts)} Obtenga la transformación total ${}^0T_2$ y separe explícitamente el vector de posición ${}^0p_2$ de la matriz de rotación ${}^0R_2$.
+    \item \textbf{(5 pts)} Verifique la plausibilidad del vector de posición utilizando trigonometría básica de eslabones planares.
+    \item \textbf{(5 pts)} Suponga que un simulador reporta que para este mismo robot existe otra postura tal que la norma euclidiana del efector resulta ser $\|p\| = 4\;\mathrm{m}$. ¿Puede ser correcta esta afirmación? Justifique físicamente.
+\end{enumerate}
+
+\begin{center}
+    \textbf{--- FIN DEL BLOQUE C-U1 (ENTREGAR PARA PASAR A C-U2) ---}
+\end{center}
+
+\newpage
+% ==============================================================================
+% CUADERNILLO 2: BLOQUE C-U2 (Se entrega tras recoger C-U1)
+% ==============================================================================
+\setcounter{page}{1}
+\lhead{\textbf{IMT-342} | Robótica}
+\chead{Recuperatorio Conjunto U1+U2 (Bloque C-U2)}
+\rhead{Sesión W14-S02}
+\lfoot{Evaluación de Unidad II}
+\rfoot{Página \thepage}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Recuperatorio Combinado — BLOQUE C-U2 (Unidad II)}}
+\end{center}
+
+\vspace{0.2cm}
+\noindent\begin{tabular}{ll}
+\textbf{Nombre:} \rule{7cm}{0.15mm} \\
+\textbf{Fecha:} \rule{4cm}{0.15mm} & \textbf{Tiempo neto C-U2:} 45 minutos
+\end{tabular}
+
+\vspace{0.3cm}
+\begin{tcolorbox}[colback=green!5, colframe=green!50!black, left=2mm, right=2mm, top=1mm, bottom=1mm]
+    \small\textbf{Recursos Habilitados para C-U2:} Para la resolución de este segundo bloque \textbf{SÍ} se autoriza emplear la calculadora científica no programable y consultar el formulario impreso EC2 existente. Mostrar todo el razonamiento; respuestas huérfanas pierden el crédito.
+\end{tcolorbox}
+
+\vspace{0.3cm}
+\noindent\textbf{\large C-U2 $\cdot$ Problema 3 — Cinemática Inversa (IK) y Jacobiano (25 puntos)}
+
+Un modelo cinemático de muñeca esférica indica que el objetivo y la geometría son:
+\begin{equation*}
+    p_6^d = \begin{bmatrix} 0.80 \\ 0.40 \\ 1.00 \end{bmatrix}\mathrm{m}, \qquad z_6^d = \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}, \qquad d_6 = 0.20\;\mathrm{m}
+\end{equation*}
+
+\begin{enumerate}
+    \item \textbf{(5 pts)} Halle el vector cartesiano que define el centro de muñeca ($p_W$).
+    \item \textbf{(5 pts)} Si en el análisis del brazo se llega a la expresión $\cos q_3 = 0$, halle las \textbf{dos ramas principales} del ángulo $q_3$ e indique conceptualmente qué se debe realizar para verificar si una solución completa de IK es correcta.
+\end{enumerate}
+
+Para un submodelo planar separado, se conocen los orígenes de marco respecto a la base:
+\begin{equation*}
+    o_0 = \begin{bmatrix} 0 \\ 0 \\ 0 \end{bmatrix},\quad o_1 = \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix},\quad o_n = \begin{bmatrix} 1 \\ 1 \\ 0 \end{bmatrix} \;[\mathrm{m}],\qquad z_0 = z_1 = \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}
+\end{equation*}
+
+\begin{enumerate}
+    \setcounter{enumi}{2}
+    \item \textbf{(9 pts)} Construya el Jacobiano geométrico correspondiente a las dos juntas revolutas y calcule la velocidad del efector ($v_e$) ante el vector de excitación articular $\dot{\mathbf{q}} = [1, -1]^T\;\mathrm{rad/s}$.
+    \item \textbf{(6 pts)} Suponga que en otro instante distinto, se mide una matriz traslacional $J_p = \begin{bmatrix} 1 & 2 \\ 1 & 2 \end{bmatrix}$. Indique el rango numérico de la matriz, confirme si representa una singularidad y provea un vector cartesiano que señale una dirección de movimiento perdida.
+\end{enumerate}
+
+\vspace{0.4cm}
+\noindent\textbf{\large C-U2 $\cdot$ Problema 4 — LSPB y Dinámica 1R (25 puntos)}
+
+Una articulación es comandada a partir de $q_i = 0$ hasta alcanzar $q_f = 1\;\mathrm{rad}$ garantizando un reposo absoluto en ambos extremos. El tiempo otorgado es $t_f = 4\;\mathrm{s}$ y se ha programado una aceleración nominal de diseño $\ddot{q}_c = 0.50\;\mathrm{rad/s^2}$.
+
+\begin{enumerate}
+    \item \textbf{(5 pts)} Compruebe rigurosamente la factibilidad física del perfil propuesto, calcule el tiempo de mezcla ($t_c$) y determine la velocidad de crucero.
+    \item \textbf{(7 pts)} Evalúe y detalle los tres estados cinemáticos ($q, \dot{q}, \ddot{q}$) exactamente en el instante de tiempo $t = 3.5\;\mathrm{s}$, declarando primero la fase en la cual se halla el robot.
+\end{enumerate}
+
+Para el modelo de articulación simple (1R) dictado en clase, se cuenta con:
+\begin{equation*}
+    T = \frac{1}{2}J\dot{q}^2, \qquad V = mg\ell_c(1 - \cos q)
+\end{equation*}
+
+\begin{enumerate}
+    \setcounter{enumi}{2}
+    \item \textbf{(7 pts)} Demuestre analíticamente el proceso de cálculo de las derivadas de Euler-Lagrange que concluyen en la ecuación de torque de actuador: $\tau = J\ddot{q} + mg\ell_c\sin q$.
+    \item \textbf{(6 pts)} Calcule numéricamente el torque inercial, el torque gravitatorio y el requerimiento de torque total en el actuador, para el estado instantáneo $q = \pi/2$ con $\ddot{q} = 0$, bajo los siguientes parámetros del eslabón: $J = 0.2\;\mathrm{kg\cdot m^2}$, $m = 1\;\mathrm{kg}$, $\ell_c = 0.5\;\mathrm{m}$ y gravedad local $g = 10\;\mathrm{m/s^2}$. Explique físicamente por qué una aceleración instantánea nula no exime al motor de requerir entrega de torque.
+\end{enumerate}
+
+\begin{center}
+    \textbf{--- FIN DEL BLOQUE C-U2 (FIN DE LA EVALUACIÓN) ---}
+\end{center}
+
+\end{document}

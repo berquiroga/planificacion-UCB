@@ -1,0 +1,195 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342} | \textbf{CONFIDENCIAL}}
+\chead{Solucionario y Puntuación: Recuperatorio U1/U2 (W14-S02)}
+\rhead{Uso Exclusivo Docente}
+\lfoot{Guía de Calificación Equitativa}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{red!80!black}{SOLUCIONARIO CONFIDENCIAL Y GUÍA DE CORRECCIÓN}}\\[0.15cm]
+    \normalsize \textbf{Recuperatorio U1 / U2 — Sesión W14-S02}[cite: 16]
+\end{center}
+
+\begin{tcolorbox}[colback=yellow!10, colframe=black, title=\textbf{Reglas de Parcialidad y Equidad} {[cite: 16]}, left=2mm, right=2mm, top=1mm, bottom=1mm]
+    \scriptsize\raggedright
+    \begin{itemize}\setlength{\itemsep}{1pt}
+        \item Puntuar el \textbf{razonamiento visible} en cada apartado; no exigir exactamente la misma ruta algebraica que este solucionario[cite: 16].
+        \item Conservar el crédito de un método correcto si se usa un valor erróneo arrastrado (salvo que implique una violación geométrica que el estudiante ignore)[cite: 16].
+        \item No premiar el resultado final huérfano (sin desarrollo) cuando se exige derivación[cite: 16]. No equiparar matriz ortonormal con rotación válida sin prueba.
+        \item No sumar las Variantes A/B/C sobre la misma escala sin aplicar la normalización respectiva (/100 o /50 $\times$ 2)[cite: 16].
+    \end{itemize}
+\end{tcolorbox}
+
+\section*{VARIANTE A — Solución y Puntuación (100 pts)[cite: 16]}
+
+\textbf{A1 (25 pts)[cite: 16]}
+\begin{enumerate}\footnotesize
+    \item \textbf{(6)} Ecuación: ${}^0T_2 = {}^0T_1 {}^1T_2$. Explicación: Los índices contiguos internos (el \textit{1}) ligan el origen del espacio vector local del primero con el sistema referencial externo del segundo[cite: 16]. (Ecuación 4 pts, explicación 2 pts).
+    \item \textbf{(9)} Operando, la matriz resultante es:
+    \begin{equation*}
+        {}^0T_2 = \begin{bmatrix} 0 & -1 & 0 & 1 \\ 1 & 0 & 0 & 4 \\ 0 & 0 & 1 & 1 \\ 0 & 0 & 0 & 1 \end{bmatrix} \implies {}^0p_2 = \begin{bmatrix} 1 \\ 4 \\ 1 \end{bmatrix} \text{[cite: 16]}
+    \end{equation*}
+    (Matriz 2 pts, Orientación 3 pts, Traslación operada $R_z(\pi/2)[2,0,1]^T + [1,2,0]^T$ 4 pts).
+    \item \textbf{(6)} Inversión matricial por bloques homogéneos: $R^T$ y $-R^T p$[cite: 16].
+    \begin{equation*}
+        {}^1T_0 = \begin{bmatrix} 0 & 1 & 0 & -2 \\ -1 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix} \text{[cite: 16]}
+    \end{equation*}
+    (Rotación 2 pts, vector $-R^Tp$ 3 pts, montaje 1 pt).
+    \item \textbf{(4)} Falso. La multiplicación matricial matricial no es conmutativa y el orden obedece a las proyecciones geométricas (secuencia física de las juntas), no a que sean "rígidas"[cite: 16]. (Identificar falso 2 pts, argumento físico/matemático 2 pts).
+\end{enumerate}
+
+\textbf{A2 (20 pts)[cite: 16]}
+\begin{enumerate}\footnotesize
+    \item \textbf{(6)} $\theta$: rotación en torno a $z_{i-1}$; $d$: traslación a lo largo de $z_{i-1}$; $a$: traslación a lo largo de $x_i$; $\alpha$: rotación en torno a $x_i$[cite: 16]. (1.5 pts por cada uno).
+    \item \textbf{(8)} La matriz de transformación simbólica construida es ($c = \cos q_i, s = \sin q_i$):
+    \begin{equation*}
+        {}^{i-1}T_i(q_i) = \begin{bmatrix} c & -s & 0 & \ell c \\ s & c & 0 & \ell s \\ 0 & 0 & 1 & h \\ 0 & 0 & 0 & 1 \end{bmatrix} \text{[cite: 16]}
+    \end{equation*}
+    (Estructura/trigonometría 3 pts, bloque rotación 3 pts, traslación 2 pts).
+    \item \textbf{(4)} Evaluando en $q_i = \pi/2$ (con $c=0, s=1$):
+    \begin{equation*}
+        {}^{i-1}T_i = \begin{bmatrix} 0 & -1 & 0 & 0 \\ 1 & 0 & 0 & \ell \\ 0 & 0 & 1 & h \\ 0 & 0 & 0 & 1 \end{bmatrix} \text{[cite: 16]}
+    \end{equation*}
+    \item \textbf{(2)} $\theta = q_i$ es la variable libre, porque es una junta revoluta y su geometría implica desplazamiento rotacional; el resto ($d$) queda fijo[cite: 16].
+\end{enumerate}
+
+\textbf{A3 (40 pts)[cite: 16]}
+\begin{enumerate}\footnotesize
+    \item \textbf{(12)} Matrices individuales:
+    \begin{equation*}
+        {}^0T_1 = \begin{bmatrix} 0 & -1 & 0 & 0 \\ 1 & 0 & 0 & 2 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}, \qquad {}^1T_2 = \begin{bmatrix} 0 & 1 & 0 & 0 \\ -1 & 0 & 0 & -1 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix} \text{[cite: 16]}
+    \end{equation*}
+    (6 pts por cada una).
+    \item \textbf{(12)} Producto matricial:
+    \begin{equation*}
+        {}^0T_2 = \begin{bmatrix} 1 & 0 & 0 & 1 \\ 0 & 1 & 0 & 2 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix} \text{[cite: 16]}
+    \end{equation*}
+    (Rotación 4 pts, traslación 5 pts, cálculo 3 pts).
+    \item \textbf{(8)} $p = [1, 2, 0]^T$ y $R = I$ ($3 \times 3$ identidad). Significan, respectivamente, la ubicación espacial del origen del marco 2 y la postura angular relativa de la brida, ambas medidas desde el marco 0 de referencia universal[cite: 16]. (4 + 4 pts).
+    \item \textbf{(8)} Comprobaciones sugeridas: $x = 2\cos(\pi/2) + 1\cos(0) = 0 + 1 = 1$; $y = 2\sin(\pi/2) + 1\sin(0) = 2 + 0 = 2$. Orientación global $q_1+q_2 = \pi/2 - \pi/2 = 0 \implies R_z(0) = I$. (Aceptables alcance euclidiano $R < 3$). (4 + 4 pts).
+\end{enumerate}
+
+\textbf{A4 (15 pts)[cite: 16]}
+\begin{enumerate}\footnotesize
+    \item \textbf{(7)} Imposible. La cota máxima que puede extender la máquina es $\|p\| \le a_1 + a_2 = 3\;\mathrm{m}$. Como exige alcanzar un radio de $4\;\mathrm{m}$, es estructuralmente inalcanzable[cite: 16]. (Cota 3 pts, cálculo de norma 2 pts, conclusión física 2 pts).
+    \item \textbf{(8)} No. Toda rotación pura ortonormal debe cumplir $R^T R = I$ y $\det(R) = +1$. La matriz mostrada tiene columnas no unitarias (ej. la primera columna $[0,2,0]^T$ posee norma 2) y su determinante es $2 \neq 1$[cite: 16]. (Demostración de al menos una propiedad vulnerada, 8 pts).
+\end{enumerate}
+
+\vspace{0.3cm}
+\hrule
+\vspace{0.3cm}
+
+\section*{VARIANTE B — Solución y Puntuación (100 pts)[cite: 16]}
+
+\textbf{B1 (20 pts)[cite: 16]}
+\begin{enumerate}\footnotesize
+    \item \textbf{(5)} Cálculo del centro de muñeca:
+    \begin{equation*}
+        p_W = p_6^d - d_6 z_6^d = \begin{bmatrix} 1.00 \\ -0.60 \\ 1.10 \end{bmatrix} - 0.15 \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix} = \begin{bmatrix} 1.00 \\ -0.60 \\ 0.95 \end{bmatrix}\mathrm{m} \text{[cite: 16]}
+    \end{equation*}
+    (Cálculo 3 pts). No coincide porque existe un offset/longitud axial constructiva $d_6$ para montar la herramienta sobre el propio origen cinemático del mecanismo esférico 3D (2 pts)[cite: 16].
+    \item \textbf{(4)} $q_1 = \operatorname{atan2}(-0.60, 1.00) \approx -0.5404\;\mathrm{rad}$[cite: 16]. (Fórmula 2 pts, cálculo 2 pts).
+    \item \textbf{(6)} Empleando la identidad trigonométrica $\sin q_3 = \pm\sqrt{1 - (-1/2)^2} = \pm\sqrt{3}/2$. Las dos ramas son $q_3 = \pm 2\pi/3$[cite: 16]. Se conservan porque ambas logran el alcance del punto interno, pero derivan en configuraciones de postura de codo distintas que requieren discriminación para evadir colisiones (4 pts cálculos, 2 pts razonamiento)[cite: 16].
+    \item \textbf{(5)} Desacople: ${}^3R_6 = ({}^0R_3)^T {}^0R_6^d$ (2 pts)[cite: 16]. La validación (FK) no se conforma con revisar la posición espacial sino con verificar que toda la matriz homogenea ${}^0T_6(\mathbf{q}^{(k)})$ reproduzca simultáneamente los requerimientos del $TCP$ en las tolerancias requeridas (3 pts)[cite: 16].
+\end{enumerate}
+
+\textbf{B2 (25 pts)[cite: 16]}
+\begin{enumerate}\footnotesize
+    \item \textbf{(10)} Vector relativo $r_1 = o_n - o_0 = [1, 2, 0]^T$. Velocidad 1: $z_0 \times r_1 = [-2, 1, 0]^T \implies J_1 = [-2, 1, 0, 0, 0, 1]^T$[cite: 16]. Vector relativo $r_2 = o_n - o_1 = [0, 2, 0]^T$. Velocidad 2: $z_1 \times r_2 = [-2, 0, 0]^T \implies J_2 = [-2, 0, 0, 0, 0, 1]^T$[cite: 16]. Ensamblaje:
+    \begin{equation*}
+        J = \begin{bmatrix} -2 & -2 \\ 1 & 0 \\ 0 & 0 \\ 0 & 0 \\ 0 & 0 \\ 1 & 1 \end{bmatrix} \text{[cite: 16]}
+    \end{equation*}
+    (Brazos de palanca 3 pts, prod. cruz 4 pts, ensamblaje 3 pts).
+    \item \textbf{(6)} $v_e = J \dot{\mathbf{q}} = [0, 0.5, 0, 0, 0, 0]^T$. Muestra una cancelación algebraica perfecta de la velocidad angular de giro total de la brida ($\omega_z = 0.5 - 0.5 = 0$) pese a que ambos motores operan sincrónicamente (Producto 3 pts, extracción angular 1 pt, interpretación de cancelación física 2 pts)[cite: 16].
+    \item \textbf{(9)} La fila dos es escalarmente proporcional, por lo que el rango es 1 (2 pts)[cite: 16]. Es una configuración singular ante tareas del plano $xy$ (2 pts)[cite: 16]. El espacio está sobre el vector $[2, -1]^T$. Una dirección ortogonal inaccesible para $v_e$ sería $[1, 2]^T$ o sus normalizados (2 pts)[cite: 16]. Si la máquina posee este déficit de rango, significa que ha perdido grados de movilidad selectiva en un eje transversal, pero puede moverse ágilmente siguiendo su espacio remanente paralelo al brazo extendido (3 pts)[cite: 16].
+\end{enumerate}
+
+\textbf{B3 (25 pts)[cite: 16]}
+\begin{enumerate}\footnotesize
+    \item \textbf{(5)} Desplazamiento de red: $\Delta q = 1.0\;\mathrm{rad}$. Aceleración mínima de seguridad es $a_{min} = \frac{4(1.0)}{16} = 0.25\;\mathrm{rad/s^2}$. Como $0.50 \ge 0.25$, es plenamente factible[cite: 16].
+    \item \textbf{(7)} $t_c = \frac{4}{2} - \frac{1}{2}\sqrt{16 - \frac{4(1)}{0.5}} = 2 - \sqrt{2} \approx 0.585786\;\mathrm{s}$[cite: 16]. La velocidad de crucero tope es $v_c = 0.5(2-\sqrt{2}) \approx 0.292893\;\mathrm{rad/s}$[cite: 16]. Las tres fases delimitadas operan entre $[0, t_c]$, $(t_c, 4-t_c]$ y $(4-t_c, 4]$ (aprox. $0.58\mathrm{s}$ y $3.41\mathrm{s}$) (Tiempo 3 pts, Vel. 2 pts, Intervalos 2 pts)[cite: 16].
+    \item \textbf{(8)} Instante $t = 3.50\;\mathrm{s} > 4 - t_c \approx 3.414\;\mathrm{s} \implies$ Desaceleración en freno[cite: 16].
+    \begin{align*}
+        q(3.5) &= 1.20 - \frac{1}{2}(0.5)(4 - 3.5)^2 = 1.20 - 0.0625 = 1.1375\;\mathrm{rad} \text{[cite: 16]} \\
+        \dot{q}(3.5) &= 0.5(4 - 3.5) = 0.25\;\mathrm{rad/s}, \qquad \ddot{q}(3.5) = -0.50\;\mathrm{rad/s^2} \text{[cite: 16]}
+    \end{align*}
+    (Fase 2 pts, $q$ 3 pts, $\dot{q}$ 2 pts, $\ddot{q}$ 1 pt).
+    \item \textbf{(5)} Que se tenga $\ddot{q} = 0$ obliga a las ecuaciones de Euler a sostener velocidad angular constante, pero no detiene el actuador en su recorrido espacial, está transcurriendo la curva máxima[cite: 16]. El adjetivo "Trapezoidal" se aplica a la integral del perfil, es decir la derivada de la posición $\dot{q}(t)$ (2 pts $+ 3$ pts)[cite: 16].
+\end{enumerate}
+
+\textbf{B4 (30 pts)[cite: 16]}
+\begin{enumerate}\footnotesize
+    \item \textbf{(12)} $L = \frac{1}{2}J\dot{q}^2 - mg\ell_c(1-\cos q)$. Sus derivadas componentes resultan: $\frac{\partial L}{\partial \dot{q}} = J\dot{q} \implies \frac{d}{dt} = J\ddot{q}$, y $\frac{\partial L}{\partial q} = -mg\ell_c\sin q$[cite: 16]. Sustituyendo el signo algebraico: $\tau = J\ddot{q} + mg\ell_c\sin q$ (Derivadas 6 pts, Montaje y balance 6 pts)[cite: 16].
+    \item \textbf{(8)} $\tau_I = 0.25(-1) = -0.25\;\mathrm{N\cdot m}$ (2 pts). $\tau_g = 1(10)(0.40)\sin(\pi/6) = 2.0\;\mathrm{N\cdot m}$ (3 pts). Suma total $= 1.75\;\mathrm{N\cdot m}$ (3 pts)[cite: 16].
+    \item \textbf{(5)} Es una afirmación completamente falsa. Incluso sin movimiento cinético inercial ($\ddot{q}=0$), la compensación por gravedad es constante en las posturas no colgantes (ej. $\pi/2$), lo cual dictamina sostener el mecanismo mediante consumo continuo del servo o bloqueos de freno $mg\ell_c \neq 0$[cite: 16]. (Planteo 1 pt, Refutación 4 pts).
+    \item \textbf{(5)} (Integración modular) La pose permite resolver la IK, cuyos candidatos se envían a la FK para discriminar falsas alarmas y validar. Luego, el plan de trayectoria (LSPB) genera la aceleración que excita a la sub-rutina de Euler-Lagrange, y el Jacobiano asiste midiendo perfiles de singularidad.
+\end{enumerate}
+
+\vspace{0.3cm}
+\hrule
+\vspace{0.3cm}
+
+\section*{VARIANTE C — Solución y Puntuación (100 pts integrados)[cite: 16]}
+\textit{Se corrigen los dos bloques independientes por 50 puntos cada uno, multiplicando la nota obtenida por 2, de forma que el registro administrativo califique U1 sobre 100 y U2 sobre 100 por separado.}
+
+\subsection*{C-U1 (50 pts)[cite: 16]}
+\textbf{Problema 1 (20 pts)[cite: 16]}
+\begin{enumerate}\footnotesize
+    \item \textbf{(4)} Composición: ${}^0T_2 = {}^0T_1 {}^1T_2$ por la regla de asociación encadenada de índices[cite: 16].
+    \item \textbf{(8)} \begin{equation*}
+        {}^0T_2 = \begin{bmatrix} 0 & -1 & 0 & 1 \\ 1 & 0 & 0 & 2 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix} \implies p = \begin{bmatrix} 1 \\ 2 \\ 0 \end{bmatrix} \text{[cite: 16]}
+    \end{equation*}
+    (Orientación 3 pts, posición extra 3 pts, ensamblado 2 pts).
+    \item \textbf{(4)} Las matrices de giro no conmutan; la premisa altera el anclaje físico de la medición[cite: 16].
+    \item \textbf{(4)} En D-H la variable libre para un brazo revoluto es su torsión mecánica $\theta_i = q_i$, y su giro se estipula en torno al vector referencial local $z_{i-1}$ anterior[cite: 16].
+\end{enumerate}
+\textbf{Problema 2 (30 pts)[cite: 16]}
+\begin{enumerate}\footnotesize
+    \item \textbf{(10)} Para los valores de D-H presentados y posturas nulas/ortogonales:
+    \begin{equation*}
+        {}^0T_1 = \begin{bmatrix} 1 & 0 & 0 & 1 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}, \qquad {}^1T_2 = \begin{bmatrix} 0 & -1 & 0 & 0 \\ 1 & 0 & 0 & 2 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix} \text{[cite: 16]}
+    \end{equation*}
+    \item \textbf{(10)} El resultado es: ${}^0T_2 = \begin{bmatrix} 0 & -1 & 0 & 1 \\ 1 & 0 & 0 & 2 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}$ (4+4+2).
+    \item \textbf{(5)} Si el brazo está tendido $x = 1\cos(0) + 2\cos(\pi/2) = 1$, $y = 1\sin(0) + 2\sin(\pi/2) = 2$[cite: 16].
+    \item \textbf{(5)} Físicamente irreal. El vector alcance máximo de elongación del diseño acotado exige $\|p\| \le 1 + 2 = 3\;\mathrm{m} < 4\;\mathrm{m}$[cite: 16].
+\end{enumerate}
+
+\subsection*{C-U2 (50 pts)[cite: 16]}
+\textbf{Problema 3 (25 pts)[cite: 16]}
+\begin{enumerate}\footnotesize
+    \item \textbf{(5)} $p_W = [0.80, 0.40, 1.00]^T - 0.20[0,0,1]^T = [0.80, 0.40, 0.80]^T\;\mathrm{m}$[cite: 16].
+    \item \textbf{(5)} Si $\cos q_3 = 0$, el seno puede ser $\pm 1$. Por ende las ramas radican en $q_3 = \pm \pi/2$. Se necesita validar la matriz completa inyectando todas en el simulador cinemático (FK)[cite: 16].
+    \item \textbf{(9)} $J_1 = [-1, 1, 0, 0, 0, 1]^T$, $J_2 = [-1, 0, 0, 0, 0, 1]^T$. La velocidad $v_e = J\dot{\mathbf{q}} = [0, 1, 0, 0, 0, 0]^T$ (Construcción 6 pts, Velocidad 3 pts)[cite: 16].
+    \item \textbf{(6)} Rango$=1$, diagnosticando singularidad plana. Columnas dependientes, dirección cartesianamente extraviada es $[1, -1]^T$ o múltiplo análogo (2+2+2 pts)[cite: 16].
+\end{enumerate}
+\textbf{Problema 4 (25 pts)[cite: 16]}
+\begin{enumerate}\footnotesize
+    \item \textbf{(5)} Aceleración umbral admisible $a_{\min} = 4(1)/16 = 0.25 \le 0.50 \implies$ factible. $t_c = 2 - \sqrt{2} \approx 0.5858\;\mathrm{s}$ y velocidad máxima crucero $\approx 0.2929\;\mathrm{rad/s}$[cite: 16].
+    \item \textbf{(7)} $t = 3.5 \implies$ fase de frenado de deceleración.
+    $q = 1 - 0.25(0.5)^2 = 0.9375\;\mathrm{rad}$. $\dot{q} = 0.25\;\mathrm{rad/s}$ y la aceleración es obligadamente $\ddot{q} = -0.50\;\mathrm{rad/s^2}$ (Desglose 2+2+2+1 pts)[cite: 16].
+    \item \textbf{(7)} Se desarrolla como en la variante B, integrando signos de $L$ hasta lograr el balance: $\tau = J\ddot{q} + mg\ell_c\sin q$ (Pasos 5 pts, conclusión 2 pts)[cite: 16].
+    \item \textbf{(6)} $\tau_I = 0$, gravedad $= 1(10)(0.5)\sin(\pi/2) = 5.0\;\mathrm{N\cdot m}$. La posición ortogonal demanda retener la plomada de peso permanentemente pese a no registrar movimiento (Fuerzas 1+2+1 pts, refutación conceptual física 2 pts)[cite: 16].
+\end{enumerate}
+
+\end{document}

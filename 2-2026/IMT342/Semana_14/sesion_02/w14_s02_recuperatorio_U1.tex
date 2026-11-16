@@ -1,0 +1,101 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage[most]{tcolorbox}
+\usepackage{enumitem}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342} | Robótica}
+\chead{Recuperatorio Exclusivo — Unidad I (Variante A)}
+\rhead{Sesión W14-S02}
+\lfoot{Evaluación Individual}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Recuperatorio de Unidad I (Variante A)}}
+\end{center}
+
+\vspace{0.2cm}
+\noindent\begin{tabular}{ll}
+\textbf{Nombre:} \rule{7cm}{0.15mm} \\
+\textbf{Fecha:} \rule{4cm}{0.15mm} & \textbf{Tiempo neto:} 90 minutos
+\end{tabular}
+
+\vspace{0.3cm}
+\begin{tcolorbox}[colback=red!5, colframe=red!80!black, left=2mm, right=2mm, top=1mm, bottom=1mm]
+    \small\textbf{Condiciones:} Escrito individual. \textbf{NO} se permite el uso de calculadora ni formulario. Se utiliza la convención Denavit-Hartenberg (D-H) estándar. Debe mostrar todos los pasos; resultados sin procedimiento reciben crédito parcial. Ángulos en radianes; distancias en metros.
+\end{tcolorbox}
+
+\vspace{0.4cm}
+\noindent\textbf{\large A1 — Marcos y auditoría de transformaciones (25 puntos)}
+
+Se dan las siguientes transformaciones homogéneas:
+\begin{equation*}
+    {}^0T_1=\begin{bmatrix}0&-1&0&1\\1&0&0&2\\0&0&1&0\\0&0&0&1\end{bmatrix},\qquad
+    {}^1T_2=\begin{bmatrix}1&0&0&2\\0&1&0&0\\0&0&1&1\\0&0&0&1\end{bmatrix} \text{}
+\end{equation*}
+
+\begin{enumerate}
+    \item \textbf{(6 pts)} Escriba la cadena matemática correcta para calcular ${}^0T_2$ y explique por qué el orden de multiplicación tiene un significado físico estricto.
+    \item \textbf{(9 pts)} Obtenga la matriz ${}^0T_2$ e identifique la posición del origen del marco 2 expresada en el marco 0.
+    \item \textbf{(6 pts)} Calcule ${}^1T_0$ utilizando las propiedades de la estructura de transformaciones homogéneas (se prohíbe la inversión matricial genérica $4\times 4$).
+    \item \textbf{(4 pts)} Evalúe y justifique la siguiente afirmación: \textit{«${}^0T_1{}^1T_2$ y ${}^1T_2{}^0T_1$ son intercambiables porque ambas matrices representan transformaciones rígidas»}.
+\end{enumerate}
+
+\vspace{0.4cm}
+\noindent\textbf{\large A2 — D-H estándar (20 puntos)}
+
+Una junta revoluta posee los parámetros $\theta_i=q_i$, $d_i=h$, $a_i=\ell$, $\alpha_i=0$, con constantes $h, \ell > 0$.
+
+\begin{enumerate}
+    \item \textbf{(6 pts)} Explique físicamente a qué ejes y desplazamientos corresponden $\theta_i, d_i, a_i, \alpha_i$ en la convención D-H estándar.
+    \item \textbf{(8 pts)} Construya la matriz de transformación homogénea ${}^{i-1}T_i(q_i)$ en su forma simbólica.
+    \item \textbf{(4 pts)} Evalúe numéricamente la matriz obtenida para la configuración $q_i = \pi/2$.
+    \item \textbf{(2 pts)} Identifique qué parámetro exacto es la variable articular en este caso y por qué.
+\end{enumerate}
+
+\vspace{0.4cm}
+\noindent\textbf{\large A3 — Cinemática Directa (FK) de un manipulador 2R planar (40 puntos)}
+
+Considere un manipulador 2R con $a_1=2$, $a_2=1$, ambas articulaciones son revolutas operando en torno al eje $z$. Parámetros D-H estándar: $d_1=d_2=0$, $\alpha_1=\alpha_2=0$, $\theta_1=q_1$, $\theta_2=q_2$. El robot se encuentra en la configuración: $q_1=\pi/2$, $q_2=-\pi/2$.
+
+\begin{enumerate}
+    \item \textbf{(12 pts)} Obtenga las matrices individuales ${}^0T_1$ y ${}^1T_2$ numéricamente.
+    \item \textbf{(12 pts)} Calcule la matriz total ${}^0T_2$, mostrando la composición explícita de orientación y posición.
+    \item \textbf{(8 pts)} Escriba los componentes separados ${}^0p_2$ y ${}^0R_2$, indicando qué representa físicamente cada uno.
+    \item \textbf{(8 pts)} Proponga y ejecute \textbf{dos verificaciones independientes} de plausibilidad geométrica para su resultado (ej. análisis de alcance máximo, composición visual de rotaciones, o ecuaciones trigonométricas puras de posición plana).
+\end{enumerate}
+
+\vspace{0.4cm}
+\noindent\textbf{\large A4 — Diagnóstico Crítico (15 puntos)}
+
+Un estudiante plantea el caso de un manipulador planar 2R compuesto por eslabones de longitudes $a_1 = 2\;\mathrm{m}$ y $a_2 = 1\;\mathrm{m}$. Afirma que el efector final ha alcanzado la posición $p = [0, 4, 0]^T\;\mathrm{m}$ y reporta la siguiente matriz de orientación para el efector:
+\begin{equation*}
+    R = \begin{bmatrix} 0 & -1 & 0 \\ 2 & 0 & 0 \\ 0 & 0 & 1 \end{bmatrix} \text{}
+\end{equation*}
+
+\begin{enumerate}
+    \item \textbf{(7 pts)} ¿Puede alcanzar físicamente el efector esa posición cartesiana? Fundamente su respuesta mediante el cálculo de una cota geométrica estructural.
+    \item \textbf{(8 pts)} ¿Puede la matriz $R$ reportada representar una rotación rígida válida en $SO(3)$? Demuestre algebraicamente \textbf{al menos una condición matemática} obligatoria que incumple; no basta con emitir una opinión conceptual.
+\end{enumerate}
+
+\begin{center}
+    \textbf{--- FIN DEL EXAMEN ---}
+\end{center}
+
+\end{document}

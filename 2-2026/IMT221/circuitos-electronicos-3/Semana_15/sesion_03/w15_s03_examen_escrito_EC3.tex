@@ -1,0 +1,202 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table]{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, calc, patterns}
+\usepackage[margin=1.6cm]{geometry}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\emergencystretch=2em
+\tolerance=1000
+\hbadness=10000
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{ucbgray}{RGB}{240, 244, 248}
+\definecolor{warnred}{RGB}{180, 20, 20}
+
+\newcommand{\workbox}[1]{%
+    \par\vspace{0.18cm}\noindent
+    \begin{tikzpicture}
+        \draw[draw=ucbblue!45, thick, rounded corners=3pt] (0,0) rectangle (\linewidth, #1);
+        \foreach \y in {0.7, 1.4, ..., #1} {
+            \draw[ucbblue!18, dashed] (0.25, \y) -- (\linewidth-0.25, \y);
+        }
+        \node[anchor=north west, font=\scriptsize\itshape, text=ucbblue!70] at (0.2, #1-0.08) {Espacio de desarrollo, ecuaciones, unidades e interpretación física:};
+    \end{tikzpicture}\par\vspace{0.2cm}%
+}
+
+\begin{document}
+
+\noindent
+{\LARGE \textbf{\textcolor{ucbblue}{IMT-221 — Circuitos Electrónicos III}}}\\[0.12cm]
+{\Large \textbf{Evaluación Escrita Individual EC3 — Cuadernillo para Estudiante (Variante A)}}\\[0.08cm]
+{\small \textbf{Sesión confirmada por el docente:} W15S03 — viernes 13 de noviembre de 2026}
+\par\vspace{0.15cm}\noindent\rule{\linewidth}{0.6pt}\vspace{0.15cm}
+
+\noindent
+\textbf{Nombre:} \rule{6.2cm}{0.4pt} \textbf{Fecha:} 13/11/2026\\[0.2cm]
+ \quad \textbf{Turno / Aula:} \rule{4.2cm}{0.4pt} \quad \textbf{Calificación (sobre 40 pt):} \rule{2.4cm}{0.4pt}
+
+\vspace{0.15cm}
+\noindent
+\fcolorbox{warnred}{ucbgray}{%
+\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{%
+\textbf{Duración de resolución:} 75 minutos (dentro de una sesión de 90 min). \quad \textbf{Puntaje interno:} 40 puntos.\\
+\textbf{\textcolor{warnred}{Modalidad aprobada: SIN CALCULADORA.}} \quad \textbf{Formulario:} incluido al final de este mismo cuadernillo.\\
+No se permite consultar fichas externas ni dispositivos electrónicos; cualquier ajuste institucional debe comunicarse antes del examen.
+}}
+
+\vspace{0.15cm}
+\noindent
+\textbf{Instrucciones:} Puede consultar el formulario incluido al final de este cuadernillo; dibuje e identifique los nodos cuando corresponda; declare modelo e hipótesis; presente ecuación, sustitución, unidades y explicación física. El crédito parcial considera el razonamiento. \textbf{Todos los parámetros ficticios son datos hipotéticos del ejercicio, NO especificaciones comerciales.} No se requiere construir ni usar LTspice.
+
+\par\vspace{0.15cm}\noindent\rule{\linewidth}{0.4pt}
+
+\section*{Problema 1 — Diagnóstico de un interruptor low-side (12 puntos; 20 min)}
+
+Un NMOS ficticio conmuta una carga resistiva equivalente de $\mathbf{9\,\Omega}$ entre el positivo de un bus $\mathbf{10\,\text{V}}$ \textbf{DC} y su drenador D; la fuente S está a GND del bus. Durante ON se ha \textbf{declarado válido}, únicamente para el ejercicio, $R_{DS(\text{on})} = 1\,\Omega$; durante OFF es circuito abierto. Se aplica PWM con $D = 1/2$. Se ignoran transiciones y corrientes de fuga.
+
+\begin{enumerate}[label=\arabic*., noitemsep, topsep=3pt]
+    \item (2 pt) Dibuje el lazo $+V_{\text{BUS}} \rightarrow R_L \rightarrow D \rightarrow S \rightarrow \text{GND}$ y localice G, D y S. Indique sentido convencional de corriente.
+    \item (4 pt) En ON, escriba KVL y calcule $I_D$, $V_{RL}$ y $V_{DS}$. Verifique que ambas caídas suman el bus.
+    \item (3 pt) Calcule las potencias \textbf{en ON} de la carga y del MOSFET. Indique dónde se disipa cada una.
+    \item (2 pt) Calcule la potencia \textbf{promedio ideal} de la carga con el PWM indicado y explique la hipótesis temporal necesaria.
+    \item (1 pt) En OFF ideal, indique $I_D$, $V_{DS}$ y disipación del MOSFET. ¿La presencia de tensión implica potencia alta?
+\end{enumerate}
+
+\section*{Problema 2 — Referencia de gate y validez de una especificación (7 puntos; 12 min)}
+
+Un circuito de prueba tiene $V_G = 10\,\text{V}$ y $V_S = 4\,\text{V}$, ambos referidos a GND. Se comparan dos \textbf{MOSFET ficticios}, cuyos demás requisitos de ensayo se declaran satisfechos:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{0.82\linewidth}{|c|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Modelo ficticio} & \textbf{Única garantía proporcionada} \\ \hline
+\textbf{X} & $R_{DS(\text{on})} \le 0.20\,\Omega$, especificada con $V_{GS} = 6\,\text{V}$ \\ \hline
+\textbf{Y} & $R_{DS(\text{on})} \le 0.10\,\Omega$, especificada con $V_{GS} = 10\,\text{V}$ \\ \hline
+\end{tabularx}
+\end{center}
+
+\begin{enumerate}[label=\arabic*., noitemsep, topsep=3pt]
+    \item (2 pt) Calcule el $V_{GS}$ real. Explique por qué $V_G$ no basta para decidir la excitación.
+    \item (3 pt) Determine cuál de las \textbf{dos garantías listadas} puede invocarse bajo el punto de operación y cuál \textbf{no}. ¿Puede afirmarse que Y es necesariamente el de menor pérdida?
+    \item (2 pt) El dispositivo Y tiene $V_{GS(\text{th})} = 2\,\text{V}$ \textbf{en una prueba de corriente pequeña}, según la hipótesis. ¿Permite esto afirmar baja resistencia de conducción a $V_{GS} = 6\,\text{V}$? Razone.
+\end{enumerate}
+
+
+\section*{Problema 3 — Carga de gate y energía de un perfil de conmutación (9 puntos; 16 min)}
+
+Se estudia un MOSFET ficticio. La carga de gate transferida en un evento vale $Q_g = 48\,\text{nC}$, y la corriente media de carga durante ese evento se aproxima por $I_G = 12\,\text{mA}$ constante. Para cada encendido, \textbf{la potencia instantánea disipada en el MOSFET} se aproxima por un triángulo de base temporal $4\,\mu\text{s}$ y altura $2\,\text{W}$; para cada apagado, otro triángulo de base $6\,\mu\text{s}$ y altura $1\,\text{W}$. La frecuencia es $f = 1000\,\text{Hz}$. \textit{Los triángulos son una hipótesis explícita, no mediciones.}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.88, transform shape]
+    % Perfil de encendido (ON)
+    \draw[->, thick] (0,0) -- (5.2,0) node[right]{\small $t\,(\mu\text{s})$};
+    \draw[->, thick] (0,0) -- (0,2.6) node[above]{\small $p_D(t)\,(\text{W}) \text{ [Hipótesis ON]}$};
+    \fill[ucbblue!15] (0.5,0) -- (2.5,2.0) -- (4.5,0) -- cycle;
+    \draw[very thick, ucbblue] (0,0) -- (0.5,0) -- (2.5,2.0) -- (4.5,0) -- (5.0,0);
+    \draw[dashed] (0,2.0) node[left]{\small $2\,\text{W}$} -- (2.5,2.0);
+    \draw[<->, thick] (0.5,-0.35) -- (4.5,-0.35) node[midway, below]{\small $\Delta t_{\text{on}} = 4\,\mu\text{s}$};
+    \node[font=\footnotesize\bfseries, text=ucbblue] at (2.5, 0.75) {$E_{\text{on}}$};
+
+    % Perfil de apagado (OFF)
+    \begin{scope}[xshift=8.2cm]
+        \draw[->, thick] (0,0) -- (6.2,0) node[right]{\small $t\,(\mu\text{s})$};
+        \draw[->, thick] (0,0) -- (0,2.6) node[above]{\small $p_D(t)\,(\text{W}) \text{ [Hipótesis OFF]}$};
+        \fill[warnred!15] (0.5,0) -- (3.5,1.0) -- (5.5,0) -- cycle;
+        \draw[very thick, warnred] (0,0) -- (0.5,0) -- (3.5,1.0) -- (5.5,0) -- (6.0,0);
+        \draw[dashed] (0,1.0) node[left]{\small $1\,\text{W}$} -- (3.5,1.0);
+        \draw[<->, thick] (0.5,-0.35) -- (5.5,-0.35) node[midway, below]{\small $\Delta t_{\text{off}} = 6\,\mu\text{s}$};
+        \node[font=\footnotesize\bfseries, text=warnred] at (3.2, 0.42) {$E_{\text{off}}$};
+    \end{scope}
+\end{tikzpicture}
+\end{center}
+
+\begin{enumerate}[label=\arabic*., noitemsep, topsep=2pt]
+    \item (3 pt) A partir de $i_G = dq_G/dt$, estime el tiempo de transferencia de $Q_g$ y conviértalo a $\mu\text{s}$.
+    \item (3 pt) Halle $E_{\text{on}}$ y $E_{\text{off}}$ usando el área de los dos triángulos, con unidades de $\mu\text{J}$.
+    \item (2 pt) Calcule $P_{\text{sw}} = f(E_{\text{on}} + E_{\text{off}})$ en $\text{mW}$.
+    \item (1 pt) Indique \textbf{una razón física} por la que $Q_g/I_G$ no es necesariamente el tiempo exacto observado de caída de $V_{DS}$.
+\end{enumerate}
+
+\section*{Problema 4 — PWM, instrumento y referencia de tierra (6 puntos; 12 min)}
+
+Un generador entrega una onda \textbf{cuadrada simétrica} con $V_{\text{pp}} = 6\,\text{V}$ y $\text{offset} = +1\,\text{V}$, ambos valores respecto del borne de retorno del generador. Un estudiante llama a esto «$0\text{ a }6\,\text{V}$». Para observar el drenador de un MOSFET, propone sujetar la \textbf{pinza de masa de un osciloscopio de banco, conectada a tierra de protección}, directamente a D; el GND del bus se encuentra ya unido a tierra de protección por otra conexión.
+
+\begin{enumerate}[label=\arabic*., noitemsep, topsep=3pt]
+    \item (2 pt) Calcule $V_{\min}$ y $V_{\max}$ de la señal. ¿La descripción «$0\text{ a }6\,\text{V}$» es válida?
+    \item (2 pt) Explique qué conexión peligrosa produciría la pinza de masa del osciloscopio en D y qué puede ocurrir.
+    \item (2 pt) Indique \textbf{dos acciones verificables previas al ensayo} para obtener una medición segura y confirmar la excitación real de gate (no basta con escribir «tener cuidado»).
+\end{enumerate}
+
+\section*{Problema 5A — Función del driver BJT (6 puntos; 15 min)}
+
+\vspace{0.1cm}
+Un driver conceptual presenta una etapa NPN en seguidor de emisor: colector conectado a $+12\,\text{V}$, base comandada por una salida lógica de $\mathbf{3.3\,\text{V}}$ y salida en el emisor. Para este modelo se supone $V_{BE} = 0.7\,\text{V}$ mientras conduce. El NMOS de potencia exige para la condición declarada un nivel de gate de $\mathbf{10\,\text{V}}$ \textbf{respecto a su source} (S a $0\,\text{V}$).
+
+\begin{enumerate}[label=\arabic*., noitemsep, topsep=3pt]
+    \item (2 pt) Estime la tensión máxima aproximada de salida del seguidor. Muestre la relación utilizada.
+    \item (2 pt) ¿Por qué el hecho de alimentar el colector a $12\,\text{V}$ \textbf{no} garantiza gate a $12\,\text{V}$? ¿Se cumple el objetivo declarado de $10\,\text{V}$?
+    \item (2 pt) Distinga \texttt{sourcing} y \texttt{sinking} de carga de gate. Proponga el tipo de función adicional que necesitaría el circuito, sin diseñar ni conectar un driver físico.
+\end{enumerate}
+
+
+\newpage
+\section*{FORMULARIO DE ECUACIONES — EC3}
+
+\noindent
+\textbf{Integrado en el examen.} Las relaciones siguientes no reemplazan la identificación de las hipótesis, las condiciones de validez ni la interpretación física.
+
+\subsection*{Tensiones, corriente y potencia}
+
+\[V_{GS}=V_G-V_S,\qquad V_{DS}=V_D-V_S.\]
+
+\[V_{\text{BUS}}=I_D R_L+V_{DS},\qquad I_D\approx\frac{V_{\text{BUS}}}{R_L+R_{DS(\text{on})}}\]
+
+\noindent\textit{La aproximación resistiva del MOSFET solo corresponde cuando el problema declara válido el valor de} $R_{DS(\text{on})}$.
+
+\[V=IR,\qquad P=VI=I^2R=\frac{V^2}{R}.\]
+
+\[P_{L}=I_D^2R_L,\qquad P_{\text{MOS,cond}}\approx I_D^2R_{DS(\text{on})}.\]
+
+\subsection*{PWM y transitorios}
+
+\[D=\frac{t_{\text{ON}}}{T},\qquad f=\frac{1}{T},\qquad P_{\text{prom}}\approx D\,P_{\text{ON}}\]
+
+\noindent\textit{La última relación supone potencia despreciable en OFF y transitorios despreciables para el elemento evaluado.}
+
+\[i_G(t)=\frac{dq_G}{dt},\qquad \Delta Q_G=\int i_G(t)\,dt,\qquad t_{\text{transfer}}\approx\frac{Q_G}{I_{G,\text{prom}}}.\]
+
+\[p_D(t)=v_{DS}(t)i_D(t),\qquad E_{\text{evento}}=\int p_D(t)\,dt.\]
+
+\[E_{\text{triangulo}}=\frac{1}{2}\,(\text{base temporal})(\text{altura de potencia}), \qquad P_{\text{sw}}\approx f_{\text{sw}}(E_{\text{on}}+E_{\text{off}}).\]
+
+\subsection*{Señal simétrica y seguidor BJT}
+
+\[V_{\max}=V_{\text{offset}}+\frac{V_{\text{pp}}}{2},\qquad V_{\min}=V_{\text{offset}}-\frac{V_{\text{pp}}}{2}.\]
+
+\[V_{E}\approx V_B-V_{BE}\quad\text{(seguidor NPN, en conducción y bajo las hipótesis del problema).}\]
+
+\subsection*{Unidades útiles}
+
+\[1\,\mathrm{mA}=10^{-3}\,\mathrm{A},\quad 1\,\mathrm{nC}=10^{-9}\,\mathrm{C},\quad 1\,\mu\mathrm{s}=10^{-6}\,\mathrm{s},\quad 1\,\mu\mathrm{J}=10^{-6}\,\mathrm{J}.\]
+
+\vfill
+\noindent\rule{\linewidth}{0.4pt}
+\begin{center}
+\textbf{FIN — Revise unidades, hipótesis y que todas las respuestas sean legibles.}
+\end{center}
+
+\end{document}

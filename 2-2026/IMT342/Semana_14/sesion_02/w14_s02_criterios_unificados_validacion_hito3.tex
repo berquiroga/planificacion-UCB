@@ -1,0 +1,447 @@
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{amsmath, amssymb, bm}
+\usepackage[most]{tcolorbox}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=1.8cm]{geometry}
+\usepackage{fancyhdr}
+
+\lstset{
+    basicstyle=\ttfamily\scriptsize,
+    backgroundcolor=\color{gray!5},
+    frame=single,
+    rulecolor=\color{gray!40},
+    showstringspaces=false,
+    breaklines=true,
+    breakatwhitespace=false,
+    columns=flexible
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342}}
+\chead{Criterios Unificados de Validación — Hito 3}
+\rhead{Semana 14 - Sesión 2}
+\lfoot{Documento Técnico Normativo (Sujeto a Aprobación Docente)}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Documento Técnico Común: Criterios Unificados de Validación Cinemática, Procedencia e Incertidumbre (Hito 3)}}[cite: 15]\\[0.15cm]
+    \footnotesize\textbf{Sesión W14-S02:} Jueves 5 de noviembre de 2026, 16:00–17:45 (105 min) $\mid$ \textbf{Estado:} Propuesta normativa sujeta a aprobación docente de umbrales[cite: 15]
+\end{center}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!80!black, title=\textbf{Regla Operativa y Prioridad de la Sesión W14-S02} {[cite: 15]}, left=2mm, right=2mm, top=1mm, bottom=1mm]
+    \footnotesize\raggedright
+    El recuperatorio individual U1/U2 (Track A) y el taller autónomo Hito 3 (Track B) ocurren simultáneamente con \textbf{prioridad inequívoca a la integridad del examen}[cite: 15]. Un docente que vigila la evaluación no supervisa a la vez pruebas físicas del robot[cite: 15]. El Track B utiliza únicamente datos previamente recogidos, documentación, computación offline y simulación; rige \textbf{\texttt{NO-GO} físico} salvo supervisor autorizado independiente y todas las condiciones de laboratorio verificadas[cite: 15].
+\end{tcolorbox}
+
+% ============================================================================
+\section{Alcance, Procedencia y Niveles de Evidencia (Bloque B)[cite: 15]}
+En la sesión previa, algunos equipos comunicaron datos articulares desde el controlador IRC5 por Ethernet, reflejaron en RViz movimientos originados desde el \textit{teach pendant} y compararon una FK propia con una pose reportada por el controlador[cite: 15]. Sin valores numéricos, unidades, marcos y fuente temporal identificados, aquello constituye una \textbf{comparación iniciada}, no una validación concluida, y ningún equipo ha demostrado aún la cadena completa $\text{ROS} \to \text{IRC5} \to \text{movimiento físico}$[cite: 15].
+
+Una comparación solo es válida si ambas salidas representan \textbf{la misma magnitud física}, en \textbf{el mismo instante}, \textbf{marco}, \textbf{punto}, \textbf{convención} y con una \textbf{cadena de procedencia identificable}[cite: 15]. La coincidencia numérica aislada no demuestra corrección[cite: 15].
+
+\subsection{Visual 1 y Visual 6: Cadena de Procedencia y Niveles de Evidencia (S0–S3 / Gates 0–3)[cite: 15]}
+\begin{center}
+\begin{tikzpicture}[
+    boxok/.style={rectangle, draw=ucbblue, thick, fill=ucbblue!8, text width=2.2cm, align=center, rounded corners, font=\scriptsize, minimum height=1.0cm},
+    boxpend/.style={rectangle, draw=orange!85!black, thick, dashed, fill=yellow!12, text width=2.2cm, align=center, rounded corners, font=\scriptsize, minimum height=1.0cm},
+    boxnogo/.style={rectangle, draw=red!80!black, very thick, fill=red!10, text width=2.3cm, align=center, rounded corners, font=\scriptsize, minimum height=1.0cm},
+    arrow/.style={-Stealth, thick, ucbblue}
+]
+    \node[boxok] (c1) at (0,0) {\textbf{Controlador IRC5}\\Estado interno / TP[cite: 15]};
+    \node[boxpend] (c2) at (2.8,0) {\textbf{Interfaz Verif.}\\Ethernet / RWS?[cite: 15]};
+    \node[boxpend] (c3) at (5.6,0) {\textbf{Lectura Local}\\ROS Tópico / Log[cite: 15]};
+    \node[boxpend] (c4) at (8.4,0) {\textbf{Normalización}\\$\mathbf{q}$, Base, TCP, $t$[cite: 15]};
+    \node[boxpend] (c5) at (11.2,0) {\textbf{Comparador FK}\\$e_p, e_R$ Trazables[cite: 15]};
+    \node[boxnogo] (c6) at (14.2,0) {\textbf{ROS $\to$ IRC5}\\Mov. Físico (\textbf{S3})\\{\tiny\textbf{NO VERIFICADO}}[cite: 15]};
+
+    \draw[arrow] (c1) -- (c2);
+    \draw[arrow] (c2) -- (c3);
+    \draw[arrow] (c3) -- (c4);
+    \draw[arrow] (c4) -- (c5);
+    \draw[-Stealth, thick, red!80!black, dotted] (c5) -- node[above, font=\tiny\bfseries, text=red!80!black]{Llave GO Lab.} (c6);
+
+    \node[font=\tiny, text=ucbblue] at (2.8, -0.75) {Nivel S1: Observación Controlador[cite: 15]};
+    \node[font=\tiny, text=orange!85!black] at (7.0, -0.75) {Nivel S2: Observación ROS Trazada (Pendiente por grupo)[cite: 15]};
+    \node[font=\tiny\bfseries, text=red!80!black] at (14.2, -0.75) {Gate 3: NO-GO hoy[cite: 15]};
+\end{tikzpicture}
+\end{center}
+
+\noindent
+{\scriptsize
+\renewcommand{\arraystretch}{1.3}
+\noindent\begin{tabularx}{\textwidth}{|>{\hsize=0.65\hsize\raggedright\arraybackslash}X|>{\hsize=1.05\hsize\raggedright\arraybackslash}X|>{\hsize=1.15\hsize\raggedright\arraybackslash}X|>{\hsize=1.15\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Nivel}[cite: 15] & \textbf{Evidencia y Procedencia}[cite: 15] & \textbf{Qué Permite Afirmar}[cite: 15] & \textbf{Qué NO Acredita}[cite: 15] \\ \hline
+\textbf{S0} — Modelo / simulación offline[cite: 15] & Versiones de código y URDF, parámetros y configuración artificial conocida[cite: 15]. & Consistencia matemática interna de cálculos y modelos[cite: 15]. & Estado real o comando del controlador IRC5[cite: 15]. \\ \hline
+\textbf{S1} — Observación de controlador[cite: 15] & Estado leído con interfaz identificada, unidad, fuente y marca temporal[cite: 15]. & Que el controlador reportó ese dato en ese instante[cite: 15]. & Que ROS lo comandó ni que corresponde al mismo TCP de la FK propia[cite: 15]. \\ \hline
+\textbf{S2} — Observación ROS trazada[cite: 15] & Dato asociado a tópico/interfaz, fuente \textit{upstream}, tiempos y enlace a IRC5[cite: 15]. & Estado retransmitido/consumido por ROS según prueba documentada[cite: 15]. & Aceptación de comando ROS o ejecución física dirigida por ROS[cite: 15]. \\ \hline
+\textbf{S3} — Ejecución física autorizada[cite: 15] & Orden verificable $\to$ aceptación $\to$ estado $\to$ movimiento observado y registros[cite: 15]. & Operación física dentro del alcance específico demostrado[cite: 15]. & Seguridad certificada universal o exactitud global de modelos (\textbf{NO VERIFICADO})[cite: 15]. \\ \hline
+\end{tabularx}
+}
+
+\subsection{Manifiesto Obligatorio por Experimento y Regla de Bloqueo[cite: 15]}
+Si \texttt{joint\_order}, el cero/offset o el punto \texttt{TCP} es desconocido, el experimento puede conservarse como \textbf{resultado exploratorio}, pero \textbf{no pasa a conformidad de FK/IK/J}[cite: 15].
+
+\vspace{0.15cm}
+\noindent
+{\scriptsize
+\renewcommand{\arraystretch}{1.28}
+\noindent\begin{tabularx}{\textwidth}{|>{\hsize=0.65\hsize\raggedright\arraybackslash}X|>{\hsize=1.25\hsize\raggedright\arraybackslash}X|>{\hsize=1.10\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{gray!20}
+\textbf{Campo del Manifiesto}[cite: 15] & \textbf{Información Exacta que Debe Registrarse}[cite: 15] & \textbf{Regla de Validación}[cite: 15] \\ \hline
+ID prueba, equipo y operador[cite: 15] & Identificadores no ambiguos de ensayo y responsables[cite: 15]. & Vincular archivos, logs y resultados[cite: 15]. \\ \hline
+Código / modelo[cite: 15] & Repositorio + commit; URDF + hash/versión; parámetros DH propios; versión SW[cite: 15]. & No cambiar el modelo a mitad de comparación[cite: 15]. \\ \hline
+Juntas[cite: 15] & Nombres, \texttt{joint\_order}, tipos, $\mathbf{q}$ completo, signos, offsets, cero mecánico/modelado[cite: 15]. & Pasar la \textbf{misma configuración física} a ambos cálculos[cite: 15]. \\ \hline
+Unidades[cite: 15] & $\mathrm{rad}$/grado, $\mathrm{m}$/$\mathrm{mm}$, velocidad $\mathrm{rad/s}$[cite: 15]. & Normalizar al SI antes de calcular métricas[cite: 15]. \\ \hline
+Frames[cite: 15] & \texttt{base propia}, \texttt{base referencia}, \texttt{world}, \texttt{flange}, \texttt{tool}, \texttt{TCP}[cite: 15]. & Indicar transformaciones para igualar base y punto[cite: 15]. \\ \hline
+Herramienta[cite: 15] & Tool/TCP activo, su pose relativa y fuente en IRC5/ROS/modelo[cite: 15]. & Prohibido comparar \texttt{flange} (brida) contra \texttt{TCP}[cite: 15]. \\ \hline
+Datos[cite: 15] & Origen IRC5/RWS/EGM/ROS/simulador/archivo; endpoint o variable documentada[cite: 15]. & ROS no es fuente primaria por defecto[cite: 15]. \\ \hline
+Tiempo[cite: 15] & Reloj y dominio temporal; \texttt{timestamp\_q}; \texttt{timestamp\_pose}; latencia[cite: 15]. & Registrar robot quieto o sincronización verificada[cite: 15]. \\ \hline
+Referencia[cite: 15] & Cálculo independiente, MoveIt, controlador o patrón geométrico[cite: 15]. & Clasificar independencia y limitaciones[cite: 15]. \\ \hline
+Seguridad[cite: 15] & Evidencia offline o condición GO firmada por personal autorizado[cite: 15]. & En W14-S02 solo offline salvo excepción formal[cite: 15]. \\ \hline
+Tolerancias[cite: 15] & Versión de criterio, umbral propuesto/aprobado, incertidumbre[cite: 15]. & Ninguna cifra aprobada se presume de antemano[cite: 15]. \\ \hline
+\end{tabularx}
+}
+
+% ============================================================================
+\section{Protocolo Unificado de Cinemática Directa — FK (Bloque C)[cite: 15]}
+Se contrasta la misma pose homogénea ${}^BT_{TCP}(\mathbf{q}) \in SE(3)$ a partir de la misma configuración articular $\mathbf{q}$ con idéntica base $\{B\}$ y punto $\{TCP\}$[cite: 15]:
+\begin{equation}
+    {}^BT_{TCP}(\mathbf{q}) = \begin{bmatrix} {}^BR_{TCP}(\mathbf{q}) & {}^Bp_{TCP}(\mathbf{q}) \\ \mathbf{0}^T & 1 \end{bmatrix}, \qquad
+    {}^BT_{TCP} = {}^BT_{flange}\;{}^{flange}T_{TCP} \text{[cite: 15]}
+\end{equation}
+
+\subsection{Visual 2 y Visual 3: Alineación Geométrica de Marcos y Árbol de Discrepancias FK[cite: 15]}
+\begin{center}
+\begin{tikzpicture}[scale=0.92, thick]
+    % Panel Izquierdo: Visual 2 (Marcos W, B, flange, TCP)
+    \begin{scope}[xshift=0cm]
+        \draw[-Stealth, gray!80!black] (-0.8,-0.5) -- (-0.1,-0.5) node[below, font=\tiny]{$x_W$};
+        \draw[-Stealth, gray!80!black] (-0.8,-0.5) -- (-0.8,0.2) node[left, font=\tiny]{$z_W$};
+        \filldraw[gray!80!black] (-0.8,-0.5) circle (1.8pt) node[below left, font=\tiny\bfseries]{$\{W\}$};
+
+        \draw[-Stealth, ucbblue, line width=1.1pt] (0,0) -- (0.9,0) node[below, font=\scriptsize]{$x_B$};
+        \draw[-Stealth, ucbblue, line width=1.1pt] (0,0) -- (0,0.9) node[left, font=\scriptsize]{$z_B$};
+        \filldraw[ucbblue] (0,0) circle (2.2pt) node[below left, font=\scriptsize\bfseries]{$\{B\}$};
+
+        \draw[gray!70!black, line width=3pt, line cap=round] (0,0) -- (1.1,1.5) -- (2.6,1.9);
+        \filldraw[black] (2.6,1.9) circle (2.5pt) node[above=2pt, font=\scriptsize\bfseries]{$\{flange\}$};
+
+        \draw[orange!90!black, line width=2.2pt] (2.6,1.9) -- (4.3,1.9);
+        \filldraw[red!80!black] (4.3,1.9) circle (2.5pt) node[above=2pt, font=\scriptsize\bfseries, text=red!80!black]{$\{TCP\}$};
+
+        \draw[-Stealth, dashed, black] (0.1,0.1) to[bend left=12] node[midway, above left, font=\tiny, fill=white, inner sep=1pt]{${}^BT_{flange}$} (2.5,1.8);
+        \draw[-Stealth, dotted, orange!90!black, line width=1.1pt] (2.7,1.75) to[bend right=22] node[midway, below, font=\tiny, fill=white, inner sep=1pt]{${}^{flange}T_{TCP}$} (4.2,1.75);
+        \draw[-Stealth, dashed, red!80!black] (0.2,-0.05) to[bend right=16] node[midway, below right, font=\tiny, text=red!80!black, fill=white, inner sep=1pt]{${}^BT_{TCP}$} (4.25,1.8);
+    \end{scope}
+
+    % Panel Derecho: Visual 3 (Árbol de diagnóstico de discrepancias FK)
+    \begin{scope}[xshift=6.3cm, yshift=1.8cm,
+        dnode/.style={rectangle, draw=ucbblue, thick, fill=ucbblue!5, rounded corners, font=\tiny, text width=2.1cm, align=center, minimum height=0.55cm},
+        fnode/.style={rectangle, draw=red!80!black, fill=red!5, rounded corners, font=\tiny, text width=2.2cm, align=center, minimum height=0.55cm},
+        arr/.style={-Stealth, thick, ucbblue}
+    ]
+        \node[fnode] (e0) at (0,0) {\textbf{Error $e_p$ o $e_R$ Alto}[cite: 15]};
+        \node[dnode] (d1) at (2.8,0) {1. ¿Mismo $\mathbf{q}$ y $t$ estático?[cite: 15]};
+        \node[dnode] (d2) at (5.6,0) {2. ¿Unidades ($\mathrm{rad, m}$) y \texttt{joint\_order}?[cite: 15]};
+        \node[dnode] (d3) at (8.4,0) {3. ¿Signos y offsets de cero?[cite: 15]};
+        \node[dnode] (d4) at (2.8,-1.1) {4. ¿Misma Base $\{B\}$ y $\{TCP\}$?[cite: 15]};
+        \node[dnode] (d5) at (5.6,-1.1) {5. ¿Parámetros DH / URDF iguales?[cite: 15]};
+        \node[fnode] (d6) at (8.4,-1.1) {6. Auditar Bug de Implementación[cite: 15]};
+
+        \draw[arr] (e0) -- (d1);
+        \draw[arr] (d1) -- (d2);
+        \draw[arr] (d2) -- (d3);
+        \draw[arr] (d3.south) -- ++(0,-0.25) -| (d4.north);
+        \draw[arr] (d4) -- (d5);
+        \draw[arr] (d5) -- (d6);
+    \end{scope}
+\end{tikzpicture}
+\end{center}
+
+\subsection{Métricas Exactas de Posición y Orientación[cite: 15]}
+Tras alinear marcos y punto TCP, y habiendo verificado que ambas matrices de rotación cumplen ortogonalidad y orientación derecha ($R^T R \approx I$, $\det(R) \approx +1$)[cite: 15]:
+\begin{equation}
+    \boxed{ e_p = \lVert p_{propia} - p_{ref} \rVert_2 \quad [\mathrm{m}], \qquad e_{p,rel} = \frac{e_p}{L_{ref}} \quad (L_{ref} > 0\text{ declarada}) } \text{[cite: 15]}
+\end{equation}
+\begin{equation}
+    R_{err} = R_{ref}^T R_{propia}, \qquad
+    c = \operatorname{clip}\!\left(\frac{\operatorname{tr}(R_{err}) - 1}{2}, -1, 1\right), \qquad
+    \boxed{ e_R = \arccos(c) \quad [\mathrm{rad}], \quad e_R \in [0, \pi] } \text{[cite: 15]}
+\end{equation}
+
+\subsection{Plan Mínimo de Casos de Prueba FK[cite: 15]}
+\noindent
+{\scriptsize
+\renewcommand{\arraystretch}{1.25}
+\noindent\begin{tabularx}{\textwidth}{|l|>{\hsize=1.15\hsize\raggedright\arraybackslash}X|>{\hsize=0.95\hsize\raggedright\arraybackslash}X|>{\hsize=0.90\hsize\raggedright\arraybackslash}X|>{\hsize=1.00\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Caso}[cite: 15] & \textbf{Origen de $\mathbf{q}$}[cite: 15] & \textbf{Motivación}[cite: 15] & \textbf{Requisitos Previos}[cite: 15] & \textbf{Resultado Documentado}[cite: 15] \\ \hline
+\texttt{FK-N1}[cite: 15] & Postura regular registrada/autorizada o sintética del modelo[cite: 15]. & Caso nominal base[cite: 15]. & Fuentes y marcos alineados[cite: 15]. & Poses completas y errores $e_p, e_R$[cite: 15]. \\ \hline
+\texttt{FK-N2}[cite: 15] & Segunda postura claramente distinguible[cite: 15]. & Detectar errores dependientes de $\mathbf{q}$[cite: 15]. & Fuentes y marcos alineados[cite: 15]. & Poses completas y errores $e_p, e_R$[cite: 15]. \\ \hline
+\texttt{FK-L}[cite: 15] & Postura cercana a límite \textbf{documentado} o borde offline[cite: 15]. & Robustez y consistencia[cite: 15]. & Límite real verificado (no inventar)[cite: 15]. & Poses y errores, o \texttt{bloqueado}[cite: 15]. \\ \hline
+\texttt{FK-D-TCP}[cite: 15] & \texttt{N1} con TCP discrepante \textbf{intencionalmente simulado}[cite: 15]. & Diagnóstico de sensibilidad a herramienta[cite: 15]. & Referencia TCP conocida en modelo[cite: 15]. & Variación del error y explicación física[cite: 15]. \\ \hline
+\texttt{FK-D-ORD}[cite: 15] & \texttt{N2} con permutación de $\mathbf{q}$ intencional \textbf{offline}[cite: 15]. & Diagnóstico de orden articular[cite: 15]. & Lista de juntas verificada[cite: 15]. & Error emergente y demostración de corrección[cite: 15]. \\ \hline
+\end{tabularx}
+}
+
+% ============================================================================
+\section{Protocolo Unificado de Cinemática Inversa — IK (Bloque D)[cite: 15]}
+Un solucionador de IK puede producir configuraciones distintas que alcanzan exactamente la misma pose ($\mathbf{q}_{own}^{(k)} \neq \mathbf{q}_{ref}^{(r)}$); \textbf{la igualdad de vectores articulares no es criterio general de equivalencia}[cite: 15].
+\begin{enumerate}
+    \item Seleccionar al menos dos poses objetivo $T_d^{(1)}, T_d^{(2)}$ construidas evaluando la FK sobre configuraciones documentadas y admisibles del modelo (más una postura cercana a singularidad si procede)[cite: 15].
+    \item Registrar tolerancias, semilla, selector de rama, método e iteraciones/timeout del solver de referencia según versión instalada[cite: 15].
+    \item Ejecutar la IK propia enumerando ramas reales mediante \texttt{atan2}, calcular $T_{own}(\mathbf{q}^{(k)})$ (y $T_{ref}(\mathbf{q}^{(k)})$ si existe segunda FK independiente) y cuantificar los residuos $e_p, e_R$ respecto a $T_d$[cite: 15].
+    \item Clasificar cada solución candidata como: \texttt{válida en modelo}, \texttt{no válida}, \texttt{indeterminada por datos}, \texttt{numéricamente singular} o \texttt{sin solución encontrada} (distinguiendo \textit{no encontrada} de \textit{inexistente})[cite: 15].
+\end{enumerate}
+
+% ============================================================================
+\section{Protocolo Unificado del Jacobiano y Diferencias Finitas (Bloque E)[cite: 15]}
+Bajo la convención geométrica del curso, el twist del punto TCP expresado en el marco declarado es[cite: 15]:
+\begin{equation}
+    V = \begin{bmatrix} v \\ \omega \end{bmatrix} = J(\mathbf{q})\dot{\mathbf{q}}, \qquad J(\mathbf{q}) = \begin{bmatrix} J_v(\mathbf{q}) \\ J_\omega(\mathbf{q}) \end{bmatrix} \in \mathbb{R}^{6 \times n}, \qquad
+    J_i = \begin{bmatrix} z_{i-1} \times (p_{TCP} - o_{i-1}) \\ z_{i-1} \end{bmatrix} \text{[cite: 15]}
+\end{equation}
+Dado que $J_v$ tiene unidades $[\mathrm{m/rad}]$ (para juntas revolutas) y $J_\omega$ tiene $[\mathrm{rad/rad}]$, la norma de Frobenius total mezcla escalas físicas; por tanto, deben reportarse por separado[cite: 15]:
+\begin{equation}
+    \boxed{ e_{J_v} = \lVert J_{v,own} - J_{v,ref} \rVert_F \quad [\mathrm{m/rad}], \qquad
+    e_{J_\omega} = \lVert J_{\omega,own} - J_{\omega,ref} \rVert_F \quad [\mathrm{rad/rad}] } \text{[cite: 15]}
+\end{equation}
+\textbf{Verificación física/matemática complementaria por diferencias finitas centrales[cite: 15]:}
+Perturbando la configuración alrededor de $\mathbf{q}$ en la dirección de la velocidad articular $\dot{\mathbf{q}}$ ($\mathrm{rad/s}$) durante un intervalo temporal pequeño $\varepsilon$ ($\mathrm{s}$), el argumento $\mathbf{q} \pm \varepsilon\dot{\mathbf{q}}$ conserva unidades angulares ($\mathrm{rad}$) y verifica la parte traslacional $J_v(\mathbf{q})\dot{\mathbf{q}}$[cite: 15]:
+\begin{equation}
+    \boxed{ \frac{p(\mathbf{q} + \varepsilon\dot{\mathbf{q}}) - p(\mathbf{q} - \varepsilon\dot{\mathbf{q}})}{2\varepsilon} \approx J_v(\mathbf{q})\dot{\mathbf{q}} \quad [\mathrm{m/s}] } \text{[cite: 15]}
+\end{equation}
+Se debe evaluar $\varepsilon$ en varias escalas para distinguir el error de truncamiento frente al error de cancelación numérica[cite: 15]. Asimismo, una configuración pierde rango cuando $\operatorname{rank}J(\mathbf{q}) < \operatorname{rank}_{\max}$ bajo una tolerancia explícita, recordando que comparar el condicionamiento del Jacobiano completo $6 \times n$ exige escalado consistente porque $J_v$ y $J_\omega$ poseen unidades distintas[cite: 15].
+
+% ============================================================================
+\section{Singularidades, Esfuerzo Estático y Dinámica (Bloque F)[cite: 15]}
+Para el subespacio de tarea elegido, a partir de la descomposición en valores singulares $J = U\Sigma V^T$ ($\sigma_1 \ge \dots \ge \sigma_r \ge 0$), el umbral de rango puramente numérico en precisión de máquina ($\epsilon_{mach}$) es[cite: 15]:
+\begin{equation}
+    \tau_{num} = \max(m,n)\,\epsilon_{mach}\,\sigma_{\max}, \qquad
+    \operatorname{rank}_{num} = \#\{\sigma_i > \tau_{num}\}, \qquad
+    J_s = \begin{bmatrix} J_v / L \\ J_\omega \end{bmatrix} \text{[cite: 15]}
+\end{equation}
+donde $L > 0$ es una longitud característica declarada para homogeneizar unidades antes de evaluar condicionamiento[cite: 15]. Por trabajo virtual $\delta W = F^T V = F^T J\dot{\mathbf{q}} = (J^T F)^T \dot{\mathbf{q}}$, el esfuerzo generalizado estático ante un wrench externo es $\tau_{ext} = J^T F$, el cual \textbf{no} representa el torque total de actuador en una trayectoria acelerada[cite: 15]:
+\begin{equation}
+    \boxed{ \tau_{ext} = J(\mathbf{q})^T F \quad \neq \quad \tau_{act} = M(\mathbf{q})\ddot{\mathbf{q}} + C(\mathbf{q},\dot{\mathbf{q}})\dot{\mathbf{q}} + \mathbf{g}(\mathbf{q}) + \text{términos externos} } \text{[cite: 15]}
+\end{equation}
+
+% ============================================================================
+\section{Sincronización Temporal, Tolerancias y Presupuesto de Error (Bloques G y H)[cite: 15]}
+La FK evaluada en $\mathbf{q}(t_1)$ no es comparable con una pose capturada en $t_2$ si hubo movimiento intermedio; sin alineación temporal o estado estático confirmado, el ensayo se clasifica como \texttt{inconcluso por tiempo}[cite: 15].
+
+\vspace{0.15cm}
+\noindent
+{\scriptsize
+\renewcommand{\arraystretch}{1.28}
+\noindent\begin{tabularx}{\textwidth}{|>{\hsize=0.75\hsize\raggedright\arraybackslash}X|>{\hsize=1.25\hsize\raggedright\arraybackslash}X|>{\hsize=1.25\hsize\raggedright\arraybackslash}X|>{\hsize=0.75\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Criterio}[cite: 15] & \textbf{Propuesta Técnica / Procedimiento}[cite: 15] & \textbf{Justificación y Limitación}[cite: 15] & \textbf{Estado}[cite: 15] \\ \hline
+FK propia vs. ref. (\textbf{idéntico modelo offline, float64})[cite: 15] & Presupuesto $\tau_p^{num} = K\epsilon_{mach} L N_{ops}$, $\tau_R^{num} = K\epsilon_{mach} N_{ops}$. Cribado exploratorio sintético: $e_p \le 10^{-6}\;\mathrm{m}$, $e_R \le 10^{-5}\;\mathrm{rad}$[cite: 15]. & Solo para modelo artificial suave en doble precisión; \textbf{no} son tolerancias físicas ni valores ABB[cite: 15]. & \textbf{Pendiente de aprobación}[cite: 15] \\ \hline
+FK propia vs. datos \textbf{IRC5}[cite: 15] & $\tau_p^{real} \ge u_p(\text{modelo, TCP, }\mathbf{q}\text{, sincr., rep.})$, $\tau_R^{real} \ge u_R(\dots)$, sin cifra numérica hasta medir resolución y TCP local[cite: 15]. & No consta precisión local del controlador, incertidumbre de TCP ni calidad de sincronía[cite: 15]. & \textbf{Pendiente y bloqueada por datos}[cite: 15] \\ \hline
+Residuales IK (offline)[cite: 15] & Reutilizar métricas/criterios de FK del mismo escenario más límites documentados[cite: 15]. & Dos ramas distintas pueden ser válidas para la misma pose $T_d$[cite: 15]. & \textbf{Pendiente}[cite: 15] \\ \hline
+Error $J_v$ por FD[cite: 15] & Curva $h \to E_i(h)$ e identificación del mínimo estable observado (autoconvergencia)[cite: 15]. & Error $O(h^2) + O(\epsilon_{mach}/h)$ dependiente de escala y postura[cite: 15]. & \textbf{Pendiente}[cite: 15] \\ \hline
+$J$ propio vs. referencia[cite: 15] & Separar tolerancias para $e_{J_v}$ y $e_{J_\omega}$ según presupuesto de FK y convenciones[cite: 15]. & Prohibido usar norma mezclada sin escalado previo $L$[cite: 15]. & \textbf{Pendiente}[cite: 15] \\ \hline
+Rango y cercanía a singularidad[cite: 15] & $\tau_{num} = \max(m,n)\epsilon_{mach}\sigma_{\max}$ para redondeo; registrar $\kappa, \sigma_{\min}$, escala $L$ y subespacio[cite: 15]. & Criterio NumPy de dependencia numérica; no predice límites operacionales[cite: 15]. & \textbf{Referencia numérica}[cite: 15] \\ \hline
+\end{tabularx}
+}
+
+% ============================================================================
+\section{Ejemplos Sintéticos Resueltos y Visuales 4 y 5[cite: 15]}
+
+\subsection{Ejemplo 1: Banco Sintético Planar 2R (No ABB) y Curva de Diferencias Finitas[cite: 15]}
+Datos didácticos sintéticos (no corresponden al IRB120): $a_1 = 1.0\;\mathrm{m}$, $a_2 = 0.5\;\mathrm{m}$, $\mathbf{q} = [30^\circ, -45^\circ]^T = [\pi/6, -\pi/4]^T\;\mathrm{rad}$ ($q_1+q_2 = -\pi/12\;\mathrm{rad}$), y velocidad articular $\dot{\mathbf{q}} = [0.10, -0.20]^T\;\mathrm{rad/s}$[cite: 15]:
+\begin{equation}
+    p(\mathbf{q}) = \begin{bmatrix} a_1\cos q_1 + a_2\cos(q_1+q_2) \\ a_1\sin q_1 + a_2\sin(q_1+q_2) \end{bmatrix} \approx \begin{bmatrix} 1.34898832 \\ 0.37059048 \end{bmatrix}\mathrm{m} \text{[cite: 15]}
+\end{equation}
+\begin{equation}
+    J_p(\mathbf{q}) = \begin{bmatrix} -a_1\sin q_1 - a_2\sin(q_1+q_2) & -a_2\sin(q_1+q_2) \\ a_1\cos q_1 + a_2\cos(q_1+q_2) & a_2\cos(q_1+q_2) \end{bmatrix} \approx \begin{bmatrix} -0.37059048 & 0.12940952 \\ 1.34898832 & 0.48296291 \end{bmatrix}\mathrm{m/rad} \text{[cite: 15]}
+\end{equation}
+\begin{equation}
+    \dot{p} = J_p(\mathbf{q})\dot{\mathbf{q}} \approx \begin{bmatrix} -0.06294095 \\ 0.03830625 \end{bmatrix}\mathrm{m/s}, \qquad
+    \det J_p = a_1 a_2 \sin q_2 \approx -0.35355339\;\mathrm{m^2/rad^2} \text{[cite: 15]}
+\end{equation}
+
+\begin{center}
+\begin{minipage}[c]{0.52\textwidth}
+    \centering
+    % Visual 4: Curva log-log de error FD
+    \begin{tikzpicture}
+        \begin{loglogaxis}[
+            width=7.2cm, height=4.5cm,
+            xlabel={Paso de perturbación $h$ [rad]},
+            ylabel={Error $\|J_{v,:,1} - J_{v,FD,:,1}\|_2$ [m/rad]},
+            grid=both,
+            tick label style={font=\tiny},
+            label style={font=\scriptsize},
+            title style={font=\scriptsize\bfseries},
+            title={Visual 4: Convergencia FD ($O(h^2)$ vs. Redondeo)[cite: 15]}
+        ]
+        \addplot[color=ucbblue, mark=*, thick] coordinates {
+            (1e-2, 2.33e-5)
+            (1e-3, 2.33e-7)
+            (1e-4, 2.33e-9)
+            (1e-5, 3.45e-11)
+            (1e-6, 7.43e-11)
+        };
+        \node[font=\tiny, fill=white, inner sep=1pt] at (axis cs:1e-3,3e-6) {Truncamiento $O(h^2)$};
+        \node[font=\tiny, text=red!80!black, fill=white, inner sep=1pt] at (axis cs:4e-6,3e-10) {Redondeo};
+        \end{loglogaxis}
+    \end{tikzpicture}
+\end{minipage}%
+\hfill
+\begin{minipage}[c]{0.45\textwidth}
+    \centering
+    % Visual 5: Singularidad y dirección perdida
+    \begin{tikzpicture}[scale=0.65, thick]
+        \draw[->, gray] (-2.5,0) -- (2.5,0) node[right, font=\tiny]{$v_x$};
+        \draw[->, gray] (0,-0.5) -- (0,4.3) node[above, font=\tiny]{$v_y$};
+        \draw[-Stealth, ucbblue, line width=1.4pt] (0,0) -- (1,2) node[right, font=\tiny]{$J_{p,:,1}=[1,2]^T$};
+        \draw[-Stealth, ucbblue!60, dashed, line width=1.2pt] (0,0) -- (2,4) node[right, font=\tiny]{$J_{p,:,2}=[2,4]^T$};
+        \draw[-Stealth, red!80!black, line width=1.4pt] (0,0) -- (-2,1) node[above left, font=\tiny\bfseries]{Dir. perdida $[-2,1]^T$};
+        \node[font=\tiny, align=center, fill=yellow!10, draw=orange] at (0,-1.2) {Visual 5: $\operatorname{rank}J_p=1$; $\tau_{ext}=J_p^T F$ finito $\neq$ dinámica[cite: 15]};
+    \end{tikzpicture}
+\end{minipage}
+\end{center}
+
+\subsection{Ejemplo 2 (Error de Orientación) y Ejemplo 3 (Singularidad y Dualidad)[cite: 15]}
+\begin{itemize}
+    \item \textbf{Ejemplo 2[cite: 15]:} Si $R_{ref} = I$ y $R_{propia} = R_z(10^\circ)$, entonces $R_{err} = R_z(10^\circ)$, $\operatorname{tr}(R_{err}) = 1 + 2\cos 10^\circ$, y el error angular resulta exactamente $e_R = \arccos\!\left(\frac{\operatorname{tr}(R_{err})-1}{2}\right) = 10^\circ = \frac{\pi}{18}\;\mathrm{rad} \approx 0.174533\;\mathrm{rad}$[cite: 15]. Si se usan cuaterniones, declarar explícitamente el orden $(x,y,z,w)$ vs. $(w,x,y,z)$[cite: 15].
+    \item \textbf{Ejemplo 3[cite: 15]:} Para $J_p = \begin{bmatrix} 1 & 2 \\ 2 & 4 \end{bmatrix}$, $\operatorname{rank}(J_p) = 1$, el espacio columna está generado por $[1,2]^T$ y la dirección cartesiana $[-2,1]^T$ es inaccesible instantáneamente[cite: 15]. Aun así, $J_p^T F$ es finito para cualquier $F$ finito, confirmando que una pérdida de rango no implica torque infinito[cite: 15].
+\end{itemize}
+
+\subsection{Material Computacional de Referencia (Offline, Sin Control de Robot)[cite: 15]}
+\begin{lstlisting}[language=Python]
+import numpy as np
+
+a1, a2 = 1.0, 0.5  # m - modelo artificial 2R, NO IRB120
+q = np.deg2rad([30.0, -45.0])
+qd = np.array([0.1, -0.2])  # rad/s
+
+def fk_p(x):
+    q1, q2 = x
+    return np.array([a1*np.cos(q1)+a2*np.cos(q1+q2), a1*np.sin(q1)+a2*np.sin(q1+q2)])
+
+def jac_p(x):
+    q1, q2 = x
+    s1, s12 = np.sin(q1), np.sin(q1+q2)
+    c1, c12 = np.cos(q1), np.cos(q1+q2)
+    return np.array([[-a1*s1-a2*s12, -a2*s12], [a1*c1+a2*c12, a2*c12]])
+
+J = jac_p(q)
+for h in [1e-2, 1e-3, 1e-4, 1e-5, 1e-6]:
+    Jfd = np.column_stack([(fk_p(q + h*np.eye(2)[i]) - fk_p(q - h*np.eye(2)[i]))/(2*h) for i in range(2)])
+    print('h=', h, ' error_col1=', np.linalg.norm(J[:,0] - Jfd[:,0]))
+\end{lstlisting}
+
+% ============================================================================
+\section{Plantillas Normativas de Registro y Decisión Formal (P1 a P7)[cite: 15]}
+
+\subsection*{P1. Tabla de Caso de Cinemática Directa (FK)[cite: 15]}
+\noindent
+{\tiny
+\renewcommand{\arraystretch}{1.35}
+\noindent\begin{tabularx}{\textwidth}{|l|l|l|X|l|l|l|l|l|l|l|l|l|l|l|X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{ID} & \textbf{Grp} & \textbf{Mod/Commit} & $\mathbf{q}$ \textbf{+ Uds.} & \textbf{Fecha/$t$} & \textbf{Base$\to$TCP} & \textbf{Ref/Src} & $p_{own}$ & $p_{ref}$ & $R_{own}$ & $R_{ref}$ & $e_p$ [m] & $e_R$ [rad] & \textbf{Tol.} & \textbf{Decisión} & \textbf{Evidencia} \\ \hline
+[ID] & [G] & [ver] & [vec] & [src] & [transf] & [sist] & [3 val] & [3 val] & [conv] & [conv] & [núm] & [núm] & [pend/apr] & [estado] & [ruta][cite: 15] \\ \hline
+\end{tabularx}
+}
+
+\subsection*{P2. Tabla de Ramas de Cinemática Inversa (IK)[cite: 15]}
+\noindent
+{\tiny
+\renewcommand{\arraystretch}{1.35}
+\noindent\begin{tabularx}{\textwidth}{|l|l|l|l|l|c|X|l|l|l|X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{ID Pose} & $T_d$ / \textbf{Fuente} & \textbf{Método Propio} & \textbf{Método Ref.} & \textbf{Semilla} & \textbf{Rama} & $\mathbf{q}^{(k)}$ [rad] & \textbf{Residuo} $e_p / e_R$ & \textbf{Límites / Fuente} & \textbf{Estado Solución} & \textbf{Evidencia} \\ \hline
+[ID] & [T] & [versión] & [versión] & [vec/NA] & [$k$] & [vector] & [m] / [rad] & [fuente/pend] & [clasificación] & [enlace][cite: 15] \\ \hline
+\end{tabularx}
+}
+
+\subsection*{P3. Tabla de Jacobiano y Diferencias Finitas[cite: 15]}
+\noindent
+{\tiny
+\renewcommand{\arraystretch}{1.35}
+\noindent\begin{tabularx}{\textwidth}{|l|X|l|l|l|l|l|l|l|X|l|X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{ID} & $\mathbf{q}$ \textbf{y Uds.} & \textbf{Frame/TCP/Twist} & $J_{own}$ & $J_{ref}$ & $e_{J_v}$ & $e_{J_\omega}$ & $\dot{\mathbf{q}}_{test}$ & $J\dot{\mathbf{q}}$ & $h \to$ \textbf{Error FD} & \textbf{Decisión} & \textbf{Evidencia} \\ \hline
+[ID] & [vector] & [definición] & [arch] & [arch/NA] & [m/rad] & [rad/rad] & [rad/s] & [m/s, rad/s] & [tabla $E_i(h)$] & [estado] & [enlace][cite: 15] \\ \hline
+\end{tabularx}
+}
+
+\subsection*{P4. Tabla de Análisis de Singularidad[cite: 15]}
+\noindent
+{\tiny
+\renewcommand{\arraystretch}{1.35}
+\noindent\begin{tabularx}{\textwidth}{|l|l|l|c|l|l|X|X|X|c|X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{ID} & \textbf{Subespacio} & \textbf{Matriz y Escala $L$} & $r_{\max}$ & $\sigma_{\min}/\sigma_{\max}$ & \textbf{Umbral $\tau_{num}$} & $\mathbf{q}$ & \textbf{Dir. Perdida} & \textbf{Efecto en Vel.} & \textbf{Sep. Torque} & \textbf{Evidencia} \\ \hline
+[ID] & [tarea] & [$J$ y $L$] & [$n$] & [valores] & [fórmula] & [vector] & [análisis] & [obs/cond] & [sí] & [enlace][cite: 15] \\ \hline
+\end{tabularx}
+}
+
+\subsection*{P5. Estados Formales de Decisión por Caso y por Equipo[cite: 15]}
+\begin{itemize}\footnotesize
+    \item \textbf{\texttt{verificado}}: entrada, convenciones, procedencia, resultados, incertidumbre/tolerancia aprobada y prueba reproducible satisfacen el alcance declarado (hasta aprobación docente de umbrales, significa \textit{verificación procedimental}, no conformidad física formal)[cite: 15].
+    \item \textbf{\texttt{parcial}}: existe cálculo o comparación trazable, pero falta prueba de independencia, tolerancia aprobada, repetición, cobertura o sincronización (\texttt{inconcluso por comparabilidad/tiempo})[cite: 15].
+    \item \textbf{\texttt{fallido}}: ejecutado bajo precondiciones válidas pero incumple un criterio aprobado; adjuntar error, explicación y corrección[cite: 15].
+    \item \textbf{\texttt{no ejecutado}}: no hubo ejecución de esa prueba (no equivale necesariamente a falla técnica)[cite: 15].
+    \item \textbf{\texttt{bloqueado por acceso}}: depende de permiso, hardware o documentación no disponible; adjuntar solicitud y plan alternativo offline[cite: 15].
+\end{itemize}
+
+\subsection*{P6. Checklist Estudiantil Antes de Declarar un Resultado y P7. Firma de Revisión[cite: 15]}
+\begin{tcolorbox}[colback=white, colframe=ucbblue, left=2mm, right=2mm, top=1mm, bottom=1mm]
+    \scriptsize\raggedright
+    $\square$ 1. Tengo $\mathbf{q}$, \texttt{joint\_order}, unidades, signos, offsets y fuente[cite: 15]. \quad
+    $\square$ 2. Tengo modelo/URDF/commit, parámetros geométricos, tool y TCP[cite: 15].\\
+    $\square$ 3. Ambas poses usan base, TCP y tiempo comparables[cite: 15]. \quad
+    $\square$ 4. Mi referencia está identificada y sé si es independiente[cite: 15].\\
+    $\square$ 5. Calculo y adjunto $e_p$ y $e_R$ ($\mathrm{m}, \mathrm{rad}$), no solo captura de pantalla[cite: 15]. \quad
+    $\square$ 6. En IK muestro ramas, límites y residuo FK por rama[cite: 15].\\
+    $\square$ 7. En Jacobiano indico twist, columna, punto, FD y paso $h$[cite: 15]. \quad
+    $\square$ 8. En singularidad especifico tarea, rango/$\sigma_i$ y escalado $L$[cite: 15].\\
+    $\square$ 9. Distingo $J^T F$ de dinámica y no afirmo torque infinito[cite: 15]. \quad
+    $\square$ 10. Tengo presupuesto/criterio de tolerancia y estado de aprobación[cite: 15].\\
+    $\square$ 11. Mi script/notebook ejecuta offline con entradas conservadas[cite: 15]. \quad
+    $\square$ 12. Cito logs/archivos, fecha, responsable y evidencia[cite: 15].\\
+    $\square$ 13. No afirmo movimiento $\text{ROS}\to\text{IRC5}$ ni estado \texttt{GO} sin evidencias de autorización[cite: 15].
+    \par\vspace{0.15cm}\hrule\vspace{0.15cm}
+    \textbf{P7. Firma de Revisión[cite: 15]:} Equipo: \rule{2cm}{0.15mm} $\mid$ ID prueba: \rule{2cm}{0.15mm} $\mid$ Responsable: \rule{3cm}{0.15mm} $\mid$ Versión doc.: \rule{1.8cm}{0.15mm} $\mid$ Fecha: \rule{2cm}{0.15mm}\\
+    \textbf{Revisión docente:} \texttt{pendiente / revisado / aprobado (alcance explícito):} \rule{5.5cm}{0.15mm}[cite: 15]\\
+    \textbf{Hallazgo mayor:} \rule{4.2cm}{0.15mm} $\mid$ \textbf{Acción siguiente:} \rule{4.2cm}{0.15mm} $\mid$ \textbf{Enlace evidencia:} \rule{3.5cm}{0.15mm}[cite: 15]
+\end{tcolorbox}
+
+\end{document}

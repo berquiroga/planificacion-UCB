@@ -1,0 +1,344 @@
+% student/w_intensivo_guia_ltspice.tex
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage[most]{tcolorbox}
+\usepackage[american]{circuitikz}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=2.1cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+
+% Prevención de advertencias de fuentes monoespaciadas en negrita
+\renewcommand{\ttdefault}{lmtt}
+
+% Columna flexible alineada a la izquierda para evitar Overfull/Underfull \hbox
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{15pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Guía de LTspice desde Cero}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{IMT-221 | Guía de LTspice desde cero: simulación integral}}
+    \par\vspace{0.15cm}
+    {\large \textbf{Acondicionador LM358N, filtro Sallen-Key, cadena completa y control simulado}}
+    \par\vspace{0.1cm}
+    \textit{Material técnico para tutoría individual | UCB Tarija — 13 de noviembre de 2026}
+\end{center}
+
+\section*{Antes de comenzar: ¿qué vas a construir?}
+Esta guía \textbf{complementa}, no sustituye, las guías de laboratorio intensivo (14 páginas) y armado físico (6 páginas). Las dos guías proporcionan cálculos y conexiones físicas, pero no enseñan a construir de principio a fin \textbf{todas las simulaciones}[cite: 19, 27]. Aquí lo harás tú, con una ruta inicial que \textbf{no depende de disponer de una biblioteca específica de LM358N}[cite: 19, 27].
+
+\textbf{Meta principal: dos etapas en cascada:}
+\begin{center}
+    \begin{tikzpicture}[node distance=0.8cm, thick,
+        block/.style={draw=ucbblue, rounded corners, fill=blue!6, minimum height=1.0cm, align=center, font=\footnotesize}]
+        \node (in) [font=\footnotesize\ttfamily] {sensor\_in};
+        \node[block, right=0.8cm of in, text width=3.6cm] (stA) {\textbf{Etapa A: No Inversor}\\Ganancia $A_A = 3$};
+        \node[block, right=1.4cm of stA, text width=4.2cm] (stB) {\textbf{Etapa B: Sallen-Key}\\$K \approx 1.593, \; f_0 \approx 99.5\,\text{Hz}$};
+        \node[right=0.8cm of stB, font=\footnotesize\ttfamily] (out) {filt\_out};
+        
+        \draw[->, line width=1pt] (in) -- (stA);
+        \draw[->, line width=1pt] (stA) -- node[above, font=\scriptsize\ttfamily]{cond\_out} (stB);
+        \draw[->, line width=1pt] (stB) -- (out);
+    \end{tikzpicture}
+\end{center}
+
+\textbf{Meta complementaria:} analizar límites del LM358N mediante un \textbf{modelo real documentado}, representar un modelo de planta ilustrativo y comparar controles P y PI[cite: 19, 27]. El controlador y la planta térmica \textbf{no son un circuito físico conectado al LM358N de esta práctica}[cite: 19, 27].
+
+\textbf{Convenciones:} \texttt{CALCULADO} = ecuaciones; \texttt{SIMULADO IDEAL} = fuentes dependientes ideales; \texttt{SIMULADO MODELO LM358N} = macromodelo específico y documentado; \texttt{MEDIDO} = osciloscopio real[cite: 19, 27]. No llenes la columna \texttt{MEDIDO} con resultados del programa[cite: 19, 27].
+
+\section*{0. Preparación del programa y carpeta de trabajo}
+\begin{enumerate}[noitemsep, leftmargin=*]
+    \item Instala LTspice desde \texttt{https://www.analog.com/ltspice} y abre el programa[cite: 19, 27].
+    \item Crea la carpeta \texttt{IMT221\_SIMULACION/} con las subcarpetas \texttt{01\_RC}, \texttt{02\_ACOND}, \texttt{03\_FILTRO}, \texttt{04\_CADENA}, \texttt{05\_MODELO\_REAL}, \texttt{06\_CONTROL} y \texttt{07\_EVIDENCIAS}[cite: 19, 27].
+    \item Aprende estas acciones por el \textbf{nombre de la herramienta}, porque los atajos cambian según la versión: \textbf{New Schematic}, \textbf{Component}, \textbf{Resistor}, \textbf{Capacitor}, \textbf{Voltage Source}, \textbf{Ground}, \textbf{Wire}, \textbf{Label Net}, \textbf{Simulate/Run}, \textbf{Add Trace}, \textbf{Save As}[cite: 19, 27]. Las instrucciones de menús dependen de versión y sistema operativo[cite: 19, 27].
+    \item Comprueba la diferencia entre archivos: \texttt{.asc} es un esquema editable con símbolos; \texttt{.cir} es una \textbf{lista de conexiones en texto}, igualmente simulable; \texttt{.raw} almacena resultados; \texttt{.log} muestra errores y mediciones[cite: 19, 27]. \textbf{Se exige que construyas tu propio \texttt{.asc}}; los \texttt{.cir} anexos funcionan como comprobación y ruta alternativa[cite: 19, 27].
+    \item Si aparece la ventana de gráficas vacía tras ejecutar una simulación, \textbf{no es necesariamente un error}: hay que elegir nodos en el esquema o agregar una expresión en el visor[cite: 19, 27].
+\end{enumerate}
+
+\begin{tcolorbox}[colback=blue!5, colframe=ucbblue, title=\textbf{Regla Operativa de la Guía}]
+    Mantén solamente \textbf{un tipo de análisis activo} (\texttt{.op}, \texttt{.dc}, \texttt{.ac} o \texttt{.tran}) por archivo o simulación[cite: 19, 27]. Antes de pulsar \textbf{Run}, completa la predicción en papel[cite: 19, 27].
+\end{tcolorbox}
+
+\section{Práctica 1. Recordatorio RC — primer esquema desde cero (CP1A)}
+
+\subsection{Dibuja el esquema, pin por pin}
+
+\begin{center}
+    \begin{circuitikz}[thick, scale=0.95, transform shape]
+        \draw (0,0) node[ground]{} to[V, l={$V_1$ (\texttt{AC 1})}] (0,2.2)
+              to[short, -*] (1.2,2.2) node[above]{\texttt{in}}
+              to[R, l={$R_1 = 10\,\text{k}\Omega$}] (4.0,2.2)
+              to[short, -*] (5.2,2.2) node[above]{\texttt{out}}
+              to[C, l={$C_1 = 100\,\text{nF}$}] (5.2,0) -- (0,0);
+        \draw (5.2,2.2) to[short, -o] (6.2,2.2);
+    \end{circuitikz}
+\end{center}
+
+\begin{enumerate}[noitemsep, leftmargin=*]
+    \item Selecciona \textbf{File $\to$ New Schematic} y guarda como \texttt{01\_RC/rc\_inicial.asc}[cite: 20, 27].
+    \item Inserta un resistor \texttt{R1}, un capacitor \texttt{C1} y una fuente de voltaje \texttt{V1} mediante sus iconos o el buscador de componentes[cite: 20, 27].
+    \item Sitúa \texttt{V1} a la izquierda, \texttt{R1} horizontal arriba y \texttt{C1} vertical a la derecha[cite: 20, 27].
+    \item Con \textbf{Wire}, une \textbf{V1 positivo $\to$ R1 izquierda}, \textbf{R1 derecha $\to$ C1 arriba}, \textbf{C1 abajo $\to$ V1 negativo}[cite: 20, 27].
+    \item Inserta el símbolo \textbf{Ground} en el cable inferior común. Sin \texttt{GND}, SPICE no tiene referencia[cite: 20, 27].
+    \item Edita \texttt{R1}: \texttt{10k}; \texttt{C1}: \texttt{100n}. Usa \textbf{Label Net} para poner \texttt{in} al cable superior izquierdo y \texttt{out} al derecho[cite: 20, 27].
+    \item Abre \texttt{V1}, define una \textbf{amplitud AC = 1} (\textit{AC small-signal}, fase 0). El parámetro \texttt{AC 1} no es lo mismo que poner una fuente temporal \texttt{SINE}[cite: 20, 27].
+    \item Abre la configuración \textbf{AC Analysis} y elige década, 100 puntos/década, frecuencia inicial $1\,\text{Hz}$, final $100\,\text{kHz}$. La directiva equivalente es: \texttt{.ac dec 100 1 100k}[cite: 20, 27].
+    \item \textbf{Predice} $f_c = \frac{1}{2\pi RC} = 159.15\,\text{Hz}$. Pulsa \textbf{Run}[cite: 20, 27].
+    \item En la ventana del Bode busca \textbf{Add Trace} y escribe \texttt{V(out)/V(in)}; comprueba magnitud y fase. A $f_c$ predice $0.707$, $-3.01\,\text{dB}$ y $-45^\circ$[cite: 20, 27].
+    \item Guarda una captura con título \texttt{01\_rc\_bode}[cite: 20, 27].
+\end{enumerate}
+
+\textbf{Si aparece una línea horizontal:} revisa que el capacitor vaya a \texttt{GND}, que la fuente tenga \texttt{AC 1} y que estés graficando \texttt{V(out)/V(in)} en un \textbf{AC sweep}, no en DC[cite: 20, 27].
+
+\newpage
+\section{Práctica 2. Acondicionador no inversor (CP2A)}
+
+\subsection{Ecuación y predicción PREVIA}
+La etapa A tiene $R_{gA} = 10\,\text{k}\Omega$ del nodo inversor a \texttt{GND} y $R_{fA} = 20\,\text{k}\Omega$ de la salida al nodo inversor[cite: 20, 27]. En el régimen ideal lineal:
+\begin{equation}
+    A_A = 1 + \frac{R_{fA}}{R_{gA}} = 3, \qquad V(\texttt{cond\_out}) = 3\,V(\texttt{sensor\_in})
+\end{equation}
+Antes de simular completa: para entradas $0.20\,\text{V}$, $0.50\,\text{V}$ y $0.80\,\text{V}$, las salidas esperadas son $0.60\,\text{V}$, $1.50\,\text{V}$ y $2.40\,\text{V}$[cite: 20, 27].
+
+\subsection{Tu primer amplificador en un esquema LTspice}
+Para un \textbf{esquema con LM358N real}, utiliza \textbf{un símbolo cuya correspondencia con el modelo SPICE sea válida}[cite: 20, 27]. El pinout DIP-8 \textbf{físico} no equivale automáticamente al orden de terminales de un subcircuito[cite: 20, 27]. Si todavía no se ha importado el modelo, utiliza primero el archivo \texttt{02\_acond\_ideal\_dc.cir} para verificar el método, y construye el \texttt{.asc} con un op-amp \textbf{universal simulado} únicamente cuando verifiques sus terminales en el símbolo de tu versión[cite: 20, 27].
+
+\begin{center}
+    \begin{circuitikz}[thick, scale=0.92, transform shape]
+        \draw (0,0) node[op amp, yscale=-1] (U1A) {};
+        \node[font=\footnotesize] at (U1A.center) {U1A};
+        
+        \draw (-4.2,-1.8) node[ground]{} to[V, l={$V_{\text{sig}}$}, invert] (-4.2,0.5)
+              to[short, -*] (-1.8,0.5) node[above]{\texttt{sensor\_in}} -- (U1A.+);
+              
+        \draw (U1A.-) to[short, -*] ++(-1.7,0) coordinate(fbA) node[above left]{\texttt{fbA}};
+        \draw (fbA) to[R, l={$R_{gA} = 10\,\text{k}\Omega$}] ++(0,-2.5) coordinate(ground) node[ground]{};
+        \draw (ground) -- ++(0,0) coordinate(rfa_l) to[R, l={$R_{fA} = 20\,\text{k}\Omega$}] (rfa_l -| U1A.out) -- (U1A.out);
+        
+        \draw (U1A.out) to[short, *-o] ++(1.4,0) node[right]{\texttt{cond\_out}};
+        
+        \draw (U1A.down) -- ++(0,0.5) node[above, font=\scriptsize]{\texttt{VPLUS} ($+9\,\text{V}$, solo modelo con rieles)};
+        \draw (U1A.up) -- ++(0,-0.5) node[below, font=\scriptsize]{\texttt{VMINUS} ($-9\,\text{V}$, solo modelo con rieles)};
+    \end{circuitikz}
+\end{center}
+
+\textbf{Acciones en el programa:}
+\begin{enumerate}[noitemsep, leftmargin=*]
+    \item \textbf{New Schematic}, \textbf{Save As} \texttt{02\_ACOND/acondicionador\_propio.asc}[cite: 21, 27].
+    \item Abre \textbf{Component}. Busca un op-amp con \textbf{macromodelo válido en tu instalación}; no uses \texttt{opamp2} sin revisar si su subcircuito está asignado[cite: 21, 27]. El símbolo debe tener entradas $+$, $-$, salida y, si corresponde, los dos rieles. Si no sabes identificarlo, usa el netlist ideal anexo y continúa el resto del laboratorio sin bloquearte[cite: 21, 27].
+    \item Coloca $R_{gA}$ de \texttt{10k} entre entrada $-$ y \texttt{GND}. Coloca $R_{fA}$ de \texttt{20k} entre salida y entrada $-$. Estas \textbf{dos} resistencias forman realimentación negativa[cite: 21, 27].
+    \item Coloca la fuente \texttt{Vsig} entre \texttt{sensor\_in} y \texttt{GND}, conectando \texttt{sensor\_in} a la entrada $+$. Establece $\text{DC} = 0.2\,\text{V}$ (inicial)[cite: 21, 27].
+    \item Si elegiste un modelo con alimentación, agrega dos fuentes de \textbf{9 V} para los rieles $+9$ y $-9$, creando exactamente los nodos \texttt{VPLUS}, \texttt{VMINUS} y \texttt{GND}. En una fuente que define $-9\,\text{V}$, el terminal positivo va a \texttt{GND} y el negativo al riel \texttt{VMINUS}; comprueba los signos con \texttt{.op}[cite: 21, 27].
+    \item Etiqueta la señal de entrada \texttt{sensor\_in} y la salida \texttt{cond\_out}. \textbf{Comprueba que la entrada $-$ NO está conectada directamente a GND}[cite: 21, 27].
+    \item Introduce el análisis de punto de operación \texttt{.op}; ejecuta y anota las tensiones \texttt{sensor\_in}, \texttt{fbA}, \texttt{cond\_out} y los rieles si los hay[cite: 21, 27].
+    \item Para \textbf{DC sweep}, desactiva \texttt{.op} y configura: fuente \texttt{Vsig}, $0\,\text{V}$ inicial, $1\,\text{V}$ final, paso $0.05\,\text{V}$. Directiva: \texttt{.dc Vsig 0 1 0.05}[cite: 21, 27].
+    \item Ejecuta \textbf{Run} y grafica \texttt{V(cond\_out)} frente al eje de entrada que representa la tensión DC de \texttt{Vsig}. Añade \texttt{V(sensor\_in)} para comparar[cite: 21, 27].
+    \item Usa los cursores del gráfico para leer las salidas cerca de $0.2, 0.5, 0.8\,\text{V}$. Deben aproximarse a $0.6, 1.5, 2.4\,\text{V}$ \textbf{si el modelo opera linealmente}[cite: 21, 27].
+    \item Guarda captura \texttt{02\_acondicionador\_dc.png} y el archivo \texttt{.asc}[cite: 21, 27].
+\end{enumerate}
+
+\textbf{Si no obtienes una recta:} revisa (1) tierra común, (2) conexión salida $\to R_{fA} \to$ entrada $-$, (3) $R_{gA}$ a \texttt{GND}, (4) conexión de $+$, (5) polaridad de alimentación, (6) modelo de op-amp y sus pines[cite: 21, 27].
+
+\textbf{Ejercicio de rediseño:} cambia $R_{fA}$ de \texttt{20k} a \texttt{30k}. Escribe \textbf{antes} la nueva ganancia y la salida a $0.8\,\text{V}$. Simula y documenta antes/después[cite: 21, 27].
+
+\newpage
+\section{Práctica 3. Filtro Sallen-Key (CP3A)}
+
+\subsection{Esta conexión es crítica}
+La guía física y la matemática definen una topología \textbf{concreta}, que debes reproducir sin intercambiar los capacitores[cite: 21, 27]:
+
+\begin{center}
+    \begin{circuitikz}[thick, scale=0.9, transform shape]
+        \draw (0,0) node[op amp, yscale=-1] (U1B) {};
+        \node[font=\footnotesize] at (U1B.center) {U1B};
+        
+        \draw (U1B.+) to[short, -*] ++(-2.5,0) coordinate(b) node[above left]{\texttt{b}};
+        \draw (b) to[C, l_={$C_2 = 100\,\text{nF}$}] ++(0,-2.1) node[ground]{};
+        \draw (b) to[R, l_={$R_2 = 16\,\text{k}\Omega$}, -*] ++(-2.5,0) coordinate(a) node[below right]{\texttt{a}};
+        \draw (a) to[R, l_={$R_1 = 16\,\text{k}\Omega$}, -o] ++(-2.4,0) node[left]{\texttt{inB}};
+        
+        % Capacitor C1 desde nodo a hasta la salida filt_out
+        \draw (a) -- ++(0,1.7) coordinate(c1_up) to[C, l={$C_1 = 100\,\text{nF}$ (de \texttt{a} a \texttt{filt\_out})}] (c1_up -| U1B.out) -- (U1B.out);
+        
+        \draw (U1B.-) to[short, -*] ++(-0.6,0) coordinate(fbB) node[below left]{\texttt{fbB}};
+        \draw (fbB) to[R, l={$R_{gB} = 10\,\text{k}\Omega$}] ++(0,-2.5) coordinate(ground) node[ground]{};
+        \draw (ground) -- ++(0,0) coordinate(rfb_l) to[R, l={$R_{fB} = 5.93\,\text{k}\Omega$}] (rfb_l -| U1B.out) -- (U1B.out);
+        
+        \draw (U1B.out) to[short, *-o] ++(1.4,0) node[right]{\texttt{filt\_out}};
+    \end{circuitikz}
+\end{center}
+
+\textbf{$C_1$ conecta \texttt{a} a la SALIDA \texttt{filt\_out}; $C_2$ conecta \texttt{b} a \texttt{GND}.} La salida influye sobre \texttt{a} a través de $C_1$: es una característica fundamental de esta topología[cite: 21, 27]. Se adoptan $R_1 = R_2 = 16\,\text{k}\Omega$, $C_1 = C_2 = 100\,\text{nF}$, $R_{gB} = 10\,\text{k}\Omega$, $R_{fB} = 5.93\,\text{k}\Omega$[cite: 21, 27]. Valores de referencia \textbf{ILUSTRATIVOS}[cite: 21, 27]:
+\begin{equation}
+    K = 1 + \frac{5.93}{10} = 1.593, \qquad f_0 = \frac{1}{2\pi RC} \approx 99.47\,\text{Hz}, \qquad Q = \frac{1}{3 - K} \approx 0.7107
+\end{equation}
+
+\subsection{Crear la simulación de filtro en LTspice}
+\begin{enumerate}[noitemsep, leftmargin=*]
+    \item Guarda un esquema nuevo \texttt{03\_FILTRO/filtro\_propio.asc}[cite: 22, 27].
+    \item Inserta \textbf{dos resistencias en serie} con valores \texttt{16k}, formando $\texttt{inB} \to R_1 \to \texttt{a} \to R_2 \to \texttt{b}$[cite: 22, 27].
+    \item Inserta \textbf{$C_2 = \texttt{100n}$ entre \texttt{b} y \texttt{GND}}[cite: 22, 27].
+    \item Inserta \textbf{$C_1 = \texttt{100n}$ entre \texttt{a} y la salida del op-amp B}, nunca desde \texttt{a} a \texttt{GND}[cite: 22, 27].
+    \item Une \texttt{b} a la entrada $+$ del segundo op-amp[cite: 22, 27].
+    \item Crea la realimentación negativa resistiva: salida $\texttt{filt\_out} \to R_{fB}=\texttt{5.93k} \to$ entrada $-$ ($\texttt{fbB}$) $\to R_{gB}=\texttt{10k} \to \texttt{GND}$[cite: 22, 27].
+    \item Coloca una fuente \texttt{Vflt} entre \texttt{inB} y \texttt{GND} con amplitud \texttt{AC 1}. Con un modelo real conecta \textbf{también} los rieles del op-amp. No confundas estas fuentes con la señal \texttt{Vflt}[cite: 22, 27].
+    \item \textbf{Predice antes de ejecutar:} en banda pasante ganancia positiva $K \approx 1.593$ ($+4.04\,\text{dB}$); cerca de $f_0$, la magnitud \textbf{relativa} a banda pasante cae aproximadamente $-3\,\text{dB}$; a frecuencias muy altas cae con pendiente ideal $-40\,\text{dB/década}$[cite: 22, 27].
+    \item Configura \texttt{.ac dec 100 1 100k}. Ejecuta[cite: 22, 27].
+    \item Añade la traza \texttt{V(filt\_out)/V(inB)} en la ventana de Bode y observa \textbf{magnitud y fase}. Si solo ves magnitud, consulta la visualización del eje secundario/fase de tu versión[cite: 22, 27].
+    \item Registra en $10, 100, 300$ y $1000\,\text{Hz}$ \textbf{amplitud absoluta}, ganancia relativa respecto a $K$, dB absoluto y fase. Guarda una captura con el eje de frecuencia claramente visible[cite: 22, 27].
+    \item \textbf{Rediseño:} guarda una copia y cambia SOLO $R_{fB}$ de \texttt{5.93k} a \texttt{10k}. Antes de \textbf{Run} calcula $K = 2$ y $Q = 1$, anticipa el posible pico en magnitud y luego verifica. Recupera los valores originales al terminar[cite: 22, 27].
+\end{enumerate}
+
+\textbf{Errores típicos:} si apenas hay atenuación, revisa $C_1$ y $C_2$; si ves oscilaciones o un pico grande, comprueba $R_{fB}/R_{gB}$ y el valor de $Q$; si aparece una curva sin fase, revisa que se trate de análisis \texttt{.ac} y que hayas seleccionado la traza compleja adecuada[cite: 22, 27].
+
+\newpage
+\section{Práctica 4. Conecta AMBAS etapas en un único esquema (CP5 parcial)}
+
+\subsection{Esquema final obligatorio de simulación}
+\begin{center}
+    \begin{circuitikz}[thick, scale=0.76, transform shape]
+        % Etapa A
+        \draw (-6.2,0) node[op amp, yscale=-1] (U1A) {};
+        \node[font=\scriptsize] at (U1A.center) {OPAMP A};
+        \draw (-9.0,-1.8) node[ground]{} to[V, l={$V_{\text{sig}}$}] (-9.0,0.5)
+              to[short, -*] (-7.6,0.5) node[above]{\texttt{sensor\_in}} -- (U1A.+);
+        \draw (U1A.-) to[short, -*] ++(-0.5,0) coordinate(fbA) node[above left, font=\scriptsize]{\texttt{fbA}};
+        \draw (fbA) to[R, l={$R_{gA}=10\text{k}$}] ++(0,-2.0) coordinate(ground) node[ground]{};
+        \draw (ground) -- ++(0,0) coordinate(rfa_l) to[R, l={$R_{fA}=20\text{k}$}] (rfa_l -| U1A.out) -- (U1A.out);
+        
+        % Conexion intermedia cond_out -> R1 -> a -> R2 -> b
+        \draw (U1A.out) to[short, *-*] ++(0.9,0) coordinate(cond) node[above]{\texttt{cond\_out}}
+              to[R, l_={$R_1=16\text{k}$}, -*] ++(2.2,0) coordinate(a) node[below right]{\texttt{a}}
+              to[R, l_={$R_2=16\text{k}$}, -*] ++(2.2,0) coordinate(b) node[above left]{\texttt{b}};
+              
+        % Etapa B
+        \draw ($(b)+(2.7,-0.5)$) node[op amp, yscale=-1] (U1B) {};
+        \node[font=\scriptsize] at (U1B.center) {OPAMP B};
+        \draw (b) -- (U1B.+);
+        \draw (b) to[C, l_={$C_2=100\text{n}$}] ++(0,-2.0) node[ground]{};
+        \draw (a) -- ++(0,1.6) coordinate(c1_up) to[C, l={$C_1=100\text{n}$}] (c1_up -| U1B.out) -- (U1B.out);
+        
+        \draw (U1B.-) to[short, -*] ++(-0.5,0) coordinate(fbB) node[below left, font=\scriptsize]{\texttt{fbB}};
+        \draw (fbB) to[R, l={$R_{gB}=10\text{k}$}] ++(0,-2.0) coordinate(ground) node[ground]{};
+        \draw (ground) -- ++(0,0) coordinate(rfb_l) to[R, l={$R_{fB}=5.93\text{k}$}] (rfb_l -| U1B.out) -- (U1B.out);
+        \draw (U1B.out) to[short, *-o] ++(1.2,0) node[right]{\texttt{filt\_out}};
+    \end{circuitikz}
+\end{center}
+El LM358N en \textbf{DIP-8} físico tiene: amplificador A $\texttt{OUT}=1, \texttt{-}=2, \texttt{+}=3$; riel negativo $4$; amplificador B $\texttt{+}=5, \texttt{-}=6, \texttt{OUT}=7$; riel positivo $8$[cite: 22, 27]. \textbf{En LTspice el orden de terminales del subcircuito se verifica con el propio modelo; no copies estos números como índices de modelo sin verificar}[cite: 22, 27].
+
+\subsection{Simulación DC de la cadena}
+\begin{enumerate}[noitemsep, leftmargin=*]
+    \item Crea \texttt{04\_CADENA/cadena\_dc.asc} y dibuja las dos etapas como se indica arriba, conectando \textbf{\texttt{cond\_out} con \texttt{inB}}. Si utilizas un bloque ideal, \textbf{identifica el resultado como ideal}[cite: 22, 27].
+    \item En \texttt{Vsig}, coloca $\text{DC} = 0.2\,\text{V}$. Añade \texttt{.op} y verifica $\texttt{cond\_out} \approx 0.6\,\text{V}$, $\texttt{filt\_out} \approx 0.956\,\text{V}$ (ideales nominales)[cite: 22, 27].
+    \item Cambia a \texttt{.dc Vsig 0.2 0.8 0.3}. Grafica \texttt{V(sensor\_in)}, \texttt{V(cond\_out)}, \texttt{V(filt\_out)} y compara $0.2, 0.5, 0.8\,\text{V}$[cite: 22, 27].
+    \item Completa una tabla con valores calculados y simulados separados. La ganancia DC final esperada ideal es $3 \times 1.593 = 4.779\,\text{V/V}$[cite: 22, 27].
+\end{enumerate}
+
+\subsection{AC Sweep: dos relaciones distintas}
+\begin{enumerate}[noitemsep, leftmargin=*]
+    \item Guarda una copia \texttt{04\_CADENA/cadena\_ac.asc}.
+    \item Configura \texttt{Vsig} con \textbf{DC = 0.5 V y AC = 1}. El punto DC permite que el modelo real esté polarizado; el AC Sweep sigue siendo de pequeña señal[cite: 23, 27].
+    \item Añade \texttt{.ac dec 100 1 100k} y ejecuta[cite: 23, 27].
+    \item Agrega \textbf{ambas trazas}: \texttt{V(filt\_out)/V(cond\_out)} (solo filtro B) y \texttt{V(filt\_out)/V(sensor\_in)} (cadena A+B)[cite: 23, 27].
+    \item Observa que \textbf{la frecuencia de corte se mantiene} cerca de $100\,\text{Hz}$, mientras que la cadena completa posee más ganancia de baja frecuencia ($+13.59\,\text{dB}$) que el filtro solo ($+4.04\,\text{dB}$)[cite: 23, 27].
+    \item Registra datos a \textbf{10, 100, 300 y 1000 Hz}: traza filtro, traza cadena y fase de ambas[cite: 23, 27].
+    \item Conecta la comparación al laboratorio físico: CH1 en \texttt{cond\_out} y CH2 en \texttt{filt\_out} miden el filtro; CH1 en \texttt{sensor\_in} y CH2 en \texttt{filt\_out} miden la cadena completa, siempre bajo autorización de tierras[cite: 23, 27].
+\end{enumerate}
+
+\subsection{Transient: señal con perturbación}
+\begin{enumerate}[noitemsep, leftmargin=*]
+    \item Guarda \texttt{04\_CADENA/cadena\_trans.asc}[cite: 23, 27].
+    \item Prueba 1: \texttt{Vsig = SINE(0.5 0.1 10)} y \texttt{.tran 0 500m 0 50u}. Observa offset, amplitud pico a pico y retraso de fase en \texttt{V(sensor\_in)}, \texttt{V(cond\_out)} y \texttt{V(filt\_out)}[cite: 23, 27].
+    \item Prueba 2: \texttt{SINE(0.5 0.1 100)} y \texttt{.tran 0 100m 0 10u}[cite: 23, 27].
+    \item Prueba 3: \texttt{SINE(0.5 0.1 1000)} y \texttt{.tran 0 20m 0 2u}. Si la salida AC es muy pequeña, cambia escala en el visor sin aumentar arbitrariamente la entrada[cite: 23, 27].
+    \item \textbf{Ensayo avanzado de mezcla de señal y ruido:} abre \texttt{04\_cadena\_dos\_tonos\_ideal.cir}, o inserta tres fuentes en serie entre \texttt{GND} y \texttt{sensor\_in}: \texttt{DC 0.5}, \texttt{SINE(0 0.05 10)} y \texttt{SINE(0 0.02 1k)}. Compara \texttt{cond\_out} y \texttt{filt\_out}[cite: 23, 27].
+\end{enumerate}
+
+\section{Práctica 5. Pasa de modelo IDEAL a LM358N REAL (CP2B)}
+Esta práctica es \textbf{obligatoria como análisis documental}, aunque la instalación local no disponga todavía del macromodelo específico[cite: 23, 27].
+\begin{enumerate}[noitemsep, leftmargin=*]
+    \item Descarga el datasheet exacto del LM358-N de Texas Instruments (\texttt{https://www.ti.com/lit/ds/symlink/lm358-n.pdf}) y registra alimentación admitida, rango modo común, excursión bajo carga, $GBW$, $SR$ y offset con sus condiciones de medida[cite: 23, 27].
+    \item Busca un macromodelo SPICE oficial compatible (\texttt{.lib}, \texttt{.sub} o \texttt{.cir}) y guárdalo en \texttt{05\_MODELO\_REAL/}. Si no existe o es incompatible, marca \textbf{MODELO NO DISPONIBLE} y continúa con análisis ideales declarando su alcance[cite: 23, 27].
+    \item Si tienes un \texttt{.SUBCKT nombre p1 p2 ...}, verifica el orden exacto de terminales (\texttt{SpiceOrder}) antes de asociar un símbolo con \texttt{Prefix=X} y directiva \texttt{.include}. \textbf{No deduzcas \texttt{SpiceOrder} del pinout DIP-8}[cite: 23, 27].
+    \item Calcula la condición de velocidad para salida senoidal $v_o(t) = V_p\sin(2\pi f t)$: $SR_{\text{req}} = 2\pi f V_p$. Para $V_p = 2\,\text{V}$ y $f = 10\,\text{kHz} \implies SR_{\text{req}} = 0.1257\,\text{V/}\mu\text{s}$. Compara con la hoja de datos y escribe tu decisión[cite: 24, 27].
+\end{enumerate}
+
+\newpage
+\section{Práctica 6. Planta y controlador P / PI (CP4A: simulación separada)}
+Se utiliza el modelo didáctico de planta y controladores[cite: 24, 27]:
+\begin{equation}
+    G_p(s) = \frac{2}{20s + 1}, \qquad C_P(s) = 1, \qquad C_{\text{PI}}(s) = 1 + \frac{0.05}{s}
+\end{equation}
+
+\subsection{Modelo de planta mediante RC equivalente en LTspice}
+\begin{center}
+    \begin{circuitikz}[thick, scale=0.9, transform shape]
+        \draw (0,0) node[ground]{} to[V, l={$V_u$ (\texttt{PULSE})}] (0,2.0) to[short, -*] (1.2,2.0) node[above]{\texttt{u}};
+        \draw (3.0,2.0) node[above]{\texttt{drive}} to[R, l={$R_{\text{plant}} = 20\,\text{k}\Omega$}, *-*] (6.0,2.0) node[above]{\texttt{plant}}
+              to[C, l={$C_{\text{plant}} = 1\,\text{mF}$}] (6.0,0) node[ground]{};
+        \draw[draw=ucbblue, fill=blue!6, rounded corners] (1.6,0.6) rectangle (2.7,2.3);
+        \node[align=center, font=\scriptsize] at (2.15,1.45) {VCVS\\$E = 2\,V(\texttt{u})$};
+        \draw (1.2,2.0) -- (1.6,2.0);
+        \draw (2.7,2.0) -- (3.0,2.0);
+        \draw (6.0,2.0) to[short, -o] (7.0,2.0);
+    \end{circuitikz}
+\end{center}
+\begin{enumerate}[noitemsep, leftmargin=*]
+    \item Crea \texttt{06\_CONTROL/planta\_rc\_equivalente.asc} con una fuente controlada de ganancia 2 hacia el nodo \texttt{drive}, seguida de $R_{\text{plant}} = 20\,\text{k}\Omega$ y $C_{\text{plant}} = 1\,\text{mF}$ ($\tau = R_{\text{plant}}C_{\text{plant}} = 20\,\text{s}$)[cite: 24, 27].
+    \item Aplica \texttt{PULSE(0 1 1 1m 1m 100 200)}, análisis \texttt{.tran 0 100}, y verifica que la salida tiende a $2$ (unidades simuladas). Compara con \texttt{05\_planta\_escalon.cir}[cite: 24, 27].
+    \item \textbf{Lazo P (\texttt{06\_control\_P.cir}):} Predice $y(\infty) = 2/3$ y $e_\infty = 1/3$ antes de simular y grafica \texttt{V(ref)}, \texttt{V(plant)}, \texttt{V(error)} y \texttt{V(ctrl)}[cite: 24, 27].
+    \item \textbf{Lazo PI (\texttt{07\_control\_PI.cir}):} Con $u = e + i$ y $\frac{di}{dt} = 0.05e$, predice $y(t) = 1 - e^{-t/10}$, ejecuta \texttt{.tran} y comprueba la eliminación del error estacionario[cite: 24, 27].
+\end{enumerate}
+
+\section{Práctica 7. Microcasos de Wien, carga y etapa clase AB (CP3B/CP4B)}
+\begin{itemize}[noitemsep, leftmargin=*]
+    \item \textbf{Puente de Wien (\texttt{08\_wien\_red\_ac.cir}):} Con $R = 10\,\text{k}\Omega$ y $C = 10\,\text{nF}$, predice $f_0 \approx 1591.55\,\text{Hz}$, $|\beta(f_0)| = 1/3$ ($-9.54\,\text{dB}$) y fase $0^\circ$. Grafica \texttt{V(beta)/V(src)}.
+    \item \textbf{Efecto de carga y Clase AB:} Evalúa el efecto de carga resistiva/capacitiva sobre un seguidor con modelo real, y revisa el microcaso teórico de potencia ($5\,\text{V}$ sobre $100\,\Omega \implies 50\,\text{mA}$) sin conectar esa carga al LM358N físico[cite: 25, 27].
+\end{itemize}
+
+\section{Práctica 8. Entrega, validación y defensa}
+
+\begin{center}
+\footnotesize
+\begin{tabularx}{\textwidth}{@{} l L L L @{}}
+\toprule
+\textbf{Ensayo} & \textbf{Predicción antes de Run} & \textbf{Captura / Archivo} & \textbf{Interpretación Requerida} \\ \midrule
+RC Bode & $f_c$, fase, $-3\,\text{dB}$ & \texttt{rc\_inicial.asc} / PNG & Qué cambia con la frecuencia[cite: 25, 27] \\
+Acondicionador DC & Tres pares $V_{in}/V_{out}$ & \texttt{.asc} / captura & Ganancia y realimentación[cite: 25, 27] \\
+Filtro AC & $K, Q, f_0$, cuatro puntos & \texttt{.asc} / Bode & Magnitud abs. y rel.; fase[cite: 25, 27] \\
+Cadena DC & Ganancia $4.779\,\text{V/V}$ & \texttt{.asc} / tabla & Dos etapas conectadas[cite: 25, 27] \\
+Cadena AC & Dos funciones de transf. & \texttt{.asc} / Bode & Filtro B vs. cadena A+B[cite: 25, 27] \\
+Cadena Transient & Seno $10/100/1000\,\text{Hz}$ & \texttt{.asc} / curvas & Amplitud, offset, desfase[cite: 25, 27] \\
+Modelo LM358N & Límites documentados & Modelo y \texttt{.log} & Límites que sí/no reproduce[cite: 25, 27] \\
+Planta P / PI & Error y respuesta temporal & \texttt{.cir} / curvas & Datos sintéticos, no $T$ real[cite: 25, 27] \\
+Wien / Potencia & Condiciones conceptuales & \texttt{.cir} / script & Microcaso, no montaje físico[cite: 25, 27] \\ \bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection*{Cinco preguntas de defensa}
+\begin{enumerate}[noitemsep, leftmargin=*]
+    \item ¿Por qué graficar \texttt{V(filt\_out)/V(cond\_out)} no es lo mismo que \texttt{V(filt\_out)/V(sensor\_in)}[cite: 26, 27]?
+    \item ¿Por qué el filtro puede tener $+4\,\text{dB}$ de ganancia absoluta en banda pasante y aun así ser un pasa-bajos[cite: 26, 27]?
+    \item ¿Qué conexión cambia completamente el Sallen-Key si llevas $C_1$ a tierra[cite: 26, 27]?
+    \item ¿Por qué un AC Sweep ideal no prueba que el LM358N no sature ante una senoide grande[cite: 26, 27]?
+    \item ¿Qué parte del sistema regula temperatura físicamente y cuál solo representa un modelo didáctico[cite: 26, 27]?
+\end{enumerate}
+
+\end{document}

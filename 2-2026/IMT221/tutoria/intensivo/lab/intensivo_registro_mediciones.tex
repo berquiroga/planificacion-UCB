@@ -1,0 +1,69 @@
+% lab/w_intensivo_registro_mediciones.tex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm} % Solución al error \bm
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+% Solución a las advertencias de fuente Typewriter en negrita
+\renewcommand{\ttdefault}{lmtt}
+
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\rhead{IMT-221 | Registro de Mediciones Físicas}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{Hoja de Registro de Mediciones de Hardware}}
+    \par\vspace{0.1cm}
+    \textit{Proyecto: Acondicionador + Filtro Sallen-Key (LM358N)}
+\end{center}
+
+\noindent\textbf{Estudiante:} \rule{6cm}{0.4pt} \hfill \textbf{Fecha de Ensayo:} \rule{3cm}{0.4pt}
+
+\section*{1. Verificación Estática (Corriente Continua - DC)}
+\textit{Mida con multímetro. Los valores teóricos asumen modelo lineal ideal y $K_B \approx 1.593$.}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{} c c c L L @{}}
+\toprule
+\textbf{\texttt{sensor\_in} [V]} & \textbf{CALC. \texttt{cond\_out}} & \textbf{CALC. \texttt{filt\_out}} & \textbf{MEDIDO \texttt{cond\_out}} & \textbf{MEDIDO \texttt{filt\_out}} \\ \midrule
+$0.20$ & $0.60\,\text{V}$ & $0.956\,\text{V}$ & & \\ \addlinespace[15pt]
+$0.50$ & $1.50\,\text{V}$ & $2.390\,\text{V}$ & & \\ \addlinespace[15pt]
+$0.80$ & $2.40\,\text{V}$ & $3.823\,\text{V}$ & & \\ \bottomrule
+\end{tabularx}
+\end{center}
+
+\section*{2. Verificación Dinámica (Barrido de Frecuencia - AC)}
+\textit{Configuración Generador: Senoide, Offset DC $0.50\,\text{V}$, Amplitud Pico $\approx 0.10\,\text{V}$.} \\
+\textit{Si a $1\,\text{kHz}$ la señal es indistinguible del ruido, registre "No resuelto instrumentalmente".}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{} r L L L L L @{}}
+\toprule
+$\bm{f}$ \textbf{[Hz]} & \textbf{$V_{pp,cond}$ [V]} & \textbf{$V_{pp,filt}$ [V]} & $\mathbf{|H_B| = \frac{V_{pp,filt}}{V_{pp,cond}}}$ & \textbf{Fase $\phi$ [$^\circ$]} & \textbf{Observaciones} \\ \midrule
+$10$ & & & & & \\ \addlinespace[20pt]
+$\sim 100$ & & & & & \\ \addlinespace[20pt]
+$300$ & & & & & \\ \addlinespace[20pt]
+$1000$ & & & & & \\ \bottomrule
+\end{tabularx}
+\end{center}
+
+\vspace{2cm}
+\noindent\rule{6cm}{0.4pt} \\
+\textbf{Firma Constancia Toma de Datos (Docente)}
+
+\end{document}

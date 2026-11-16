@@ -1,0 +1,107 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage[most]{tcolorbox}
+\usepackage{enumitem}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342} | Robótica}
+\chead{Recuperatorio Exclusivo — Unidad II (Variante B)}
+\rhead{Sesión W14-S02}
+\lfoot{Evaluación Individual}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Recuperatorio de Unidad II (Variante B)}}
+\end{center}
+
+\vspace{0.2cm}
+\noindent\begin{tabular}{ll}
+\textbf{Nombre:} \rule{7cm}{0.15mm} \\
+\textbf{Fecha:} \rule{4cm}{0.15mm} & \textbf{Tiempo neto:} 90 minutos
+\end{tabular}
+
+\vspace{0.3cm}
+\begin{tcolorbox}[colback=green!5, colframe=green!50!black, left=2mm, right=2mm, top=1mm, bottom=1mm]
+    \small\textbf{Condiciones:} Escrito individual. \textbf{SÍ se autoriza} tener impreso el formulario EC2 existente y utilizar calculadora científica no programable. Sin CAS, apuntes adicionales, celular ni laptop. Mostrar método y razonamiento; las unidades en la respuesta final son obligatorias.
+\end{tcolorbox}
+
+\vspace{0.3cm}
+\noindent\textbf{\large B1 — Pieper y múltiples ramas (20 puntos)}
+
+En un modelo simbólico de robot con muñeca esférica, se proveen los siguientes datos para la pose deseada del efector final:
+\begin{equation*}
+    {}^0p_6^d=\begin{bmatrix}1.00\\-0.60\\1.10\end{bmatrix}\mathrm{m},\qquad
+    {}^0z_6^d=\begin{bmatrix}0\\0\\1\end{bmatrix},\qquad d_6=0.15\;\mathrm{m}
+\end{equation*}
+
+\begin{enumerate}
+    \item \textbf{(5 pts)} Halle el centro de muñeca ($p_W$) y explique por qué este punto no coincide espacialmente con el origen del efector final.
+    \item \textbf{(4 pts)} Proporcione un candidato matemático para $q_1 = \operatorname{atan2}(p_{Wy}, p_{Wx})$ y evalúe su valor aproximado.
+    \item \textbf{(6 pts)} En la fase geométrica se obtiene $\cos q_3 = -1/2$. Determine \textbf{ambas ramas principales} discriminando por el signo de $\sin q_3$ y explique por qué es estrictamente necesario conservar ambas en esta etapa.
+    \item \textbf{(5 pts)} Escriba la expresión algebraica que permite el desacoplamiento de la orientación de la muñeca (${}^3R_6$) y redacte un criterio concreto de verificación cruzada para validar la pose completa mediante Cinemática Directa (FK).
+\end{enumerate}
+
+\vspace{0.3cm}
+\noindent\textbf{\large B2 — Jacobiano y singularidad (25 puntos)}
+
+En una postura planar, los vectores característicos de dos articulaciones revolutas se expresan respecto al marco base como:
+\begin{equation*}
+    o_0 = \begin{bmatrix} 0 \\ 0 \\ 0 \end{bmatrix},\quad o_1 = \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix},\quad o_n = \begin{bmatrix} 1 \\ 2 \\ 0 \end{bmatrix} \;[\mathrm{m}],\qquad z_0 = z_1 = \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}
+\end{equation*}
+
+\begin{enumerate}
+    \item \textbf{(10 pts)} Construya paso a paso las dos columnas del Jacobiano geométrico revoluto y ensamble la matriz total $J \in \mathbb{R}^{6 \times 2}$, respetando el orden $[v_L ; \omega]^T$.
+    \item \textbf{(6 pts)} Calcule el vector de velocidad cartesiana $v_e = J\dot{\mathbf{q}}$ si se imponen velocidades articulares $\dot{\mathbf{q}} = [0.5, -0.5]^T\;\mathrm{rad/s}$. Interprete físicamente el resultado de la componente angular.
+    \item \textbf{(9 pts)} En una postura distinta del mismo mecanismo, se reporta que la submatriz de posición planar es $J_p = \begin{bmatrix} 2 & 4 \\ -1 & -2 \end{bmatrix}$. Halle su rango, el diagnóstico resultante, una dirección cartesiana de velocidad que se ha \textit{perdida}, y explique por qué la condición de singularidad \textbf{no} significa la ausencia de todo movimiento físico.
+\end{enumerate}
+
+\vspace{0.3cm}
+\noindent\textbf{\large B3 — Perfil LSPB: Factibilidad y Cinemática (25 puntos)}
+
+Se exige mover una articulación de $q_i = 0.20\;\mathrm{rad}$ hasta $q_f = 1.20\;\mathrm{rad}$ en un tiempo $t_f = 4\;\mathrm{s}$, garantizando velocidad inicial y final nula. Se propone imponer una aceleración en fase de arranque $\ddot{q}_c = 0.50\;\mathrm{rad/s^2}$.
+
+\begin{enumerate}
+    \item \textbf{(5 pts)} Determine la aceleración mínima estrictamente necesaria y dictamine la factibilidad del perfil propuesto.
+    \item \textbf{(7 pts)} Obtenga el tiempo de mezcla ($t_c$), la velocidad de crucero constante ($\dot{q}_c$), y declare los intervalos de tiempo exactos correspondientes a cada una de las tres fases del movimiento.
+    \item \textbf{(8 pts)} Identificando primero a qué fase corresponde el instante $t = 3.50\;\mathrm{s}$, calcule los valores cinemáticos instantáneos $q(3.50)$, $\dot{q}(3.50)$ y $\ddot{q}(3.50)$.
+    \item \textbf{(5 pts)} Explique por qué tener $\ddot{q} = 0$ durante la fase de crucero \textbf{no} significa reposo articular. ¿A qué magnitud cinemática específica hace referencia el término de diseño «perfil trapezoidal»?
+\end{enumerate}
+
+\vspace{0.3cm}
+\noindent\textbf{\large B4 — Dinámica de Euler-Lagrange e Integración (30 puntos)}
+
+Considere el modelo 1R abordado en clase, con expresiones de energía:
+\begin{equation*}
+    T = \frac{1}{2}J\dot{q}^2, \qquad V = mg\ell_c(1 - \cos q)
+\end{equation*}
+Parámetros del sistema: $J = 0.25\;\mathrm{kg\cdot m^2}$, $m = 1\;\mathrm{kg}$, $\ell_c = 0.40\;\mathrm{m}$, $g = 10\;\mathrm{m/s^2}$. \\
+Estado dinámico instantáneo a evaluar: $q = \pi/6\;\mathrm{rad}$ y $\ddot{q} = -1\;\mathrm{rad/s^2}$.
+
+\begin{enumerate}
+    \item \textbf{(12 pts)} Construya el Lagrangiano $L$, calcule explícitamente las tres derivadas parciales necesarias e ingréselas en la ecuación de Euler-Lagrange para derivar el torque motriz $\tau$.
+    \item \textbf{(8 pts)} Evaluando numéricamente el modelo, separe el requerimiento de torque inercial, el torque gravitatorio y el torque total, asignando el signo correcto y las unidades físicas correspondientes.
+    \item \textbf{(5 pts)} Un estudiante sostiene la afirmación: \textit{«Si no hay aceleración articular, nunca se requiere torque de parte de los motores»}. Refútelo demostrando un caso con el modelo matemático anterior.
+    \item \textbf{(5 pts)} Describa el flujo lógico secuencial que vincula: \textit{Pose deseada $\to$ IK $\to$ FK de validación $\to$ LSPB $\to$ Jacobiano $\to$ Torque}. Indique claramente la entrada y la salida de \textbf{al menos tres} de estas transiciones.
+\end{enumerate}
+
+\begin{center}
+    \textbf{--- FIN DEL EXAMEN ---}
+\end{center}
+
+\end{document}

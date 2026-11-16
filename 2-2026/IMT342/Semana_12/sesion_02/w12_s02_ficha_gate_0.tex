@@ -1,0 +1,97 @@
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.4cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342}}
+\chead{Ficha Gate 0 Actualizable — Auditoría de Evidencia Local}
+\rhead{Semana 12 - Sesión 2}
+\lfoot{Reutilización del Instrumento Gate 0}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Ficha Técnica Gate 0 (Actualizable): De la Hipótesis a la Evidencia Local}}[cite: 16]
+\end{center}
+
+\vspace{0.1cm}
+\noindent
+\textbf{Equipo:} \rule{3.5cm}{0.15mm} \hfill
+\textbf{Fecha y Hora:} \rule{4cm}{0.15mm} \hfill
+\textbf{Coord. de Auditoría:} \rule{4.5cm}{0.15mm} \hfill
+\textbf{Supervisor Lab.:} \rule{4.5cm}{0.15mm}[cite: 16]
+
+\vspace{0.15cm}
+\begin{tcolorbox}[colback=yellow!10, colframe=black, title=\textbf{Convención de Evidencia y Reglas de Clasificación (Bloque A)} {[cite: 16]}, left=2mm, right=2mm, top=1mm, bottom=1mm]
+    \scriptsize\raggedright
+    \begin{itemize}
+        \item \textbf{\texttt{CONFIRMADO}:} Existe una fuente identificable, fechada y relevante para la instalación local (placa autorizada, captura de sistema bajo supervisión, commit/archivo local verificado)[cite: 16].
+        \item \textbf{\texttt{PENDIENTE}:} Todavía no se cuenta con evidencia local verificable. Si no hay acceso al controlador, se documenta el bloqueo institucional, el responsable de acceso y la solicitud formal[cite: 16].
+        \item \textbf{\texttt{INCOMPATIBLE}:} Incompatibilidad demostrada mediante la contradicción directa entre un requisito técnico documentado y un dato local verificable. \textbf{El mero desconocimiento nunca se rotula \texttt{INCOMPATIBLE}}[cite: 16].
+        \item \textbf{Separación de dos niveles:} \textit{«El README del candidato A exige la opción X»} puede estar \texttt{CONFIRMADO} como requisito del software, mientras que \textit{«El ABB de Tarija posee la opción X»} permanece \texttt{PENDIENTE} hasta comprobarlo en el equipo[cite: 16].
+    \end{itemize}
+\end{tcolorbox}
+
+\begin{center}
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.42}
+% Suma de \hsize = 0.85 + 0.85 + 0.85 + 1.15 + 0.55 + 0.65 + 1.00 + 1.10 = 7.0 para las 7 columnas X
+\begin{tabularx}{\textwidth}{|>{\hsize=0.85\hsize\raggedright\arraybackslash}X|>{\hsize=0.85\hsize\raggedright\arraybackslash}X|>{\hsize=0.85\hsize\raggedright\arraybackslash}X|>{\hsize=1.15\hsize\raggedright\arraybackslash}X|c|>{\hsize=0.65\hsize\raggedright\arraybackslash}X|>{\hsize=1.00\hsize\raggedright\arraybackslash}X|>{\hsize=1.10\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Ítem}[cite: 16] & \textbf{Valor Local Observado}[cite: 16] & \textbf{Estado} (\texttt{CONFIRMADO} / \texttt{PENDIENTE} / \texttt{INCOMPATIBLE})[cite: 16] & \textbf{Evidencia Exacta / Fuente y Versión}[cite: 16] & \textbf{Fecha}[cite: 16] & \textbf{Resp.}[cite: 16] & \textbf{Qué Falta Verificar}[cite: 16] & \textbf{Siguiente Prueba Autorizada}[cite: 16] \\ \hline
+1. Controlador (modelo y serie)[cite: 16] & & & & & & & \\ \hline
+2. RobotWare / firmware[cite: 16] & & & & & & & \\ \hline
+3. Opciones y licencias instaladas[cite: 16] & & & & & & & \\ \hline
+4. ROS 1 / ROS 2 y distribución[cite: 16] & & & & & & & \\ \hline
+5. Sistema operativo y máquina ROS[cite: 16] & & & & & & & \\ \hline
+6. Red / IP / subred y permisos[cite: 16] & & & & & & & \\ \hline
+7. Driver / paquete y commit candidato[cite: 16] & & & & & & & \\ \hline
+8. Código ajedrez y protocolo previo[cite: 16] & & & & & & & \\ \hline
+9. Operador / supervisor autorizado[cite: 16] & & & & & & & \\ \hline
+\end{tabularx}
+\end{center}
+
+\vspace{0.15cm}
+\noindent
+\begin{minipage}[t]{0.49\textwidth}
+    \begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{Dato de Mayor Poder Discriminante (Actividad 2)} {[cite: 16]}, left=2mm, right=2mm, top=1mm, bottom=1mm]
+        \scriptsize\raggedright
+        \textbf{¿Cuál es el dato único cuya verificación descartaría o admitiría de inmediato una ruta de integración?[cite: 16]}\\[0.25cm]
+        \rule{\textwidth}{0.15mm}\\[0.25cm]
+        \textbf{Autoridad o medio requerido para obtenerlo[cite: 16]:} \rule{5.5cm}{0.15mm}
+    \end{tcolorbox}
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.49\textwidth}
+    \begin{tcolorbox}[colback=red!5, colframe=red!70!black, title=\textbf{Errores Frecuentes a Auditar Antes de Entregar} {[cite: 16]}, left=2mm, right=2mm, top=1mm, bottom=1mm]
+        \scriptsize\raggedright
+        $\square$ ¿Se rotuló algún dato \texttt{INCOMPATIBLE} solo por no conocerlo?[cite: 16]\\
+        $\square$ ¿Se asumió comunicación real solo porque un paquete ROS compiló?[cite: 16]\\
+        $\square$ ¿Se atribuyó ROS al proyecto previo de ajedrez sin ver su código?[cite: 16]\\
+        $\square$ ¿Se copiaron opciones de un manual genérico como si estuvieran instaladas?[cite: 16]
+    \end{tcolorbox}
+\end{minipage}
+
+\end{document}

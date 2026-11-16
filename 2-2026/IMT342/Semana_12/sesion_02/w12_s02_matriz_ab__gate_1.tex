@@ -1,0 +1,108 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342}}
+\chead{Matriz de Arquitecturas A/B y Diseño Gate 1}
+\rhead{Semana 12 - Sesión 2}
+\lfoot{Diseño de Prueba Solo Lectura (Sin Movimiento)}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Contraste de Arquitecturas Candidatas (A/B) y Diseño del Ensayo Gate 1}}[cite: 16]
+\end{center}
+
+\section{Separación Conceptual de Canales y Visual 3[cite: 16]}
+Para sostener una afirmación de comunicación en Gate 1, es obligatorio distinguir entre un comando emitido desde ROS, el transporte de red, el estado generado por el controlador y el movimiento físico[cite: 16]. Ni la visualización en RViz, ni el eco local de un tópico, ni un \texttt{ping} exitoso prueban que se lean estados reales del controlador ABB[cite: 16].
+
+\begin{center}
+% Visual 3: Arquitecturas A y B con separación de lectura/escritura
+\begin{tikzpicture}[
+    box/.style={rectangle, draw=ucbblue, thick, fill=ucbblue!5, text width=3.0cm, align=center, rounded corners, font=\scriptsize, minimum height=1.1cm},
+    bridge/.style={rectangle, draw=orange!80!black, thick, fill=yellow!10, text width=3.6cm, align=center, rounded corners, font=\scriptsize, minimum height=1.1cm},
+    hw/.style={rectangle, draw=gray!80!black, thick, fill=gray!10, text width=2.8cm, align=center, rounded corners, font=\scriptsize, minimum height=1.1cm},
+    auth/.style={rectangle, draw=red!80!black, very thick, fill=red!5, text width=11.5cm, align=center, rounded corners, font=\scriptsize\bfseries, inner sep=2mm}
+]
+    \node[box] (ros) at (0, 0) {\textbf{PC / Entorno ROS}\\Nodos de Consulta y Registro[cite: 16]};
+    \node[bridge] (drv) at (5.5, 0) {\textbf{Candidato A} (Driver Existente)\\o \textbf{Candidato B} (Puente Adaptado)[cite: 16]};
+    \node[hw] (ctrl) at (11.0, 0) {\textbf{Red $\leftrightarrow$ Controlador ABB}\\(Robot Físico en Reposo)[cite: 16]};
+
+    % Canal superior: Solicitud / Comando (Bloqueado para movimiento)
+    \draw[-Stealth, thick, red!80!black] ([yshift=2.8mm]ros.east) -- node[above, font=\tiny\bfseries]{Solicitud Consulta (NO mover hoy)[cite: 16]} ([yshift=2.8mm]drv.west);
+    \draw[-Stealth, thick, red!80!black] ([yshift=2.8mm]drv.east) -- node[above, font=\tiny\bfseries]{Petición Solo Lectura[cite: 16]} ([yshift=2.8mm]ctrl.west);
+
+    % Canal inferior: Estado validado / Identificación
+    \draw[-Stealth, very thick, ucbblue, dashed] ([yshift=-2.8mm]ctrl.west) -- node[below, font=\tiny\bfseries]{Estado / ID + Timestamp[cite: 16]} ([yshift=-2.8mm]drv.east);
+    \draw[-Stealth, very thick, ucbblue, dashed] ([yshift=-2.8mm]drv.west) -- node[below, font=\tiny\bfseries]{Realimentación Trazable[cite: 16]} ([yshift=-2.8mm]ros.east);
+
+    \node[auth] at (5.5, -1.45) {COMPUERTA DE AUTORIZACIÓN DE LABORATORIO Y SEGURIDAD: Requerida antes de cualquier ensayo en hardware[cite: 16]};
+\end{tikzpicture}
+\end{center}
+
+\section{Matriz Comparativa de Rutas Candidatas A y B[cite: 16]}
+Una ruta no es superior por popularidad, sino porque sus prerrequisitos documentados pueden comprobarse localmente con menor incertidumbre[cite: 16]:
+
+\begin{center}
+\footnotesize
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\textwidth}{|>{\hsize=0.9\hsize\raggedright\arraybackslash}X|>{\hsize=1.05\hsize\raggedright\arraybackslash}X|>{\hsize=1.05\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Campo de Evaluación}[cite: 16] & \textbf{Ruta A (Integración con Driver Existente, ej. RWS/EGM condicionado)}[cite: 16] & \textbf{Ruta B (Puente Documentado Adaptado al Sistema Existente / RAPID)}[cite: 16] \\ \hline
+1. Interfaz exacta candidata[cite: 16] & Por verificar[cite: 16] & Por verificar[cite: 16] \\ \hline
+2. Versiones admitidas por fuente documental[cite: 16] & & \\ \hline
+3. Prerrequisito local crítico (opción/licencia/código)[cite: 16] & & \\ \hline
+4. Evidencia local actual del prerrequisito[cite: 16] & & \\ \hline
+5. Canal de comando (conceptual)[cite: 16] & & \\ \hline
+6. Canal de estado (origen, unidades, orden, timestamp)[cite: 16] & & \\ \hline
+7. Prueba \textit{read-only} (solo lectura) propuesta[cite: 16] & & \\ \hline
+8. Autorización de laboratorio necesaria[cite: 16] & & \\ \hline
+9. Observable exacto y archivo de log[cite: 16] & & \\ \hline
+10. Criterio \texttt{PASS / FAIL / BLOCKED}[cite: 16] & & \\ \hline
+11. Condiciones de aborto y \texttt{NO-GO}[cite: 16] & & \\ \hline
+12. Próxima acción y responsable asignado[cite: 16] & & \\ \hline
+\end{tabularx}
+\end{center}
+
+\section{Especificación Estructurada del Ensayo Gate 1 (Diseñado, No Ejecutado)[cite: 16]}
+\textbf{Pregunta verificable de Gate 1:} \textit{¿Puede la interfaz obtener, de manera autorizada y repetible, una señal real de estado o identidad del controlador ABB sin ordenar movimiento?}[cite: 16]
+
+\begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{Protocolo de 8 Puntos para el Ensayo Gate 1} {[cite: 16]}, left=2mm, right=2mm, top=1mm, bottom=1mm]
+    \footnotesize\raggedright
+    \begin{enumerate}
+        \item \textbf{Objetivo limitado:} Leer identificación o estado en modo \textbf{solo lectura}, sin envío de trayectoria ni activación de motores[cite: 16].
+        \item \textbf{Precondiciones:} Protocolo/opción soportada, red autorizada, operador habilitado presente, modo de operación conforme al procedimiento local y separación estricta de interfaces de escritura[cite: 16].
+        \item \textbf{Entrada:} Solicitud de consulta definida exactamente por la documentación de la versión concreta identificada (prohibido inventar llamadas de API)[cite: 16].
+        \item \textbf{Observables requeridos:} Fuente verificable del estado, identificación del controlador, valor numérico y \textit{timestamp}, consistencia temporal, archivo de log, modo operativo y unidades[cite: 16].
+        \item \textbf{Criterio \texttt{PASS}:} Respuesta rastreable originada en el controlador físico, reproducible y con ausencia total de movimiento. \textit{Alcance de la conclusión:} lectura de estado validada (no implica control de trayectoria)[cite: 16].
+        \item \textbf{Criterio \texttt{FAIL}:} Intento autorizado ejecutado que no produce el observable esperado; exige conservar mensajes de error y configuración exacta[cite: 16].
+        \item \textbf{Criterio \texttt{BLOCKED}:} Prerrequisito técnico o autorización de laboratorio no disponible; prohibido ejecutar la prueba o atribuir una falla técnica falsa[cite: 16].
+        \item \textbf{Condición de Aborto:} Cualquier inconsistencia de identidad, error de permisos, comportamiento inesperado o instrucción directa del supervisor obliga a detener la prueba según el protocolo local sin improvisar \textit{bypasses}[cite: 16].
+    \end{enumerate}
+\end{tcolorbox}
+
+\end{document}
