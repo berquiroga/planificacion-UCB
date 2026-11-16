@@ -1,0 +1,51 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Guía Autónoma W16S3}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Artefacto A5b: Guía Autónoma de Trabajo (W16S3 — 20/11/2026)}]
+    \centering \textbf{Procesamiento de Evidencias, Contraste y Cierre Analítico}
+\end{tcolorbox}
+
+\noindent\textit{Objetivo: Auditar la procedencia de los datos obtenidos en sesiones previas, calcular magnitudes/fases reales, compararlas con el modelo y resolver evaluación de cierre. (Por defecto no se energizan equipos sin nuevo GO).}
+
+\section*{Fuentes de Datos Admitidas}
+Solamente: 1) Capturas propias obtenidas con GO; 2) Simulaciones LTspice identificadas claramente; 3) Valores teóricos calculados en papel. \textbf{NO MEZCLE} orígenes. Si no tiene capturas, deje vacío o ponga "NO MEDIDO".
+
+\section*{Cronograma de Sesión (90 min)}
+\textbf{Minutos 0–10 (Auditoría):} Clasifique sus datos. Registre si hubo GO en W16S2. \par
+\textbf{Minutos 10–35 (Procesamiento):} Para las frecuencias registradas, recalcule $x = 2\pi f_{\text{real}} R C$. Calcule $|H|_{\text{pred}}$ y $\phi_{\text{pred}}$. Utilice $V_{out,pp} / V_{in,pp}$ para $|H|_{\text{med}}$ y $-360^\circ \frac{\Delta t}{T}$ para $\phi_{\text{med}}$. \par
+\textbf{Minutos 35–60 (Contraste):} Explique por escrito las desviaciones respecto a las tolerancias de componentes, problemas de sondas o resoluciones del osciloscopio. Diferencie hechos medidos de hipótesis. \par
+\textbf{Minutos 60–80 (Ejercicio Individual E5):} 
+Resuelva en hoja separada: Para $R=6.8\,\text{k}\Omega, C=220\,\text{nF}$, halle $\tau, f_c$, ganancia en corte. Explique qué pasa a $10f_c$. Responda de forma personal: \textit{¿Qué hice yo en esta práctica y qué evidencia lo respalda?} \par
+\textbf{Minutos 80–90 (Cierre y Entrega):} Adjunte la hoja A2 procesada, cálculos teóricos, capturas reales/simulaciones, bitácora de bloqueos (NO-GO) y el ejercicio individual.
+
+\vspace{0.4cm}
+\begin{tcolorbox}[colback=gray!5, colframe=black, title=\textbf{Nota Opcional de LTspice (\texttt{.ac})}]
+\small Si dispone de computadora validada: LTspice \texttt{.ac} calcula directamente $V(out)/V(in)$ en pequeña señal (magnitud en dB y fase). Rotule toda gráfica producto de este software como \textbf{"SIMULACIÓN COMPUTACIONAL IDEAL"}.
+\end{tcolorbox}
+
+\end{document}

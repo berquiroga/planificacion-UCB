@@ -1,0 +1,54 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Guía Autónoma W16S2}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Artefacto A5a: Guía Autónoma de Trabajo (W16S2 — 18/11/2026)}]
+    \centering \textbf{Rutas A (Con GO Presencial) y B (Analítica sin Energización)}
+\end{tcolorbox}
+
+\noindent\textit{Objetivo: Completar predicciones analíticas propias y, SOLO si existe un supervisor institucional habilitado que firme el GO, realizar la adquisición de datos de ganancia y fase.}
+
+\section*{Fórmulas Clave}
+$$ \tau=RC, \quad f_c=\frac{1}{2\pi RC}, \quad x=\frac{f}{f_c}, \quad |H|=\frac{1}{\sqrt{1+x^2}}, \quad \phi=-\arctan(x) $$
+Si logra medir: $\quad |H|_{\text{med}} = \frac{V_{out,pp}}{V_{in,pp}}, \quad \phi_{\text{med}} = -360^\circ \frac{\Delta t}{T}$
+
+\section*{Cronograma de Sesión (90 min)}
+\textbf{Minutos 0–10 (Lectura y Autochequeo):} Identifique los componentes R y C de su grupo. Verifique la presencia del supervisor institucional habilitado. Si no hay supervisor o no da GO, asuma \textbf{Ruta B}. \par
+\textbf{Minutos 10–30 (Cálculos Individuales):} Calcule $\tau$, $f_c$ y proponga 3 frecuencias ($0.1f_c, f_c, 10f_c$). Calcule $|H|$ y $\phi$ predictivos. Registre en la hoja A2. \par
+\textbf{Minutos 30–70 (Ejecución según Ruta):}
+\begin{itemize}
+    \item \textbf{Ruta A (Con GO):} Con salida en OFF arme el circuito, unifique GNDs, consiga firma GO. Alimente el RC, lea $V_{in,pp}$, $V_{out,pp}$ y $\Delta t$. Guarde captura.
+    \item \textbf{Ruta B (NO-GO):} Circuito apagado. Repase las mediciones pasivas (Multímetro) de $R$ y $C$. Elabore sus predicciones analíticas completas indicando el bloqueo técnico.
+\end{itemize}
+\textbf{Minutos 70–85 (Comparación):} Compare datos con predicciones. Para Ruta B, discuta qué evidencia falta. \par
+\textbf{Minutos 85–90 (Cierre y Entrega):} Adjunte hoja A2 y evidencias. Cierre según protocolo de seguridad.
+
+\section*{Checklist de Entrega}
+[ ] Integrantes e identificación de ruta. \quad [ ] $R, C$ propios, $\tau, f_c$. \quad [ ] GO y datos reales (Si Ruta A). \par
+[ ] Explicación de obstáculo (Si Ruta B). \quad [ ] Pendientes y solicitud de recuperación.
+
+\end{document}

@@ -1,0 +1,140 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage[american]{circuitikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | Laboratorio EC4 (W16)}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{warnred}{RGB}{180, 0, 0}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=warnred!5!white, colframe=warnred, title=\textbf{Artefacto A1: Guía Experimental Integral EC4 (Filtro RC Pasabajos AC)}]
+    \centering \textbf{PROPUESTA OPERATIVA — NO ENERGIZAR SIN "GO" POR MONTAJE}
+\end{tcolorbox}
+
+\noindent\textbf{Identificación:} \par
+\textbf{Grupo ID:} \rule{3cm}{0.4pt} \quad \textbf{Estación ID:} \rule{2cm}{0.4pt} \quad \textbf{Fecha/Sesión:} \rule{3cm}{0.4pt} \par
+\textbf{Estudiantes y Roles} (Montaje, Adquisición, Análisis, Registro): \rule{7cm}{0.4pt} \par
+\textbf{Docente/Técnico (GO):} \rule{5cm}{0.4pt}
+
+\section*{A1.1 Objetivos y Topología Obligatoria}
+Desarrollar \textbf{dos configuraciones} de filtro RC pasabajos (Configuración A y B), modificando un solo componente (R o C) entre ellas. Obtener 3 frecuencias por configuración (Total: 6 ensayos).
+
+\begin{center}
+\begin{circuitikz}[scale=0.9, transform shape, thick]
+    \draw (0,0) to[sV, l_={Gen. AC}] (0,3)
+          to[short, -*] (1.5,3) node[above]{\texttt{IN (CH1+)}}
+          to[R, l={$R_{\text{config}}$}] (5,3)
+          to[short, -*] (6.5,3) node[above]{\texttt{OUT (CH2+)}};
+    \draw (6.5,3) to[C, l={$C_{\text{config}}$}, v=$\tilde{V}_{\text{out}}$] (6.5,0);
+    \draw (0,0) -- (8.5,0) node[right]{\textbf{\small Retorno GND común}};
+    \draw (4,0) node[ground]{};
+    \draw[ucbblue, dashed] (1.5,3) -- (1.5,3.8) node[above]{\scriptsize Sonda CH1};
+    \draw[ucbblue, dashed] (6.5,3) -- (7.5,3.8) node[above]{\scriptsize Sonda CH2};
+\end{circuitikz}
+\end{center}
+\textit{Peligro: Las masas (GND) del Generador, CH1 y CH2 deben conectarse EXCLUSIVAMENTE al retorno GND común inferior.}
+
+\section*{A1.2 Verificación de Componentes Variables}
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\textwidth}{X X X}
+\toprule
+\textbf{Parámetro} & \textbf{Configuración A} & \textbf{Configuración B} \\
+\midrule
+$R$ (Nominal / Medido) & \rule{2cm}{0.4pt} $\Omega$ / \rule{2cm}{0.4pt} $\Omega$ & \rule{2cm}{0.4pt} $\Omega$ / \rule{2cm}{0.4pt} $\Omega$ \\
+$C$ (Nom. / Medido) & \rule{2cm}{0.4pt} F / \rule{2cm}{0.4pt} F & \rule{2cm}{0.4pt} F / \rule{2cm}{0.4pt} F \\
+¿Es C No polarizado? & [Sí/No] \rule{1.5cm}{0.4pt} & [Sí/No] \rule{1.5cm}{0.4pt} \\
+Tensión Nominal C & \rule{2cm}{0.4pt} V & \rule{2cm}{0.4pt} V \\
+\bottomrule
+\end{tabularx}
+\end{center}
+\textit{Justificación del cambio (Solo varíe R o C):} \rule{8cm}{0.4pt}
+
+\section*{A1.3 Predicción Matemática Analítica (ANTES DE ENERGIZAR)}
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\textwidth}{X X X}
+\toprule
+\textbf{Cálculo Ideal} & \textbf{Configuración A} & \textbf{Configuración B} \\
+\midrule
+Constante $\tau = RC$ & \rule{3cm}{0.4pt} s & \rule{3cm}{0.4pt} s \\
+Frec. de corte $f_c$ & \rule{3cm}{0.4pt} Hz & \rule{3cm}{0.4pt} Hz \\
+$f_1$ (Baja $\approx 0.1f_c$) & \rule{3cm}{0.4pt} Hz & \rule{3cm}{0.4pt} Hz \\
+$f_2$ (Corte $\approx f_c$) & \rule{3cm}{0.4pt} Hz & \rule{3cm}{0.4pt} Hz \\
+$f_3$ (Alta $\approx 10f_c$) & \rule{3cm}{0.4pt} Hz & \rule{3cm}{0.4pt} Hz \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section*{A1.4 Inspección y Autorizaciones (GO / NO-GO)}
+\textit{Requisito inalterable: Solicite un "GO" distinto para cada configuración montada (con el generador en OFF).} \\
+\textbf{GO Config. A:} Firma: \rule{4cm}{0.4pt} Hora: \rule{2cm}{0.4pt} NO-GO Causa: \rule{2cm}{0.4pt} \\
+\textbf{GO Config. B:} Firma: \rule{4cm}{0.4pt} Hora: \rule{2cm}{0.4pt} NO-GO Causa: \rule{2cm}{0.4pt}
+
+\section*{A1.5 Adquisición de Datos y Tablas}
+\textit{Con GO autorizado, estabilice el equipo y mida $V_{in,pp}$, $V_{out,pp}$ y el retraso $\Delta t = t_{out} - t_{in} > 0$ entre cruces homólogos.}
+\vspace{0.2cm}
+\begin{center}
+\resizebox{\textwidth}{!}{
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{c c c c c c c c c}
+\multicolumn{9}{c}{\textbf{CONFIGURACIÓN A}} \\
+\toprule
+\textbf{Ensayo} & \textbf{$f_{\text{real}}$ [Hz]} & \textbf{$V_{in,pp}$ [V]} & \textbf{$V_{out,pp}$ [V]} & \textbf{$T_{\text{real}}$ [ms]} & \textbf{$\Delta t$ [ms]} & \textbf{$|H|_{\text{med}}$} & \textbf{$\phi_{\text{med}}$ [$^\circ$]} & \textbf{ID Captura USB} \\
+\midrule
+Baja & & & & & & & & \\ \midrule
+Corte & & & & & & & & \\ \midrule
+Alta & & & & & & & & \\
+\bottomrule
+\end{tabular}
+}
+\end{center}
+\vspace{0.2cm}
+\begin{center}
+\resizebox{\textwidth}{!}{
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{c c c c c c c c c}
+\multicolumn{9}{c}{\textbf{CONFIGURACIÓN B}} \\
+\toprule
+\textbf{Ensayo} & \textbf{$f_{\text{real}}$ [Hz]} & \textbf{$V_{in,pp}$ [V]} & \textbf{$V_{out,pp}$ [V]} & \textbf{$T_{\text{real}}$ [ms]} & \textbf{$\Delta t$ [ms]} & \textbf{$|H|_{\text{med}}$} & \textbf{$\phi_{\text{med}}$ [$^\circ$]} & \textbf{ID Captura USB} \\
+\midrule
+Baja & & & & & & & & \\ \midrule
+Corte & & & & & & & & \\ \midrule
+Alta & & & & & & & & \\
+\bottomrule
+\end{tabular}
+}
+\end{center}
+
+\section*{A1.6 Ejercicio Comparativo Final a Frecuencia Absoluta Común ($f^*$)}
+Elija una frecuencia común (ej. la $f_c$ de la Configuración A). $f^* = $ \rule{3cm}{0.4pt} Hz. \par
+Calcule matemáticamente cómo responderían ambas configuraciones a esa \textbf{misma} frecuencia absoluta ($x_A = 2\pi f^* R_A C_A$ y $x_B = 2\pi f^* R_B C_B$): \par
+$|H_A| = $ \rule{3cm}{0.4pt} \quad $|H_B| = $ \rule{3cm}{0.4pt} \par
+$\phi_A = $ \rule{3cm}{0.4pt} \quad $\phi_B = $ \rule{3cm}{0.4pt} \par
+\textbf{Conclusión:} ¿Por qué las ganancias son distintas a esta frecuencia si ambas son filtros pasabajos? \par
+\noindent\rule{\textwidth}{0.4pt} \par\vspace{0.1cm}
+\noindent\rule{\textwidth}{0.4pt}
+
+\end{document}
