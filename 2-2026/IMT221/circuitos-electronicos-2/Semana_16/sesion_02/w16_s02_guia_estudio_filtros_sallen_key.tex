@@ -1,0 +1,200 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{shapes.geometric, positioning} % Removido arrows.meta para evitar conflictos
+\usepackage[american]{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\setlength{\emergencystretch}{2em}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Guía de Estudio: Diseño K y Q en Sallen-Key}
+\rhead{Unidad 3 - Lab 6}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\textbf{\textcolor{ucbblue}{Guía de Estudio Autónomo: Elección de K y Q en Filtro Sallen-Key}}} \\[0.1cm]
+    {\footnotesize\textbf{Material de profundización y preparación autónoma.} Estado: Desarrollo teórico, no equivale a validación física.}
+\end{center}
+
+\section*{1. Lo que aprenderás}
+Al terminar el trabajo autónomo, podrás (i) diferenciar la ganancia de banda pasante $K$, la frecuencia natural $f_0$ y el factor de calidad $Q$; (ii) traducir una especificación en un $Q$ objetivo; (iii) seleccionar diseño con $K>1$ o seguidor $K=1$; (iv) calcular componentes y (v) verificar objetivos.
+\textbf{Pregunta central:} ¿Por qué dos filtros con igual $f_0$ muestran distinta curva cerca del corte? Porque $Q$ determina el amortiguamiento y la forma de transición.
+
+\section*{2. Primera decisión: ¿qué respuesta necesitamos?}
+\begin{enumerate}
+    \setlength{\itemsep}{1pt}
+    \item \textbf{Tipo de respuesta:} Pasa-bajos de segundo orden.
+    \item \textbf{Ganancia $K$:} Cociente $|V_{\mathrm{out}}/V_{\mathrm{in}}|$ en bajas frecuencias. $K=1$ mantiene amplitud; $K=2$ la duplica ($+6.02\,\mathrm{dB}$).
+    \item \textbf{Frecuencia natural $f_0$:} Ubicación de los polos ($\omega_0=2\pi f_0$). No siempre coincide con $f_{-3\mathrm{dB}}$.
+    \item \textbf{Factor de calidad $Q$:} Describe el amortiguamiento. $Q=1/\sqrt{2} \approx 0.7071$ produce un Butterworth de 2do orden.
+    \item \textbf{Banda útil e interferencia:} Determinar si el objetivo $f_0$ preserva variaciones del sensor.
+\end{enumerate}
+
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|P{1.2cm}|P{3.5cm}|Y|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Q} & \textbf{Respuesta en $f=f_0$} & \textbf{Comportamiento cerca de $f_0$} \\ \hline
+    $0.500$ & $|H|/K = 0.500$ ($-6.02\,\mathrm{dB}$) & Monótona muy amortiguada; dos polos reales coincidentes. \\ \hline
+    $0.7071$ & $|H|/K = 0.7071$ ($-3.01\,\mathrm{dB}$) & Butterworth de orden 2: magnitud máxima plana. \\ \hline
+    $1.000$ & $|H|/K = 1.000$ ($0\,\mathrm{dB}$) & Realce cerca del corte; pico de resonancia. \\ \hline
+    \end{tabularx}
+\end{table}
+\textit{Precaución:} Un Sallen-Key con $K=1$ y todos los R/C iguales \textbf{no es Butterworth} (tiene $Q=0.5$).
+
+\section*{3. Modelo Matemático Completo (V1 y V5)}
+\begin{minipage}{0.48\textwidth}
+    La transferencia canónica es:
+    \begin{equation}
+        H(s) = \frac{K\omega_0^2}{s^2+(\omega_0/Q)s+\omega_0^2}
+    \end{equation}
+    En régimen senoidal ($x = f/f_0$):
+    \begin{equation}
+        |H(j\omega)| = \frac{|K|}{\sqrt{(1-x^2)^2+(x/Q)^2}}
+    \end{equation}
+    \begin{equation}
+        \varphi(\omega) = -\operatorname{atan2}(x/Q, 1-x^2)
+    \end{equation}
+    \textbf{Significado físico de Q (V5):}\\
+    El denominador normalizado es $s^2 + 2\zeta\omega_0 s + \omega_0^2$, por lo que el amortiguamiento es $\zeta = 1/(2Q)$. Un $Q$ mayor implica menor amortiguamiento (sobreimpulso). No confundir con el Margen de Fase de un sistema de control.
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+    \begin{center}
+        \begin{tikzpicture} % V1 - Dos respuestas con mismo f0
+            \begin{axis}[
+                xmode=log,
+                xmin=0.1, xmax=10,
+                ymin=-35, ymax=5,
+                xlabel={$f/f_0$ (Log)},
+                ylabel={$20\log_{10}(|H|/K)$ [dB]},
+                grid=both,
+                width=\textwidth, % Correccion: uso de \textwidth
+                height=5.5cm,     % Correccion: altura fijada correctamente
+                legend pos=south west,
+                legend style={font=\scriptsize}
+            ]
+            \addplot[blue, thick, samples=100, domain=0.1:10] {-10*log10( (1-x^2)^2 + (x/0.5)^2 )};
+            \addlegendentry{$Q=0.500$}
+            \addplot[red, thick, dashed, samples=100, domain=0.1:10] {-10*log10( (1-x^2)^2 + (x/0.7071)^2 )};
+            \addlegendentry{$Q=0.707$ (Butt.)}
+            \draw[dotted, thick] (axis cs:1,-35) -- (axis cs:1,0);
+            \node[above left, font=\scriptsize] at (axis cs:1, -6.02) {$-6.02\,\mathrm{dB}$};
+            \node[above right, font=\scriptsize] at (axis cs:1, -3.01) {$-3.01\,\mathrm{dB}$};
+            \end{axis}
+        \end{tikzpicture}
+    \end{center}
+\end{minipage}
+
+\section*{4. Topologías del Filtro Sallen-Key (V2 y V3)}
+\begin{center}
+    \begin{circuitikz}[>=stealth, thick, scale=0.85, transform shape] % Correccion: stealth (minuscula)
+        % V2: Sallen-Key K=1
+        \draw (-2,0) node[op amp, yscale=-1] (op1) {};
+        \draw (op1.out) to[short, *-o] ++(1,0) node[right]{$V_{\mathrm{out}}$};
+        \draw (op1.-) -- ++(0,-1.2) -| (op1.out);
+        \draw (op1.+) -- ++(-1.0,0) coordinate(y1) to[R, l_=$R_2$, -*] ++(-2,0) coordinate(x1) to[R, l_=$R_1$, -o] ++(-2.5,0) node[left]{$V_{\mathrm{in}}$};
+        \node[below] at (x1) {$x$};
+        \node[above] at (y1) {$y$};
+        \draw (x1) -- ++(0,1.5) coordinate(c1) to[C, l=$C_1$] (c1 -| op1.out) -- (op1.out);
+        \draw (y1) to[C, l_=$C_2$] ++(0,-1.5) node[ground]{};
+        \node[font=\footnotesize\bfseries, text=ucbblue, align=center] at (-3,-2.5) {V2: Seguidor ($K=1$)};
+        
+        % V3: Sallen-Key K>1
+        \draw (8,0) node[op amp, yscale=-1] (op2) {};
+        \draw (op2.out) to[short, *-o] ++(1,0) node[right]{$V_{\mathrm{out}}$};
+        \draw (op2.+) -- ++(-1.0,0) coordinate(y2) to[R, l_=$R_2$, -*] ++(-2,0) coordinate(x2) to[R, l_=$R_1$, -o] ++(-2.5,0) node[left]{$V_{\mathrm{in}}$};
+        \draw (x2) -- ++(0,1.5) coordinate(c2) to[C, l=$C_1$] (c2 -| op2.out) -- (op2.out);
+        \draw (y2) to[C, l_=$C_2$] ++(0,-1.5) node[ground]{};
+        
+        \draw (op2.-) -| ++(-0.1,-1.5) to[short, *-] ++(0,0) coordinate(fb) to[R, l_=$R_f$] (fb -| op2.out) -- (op2.out);
+        \draw (fb) to[R, l=$R_g$] ++(0,-1.5) node[ground]{};
+        \draw (op2.down) -- ++(0,0.5) node[above]{\footnotesize $V_{S+}$};
+        \draw (op2.up) -- ++(0,-0.5) node[below]{\footnotesize $V_{S-}$};
+        \node[font=\footnotesize\bfseries, text=ucbblue, align=center] at (7,-4.5) {V3: Ganancia $K = 1 + R_f/R_g$};
+    \end{circuitikz}
+\end{center}
+
+\section*{5. Derivación: Cómo K Modifica Q}
+En el nodo $y$: $\frac{v_y-v_x}{R_2} + sC_2v_y = 0 \implies v_x = v_y(1+sR_2C_2)$. En el nodo $x$: $\frac{v_x-v_i}{R_1} + \frac{v_x-v_y}{R_2} + sC_1(v_x-v_o) = 0$.
+Sustituyendo $v_o=Kv_y$ y resolviendo, al comparar con la forma canónica se obtiene:
+\begin{equation}
+    \boxed{\omega_0 = \frac{1}{\sqrt{R_1R_2C_1C_2}}}, \qquad \boxed{Q = \frac{\sqrt{R_1R_2C_1C_2}}{C_2(R_1+R_2)+C_1R_1(1-K)}}
+\end{equation}
+\textbf{Chequeo dimensional:} $\sqrt{\Omega^2 \mathrm{F}^2} = \mathrm{s}$ (segundos) en numerador y denominador, por tanto $Q$ es adimensional.\\
+\textbf{Caso especial ($R_1=R_2=R$, $C_1=C_2=C$):} $f_0 = \frac{1}{2\pi RC}$ y $Q = \frac{1}{3-K}$. (Si $K=1 \implies Q=0.5$).
+
+\section*{6. Dos Métodos para Elegir K y Q (V4)}
+\begin{center}
+    \begin{tikzpicture}[>=stealth, thick, scale=0.8, transform shape] % Correccion: stealth (minuscula)
+        \node[draw=ucbblue, fill=blue!5, text width=2.5cm, align=center, minimum height=1cm] (req) at (0,0) {Requisito Banda Útil};
+        \node[draw=ucbblue, fill=blue!5, text width=2cm, align=center, minimum height=1cm] (qobj) at (3.5,0) {Fijar $Q$ Objetivo};
+        \node[draw=orange, fill=orange!10, text width=2.5cm, align=center, minimum height=1cm] (mA) at (7, 1.2) {\textbf{Método A}\\Elegir $K>1$\\$R, C$ iguales};
+        \node[draw=green!60!black, fill=green!10, text width=2.5cm, align=center, minimum height=1cm] (mB) at (7, -1.2) {\textbf{Método B}\\Fijar $K=1$\\Ajustar $C_1/C_2$};
+        \node[draw=black, text width=2.5cm, align=center, minimum height=1cm] (val) at (11,0) {Validar Tolerancias y Medir Bode};
+        \draw[->] (req) -- (qobj);
+        \draw[->] (qobj) -- (mA.west); \draw[->] (qobj) -- (mB.west);
+        \draw[->] (mA.east) -- (val.west); \draw[->] (mB.east) -- (val.west);
+    \end{tikzpicture}
+\end{center}
+
+\textbf{Ejemplo M-A1 ($K>1$):} Para Butterworth ($Q=0.7071$) y $R,C$ iguales, se requiere $K=3-1/0.7071 \approx 1.5858$. Si se ajusta $R_f/R_g \approx 0.5858$, la ganancia aumenta el riesgo de saturación.\\
+\textbf{Ejemplo M-B1 ($K=1$):} Con $R_1=R_2$, la relación $C_1/C_2 = (2Q)^2$. Para Butterworth, $C_1 = 2C_2$.
+
+\section*{7. Cómo Saber si Elegir K=1 o K>1}
+\begin{itemize}
+    \item Use \textbf{$K=1$} si la señal ya está amplificada, para no inducir recorte contra los rieles del Op-Amp.
+    \item Use \textbf{$K>1$} si dispone de pares RC idénticos y necesita $Q \approx 0.707$, siempre que el voltaje de fuente lo soporte.
+\end{itemize}
+
+\section*{8. Procedimiento LTspice y Medición de Bode (V6)}
+Para medir Bode en físico o AC simulado, capture la magnitud y la fase a distintas frecuencias.
+\begin{table}[htbp]
+    \centering
+    \scriptsize
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabularx}{\textwidth}{|P{1.2cm}|P{1.2cm}|P{1.2cm}|P{1.5cm}|P{1.5cm}|P{1.5cm}|P{2cm}|Y|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{$f$ (Hz)} & \textbf{$V_{\mathrm{in}}$ (V)} & \textbf{$V_{\mathrm{out}}$ (V)} & \textbf{$G_{\mathrm{rel}}$ (dB)} & \textbf{$\varphi$ ($^\circ$)} & \textbf{Origen} & \textbf{Carga / Modelo} & \textbf{Observaciones} \\ \hline
+     & & & & & & & \\ \hline
+    \end{tabularx}
+\end{table}
+
+\section*{9. Ejercicios de Estudio Autónomo}
+\textbf{E1.} Dada $H(s)=2\cdot 100^2 / [s^2 + (100/0.5)s + 100^2]$, identifique $K, \omega_0, f_0, Q, |H(j\omega_0)|$ y la ganancia en dB.\\
+\textbf{E2.} Para $R_1=R_2=16\,\mathrm{k}\Omega, C_1=C_2=1\,\mu\mathrm{F}, K=1$, halle $f_0, Q$ y magnitud en $f_0$. ¿Es Butterworth?\\
+\textbf{E3.} Con R/C iguales, halle $K$ para $Q=1/\sqrt{2}$. Calcule $R_f/R_g$.\\
+\textbf{E4.} Para $K=1, R_1=R_2$, obtenga $C_1/C_2$ para Butterworth.\\
+\textbf{E5.} Un grupo dice: "Con $K=1$, y R/C iguales es Butterworth". Corrija los errores.\\
+\textbf{E6.} A $f_0=10\,\mathrm{Hz}$ se miden ganancias de $-6.02\,\mathrm{dB}$ y $-3.01\,\mathrm{dB}$. ¿Qué $Q$ tiene cada filtro?\\
+\textbf{E7.} Especifique qué se necesita para demostrar el cumplimiento del Hito 3 frente a un Lab 6.\\
+\textbf{E8.} Si $K=1, R_1=R_2$ y nominalmente $C_1=2C_2$, ¿qué pasa con $Q$ y $f_0$ si $C_1$ real es $10\%$ menor?
+
+\end{document}
