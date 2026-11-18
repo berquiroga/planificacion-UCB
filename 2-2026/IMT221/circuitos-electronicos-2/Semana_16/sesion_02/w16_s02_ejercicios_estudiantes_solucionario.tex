@@ -1,0 +1,111 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{shapes.geometric, positioning}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | Documento Docente}
+\chead{Clave Docente: Taller de Preparación EC2}
+\rhead{W16S02 - 18/11/2026}
+\renewcommand{\headrulewidth}{0.8pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\textbf{\textcolor{red!70!black}{CLAVE DOCENTE EXCLUSIVA — SEPARAR DE ESTUDIANTES}}} \\[0.1cm]
+    {\footnotesize\textbf{Aviso:} Soluciones exactamente correspondientes a la hoja del estudiante. Datos ficticios, no asigna pesos nuevos.}
+\end{center}
+
+\subsection*{D0 - Diagnóstico Rápido}
+\textbf{D0a.} \textbf{No.} Diodo en bloqueo significa lazo abierto (sin realimentación negativa operativa), por lo que el "cortocircuito virtual" no está justificado.\\
+\textbf{D0b.} $K$ = Ganancia de banda pasante (adimensional). $\omega_0$ = Frecuencia angular natural ($\mathrm{rad/s}$). $Q$ = Factor de calidad (adimensional).
+
+\subsection*{P1 — Op-Amp Real (Solución)}
+(a) $f_{BW} \approx \frac{f_T}{|A_{CL}|} = \frac{1.0 \times 10^6\,\mathrm{Hz}}{20} = \mathbf{50\,\mathrm{kHz}}$. Hipótesis: Op-Amp modelado como polo dominante, lazo estable y amplitud de pequeña señal. \\
+(b) Exigencia máxima: $\left| \frac{dv_o}{dt} \right|_{\max} = 2\pi f V_p = 2\pi (20\times 10^3\,\mathrm{s}^{-1})(5\,\mathrm{V}) \approx 6.283\times 10^5\,\mathrm{V/s} = \mathbf{0.628\,\mathrm{V/\mu s}}$. \\
+(c) Comparación: $0.628\,\mathrm{V/\mu s} > 0.50\,\mathrm{V/\mu s}$ (Límite SR). \textbf{No se cumple.} La salida se distorsionará en forma de onda triangular. \\
+(d) A $10\,\mathrm{kHz}$: $SR_{\mathrm{req}} = 2\pi (10\times 10^3)(5) \approx \mathbf{0.314\,\mathrm{V/\mu s}}$. Esto es menor a $0.50\,\mathrm{V/\mu s}$, el SR deja de ser obstáculo en este modelo idealizado. \\
+(e) Errores del estudiante: 1) Ignora el \textit{Slew Rate} que domina en gran señal. 2) Ignora el margen de excursión de salida (Voltage Swing) y los rieles de alimentación, ya que la aproximación GBW es estrictamente de pequeña señal.
+
+\subsection*{P2 — In-Amp / CMRR (Solución)}
+(a) $v_d = v_+ - v_- = 1.512 - 1.488 = \mathbf{0.024\,\mathrm{V}}$. $v_{cm} = \frac{1.512 + 1.488}{2} = \mathbf{1.500\,\mathrm{V}}$. \\
+(b) Diferencial: $A_d v_d = 50(0.024) = \mathbf{1.200\,\mathrm{V}}$. Común: $A_{cm} v_{cm} = 0.020(1.500) = \mathbf{0.030\,\mathrm{V}}$. Salida $v_o = 1.200 + 0.030 + 0 = \mathbf{1.230\,\mathrm{V}}$. \\
+(c) $\mathrm{CMRR}_{\mathrm{dB}} = 20\log_{10}\left|\frac{50}{0.020}\right| = 20\log_{10}(2500) = \mathbf{67.96\,\mathrm{dB}}$. \\
+(d) Incremento de $+1.0\,\mathrm{V}$ en ambas: $v_d' = 0.024\,\mathrm{V}$ (\textbf{igual}), $v_{cm}' = 2.500\,\mathrm{V}$. El aporte común sube a $0.050\,\mathrm{V}$, entonces $v_o' = \mathbf{1.250\,\mathrm{V}}$ (Varía en $+0.020\,\mathrm{V}$). \\
+(e) Faltan pruebas experimentales: aplicar variaciones puras de modo común y medir $\Delta v_o$, referenciar el generador al circuito físico, documentar incertidumbre instrumental y demostrar operación lineal sin recorte.
+
+\subsection*{P3 — Rectificador (Solución y Tabla V4)}
+(a) Convencional: $v_i \to$ ánodo D $\to$ cátodo a $v_{o,D}$ $\to R_L \to$ GND. Precisión: $v_i \to (+)$, salida interna $v_a \to$ ánodo D, cátodo a $v_{o,P} \to (-)$ y $R_L$. \\
+(b) Convencional: $V_{o,\mathrm{pico}} = \max(0.30 - 0.40, 0) = \mathbf{0\,\mathrm{V}}$. (c) Superdiodo: $V_{o,\mathrm{pico}} \approx \mathbf{0.30\,\mathrm{V}}$.
+\begin{center}
+    \footnotesize
+    \begin{tabular}{|c|c|c|c|c|}
+    \hline
+    \textbf{Condición} & \textbf{Estado Diodo} & \textbf{Estado Lazo} & $\mathbf{v_{o,P}}$ (Ideal) & $\mathbf{v_a}$ (Salida Op-Amp) \\ \hline
+    $v_i > 0$ & Conduce (ON) & Cerrado & $v_{o,P} \approx v_i$ & $v_a \approx v_i + v_D$ \\ \hline
+    $v_i < 0$ & Bloqueado (OFF) & Abierto & $v_{o,P} \approx 0\,\mathrm{V}$ & Tiende al límite negativo (Saturación) \\ \hline
+    \end{tabular}
+\end{center}
+(e) En $v_i<0$ no hay camino de retroalimentación (lazo abierto). El op-amp no puede forzar $v_+ = v_-$. (f) Desviación real: retardo por \textbf{recuperación a la salida de la saturación}, SR finito, o modo común no admitido en tensiones bajas (LM358N).
+
+\subsection*{P4 — Filtro Lab 6 (Solución y Bode V6)}
+(a) Denominador: $1 + s C_2(R_1+R_2) + s^2 R_1 R_2 C_1 C_2$. $\mathbf{K = 1}$. \\
+(b) $R_1 R_2 C_1 C_2 = (16\times 10^3)^2(1\times 10^{-6})^2 = 256\times 10^{-6}\,\mathrm{s}^2$. $\omega_0 = 1/\sqrt{256\mu} = \mathbf{62.5\,\mathrm{rad/s}}$. $f_0 = \frac{62.5}{2\pi} = \mathbf{9.947\,\mathrm{Hz}}$. \\
+(c) $Q = \frac{\sqrt{R_1 R_2 C_1 C_2}}{C_2(R_1+R_2)} = \frac{0.016}{10^{-6}(32\times 10^3)} = \frac{0.016}{0.032} = \mathbf{0.5}$. \textbf{No es Butterworth} ($Q \neq 0.707$). \\
+(d) En $f_0$: $|H| = K \cdot Q = 1(0.5) = \mathbf{0.5}$. $G_{\mathrm{dB}} = 20\log_{10}(0.5) = \mathbf{-6.02\,\mathrm{dB}}$. Fase $\varphi = \mathbf{-90^\circ}$. \\
+(e) \textbf{No.} Para que $f_0$ sea el punto de $-3\,\mathrm{dB}$, debe ser $|H(f_0)| = 1/\sqrt{2}$, lo que exige $Q=0.707$. Aquí cae $-6\,\mathrm{dB}$. \\
+(f) $x \ll 1 \implies |H| \approx 1$ ($0\,\mathrm{dB}$). $x \gg 1 \implies |H| \approx 1/x^2$ (caída de $-40\,\mathrm{dB/dec}$). \\
+(g) Demostración del Hito 3: Evidencia física en cascada, acoplamiento sin carga excesiva, comprobación explícita de atenuación real a $50\,\mathrm{Hz}$ preservando banda útil.
+\begin{center}
+    \begin{tikzpicture}[>=stealth, thick] % V6: Bode teórico ideal (Usando stealth estandar)
+        \begin{axis}[
+            xmode=log, xmin=1, xmax=100, ymin=-40, ymax=5,
+            xlabel={$f$ (Hz)}, ylabel={$G$ (dB)},
+            grid=both, width=8cm, height=4cm,
+            title={\small Bode Teorico Pasa-Bajos ($f_0 \approx 9.95\,\mathrm{Hz}, Q=0.5$)}
+        ]
+        \addplot[blue, thick, samples=100, domain=1:100] {-10*log10( (1-(x/9.947)^2)^2 + (x/(9.947*0.5))^2 )};
+        \draw[red, dashed] (axis cs:9.947, 5) -- (axis cs:9.947, -40);
+        \node[above right, font=\scriptsize] at (axis cs:10, -6) {$f_0, -6.02\,\mathrm{dB}$};
+        \node[above left, font=\scriptsize, text=red] at (axis cs:6.4, -3) {$f_{-3\mathrm{dB}} \approx 6.4\,\mathrm{Hz}$};
+        \end{axis}
+    \end{tikzpicture}
+\end{center}
+
+\subsection*{P5 — Extensión (Cascada)}
+$G_{\mathrm{total}} = -6.02\,\mathrm{dB} + (-6.02\,\mathrm{dB}) = \mathbf{-12.04\,\mathrm{dB}}$. Un modelo idealizado no garantiza el cumplimiento físico a $50\,\mathrm{Hz}$ si existen impedancias inter-etapas que carguen y deformen el divisor de tensión. Una simple suma asume aislamiento perfecto.
+
+\subsection*{T1 — Ticket de Salida}
+Ganancia: $\mathbf{-6.02\,\mathrm{dB}}$ (porque $|H(f_0)| = Q = 0.5$). No es automáticamente $-3\,\mathrm{dB}$ a menos que el filtro sea Butterworth ($Q=1/\sqrt{2}$).
+
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Taxonomía Docente de Errores}]
+    \footnotesize
+    \begin{itemize}
+        \setlength{\itemsep}{1pt}
+        \item \textbf{Modelo:} Aplicar cortocircuito virtual ($v_+ = v_-$) con diodo en OFF $\implies$ \textit{Intervención:} Pedir dibujo lazo abierto/cerrado.
+        \item \textbf{Unidades / Cálculo:} Usar $20\,\mathrm{kHz}$ como $20\,\mathrm{Hz}$, mezclar $\mathrm{rad/s}$ y $\mathrm{Hz}$ $\implies$ \textit{Intervención:} Reescribir y revisar dimensionalidad.
+        \item \textbf{Interpretación:} Asumir que $f_0 = f_{-3\mathrm{dB}}$ para todo $Q$ $\implies$ \textit{Intervención:} Evaluar manualmente $|H(f_0)| = KQ$.
+        \item \textbf{Evidencia:} Afirmar "medido" usando resultados teóricos $\implies$ \textit{Intervención:} Exigir separación PREDICHO / SIMULADO / MEDIDO.
+    \end{itemize}
+\end{tcolorbox}
+
+\end{document}

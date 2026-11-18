@@ -1,0 +1,133 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage[american]{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\setlength{\emergencystretch}{2em}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Taller de Preparación EC2: Hoja para Estudiantes}
+\rhead{W16S02 - 18/11/2026}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\textbf{\textcolor{ucbblue}{Taller de Preparación EC2 — Práctica Individual}}} \\[0.1cm]
+    {\footnotesize\textbf{Aviso:} Actividad formativa, no calificada. Todos los datos numéricos son \textbf{ficticios didácticos}, no especificaciones comerciales reales. Distinga siempre entre modelos ideales y límites físicos.}
+\end{center}
+
+\section*{Diagnóstico Inicial (2 min)}
+\textbf{D0a.} El superdiodo no inversor está en su semiciclo negativo y el diodo queda abierto. ¿Es válida $v_+ = v_-$? Explique en una línea. \\[0.5cm]
+\textbf{D0b.} Para $H(s) = \frac{K\omega_0^2}{s^2 + (\omega_0/Q)s + \omega_0^2}$, identifique $K$, $\omega_0$ y $Q$, e indique en qué unidades está $\omega_0$.
+\vspace{0.8cm}
+
+\section*{P1 — Op-Amp Real y Límites Dinámicos (20 min)}
+Un Op-Amp \textbf{hipotético} se conecta como amplificador no inversor de ganancia $\vert{}A_{CL}\vert{} = 20\,\mathrm{V/V}$. Datos del ejercicio: Frecuencia de ganancia unitaria $f_T = 1.0\,\mathrm{MHz}$, Slew Rate $SR = 0.50\,\mathrm{V/\mu s}$, salida objetivo senoidal de $V_p = 5.0\,\mathrm{V\ pico}$ a $f = 20.0\,\mathrm{kHz}$. (Asuma modelo de polo dominante, realimentación estable y alimentación holgada).
+\begin{center}
+    \begin{circuitikz}[>=Stealth, thick, scale=0.8, transform shape]
+        % V1: Esquema op-amp no inversor conceptual
+        \draw (0,0) node[op amp, yscale=-1] (op) {};
+        \draw (op.+) to[short, -o] ++(-1,0) node[left] {$v_i$};
+        \draw (op.-) -- ++(0,-2) coordinate(n1) to[R, l=$R_1$] ++(0,-1.5) node[ground]{};
+        \draw (op.out) to[short, *-o] ++(1,0) node[right] {$v_o$};
+        \draw (n1) to[R, l=$R_2$] (n1 -| op.out) -- (op.out);
+        \draw (op.down) -- ++(0,0.5) node[above]{\footnotesize $+V_S$};
+        \draw (op.up) -- ++(0,-0.5) node[below]{\footnotesize $-V_S$};
+        \node[font=\footnotesize, text=ucbblue, align=center] at (3.0, -2.5) {Límites a verificar:\\ Ancho de banda (GBW)\\ Slew Rate (SR)\\ Excursión de Salida};
+    \end{circuitikz}
+\end{center}
+(a) Estime el ancho de banda de pequeña señal ($f_{BW}$) y explique su hipótesis. (b) Calcule la máxima pendiente de salida requerida. (c) Decida si se cumple el SR. (d) Repita el análisis de SR a $10.0\,\mathrm{kHz}$. (e) Un estudiante afirma «como $20\,\mathrm{kHz}$ es inferior a $50\,\mathrm{kHz}$ de $f_{BW}$, la salida siempre será perfectamente senoidal». Corríjalo identificando dos límites distintos. \textit{(No asuma que estos son datos de un LM358N real).}
+\vspace{2.5cm}
+
+\section*{P2 — In-Amp / Señales Diferencial y Común (18 min)}
+Modelo lineal ficticio de un In-Amp: $v_o = A_d v_d + A_{cm} v_{cm} + V_{os,o}$ con $A_d = 50\,\mathrm{V/V}$, $A_{cm} = 0.020\,\mathrm{V/V}$, $V_{os,o} = 0\,\mathrm{V}$. Las entradas absolutas medidas respecto a tierra son $v_+ = 1.512\,\mathrm{V}$ y $v_- = 1.488\,\mathrm{V}$. Asuma operación en régimen lineal.
+\begin{center}
+    \begin{tikzpicture}[>=Stealth, thick, scale=0.85]
+        % V2: Concepto señales In-Amp
+        \draw[fill=blue!10, rounded corners] (0,0) rectangle (3,2);
+        \node[align=center, font=\footnotesize\bfseries] at (1.5,1) {Acondicionador\\In-Amp};
+        \draw[<-] (0, 1.5) -- ++(-1.5,0) node[left] {$v_+$};
+        \draw[<-] (0, 0.5) -- ++(-1.5,0) node[left] {$v_-$};
+        \draw[->] (3, 1) -- ++(1.5,0) node[right] {$v_o$};
+        \node[font=\scriptsize, align=left] at (6, 1) {$v_d = v_+ - v_-$\\ $v_{cm} = \frac{v_+ + v_-}{2}$};
+    \end{tikzpicture}
+\end{center}
+(a) Calcule $v_d$ y $v_{cm}$. (b) Calcule las contribuciones diferencial, común y $v_o$ final. (c) Calcule el $\mathrm{CMRR}_{\mathrm{dB}}$. (d) Si ambas entradas aumentan exactamente en $1.0\,\mathrm{V}$, ¿cómo varían $v_d, v_{cm}$ y $v_o$ según el modelo? (e) ¿Qué datos y pruebas faltan para sostener que este CMRR fue \textbf{medido} físicamente en una placa real?
+\vspace{2.5cm}
+
+\section*{P3 — Rectificador Convencional y Superdiodo (18 min)}
+Se aplica $v_i(t) = 0.30 \sin(2\pi \cdot 100 t)\,\mathrm{V}$. Para el rectificador convencional asuma el modelo simplificado $v_{o,D} \approx \max(v_i - V_\gamma, 0)$ con $V_\gamma = 0.40\,\mathrm{V}$ (solo para este ejercicio). Para el superdiodo, asuma operación idealizada.
+\begin{center}
+    \begin{circuitikz}[>=Stealth, thick, scale=0.85, transform shape]
+        % V3: Dos rectificadores
+        \node[font=\bfseries, text=ucbblue] at (1.5, 3) {Convencional};
+        \draw (0,0) node[ground]{} to[sV, l=$v_i(t)$] (0,2) to[D, l=$D$] (3,2) to[short, -o] (3.5,2) node[right]{$v_{o,D}$};
+        \draw (3,2) to[R, l=$R_L$] (3,0) node[ground]{};
+        
+        \node[font=\bfseries, text=ucbblue] at (8, 3) {Precisión (Superdiodo)};
+        \draw (6,0.5) node[op amp] (op) {};
+        \draw (op.+) to[short, -o] ++(-0.5,0) node[left]{$v_i(t)$};
+        \draw (op.out) to[short, *-] ++(0.5,0) coordinate(va) node[above]{$v_a$} to[D, l=$D$] ++(2,0) coordinate(vo) to[short, *-o] ++(0.5,0) node[right]{$v_{o,P}$};
+        \draw (vo) to[R, l=$R_L$] ++(0,-1.5) node[ground]{};
+        \draw (op.-) -- ++(0,1) -| (vo);
+    \end{circuitikz}
+\end{center}
+(a) Describa los nodos de ambos circuitos. (b) Calcule el pico de salida convencional $v_{o,D}$. (c) Prediga el pico positivo idealizado del superdiodo $v_{o,P}$. (d) Complete una tabla para el superdiodo indicando ($v_i > 0$ y $v_i < 0$): estado del diodo, estado del lazo de realimentación, $v_{o,P}$ y tendencia de $v_a$. (e) ¿Por qué no se puede afirmar $v_+ = v_-$ en el semiciclo negativo? (f) Indique una fuente concreta de desviación real en banco respecto a este modelo ideal.
+\vspace{2.5cm}
+\newpage
+
+\section*{P4 — Filtro Sallen-Key (23 min)}
+Topología Sallen-Key paso bajo unitario \textbf{corregida}: $R_1=R_2=16\,\mathrm{k\Omega}$, $C_1=C_2=1\,\mathrm{\mu F}$. La entrada no inversora se conecta al nodo $y$ (punto medio del RC). La entrada inversora se conecta \textbf{directamente a la salida} (seguidor). Para el modelo ideal, la función de transferencia es:
+\begin{equation*}
+    H(s) = \frac{1}{R_1 R_2 C_1 C_2 s^2 + C_2 (R_1 + R_2) s + 1}
+\end{equation*}
+
+\begin{center}
+    \begin{circuitikz}[>=Stealth, thick, scale=0.85, transform shape]
+        % V5: Sallen-Key Corregido
+        \draw (0,0) node[op amp, yscale=-1] (op) {};
+        \draw (op.out) to[short, *-o] ++(1,0) node[right]{$V_{\mathrm{out}}$};
+        \draw (op.-) -- ++(0,-1) -| (op.out); % Realimentacion seguidor, NUNCA a GND
+        \draw (op.+) -- ++(-1,0) coordinate(y) to[R, l_=$R_2$, -*] ++(-2,0) coordinate(x) to[R, l_=$R_1$, -o] ++(-2.5,0) node[left]{$V_{\mathrm{in}}$};
+        \node[below] at (x) {nodo $x$};
+        \node[above] at (y) {nodo $y$};
+        \draw (x) -- ++(0,1.5) coordinate(c1) to[C, l=$C_1$] (c1 -| op.out) -- (op.out);
+        \draw (y) to[C, l=$C_2$] ++(0,-1.5) node[ground]{};
+    \end{circuitikz}
+\end{center}
+(a) Identifique $K$, $\omega_0$ y $Q$ comparando con la forma canónica del filtro pasa bajo. (b) Calcule $\omega_0$ y $f_0$ con sus unidades. (c) Calcule $Q$. ¿Corresponde a un filtro Butterworth de segundo orden? (d) Calcule magnitud $\vert{}H\vert{}$, ganancia $G_{\mathrm{dB}}$ y fase $\varphi$ en $f = f_0$. (e) Razone si $f_0$ es o no el punto de $-3\,\mathrm{dB}$. (f) Si $x = f/f_0 \ll 1$ y $x \gg 1$, describa la respuesta asintótica. (g) ¿Qué evidencia adicional haría falta para demostrar el Hito 3 y no solo el Lab 6?
+\vspace{3cm}
+
+\section*{P5 — Extensión Autónoma (Opcional)}
+Si dos secciones activas tienen magnitudes de $-6.02\,\mathrm{dB}$ cada una a una frecuencia específica, y el acoplamiento no produce carga apreciable, encuentre la magnitud total en $\mathrm{dB}$. Explique por qué este cálculo no prueba el cumplimiento físico de atenuación a $50\,\mathrm{Hz}$ exigido en el Hito 3 ni valida un filtro integrado de 4to orden en laboratorio. ¿Qué cambia si existe efecto de carga?
+\vspace{2.5cm}
+
+\section*{R1 — Reintento Individual y Consolidación (12 min)}
+Seleccione una respuesta propia de P1 a P4 donde cometió un error o tuvo dudas.
+\begin{itemize}
+    \item \textbf{Problema seleccionado:} \rule{4cm}{0.4pt}
+    \item \textbf{Respuesta Inicial (Errónea o Incompleta):} \hrulefill \\ \hrulefill
+    \item \textbf{Tipo de Error:} $\square$ Unidades/Cálculo $\square$ Modelo/Topología $\square$ Interpretación/Física
+    \item \textbf{Corrección Razonada:} \hrulefill \\ \hrulefill \\ \hrulefill
+\end{itemize}
+
+\end{document}

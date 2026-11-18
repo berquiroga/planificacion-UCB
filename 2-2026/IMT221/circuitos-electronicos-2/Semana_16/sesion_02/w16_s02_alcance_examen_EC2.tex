@@ -1,0 +1,68 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | IMT-221}
+\chead{Alcance de Evaluación: Bloque EC2}
+\rhead{Semana 16 - Sesión 2}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\textbf{\textcolor{ucbblue}{Ficha de Alcance Documental y Evaluación (Examen EC2)}}} \\[0.1cm]
+    {\footnotesize\textbf{Comunicado Estudiantil:} Estado de preparación y cobertura para la evaluación del 23 de noviembre.}
+\end{center}
+
+\begin{tcolorbox}[colback=blue!5, colframe=ucbblue, boxsep=2pt, top=3pt, bottom=3pt]
+    \small \textbf{Regla Institucional de Evaluación Continua (EC2):} \\
+    Los laboratorios (Labs 3--8) equivalen a un \textbf{40\% combinado} del EC2. Los Hitos 2 y 3 equivalen a un \textbf{30\% combinado} del EC2. El Examen Escrito Individual equivale al \textbf{30\%} del EC2. La Evaluación Final del PFI (lazo cerrado + rediseño) pertenece a otro bloque de evaluación y \textbf{no} se mezcla con el EC2.
+\end{tcolorbox}
+
+\section*{Definición de Alcance del Examen Individual EC2 (23/11/2026)}
+\textit{Los contenidos se ajustan a la enseñanza efectivamente impartida y acreditada hasta el 18 de noviembre (V7).}
+
+\begin{table}[htbp]
+    \centering
+    \small
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{|P{5.0cm}|P{2.8cm}|X|}
+    \hline
+    \rowcolor[HTML]{EFEFEF} 
+    \textbf{Unidad Temática} & \textbf{Estado Cobertura} & \textbf{Observación y Limitación} \\ \hline
+    Op-Amps reales: offset, GBW, Slew Rate y excursión de salida. & \textbf{\textcolor{blue}{INCLUIDO}} & Hasta el nivel trabajado en ejercicios y preparación de laboratorio. \\ \hline
+    Amplificación diferencial, In-Amp y rechazo de modo común (CMRR). & \textbf{\textcolor{blue}{INCLUIDO}} & Incluye cálculo analítico y diferenciación de señales. \\ \hline
+    Diodos, media onda y rectificación de precisión (Lab 5). & \textbf{\textcolor{blue}{INCLUIDO}} & Modelos de diodo, estados del superdiodo y cálculo de errores. \\ \hline
+    Filtro Sallen-Key 2do orden, $H(s)$, $f_0$, $Q$ y diagrama Bode (Lab 6). & \textbf{\textcolor{orange}{CONDICIONADO}} & Sujeto a la enseñanza y cobertura efectivamente comprobada en clase. \\ \hline
+    Filtro Activo 4to orden (Hito 3) y Cascada compleja. & \textbf{\textcolor{orange}{SOLO CONCEPTOS}} & Evaluado a nivel conceptual (interacción/impedancias), no como diseño complejo de Hito 3. \\ \hline
+    PID Continuo, Método Ziegler-Nichols y Margen de Fase (Bode de Lazo). & \textbf{\textcolor{red}{EXCLUIDO}} & Por decisión docente (retraso en PFI), se omite de esta evaluación EC2. \\ \hline
+    Osciladores, Clase AB, Diseño Térmico (Labs 7 y 8). & \textbf{\textcolor{red}{EXCLUIDO}} & Fuera del alcance actual del curso. \\ \hline
+    \end{tabularx}
+\end{table}
+
+\begin{tcolorbox}[colback=white, colframe=black, title=\textbf{Fechas Oficiales Restantes}]
+    \begin{itemize}
+        \item \textbf{Lunes 23 de noviembre:} Examen Escrito Individual EC2.
+        \item \textbf{Miércoles 25 de noviembre:} Recuperatorio 2 / Cierre de notas.
+        \item \textbf{Evaluación Final PFI:} Fecha oficial pendiente de confirmación institucional.
+    \end{itemize}
+\end{tcolorbox}
+
+\end{document}
