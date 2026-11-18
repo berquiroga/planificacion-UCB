@@ -1,0 +1,72 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+
+\setlength{\headheight}{16pt}
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{UCB Sede Tarija} | Documento Docente}
+\chead{Clave Docente: Diseño K y Q en Sallen-Key}
+\rhead{Unidad 3 - Lab 6}
+\renewcommand{\headrulewidth}{0.8pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\textbf{\textcolor{red!70!black}{CLAVE DOCENTE EXCLUSIVA — SEPARAR DE ALUMNOS}}}[cite: 18] \\[0.1cm]
+    {\footnotesize\textbf{Aviso:} Solucionario del Capítulo 10 de la guía de estudio autónomo. No distribuir a estudiantes.}
+\end{center}
+
+\subsection*{S1. Parámetros de la función canónica}
+\textbf{Derivación:} Comparando $H(s)=\frac{2\cdot 100^2}{s^2+(100/0.5)s+100^2}$ con la forma canónica $\frac{K\omega_0^2}{s^2+(\omega_0/Q)s+\omega_0^2}$:
+$K=2$, $\omega_0=100\,\mathrm{rad/s}$. $f_0 = 100 / (2\pi) = \mathbf{15.915\,\mathrm{Hz}}$. $Q=\mathbf{0.5}$.
+Magnitud en la frecuencia natural: $|H(j\omega_0)| = KQ = (2)(0.5) = \mathbf{1}$.
+Ganancia absoluta en $f_0$: $20\log_{10}(1) = \mathbf{0\,\mathrm{dB}}$.
+Ganancia relativa a banda pasante (donde $K=2 \implies 6.02\,\mathrm{dB}$): $0\,\mathrm{dB} - 6.02\,\mathrm{dB} = \mathbf{-6.02\,\mathrm{dB}}$.
+
+\subsection*{S2. Diseño original condicional}
+\textbf{Derivación:} $R_1=R_2=16\,\mathrm{k}\Omega, C_1=C_2=1\,\mu\mathrm{F}$. Producto $RC = 0.016\,\mathrm{s}$.
+$\omega_0 = \frac{1}{0.016} = 62.5\,\mathrm{rad/s} \implies f_0 \approx \mathbf{9.947\,\mathrm{Hz}}$.
+Como $K=1$ y los componentes son iguales, $Q=\mathbf{0.5}$.
+Magnitud en $f_0$: $|H(f_0)| = 0.5 \implies G \approx \mathbf{-6.02\,\mathrm{dB}}$ y $\varphi \approx \mathbf{-90^\circ}$.
+Frecuencia $-3\,\mathrm{dB}$: $f_{-3\mathrm{dB}} = f_0 \sqrt{\sqrt{2}-1} = 9.947(0.6436) \approx \mathbf{6.40\,\mathrm{Hz}}$. \textbf{No es Butterworth} ($Q \neq 0.7071$).
+
+\subsection*{S3. Diseño con ganancia}
+Para Butterworth $Q=1/\sqrt{2}$ con componentes iguales: $K = 3 - 1/Q = 3 - \sqrt{2} \approx \mathbf{1.5858}$.
+$R_f/R_g = K - 1 \approx \mathbf{0.5858}$.
+Aproximando con BOM: $R_g=47\,\mathrm{k}\Omega$ y $R_f=26.7\,\mathrm{k}\Omega \implies K \approx 1.5681$ y $Q \approx 0.6984$. Una mayor ganancia exige mayor margen de salida en el Op-Amp para evitar saturación (clipping).
+
+\subsection*{S4. Butterworth unitario}
+Para $K=1, R_1=R_2=R$: $C_1/C_2 = 4Q^2$. Si $Q=1/\sqrt{2} \implies C_1/C_2 = \mathbf{2}$.
+Eligiendo $C_2 = 1\,\mu\mathrm{F}$, entonces $C_1 = 2\,\mu\mathrm{F}$ (dos capacitores de $1\,\mu\mathrm{F}$ en paralelo entre el nodo $x$ y la salida).
+Con $R = 10\,\mathrm{k}\Omega \implies f_0 \approx \mathbf{11.254\,\mathrm{Hz}}$, $Q \approx \mathbf{0.7071}$, $K=1$.
+
+\subsection*{S5. Crítica conceptual}
+La afirmación es errónea. Igualdad de R/C con $K=1$ fuerza matemáticamente a que $Q=0.5$, no a $0.7071$ (Butterworth). Además, $1/(2\pi RC)$ determina $f_0$, pero en un filtro con $Q=0.5$, $f_0$ \textbf{no} coincide con la frecuencia de $-3\,\mathrm{dB}$ ($f_{-3\mathrm{dB}} = 0.6436 f_0$).
+
+\subsection*{S6. Lectura de Bode}
+En $f_0$ (con $K=1$), $|H|=Q$. Ganancia $-6.02\,\mathrm{dB} \implies 10^{-6.02/20} \approx \mathbf{0.5}$ (No Butterworth). Ganancia $-3.01\,\mathrm{dB} \implies 10^{-3.01/20} \approx \mathbf{0.7071}$ (\textbf{Butterworth}). Ninguno demuestra un sistema Hito 3 de 4to orden por sí solo ni garantiza el rechazo medido a $50\,\mathrm{Hz}$ bajo interacción de cargas.
+
+\subsection*{S7. Evidencia y Límites}
+\textbf{Lab 6:} Requiere circuito documentado con modelo de CI, barrido de frecuencia físico (amplitudes y fases medidas) y validación de linealidad. \textbf{Hito 3:} Requiere cascada completa, medición de atenuación absoluta a $50\,\mathrm{Hz}$ preservando la señal útil, e impedancias de interfaz compatibles. La foto y la simulación AC linealizada no equivalen a operación física en régimen de gran señal.
+
+\subsection*{S8. Sensibilidad}
+$C_{1,\mathrm{real}} = 0.9 C_{1,\mathrm{nom}} = 1.8 C_2$.
+Nuevo $Q = 0.5 \sqrt{C_1/C_2} = 0.5 \sqrt{1.8} \approx \mathbf{0.6708}$.
+Nuevo $f_0 = 1 / (2\pi R \sqrt{1.8 C_2^2}) = f_{0,\mathrm{nom}} \sqrt{2/1.8} \approx 1.054 f_{0,\mathrm{nom}}$ (\textbf{Aumento del 5.41\%}).
+
+\end{document}
