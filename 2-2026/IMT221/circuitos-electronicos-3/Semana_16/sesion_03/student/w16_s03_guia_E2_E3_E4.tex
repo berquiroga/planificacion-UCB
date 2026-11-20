@@ -1,0 +1,687 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table]{xcolor}
+\usepackage{tikz}
+\usepackage[american]{circuitikz}
+\usetikzlibrary{arrows.meta, positioning, calc}
+\usepackage[margin=1.35cm]{geometry}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+
+\emergencystretch=2em
+\tolerance=1000
+\hbadness=10000
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{ucbgray}{RGB}{240, 244, 248}
+\definecolor{warnred}{RGB}{180, 20, 20}
+
+\begin{document}
+
+% ==============================================================================
+% PÁGINA 1: PORTADA OPERATIVA, SECCIÓN 0 Y SECCIÓN 1 (ARQUITECTURA)
+% ==============================================================================
+\noindent
+{\LARGE \textbf{\textcolor{ucbblue}{IMT-221 — Hito 3 / Proyecto Integrador}}}\\[0.1cm]
+{\Large \textbf{GUÍA ÚNICA DE INTEGRACIÓN: E2 $\rightarrow$ E3 $\rightarrow$ E4}}\\[0.08cm]
+{\small \textbf{Edición estudiantil consolidada R2} $\cdot$ 20 de noviembre de 2026 $\cdot$ Universidad Católica Boliviana ``San Pablo'' Sede Tarija}
+\par\vspace{0.12cm}\noindent\rule{\linewidth}{0.6pt}\vspace{0.15cm}
+
+\noindent
+\textbf{Referencia única} para nuevos montajes, cálculos, simulaciones y revisiones; sustituye los esquemas de construcción E2--E4 distribuidos anteriormente. Esta edición \textbf{\textcolor{warnred}{no significa que E4 tenga permiso de energización}}. La aprobación física \textbf{G2, G3 y G4} es individual y no transferible.
+
+\vspace{0.1cm}
+\noindent
+\fcolorbox{ucbblue}{ucbgray}{%
+\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{%
+{\small \textbf{En una frase:} \textbf{E2} utiliza \textbf{1 canal de optoacoplamiento + 1 driver NMOS} para una carga resistiva; \textbf{E3} \textbf{conserva exactamente ese canal} y cambia la carga por motor con su diodo de recirculación; \textbf{E4} utiliza \textbf{4 canales de optoacoplamiento}, pero \textbf{solo 2 drivers NMOS como el de E2} y \textbf{2 drivers PMOS distintos}, además de un interbloqueo de seguridad y protección del bus que deben validarse antes de energizar.}
+}}
+
+\section*{0. Qué Se Puede Hacer con Esta Guía y Qué No}
+
+\noindent
+\begin{minipage}[t]{0.49\linewidth}
+{\footnotesize
+\renewcommand{\arraystretch}{1.18}%
+\noindent\begin{tabularx}{\linewidth}{|>{\raggedright\arraybackslash}X|c|c|>{\raggedright\arraybackslash}p{3.8cm}|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Actividad} & \textbf{E2} & \textbf{E3} & \textbf{E4} \\ \hline
+Seleccionar piezas, dibujar, calcular, simular, armar sin tensión & Sí & Sí & Sí \\ \hline
+Energizar con protección, supervisión y revisión del montaje & \textbf{Solo G2} & \textbf{Solo G3} & \textbf{Solo con G4} \\ \hline
+Dar por terminada la etapa por una simulación correcta & No & No & No \\ \hline
+Utilizar la guía como autorización automática & No & No & \textbf{\textcolor{warnred}{No; G4 sigue bloqueada hasta cerrar el interbloqueo}} \\ \hline
+\end{tabularx}\par}
+
+\vspace{0.12cm}
+\noindent{\footnotesize \textbf{Convenciones:} Dominio A = MCU y su USB, \texttt{GND\_MCU}; Dominio B = fuente de potencia, \texttt{GND\_PWR}, buses $+12\text{B}$ y $+5\text{B}$ generados mediante \texttt{7805}. Un \texttt{PC817} es barrera \textbf{solo mientras no haya otra unión conductora} de dominios. \texttt{CALC} = calculado; \texttt{SIM} = simulado con archivo y \texttt{.log}; \texttt{MED} = medido con instrumento; \texttt{PEND} = pendiente de demostrar. \texttt{G2/G3/G4} son firmas de autorización del docente, no estados inferidos.}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.49\linewidth}
+\textbf{Topología Seleccionada (SIN Variantes Paralelas para Todos):}
+{\footnotesize
+\begin{itemize}[noitemsep, topsep=2pt]
+    \item \textbf{MCU:} Arduino Uno \textbf{o} ESP32; cada grupo registra la placa exacta y selecciona $R_{\text{LED}}$ correspondiente.
+    \item \textbf{Motor:} \texttt{JGA25-370} $\mathbf{12\,\text{V}}$; $280\,\text{RPM}$ es la variante pedagógica preferida \textbf{si el grupo consigue exactamente esa variante}. \textbf{Corriente de bloqueo y detalles mecánicos por identificar} antes de G3/G4.
+    \item \textbf{NMOS inferiores:} $2\times$ \texttt{IRLZ44N} (\texttt{NL1, NL2}), canal N; verificar fabricante, encapsulado y $V_{GS(\max)}$.
+    \item \textbf{PMOS superiores:} $2\times$ \texttt{IRF4905} (\texttt{PH1, PH2}), canal P; verificar fabricante, encapsulado y límites.
+    \item \textbf{Alimentación:} $12\,\text{V}$ CC de fuente aislada de la red, regulada, con corte accesible y protección de corriente dimensionada para el equipo real. \textbf{\textcolor{warnred}{Nunca alimentar el motorreductor amarillo de $5\,\text{V}$ con $12\,\text{V}$.}}
+    \item \textbf{Sustitutos:} \texttt{IRF9520}, \texttt{IRLR2905}, \texttt{IRFZ44N}, otros motores, módulos de \texttt{PC817} y diferentes BJT \textbf{no se intercambian automáticamente}; exigen revisión de diseño, datasheet, pinout y nueva autorización.
+\end{itemize}
+}
+\end{minipage}
+
+\section*{1. Arquitectura: Exactamente Qué Se Reutiliza y Qué Se Duplica}
+
+\begin{center}
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[
+    domA/.style={draw=ucbblue, very thick, fill=ucbgray, rounded corners=3pt, minimum height=0.88cm, align=center, inner sep=4pt, font=\footnotesize},
+    domB/.style={draw=warnred!80!black, very thick, fill=red!5, rounded corners=3pt, minimum height=0.88cm, align=center, inner sep=4pt, font=\footnotesize},
+    opto/.style={draw=black, very thick, fill=yellow!15, rounded corners=2pt, minimum width=2.3cm, minimum height=0.88cm, align=center, font=\footnotesize\bfseries}
+]
+    \node[font=\bfseries\small, text=ucbblue] at (0, 2.55) {DOMINIO A — MCU / USB (\texttt{GND\_MCU})};
+    \node[font=\bfseries\small, text=warnred] at (5.3, 2.55) {BARRERA};
+    \node[font=\bfseries\small, text=warnred!80!black] at (14.2, 2.55) {DOMINIO B — $+12\text{B}$ / $+5\text{B}$ (\texttt{GND\_PWR})};
+
+    % E2
+    \node[domA, minimum width=6.6cm] (e2a) at (0, 1.55) {\textbf{E2:} \texttt{PWM\_1} $\rightarrow R_{\text{LED\_1}} \rightarrow$ \texttt{[LED PC817\_1]}};
+    \node[opto] (e2o) at (5.3, 1.55) {\texttt{OPTO\_1}};
+    \node[domB, minimum width=13.4cm] (e2b) at (14.2, 1.55) {\texttt{[fototr.]} $\rightarrow$ \texttt{Q0\_1} $\rightarrow$ \texttt{DRIVER\_N1} $\rightarrow$ \texttt{NL1} \quad|\quad $+12\text{B}$ --- $100\,\Omega\,(\ge 5\,\text{W})$ --- $D(\texttt{NL1})$, $S \rightarrow \texttt{GND\_PWR}$};
+
+    % E3
+    \node[domA, minimum width=6.6cm] (e3a) at (0, 0.35) {\textbf{E3:} \textbf{MISMO} \texttt{PWM\_1} $\rightarrow$ \textbf{MISMO} \texttt{OPTO\_1}};
+    \node[opto] (e3o) at (5.3, 0.35) {\texttt{OPTO\_1}};
+    \node[domB, minimum width=13.4cm] (e3b) at (14.2, 0.35) {\textbf{MISMO} \texttt{DRIVER\_N1} $\rightarrow$ \textbf{MISMO} \texttt{NL1} \quad|\quad $+12\text{B}$ --- \textbf{MOTOR} --- $D(\texttt{NL1})$ + \textbf{\texttt{DF}} (K a $+12\text{B}$, A a D)};
+
+    % E4
+    \node[domA, minimum width=6.6cm, minimum height=1.5cm] (e4a) at (0, -1.25) {\textbf{E4:} \texttt{PWM\_N1}, \texttt{PWM\_N2}, \texttt{PWM\_P1}, \texttt{PWM\_P2}\\{\scriptsize\textcolor{warnred}{\textbf{Interbloqueo + habilitación segura hardware: PENDIENTE G4}}}};
+    \node[opto, minimum height=1.5cm] (e4o) at (5.3, -1.25) {4 $\times$ \texttt{PC817}\\{\scriptsize \texttt{OPTO\_1..4}}};
+    \node[domB, minimum width=13.4cm, minimum height=1.5cm, align=left] (e4b) at (14.2, -1.25) {
+        $\bullet$ \texttt{receptor\_1} $\rightarrow$ \texttt{DRIVER\_N1} $\rightarrow$ gate \texttt{NL1} (reutilizado de E3) \quad|\quad $\bullet$ \texttt{receptor\_2} $\rightarrow$ \texttt{DRIVER\_N2} $\rightarrow$ gate \texttt{NL2} (2.\textsuperscript{a} copia E2)\\
+        $\bullet$ \texttt{receptor\_3} $\rightarrow$ \texttt{DRIVER\_P1} $\rightarrow$ gate \texttt{PH1} (\textbf{NO es driver E2}) \quad|\quad $\bullet$ \texttt{receptor\_4} $\rightarrow$ \texttt{DRIVER\_P2} $\rightarrow$ gate \texttt{PH2} (\textbf{NO es driver E2})
+    };
+
+    \draw[dashed, warnred, line width=1.8pt] (5.3, 2.2) -- (5.3, -2.25);
+
+    \draw[-{Stealth[length=2.4mm]}, very thick, ucbblue] (e2a.east) -- (e2o.west);
+    \draw[-{Stealth[length=2.4mm]}, very thick, warnred!80!black] (e2o.east) -- (e2b.west);
+    \draw[-{Stealth[length=2.4mm]}, very thick, ucbblue] (e3a.east) -- (e3o.west);
+    \draw[-{Stealth[length=2.4mm]}, very thick, warnred!80!black] (e3o.east) -- (e3b.west);
+    \draw[-{Stealth[length=2.4mm]}, very thick, ucbblue] (e4a.east) -- (e4o.west);
+    \draw[-{Stealth[length=2.4mm]}, very thick, warnred!80!black] (e4o.east) -- (e4b.west);
+\end{tikzpicture}%
+}
+\end{center}
+
+\noindent{\footnotesize \textbf{Aclaración clave:} \textbf{No son 4 copias completas del driver E2.} Son \textbf{4 receptores ópticos \texttt{PC817}+\texttt{Q0}}, \textbf{2 drivers low-side \texttt{Q1/Q2/QH/QL}} y \textbf{2 drivers high-side \texttt{QP} de otra topología}. \textbf{\textcolor{warnred}{Advertencia:}} La topología candidata de driver high-side descrita en \S 5.4 no es una implementación validada de PWM; el mando de 4 salidas debe quedar deshabilitado mientras falten el enclavamiento, las pruebas de retardo real y la revisión G4.}
+
+% ==============================================================================
+% PÁGINA 2: SECCIÓN 2 (BOM FINAL ÚNICA - PARTE 1/2)
+% ==============================================================================
+\newpage
+\section*{2. BOM Final Única — Cantidades TOTALES para E4 (NO Sumarlas a E2 y E3)}
+
+\noindent{\footnotesize Esta tabla sirve también como lista de auditoría de compras. \texttt{CAND.} significa valor o dispositivo \textbf{candidato} pendiente de verificación por cálculo, LTspice con modelos pertinentes y ensayo supervisado. Las cantidades son por \textbf{un prototipo de puente H}.}
+
+\par\vspace{0.08cm}\noindent
+\textbf{Bloque I — Control, Aislamiento Óptico, Regulador $+5\text{B}$, Receptor \texttt{Q0} y Drivers Low-Side (\texttt{N1, N2})}
+\par\vspace{0.06cm}
+{\footnotesize
+\renewcommand{\arraystretch}{1.18}%
+\noindent\begin{tabularx}{\linewidth}{|>{\raggedright\arraybackslash}p{2.0cm}|>{\raggedright\arraybackslash}p{7.6cm}|>{\centering\arraybackslash}p{1.2cm}|>{\centering\arraybackslash}p{1.2cm}|>{\centering\arraybackslash}p{1.8cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Ref.} & \textbf{Pieza / Valor} & \textbf{E2} & \textbf{E3} & \textbf{E4 Total} & \textbf{Nota de Verificación} \\ \hline
+\texttt{U\_MCU} & Arduino Uno \textbf{o} ESP32 & 1 & 1 & \textbf{1} & 4 GPIO de mando; GPIO seguros de arranque; comprobar corriente total \\ \hline
+\texttt{UOP} & \texttt{PC817 / PC817C} DIP-4 & 1 & 1 & \textbf{4} & Un canal aislado por gate; CTR/tiempos según fabricante y lote \\ \hline
+\texttt{RLED} & $560\,\Omega$ (Uno) \textbf{o} $330\,\Omega$ (ESP32), $1/4\,\text{W}$ & 1 & 1 & \textbf{4} & Una resistencia por LED óptico \\ \hline
+\texttt{RPD\_PWM} & $47\,\text{k}\Omega$, $1/4\,\text{W}$ & 1 & 1 & \textbf{4} & Pull-down de cada GPIO PWM \\ \hline
+\texttt{DREV} & \texttt{1N4148} (opcional) & 0--1 & 0--1 & \textbf{0--4} & Protección antiparalela LED \texttt{PC817}; NO flyback del motor \\ \hline
+\texttt{Q0} & NPN receptor: \texttt{BC337 / 2N3904 / 2N2222A / BC547}, \textbf{validado} & 1 & 1 & \textbf{4} & No todos los encapsulados comparten pinout \\ \hline
+\texttt{ROP} & $10\,\text{k}\Omega$, $1/4\,\text{W}$, \textbf{\texttt{CAND.}} & 1 & 1 & \textbf{4} & Pull-up salida opto \\ \hline
+\texttt{RB0} & $10\,\text{k}\Omega$, $1/4\,\text{W}$, \textbf{\texttt{CAND.}} & 1 & 1 & \textbf{4} & Base \texttt{Q0} \\ \hline
+\texttt{RPU0} & $1\,\text{k}\Omega$, $1/4\,\text{W}$, \textbf{\texttt{CAND.}} & 1 & 1 & \textbf{4} & Pull-up \texttt{VIN\_ISO}; nivel HIGH cargado no es $5\,\text{V}$ \\ \hline
+\texttt{UREG} & \texttt{7805} + disipación si aplica & 1 & 1 & \textbf{1} & Revisar entrada y corriente de los \textbf{4} canales \\ \hline
+\texttt{CIN5 / COUT5} & $330\,\text{nF}$ (entrada) / $100\,\text{nF}$ (salida), cerámicos & 1+1 & 1+1 & \textbf{1+1} & Colocar según datasheet del regulador realmente adquirido \\ \hline
+\texttt{CBULK} & $10\,\mu\text{F} \ge 25\,\text{V}$ en $+12\text{B}$ & 1 & 1 & \textbf{1} & Reserva de driver; no sustituye capacidad de bus del motor \\ \hline
+\texttt{CDEC12} & $100\,\text{nF}$ cerca de drivers $+12\text{B}$ & 1 & 1 & \textbf{$\ge 2$} & Distribuir por proximidad, no contar solo un capacitor remoto \\ \hline
+\texttt{Q1, Q2} & NPN control por \textbf{driver N} & 2 & 2 & \textbf{4} & 2 por cada NL (\texttt{N1} y \texttt{N2}) \\ \hline
+\texttt{QH} & PNP (\texttt{2N3906 / BC557B}) por \textbf{driver N} & 1 & 1 & \textbf{2} & Fuente de corriente (\textit{sourcing}) gate NMOS \\ \hline
+\texttt{QL} & NPN (preferir \texttt{BC337 / 2N2222A}, sujeto a ficha) por \textbf{driver N} & 1 & 1 & \textbf{2} & Descarga (\textit{sinking}) de gate NMOS \\ \hline
+\texttt{RIN1, RIN2} & $2.2\,\text{k}\Omega$, $1/4\,\text{W}$ por driver N & 2 & 2 & \textbf{4} & Dos bases por driver N \\ \hline
+\texttt{RPD1, RPD2} & $10\,\text{k}\Omega$, $1/4\,\text{W}$ por driver N & 2 & 2 & \textbf{4} & Dos bases por driver N \\ \hline
+\end{tabularx}\par}
+
+% ==============================================================================
+% PÁGINA 3: SECCIÓN 2 (BOM FINAL ÚNICA - PARTE 2/2 Y TERMINALES)
+% ==============================================================================
+\newpage
+\noindent
+\textbf{Bloque II — Resistencias Driver N, Driver High-Side P (\texttt{CAND.}), Potencia MOSFET, Motor y Protecciones}
+\par\vspace{0.06cm}
+{\footnotesize
+\renewcommand{\arraystretch}{1.15}%
+\noindent\begin{tabularx}{\linewidth}{|>{\raggedright\arraybackslash}p{2.0cm}|>{\raggedright\arraybackslash}p{7.4cm}|>{\centering\arraybackslash}p{1.4cm}|>{\centering\arraybackslash}p{1.4cm}|>{\centering\arraybackslash}p{2.4cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Ref.} & \textbf{Pieza / Valor} & \textbf{E2} & \textbf{E3} & \textbf{E4 Total} & \textbf{Nota de Verificación} \\ \hline
+\texttt{RBH} & $2.2\,\text{k}\Omega$, $1/4\,\text{W}$ por driver N & 1 & 1 & \textbf{2} & Control PNP \texttt{QH} \\ \hline
+\texttt{RPUH} & $10\,\text{k}\Omega$, $1/4\,\text{W}$ por driver N & 1 & 1 & \textbf{2} & Mantener \texttt{QH} OFF \\ \hline
+\texttt{RPU2} & $1\,\text{k}\Omega$, $\mathbf{1/2\,\text{W}}$, por driver N & 1 & 1 & \textbf{2} & Puede disipar $\approx 0.14\,\text{W}$ en condición aproximada \\ \hline
+\texttt{RBL} & $1\,\text{k}\Omega$, $1/4\,\text{W}$ por driver N & 1 & 1 & \textbf{2} & Base \texttt{QL} \\ \hline
+\texttt{RG\_UP, RG\_DN} & $220\,\Omega$, $1/4\,\text{W}$, por driver N, \textbf{\texttt{CAND.}} & 1+1 & 1+1 & \textbf{2+2} & Dos caminos independientes; ajustar según \texttt{QL} real si corresponde \\ \hline
+\texttt{RPDG\_N} & $100\,\text{k}\Omega$, $1/4\,\text{W}$ por NMOS & 1 & 1 & \textbf{2} & Gate--source apagado residual \\ \hline
+\texttt{QP} & NPN para etapa PMOS high-side, \textbf{\texttt{CAND.}} & 0 & 0 & \textbf{2} & No sustituir por driver N completo \\ \hline
+\texttt{RBP} & $2.2\,\text{k}\Omega$, $1/4\,\text{W}$ por PMOS, \textbf{\texttt{CAND.}} & 0 & 0 & \textbf{2} & Base \texttt{QP} desde receptor óptico \\ \hline
+\texttt{RPD\_BP} & $10\,\text{k}\Omega$, $1/4\,\text{W}$ por PMOS, \textbf{\texttt{CAND.}} & 0 & 0 & \textbf{2} & Base \texttt{QP} $\rightarrow \texttt{GND\_PWR}$ \\ \hline
+\texttt{RGP} & $220\,\Omega$, $1/4\,\text{W}$ por PMOS, \textbf{\texttt{CAND.}} & 0 & 0 & \textbf{2} & Gate PMOS a colector \texttt{QP} \\ \hline
+\texttt{RSP} & $2.2\,\text{k}\Omega$, $1/4\,\text{W}$ por PMOS, \textbf{\texttt{CAND.}} & 0 & 0 & \textbf{2} & Pull-up gate--source PMOS \\ \hline
+\texttt{M\_N} & \textbf{\texttt{IRLZ44N}} (NMOS) & \textbf{1} & \textbf{1} & \textbf{2} & \texttt{NL1} y \texttt{NL2} \\ \hline
+\texttt{M\_P} & \textbf{\texttt{IRF4905}} (PMOS) & 0 & 0 & \textbf{2} & \texttt{PH1} y \texttt{PH2} \\ \hline
+\texttt{RL} & $100\,\Omega$, $\mathbf{\ge 5\,\text{W}}$ & 1 & retirar & \textbf{0} & Solo E2 carga resistiva \\ \hline
+\texttt{MTR} & \texttt{JGA25-370} $\mathbf{12\,\text{V}}$, variante registrada & 0 & 1 & \textbf{1} & Motor de E3 pasa a E4 \\ \hline
+\texttt{DF} & Diodo recirculación motor E3, \textbf{por seleccionar} & 0 & 1 & \textbf{0: retirar} & No mantener en paralelo sobre motor reversible \\ \hline
+\texttt{F1 / SW} & Fusible o limitador y corte accesible & 1 conj. & revisar & \textbf{1 conj.\ rec.} & Fusible a coordinar con fuente, conductores y motor \\ \hline
+\texttt{CBUS} & Capacitores / absorción retorno del bus, \textbf{por dim.} & s/fuente & revisar & \textbf{pendiente} & E4 necesita gestionar energía regenerativa \\ \hline
+\texttt{INTLK} & Interbloqueo hardware, habilitación segura, sobrecorriente & --- & --- & \textbf{oblig., NO dim.} & \textbf{\textcolor{warnred}{Bloqueo G4; no sustituir por código Arduino}} \\ \hline
+\texttt{CONN} & Bornes, cables, soporte, disipadores si precisan & s/mont. & revisar & s/diseño & Ver corriente, temperatura, pinout y aislamiento \\ \hline
+\end{tabularx}\par}
+
+\vspace{0.12cm}
+\noindent
+\begin{minipage}[t]{0.47\linewidth}
+\textbf{Resumen para Compras E4:}
+{\footnotesize 1 MCU, \textbf{4 \texttt{PC817}}, 4 \texttt{Q0}, \textbf{4 NPN \texttt{Q1/Q2}}, \textbf{2 NPN \texttt{QL}}, \textbf{2 NPN \texttt{QP}}, \textbf{2 PNP \texttt{QH}}, \textbf{2 NMOS + 2 PMOS}, 1 motor $12\,\text{V}$ y resistencias según tabla. En total \textbf{12 BJT NPN + 2 BJT PNP}, sujetos a sustituciones por diseño validado. \texttt{INTLK}, \texttt{CBUS}, fusibles y disipadores \textbf{NO} tienen valores cerrados; la lista no autoriza comprar un circuito completo y energizarlo sin ingeniería adicional.}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.51\linewidth}
+\textbf{Identificación de Terminales:}
+\par\vspace{0.04cm}
+{\scriptsize
+\renewcommand{\arraystretch}{1.12}%
+\noindent\begin{tabularx}{\linewidth}{|l|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{4.3cm}|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Componente} & \textbf{Conexiones Funcionales Obligatorias} & \textbf{Advertencia} \\ \hline
+\texttt{PC817} DIP-4 & Pin 1 LED ánodo; pin 2 LED cátodo; pin 3 E fototr.; pin 4 C & Confirmar muesca/marca y fabricante \\ \hline
+BJT NPN / PNP & B = base, C = colector, E = emisor & Orden de patas varía; \texttt{QH} es PNP, \textbf{no} NPN \\ \hline
+\texttt{IRLZ44N / IRF4905} & G = compuerta, D = drenador, S = surtidor & Confirmar fabricante, encapsulado y pestaña \\ \hline
+\texttt{7805} & IN, GND, OUT & Identificar vista y pines en ficha del ejemplar \\ \hline
+\end{tabularx}\par}
+\end{minipage}
+
+% ==============================================================================
+% PÁGINA 4: SECCIÓN 3 (E2 — ESQUEMA COMPLETO, PREDICCIONES Y ENSAYO ESCALONADO)
+% ==============================================================================
+\newpage
+\section*{3. Etapa E2 — Construir y Verificar UN Canal NMOS Optoaislado}
+
+\subsection*{3.1 Esquema por Nodos: Conexión Completa (Dominio A y Dominio B)}
+
+\begin{center}
+\resizebox{\linewidth}{!}{%
+\begin{circuitikz}[thick]
+    \ctikzset{bipoles/length=1.08cm, transistors/scale=1.0}
+
+    % ==================== DOMINIO A ====================
+    \draw[draw=ucbblue, dashed, very thick, rounded corners=6pt] (-9.8, -4.5) rectangle (-1.3, 8.3);
+    \node[ucbblue, font=\bfseries, anchor=north west] at (-9.6, 8.1) {DOMINIO A — MCU / USB (Ref.\ exclusivamente \texttt{GND\_MCU})};
+
+    \node[draw=ucbblue, fill=ucbgray, rounded corners=3pt, align=left, font=\scriptsize, inner sep=5pt, anchor=north west] at (-9.4, 7.1) {
+        \textbf{Reglas del Dominio A:}\\
+        $\bullet$ Alimentar MCU solo por USB.\\
+        $\bullet$ $R_{\text{LED}} = 560\,\Omega$ (Uno) / $330\,\Omega$ (ESP32).\\
+        $\bullet$ Jamás unir \texttt{GND\_MCU} con \texttt{GND\_PWR}.
+    };
+
+    \coordinate (PWM_IN) at (-8.0, 2.4);
+    \draw (PWM_IN) node[circ]{} node[left=4pt, align=right]{\textbf{GPIO\_PWM\_1}\\{\scriptsize $5\,\text{V}$ / $3.3\,\text{V}$}} -- (-7.0, 2.4) node[circ]{};
+
+    \draw (-7.0, 2.4) to[R, l_={\shortstack[r]{\scriptsize $R_{\text{PD\_PWM}}$\\[-1pt]\scriptsize $47\,\text{k}\Omega$}}] (-7.0, -1.6) node[ground]{} node[below=15pt]{\scriptsize\texttt{GND\_MCU}};
+    \draw (-7.0, 2.4) to[R, l={\shortstack[c]{\scriptsize $R_{\text{LED}}$\\[-1pt]\scriptsize $560\,\Omega$ / $330\,\Omega$}}] (-4.2, 2.4) coordinate (DREV_TOP);
+    \filldraw (DREV_TOP) circle (1.8pt);
+
+    \coordinate (DREV_BOT) at (-4.2, -1.6);
+    \filldraw (DREV_BOT) circle (1.8pt);
+    \draw (DREV_BOT) to[D, l={\shortstack[r]{\scriptsize $D_{\text{REV}}$\\[-1pt]\scriptsize 1N4148}}] (DREV_TOP);
+
+    \draw (DREV_TOP) -- (-2.3, 2.4) node[above=2pt]{\scriptsize\textbf{Pin 1 (A)}} to[leDo, l_={\scriptsize\textbf{PC817 \#1}}] (-2.3, -1.6) node[below=2pt]{\scriptsize\textbf{Pin 2 (K)}} -- (DREV_BOT);
+    \draw (DREV_BOT) -- (-4.2, -2.2) node[ground]{} node[below=15pt]{\scriptsize\texttt{GND\_MCU}};
+
+    % ==================== BARRERA GALVÁNICA ====================
+    \draw[warnred, dashed, line width=2.2pt] (-0.85, -4.5) -- (-0.85, 8.3);
+    \draw[warnred, dashed, line width=2.2pt] (-0.55, -4.5) -- (-0.55, 8.3);
+    \node[warnred, font=\bfseries\footnotesize, rotate=90, fill=white, inner sep=3pt] at (-0.70, 1.9) {BARRERA GALVÁNICA PC817 \#1 — SIN CONEXIÓN GND\_MCU $\leftrightarrow$ GND\_PWR};
+
+    % ==================== DOMINIO B ====================
+    \draw[draw=warnred!80!black, dashed, very thick, rounded corners=6pt] (-0.1, -4.5) rectangle (25.2, 8.3);
+    \node[warnred!80!black, font=\bfseries, anchor=north west] at (0.1, 8.1) {DOMINIO B — $+12\text{B}$, Regulador \texttt{7805} ($+5\text{B}$), Driver N1 y Carga E2 (Ref.\ exclusivamente \texttt{GND\_PWR})};
+
+    % Regulador 7805
+    \draw (0.6, 6.8) node[circ]{} node[above=2pt]{\textbf{$+12\text{B}$}} -- (3.9, 6.8);
+    \draw (1.1, 6.8) node[circ]{} to[eC, l_={\shortstack[r]{\scriptsize $C_{\text{BULK}}$\\[-1pt]\scriptsize $10\,\mu\text{F}$}}] (1.1, 4.8) node[ground]{};
+    \draw (2.9, 6.8) node[circ]{} to[C, l_={\shortstack[r]{\scriptsize $C_{\text{IN5}}$\\[-1pt]\scriptsize $330\,\text{nF}$}}] (2.9, 4.8) node[ground]{};
+
+    \node[draw=black, very thick, fill=ucbgray, minimum width=1.6cm, minimum height=0.85cm, align=center] (U2) at (4.7, 6.8) {\textbf{7805}\\{\scriptsize IN \quad OUT}};
+    \draw (U2.south) -- (4.7, 4.8) node[ground]{} node[right=2pt]{\scriptsize\texttt{GND\_PWR}};
+    \draw (U2.east) -- (7.5, 6.8) node[circ]{} node[above=2pt]{\textbf{$+5\text{B}$}};
+    \draw (7.0, 6.8) node[circ]{} to[C, l={\shortstack[l]{\scriptsize $C_{\text{OUT5}}$\\[-1pt]\scriptsize $100\,\text{nF}$}}] (7.0, 4.8) node[ground]{};
+
+    % Fototransistor PC817 #1 + Q0
+    \draw (1.2, 0.2) node[npn, photo, anchor=C] (OPTOTR) {};
+    \node[left=3pt] at (OPTOTR.C) {\scriptsize\textbf{Pin 4 (C)}};
+    \node[left=3pt] at (OPTOTR.E) {\scriptsize\textbf{Pin 3 (E)}};
+    \draw (OPTOTR.E) -- (1.2, -3.8) node[circ]{};
+
+    \coordinate (OPTO_N) at (2.5, 0.6);
+    \draw (OPTOTR.C) -- (1.2, 0.6) -- (OPTO_N) node[circ]{};
+    \node[below=3pt] at (OPTO_N) {\textbf{OPTO\_N}};
+    \draw (OPTO_N) to[R, l={\shortstack[r]{\scriptsize $R_{\text{OP}}$\\[-1pt]\scriptsize $10\,\text{k}\Omega$}}] (2.5, 2.8) node[vcc]{\textbf{$+5\text{B}$}};
+
+    \draw (OPTO_N) to[R, l={\shortstack[c]{\scriptsize $R_{B0}$\\[-1pt]\scriptsize $10\,\text{k}\Omega$}}] (5.0, 0.6) coordinate (B0);
+    \draw (6.0, 0.6) node[npn, anchor=B] (Q0) {};
+    \node[below right=1pt and 3pt, align=left] at (Q0.E) {\textbf{Q0}\\{\scriptsize NPN}};
+    \draw (B0) -- (Q0.B);
+    \draw (Q0.E) -- (6.0, -3.8) node[circ]{};
+
+    \coordinate (VIN_ISO) at (6.0, 1.6);
+    \draw (Q0.C) -- (VIN_ISO) node[circ]{};
+    \node[left=3pt] at (VIN_ISO) {\textbf{VIN\_ISO}};
+    \draw (VIN_ISO) to[R, l={\shortstack[r]{\scriptsize $R_{\text{PU0}}$\\[-1pt]\scriptsize $1\,\text{k}\Omega$}}] (6.0, 3.4) node[vcc]{\textbf{$+5\text{B}$}};
+
+    % Rieles Driver + Potencia
+    \draw (9.2, 7.0) node[circ]{} node[above=2pt]{\textbf{$+12\text{B}$}} -- (19.6, 7.0);
+    \draw (0.6, -3.8) node[above right=1pt]{\textbf{\texttt{GND\_PWR}}} -- (24.4, -3.8);
+
+    \draw (VIN_ISO) -- (7.8, 1.6) node[circ]{};
+    \draw (7.8, 1.6) -- (7.8, 4.6) to[R, l={\shortstack[c]{\scriptsize $R_{\text{IN1}}$\\[-1pt]\scriptsize $2.2\,\text{k}\Omega$}}] (11.0, 4.6) coordinate (B1);
+    \draw (7.8, 1.6) -- (7.8, -1.4) to[R, l={\shortstack[c]{\scriptsize $R_{\text{IN2}}$\\[-1pt]\scriptsize $2.2\,\text{k}\Omega$}}] (11.0, -1.4) coordinate (B2);
+
+    % Rama Q1 -> QH
+    \filldraw (B1) circle (1.8pt) node[above=3pt]{\textbf{B1}};
+    \draw (B1) to[R, l_={\shortstack[r]{\scriptsize $R_{\text{PD1}}$\\[-1pt]\scriptsize $10\,\text{k}\Omega$}}] (11.0, 2.0) node[ground]{};
+    \draw (12.6, 4.6) node[npn, anchor=B] (Q1) {};
+    \node[below right=1pt and 3pt] at (Q1.E) {\textbf{Q1} {\scriptsize (NPN)}};
+    \draw (B1) -- (Q1.B);
+    \draw (Q1.E) -- ++(0, -0.45) node[ground]{};
+
+    \draw (Q1.C) -- (12.6, 5.7) to[R, l={\shortstack[c]{\scriptsize $R_{\text{BH}}$\\[-1pt]\scriptsize $2.2\,\text{k}\Omega$}}] (16.0, 5.7) coordinate (BH);
+    \filldraw (BH) circle (1.8pt) node[below=3pt]{\textbf{BH}};
+    \draw (BH) to[R, l={\shortstack[r]{\scriptsize $R_{\text{PUH}}$\\[-1pt]\scriptsize $10\,\text{k}\Omega$}}] (16.0, 7.0) node[circ]{};
+    \draw (17.6, 5.7) node[pnp, anchor=B] (QH) {};
+    \node[above right=19pt and 3pt, align=left] at (QH.E) {\textbf{QH} {\scriptsize (PNP)}};
+    \draw (BH) -- (QH.B);
+    \draw (QH.E) -- (17.6, 7.0) node[circ]{};
+
+    \draw (19.6, 7.0) node[circ]{} to[C, l={\shortstack[l]{\scriptsize $C_{\text{DEC12}}$\\[-1pt]\scriptsize $100\,\text{nF}$}}] (19.6, 5.0) node[ground]{};
+
+    % Rama Q2 -> QL
+    \filldraw (B2) circle (1.8pt) node[above=3pt]{\textbf{B2}};
+    \draw (B2) to[R, l_={\shortstack[r]{\scriptsize $R_{\text{PD2}}$\\[-1pt]\scriptsize $10\,\text{k}\Omega$}}] (11.0, -3.8) node[circ]{};
+    \draw (12.6, -1.4) node[npn, anchor=B] (Q2) {};
+    \node[below right=1pt and 3pt] at (Q2.E) {\textbf{Q2} {\scriptsize (NPN)}};
+    \draw (B2) -- (Q2.B);
+    \draw (Q2.E) -- (12.6, -3.8) node[circ]{};
+
+    \coordinate (LCTL) at (14.2, -0.4);
+    \draw (Q2.C) -- (12.6, -0.4) -- (LCTL) node[circ]{};
+    \node[below=3pt] at (LCTL) {\textbf{LCTL}};
+    \draw (LCTL) to[R, l={\shortstack[r]{\scriptsize $R_{\text{PU2}}$\\[-1pt]\scriptsize $1\,\text{k}\Omega, \frac{1}{2}\text{W}$}}] (14.2, 2.2) node[vcc]{\textbf{$+12\text{B}$}};
+    \draw (LCTL) to[R, l={\shortstack[c]{\scriptsize $R_{\text{BL}}$\\[-1pt]\scriptsize $1\,\text{k}\Omega$}}] (16.4, -0.4) coordinate (BL);
+    \filldraw (BL) circle (1.8pt) node[above=3pt]{\textbf{BL}};
+    \draw (17.6, -0.4) node[npn, anchor=B] (QL) {};
+    \node[below right=2pt and 4pt, align=left] at (QL.E) {\textbf{QL} {\scriptsize (NPN)}};
+    \draw (BL) -- (QL.B);
+    \draw (QL.E) -- (17.6, -3.8) node[circ]{};
+
+    % RG_UP / RG_DN -> G_NL1 -> NL1 + RL
+    \draw (QH.C) -- (17.6, 3.8) to[R, l={\scriptsize $R_{G\_UP} = 220\,\Omega$}] (21.2, 3.8);
+    \draw (QL.C) -- (17.6, 1.0) to[R, l_={\scriptsize $R_{G\_DN} = 220\,\Omega$}] (21.2, 1.0);
+    \draw (21.2, 3.8) -- (21.2, 1.0);
+    \coordinate (GATE) at (21.2, 2.4);
+    \filldraw (GATE) circle (2.0pt) node[left=3pt]{\textbf{G\_NL1}};
+
+    \draw (GATE) -- (22.4, 2.4) coordinate (gate_m1);
+    \draw (22.4, 2.4) node[circ]{} to[R, l={\shortstack[l]{\scriptsize $R_{\text{PDG\_N}}$\\[-1pt]\scriptsize $100\,\text{k}\Omega$}}] (22.4, -3.8) node[circ]{};
+    \draw (gate_m1) -- (23.8, 2.4) node[nigfete, anchor=G] (M1) {};
+    \node[right=4pt, align=left] at (M1.D) {\textbf{NL1}\\{\scriptsize \texttt{IRLZ44N}}};
+    \draw (M1.S) -- (23.8, -3.8) node[circ]{} node[below=2pt]{\scriptsize\textbf{S / \texttt{GND\_PWR}}};
+    \draw (M1.B) -- ++(0.5, 0) |- (23.8, -3.8);
+    \draw (M1.D) to[R, l_={\shortstack[r]{\scriptsize $R_L = 100\,\Omega$\\[-1pt]\scriptsize ($\ge 5\,\text{W}$)}}] (23.8, 7.0) node[above=2pt]{\textbf{$+12\text{B}$ (protegido)}};
+\end{circuitikz}%
+}
+\end{center}
+
+\noindent{\footnotesize \textbf{Tres puntos críticos E2:} (1) Con LED HIGH, \texttt{OPTO\_N} baja, \texttt{Q0} se apaga y \texttt{VIN\_ISO} sube; cargado por dos entradas NPN, \texttt{VIN\_ISO} puede quedar alrededor de \textbf{$2.75\,\text{V}$ (estimación)}, no $5\,\text{V}$: calcular y verificar saturación real de \texttt{Q0, Q1, Q2}. (2) \texttt{QH} carga el gate por $R_{G\_UP}$ y \texttt{QL} lo descarga por $R_{G\_DN}$; pueden conducir simultáneamente en transiciones y generar picos sobre $V_{GS(\max)}$ (no usar seguidor complementario de bases unidas). (3) $+12\text{B}$ y \texttt{7805} comparten \texttt{GND\_PWR} y \textbf{nunca} se unen a \texttt{GND\_MCU} (cuidado con las pinzas de masa del osciloscopio).}
+
+\vspace{0.12cm}
+\noindent
+\begin{minipage}[t]{0.46\linewidth}
+\subsection*{3.2 Predicciones E2 (NO Son Mediciones)}
+\par\vspace{0.04cm}
+{\scriptsize
+\renewcommand{\arraystretch}{1.14}%
+\noindent\begin{tabularx}{\linewidth}{|l|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Variable} & \textbf{GPIO LOW} & \textbf{GPIO HIGH} \\ \hline
+LED \texttt{PC817} & Apagado & Encendido \\ \hline
+\texttt{OPTO\_N} & Alto si $+5\text{B}$ correcto & Bajo si CTR/sat.\ suficientes \\ \hline
+\texttt{VIN\_ISO} & Cercano a $0\,\text{V}$ si \texttt{Q0} satura & Alto \textbf{cargado}; no asumir $+5\,\text{V}$ \\ \hline
+\texttt{QH / QL} & \texttt{QH} OFF; \texttt{QL} ON & \texttt{QH} ON; \texttt{QL} OFF \\ \hline
+$V_{GS}(\texttt{NL1})$ & $\approx 0\,\text{V}$ & Hacia $+12\,\text{V}$, verificar pico real \\ \hline
+$V_{DS}(\texttt{NL1})$ con $R_L$ & $\approx 12\,\text{V}$ & $\approx 0\,\text{V}$ solo si plena conducción \\ \hline
+\end{tabularx}\par}
+\noindent{\scriptsize Valores ideales E2 resistivo: $I_{\text{ON}} \approx 12/100 = 0.12\,\text{A}$, $P_{RL,\text{ON}} \approx 1.44\,\text{W}$, $P_{RL,\text{media}} \approx 0.72\,\text{W}$ (PWM $100\,\text{Hz}$, $50\%$, estados ideales). $R_L$ debe soportar ON continuo.}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.52\linewidth}
+\subsection*{3.3 Ensayo Escalonado E2 — NO Saltar Fases}
+{\scriptsize
+\begin{enumerate}[noitemsep, topsep=2pt]
+    \item \textbf{Fase 0 (sin energía):} Pinout real, ficha, polaridad, continuidad y separación A/B; desconectar USB/fuente, descargar capacitores; foto y \texttt{CALC}.
+    \item \textbf{Fase A (solo MCU):} Probar LOW/HIGH y PWM $100\,\text{Hz}/50\%$; medir $I_{\text{LED}} = V(R_{\text{LED}})/R_{\text{LED}}$, sin $12\,\text{V}$ en el micro.
+    \item \textbf{Fase B (solo Dominio B, sin NMOS ni $R_L$):} Fuente $12\,\text{V}$ limitada; medir $+5\text{B}$, calor \texttt{7805}, consumo y OFF.
+    \item \textbf{Fase C (enlace óptico sin potencia):} Conectar \texttt{PC817} sin unir tierras; medir \texttt{OPTO\_N}, \texttt{VIN\_ISO}, \texttt{BH}, \texttt{LCTL} y gate libre en LOW/HIGH, pérdida GPIO, reset y retorno de $12\,\text{V}$.
+    \item \textbf{Fase D (MOSFET sin carga):} Montar \texttt{NL1} apagado; comprobar $V_{GS}$ respecto a S, OFF y transitorios dentro de ficha.
+    \item \textbf{Fase E (\textcolor{warnred}{solo tras G2}):} Montar $R_L$ apagado, energizar protegido en OFF, medir $V_{GS}$, $V_{DS}$, corriente, duty y temperatura.
+\end{enumerate}
+\textbf{\textcolor{warnred}{Bloqueo G2:}} Pinout dudoso, puente A/B, ON al desconectar MCU, gate flotante, $V_{GS}$ fuera de ficha, calor/corriente cruzada anómalos, sonda peligrosa o fuente sin protección.
+}
+\end{minipage}
+
+% ==============================================================================
+% PÁGINA 5: SECCIÓN 4 (E3 — MOTOR Y DIODO DF)
+% ==============================================================================
+\newpage
+\section*{4. Etapa E3 — Mismo Driver E2, Sustituir Resistencia por Motor}
+
+\noindent
+\begin{minipage}[t]{0.54\linewidth}
+\subsection*{4.1 Qué Se Conserva y Qué Cambia}
+\textbf{Se conserva:} Arduino/ESP32, \texttt{PC817 \#1} y su receptor \texttt{Q0}, driver \texttt{N1} (\texttt{Q1/Q2/QH/QL}), \texttt{IRLZ44N} (\texttt{NL1}), \texttt{7805}, fuente y tierra del lado B. \textbf{Se retira} la resistencia de potencia $R_L = 100\,\Omega$. \textbf{Se añade} el motorreductor $12\,\text{V}$ y el diodo de recirculación \texttt{DF} con características verificadas. Revisar protección de corriente (la del circuito resistivo \textbf{no} se presume válida para el motor).
+
+\vspace{0.08cm}
+\noindent\textbf{Polaridad:} \texttt{DF} va con \textbf{cátodo a $+12\text{B}$} y \textbf{ánodo al drenador de \texttt{NL1}} (\texttt{NODO\_D}) para proveer recirculación cuando \texttt{NL1} abre. El diodo intrínseco del NMOS no sustituye automáticamente a \texttt{DF}; el \texttt{1N4148} (\texttt{DREV}) del opto tampoco es diodo de motor.
+
+\subsection*{4.2 Selección Real de Motor y Diodo (Datos a Registrar)}
+\par\vspace{0.05cm}
+{\footnotesize
+\renewcommand{\arraystretch}{1.24}%
+\noindent\begin{tabularx}{\linewidth}{|>{\raggedright\arraybackslash}p{4.8cm}|>{\raggedright\arraybackslash}p{3.4cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Parámetro} & \textbf{Dato del Grupo} & \textbf{Estado / Condición} \\ \hline
+Motor / variante exacta \texttt{JGA25-370} & & Ficha / fotografía \\ \hline
+Tensión nominal & $12\,\text{V}$ de referencia & Confirmar etiqueta \\ \hline
+Corriente sin carga y a carga rep. & \hfill A & Fuente / ficha \\ \hline
+\textbf{Corriente de arranque / bloqueo} & \textbf{\texttt{PEND}} \hfill A & Crucial G3/G4; no trabar sin proc. \\ \hline
+Resistencia bobinado / inductancia & \hfill $\Omega$ / \hfill H & Método o ficha \\ \hline
+Diodo \texttt{DF}, referencia exacta & \textbf{\texttt{PEND}} & Ficha, $I$, picos, $V_{RRM}$, térmica, rec. \\ \hline
+Fuente / fusible / cables & \textbf{\texttt{PEND}} & Calibre y capacidad confirmados \\ \hline
+\end{tabularx}\par}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.43\linewidth}
+\subsection*{Esquema de Conexión E3 (Unidireccional)}
+\begin{center}
+\begin{circuitikz}[scale=0.90, transform shape, thick]
+    \draw (0, 4.4) node[above]{\textbf{$+12\text{B}$}} -- (0, 3.8) coordinate (bus_top);
+    \filldraw (bus_top) circle (1.6pt);
+
+    \draw (bus_top) -- (0, 3.0);
+    \draw (0, 2.2) circle (0.8cm) node[align=center, font=\footnotesize\bfseries]{MOTOR\\$12\,\text{V}$};
+    \draw (0, 1.4) -- (0, 0.7) coordinate (drain);
+    \filldraw (drain) circle (1.6pt) node[left=3pt]{\textbf{NODO\_D}};
+
+    \draw (drain) -- (2.9, 0.7) node[right=2pt]{\scriptsize\textbf{A(DF)}} to[D, l_={\shortstack[l]{\textbf{DF}\\{\scriptsize (SOLO E3)}}}] (2.9, 3.8) node[right=2pt]{\scriptsize\textbf{K(DF)}} -- (bus_top);
+
+    \draw (0, -0.6) node[nigfete] (M1) {};
+    \node[right=4pt] at (M1.D) {\textbf{NL1} {\scriptsize (\texttt{IRLZ44N})}};
+    \draw (drain) -- (M1.D);
+    \draw (M1.S) -- (0, -1.9) node[ground]{} node[below=14pt]{\scriptsize\texttt{GND\_PWR}};
+    \draw (M1.B) -- ++(0.5, 0) |- (0, -1.9);
+
+    \node[draw=ucbblue, very thick, fill=ucbgray, rounded corners=3pt, align=center, font=\footnotesize] (drv) at (-3.3, -0.6) {\textbf{MISMO GATE E2}\\(\texttt{DRIVER\_N1})};
+    \draw[-{Stealth[length=2.4mm]}, thick] (drv.east) -- (M1.G);
+\end{circuitikz}
+\end{center}
+
+\vspace{0.08cm}
+\noindent{\footnotesize \textbf{Modelo simplificado de bobina (NO motor girando con FEM):}
+\[
+    V = R\,i + L\frac{di}{dt}, \qquad \tau = \frac{L}{R}, \qquad E_L = \frac{1}{2}L\,I^2.
+\]
+Cuando el rotor gira existe fuerza contraelectromotriz; \textbf{no usar $12/R$} como corriente nominal en régimen. La corriente de arranque puede superar notablemente la corriente nominal.}
+
+\subsection*{4.3 Checklist de Avance E3}
+{\footnotesize
+\begin{itemize}[label=$\square$, noitemsep, topsep=2pt]
+    \item Motor y \texttt{DF} identificados por ficha; diodo orientado correctamente.
+    \item LTspice: corriente inductiva y $V_{DS}$ en ON/OFF con modelo rotulado; comparación con/sin protección \textbf{solo en simulación}.
+    \item Fuente, cables, protección y medida adecuados a arranque/bloqueo.
+    \item Revisión y firma \textbf{G3} antes de energizar motor (ensayo inicial de baja energía supervisado).
+    \item Guardar \texttt{.asc/.cir}, \texttt{.log}, capturas y medidas si las hubo; sin G3 escribir \texttt{PEND}, no \texttt{MED}.
+\end{itemize}
+}
+\end{minipage}
+
+% ==============================================================================
+% PÁGINA 6: SECCIÓN 5 (E4 — PUENTE H, DRIVERS N/P, ESTADOS E INTERBLOQUEO)
+% ==============================================================================
+\newpage
+\section*{5. Etapa E4 — Transformar E3 en Puente H (NO Duplicar Cuatro Veces E2)}
+
+\noindent
+\textbf{\textcolor{warnred}{5.1 Primero — Retirar lo que no sirve de E3:}} \textbf{Con toda energía apagada}, retirar el diodo \texttt{DF} conectado en paralelo con el motor (si permanece, al invertir sentido genera cortocircuito directo). El motor pasa a conectarse \textbf{entre los nodos centrales A y B}.
+
+\vspace{0.08cm}
+\noindent
+\begin{minipage}[t]{0.49\linewidth}
+\subsection*{5.2 Esquema de Potencia: Terminal a Terminal}
+\begin{center}
+\begin{circuitikz}[scale=0.78, transform shape, thick]
+    \draw (-4.2, 3.7) -- (4.2, 3.7) node[midway, above]{\textbf{$+12\,\text{V}_{\text{BUS}}$ PROTEGIDO}};
+
+    \draw (-2.8, 2.2) node[pigfete] (PH1) {};
+    \node[above right=2pt] at (PH1.D) {\textbf{PH1} {\scriptsize (IRF4905)}};
+    \draw (-2.8, 3.7) node[circ]{} -- (PH1.S);
+    \draw (PH1.B) -- ++(0.45, 0) |- (-2.8, 3.7);
+
+    \draw (-2.8, -1.1) node[nigfete] (NL1) {};
+    \node[below right=2pt] at (NL1.D) {\textbf{NL1} {\scriptsize (IRLZ44N)}};
+    \draw (NL1.S) -- (-2.8, -2.4) node[circ]{};
+    \draw (NL1.B) -- ++(0.45, 0) |- (-2.8, -2.4);
+
+    \draw (2.8, 2.2) node[pigfete, xscale=-1] (PH2) {};
+    \node[above left=2pt] at (PH2.D) {\textbf{PH2} {\scriptsize (IRF4905)}};
+    \draw (2.8, 3.7) node[circ]{} -- (PH2.S);
+    \draw (PH2.B) -- ++(-0.45, 0) |- (2.8, 3.7);
+
+    \draw (2.8, -1.1) node[nigfete, xscale=-1] (NL2) {};
+    \node[below left=2pt] at (NL2.D) {\textbf{NL2} {\scriptsize (IRLZ44N)}};
+    \draw (NL2.S) -- (2.8, -2.4) node[circ]{};
+    \draw (NL2.B) -- ++(-0.45, 0) |- (2.8, -2.4);
+
+    \draw (-4.2, -2.4) -- (4.2, -2.4) node[midway, below]{\textbf{\texttt{GND\_PWR}}};
+    \draw (0, -2.4) node[ground]{};
+
+    \draw (PH1.D) -- (NL1.D) node[midway, circ] (A) {};
+    \draw (PH2.D) -- (NL2.D) node[midway, circ] (B) {};
+    \node[left=4pt] at (A) {\textbf{NODO A}};
+    \node[right=4pt] at (B) {\textbf{NODO B}};
+    \draw (A) -- (-0.8, 0.55);
+    \draw (0, 0.55) circle (0.8cm) node{\textbf{MOTOR}};
+    \draw (0.8, 0.55) -- (B);
+
+    \node[draw=warnred!80!black, fill=red!5, rounded corners=2pt, font=\scriptsize] (p1) at (-5.8, 2.2) {\texttt{DRIVER\_P1}};
+    \node[draw=ucbblue, fill=ucbgray, rounded corners=2pt, font=\scriptsize] (n1) at (-5.8, -1.1) {\texttt{DRIVER\_N1}};
+    \node[draw=warnred!80!black, fill=red!5, rounded corners=2pt, font=\scriptsize] (p2) at (5.8, 2.2) {\texttt{DRIVER\_P2}};
+    \node[draw=ucbblue, fill=ucbgray, rounded corners=2pt, font=\scriptsize] (n2) at (5.8, -1.1) {\texttt{DRIVER\_N2}};
+    \draw[-{Stealth[length=2mm]}] (p1.east) -- (PH1.G);
+    \draw[-{Stealth[length=2mm]}] (n1.east) -- (NL1.G);
+    \draw[-{Stealth[length=2mm]}] (p2.west) -- (PH2.G);
+    \draw[-{Stealth[length=2mm]}] (n2.west) -- (NL2.G);
+\end{circuitikz}
+\end{center}
+\noindent{\scriptsize \textbf{Conexiones inequívocas:} $S(\texttt{PH1})=S(\texttt{PH2})=+12\text{B}$; $D(\texttt{PH1})=D(\texttt{NL1})=\text{A}$; $D(\texttt{PH2})=D(\texttt{NL2})=\text{B}$; motor entre A y B sin \texttt{DF}; $S(\texttt{NL1})=S(\texttt{NL2})=\texttt{GND\_PWR}$; jamás unir los 4 gates.}
+
+\subsection*{5.3 Drivers Inferiores (\texttt{NL1, NL2}) y 5.7 Tensión $V_{GS} = V_G - V_S$}
+{\scriptsize \texttt{DRIVER\_N1} = E2 (\texttt{PC817 \#1} $\rightarrow$ \texttt{Q0\_1} $\rightarrow$ \texttt{Q1\_1/Q2\_1} $\rightarrow$ \texttt{QH\_1/QL\_1} $\rightarrow$ $G(\texttt{NL1})$). \texttt{DRIVER\_N2} = 2.\textsuperscript{a} copia idéntica (\texttt{PC817 \#2}) con \texttt{VIN\_ISO} y gate independientes.}
+\par\vspace{0.04cm}
+{\scriptsize
+\renewcommand{\arraystretch}{1.12}%
+\noindent\begin{tabularx}{\linewidth}{|l|c|c|c|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Dispositivo} & \textbf{$V_S$} & \textbf{OFF ($V_G$)} & \textbf{ON ($V_G$ aprox.)} & \textbf{Signo ON ($V_{GS}$) / Verificación} \\ \hline
+\texttt{NL1 / NL2} (NMOS) & $0\,\text{V}$ & $0\,\text{V}$ & $12\,\text{V}$ & $+12\,\text{V}$ (cond.\ a ficha, picos, startup) \\ \hline
+\texttt{PH1 / PH2} (PMOS) & $+12\,\text{V}$ & $+12\,\text{V}$ & cerca de $0\,\text{V}$ & $\approx -12\,\text{V}$ (no asumir seguridad sin ficha) \\ \hline
+\end{tabularx}\par}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.49\linewidth}
+\subsection*{5.4 Driver High-Side (\texttt{PH1, PH2}) — Candidato, NO PWM Autorizado}
+\begin{center}
+\begin{circuitikz}[scale=0.76, transform shape, thick]
+    \draw[dashed, warnred, rounded corners=4pt] (-6.0, -4.5) rectangle (5.7, 3.5);
+    \node[font=\scriptsize\bfseries, text=warnred] at (-0.3, 3.22) {TOPOLOGÍA CANDIDATA PARA ESTUDIO — NO AUTORIZADA G4 / SIN PWM};
+
+    \draw (-0.8, 2.5) -- (3.8, 2.5) node[midway, above]{\scriptsize\textbf{$+12\text{B} = S(\texttt{PH}_j)$}};
+    \draw (0.6, 2.5) node[circ]{} to[R, l_={\shortstack[r]{\scriptsize $R_{SPj}$\\[-1pt]\scriptsize $2.2\,\text{k}\Omega$}}] (0.6, 0.8) coordinate (GPH);
+    \filldraw (GPH) circle (1.8pt) node[above right=2pt]{\scriptsize\textbf{$\texttt{G\_PH}_j$}};
+
+    \draw (GPH) to[R, l_={\shortstack[r]{\scriptsize $R_{GPj}$\\[-1pt]\scriptsize $220\,\Omega$}}] (0.6, -0.9) -- (0.6, -1.0) node[npn, anchor=C] (QP) {};
+    \node[right=4pt] at (QP.E) {\scriptsize\textbf{$\texttt{QP}_j$} (NPN)};
+    \draw (QP.E) -- (0.6, -2.2) node[ground]{} node[right=3pt]{\scriptsize\texttt{GND\_PWR}};
+
+    \draw (-4.8, -1.76) node[circ]{} node[above=2pt, align=left]{\scriptsize\textbf{$\texttt{VIN\_ISO\_P}_j$}\\{\tiny (\texttt{PC817 \#3/\#4}+\texttt{Q0})}} to[R, l={\scriptsize $R_{BPj}=2.2\,\text{k}\Omega$}] (-1.6, -1.76) coordinate (BQP);
+    \draw (BQP) -- (QP.B);
+    \draw (BQP) node[circ]{} to[R, l_={\scriptsize $R_{\text{PD\_BP}j}=10\,\text{k}\Omega$}] (-1.6, -3.4) node[ground]{};
+
+    \draw (3.1, 0.8) node[pigfete, anchor=G] (PHJ) {};
+    \node[right=3pt, align=left] at (PHJ.D) {\scriptsize\textbf{$\texttt{PH}_j$}\\{\scriptsize IRF4905}};
+    \draw (GPH) -- (PHJ.G);
+    \draw (PHJ.S) -- (PHJ.S |- 0, 2.5) node[circ]{};
+    \draw (PHJ.D) -- ++(0, -0.8) node[below]{\scriptsize Nodo A o B};
+\end{circuitikz}
+\end{center}
+\noindent{\scriptsize $\texttt{QP}_j$ OFF $\rightarrow$ $R_{SPj}$ lleva gate a $+12\,\text{V}$ (PMOS OFF). $\texttt{QP}_j$ ON $\rightarrow$ gate baja por $R_{GPj}$ ($V_{GS} < 0$, PMOS ON). $R_{SPj}$ alta produce apagado lento; \textbf{no autoriza PWM ni inversión energizada}.}
+
+\subsection*{5.5 Tabla de los Cuatro Mandos (Estática, NO Temporizada)}
+\par\vspace{0.04cm}
+{\scriptsize
+\renewcommand{\arraystretch}{1.12}%
+\noindent\begin{tabularx}{\linewidth}{|l|c|c|c|c|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Estado} & \textbf{PH1} & \textbf{NL1} & \textbf{PH2} & \textbf{NL2} & \textbf{Ruta Principal / Observación} \\ \hline
+Reposo & 0 & 0 & 0 & 0 & Motor sin mando; gestionar energía residual \\ \hline
+Adelante $A\rightarrow B$ & 1 & 0 & 0 & 1 & $+12 \rightarrow \texttt{PH1} \rightarrow \text{A} \rightarrow \text{motor} \rightarrow \text{B} \rightarrow \texttt{NL2} \rightarrow \text{GND}$ \\ \hline
+Reversa $B\rightarrow A$ & 0 & 1 & 1 & 0 & $+12 \rightarrow \texttt{PH2} \rightarrow \text{B} \rightarrow \text{motor} \rightarrow \text{A} \rightarrow \texttt{NL1} \rightarrow \text{GND}$ \\ \hline
+Cambio dirección & 0 & 0 & 0 & 0 & Solo si tiempos físicos y corriente controlados \\ \hline
+\textcolor{warnred}{\textbf{PROHIBIDO A / B}} & \textcolor{warnred}{\textbf{1 / *}} & \textcolor{warnred}{\textbf{1 / *}} & \textcolor{warnred}{\textbf{* / 1}} & \textcolor{warnred}{\textbf{* / 1}} & \textcolor{warnred}{\textbf{Cortocircuito directo fuente--retorno}} \\ \hline
+\end{tabularx}\par}
+
+\subsection*{5.6 Requisito FALTANTE Antes de Energizar E4: Interbloqueo Hardware}
+{\scriptsize \textbf{\textcolor{warnred}{NO energizar E4 basándose solo en esta tabla.}} Se exige \textbf{adenda eléctrica aprobada con circuito y BOM} que asegure: (1) habilitación \texttt{ENABLE} con las 4 puertas en OFF ante arranque, reset, pérdida de PWM, fallo de software o caída de fuente; (2) exclusión hardware high/low en cada brazo (no depender solo del orden de escritura en Arduino); (3) \textit{break-before-make / dead-time} medido con retardos reales de optos/BJT; (4) gestión de corriente de motor, retorno de energía al bus y corte por sobrecorriente; (5) medición segura de $V_{GS}$ high-side sin pinza GND en $+12\text{B}$.}
+\end{minipage}
+
+% ==============================================================================
+% PÁGINA 7: SECCIÓN 6 (RUTA), SECCIÓN 7 (LTSPICE), SECCIÓN 8 Y SECCIÓN 9
+% ==============================================================================
+\newpage
+\section*{6. Ruta Única de Trabajo para los Grupos}
+
+\par\vspace{0.05cm}
+{\footnotesize
+\renewcommand{\arraystretch}{1.16}%
+\noindent\begin{tabularx}{\linewidth}{|c|>{\raggedright\arraybackslash}p{6.6cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{3.4cm}|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Paso} & \textbf{Montaje / Diseño} & \textbf{Evidencia que Se Presenta} & \textbf{¿Motor Energizado?} \\ \hline
+1 & E2 opto + 1 driver NMOS, inspección sin fuente & Esquema, BOM, pinouts, conexiones A/B y LTspice & No \\ \hline
+2 & Ensayo E2 escalonado, \textbf{G2} & $V_{GS}$, PWM, $V_{DS}$, corriente $R_L$ solo si autorizado & No motor aún \\ \hline
+3 & Sustituir $R_L$ por motor + \texttt{DF} E3 & Motor real, ficha, diodo seleccionado, protección, LTspice & Solo con \textbf{G3} \\ \hline
+4 & Retirar \texttt{DF}; dibujar potencia E4 A/B; añadir 2.\textsuperscript{o} NL + \texttt{PH1/PH2} & 4 datasheets, BOM final, nodos, tabla de estados & No \\ \hline
+5 & Añadir 4 optos y 4 receptores; 2 drivers N y 2 drivers P & Simulación y medición segura \textbf{sin bus}, señales/estados de gate & No \\ \hline
+6 & Diseñar y demostrar hardware \texttt{ENABLE} + interbloqueo + dead-time + prot. & Adenda aprobada, formas de onda, secuencia de fallo, instrumento y fuente & \textbf{Solo después de G4} \\ \hline
+7 & Integración final, solo con G4 & Medidas reales con corriente y referencias correctas; análisis térmico & Sí, supervisado y prot. \\ \hline
+\end{tabularx}\par}
+
+\noindent{\footnotesize No se exige que todos los grupos alcancen G4 físicamente si faltan piezas o autorizaciones: registrar \texttt{PEND} y jamás inventar resultados \texttt{MED}. Esta guía es técnica y no modifica rúbricas ni plazos institucionales.}
+
+\section*{7. Pruebas LTspice y Entregables Mínimos}
+
+\par\vspace{0.04cm}
+{\footnotesize
+\renewcommand{\arraystretch}{1.15}%
+\noindent\begin{tabularx}{\linewidth}{|c|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Etapa} & \textbf{Formas de Onda y Condiciones Imprescindibles (Entregar \texttt{.asc/.cir}, \texttt{.log}, modelos y capturas con escala)} \\ \hline
+\textbf{E2} & \texttt{PWM\_A}, \texttt{OPTO\_N}, \texttt{VIN\_ISO}, \texttt{BH}, \texttt{LCTL}, $V_{GS\_N1}$, $V_{DS\_N1}$, $I(R_L)$, $I(12\text{B})$, $V_{BE}$ de cada BJT; arranque, pérdida PWM y $100\,\text{Hz}$ $50\%$ \\ \hline
+\textbf{E3} & $I(\text{motor})$, $V_{DS}(\texttt{NL1})$, $I(\texttt{DF})$, tensión de bus y energía almacenada; ON/OFF con modelo de carga documentado \\ \hline
+\textbf{E4} & $4\times V_{GS}$ cada uno \textbf{referido a su source}, $V(\text{A})-V(\text{B})$, corrientes de cada rama, $I_{\text{BUS}}$, dos sentidos, fallo/reset, retardos de apagado, sobretensión de bus y recuperación de energía \\ \hline
+\end{tabularx}\par}
+\noindent{\footnotesize Un modelo genérico sirve para aprender topología, \textbf{no} para validar límites de dispositivos reales. Distinguir por cada cifra \texttt{CALC}, \texttt{SIM}, \texttt{MED}, \texttt{PEND} y su condición.}
+
+\vspace{0.08cm}
+\noindent
+\begin{minipage}[t]{0.49\linewidth}
+\section*{8. Puntos de Parada Inmediata y Seguridad Común}
+{\footnotesize
+\begin{itemize}[noitemsep, topsep=2pt]
+    \item Fuente de $12\,\text{V}$ sin limitación apropiada o fusible/interruptor no dimensionado; sobrecorriente, arco, calentamiento de resistencias o BJT/MOSFET; cables insuficientes.
+    \item MOSFET real distinto al esquema, pinout no comprobado, masa del osciloscopio en nodo high-side o puente involuntario entre \texttt{GND\_MCU} y \texttt{GND\_PWR}.
+    \item Gate ON en arranque, reset, pérdida PWM o al energizar; $V_{GS}$ fuera de límites absolutos; ambas ramas de un mismo brazo conduciendo.
+    \item Motor bloqueado, eje/engranajes expuestos, vibración o incremento térmico; transitorios de bus no controlados.
+    \item \textbf{\textcolor{warnred}{Sin firma de G2/G3/G4 pertinente, se detiene la energización correspondiente.}}
+\end{itemize}
+}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.49\linewidth}
+\section*{9. Fuentes de Consulta y Datos Pendientes de Verificar}
+{\footnotesize
+\begin{itemize}[noitemsep, topsep=2pt]
+    \item \textbf{Origen docente:} Esquema E2 optoaislado v1.5, edición maestra E2--E4 del 20/11/2026 y guía de integración; valores de receptores y driver P son \textbf{propuestas didácticas previas}, no ensayos físicos confirmados.
+    \item \textbf{Fuentes técnicas:} Infineon \texttt{IRLZ44N} (\url{https://www.infineon.com/part/IRLZ44N}), Infineon \texttt{IRF4905} (\url{https://www.infineon.com/part/IRF4905}), Sawers \texttt{JGA25-370} $12\,\text{V}$ (\url{https://tienda.sawers.com.bo/motor-dc-12v-alto-torque-}). Revisar datasheet del \textbf{fabricante real} (pinout, máximos, $R_{DS(\text{on})}$, $Q_g$, térmica y SOA).
+    \item \textbf{Pendientes antes de G3/G4:} Inventario real de MOSFET/BJT/\texttt{PC817}, corriente de bloqueo del motor, diodo \texttt{DF}, fuente/fusible/cableado, interbloqueo y \textit{dead-time} implementados, protección de bus y modelos o medidas verificables.
+\end{itemize}
+}
+\end{minipage}
+
+% ==============================================================================
+% PÁGINA 8: FICHA DE EVIDENCIA IMPRIMIBLE (DUPLICAR POR GRUPO Y ETAPA)
+% ==============================================================================
+\newpage
+\section*{Ficha de Evidencia Trazable (Duplicar por Grupo y Etapa: E2 / E3 / E4)}
+
+\noindent{\small Completar una hoja por cada etapa ejecutada o bloqueada. No borrar filas pendientes ni copiar valores \texttt{CALC} o \texttt{SIM} en la casilla \texttt{MED}.}
+
+\par\vspace{0.15cm}
+{\small
+\renewcommand{\arraystretch}{1.85}%
+\noindent\begin{tabularx}{\linewidth}{|>{\raggedright\arraybackslash}p{7.4cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Dato de Auditoría} & \textbf{Registro Trazable} \\ \hline
+Equipo / integrantes / fecha / versión guía (R2) & \\ \hline
+Etapa y circuito (\texttt{E2}, \texttt{E3}, \texttt{E4}) & \\ \hline
+BOM real / códigos y fabricantes & \\ \hline
+Modelo y captura LTspice / archivo \texttt{.log} & \\ \hline
+Fuente, protección, cableado y método de medida & \\ \hline
+\texttt{CALC} y supuestos & \\ \hline
+\texttt{SIM} y modelo aplicado & \\ \hline
+\texttt{MED} (solo si autorización G y medida real) & \\ \hline
+Bloqueo / anomalía / acción correctiva & \\ \hline
+\textbf{G2 / G3 / G4:} firmado, observado o bloqueado & $\square$ Autorizado \quad $\square$ Observado \quad $\square$ Bloqueado \hfill Firma docente: \rule{5.2cm}{0.4pt} \\ \hline
+\end{tabularx}\par}
+
+\end{document}

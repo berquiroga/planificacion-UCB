@@ -1,0 +1,105 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[table]{xcolor}
+\usepackage[margin=1.35cm]{geometry}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\emergencystretch=2em
+\tolerance=1000
+\hbadness=10000
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{ucbgray}{RGB}{240, 244, 248}
+\definecolor{warnred}{RGB}{180, 20, 20}
+
+\begin{document}
+\pagestyle{empty}
+
+\noindent
+{\LARGE \textbf{\textcolor{ucbblue}{IMT-221 — Circuitos Electrónicos III}}}\\[0.1cm]
+{\Large \textbf{W16S01 — Ficha Única de Estado y Trazabilidad (1 por Equipo)}}\\[0.08cm]
+{\small \textbf{Control documental de avance Hito 3} $\cdot$ Universidad Católica Boliviana ``San Pablo'' Sede Tarija}
+\par\vspace{0.12cm}\noindent\rule{\linewidth}{0.6pt}\vspace{0.16cm}
+
+\noindent
+\textbf{Equipo:} \rule{3.2cm}{0.4pt} \quad
+\textbf{Integrantes:} \rule{9.8cm}{0.4pt} \quad
+\textbf{Docente / Revisor:} \rule{4.4cm}{0.4pt} \quad
+\textbf{Fecha:} \rule{2.4cm}{0.4pt}
+
+\vspace{0.16cm}
+\noindent
+\fcolorbox{ucbblue}{ucbgray}{%
+\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{%
+{\footnotesize \textbf{Convenciones de evidencia:} \texttt{CALC} = cálculo y supuesto; \texttt{SIM} = archivo ejecutado + modelo/log; \texttt{MED} = medición con instrumento; \texttt{G} = firma real; \texttt{PEND} = sin verificar; \texttt{BLOQ} = bloqueo identificado. \textbf{Cada evidencia se consigna con nombre/ubicación; no inventar valores ni aprobaciones.}}
+}}
+
+\par\vspace{0.18cm}\noindent
+\renewcommand{\arraystretch}{1.25}
+{\footnotesize
+\begin{tabularx}{\linewidth}{|>{\raggedright\arraybackslash}p{3.0cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbgray}
+\textbf{Etapa} & \textbf{\texttt{CALC} (archivo / página)} & \textbf{\texttt{SIM} (\texttt{.asc/.cir} + \texttt{.log})} & \textbf{\texttt{MED} (instrumento / archivo)} & \textbf{Puerta G y firma} & \textbf{Parte real / fabricante} & \textbf{\texttt{BLOQ} / falta evidencia} \\ \hline
+\textbf{E1} NMOS resistivo \rule{0pt}{1.35cm} & & & & \textbf{G1:} & & \\ \hline
+\textbf{E2} BJT + \texttt{PC817} (o variante declarada) \rule{0pt}{1.35cm} & & & & \textbf{G2:} & & \\ \hline
+\textbf{E3} Inductiva \rule{0pt}{1.35cm} & & & & \textbf{G3:} & & \\ \hline
+\textbf{E4} Puente H \rule{0pt}{1.35cm} & & & & \textbf{G4:} & & \\ \hline
+\end{tabularx}
+}
+
+\vspace{0.2cm}
+\noindent
+\fcolorbox{ucbblue!60}{white}{%
+\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{%
+{\small
+\textbf{Disponibilidad real de hardware e instrumental en banco:}\\[0.14cm]
+\textbf{Fuente disponible y limitación:} \rule{6.8cm}{0.4pt} \quad
+\textbf{Motor / bobina disponible:} \rule{5.2cm}{0.4pt} \quad
+\textbf{Diodo disponible:} \rule{4.5cm}{0.4pt}\\[0.18cm]
+\textbf{PMOS / NMOS disponibles:} \rule{9.8cm}{0.4pt} \quad
+\textbf{Instrumentos disponibles:} \rule{9.2cm}{0.4pt}
+}
+}}
+
+\vspace{0.18cm}
+\noindent
+\fcolorbox{ucbblue!60}{white}{%
+\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{%
+{\small
+\textbf{Bloqueo prioritario, acción siguiente y separación del trabajo:}\\[0.14cm]
+\textbf{Bloqueo principal con evidencia:} \rule{11.5cm}{0.4pt} \quad
+\textbf{Acción mínima siguiente:} \rule{7.2cm}{0.4pt}\\[0.18cm]
+\textbf{Responsable:} \rule{4.6cm}{0.4pt} \quad
+\textbf{Archivo verificable a entregar durante W16:} \rule{8.6cm}{0.4pt} \quad
+\textbf{Fecha interna:} \rule{2.8cm}{0.4pt}\\[0.18cm]
+\textbf{Separación del trabajo — 20/11 (fecha ORIGINAL en revisión), evidencia factible:} \rule{8.0cm}{0.4pt}\\[0.18cm]
+\textbf{Posible remanente PFI (solo propuesta):} \rule{18.8cm}{0.4pt}
+}
+}}
+
+\vspace{0.2cm}
+\noindent
+\fcolorbox{warnred}{red!5}{%
+\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{%
+{\small
+\textbf{Declaración del revisor:} \quad
+$\square$ Verificado documentalmente \qquad
+$\square$ Observado \qquad
+$\square$ \textbf{\textcolor{warnred}{BLOQUEADO}} \hfill
+\textbf{Firma del revisor:} \rule{5.5cm}{0.4pt}\\[0.1cm]
+\textbf{\textcolor{warnred}{Aviso obligatorio:}} Esta ficha \textbf{no} concede autorización \textbf{G1, G2, G3 ni G4}.
+}
+}}
+
+\end{document}
