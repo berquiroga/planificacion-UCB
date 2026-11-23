@@ -1,0 +1,173 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | W17S1 — Artefacto A2 (RESERVADO)}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{warnred}{RGB}{170, 20, 20}
+
+\newcommand{\phasor}[1]{\widetilde{#1}}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=warnred!5!white, colframe=warnred, title=\textbf{Artefacto A2: Clave Docente Desarrollada y Mapa de Errores (W17S1)}]
+    \centering \textbf{ARCHIVO RESERVADO — NO DISTRIBUIR COMO GUÍA DEL ESTUDIANTE}
+\end{tcolorbox}
+
+\section*{1. Secuencia Operativa de W17S1 (90 min) y Plan Adaptativo}
+{\small
+\renewcommand{\arraystretch}{1.25}
+\noindent
+\begin{tabularx}{\textwidth}{
+  >{\bfseries\RaggedRight}p{3.9cm}
+  >{\centering\arraybackslash}p{1.2cm}
+  >{\RaggedRight\arraybackslash}X
+  >{\RaggedRight\arraybackslash}p{4.3cm}}
+\toprule
+\textbf{Tramo} & \textbf{Min} & \textbf{Actividad} & \textbf{Evidencia esperada} \\
+\midrule
+Guía + diagnóstico & 10 & A3-D1--D3, individuales & Frecuencia, fasor, impedancia \\
+Reparación fasores / $Z$ & 15 & A1-E1 y E2; docente modela otro caso & Conversión y tabla \\
+Problema ancla RC & 20 & A1-E3: marcar nodos antes de deducir $H$ & Deducción correcta \\
+Corte y fase & 25 & A1-E4 y E5, trabajo individual/par & Cálculos y explicación \\
+Datos sintéticos / dudas & 10 & A1-E6 y detección de error & Interpretación razonada \\
+Registro breve EC4 práctico & 5 & A5, sin abrir debate & Estado por grupo \\
+Exit ticket & 5 & A3-T1 individual & Logrado / parcial / no evidenciado \\
+\bottomrule
+\end{tabularx}\par}
+
+\vspace{0.15cm}
+\noindent\textbf{Plan adaptativo:} Ante dificultad extendida, trasladar hasta $10\,\text{min}$ de interpretación y ejercicios avanzados a E3; conservar un cálculo de corte, interpretación de fase, entrega de A1 y ticket. Lo no completado queda como estudio autónomo, \textbf{no} como contenido acreditado en aula.
+
+\section*{2. Desarrollo Técnico de Referencia (Bloques T1--T5 y Micro-Ejemplos)}
+\begin{itemize}\setlength\itemsep{0.2cm}
+    \item \textbf{T1 (Senoides y fasores pico):} Para $\omega > 0$, $v(t) = V_m\cos(\omega t + \varphi) = \Re\{\phasor{V}e^{j\omega t}\}$ con $\phasor{V} = V_m\angle\varphi$. Micro-ejemplo de aula: $v(t) = 4\cos(120\pi t - \pi/4)\,\text{V}$ da $V_m = 4\,\text{V}$, $\omega = 120\pi\,\text{rad/s}$, $f = 60\,\text{Hz}$, $T = 1/60 \approx 16.67\,\text{ms}$, $\varphi = -45^\circ$ y $\phasor{V} = 4\angle -45^\circ\,\text{V}$ pico. Contraste: $5\cos(100\pi t)$ y $3\cos(100\pi t - \pi/3)$ muestran retraso de $60^\circ$ en la segunda. Chequeo oral: $2\cos(80\pi t + \pi/6)$ corresponde a $f = 40\,\text{Hz}$ y $\phasor{V} = 2\angle 30^\circ\,\text{V}$.
+    \item \textbf{T2 (Operador $j\omega$ e impedancias):} En régimen sinusoidal permanente, la derivación temporal opera como multiplicación por $j\omega$:
+    $$\frac{d}{dt}\Re\{\phasor{X}e^{j\omega t}\} = \Re\{j\omega\phasor{X}e^{j\omega t}\}$$
+    Con convención pasiva: $Z_R = R\angle 0^\circ$, $Z_L = j\omega L = \omega L\angle +90^\circ$, y $Z_C = \frac{1}{j\omega C} = -\frac{j}{\omega C}$ con $|Z_C| = \frac{1}{\omega C}$ y fase $-90^\circ$ (mientras que $Y_C = j\omega C$ [S] es admitancia).
+    \item \textbf{T3 y T4 (Derivación completa de $H(j\omega)$ sobre $C$):} Con fuente entre \texttt{IN}/\texttt{GND}, $R$ entre \texttt{IN}/\texttt{OUT} y $C$ entre \texttt{OUT}/\texttt{GND}, sin carga adicional:
+    \begin{align*}
+        \phasor{V}_{\text{in}} &= \phasor{I}R + \phasor{I}Z_C = \phasor{I}(R + Z_C), \qquad \phasor{V}_{\text{out}} = \phasor{I}Z_C \\
+        H(j\omega) &= \frac{\phasor{V}_{\text{out}}}{\phasor{V}_{\text{in}}} = \frac{Z_C}{R + Z_C} = \frac{\frac{1}{j\omega C}}{R + \frac{1}{j\omega C}} = \frac{1}{1 + j\omega RC}
+    \end{align*}
+    Definiendo $\tau = RC$ [s] y $x = \omega RC = 2\pi f RC = f/f_c$ (adimensional), al racionalizar por el conjugado $(1 - jx)$:
+    \begin{align*}
+        H(j\omega) &= \frac{1 - jx}{(1 + jx)(1 - jx)} = \frac{1 - jx}{1 + x^2} \implies |H| = \frac{1}{\sqrt{1 + x^2}}, \qquad \varphi_H = -\arctan(x)
+    \end{align*}
+    En $x = 1$: $\omega_c = 1/(RC)$, $f_c = 1/(2\pi RC)$, $|H(f_c)| = 1/\sqrt{2} \approx 0.7071$, $\varphi_H(f_c) = -45^\circ$, $G_{\text{dB}} = 20\log_{10}(1/\sqrt{2}) \approx -3.0103\,\text{dB}$. Contraste opcional: con salida sobre $R$, $H_R = j\omega RC/(1 + j\omega RC)$ (no evaluado).
+    \item \textbf{T5 (Lectura sintética y trazabilidad):} $|H|_{\text{med}} = V_{\text{out,pp}}/V_{\text{in,pp}}$, $\varphi_H \approx -360^\circ (\Delta t/T)$ para retraso positivo $\Delta t = t_{\text{out}} - t_{\text{in}} > 0$ entre eventos homólogos del mismo ciclo (rama $0^\circ$ a $-90^\circ$ ideal). Con señal próxima al ruido, registrar \textbf{fase no medible}.
+\end{itemize}
+
+\section*{3. Criterio Transversal y Desglose Orientativo de A1 (Formativo)}
+\noindent\textit{Criterio transversal:} Evaluar referencia y nodos, método, conversión de unidades, cálculo y explicación. Aplicar \textbf{error de arrastre} cuando un fallo aritmético temprano no invalida el método de los pasos posteriores. Los puntajes siguientes son sugerencias \textbf{formativas}, no notas oficiales ni rúbrica EC4 aprobada.
+
+\vspace{0.15cm}
+{\small
+\renewcommand{\arraystretch}{1.22}
+\noindent
+\begin{tabularx}{\textwidth}{
+  >{\bfseries\centering\arraybackslash}p{1.6cm}
+  >{\centering\arraybackslash}p{2.3cm}
+  >{\RaggedRight\arraybackslash}X}
+\toprule
+\textbf{Ejercicio} & \textbf{Pts orient.} & \textbf{Evidencia mínima y desglose} \\
+\midrule
+E1 & 12 & Magnitudes/periodo 4; polar/rectangular 3; desfase 3; distintas frecuencias 2 \\
+E2 & 12 & Conversión $\omega$ 2; tres $Z$ y fases 6; duplicación 3; admitancia 1 \\
+E3 & 14 & Nodos 3; KVL 3; divisor/álgebra 5; unidades/límites 2; contraste salida $R$ 1 \\
+E4 & 12 & $\tau/\omega_c/f_c$ 5; ganancia/fase 3; salida temporal 3; frecuencia 1 \\
+E5 & 12 & $\tau/f_c$ 3; tabla 6; interpretación 3 \\
+E6 & 10 & Razón 2; fase 3; corte 2; procedencia/dB 3 \\
+E7 & 18 & Entrada/$\tau/f_c/x$ 4; $H$ rectangular 4; módulo/fase 4; salida 3; cambio $C$ 3 \\
+E8 & 10 & Cortes 3; misma $f$ 4; corte normalizado 2; limitación 1 \\
+\midrule
+\textbf{Total} & \textbf{100} & \textbf{Práctica formativa de la guía (no equivale al examen ni a peso EC4)} \\
+\bottomrule
+\end{tabularx}\par}
+
+\section*{4. Clave Expandida y Comprobaciones Paso a Paso (A1: E1--E8)}
+\begin{itemize}\setlength\itemsep{0.2cm}
+    \item \textbf{E1:} $V_m = 5\,\text{V}$ pico, $V_{\text{rms}} = 5/\sqrt{2} \approx 3.536\,\text{V}$, $\omega = 160\pi\,\text{rad/s}$, $f = \frac{160\pi}{2\pi} = 80\,\text{Hz}$, $T = \frac{1}{80} = 12.5\,\text{ms}$, $\varphi = +\frac{\pi}{6}\,\text{rad} = +30^\circ$.
+    $$\phasor{V}_a = 5(\cos 30^\circ + j\sin 30^\circ) = 4.330 + j2.500\,\text{V} = 5\angle 30^\circ\,\text{V}$$
+    Para $v_b$: $\varphi_b = -\pi/3 = -60^\circ$. Diferencia $\varphi_a - \varphi_b = 30^\circ - (-60^\circ) = 90^\circ$ ($v_a$ adelanta). Frente a $w(t)$ ($f = 100\,\text{Hz}$), la diferencia de fase instantánea $(160\pi t + \pi/6) - 200\pi t$ depende de $t$: no es constante.
+
+    \item \textbf{E2:} $\omega = 2\pi(500) = 1000\pi \approx 3141.59265\,\text{rad/s}$.
+    \begin{align*}
+        Z_R &= 820\,\Omega\ (0^\circ), \qquad Z_L = j(3141.59265)(0.020) = j62.832\,\Omega\ (+90^\circ) \\
+        Z_C &= \frac{-j}{(3141.59265)(470\times 10^{-9})} \approx -j677.255\,\Omega\ (-90^\circ)
+    \end{align*}
+    Al duplicar $f$ a $1000\,\text{Hz}$: $|Z_R| = 820\,\Omega$, $|Z_L| = 125.664\,\Omega$, $|Z_C| = 338.628\,\Omega$. Resaltar que $\omega C$ está en siemens [S] (admitancia $Y_C$) y que $-90^\circ$ es la fase de tensión respecto de corriente bajo convención pasiva.
+
+    \item \textbf{E3:} Dibujar explícitamente \texttt{GND} compartido y salida sobre $C$. Aceptar deducción vía KVL o divisor complejo: $H(j\omega) = \frac{1}{1+j\omega RC}$ (adimensional; válida sin resistencia de carga adicional en \texttt{OUT}). Detectar $H = R/(R+Z_C)$ como inversión de nodo de salida (pasaaltas).
+
+    \item \textbf{E4:} $RC = (6800)(330\times 10^{-9}) = 0.002244\,\text{s}$. $\omega_c = 1/0.002244 = 445.6328\,\text{rad/s}$; $f_c = \omega_c/(2\pi) = 70.9247\,\text{Hz}$. En corte: $H(j\omega_c) = \frac{1}{1+j} = \frac{1-j}{2} = 0.5 - j0.5 = 0.7071\angle -45^\circ$. Con $\phasor{V}_{\text{in}} = 4\angle 0^\circ\,\text{V}$ pico: $\phasor{V}_{\text{out}} = 2.828\angle -45^\circ\,\text{V}$ pico $\implies v_{\text{out}}(t) \approx 2.828\cos(445.633\,t - 45^\circ)\,\text{V}$ (misma frecuencia $\approx 70.925\,\text{Hz}$).
+
+    \item \textbf{E5:} $\tau = (3300)(680\times 10^{-9}) = 0.002244\,\text{s}$ (coincide con E4 pese a $R$ y $C$ distintos; no inferir que son el mismo circuito físico, pero bajo modelo ideal comparten $\tau$ y respuesta en frecuencia). $f_c \approx 70.925\,\text{Hz}$. Puntos: $f \approx 7.09, 70.9, 709\,\text{Hz}$; $|H| \approx 0.9950, 0.7071, 0.09950$; $\varphi_H \approx -5.71^\circ, -45^\circ, -84.29^\circ$. Justificación física: a $f$ alta, $|Z_C|$ decrece y $C$ sostiene menos tensión.
+
+    \item \textbf{E6:} $|H| = 1.414/2.000 = 0.7070$; $\varphi_H = -360^\circ(1.571/12.566) \approx -45.007^\circ$ (valor redondeado $\approx -45.00^\circ$; nota de precisión: el paquete fuente consignó $-45.003^\circ$). Corte teórico: $f_c = 1/[2\pi(2000)(10^{-6})] \approx 79.58\,\text{Hz}$. En dB: $20\log_{10}(0.7071) \approx -3.01\,\text{dB}$ (razón logarítmica, no resta fija de tensión). Datos sintéticos: rechazar atribución a estación real sin modelo/ID, escalas, sondas, grupo/fecha y captura original.
+
+    \item \textbf{E7:} $\omega = 2\pi(100) = 628.3185\,\text{rad/s}$; $\tau = (4700)(220\times 10^{-9}) = 0.001034\,\text{s}$; $f_c \approx 153.922\,\text{Hz}$; $x = \omega\tau \approx 0.649681$; $1 + x^2 \approx 1.422085$.
+    \begin{align*}
+        \Re\{H\} &= \frac{1}{1+x^2} \approx 0.70319, \qquad \Im\{H\} = \frac{-x}{1+x^2} \approx -0.45685 \\
+        |H| &= \frac{1}{\sqrt{1+x^2}} \approx 0.83857\ (\approx 0.8386), \qquad \varphi_H = -\arctan(0.649681) \approx -33.011^\circ \\
+        V_{\text{out,pico}} &= 3(0.83857) \approx 2.5157\,\text{V}, \qquad \varphi_{\text{out}} = 20^\circ - 33.011^\circ = -13.011^\circ
+    \end{align*}
+    \textit{Nota pedagógica:} La fase absoluta de salida es $-13.01^\circ$, pero el retraso relativo respecto a la entrada es $33.01^\circ$ (nota de precisión: A2 fuente registró $|H|\approx 0.83869$; el valor verificado a 5 cifras es $0.83857$). Al duplicar $C$ (con $R, f$ fijos), $x$ se duplica, $|H|$ decrece y la fase se hace más negativa.
+
+    \item \textbf{E8:} $\tau_A = (10000)(470\times 10^{-9}) = 0.0047\,\text{s} \implies f_{cA} \approx 33.8628\,\text{Hz}$; $\tau_B = (5100)(470\times 10^{-9}) = 0.002397\,\text{s} \implies f_{cB} \approx 66.3976\,\text{Hz}$. A $f = 50\,\text{Hz}$: $x_A = 2\pi(50)(0.0047) \approx 1.47655 \implies |H_A| \approx 0.56075$, $\varphi_A \approx -55.89^\circ$; $x_B = 2\pi(50)(0.002397) \approx 0.75304 \implies |H_B| \approx 0.79883$, $\varphi_B \approx -36.98^\circ$. Tolerancia docente orientativa: $\pm 1\%$ en magnitud y $\pm 0.5^\circ$ en fase con procedimiento correcto.
+\end{itemize}
+
+\section*{5. Claves Docentes de la Ficha de Taller y Exit Ticket (A3)}
+\begin{itemize}\setlength\itemsep{0.12cm}
+    \item \textbf{Diagnóstico A3 (D1--D3):} \textbf{D1:} $f = \frac{180\pi}{2\pi} = 90\,\text{Hz}$, $T = 1/90 \approx 11.111\,\text{ms}$. \textbf{D2:} $\phasor{V} = 2\angle -30^\circ\,\text{V}$ (pico). \textbf{D3:} $Z_C = \frac{-j}{2\pi(100)(10^{-6})} \approx -j1591.55\,\Omega$.
+    \item \textbf{Exit Ticket A3 ($R = 2.2\,\text{k}\Omega$, $C = 470\,\text{nF}$, salida sobre $C$):} (1) $RC = (2200)(470\times 10^{-9}) = 0.001034\,\text{s} \implies f_c = \frac{1}{2\pi(0.001034)} \approx 153.922\,\text{Hz}$. (2) En $f = f_c$: $|H| = 0.7071$ y fase $-45^\circ$ respecto de entrada. (3) A frecuencia elevada disminuye $|Z_C| = 1/(\omega C)$, reduciendo la fracción de tensión sobre $C$ en el divisor.
+\end{itemize}
+
+\section*{6. Mapa de Errores para Corrección Formativa y Criterios}
+{\small
+\renewcommand{\arraystretch}{1.22}
+\noindent
+\begin{tabularx}{\textwidth}{
+  >{\bfseries\RaggedRight}p{4.8cm}
+  >{\centering\arraybackslash}p{2.3cm}
+  >{\RaggedRight\arraybackslash}X}
+\toprule
+\textbf{Error observable} & \textbf{Tipo} & \textbf{Retroalimentación formativa} \\
+\midrule
+Da $\omega$ en Hz o $f$ en rad/s & Unidades & Convertir con $2\pi$ y escribir dimensión \\
+Usa RMS para fasor pico & Convención & Señalar $V_m$ y aplicar $\sqrt{2}$ solo si cambia explícitamente \\
+Interpreta $-45^\circ$ como $-45\,\text{s}$ & Física & Relacionar $\Delta t$ con $T$ y $\varphi$ \\
+Da $Z_C = j\omega C$ & Modelo & Distinguir admitancia [S] de impedancia [$\Omega$] \\
+Magnitud negativa de capacitor & Álgebra & Módulos siempre no negativos \\
+Usa salida sobre $R$ & Topología & Marcar \texttt{OUT} sobre $C$ antes del divisor \\
+Obtiene $f_c = 1/(RC)$ en Hz & Unidades & Ese valor es $\omega_c$ [rad/s] \\
+Calcula $|H| > 1$ para RC pasivo sin carga & Control físico & Revisar signo y módulo \\
+Cree que alta $f$ altera frecuencia \texttt{OUT} & Interpretación & Régimen permanente lineal conserva $f$ \\
+Presenta tabla teórica como captura & Procedencia & Exigir datos instrumentales verificables \\
+Confunde fase total \texttt{OUT} con fase relativa $H$ & Interpretación & Recordar $\varphi_{\text{out}} = \varphi_{\text{in}} + \varphi_H$ \\
+\bottomrule
+\end{tabularx}\par}
+
+\vspace{0.18cm}
+\noindent\textbf{Criterios cualitativos:} \textbf{Logrado} = nodos, razonamiento, unidades e interpretación correctos; \textbf{Parcial} = método adecuado con equivocación recuperable; \textbf{No evidenciado} = falta solución individual suficiente o error conceptual fundamental. No inferir porcentajes de cohorte antes de recoger trabajos.
+
+\end{document}

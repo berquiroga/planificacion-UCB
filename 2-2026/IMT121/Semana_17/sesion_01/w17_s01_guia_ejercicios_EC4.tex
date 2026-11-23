@@ -1,0 +1,363 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[american]{circuitikz}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{UCB Sede Tarija} | Ing. Mecatrónica}
+\chead{}
+\rhead{IMT-121 Circuitos Electrónicos I | W17S1 — Artefacto A1}
+\lfoot{Prof: M.Sc. Ing. Bernardo Quiroga Turdera}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{warnred}{RGB}{170, 20, 20}
+\definecolor{siggreen}{RGB}{0, 110, 60}
+
+\newcommand{\phasor}[1]{\widetilde{#1}}
+
+\begin{document}
+
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Artefacto A1: Guía de Ejercicios Preparatoria EC4 — Estudiantes}]
+    \centering \textbf{IMT-121 · W17S1 (23/11/2026) · Preparación del Examen Escrito del Miércoles 25/11/2026}
+\end{tcolorbox}
+
+\noindent\textbf{Nombre:} \hrulefill \quad \textbf{Registro:} \rule{3.5cm}{0.4pt} \quad \textbf{Fecha:} 23/11/2026
+
+\vspace{0.15cm}
+\noindent\textit{\textbf{Uso y alcances:} Material de estudio y clase-taller en papel. Las respuestas de autoverificación están ubicadas \textbf{exclusivamente al final} de esta guía. Todos los datos numéricos son hipotéticos/teóricos y \textbf{no} corresponden a mediciones experimentales. La calculadora científica está permitida para \textbf{esta guía}; la duración, escala y condiciones del examen del 25/11 serán comunicadas formalmente por el docente.}
+
+\vspace{0.2cm}
+\begin{tcolorbox}[colback=gray!5, colframe=ucbblue, title=\textbf{Formulario Común de Estudio y Convención Uniforme}]
+\small
+\textbf{Convención obligatoria:} Referencia \textbf{coseno}, fasores de \textbf{amplitud pico}, $j^2 = -1$, y comparación de fases únicamente entre señales de \textbf{igual frecuencia angular} $\omega > 0$. Tensiones referidas al nodo común \texttt{GND}.
+\begin{align*}
+    v(t) &= V_m \cos(\omega t + \varphi), \quad \omega = 2\pi f\ [\text{rad/s}], \quad T = \frac{1}{f}\ [\text{s}], \quad \phasor{V} = V_m e^{j\varphi} = V_m\angle\varphi\ [\text{V pico}] \\
+    v(t) &= \Re\{\phasor{V} e^{j\omega t}\}, \quad V_{\text{rms}} = \frac{V_m}{\sqrt{2}}\ \text{(senoide pura sin offset)}, \quad \frac{d}{dt} \longleftrightarrow j\omega\ \text{(permanente)} \\
+    Z_R &= R\ [\Omega], \quad Z_L = j\omega L\ [\Omega], \quad Z_C = \frac{1}{j\omega C} = -\frac{j}{\omega C}\ [\Omega], \quad Y_C = j\omega C\ [\text{S}] \\
+    H(j\omega) &= \frac{\phasor{V}_{\text{out}}}{\phasor{V}_{\text{in}}} = \frac{Z_C}{R + Z_C} = \frac{1}{1 + j\omega RC}\ \text{(RC salida en } C\text{)}, \quad \tau = RC\ [\text{s}], \quad f_c = \frac{1}{2\pi RC}\ [\text{Hz}] \\
+    x &= \omega RC = \frac{f}{f_c}, \quad |H| = \frac{1}{\sqrt{1 + x^2}}, \quad \varphi_H = -\arctan(x), \quad G_{\text{dB}} = 20\log_{10}|H| \\
+    |H| &\approx \frac{V_{\text{out,pp}}}{V_{\text{in,pp}}}, \quad \varphi_H \approx -360^\circ\,\frac{\Delta t}{T} = -360^\circ f\,\Delta t \quad (\text{retraso } \Delta t = t_{\text{out}} - t_{\text{in}} > 0)
+\end{align*}
+\textbf{Recomendación de estudio (60--90 min):} \textbf{E1--E3} esenciales; \textbf{E4--E6} aplicación central; \textbf{E7} integrador indispensable; \textbf{E8} transferencia opcional. Trabaje primero sin consultar la clave, anote unidades y verifique los límites físicos ($f\to 0$ y $f\to\infty$).
+\end{tcolorbox}
+
+\section*{Resumen Visual de Referencia (V1--V5)}
+
+% V1: Senoides y fasores (misma frecuencia f=80 Hz, T=12.5 ms, +30 y -60 deg)
+\noindent
+\begin{minipage}[t]{0.55\textwidth}
+\vspace{0pt}
+\centering
+\begin{tikzpicture}
+    \begin{axis}[
+        width=0.98\textwidth, height=4.4cm,
+        xlabel={\scriptsize Tiempo $t$ [ms]}, ylabel={\scriptsize Tensión $v(t)$ [V]},
+        xmin=0, xmax=12.5, ymin=-5.8, ymax=5.8,
+        grid=major,
+        tick label style={font=\scriptsize},
+        legend pos=south east, legend style={font=\tiny, fill=white, fill opacity=0.85},
+        title={\scriptsize \textbf{V1a: Dos senoides a igual frecuencia ($f=80\,\text{Hz}$, $T=12.5\,\text{ms}$)}}
+    ]
+    \addplot[ucbblue, thick, domain=0:12.5, samples=160] {5*cos(deg(160*pi*x/1000 + pi/6))};
+    \addlegendentry{$v_a$: $5\angle +30^\circ\,\text{V}$}
+    \addplot[warnred, thick, dashed, domain=0:12.5, samples=160] {3*cos(deg(160*pi*x/1000 - pi/3))};
+    \addlegendentry{$v_b$: $3\angle -60^\circ\,\text{V}$}
+    \end{axis}
+\end{tikzpicture}
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.42\textwidth}
+\vspace{0pt}
+\centering
+\begin{tikzpicture}[scale=0.58]
+    \node[above, font=\scriptsize\bfseries] at (1.5, 3.1) {V1b: Plano Complejo (Módulo pico)};
+    \draw[->, thick] (-1.2,0) -- (5.5,0) node[right]{\scriptsize $\Re$};
+    \draw[->, thick] (0,-3.2) -- (0,3.1) node[above]{\scriptsize $\Im\,(j)$};
+    \draw[->, ucbblue, very thick] (0,0) -- (4.33, 2.5) node[right]{\scriptsize $\phasor{V}_a = 5\angle +30^\circ$};
+    \draw[->, warnred, very thick] (0,0) -- (1.5, -2.60) node[right]{\scriptsize $\phasor{V}_b = 3\angle -60^\circ$};
+    \draw[ucbblue, ->] (1.3,0) arc (0:30:1.3);
+    \node[ucbblue, font=\tiny] at (1.9, 0.45) {$+30^\circ$};
+    \draw[warnred, ->] (1.0,0) arc (0:-60:1.0);
+    \node[warnred, font=\tiny] at (1.55, -0.8) {$-60^\circ$};
+    \draw[black, <->, dashed] (2.2, 1.27) arc (30:-60:2.54);
+    \node[black, font=\tiny, fill=white, inner sep=1pt] at (2.8, -0.3) {$\Delta\varphi=90^\circ$};
+\end{tikzpicture}
+\par\vspace{0.05cm}{\tiny Solo comparable en un plano estático porque comparten $\omega$.}
+\end{minipage}
+
+\vspace{0.25cm}
+% V2: Tabla R/L/C
+\noindent\textbf{V2 — Resumen de Impedancias Ideales ($\omega > 0$, convención pasiva):}\par\vspace{0.1cm}
+{\small
+\renewcommand{\arraystretch}{1.25}
+\noindent
+\begin{tabularx}{\textwidth}{
+  >{\bfseries\centering\arraybackslash}p{1.4cm}
+  >{\centering\arraybackslash}p{2.3cm}
+  >{\centering\arraybackslash}p{2.8cm}
+  >{\centering\arraybackslash}p{2.0cm}
+  >{\centering\arraybackslash}p{2.6cm}
+  >{\RaggedRight\arraybackslash}X}
+\toprule
+\textbf{Elem.} & \textbf{Ley temporal} & \textbf{Impedancia $Z$ [$\Omega$]} & \textbf{Módulo $|Z|$} & \textbf{Fase $\arg Z$ ($\phasor{V}/\phasor{I}$)} & \textbf{Si se duplica $f$} \\
+\midrule
+$R$ & $v_R = R i$ & $R$ & $R$ & $0^\circ$ & No cambia \\
+$L$ & $v_L = L\,\frac{di}{dt}$ & $j\omega L$ & $\omega L$ & $+90^\circ$ & $|Z_L|$ se duplica \\
+$C$ & $i_C = C\,\frac{dv_C}{dt}$ & $\frac{1}{j\omega C} = -\frac{j}{\omega C}$ & $\frac{1}{\omega C}$ & $-90^\circ$ & $|Z_C|$ se reduce a la mitad \\
+\bottomrule
+\end{tabularx}\par}
+
+\vspace{0.25cm}
+% V3 (Circuito RC) + V4 (Curvas normalizadas) + V5 (Medicion fase)
+\noindent
+\begin{minipage}[t]{0.47\textwidth}
+\vspace{0pt}
+\centering
+\textbf{\scriptsize V3: Topología RC Obligatoria (Salida sobre $C$, sin carga)}\par\vspace{0.15cm}
+\begin{circuitikz}[scale=0.80, transform shape, thick]
+    \draw (0,0) to[sV, l_={$\phasor{V}_{\text{in}}$}] (0,2.7)
+          to[short, -*] (1.1,2.7) node[above]{\texttt{IN}}
+          to[R, l={$R$}, i={$\phasor{I}$}] (4.1,2.7)
+          to[short, -*] (5.1,2.7) node[above]{\texttt{OUT}};
+    \draw (5.1,2.7) to[C, l={$C$}, v={$\phasor{V}_{\text{out}}=\phasor{V}_C$}] (5.1,0);
+    \draw (0,0) -- (5.1,0);
+    \draw (2.55,0) node[ground]{} node[below=0.55cm]{\scriptsize \texttt{GND} (retorno común)};
+\end{circuitikz}
+\par\vspace{0.2cm}
+\begin{tikzpicture}
+    \begin{axis}[
+        width=0.96\textwidth, height=3.6cm,
+        xlabel={\scriptsize Tiempo $t$ (misma $f$)}, ylabel={\scriptsize $v(t)$ [V]},
+        xmin=0, xmax=1.25, ymin=-1.3, ymax=1.3,
+        xtick=\empty, ytick=\empty, axis lines=middle,
+        title={\scriptsize \textbf{V5: Medición Conceptual de $\Delta t$ y $V_{\text{pp}}$}},
+        clip=false
+    ]
+    \addplot[ucbblue, thick, domain=0:1.2, samples=140] {1.0*sin(deg(2*pi*x))};
+    \addplot[warnred, thick, dashed, domain=0:1.2, samples=140] {0.707*sin(deg(2*pi*(x - 0.125)))};
+    \draw[<->, black, thick] (axis cs:0, 0.25) -- (axis cs:0.125, 0.25) node[above, midway, font=\tiny]{$\Delta t>0$};
+    \draw[<->, ucbblue, thin] (axis cs:0.25, -1.0) -- (axis cs:0.25, 1.0) node[right, pos=0.78, font=\tiny]{$V_{\text{in,pp}}$};
+    \draw[<->, warnred, thin] (axis cs:0.875, -0.707) -- (axis cs:0.875, 0.707) node[right, pos=0.25, font=\tiny]{$V_{\text{out,pp}}$};
+    \draw[<->, gray, thin] (axis cs:0, -1.2) -- (axis cs:1.0, -1.2) node[below, midway, font=\tiny]{Período $T$};
+    \end{axis}
+\end{tikzpicture}
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.50\textwidth}
+\vspace{0pt}
+\centering
+\textbf{\scriptsize V4: Modelo RC Ideal — Analítico / No Experimental}\par\vspace{0.1cm}
+\begin{tikzpicture}
+    \begin{axis}[
+        width=0.96\textwidth, height=3.45cm,
+        xmode=log, xmin=0.1, xmax=10, ymin=0, ymax=1.12,
+        ylabel={\scriptsize $|H|$}, xticklabels=\empty,
+        xtick={0.1, 1, 10}, ytick={0, 0.7071, 1}, yticklabels={0, 0.707, 1},
+        grid=major, tick label style={font=\scriptsize}
+    ]
+    \addplot[ucbblue, very thick, domain=0.1:10, samples=120] {1/sqrt(1+x^2)};
+    \addplot[only marks, mark=*, mark size=1.8pt, warnred] coordinates {(0.1,0.9950) (1,0.7071) (10,0.0995)};
+    \draw[dashed, gray] (axis cs:1,0) -- (axis cs:1,0.7071) -- (axis cs:0.1,0.7071);
+    \node[anchor=south west, font=\tiny] at (axis cs:1.05, 0.72) {Corte ($x=1$, $0.707$)};
+    \end{axis}
+\end{tikzpicture}
+\par\vspace{-0.1cm}
+\begin{tikzpicture}
+    \begin{axis}[
+        width=0.96\textwidth, height=3.55cm,
+        xmode=log, xmin=0.1, xmax=10, ymin=-95, ymax=5,
+        xlabel={\scriptsize Frecuencia normalizada $x = f/f_c$}, ylabel={\scriptsize $\varphi_H$ [$^\circ$]},
+        xtick={0.1, 1, 10}, xticklabels={$0.1$, $1$ ($f_c$), $10$},
+        ytick={-90, -45, 0}, grid=major, tick label style={font=\scriptsize}
+    ]
+    \addplot[siggreen, very thick, domain=0.1:10, samples=120] {-atan(x)};
+    \addplot[only marks, mark=*, mark size=1.8pt, warnred] coordinates {(0.1,-5.71) (1,-45) (10,-84.29)};
+    \draw[dashed, gray] (axis cs:1,0) -- (axis cs:1,-45) -- (axis cs:0.1,-45);
+    \node[anchor=north east, font=\tiny] at (axis cs:0.95, -48) {$-45^\circ$};
+    \end{axis}
+\end{tikzpicture}
+\end{minipage}
+
+\newpage
+\section*{Enunciados de Ejercicios Preparatorios (E1--E8)}
+
+\subsection*{E1 — Identificación de senoide y fasor \hfill \textnormal{\small [Nivel A · Esencial]}}
+Sea $v_a(t) = 5\cos(160\pi t + \pi/6)\,\text{V}$.
+\begin{enumerate}\setlength\itemsep{0.15cm}
+    \item[(a)] Indique amplitud pico, amplitud RMS, $\omega$, $f$, $T$ y fase en radianes y grados.
+    \item[(b)] Escriba el fasor de amplitud pico en forma polar y rectangular.
+    \item[(c)] Considere $v_b(t) = 3\cos(160\pi t - \pi/3)\,\text{V}$. ¿Cuál señal adelanta y por cuánto?
+    \item[(d)] ¿Puede atribuirse un \textbf{desfase constante} a $v_a(t)$ frente a $w(t) = 2\cos(200\pi t)\,\text{V}$ usando dos fasores de frecuencia única? Justifique.
+\end{enumerate}
+\noindent\textit{Espacio de trabajo:}\par\vspace{0.35cm}
+\noindent\rule{\textwidth}{0.3pt}\par\vspace{0.45cm}
+\noindent\rule{\textwidth}{0.3pt}\par\vspace{0.45cm}
+\noindent\rule{\textwidth}{0.3pt}
+
+\subsection*{E2 — Impedancias $R/L/C$ \hfill \textnormal{\small [Nivel A · Esencial]}}
+Elementos ideales aislados a $f = 500\,\text{Hz}$: $R = 820\,\Omega$, $L = 20\,\text{mH}$, $C = 470\,\text{nF}$.
+\begin{enumerate}\setlength\itemsep{0.15cm}
+    \item[(a)] Calcule $\omega$, $Z_R$, $Z_L$ y $Z_C$ en forma rectangular.
+    \item[(b)] Indique $|Z|$ y la fase de cada elemento (tensión respecto de corriente).
+    \item[(c)] Si $f$ se duplica, calcule los nuevos módulos y explique su tendencia física.
+    \item[(d)] Explique en una frase por qué $j\omega C$ no es la impedancia del capacitor.
+\end{enumerate}
+\noindent\textit{Espacio de trabajo:}\par\vspace{0.35cm}
+\noindent\rule{\textwidth}{0.3pt}\par\vspace{0.45cm}
+\noindent\rule{\textwidth}{0.3pt}\par\vspace{0.45cm}
+\noindent\rule{\textwidth}{0.3pt}
+
+\subsection*{E3 — Deducción del divisor RC \hfill \textnormal{\small [Nivel B · Indispensable]}}
+Una fuente sinusoidal ideal establece la tensión $\phasor{V}_{\text{in}}$ entre \texttt{IN} y \texttt{GND}. Una resistencia fija $R$ conecta \texttt{IN} con \texttt{OUT}; un capacitor $C$ conecta \texttt{OUT} con \texttt{GND}. No hay carga adicional en \texttt{OUT}.
+\begin{enumerate}\setlength\itemsep{0.15cm}
+    \item[(a)] Dibuje la topología y marque $\phasor{V}_{\text{in}}$, $\phasor{V}_{\text{out}}$ (sobre $C$), corriente $\phasor{I}$ y referencia \texttt{GND}.
+    \item[(b)] Escriba la KVL con $Z_C$ y construya la relación $\phasor{V}_{\text{out}}/\phasor{V}_{\text{in}}$.
+    \item[(c)] Demuestre paso a paso que $H(j\omega) = \dfrac{1}{1 + j\omega RC}$.
+    \item[(d)] Compruebe las dimensiones de $\omega RC$ y los límites de magnitud a frecuencia baja y alta.
+    \item[(e)] ¿Seguiría siendo la misma transferencia si \texttt{OUT} fuera la tensión sobre $R$? Justifique cualitativamente.
+\end{enumerate}
+\noindent\textit{Espacio de trabajo y esquema:}\par\vspace{2.2cm}
+\noindent\rule{\textwidth}{0.3pt}\par\vspace{0.45cm}
+\noindent\rule{\textwidth}{0.3pt}
+
+\subsection*{E4 — Frecuencia de corte y una senoide de salida \hfill \textnormal{\small [Nivel B · Indispensable]}}
+Para un filtro ideal RC pasabajos con $R = 6.8\,\text{k}\Omega$, $C = 330\,\text{nF}$, excitación $v_{\text{in}}(t) = 4\cos(\omega t)\,\text{V}$:
+\begin{enumerate}\setlength\itemsep{0.15cm}
+    \item[(a)] Calcule $\tau$, $\omega_c$ y $f_c$, indicando las unidades en cada paso.
+    \item[(b)] Si $f = f_c$, calcule $|H|$ y la fase $\varphi_H$.
+    \item[(c)] Determine la amplitud \textbf{pico} de la salida y escriba $v_{\text{out}}(t)$ en régimen permanente para esa excitación en corte.
+    \item[(d)] Explique si a la salida se modifica la frecuencia.
+\end{enumerate}
+\noindent\textit{Espacio de trabajo:}\par\vspace{0.35cm}
+\noindent\rule{\textwidth}{0.3pt}\par\vspace{0.45cm}
+\noindent\rule{\textwidth}{0.3pt}\par\vspace{0.45cm}
+\noindent\rule{\textwidth}{0.3pt}
+
+\newpage
+\subsection*{E5 — Tres frecuencias y criterio pasabajos \hfill \textnormal{\small [Nivel B · Indispensable]}}
+Se tiene un filtro ideal con $R = 3.3\,\text{k}\Omega$ y $C = 680\,\text{nF}$. Calcule $\tau$ y $f_c$ y complete la tabla para $f = 0.1f_c$, $f = f_c$ y $f = 10f_c$.
+
+\vspace{0.15cm}
+\noindent $\tau =$ \rule{3.2cm}{0.4pt}\,\text{s} \hspace{1.2cm} $f_c =$ \rule{3.2cm}{0.4pt}\,\text{Hz}
+
+\vspace{0.2cm}
+\renewcommand{\arraystretch}{1.6}
+\noindent
+\begin{tabularx}{\textwidth}{
+  >{\bfseries\RaggedRight}p{2.3cm}
+  >{\centering\arraybackslash}p{2.2cm}
+  >{\centering\arraybackslash}p{2.0cm}
+  >{\centering\arraybackslash}p{2.0cm}
+  >{\centering\arraybackslash}p{2.1cm}
+  >{\RaggedRight\arraybackslash}X}
+\toprule
+\textbf{Región} & \textbf{$f$ [Hz]} & \textbf{$x = f/f_c$} & \textbf{$|H|$} & \textbf{Fase [$^\circ$]} & \textbf{Interpretación física} \\
+\midrule
+Baja ($0.1f_c$) & & & & & \\
+Corte ($f_c$)   & & & & & \\
+Alta ($10f_c$)  & & & & & \\
+\bottomrule
+\end{tabularx}
+
+\vspace{0.2cm}
+\noindent Explique por qué se llama \textbf{pasabajos} y por qué una ganancia de $0.1$ no implica que la frecuencia de salida sea $10$ veces menor:\par\vspace{0.35cm}
+\noindent\rule{\textwidth}{0.3pt}\par\vspace{0.45cm}
+\noindent\rule{\textwidth}{0.3pt}
+
+\subsection*{E6 — Lectura de datos HIPOTÉTICOS \hfill \textnormal{\small [Nivel B · Indispensable]}}
+La siguiente tabla es \textbf{SINTÉTICA/TEÓRICA}, no obtenida de estudiantes ni de un osciloscopio. Corresponde aproximadamente a un RC ideal con $R = 2\,\text{k}\Omega$ y $C = 1\,\mu\text{F}$, operado a la frecuencia de corte.
+
+\vspace{0.15cm}
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{rrrrr}
+\toprule
+\textbf{$f$ [Hz]} & \textbf{$T$ [ms]} & \textbf{$V_{\text{in,pp}}$ [V]} & \textbf{$V_{\text{out,pp}}$ [V]} & \textbf{Retraso $\Delta t$ [ms]} \\
+\midrule
+$79.58$ & $12.566$ & $2.000$ & $1.414$ & $1.571$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{enumerate}\setlength\itemsep{0.15cm}
+    \item[(a)] Calcule la ganancia de amplitud y la fase (salida retrasada).
+    \item[(b)] Compruebe si son coherentes con el punto de corte teórico de $R$ y $C$.
+    \item[(c)] ¿Qué datos instrumentales y de procedencia faltarían para tratar esto como una medición real? Mencione al menos dos.
+    \item[(d)] Explique por qué $-3.01\,\text{dB}$ no significa «$3.01$ voltios menos».
+\end{enumerate}
+\noindent\textit{Espacio de trabajo:}\par\vspace{0.35cm}
+\noindent\rule{\textwidth}{0.3pt}\par\vspace{0.45cm}
+\noindent\rule{\textwidth}{0.3pt}\par\vspace{0.45cm}
+\noindent\rule{\textwidth}{0.3pt}
+
+\subsection*{E7 — Problema integrador individual \hfill \textnormal{\small [Nivel C · Indispensable]}}
+Filtro ideal RC con $R = 4.7\,\text{k}\Omega$ y $C = 220\,\text{nF}$. El generador presenta a la entrada del filtro $v_{\text{in}}(t) = 3\cos(2\pi\cdot 100\,t + 20^\circ)\,\text{V}$ (amplitud pico real de entrada dada en el problema).
+\begin{enumerate}\setlength\itemsep{0.15cm}
+    \item[(a)] Identifique $\phasor{V}_{\text{in}}$, $\tau$, $f_c$ y $x$ a $100\,\text{Hz}$.
+    \item[(b)] Calcule $H(j\omega)$ en forma rectangular aproximada y obtenga su módulo y fase.
+    \item[(c)] Obtenga $\phasor{V}_{\text{out}}$ en forma polar y escriba una expresión para $v_{\text{out}}(t)$ en régimen permanente.
+    \item[(d)] ¿\texttt{OUT} adelanta o retrasa respecto a \texttt{IN}?
+    \item[(e)] Si se duplica $C$ manteniendo $R$ y $f$, sin recalcular todo numéricamente explique qué ocurre con la ganancia y el retraso de fase.
+\end{enumerate}
+\noindent\textit{Espacio de trabajo:}\par\vspace{0.35cm}
+\noindent\rule{\textwidth}{0.3pt}\par\vspace{0.45cm}
+\noindent\rule{\textwidth}{0.3pt}\par\vspace{0.45cm}
+\noindent\rule{\textwidth}{0.3pt}
+
+\subsection*{E8 — Transferencia a otra configuración \hfill \textnormal{\small [Nivel C · Ampliación Opcional]}}
+Dos filtros ideales RC pasabajos comparten $C = 470\,\text{nF}$. El primero tiene $R_A = 10\,\text{k}\Omega$ y el segundo $R_B = 5.1\,\text{k}\Omega$.
+\begin{enumerate}\setlength\itemsep{0.15cm}
+    \item[(a)] Calcule $f_{cA}$ y $f_{cB}$.
+    \item[(b)] A la \textbf{misma frecuencia absoluta} de $50\,\text{Hz}$, determine $|H_A|$, $|H_B|$ y sus fases.
+    \item[(c)] A la frecuencia de corte propia de cada filtro, ¿por qué las dos magnitudes ideales coinciden?
+    \item[(d)] Enuncie una limitación de usar solamente valores nominales para predecir un banco físico.
+\end{enumerate}
+\noindent\textit{Espacio de trabajo:}\par\vspace{0.35cm}
+\noindent\rule{\textwidth}{0.3pt}\par\vspace{0.45cm}
+\noindent\rule{\textwidth}{0.3pt}
+
+\newpage
+% ==============================================================================
+% RESPUESTAS DE AUTOESTUDIO (DESPUÉS DE TODOS LOS ENUNCIADOS)
+% ==============================================================================
+\begin{tcolorbox}[colback=ucbblue!5!white, colframe=ucbblue, title=\textbf{Respuestas de Autoestudio — CONSULTAR DESPUÉS DE RESOLVER LOS EJERCICIOS}]
+    \centering \textbf{Verificación Autónoma de E1--E8 (Cálculos Teóricos de Modelo Ideal)}
+\end{tcolorbox}
+
+\begin{description}\setlength\itemsep{0.3cm}
+    \item[E1:] $V_m = 5\,\text{V}$ pico; $V_{\text{rms}} = 5/\sqrt{2} \approx 3.536\,\text{V}$; $\omega = 160\pi\,\text{rad/s}$; $f = 80\,\text{Hz}$; $T = 12.5\,\text{ms}$; $\varphi = \pi/6\,\text{rad} = +30^\circ$; $\phasor{V}_a = 5\angle +30^\circ\,\text{V} = (4.330 + j2.500)\,\text{V}$. La señal $v_b$ tiene fase $-60^\circ$, por lo que $v_a$ adelanta a $v_b$ por $90^\circ$ (comparten frecuencia). La señal $w(t)$ tiene $f = 100\,\text{Hz}$, por lo que no existe un desfase constante entre $v_a$ y $w$ representable mediante un único par fasorial de igual $\omega$. Compruebe siempre $f = \omega/(2\pi)$.
+
+    \item[E2:] $\omega = 1000\pi \approx 3141.59\,\text{rad/s}$. $Z_R = 820\,\Omega$ (fase $0^\circ$); $Z_L = j62.832\,\Omega$ ($|Z_L| = 62.832\,\Omega$, fase $+90^\circ$); $Z_C \approx -j677.255\,\Omega$ ($|Z_C| = 677.255\,\Omega$, fase $-90^\circ$). Al duplicar la frecuencia a $1000\,\text{Hz}$, los módulos pasan a $820\,\Omega$, $125.664\,\Omega$ y $338.628\,\Omega$. La cantidad $j\omega C$ corresponde a la admitancia $Y_C$ (en siemens, S), no a la impedancia. Verifique que la reactancia capacitiva disminuye al aumentar $f$.
+
+    \item[E3:] Diagrama: \texttt{IN} --- $R$ --- \texttt{OUT} --- $C$ --- \texttt{GND}; entrada entre \texttt{IN}/\texttt{GND}, salida sobre $C$ entre \texttt{OUT}/\texttt{GND}. Por KVL fasorial: $\phasor{V}_{\text{in}} = \phasor{I}(R + Z_C)$ y $\phasor{V}_{\text{out}} = \phasor{I} Z_C$, por lo que $H(j\omega) = \frac{Z_C}{R + Z_C} = \frac{1/(j\omega C)}{R + 1/(j\omega C)} = \frac{1}{1 + j\omega RC}$. El producto $\omega RC$ es adimensional ($[\text{s}^{-1}\cdot\text{s}]=1$); cuando $f\to 0$, $|H|\to 1$, y cuando $f\to\infty$, $|H|\to 0$. Si la salida se tomara sobre $R$, se obtendría un filtro pasaaltas ($H_R = j\omega RC/(1+j\omega RC)$), no la misma $H$.
+
+    \item[E4:] $\tau = (6800)(330\times 10^{-9}) = 0.002244\,\text{s} = 2.244\,\text{ms}$; $\omega_c = 1/\tau \approx 445.633\,\text{rad/s}$; $f_c = \omega_c/(2\pi) \approx 70.925\,\text{Hz}$. En corte: $|H| = 1/\sqrt{2} \approx 0.7071$ y $\varphi_H = -45^\circ$. Amplitud pico de salida: $4/\sqrt{2} \approx 2.828\,\text{V}$ pico; en régimen permanente $v_{\text{out}}(t) \approx 2.828\cos(445.633\,t - 45^\circ)\,\text{V}$. La frecuencia de salida se mantiene igual ($\approx 70.925\,\text{Hz}$).
+
+    \item[E5:] $\tau = (3300)(680\times 10^{-9}) = 0.002244\,\text{s}$, $f_c \approx 70.925\,\text{Hz}$. Frecuencias de ensayo: $7.0925\,\text{Hz}$ ($0.1f_c$), $70.925\,\text{Hz}$ ($f_c$) y $709.25\,\text{Hz}$ ($10f_c$). Ganancias teóricas: $0.9950$, $0.7071$ y $0.09950$; fases teóricas: $-5.7106^\circ$, $-45^\circ$ y $-84.2894^\circ$. Es pasabajos porque atenúa la amplitud de las frecuencias altas; la frecuencia de salida conserva siempre la frecuencia de entrada sinusoidal.
+
+    \item[E6:] $|H| \approx 1.414/2.000 = 0.707$; $\varphi_H \approx -360^\circ (1.571/12.566) \approx -45.00^\circ$; $f_c = 1/[2\pi(2000)(10^{-6})] \approx 79.58\,\text{Hz}$, coherente con el punto de corte. Para evidencia física trazable faltarían: modelo/ID del osciloscopio y generador, escalas V/div y tiempo/div, identificación de grupo/fecha, configuración de sondas, topología de tierras y captura original. El valor $-3.01\,\text{dB}$ expresa una \textbf{razón logarítmica} de amplitudes ($20\log_{10}|H|$), no una resta fija de tensión en voltios.
+
+    \item[E7:] $\phasor{V}_{\text{in}} = 3\angle +20^\circ\,\text{V}$ (pico); constante $\tau = 4700 \times 220\times 10^{-9}\,\text{s}$, es decir $\tau = 0.001034\,\text{s}$; $f_c \approx 153.922\,\text{Hz}$; $x = 2\pi(100)(0.001034) \approx 0.64968$. Forma rectangular: $H(j\omega) \approx 0.7032 - j0.4569$; módulo $|H| \approx 0.8386$; fase $\varphi_H \approx -33.011^\circ$. Salida: $\phasor{V}_{\text{out}} \approx 2.516\angle -13.011^\circ\,\text{V}$ pico, por lo que $v_{\text{out}}(t) \approx 2.516\cos(2\pi\cdot 100\,t - 13.011^\circ)\,\text{V}$. \texttt{OUT} retrasa $33.01^\circ$ respecto a \texttt{IN}. Si $C$ se duplica manteniendo $R$ y $f$, $x$ aumenta, la ganancia $|H|$ disminuye y el retraso de fase se vuelve más negativo.
+
+    \item[E8:] $f_{cA} = 1/[2\pi(10000)(470\times 10^{-9})] \approx 33.863\,\text{Hz}$; $f_{cB} \approx 66.398\,\text{Hz}$. A $50\,\text{Hz}$: $x_A \approx 1.47655$ y $x_B \approx 0.75304$; ganancias $|H_A| \approx 0.56075$ y $|H_B| \approx 0.79883$; fases $\varphi_A \approx -55.89^\circ$ y $\varphi_B \approx -36.98^\circ$. En su respectiva frecuencia de corte ambos cumplen $x=1$ y por ello $|H| = 1/\sqrt{2}$. Los componentes reales presentan tolerancias y las impedancias de fuente y medición pueden modificar la respuesta real.
+\end{description}
+
+\end{document}
