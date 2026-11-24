@@ -1,0 +1,110 @@
+\documentclass[10.5pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{enumitem}
+\usepackage[margin=1.9cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342} $\mid$ Robótica}
+\chead{Guía de Ensayo y Hoja de Campo Estudiantil — Hito 3}
+\rhead{Adenda de Validación}
+\lfoot{Trabajo Offline Obligatorio Sin Permisos de Laboratorio}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Guía de Ensayo y Hoja de Campo Estudiantil — Validación Integral Hito 3}}
+\end{center}
+
+\begin{tcolorbox}[colback=red!5, colframe=red!80!black, title=\textbf{Condición Operativa de Campo}, left=2mm, right=2mm, top=1mm, bottom=1mm]
+    \footnotesize\raggedright
+    \textbf{Sin permisos explícitos del laboratorio se trabaja exclusivamente offline.} Prohibido emitir órdenes de movimiento hacia el controlador IRC5 sin firma \texttt{GO} externa, supervisor dedicado y protocolo local de seguridad completado.
+\end{tcolorbox}
+
+\section{Fase Previa: Registro de Entorno y Procedencia}
+\begingroup
+\footnotesize
+\renewcommand{\arraystretch}{1.45}
+\noindent\begin{tabularx}{\textwidth}{|>{\hsize=0.65\hsize\raggedright\arraybackslash}X|>{\hsize=1.35\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Parámetro de Ensayo} & \textbf{Dato Registrado por el Equipo (Indicar \texttt{PENDIENTE} si no está verificado)} \\ \hline
+Equipo / Responsable / Fecha & \\ \hline
+Entorno SW (SO, ROS, Python, commit) & \\ \hline
+Fuente de datos y versión RobotWare & \\ \hline
+Marco Base $\{B\}$, Flange $\{F\}$ y $\{TCP\}$ & \\ \hline
+Nombres, orden articular (\texttt{joint\_order}) & \\ \hline
+Unidades ($\mathrm{rad}/\mathrm{m}$), signos y offsets & \\ \hline
+\end{tabularx}\par
+\endgroup
+
+\section{Procedimiento Secuencial de Campo (Etapas A–G)}
+\begin{enumerate}[leftmargin=*, itemsep=3pt]
+    \item \textbf{Etapa A — Inventario:} Identificar versiones reales y datos ausentes del controlador, ROS, driver y URDF. Bloquear toda comparación cuantitativa cuyas definiciones de marcos, orden u offsets permanezcan inciertas.
+    \item \textbf{Etapa B — Observación Pasiva:} Importar únicamente logs de lectura autorizados; registrar las seis juntas y su procedencia exacta; obtener \textbf{tres capturas estacionarias distinguibles} y conservar todos los archivos brutos sin editar.
+    \item \textbf{Etapa C — Cinemática Directa (FK):} Calcular la FK propia, comparar contra referencias alineadas al mismo marco/TCP y reportar $e_p$ y $e_R$. Ejecutar adicionalmente una prueba diagnóstica sintética offline alterando deliberadamente el TCP y el orden articular, demostrando detección y corrección.
+    \item \textbf{Etapa D — Interfaz de Consigna:} \textbf{Planificar} la validación del contrato de mensajes (campos, unidades, límites, acuse/rechazo). No emitir órdenes contra el hardware mientras no exista permiso \texttt{GO} y protocolo externo firmado.
+    \item \textbf{Etapa E — Cinemática Inversa (IK):} Construir poses objetivo desde FK válida, ejecutar la IK propia (Pieper/\texttt{atan2}) y el solucionador de referencia offline, filtrar por límites documentados y documentar todas las ramas con su residuo FK.
+    \item \textbf{Etapa F — Jacobiano y Singularidad:} Calcular el Jacobiano propio, ejecutar pruebas de diferencias finitas translacionales y angulares en varias décadas de paso $h$, y analizar offline una postura regular y una postura cercana a singularidad (SVD escalado).
+    \item \textbf{Etapa G — Trayectoria LSPB:} Implementar el perfil LSPB offline, verificar condiciones de frontera, continuidad de $q$ y $\dot{q}$, extremos analíticos y límites articulares. Solo si posteriormente se obtiene autorización física \texttt{GO}, utilizar la hoja de seguimiento específica del laboratorio registrando \texttt{timestamps}, estados y eventuales abortos.
+    \item \textbf{Bitácora de Decisiones:} Registrar obstáculos, hipótesis, evidencia trazable y siguiente prueba autorizable. Entregar datos brutos, scripts reproducibles y \texttt{README} (nunca únicamente capturas de pantalla).
+\end{enumerate}
+
+\section{Registro Rápido de Obstáculos e Hipótesis en Campo}
+\begingroup
+\footnotesize
+\renewcommand{\arraystretch}{1.8}
+\noindent\begin{tabularx}{\textwidth}{|c|>{\hsize=1.0\hsize\raggedright\arraybackslash}X|>{\hsize=1.0\hsize\raggedright\arraybackslash}X|>{\hsize=1.0\hsize\raggedright\arraybackslash}X|>{\hsize=1.0\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{gray!20}
+\textbf{Etapa} & \textbf{Obstáculo / Bloqueo} & \textbf{Hipótesis Técnica} & \textbf{Evidencia / Archivo} & \textbf{Siguiente Prueba} \\ \hline
+ & & & & \\[0.35cm] \hline
+ & & & & \\[0.35cm] \hline
+ & & & & \\[0.35cm] \hline
+\end{tabularx}\par
+\endgroup
+
+\section{Ejercicios de Verificación Conceptual y Práctica (A–H)}
+\begin{enumerate}[label=\textbf{Ejercicio \Alph* —}, leftmargin=*, itemsep=3pt]
+    \item \textbf{Manifiesto:} Identifique cinco campos cuya omisión invalida la comparación de una FK propia contra el controlador IRC5. Para cada campo, explique cómo se comprueba y qué tipo de error produce su ausencia.
+    \item \textbf{Evidencia:} Clasifique los cuatro registros siguientes indicando qué prueba y qué \textbf{no} prueba cada uno: (i) el robot se mueve en RViz con posiciones simuladas; (ii) una articulación se actualiza desde estado leído del IRC5; (iii) el controlador devuelve acuse de orden sin cambio de posición medido; (iv) log firmado y trayectoria física observada bajo \texttt{GO}.
+    \item \textbf{FK:} Dados dos pares de poses con idénticos $\mathbf{q}$ y TCP, calcule $e_p$ y $e_R$ y explique qué información adicional se requiere para declarar aceptación física.
+    \item \textbf{IK:} Dos ramas distintas producen la misma pose $T_d$ al evaluarse por FK. Justifique por qué no debe reprobarse una rama por diferir de la semilla de MoveIt y proponga un filtro basado en límites y residuo.
+    \item \textbf{Jacobiano:} Diseñe la prueba de diferencias finitas translacional y angular para una columna; indique la convención de twist utilizada y qué patrón de error delataría un TCP incorrecto.
+    \item \textbf{Singularidad:} Contraste el rango numérico en precisión de máquina frente a un umbral operacional de cercanía a singularidad, y explique por qué $\tau_{ext} = J^T F$ no constituye la ecuación dinámica completa.
+    \item \textbf{LSPB:} Para el caso sintético ($q_i=0, q_f=1.5\;\mathrm{rad}, T=4\;\mathrm{s}, a=0.5\;\mathrm{rad/s^2}$), compruebe factibilidad, $t_b$, velocidad de crucero, continuidad y límites; explique por qué la interpolación del controlador puede hacer divergir la ejecución real del perfil offline.
+    \item \textbf{Decisión:} Construya la cadena de evidencias necesaria para pasar de lectura pasiva a ejecución física, separando explícitamente aceptación de comando, constatación de movimiento y autorización \texttt{GO}.
+\end{enumerate}
+
+\section{Casillas de Cierre Obligatorias antes de Entregar}
+\begin{tcolorbox}[colback=white, colframe=ucbblue, left=2mm, right=2mm, top=1.5mm, bottom=1.5mm]
+    \footnotesize\raggedright
+    $\square$ Procedencia completamente trazable hasta fuente y archivo bruto.\\
+    $\square$ Base $\{B\}$ y $\{TCP\}$ alineados y comparables.\\
+    $\square$ Métricas completas reportadas con unidades ($\mathrm{m}$, $\mathrm{rad}$, $\mathrm{s}$).\\
+    $\square$ Tolerancias aprobadas o marcadas explícitamente como \texttt{PENDIENTE}.\\
+    $\square$ Estado formal asignado individualmente a cada prueba.\\
+    $\square$ No se confunden lectura pasiva, acuse de comando y movimiento físico.\\
+    $\square$ Existe decisión \texttt{GO} externa documentada siempre que aplique a hardware.
+\end{tcolorbox}
+
+\end{document}

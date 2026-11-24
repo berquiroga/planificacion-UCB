@@ -1,0 +1,91 @@
+\documentclass[10.5pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{enumitem}
+\usepackage[margin=1.9cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342} $\mid$ Robótica}
+\chead{Anexo: Campaña Piloto y Criterios de Tolerancia — Hito 3}
+\rhead{Propuesta Pendiente de Aprobación}
+\lfoot{No Aplicar Retroactivamente sin Aprobación Formal}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Anexo Técnico: Campaña Piloto, Presupuesto de Error y Aprobación de Tolerancias (Hito 3)}}
+\end{center}
+
+\section{Objetivo y Protocolo de Campaña Piloto (7 Pasos)}
+El propósito de la campaña piloto es justificar cuantitativamente los umbrales de aceptación \textbf{antes} de emplearlos en calificación o en evaluación frente a hardware real:
+\begin{enumerate}[leftmargin=*, itemsep=2pt]
+    \item Definir configuraciones regulares y condiciones de captura seguras y autorizadas (o exclusivamente offline si no existe acceso al robot).
+    \item Documentar resolución e incertidumbre del estado articular, redondeo de la pose reportada, definición de TCP, calibración y referencia temporal a partir de fuentes \textbf{reales}.
+    \item Repetir mediciones independientes manteniendo constantes las condiciones de ensayo e identificar valores atípicos sin eliminarlos silenciosamente.
+    \item Evaluar residuos $e_p$ y $e_R$ por postura, diferencia de modelo, deriva (\textit{drift}) y sincronización; cuantificar los aportes conocidos y dejar explícitos los aportes desconocidos.
+    \item Proponer $\tau_{p,real}$, $\tau_{R,real}$ y criterios de Jacobiano y LSPB fundamentados en escalas, cobertura y propósito, declarando si corresponden a cota máxima, percentil o banda de incertidumbre.
+    \item Poner a prueba los criterios propuestos mediante casos sintéticos perturbados y casos independientes fuera de la muestra piloto para auditar falsos rechazos y falsas aceptaciones.
+    \item Obtener \textbf{aprobación docente formal} para el criterio académico. Para movimiento físico, la aprobación académica nunca sustituye la aprobación de seguridad ni el \texttt{GO} institucional.
+\end{enumerate}
+
+\section{Presupuesto de Incertidumbre Propuesto}
+Para errores pequeños expresados en la misma base $\{B\}$:
+\begin{equation}
+    \delta p \approx J_v(\mathbf{q})\,\delta\mathbf{q} + \delta p_{TCP} + \delta p_{modelo} + v\,\delta t \;\implies\;
+    \boxed{ \|\delta p\|_2 \lesssim \|J_v(\mathbf{q})\|_2\,\|\delta\mathbf{q}\|_2 + \|\delta p_{TCP}\|_2 + \|\delta p_{modelo}\|_2 + \|v\|_2\,|\delta t| }.
+\end{equation}
+Esta cota conservadora requiere linealidad local y aportes acotados. Si se dispone de matrices de covarianza justificadas puede formularse una propagación estadística, sin presumir Gaussianidad ni independencia. Todo término sin respaldo experimental debe consignarse como \texttt{incertidumbre no cuantificada}.
+
+\section{Estado Actual de Propuestas de Tolerancia}
+\begingroup
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.35}
+% 4 columnas X: 0.90 + 1.05 + 1.20 + 0.85 = 4.00
+\noindent\begin{tabularx}{\textwidth}{|>{\hsize=0.90\hsize\raggedright\arraybackslash}X|>{\hsize=1.05\hsize\raggedright\arraybackslash}X|>{\hsize=1.20\hsize\raggedright\arraybackslash}X|>{\hsize=0.85\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Magnitud} & \textbf{Propuesta Actual} & \textbf{Justificación y Limitación} & \textbf{Estado} \\ \hline
+FK offline \texttt{float64} (geometría idéntica) & $e_p \le 10^{-6}\;\mathrm{m}$, $e_R \le 10^{-5}\;\mathrm{rad}$ & Cribado exploratorio heredado; no es universal ni representa precisión ABB. & \textbf{Pendiente de aprobación} \\ \hline
+FK vs. IRC5 real & $e_p \le \tau_{p,real}$, $e_R \le \tau_{R,real}$ & Depende de fuente de pose, TCP, $\mathbf{q}$, sincronización y repetibilidad local. & \textbf{Bloqueado por datos} \\ \hline
+Cinemática Inversa (IK) & Criterios del mismo escenario FK + límites reales aprobados & Ramas múltiples; validación exclusivamente por residuo FK y límites. & \textbf{Pendiente} \\ \hline
+Jacobiano ($J_v, J_\omega$) & Error absoluto + relativo por bloque y convergencia FD & Escalas físicas distintas; tolerancia relativa exige norma de referencia no nula o regularización. & \textbf{Por aprobar} \\ \hline
+Cercanía singular & SVD con escala declarada $L$ y umbral académico específico & El rango numérico en precisión de máquina no equivale a seguridad operacional. & \textbf{Por aprobar} \\ \hline
+LSPB offline & Fronteras, continuidad, máximos analíticos y límites documentados & La validez algebraica no implica admisibilidad física sin límites reales. & \textbf{Por aprobar} \\ \hline
+\textit{Tracking} físico & Errores por junta ($e_{fin}, e_{\max}, e_{RMS}$), retardo/timeout, aborto y acuse & Contrato exacto de interfaz y controlador pendientes de verificación. & \textbf{Bloqueado por datos y GO} \\ \hline
+\end{tabularx}\par
+\endgroup
+
+\section{Formato Oficial de Aprobación de Criterio Académico}
+\begin{tcolorbox}[colback=white, colframe=ucbblue, title=\textbf{Acta de Aprobación Prospectiva de Umbral (No Retroactiva)}, left=2.5mm, right=2.5mm, top=1.5mm, bottom=1.5mm]
+    \footnotesize\raggedright
+    \textbf{ID Criterio:} \rule{3cm}{0.15mm} \hfill \textbf{Versión:} \rule{2.5cm}{0.15mm} \hfill \textbf{Fecha de vigencia:} \rule{3cm}{0.15mm}\\[0.28cm]
+    \textbf{Alcance (offline/real, tarea y TCP exacto):} \rule{9.5cm}{0.15mm}\\[0.28cm]
+    \textbf{Umbral aprobado y unidades:} \rule{11.4cm}{0.15mm}\\[0.28cm]
+    \textbf{Procedencia de datos y tamaño de muestra piloto ($N$):} \rule{7.8cm}{0.15mm}\\[0.28cm]
+    \textbf{Justificación técnica y exclusiones explícitas:} \rule{9.2cm}{0.15mm}\\[0.28cm]
+    \rule{\textwidth}{0.15mm}\\[0.28cm]
+    \textbf{Firma Docente:} \rule{6cm}{0.15mm} \hfill \textbf{Próxima fecha de revisión:} \rule{3.5cm}{0.15mm}
+    \par\vspace{0.15cm}\scriptsize\textit{Regla de equidad: Ningún criterio académico propuesto se aplica retroactivamente sin comunicación previa y aprobación formal.}
+\end{tcolorbox}
+
+\end{document}

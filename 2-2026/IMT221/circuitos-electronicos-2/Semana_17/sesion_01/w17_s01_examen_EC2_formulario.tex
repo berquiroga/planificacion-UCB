@@ -1,0 +1,295 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, positioning}
+\usepackage[american]{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\setlength{\headheight}{16pt}
+\setlength{\emergencystretch}{2em}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{accentteal}{RGB}{0, 102, 102}
+\definecolor{neutralbg}{RGB}{246, 248, 251}
+\definecolor{warnbg}{RGB}{254, 246, 246}
+\definecolor{warnframe}{RGB}{153, 30, 30}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{IMT-221 --- Circuitos Electrónicos II}}
+\chead{Formulario de Ecuaciones -- Examen EC2}
+\rhead{Hasta Lab 6}
+\cfoot{\footnotesize Página \thepage\ de \pageref{LastPage} \quad|\quad Hoja de fórmulas sin ejemplos resueltos (uso sujeto a autorización docente)}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\newtcolorbox{formulabox}[2][ucbblue]{%
+    colback=white,
+    colframe=#1,
+    colbacktitle=#1,
+    coltitle=white,
+    fonttitle=\bfseries\small,
+    title=#2,
+    boxrule=0.7pt,
+    arc=1.5mm,
+    left=7pt,
+    right=7pt,
+    top=5pt,
+    bottom=5pt,
+    before skip=6pt,
+    after skip=6pt
+}
+
+\begin{document}
+
+% =========================================================================
+% ENCABEZADO
+% =========================================================================
+\begin{center}
+    {\large\textbf{\textcolor{ucbblue}{IMT-221 --- Formulario de Ecuaciones para el Examen EC2}}}\\[0.08cm]
+    {\footnotesize\textbf{Alcance:} amplificadores operacionales reales, In-Amp/CMRR, diodos y rectificación de precisión, filtros activos de segundo orden (hasta Lab 6).}
+\end{center}
+
+\begin{tcolorbox}[colback=neutralbg, colframe=ucbblue!70, boxrule=0.6pt, arc=1.2mm, left=6pt, right=6pt, top=4pt, bottom=4pt]
+    \footnotesize
+    \textbf{Uso:} Hoja de fórmulas de referencia, \textbf{sin ejemplos resueltos ni resultados de los problemas}. \textbf{Su autorización para la prueba corresponde al docente:} \quad $\square$ Autorizado \quad $\square$ No autorizado \qquad \textbf{V.\textsuperscript{o} B.\textsuperscript{o}:} \rule{3.0cm}{0.4pt}
+\end{tcolorbox}
+
+% =========================================================================
+% SECCION 1: AMPLIFICADORES OPERACIONALES REALES
+% =========================================================================
+\begin{formulabox}{1. Amplificadores operacionales reales}
+    \begin{minipage}[t]{0.62\textwidth}
+        \textbf{Amplificador no inversor} \textit{(realimentación negativa; operación lineal):}
+        \begin{align}
+            A_{CL} &= \frac{V_o}{V_i} = 1 + \frac{R_f}{R_g}, \label{eq:acl} \\[2pt]
+            f_{BW} &\approx \frac{f_T}{|A_{CL}|} \qquad \text{(polo dominante; } \text{noise gain} = A_{CL}\text{)}, \label{eq:fbw}
+        \end{align}
+        donde $f_T$ es la frecuencia de ganancia unitaria o $\mathrm{GBW}$ en el modelo indicado.
+
+        \vspace{0.18cm}
+        \textbf{Respuesta sinusoidal y \textit{slew rate} (SR):}
+        \begin{align}
+            v_o(t) &= V_p \sin(2\pi f t + \varphi), \label{eq:seno} \\[2pt]
+            \mathrm{SR}_{\mathrm{req}} &= \max\left|\frac{dv_o}{dt}\right| = 2\pi f V_p, \qquad V_{p,\max} \approx \frac{\mathrm{SR}}{2\pi f}. \label{eq:sr}
+        \end{align}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}[t]{0.35\textwidth}
+        \centering
+        \vspace{0pt}
+        \begin{circuitikz}[>=stealth, thick, scale=0.72, transform shape]
+            \draw (0,0) node[op amp, yscale=-1] (op) {};
+            \draw (op.+) to[short, -o] ++(-1.1,0) node[left]{$v_i$};
+            \draw (op.out) to[short, *-o] ++(1.0,0) node[right]{$v_o$};
+            \draw (op.-) -- ++(0,-0.85) coordinate(ninv);
+            \draw (ninv) to[R, l_=$R_g$] ++(0,-1.45) node[ground]{};
+            \draw (ninv) to[short, *-] ++(0.3,0) to[R, l=$R_f$] ++(1.7,0) -| (op.out);
+        \end{circuitikz}\\[0.1cm]
+        {\scriptsize\textit{Esquema simbólico no inversor (ref. $0\,\mathrm{V}$)}}
+    \end{minipage}
+
+    \vspace{0.15cm}
+    \hrule
+    \vspace{0.12cm}
+    \footnotesize
+    \textbf{Conversiones:} $1\,\mathrm{V/\mu s} = 10^6\,\mathrm{V/s}$; \quad $V_{pp} = 2 V_p$ (para una senoide sin \textit{offset}).\\
+    \textbf{Condición de verificación:} Comprobar \textbf{separadamente} banda ($f_{BW}$), $\mathrm{SR}$, rieles/excursión permitida y rango de modo común. Los límites específicos se suministran en cada enunciado.
+\end{formulabox}
+
+% =========================================================================
+% SECCION 2: ACONDICIONAMIENTO DIFERENCIAL E INSTRUMENTACION
+% =========================================================================
+\begin{formulabox}{2. Acondicionamiento diferencial e instrumentación}
+    \begin{minipage}[t]{0.62\textwidth}
+        \begin{align}
+            v_d &= v_+ - v_-, \qquad v_{cm} = \frac{v_+ + v_-}{2}, \label{eq:vd_vcm} \\[3pt]
+            v_o &= A_d v_d + A_{cm} v_{cm} + V_{\mathrm{offset}} \qquad \text{(modelo lineal)}, \label{eq:vo_inamp} \\[3pt]
+            \mathrm{CMRR} &= \left|\frac{A_d}{A_{cm}}\right|, \qquad \mathrm{CMRR}_{\mathrm{dB}} = 20\log_{10}(\mathrm{CMRR}), \label{eq:cmrr} \\[3pt]
+            \Delta v_o &= A_d \Delta v_d + A_{cm} \Delta v_{cm} \qquad \text{(\textit{offset} y ganancias constantes)}. \label{eq:delta_vo}
+        \end{align}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}[t]{0.35\textwidth}
+        \centering
+        \vspace{0.25cm}
+        \begin{tikzpicture}[>=stealth, thick, scale=0.82, transform shape]
+            \draw[fill=neutralbg, draw=ucbblue, rounded corners=2pt] (0,0) rectangle (2.6,1.8);
+            \node[align=center, font=\footnotesize\bfseries, text=ucbblue] at (1.3, 1.15) {In-Amp /\\Diferencial};
+            \node[align=center, font=\scriptsize] at (1.3, 0.4) {$A_d,\; A_{cm}$};
+            \draw[->] (-0.9, 1.35) node[left]{$v_+$} -- (0, 1.35) node[right, font=\scriptsize]{$+$};
+            \draw[->] (-0.9, 0.45) node[left]{$v_-$} -- (0, 0.45) node[right, font=\scriptsize]{$-$};
+            \draw[->] (2.6, 0.9) -- (3.5, 0.9) node[right]{$v_o$};
+            \draw (1.3, 0) -- (1.3, -0.45) node[ground]{};
+        \end{tikzpicture}\\[0.05cm]
+        {\scriptsize\textit{Bloque lineal simbólico (ref. común)}}
+    \end{minipage}
+
+    \vspace{0.12cm}
+    \hrule
+    \vspace{0.12cm}
+    \footnotesize
+    \textbf{Unidades y caso ideal:} $A_d$ y $A_{cm}$ son ganancias de tensión en $\mathrm{V/V}$. Si $A_{cm} = 0$, el $\mathrm{CMRR}$ ideal se considera infinito.
+\end{formulabox}
+
+% =========================================================================
+% SECCION 3: DIODOS Y RECTIFICACION
+% =========================================================================
+\begin{formulabox}{3. Diodos y rectificación}
+    \begin{itemize}
+        \setlength{\itemsep}{2pt}
+        \item \textbf{Diodo ideal:} conduce en sentido directo y bloquea en inverso (modelo por tramos).
+        \item \textbf{Rectificador convencional} de media onda positiva con carga a $0\,\mathrm{V}$ \textit{(modelo de umbral)} y \textbf{referencia ideal}:
+        \begin{equation}
+            v_o(t) \approx \max\big[v_i(t) - V_\gamma,\; 0\big], \qquad v_{\mathrm{ref}}(t) = \max\big[v_i(t),\; 0\big]. \label{eq:rect}
+        \end{equation}
+        \item \textbf{Superdiodo no inversor idealizado:} con diodo conductor y realimentación negativa cerrada, $v_o \approx v_i$; si el diodo bloquea, la realimentación se abre y \textbf{no se puede imponer} $v_+ \approx v_-$.
+        \item \textbf{Error absoluto medio de $N$ muestras} \textit{(solo si se solicita):}
+        \begin{equation}
+            E_{\mathrm{MAE}} = \frac{1}{N}\sum_{k=1}^{N} \big|v_o[k] - v_{\mathrm{ref}}[k]\big|. \label{eq:mae}
+        \end{equation}
+    \end{itemize}
+
+    \begin{center}
+        \begin{circuitikz}[>=stealth, thick, scale=0.76, transform shape]
+            % Convencional
+            \node[font=\footnotesize\bfseries, text=ucbblue] at (1.5, 2.35) {Convencional (media onda $+$)};
+            \draw (0,0) node[ground]{} to[sV] (0,1.65) -- (0.55,1.65) to[D, l=$D$] (2.35,1.65) to[short, *-o] (3.0,1.65) node[right]{$v_o$};
+            \node[left, font=\footnotesize] at (-0.45, 0.85) {$v_i$};
+            \node[below, font=\tiny] at (1.05, 1.50) {A};
+            \node[below, font=\tiny] at (1.85, 1.50) {K};
+            \draw (2.35,1.65) to[R, l=$R_L$] (2.35,0) node[ground]{};
+
+            % Superdiodo no inversor (op.- arriba, op.+ abajo -> sin cruces)
+            \node[font=\footnotesize\bfseries, text=ucbblue] at (9.4, 2.35) {Superdiodo no inversor (idealizado)};
+            \draw (7.4, 0.85) node[op amp] (op) {};
+            \draw (op.+) to[short, -o] ++(-1.0,0) node[left]{$v_i$};
+            \draw (op.out) to[short, *-] ++(0.55,0) coordinate(va) node[below]{\scriptsize $v_a$} to[D, l=$D$] ++(2.0,0) coordinate(vo) to[short, *-o] ++(0.75,0) node[right]{$v_o$};
+            \node[below, font=\tiny] at ([xshift=0.6cm, yshift=-0.12cm]va) {A};
+            \node[below, font=\tiny] at ([xshift=1.4cm, yshift=-0.12cm]va) {K};
+            \draw (vo) to[R, l=$R_L$] (vo |- 0,0) node[ground]{};
+            \draw (op.-) -- ++(0,0.75) -| (vo);
+        \end{circuitikz}
+    \end{center}
+
+    \vspace{0.05cm}
+    \hrule
+    \vspace{0.10cm}
+    \footnotesize
+    \textbf{Alcance del parámetro $V_\gamma$:} $V_\gamma$ depende del modelo especificado; \textbf{no} se considera una constante universal del diodo real.
+\end{formulabox}
+
+\newpage
+
+% =========================================================================
+% SECCION 4: FILTROS ACTIVOS DE SEGUNDO ORDEN
+% =========================================================================
+\begin{formulabox}{4. Filtros activos de segundo orden}
+    \begin{minipage}[t]{0.66\textwidth}
+        \textbf{Función de transferencia canónica pasa-bajos:}
+        \begin{equation}
+            H(s) = \frac{V_o(s)}{V_i(s)} = \frac{K\omega_0^2}{s^2 + (\omega_0/Q)s + \omega_0^2}. \label{eq:hs_canon}
+        \end{equation}
+        \textbf{Frecuencia característica y normalizada:}
+        \begin{equation}
+            \omega_0 = 2\pi f_0, \qquad f_0 = \frac{\omega_0}{2\pi}, \qquad x = \frac{\omega}{\omega_0} = \frac{f}{f_0}, \label{eq:w0_x}
+        \end{equation}
+        con $\omega$ en $\mathrm{rad/s}$ y $f$ en $\mathrm{Hz}$.
+    \end{minipage}%
+    \hfill
+    \begin{minipage}[t]{0.31\textwidth}
+        \centering
+        \vspace{0.35cm}
+        \begin{tikzpicture}[>=stealth, thick, scale=0.85, transform shape]
+            \draw[->] (-0.9, 0) node[left]{$V_i(s)$} -- (0, 0);
+            \draw[fill=neutralbg, draw=ucbblue, rounded corners=2pt] (0, -0.65) rectangle (2.6, 0.65);
+            \node[align=center, font=\small\bfseries, text=ucbblue] at (1.3, 0.12) {$H(s)$};
+            \node[align=center, font=\scriptsize] at (1.3, -0.35) {$K,\; \omega_0,\; Q$};
+            \draw[->] (2.6, 0) -- (3.5, 0) node[right]{$V_o(s)$};
+        \end{tikzpicture}\\[0.1cm]
+        {\scriptsize\textit{Bloque lineal (sin carga mutua)}}
+    \end{minipage}
+
+    \vspace{0.15cm}
+    \textbf{Respuesta en frecuencia} \textit{(sustituyendo $s = j\omega$, con $j^2 = -1$):}
+    \begin{align}
+        |H(j\omega)| &= \frac{|K|}{\sqrt{(1 - x^2)^2 + (x/Q)^2}}, \label{eq:mag} \\[3pt]
+        G_{\mathrm{dB}} &= 20\log_{10}\left|\frac{V_o}{V_i}\right| = 20\log_{10}|H(j\omega)|, \label{eq:gdb} \\[3pt]
+        \varphi(\omega) &= \arg\big[H(j\omega)\big] = -\operatorname{atan2}\!\left(\frac{x}{Q},\; 1 - x^2\right) \qquad \text{(para $K > 0$; selección de cuadrante correcta)}. \label{eq:fase}
+    \end{align}
+
+    \textbf{Propiedades en la frecuencia natural, Butterworth y cascada:}
+    \begin{itemize}
+        \setlength{\itemsep}{2pt}
+        \item En la frecuencia natural ($\omega = \omega_0$, $x = 1$): \quad $|H(j\omega_0)| = |K|\,Q$; \quad para $K > 0$, $\varphi(\omega_0) = -90^\circ$.
+        \item \textbf{Butterworth pasa-bajos de segundo orden:} \quad $Q = \dfrac{1}{\sqrt{2}}$.
+        \item \textbf{Advertencia sobre $-3\,\mathrm{dB}$:} \textbf{No presuponer} que $f_0$ es la frecuencia de $-3\,\mathrm{dB}$; hallar el punto respecto de la ganancia en banda pasante cuando corresponda.
+        \item \textbf{Etapas en cascada} \textit{(desacopladas o sin carga significativa):}
+        \begin{equation}
+            H_{\mathrm{total}}(s) \approx H_1(s)\,H_2(s), \qquad G_{\mathrm{total,dB}}(f) \approx G_{1,\mathrm{dB}}(f) + G_{2,\mathrm{dB}}(f). \label{eq:cascada}
+        \end{equation}
+    \end{itemize}
+\end{formulabox}
+
+% =========================================================================
+% SECCION 5: MATEMATICA Y UNIDADES DE USO TRANSVERSAL
+% =========================================================================
+\begin{formulabox}[accentteal]{5. Matemática y unidades de uso transversal}
+    \begin{minipage}[t]{0.52\textwidth}
+        \textbf{Relaciones matemáticas:}
+        \begin{align}
+            \omega &= 2\pi f, \\[2pt]
+            \log_{10}(ab) &= \log_{10}(a) + \log_{10}(b) \qquad (a, b > 0), \\[2pt]
+            |a + jb| &= \sqrt{a^2 + b^2}, \\[2pt]
+            \arg(a + jb) &= \operatorname{atan2}(b, a).
+        \end{align}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}[t]{0.44\textwidth}
+        \textbf{Prefijos y unidades:}
+        \vspace{0.15cm}
+        \begin{center}
+            \renewcommand{\arraystretch}{1.25}
+            \begin{tabularx}{\textwidth}{@{}l X@{}}
+                \toprule
+                \textbf{Unidad} & \textbf{Equivalencia} \\
+                \midrule
+                $1\,\mathrm{k\Omega}$ & $10^{3}\,\Omega$ \\
+                $1\,\mathrm{M\Omega}$ & $10^{6}\,\Omega$ \\
+                $1\,\mathrm{\mu F}$ & $10^{-6}\,\mathrm{F}$ \\
+                $1\,\mathrm{mV}$ & $10^{-3}\,\mathrm{V}$ \\
+                \bottomrule
+            \end{tabularx}
+        \end{center}
+    \end{minipage}
+
+    \vspace{0.12cm}
+    \hrule
+    \vspace{0.12cm}
+    \footnotesize
+    \textbf{Interpretación de decibelios:} Los resultados en $\mathrm{dB}$ corresponden a \textbf{razones de amplitud}, no a una diferencia de voltajes.
+\end{formulabox}
+
+% =========================================================================
+% NOTA FINAL DE HIPOTESIS Y VALIDEZ
+% =========================================================================
+\begin{tcolorbox}[colback=warnbg, colframe=warnframe, boxrule=0.7pt, arc=1.2mm, left=7pt, right=7pt, top=5pt, bottom=5pt]
+    \footnotesize
+    \textbf{Nota general de validez:} Las fórmulas aproximadas requieren que se cumplan sus hipótesis de aplicación. Los valores reales de un circuito integrado (CI) y las condiciones de operación deben provenir exclusivamente del enunciado o del circuito especificado.
+\end{tcolorbox}
+
+\end{document}

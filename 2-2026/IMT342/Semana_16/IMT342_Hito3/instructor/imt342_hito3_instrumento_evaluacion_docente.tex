@@ -1,0 +1,440 @@
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[table]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{amsmath, amssymb}
+\usepackage[margin=1.75cm, top=2.0cm, bottom=1.9cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\renewcommand{\contentsname}{Índice}
+\renewcommand{\tablename}{Tabla}
+\renewcommand{\figurename}{Figura}
+\renewcommand{\refname}{Referencias}
+
+% Paleta institucional IMT-342
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{offcolor}{RGB}{235, 242, 250}
+\definecolor{readcolor}{RGB}{255, 248, 225}
+\definecolor{acccolor}{RGB}{240, 248, 235}
+\definecolor{movcolor}{RGB}{253, 237, 236}
+\definecolor{alertred}{RGB}{170, 25, 25}
+\definecolor{warnamber}{RGB}{185, 110, 0}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342} $\mid$ Robótica}
+\chead{Instrumento Unificado de Evaluación y Defensa — Hito 3 (Docente)}
+\rhead{Propuesta Operativa}
+\lfoot{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija $\mid$ No Concede Permiso de Movimiento}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\setlength{\parskip}{4pt plus 1pt minus 1pt}
+\setlength{\parindent}{0pt}
+
+\newcommand{\ucbbox}[4]{%
+  \vspace{4pt}\noindent
+  \fcolorbox{#1}{#2}{%
+    \parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule\relax}{%
+      \vspace{2pt}%
+      {\small\textbf{\textcolor{#1}{#3}}}\\[2pt]
+      {\footnotesize #4}%
+      \vspace{2pt}%
+    }%
+  }\vspace{4pt}%
+}
+
+\newcommand{\linea}[1]{\rule{#1}{0.2pt}}
+
+\begin{document}
+
+% ============================================================================
+% ENCABEZADO INSTITUCIONAL Y ADVERTENCIA DE ESTADO
+% ============================================================================
+\begin{center}
+    {\large\textbf{\textcolor{ucbblue}{UNIVERSIDAD CATÓLICA BOLIVIANA ``SAN PABLO'' — SEDE TARIJA}}}\\[2pt]
+    {\small Departamento de Ciencias de la Tecnología e Innovación $\mid$ Ingeniería Mecatrónica}\\[6pt]
+    \rule{\textwidth}{1.2pt}\\[5pt]
+    {\LARGE\textbf{\textcolor{ucbblue}{IMT-342 — Hito 3 Integrado (ECI-3/4)}}}\\[2pt]
+    {\large\textit{Instrumento unificado de evaluación y defensa — versión docente}}\\[4pt]
+    \rule{\textwidth}{1.2pt}
+\end{center}
+
+\ucbbox{alertred}{movcolor}{Estado editorial, fecha y separación curricular}{%
+    \textbf{Fecha de defensa:} 24 de noviembre de 2026.\\[2pt]
+    \textbf{Estado:} propuesta operativa para aprobación docente antes de puntuar. Mantiene los pesos \textbf{20 / 25 / 25 / 20 / 10} de la rúbrica \textbf{propuesta} en la replanificación. No representa una aprobación institucional, un cambio retroactivo de los criterios comunicados ni una autorización de movimiento del robot.\\[2pt]
+    \textbf{Separación curricular:} Hito 3 es un elemento integrado con peso del \textbf{50\,\% de la evaluación continua}; la \textbf{evaluación final de la asignatura es independiente}. No duplicar automáticamente evidencia entre Hito 3 y evaluación final.
+}
+
+% ============================================================================
+% SECCIÓN 1: FICHA DEL GRUPO
+% ============================================================================
+\section{Ficha del grupo}
+
+\begingroup
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.42}
+\noindent\begin{tabularx}{\textwidth}{|>{\hsize=0.72\hsize\raggedright\arraybackslash}X|>{\hsize=1.28\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Campo} & \textbf{Registro} \\ \hline
+\textbf{Grupo / proyecto} & \\ \hline
+\textbf{Integrantes presentes} & \\ \hline
+\textbf{Fecha y hora de defensa} & \\ \hline
+\textbf{Repositorio y commit evaluado} & \\ \hline
+\textbf{Informe PDF / versión} & \\ \hline
+\textbf{URDF/DH / versión} & \\ \hline
+\textbf{ROS, driver/interfaz y versiones comprobadas} & \\ \hline
+\textbf{IRC5 / RobotWare / opciones comprobadas} & \\ \hline
+\textbf{Revisor / docente} & \\ \hline
+\textbf{Supervisor autorizado, si hubo prueba física} & \\ \hline
+\textbf{Evidencias examinadas (IDs)} & \\ \hline
+\end{tabularx}
+\endgroup
+
+\vspace{4pt}
+\ucbbox{ucbblue}{offcolor}{Declaración de alcance al comenzar}{%
+    \textbf{El grupo afirma haber logrado:} \linea{11.5cm}\\[4pt]
+    \textbf{La prueba que mejor respalda esa afirmación es:} \linea{9.5cm}\\[4pt]
+    \textbf{Limitación principal declarada:} \linea{11.6cm}
+}
+
+% ============================================================================
+% SECCIÓN 2: MATRIZ DE EVIDENCIA POR GATE
+% ============================================================================
+\newpage
+\section{Matriz de evidencia por Gate — no es una escala adicional}
+
+Marcar \textbf{V} verificado para alcance declarado; \textbf{P} parcial; \textbf{F} fallido con prueba válida; \textbf{NE} no ejecutado; \textbf{BA} bloqueado por acceso o condición externa documentada. Registrar evidencia, no solo una marca. La clasificación del Gate \textbf{no suma puntos por sí misma}: alimenta los criterios de la Sección~3 y evita doble conteo.
+
+\begingroup
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.45}
+\noindent\begin{tabularx}{\textwidth}{|c|>{\hsize=1.20\hsize\raggedright\arraybackslash}X|c|>{\hsize=0.80\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Gate} & \textbf{Afirmación específica que se revisa} & \textbf{Estado (V/P/F/NE/BA)} & \textbf{Evidencia / ID / observación} \\ \hline
+\textbf{0} & Identificación real de IRC5, versiones, red, interfaz, ROS, modelo, TCP, joints & & \\ \hline
+\textbf{1} & Estado del controlador leído y atribuido; dato ROS trazado a IRC5 & & \\ \hline
+\textbf{2a} & FK propia comparada bajo mismo $\mathbf{q}$, base, TCP y tiempo; $e_p$, $e_R$ & & \\ \hline
+\textbf{2b} & IK propia: ramas, límites, residual FK, referencia si existe & & \\ \hline
+\textbf{2c} & Jacobiano: bloques, $J\dot{\mathbf{q}}$, referencia o diferencias finitas & & \\ \hline
+\textbf{2d} & Singularidad: tarea, rango/SVD y significado físico & & \\ \hline
+\textbf{2e} & LSPB \textit{offline}: límites, condiciones de frontera y continuidad & & \\ \hline
+\textbf{3a} & Consigna ROS recibida/aceptada por interfaz, con prueba atribuible & & \\ \hline
+\textbf{3b} & Movimiento físico \textbf{comandado desde ROS}, autorizado y medido & & \\ \hline
+\textbf{4} & Tarea completa reproducible con prueba repetida y estados registrados & & \\ \hline
+\end{tabularx}
+\endgroup
+
+\vspace{2pt}
+{\footnotesize\textbf{Claves de evidencia:} \texttt{RViz $\neq$ estado real}; \texttt{lectura $\neq$ aceptación de comando}; \texttt{aceptación $\neq$ movimiento}; \texttt{movimiento $\neq$ validación general de seguridad}.}
+
+% ============================================================================
+% SECCIÓN 3: RÚBRICA DE HITO 3 (100 PUNTOS)
+% ============================================================================
+\newpage
+\section{Rúbrica de Hito 3 (100 puntos)}
+
+\ucbbox{warnamber}{readcolor}{Uso de esta rúbrica}{%
+    Registrar puntaje solamente después de revisar evidencias. Las subponderaciones de esta tabla son una \textbf{propuesta de desglose operativo} que requiere aprobación y aplicación uniforme; los pesos mayores \textbf{20 / 25 / 25 / 20 / 10} proceden de la propuesta curricular. Si ya existe una rúbrica comunicada distinta, prevalece esa rúbrica y se usa este documento únicamente como ficha de evidencia.
+}
+
+\subsection*{A. Ingeniería, inventario y arquitectura — 20 puntos grupales}
+\begingroup
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.40}
+\noindent\begin{tabularx}{\textwidth}{|>{\hsize=1.15\hsize\raggedright\arraybackslash}X|r|r|>{\hsize=0.85\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Subcriterio} & \textbf{Máx.} & \textbf{Obt.} & \textbf{Evidencia que fundamenta el puntaje} \\ \hline
+Identifica controlador, RobotWare, ROS, interfaz, versiones y dependencias sin suposiciones & 6 & & \\ \hline
+Diagrama distingue flujo de comandos, estados y puntos de validación & 5 & & \\ \hline
+Manifiesto: URDF, base/TCP, articulaciones, unidades, offsets, fuentes y timestamps & 6 & & \\ \hline
+Justifica ruta técnica, limitaciones y alternativa ante bloqueo & 3 & & \\ \hline
+\rowcolor{offcolor}
+\textbf{Subtotal A} & \textbf{20} & & \\ \hline
+\end{tabularx}
+\endgroup
+
+\subsection*{B. Modelos propios y validación — 25 puntos grupales}
+\begingroup
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.40}
+\noindent\begin{tabularx}{\textwidth}{|>{\hsize=1.15\hsize\raggedright\arraybackslash}X|r|r|>{\hsize=0.85\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Subcriterio} & \textbf{Máx.} & \textbf{Obt.} & \textbf{Evidencia que fundamenta el puntaje} \\ \hline
+FK propia, configuraciones reproducibles, marcos/TCP y residuos $e_p$, $e_R$ & 7 & & \\ \hline
+IK propia: ramas, validación FK por candidato, límites y razonamiento & 5 & & \\ \hline
+Jacobiano propio: construcción, $J\dot{\mathbf{q}}$, comprobación o diagnóstico de diferencias & 5 & & \\ \hline
+Singularidades: subespacio de tarea, rango/valores singulares e interpretación & 4 & & \\ \hline
+LSPB/planificación \textit{offline}: extremos, continuidad, restricciones e interpretación & 4 & & \\ \hline
+\rowcolor{offcolor}
+\textbf{Subtotal B} & \textbf{25} & & \\ \hline
+\end{tabularx}
+\endgroup
+
+{\footnotesize\textbf{Regla:} una comparación solo visual o con marcos/TCP no identificados no prueba exactitud; una FK propia y MoveIt basados en el mismo URDF no son validación totalmente independiente. Si un componente es incompleto, graduar la evidencia parcial sin inventar tolerancias ABB.}
+
+\subsection*{C. Integración ROS–IRC5 — 25 puntos grupales}
+\begingroup
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.40}
+\noindent\begin{tabularx}{\textwidth}{|>{\hsize=1.15\hsize\raggedright\arraybackslash}X|r|r|>{\hsize=0.85\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Subcriterio} & \textbf{Máx.} & \textbf{Obt.} & \textbf{Evidencia que fundamenta el puntaje} \\ \hline
+Ruta de comunicación ROS–IRC5 documentada y atribuible & 5 & & \\ \hline
+Lectura del estado real, seis juntas, unidades, timestamps y trazabilidad & 7 & & \\ \hline
+Compatibilidad/contrato de interfaz de consigna investigado y verificado según documentación & 5 & & \\ \hline
+Prueba atribuible de recepción/aceptación de consigna \textbf{o rechazo documentado} (sin inferir ejecución) & 4 & & \\ \hline
+Movimiento dirigido por ROS y observado mediante mediciones, cuando autorizado y disponible & 4 & & \\ \hline
+\rowcolor{offcolor}
+\textbf{Subtotal C} & \textbf{25} & & \\ \hline
+\end{tabularx}
+\endgroup
+
+{\footnotesize\textbf{Nota de equidad:} el último subcriterio no puede acreditarse como ejecución física si solo hubo simulación. Ante falta de autorización, licencia o acceso por causa externa: marcar \textbf{BA}, conservar evidencia de la gestión técnica y someter a decisión docente la oportunidad evaluativa o adaptación formal; \textbf{no otorgar ni descontar automáticamente esos 4 puntos} sin regla aprobada y común a los grupos afectados.}
+
+\subsection*{D. Seguridad, pruebas y reproducibilidad — 20 puntos grupales}
+\begingroup
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.40}
+\noindent\begin{tabularx}{\textwidth}{|>{\hsize=1.15\hsize\raggedright\arraybackslash}X|r|r|>{\hsize=0.85\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Subcriterio} & \textbf{Máx.} & \textbf{Obt.} & \textbf{Evidencia que fundamenta el puntaje} \\ \hline
+Riesgos, procedimiento de laboratorio, autorizaciones y \texttt{GO/NO-GO} correctamente diferenciados & 6 & & \\ \hline
+Plan de prueba escalonado y verificaciones antes de cualquier consigna física & 4 & & \\ \hline
+Pruebas repetibles, registros, fallos/diagnóstico y criterios de aceptación explícitos & 5 & & \\ \hline
+Repositorio, instrucciones de reproducción, versiones, archivos y evidencias atribuibles & 5 & & \\ \hline
+\rowcolor{offcolor}
+\textbf{Subtotal D} & \textbf{20} & & \\ \hline
+\end{tabularx}
+\endgroup
+
+{\footnotesize\textbf{Nota:} la decisión responsable de no operar el robot sin permiso puede demostrar competencia de seguridad. No exigir una maniobra peligrosa para obtener puntos de este dominio.}
+
+\subsection*{E. Documentación y defensa — 10 puntos, con evidencia individual}
+{\footnotesize\textbf{Desglose operativo propuesto:} 4 puntos comunes de documentación + 6 puntos de defensa individual. \textbf{No aprobado todavía} como reemplazo de una rúbrica previa: confirmar antes de aplicar.}
+
+\begingroup
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.40}
+\noindent\begin{tabularx}{\textwidth}{|>{\hsize=1.50\hsize\raggedright\arraybackslash}X|r|>{\hsize=0.60\hsize\raggedright\arraybackslash}X|>{\hsize=0.90\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Subcriterio} & \textbf{Máx.} & \textbf{Grupo / estudiante} & \textbf{Evidencia} \\ \hline
+Informe coherente con repositorio, estados, métricas, errores, límites y fuentes & 4 & Grupo: & \\ \hline
+Explica decisiones técnicas y evidencia matemática/computacional & 2 & Estudiante: & \\ \hline
+Interpreta una discrepancia o resultado y propone una verificación & 2 & Estudiante: & \\ \hline
+Distingue simulación, lectura, comandos, ejecución y seguridad; responde preguntas sobre el pipeline completo & 2 & Estudiante: & \\ \hline
+\end{tabularx}
+\endgroup
+
+{\footnotesize\textbf{Puntaje grupal de referencia sobre 94:} $A(20) + B(25) + C(25) + D(20) + \text{documentación}(4)$. \quad \textbf{Defensa individual:} $0\text{--}6$ puntos por persona; no trasladar automáticamente la competencia del programador principal a los demás.}
+
+\subsection*{Guía de niveles para cada subcriterio}
+\begin{itemize}
+    \setlength{\itemsep}{2pt}\setlength{\parskip}{0pt}
+    \footnotesize
+    \item \textbf{100\,\% del máximo:} evidencia verificable y método consistente; interpretación/limitación correcta.
+    \item \textbf{$\approx$75\,\%:} cumple el núcleo con algún faltante menor documentado.
+    \item \textbf{$\approx$50\,\%:} implementación o explicación parcial; validación incompleta.
+    \item \textbf{$\approx$25\,\%:} evidencia inicial o meramente exploratoria, sin demostrar la afirmación principal.
+    \item \textbf{0\,\%:} no hay evidencia examinable del criterio o hay una falla demostrada que invalida el requisito completo.
+\end{itemize}
+{\footnotesize Usar incrementos razonables y justificar las decisiones. \textbf{NE} y \textbf{BA} son estados de evidencia distintos; no equivalen automáticamente a cero por incumplimiento. Los pesos siguen siendo fijos mientras no exista una decisión docente aprobada y comunicada.}
+
+% ============================================================================
+% SECCIÓN 4: GUION DE DEFENSA INDIVIDUAL Y REGISTRO
+% ============================================================================
+\newpage
+\section{Guion de defensa individual y registro}
+
+Preguntar \textbf{al menos una cuestión del trabajo propio y otra transversal}, adaptando dificultad comparable entre estudiantes. Registrar evidencia observada; la lista siguiente es un banco, no una batería obligatoria.
+
+\begingroup
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.35}
+\noindent\begin{tabularx}{\textwidth}{|l|>{\hsize=1.10\hsize\raggedright\arraybackslash}X|>{\hsize=0.90\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Eje} & \textbf{Pregunta sugerida} & \textbf{Evidencia esperada} \\ \hline
+\textbf{Arquitectura} & ¿Qué mensaje salió de ROS y qué dato llegó realmente del IRC5? & Diferenciar comando y feedback; ruta y procedencia \\ \hline
+\textbf{FK} & ¿Qué valor obtuvo para $e_p$ y $e_R$? ¿Mismo marco/TCP? & Métricas, unidades, comparabilidad \\ \hline
+\textbf{IK} & ¿Por qué una rama distinta de MoveIt podría ser correcta? & Residual FK, límites y semillas \\ \hline
+\textbf{Jacobiano} & ¿Cómo contrastaría una columna de $J_v$ por diferencias finitas? & Perturbación, frame, unidades \\ \hline
+\textbf{Singularidad} & ¿Qué movilidad se pierde y por qué no implica torque infinito? & Rango, subespacio de tarea, separación de dinámica \\ \hline
+\textbf{Trayectoria} & ¿Qué verificaron en el LSPB antes de enviarlo? & Límites, continuidad, extremos y diferencia entre plan/ejecución \\ \hline
+\textbf{Evidencia crítica} & Muéstreme un archivo o log que sostenga su principal conclusión & Trazabilidad y límites \\ \hline
+\textbf{Seguridad} & ¿Qué faltaría para declarar \texttt{GO}? & Autorización externa, supervisión y controles \\ \hline
+\end{tabularx}
+\endgroup
+
+\subsection*{Registro por estudiante}
+
+\begingroup
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.85}
+\noindent\begin{tabularx}{\textwidth}{|>{\hsize=0.75\hsize\raggedright\arraybackslash}X|>{\hsize=1.20\hsize\raggedright\arraybackslash}X|>{\hsize=1.20\hsize\raggedright\arraybackslash}X|r|>{\hsize=0.85\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Nombre} & \textbf{Pregunta propia / respuesta observada} & \textbf{Pregunta transversal / respuesta observada} & \textbf{Defensa /6} & \textbf{Pendiente / observaciones} \\ \hline
+& & & & \\[0.35cm] \hline
+& & & & \\[0.35cm] \hline
+& & & & \\[0.35cm] \hline
+& & & & \\[0.35cm] \hline
+\end{tabularx}
+\endgroup
+
+% ============================================================================
+% SECCIÓN 5: ACTA CONSOLIDADA Y CÁLCULO
+% ============================================================================
+\section{Acta consolidada y cálculo}
+
+\begin{minipage}[t]{0.42\textwidth}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{\linewidth}{|X|r|r|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Componente} & \textbf{Máx.} & \textbf{Obt.} \\ \hline
+A. Arquitectura & 20 & \\ \hline
+B. Modelos/validación & 25 & \\ \hline
+C. ROS–IRC5 & 25 & \\ \hline
+D. Seguridad/reproducibilidad & 20 & \\ \hline
+E1. Informe/documentación & 4 & \\ \hline
+\rowcolor{offcolor}
+\textbf{Subtotal grupal} & \textbf{94} & \\ \hline
+\end{tabularx}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.55\textwidth}
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.48}
+\begin{tabularx}{\linewidth}{|>{\hsize=1.05\hsize\raggedright\arraybackslash}X|r|r|r|>{\hsize=0.95\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Estudiante} & \textbf{Grup. /94} & \textbf{Def. /6} & \textbf{Nota /100} & \textbf{Observaciones} \\ \hline
+& & & & \\ \hline
+& & & & \\ \hline
+& & & & \\ \hline
+& & & & \\ \hline
+\end{tabularx}
+\end{minipage}
+
+\vspace{4pt}
+\begin{equation}
+    N_{H3,i} = P_A + P_B + P_C + P_D + P_{\mathrm{doc}} + P_{\mathrm{def},i}, \qquad 0 \le N_{H3,i} \le 100.
+    \label{eq:nota_h3}
+\end{equation}
+
+\textbf{Peso curricular del elemento:} si $E_1$, $E_2$ y $H3$ están en la misma escala, la evaluación continua propuesta es:
+\begin{equation}
+    EC = 0.25\,E_1 + 0.25\,E_2 + 0.50\,H3.
+    \label{eq:ec}
+\end{equation}
+{\footnotesize La evaluación final global se contabiliza por separado conforme al plan vigente; no es la defensa individual de esta ficha.}
+
+% ============================================================================
+% SECCIÓN 6: REGISTRO DE INCIDENCIAS, BLOQUEOS Y DECISIÓN DOCENTE
+% ============================================================================
+\newpage
+\section{Registro de incidencias, bloqueos y decisión docente}
+
+\begingroup
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.75}
+\noindent\begin{tabularx}{\textwidth}{|>{\hsize=1.05\hsize\raggedright\arraybackslash}X|>{\hsize=0.80\hsize\raggedright\arraybackslash}X|>{\hsize=1.10\hsize\raggedright\arraybackslash}X|>{\hsize=1.05\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Incidencia / dato faltante} & \textbf{Tipo: técnica / externa / documental / seguridad} & \textbf{Evidencia y afectación} & \textbf{Decisión y responsable} \\ \hline
+& & & \\[0.35cm] \hline
+& & & \\[0.35cm] \hline
+\end{tabularx}
+\endgroup
+
+\vspace{4pt}
+\ucbbox{alertred}{movcolor}{Bloqueo de ejecución física (si aplica)}{%
+    \textbf{Quién debía autorizar:} \linea{5.5cm} \hfill \textbf{Qué faltó:} \linea{5.5cm}\\[5pt]
+    \textbf{Solicitud / fecha:} \linea{4.5cm} \hfill \textbf{Alternativa \textit{offline} entregada:} \linea{6.0cm}\\[5pt]
+    \textbf{Decisión docente de tratamiento del criterio:} \linea{9.8cm}
+}
+
+\vspace{2pt}
+\textbf{Estado de la calificación:} \quad
+$\square$ Provisional \qquad
+$\square$ Pendiente de evidencia \qquad
+$\square$ Pendiente por bloqueo externo \qquad
+$\square$ Aprobada por docente
+
+\vspace{4pt}
+\ucbbox{ucbblue}{offcolor}{Comentarios para devolución al grupo}{%
+    \textbf{Fortalezas demostradas:} \linea{12.6cm}\\[5pt]
+    \textbf{Hallazgo técnico más importante:} \linea{11.4cm}\\[5pt]
+    \textbf{Brecha de evidencia:} \linea{13.1cm}\\[5pt]
+    \textbf{Próxima prueba o corrección prioritaria:} \linea{10.5cm}\\[6pt]
+    \textbf{Fecha de revisión:} \linea{2.5cm} \hfill \textbf{Docente:} \linea{3.8cm} \hfill \textbf{Firma / constancia:} \linea{3.3cm}
+}
+
+% ============================================================================
+% SECCIÓN 7: CHECKLIST RÁPIDO DEL DOCENTE PARA HOY
+% ============================================================================
+\section{Checklist rápido del docente para hoy}
+
+\begin{itemize}
+    \setlength{\itemsep}{3pt}\setlength{\parskip}{0pt}
+    \footnotesize
+    \item[$\square$] Verifiqué el commit y el informe realmente entregados.
+    \item[$\square$] Diferencié evidencia simulada, lectura IRC5, comando aceptado y movimiento físico.
+    \item[$\square$] Revisé al menos un resultado numérico de cinemática y su referencia.
+    \item[$\square$] Registré FK, IK, Jacobiano, singularidades y LSPB, incluso cuando faltó evidencia.
+    \item[$\square$] Comprobé condiciones de seguridad y no solicité una maniobra no autorizada.
+    \item[$\square$] Anoté qué criterios estaban bloqueados por causas externas.
+    \item[$\square$] Registré al menos una respuesta propia y una transversal por estudiante.
+    \item[$\square$] Dejé una puntuación argumentada y un estado de aprobación explícito.
+\end{itemize}
+
+% ============================================================================
+% SECCIÓN 8: FUENTES Y CAUTELAS DE APLICACIÓN
+% ============================================================================
+\section{Fuentes y cautelas de aplicación}
+
+\begin{itemize}
+    \setlength{\itemsep}{2pt}\setlength{\parskip}{0pt}
+    \footnotesize
+    \item \textbf{Planificación W12-S01 y adenda del Hito 3:} pesos de rúbrica \textbf{propuestos} \texttt{20/25/25/20/10}; Hito 3 equivale al 50\,\% de evaluación continua; evaluación final global separada.
+    \item \textbf{Documento unificado de validación (W14-S02):} evidencia S0--S3, manifiesto, FK/IK/Jacobiano, singularidad, métricas, seguridad y estados; umbrales físicos pendientes de aprobación.
+    \item \textbf{Adenda técnica de validación:} secuencia A--G con comunicación, consigna, LSPB \textit{offline}, ejecución física autorizada y límites de aceptación.
+    \item \textbf{Formato mínimo de informe Hito 3 del 24/11/2026:} campos, tabla Gate 0--4, análisis crítico, documentación y preguntas de defensa.
+\end{itemize}
+
+\ucbbox{warnamber}{readcolor}{Puntos que el docente debe confirmar antes de cerrar calificaciones}{%
+    (1) Si la rúbrica \texttt{20/25/25/20/10} fue aprobada y comunicada; (2) si el desglose propuesto \texttt{4+6} del último dominio es admisible; (3) cómo tratar de modo uniforme cualquier condición externa que haya impedido una prueba física; (4) qué tolerancias estaban aprobadas para los ensayos que se califican. Hasta entonces, los resultados son \textbf{provisionales} y este documento es una propuesta operativa, no normativa nueva.
+}
+
+\end{document}

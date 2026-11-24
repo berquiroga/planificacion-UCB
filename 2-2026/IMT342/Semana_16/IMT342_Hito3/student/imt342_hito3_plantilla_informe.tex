@@ -1,0 +1,340 @@
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[table]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{amsmath, amssymb}
+\usepackage[margin=1.85cm, top=2.1cm, bottom=2.0cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+% Nombres en español (compatible sin babel-spanish)
+\renewcommand{\contentsname}{Índice}
+\renewcommand{\tablename}{Tabla}
+\renewcommand{\figurename}{Figura}
+\renewcommand{\refname}{Referencias}
+
+% Paleta institucional y de evidencia IMT-342
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{offcolor}{RGB}{235, 242, 250}
+\definecolor{readcolor}{RGB}{255, 248, 225}
+\definecolor{acccolor}{RGB}{240, 248, 235}
+\definecolor{movcolor}{RGB}{253, 237, 236}
+\definecolor{alertred}{RGB}{170, 25, 25}
+\definecolor{warnamber}{RGB}{185, 110, 0}
+\definecolor{slateborder}{RGB}{120, 140, 165}
+
+% Encabezados y pies de página
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342} $\mid$ Robótica}
+\chead{Hito 3 Integrado — Formato Mínimo de Informe Técnico}
+\rhead{24/11/2026}
+\lfoot{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Espaciado vertical legible
+\setlength{\parskip}{4pt plus 1pt minus 1pt}
+\setlength{\parindent}{0pt}
+
+% Cajas de aviso y reglas (sin dependencia externa de tcolorbox)
+\newcommand{\ucbbox}[4]{%
+  \vspace{4pt}\noindent
+  \fcolorbox{#1}{#2}{%
+    \parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule\relax}{%
+      \vspace{2pt}%
+      {\small\textbf{\textcolor{#1}{#3}}}\\[2pt]
+      {\footnotesize #4}%
+      \vspace{2pt}%
+    }%
+  }\vspace{4pt}%
+}
+
+% Comandos auxiliares para campos editables y etiquetas de estado
+\newcommand{\campo}[1]{{\ttfamily\small[#1]}}
+\newcommand{\estado}[1]{\texttt{#1}}
+
+\begin{document}
+
+% ============================================================================
+% ENCABEZADO Y PORTADA
+% ============================================================================
+\begin{center}
+    {\large\textbf{\textcolor{ucbblue}{UNIVERSIDAD CATÓLICA BOLIVIANA ``SAN PABLO'' — SEDE TARIJA}}}\\[2pt]
+    {\small Departamento de Ciencias de la Tecnología e Innovación $\mid$ Ingeniería Mecatrónica}\\[6pt]
+    \rule{\textwidth}{1.2pt}\\[6pt]
+    {\LARGE\textbf{\textcolor{ucbblue}{IMT-342 — Hito 3 Integrado}}}\\[3pt]
+    {\large\textit{Formato mínimo de informe técnico y defensa}}\\[5pt]
+    \rule{\textwidth}{1.2pt}
+\end{center}
+
+\vspace{2pt}
+\ucbbox{ucbblue}{offcolor}{Condiciones de entrega y alcance del formato}{%
+    \textbf{Entrega y defensa:} martes \textbf{24 de noviembre de 2026}. \quad
+    \textbf{Formato de entrega:} informe PDF (recomendación: \textbf{3--5 páginas de cuerpo}, sin contar anexos), con enlace a repositorio y evidencias.\\[2pt]
+    \textbf{Alcance:} documentar \textbf{lo efectivamente implementado, probado y observado} hasta la fecha. No se exige presentar como logrado aquello que todavía está pendiente.\\[2pt]
+    \textbf{Estado:} plantilla de presentación; \textbf{no modifica la rúbrica aprobada}, las autorizaciones del laboratorio ni los umbrales aún pendientes de aprobación.
+}
+
+\ucbbox{alertred}{movcolor}{Regla principal de evidencia}{%
+    Una simulación no demuestra comunicación con IRC5; lectura de datos no demuestra aceptación de comandos; aceptación de comandos no demuestra movimiento físico; un movimiento observado no certifica seguridad general. \textbf{Cada afirmación debe vincularse con una evidencia concreta.}
+}
+
+\section*{Portada del Proyecto}
+
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.35}
+\noindent\begin{tabularx}{\textwidth}{|>{\hsize=0.65\hsize\raggedright\arraybackslash}X|>{\hsize=1.35\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Campo de identificación} & \textbf{Registro del grupo (completar)} \\ \hline
+\textbf{Título del proyecto} & \campo{Nombre} \\ \hline
+\textbf{Grupo} & \campo{Número} \\ \hline
+\textbf{Integrantes y responsabilidades efectivamente realizadas} & \campo{Nombres y roles} \\ \hline
+\textbf{Repositorio (URL) y commit evaluado} & \campo{Enlace / hash} \\ \hline
+\textbf{Fecha de cierre de evidencias} & \campo{Fecha y hora} \\ \hline
+\textbf{Plataforma} & ABB IRB120 + IRC5; \campo{ROS versión/distro si está verificada} \\ \hline
+\textbf{Responsable de laboratorio / autorización de pruebas físicas, si hubo} & \campo{Nombre y constancia, o NO APLICA} \\ \hline
+\end{tabularx}
+\endgroup
+
+% ============================================================================
+% SECCIÓN 1
+% ============================================================================
+\section{Objetivo y resultado alcanzado \texorpdfstring{{\small\normalfont(máx. $\frac{1}{2}$ página)}}{(máx. 1/2 página)}}
+
+\textbf{Objetivo técnico del proyecto (2--3 líneas):} \campo{Describir la tarea propuesta y la función de ROS}.
+
+\textbf{Resultado demostrado (3--5 líneas):} \campo{Especificar hasta dónde llegó la cadena modelo $\to$ ROS $\to$ IRC5 $\to$ movimiento}.
+
+\textbf{Estado de las etapas:}
+
+\begingroup
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.35}
+\noindent\begin{tabularx}{\textwidth}{|>{\hsize=1.05\hsize\raggedright\arraybackslash}X|>{\hsize=1.10\hsize\raggedright\arraybackslash}X|>{\hsize=0.85\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Etapa} & \textbf{Estado: verificado / parcial / fallido / no ejecutado / bloqueado} & \textbf{Evidencia principal (ID/enlace)} \\ \hline
+Gate 0. Inventario y compatibilidad & \campo{\quad} & \campo{\quad} \\ \hline
+Gate 1. Lectura/comunicación sin movimiento & \campo{\quad} & \campo{\quad} \\ \hline
+Gate 2. Validación cinemática & \campo{\quad} & \campo{\quad} \\ \hline
+Gate 3. Movimiento físico autorizado desde ROS & \campo{\quad} & \campo{\quad} \\ \hline
+Gate 4. Tarea integrada reproducible & \campo{\quad} & \campo{\quad} \\ \hline
+\end{tabularx}
+\endgroup
+
+\vspace{2pt}
+{\footnotesize\textbf{Nota:} «Verificado» significa únicamente que se aportó evidencia suficiente para la afirmación concreta realizada; no equivale a una aceptación global ni a permiso \texttt{GO}.}
+
+% ============================================================================
+% SECCIÓN 2
+% ============================================================================
+\section{Arquitectura y configuración verificadas \texorpdfstring{{\small\normalfont(máx. $\frac{1}{2}$ página)}}{(máx. 1/2 página)}}
+
+\textit{Instrucción para el grupo:} reemplazar o actualizar el diagrama esquemático inferior con flechas diferenciadas: \textbf{comando} ($\text{ROS} \to \text{interfaz} \to \text{IRC5}$) y \textbf{estado} ($\text{IRC5} \to \text{interfaz} \to \text{ROS}$). Marcar con \textbf{línea discontinua} las conexiones todavía no probadas.
+
+\begin{figure}[!htbp]
+\centering
+\setlength{\unitlength}{1mm}
+\begin{picture}(160,34)
+  % Caja ROS / PC
+  \put(4,16){\fcolorbox{ucbblue}{offcolor}{\parbox[c][16mm][c]{34mm}{\centering\footnotesize\textbf{Estación ROS}\\[2pt]\scriptsize\campo{Distro / nodos}\\Modelos FK/IK/J/LSPB}}}
+  % Caja Interfaz
+  \put(60,16){\fcolorbox{warnamber}{readcolor}{\parbox[c][16mm][c]{36mm}{\centering\footnotesize\textbf{Interfaz / Driver}\\[2pt]\scriptsize\campo{Ethernet / RWS / EGM}\\Protocolo verificado}}}
+  % Caja IRC5 + IRB120
+  \put(118,16){\fcolorbox{alertred}{movcolor}{\parbox[c][16mm][c]{36mm}{\centering\footnotesize\textbf{IRC5 + ABB IRB120}\\[2pt]\scriptsize\campo{RobotWare / TCP}\\Estado real y actuadores}}}
+
+  % Flecha superior: COMANDO (ROS -> Interfaz -> IRC5)
+  % Tramo 1: continuo (editar si no probado)
+  \linethickness{0.9pt}
+  \put(41,21){\color{ucbblue}\vector(1,0){18}}
+  \put(41,23){\makebox(18,3){\scriptsize\textcolor{ucbblue}{\textbf{Comando}}}}
+  % Tramo 2: discontinuo por defecto (indica conexión no probada hasta verificar)
+  \put(99,21){\color{alertred}\line(1,0){3}}
+  \put(103.5,21){\color{alertred}\line(1,0){3}}
+  \put(108,21){\color{alertred}\line(1,0){3}}
+  \put(112.5,21){\color{alertred}\vector(1,0){4.5}}
+  \put(99,23){\makebox(18,3){\scriptsize\textcolor{alertred}{\textit{No probado}}}}
+
+  % Flecha inferior: ESTADO (IRC5 -> Interfaz -> ROS)
+  \put(117,13){\color{ucbblue}\vector(-1,0){18}}
+  \put(99,9){\makebox(18,3){\scriptsize\textcolor{ucbblue}{\textbf{Estado}}}}
+  \put(59,13){\color{ucbblue}\vector(-1,0){18}}
+  \put(41,9){\makebox(18,3){\scriptsize\textcolor{ucbblue}{\textbf{Estado}}}}
+
+  % Leyenda
+  \put(4,3){\fcolorbox{slateborder}{white}{\parbox{149mm}{\centering\scriptsize
+    \textbf{Convención del diagrama:} \quad
+    \textcolor{ucbblue}{\rule[2pt]{8mm}{0.9pt}$\blacktriangleright$} Conexión probada y con evidencia \qquad
+    \textcolor{alertred}{\texttt{- - -}$\blacktriangleright$} Conexión todavía no probada / pendiente \qquad
+    \textbf{Nota:} actualizar según el estado real del grupo.}}}
+\end{picture}
+\caption{Plantilla de diagrama de arquitectura: flujo de comandos ($\text{ROS} \to \text{interfaz} \to \text{IRC5}$) y flujo de estado ($\text{IRC5} \to \text{interfaz} \to \text{ROS}$).}
+\label{fig:arquitectura}
+\end{figure}
+
+\textbf{Manifiesto de comparabilidad y configuración:}
+
+\begingroup
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.32}
+\noindent\begin{tabularx}{\textwidth}{|>{\hsize=1.05\hsize\raggedright\arraybackslash}X|>{\hsize=1.05\hsize\raggedright\arraybackslash}X|>{\hsize=0.90\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Dato indispensable} & \textbf{Valor o estado} & \textbf{Fuente / evidencia} \\ \hline
+Controlador y versión RobotWare & \campo{Confirmado / desconocido} & \campo{\quad} \\ \hline
+ROS, sistema operativo y paquete/driver (versión) & \campo{\quad} & \campo{\quad} \\ \hline
+Interfaz utilizada: Ethernet/RWS/EGM/otra & \campo{\quad} & \campo{\quad} \\ \hline
+Modelo URDF/DH y versión & \campo{\quad} & \campo{\quad} \\ \hline
+\texttt{joint\_order}, signos, offsets y unidades & \campo{\quad} & \campo{\quad} \\ \hline
+Marcos base/world/flange y TCP/tool activo & \campo{\quad} & \campo{\quad} \\ \hline
+Procedencia del estado articular y pose del IRC5 & \campo{\quad} & \campo{\quad} \\ \hline
+\end{tabularx}
+\endgroup
+
+\vspace{2pt}
+\textbf{Limitación de comparabilidad:} \campo{Indicar marcos, TCP, tiempos o parámetros que todavía no se lograron confirmar}.
+
+% ============================================================================
+% SECCIÓN 3
+% ============================================================================
+\section{Ensayos y resultados verificables \texorpdfstring{{\small\normalfont(1--2 páginas)}}{(1-2 páginas)}}
+
+\subsection{Lectura del IRC5 y comunicación ROS}
+
+\begin{itemize}
+    \setlength{\itemsep}{2pt}\setlength{\parskip}{0pt}
+    \item \textbf{Qué se probó:} \campo{Interfaz, fuente, fecha, estado del robot, método de obtención}.
+    \item \textbf{Dato registrado:} \campo{Seis articulaciones con nombres/unidades y timestamp; pose si existe}.
+    \item \textbf{Resultado:} \campo{Dato recibido / retransmitido a ROS / comando aceptado / no ejecutado}.
+    \item \textbf{Evidencia:} \campo{Archivo de log, captura con procedencia, commit o vídeo}.
+\end{itemize}
+
+\subsection{Validación de modelos FK / IK / Jacobiano}
+
+Utilizar la \textbf{misma base, TCP, configuración articular, orden, unidades y condiciones temporales} en comparaciones que se declaren válidas.
+
+\begingroup
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.35}
+\noindent\begin{tabularx}{\textwidth}{|l|>{\hsize=0.90\hsize\raggedright\arraybackslash}X|>{\hsize=1.05\hsize\raggedright\arraybackslash}X|>{\hsize=1.05\hsize\raggedright\arraybackslash}X|>{\hsize=1.00\hsize\raggedright\arraybackslash}X|>{\hsize=1.00\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{ID} & \textbf{Prueba} & \textbf{Entrada / referencia} & \textbf{Resultado medido o calculado} & \textbf{Métrica / unidad} & \textbf{Estado y evidencia} \\ \hline
+\textbf{FK-01} & FK propia vs. referencia & $\mathbf{q}$, base, TCP, fuente y timestamp & $T_{\mathrm{own}}$, $T_{\mathrm{ref}}$ & $e_p$ [$\mathrm{m}$], $e_R$ [$\mathrm{rad}$] & \campo{\quad} \\ \hline
+\textbf{IK-01} & Pose objetivo $\to$ ramas IK $\to$ validación FK & $T_d$, límites, semilla si corresponde & Ramas y residual por rama & $e_p$ [$\mathrm{m}$], $e_R$ [$\mathrm{rad}$] & \campo{\quad} \\ \hline
+\textbf{J-01} & Jacobiano propio vs. referencia / diferencias finitas & $\mathbf{q}$, frame, TCP, $\dot{\mathbf{q}}$, paso & $J_v$, $J_\omega$, $J\dot{\mathbf{q}}$ & Error lineal y angular separados & \campo{\quad} \\ \hline
+\textbf{S-01} & Singularidad / proximidad & Configuración y subespacio de tarea & Rango o valores singulares & Criterio y escala declarados & \campo{\quad} \\ \hline
+\end{tabularx}
+\endgroup
+
+\textbf{Ecuaciones mínimas para reportar (no sustituyen resultados):}
+\begin{equation}
+    e_p = \|p_{\mathrm{propia}} - p_{\mathrm{ref}}\|_2 \quad [\mathrm{m}]
+    \label{eq:error_posicion}
+\end{equation}
+\begin{equation}
+    R_{\mathrm{err}} = R_{\mathrm{ref}}^{T} R_{\mathrm{propia}}, \qquad
+    e_R = \cos^{-1}\!\left(\operatorname{clip}\!\left(\frac{\operatorname{tr}(R_{\mathrm{err}}) - 1}{2},\, -1,\, 1\right)\right) \quad [\mathrm{rad}].
+    \label{eq:error_orientacion}
+\end{equation}
+
+Para IK, \textbf{dos vectores articulares diferentes pueden ser soluciones válidas de la misma pose}. Cada rama debe comprobarse con FK y límites conocidos. Para Jacobiano, reportar por separado el bloque lineal y angular; indicar el método y paso de diferencias finitas cuando se use. Para singularidad, definir la tarea y distinguir pérdida de rango de torque dinámico.
+
+\textbf{Criterio de aceptación:} \campo{Versión y umbral aprobado, o «PENDIENTE: comparación cuantificada sin aprobación de conformidad»}. \textbf{No inventar tolerancias ABB.}
+
+\subsection{Trayectoria y movimiento (si corresponde)}
+
+\begingroup
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.35}
+\noindent\begin{tabularx}{\textwidth}{|>{\hsize=1.35\hsize\raggedright\arraybackslash}X|>{\hsize=0.85\hsize\raggedright\arraybackslash}X|>{\hsize=0.80\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Nivel de evidencia} & \textbf{Resultado real} & \textbf{Archivo / registro} \\ \hline
+LSPB generada y validada \textbf{offline} (extremos, tiempo, continuidad, límites) & \campo{\quad} & \campo{\quad} \\ \hline
+Interfaz acepta una consigna (sin confundir aceptación con ejecución) & \campo{\quad} & \campo{\quad} \\ \hline
+Movimiento físico comandado desde ROS, autorizado y observado & \campo{\quad} & \campo{\quad} \\ \hline
+Seguimiento $\mathbf{q}_{\mathrm{ref}}(t)$ vs. $\mathbf{q}_{\mathrm{actual}}(t)$ y estado final & \campo{\quad} & \campo{\quad} \\ \hline
+\end{tabularx}
+\endgroup
+
+\vspace{2pt}
+\ucbbox{warnamber}{readcolor}{Condición obligatoria para registro de movimiento físico}{%
+    \textbf{Si hubo movimiento físico:} registrar operador autorizado, procedimiento seguido, objetivo y velocidad autorizados, supervisión, estado de parada, logs, eventos de rechazo/aborto y evidencia de movimiento real.\\[2pt]
+    \textbf{Si no lo hubo:} declarar \estado{NO EJECUTADO} o \estado{BLOQUEADO} y explicar el impedimento. \textbf{No se debe intentar una demostración no autorizada para completar el informe.}
+}
+
+% ============================================================================
+% SECCIÓN 4
+% ============================================================================
+\section{Análisis crítico y limitaciones \texorpdfstring{{\small\normalfont($\frac{1}{2}$--1 página)}}{(1/2-1 página)}}
+
+Responder de manera concreta:
+\begin{enumerate}
+    \setlength{\itemsep}{4pt}\setlength{\parskip}{0pt}
+    \item \textbf{Hallazgo principal:} ¿qué demuestran los datos y qué no permiten afirmar?\\
+    \campo{Respuesta concreta basada en evidencias}
+
+    \item \textbf{Discrepancia más importante:} ¿qué valor se obtuvo, qué hipótesis explica el error y cómo se intentó verificar? Considerar TCP, base, \texttt{joint\_order}, signos, offsets y sincronización.\\
+    \campo{Valor observado, hipótesis y verificación realizada}
+
+    \item \textbf{Bloqueo técnico o de acceso:} ¿qué prueba faltó, por qué y cuál sería la siguiente verificación segura?\\
+    \campo{Prueba faltante, causa del bloqueo y siguiente paso seguro}
+
+    \item \textbf{Seguridad:} ¿quién autorizó el movimiento físico, si lo hubo? Si no hay autorización, registrar \textbf{\texttt{NO-GO}}.\\
+    \campo{Constancia de autorización o registro explícito NO-GO}
+\end{enumerate}
+
+% ============================================================================
+% SECCIÓN 5
+% ============================================================================
+\section{Conclusiones y siguiente paso \texorpdfstring{{\small\normalfont(máx. $\frac{1}{2}$ página)}}{(máx. 1/2 página)}}
+
+\begin{itemize}
+    \setlength{\itemsep}{3pt}\setlength{\parskip}{0pt}
+    \item \textbf{Conclusión 1 — lo logrado:} \campo{Evidencia concreta, no intención}.
+    \item \textbf{Conclusión 2 — lo no demostrado:} \campo{Brecha crítica}.
+    \item \textbf{Próxima prueba prioritaria:} \campo{Hipótesis, procedimiento permitido, responsable, evidencia esperada y condición de aceptación}.
+\end{itemize}
+
+% ============================================================================
+% ANEXOS Y EVIDENCIAS
+% ============================================================================
+\newpage
+\section*{Anexos y evidencias {\small\normalfont(enlaces, no capturas sin contexto)}}
+\addcontentsline{toc}{section}{Anexos y evidencias}
+
+\begingroup
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.45}
+\noindent\begin{tabularx}{\textwidth}{|l|>{\hsize=1.05\hsize\raggedright\arraybackslash}X|>{\hsize=1.25\hsize\raggedright\arraybackslash}X|>{\hsize=0.85\hsize\raggedright\arraybackslash}X|>{\hsize=0.85\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{ID} & \textbf{Archivo o enlace} & \textbf{Qué demuestra} & \textbf{Quién lo generó} & \textbf{Fecha / versión} \\ \hline
+\textbf{E-01} & \campo{\quad} & \campo{\quad} & \campo{\quad} & \campo{\quad} \\ \hline
+\textbf{E-02} & \campo{\quad} & \campo{\quad} & \campo{\quad} & \campo{\quad} \\ \hline
+\textbf{E-03} & \campo{\quad} & \campo{\quad} & \campo{\quad} & \campo{\quad} \\ \hline
+\end{tabularx}
+\endgroup
+
+\vspace{4pt}
+{\footnotesize Se podrán adjuntar notebooks, CSV, logs, capturas, videos, URDF, scripts y archivos de configuración. Deben corresponder al commit y las condiciones declaradas. \textbf{No incluir credenciales, contraseñas o configuraciones sensibles de red.}}
+
+\end{document}

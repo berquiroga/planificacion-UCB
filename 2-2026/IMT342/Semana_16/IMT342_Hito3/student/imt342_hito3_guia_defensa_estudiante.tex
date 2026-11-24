@@ -1,0 +1,104 @@
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[table]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{amsmath, amssymb}
+\usepackage[margin=2.0cm, top=2.2cm, bottom=2.1cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\renewcommand{\contentsname}{Índice}
+\renewcommand{\tablename}{Tabla}
+\renewcommand{\figurename}{Figura}
+\renewcommand{\refname}{Referencias}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{offcolor}{RGB}{235, 242, 250}
+\definecolor{readcolor}{RGB}{255, 248, 225}
+\definecolor{movcolor}{RGB}{253, 237, 236}
+\definecolor{alertred}{RGB}{170, 25, 25}
+\definecolor{warnamber}{RGB}{185, 110, 0}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342} $\mid$ Robótica}
+\chead{Hito 3 Integrado — Guía Estudiantil de Preparación para la Defensa}
+\rhead{24/11/2026}
+\lfoot{Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\setlength{\parskip}{5pt plus 1pt minus 1pt}
+\setlength{\parindent}{0pt}
+
+\newcommand{\ucbbox}[4]{%
+  \vspace{5pt}\noindent
+  \fcolorbox{#1}{#2}{%
+    \parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule\relax}{%
+      \vspace{3pt}%
+      {\small\textbf{\textcolor{#1}{#3}}}\\[3pt]
+      {\small #4}%
+      \vspace{3pt}%
+    }%
+  }\vspace{5pt}%
+}
+
+\begin{document}
+
+\begin{center}
+    {\large\textbf{\textcolor{ucbblue}{UNIVERSIDAD CATÓLICA BOLIVIANA ``SAN PABLO'' — SEDE TARIJA}}}\\[2pt]
+    {\small Departamento de Ciencias de la Tecnología e Innovación $\mid$ Ingeniería Mecatrónica}\\[8pt]
+    \rule{\textwidth}{1.2pt}\\[6pt]
+    {\LARGE\textbf{\textcolor{ucbblue}{Preparación para la Defensa — Guía Estudiantil}}}\\[3pt]
+    {\large\textit{IMT-342 — Hito 3 Integrado (Entrega y defensa: martes 24 de noviembre de 2026)}}\\[5pt]
+    \rule{\textwidth}{1.2pt}
+\end{center}
+
+\ucbbox{alertred}{movcolor}{Regla principal de evidencia}{%
+    Una simulación no demuestra comunicación con IRC5; lectura de datos no demuestra aceptación de comandos; aceptación de comandos no demuestra movimiento físico; un movimiento observado no certifica seguridad general. \textbf{Cada afirmación debe vincularse con una evidencia concreta.}
+}
+
+\section*{Competencias verificables en la defensa individual y grupal}
+
+\textbf{Cada integrante debe poder explicar:}
+
+\begin{enumerate}
+    \setlength{\itemsep}{6pt}\setlength{\parskip}{0pt}
+    \item La arquitectura del grupo y cuáles conexiones se demostraron realmente.
+    \item La procedencia de $\mathbf{q}$ y de la pose de referencia, incluyendo marcos y TCP.
+    \item Cómo se calcula y se interpreta al menos un error FK / IK / Jacobiano.
+    \item Una discrepancia, prueba fallida o limitación y su diagnóstico.
+    \item Por qué \textbf{lectura de estado $\neq$ comando aceptado $\neq$ movimiento físico}.
+    \item Qué condiciones de seguridad impiden pasar de una prueba \textit{offline} a una ejecución real.
+\end{enumerate}
+
+\ucbbox{ucbblue}{offcolor}{Sustento en evidencias propias y alcance normativo}{%
+    La defensa debe sustentarse en archivos, resultados y decisiones del propio grupo. \textbf{No se fija aquí una duración ni una nueva ponderación de defensa:} aplicar la convocatoria y rúbrica aprobadas por el docente.
+}
+
+\section*{Lista rápida de verificación antes de entregar y defender}
+
+\begin{itemize}
+    \setlength{\itemsep}{4pt}\setlength{\parskip}{0pt}
+    \item[$\square$] El informe PDF mantiene el cuerpo recomendado de \textbf{3--5 páginas} (sin contar anexos) e incluye el enlace al repositorio y el \textit{hash} del commit evaluado.
+    \item[$\square$] Los estados no completados se reportan honestamente como \texttt{NO EJECUTADO}, \texttt{PARCIAL} o \texttt{BLOQUEADO}, con su impedimento y evidencia correspondiente.
+    \item[$\square$] El diagrama de arquitectura diferencia claramente los flujos de \textbf{comando} y \textbf{estado}, y marca con línea discontinua toda conexión aún no probada.
+    \item[$\square$] Ningún anexo ni captura contiene credenciales, contraseñas ni configuraciones sensibles de red.
+    \item[$\square$] No se han inventado tolerancias ABB ni se han realizado maniobras físicas sin autorización explícita (\texttt{GO}) del laboratorio.
+\end{itemize}
+
+\vfill
+\ucbbox{warnamber}{readcolor}{Fuente y alcance del formato}{%
+    Adaptación de la \textbf{adenda de validación del Hito 3} y del documento \textbf{Criterios Unificados de Validación Cinemática, Procedencia e Incertidumbre}, conservando trazabilidad, pruebas FK/IK/J, singularidades, niveles de evidencia y diferencia entre aprobación matemática y \texttt{GO} de laboratorio. Los criterios de aceptación numérica siguen sujetos a aprobación docente. Esta plantilla \textbf{no sustituye} el protocolo técnico detallado ni establece nueva escala de calificación.
+}
+
+\end{document}

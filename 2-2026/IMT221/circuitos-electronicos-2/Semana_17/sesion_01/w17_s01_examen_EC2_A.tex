@@ -1,0 +1,224 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, positioning}
+\usepackage[american]{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.6cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\setlength{\headheight}{16pt}
+\setlength{\emergencystretch}{2em}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{neutralbg}{RGB}{246, 248, 251}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{IMT-221 --- Circuitos Electrónicos II}}
+\chead{Examen Escrito Individual EC2}
+\rhead{23/11/2026}
+\cfoot{\footnotesize Página \thepage\ de \pageref{LastPage} \quad|\quad Versión A -- Instrumento de 100 puntos}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\newcommand{\answerbox}[1]{%
+    \vspace{0.15cm}
+    \begin{tcolorbox}[colback=white, colframe=black!45, boxrule=0.5pt, arc=1mm, height=#1]
+        \hfill {\tiny\color{black!45} Desarrollo, unidades e interpretación}
+    \end{tcolorbox}
+}
+
+\begin{document}
+
+% --- CABECERA PARA ESTUDIANTES ---
+\begin{center}
+    {\large\textbf{\textcolor{ucbblue}{Universidad Católica Boliviana ``San Pablo'' --- Sede Tarija}}}\\[0.08cm]
+    {\Large\textbf{IMT-221 --- Circuitos Electrónicos II}}\\
+    {\normalsize\textbf{Evaluación Escrita Individual EC2} \quad$\cdot$\quad 23 de noviembre de 2026 \quad$\cdot$\quad \textbf{Versión A}}
+\end{center}
+
+\begin{tcolorbox}[colback=neutralbg, colframe=ucbblue, boxrule=0.8pt, arc=1.5mm, left=6pt, right=6pt, top=5pt, bottom=5pt]
+    \small
+    \renewcommand{\arraystretch}{1.45}
+    \begin{tabularx}{\textwidth}{@{}lX lX@{}}
+        \textbf{Nombre:} & \hrulefill & \textbf{Versión:} & \textbf{A} \quad (Total: \textbf{100 puntos}) \\
+        \textbf{Duración:} & \texttt{90 minutos} & \textbf{Calculadora:} & \texttt{Válida} \\
+    \end{tabularx}
+    \vspace{0.15cm}
+    \hrule
+    \vspace{0.15cm}
+    \footnotesize
+    \textbf{Instrucciones generales:} Responda de manera individual. Muestre todas las ecuaciones, sustituciones con unidades, supuestos e interpretación física. Los parámetros de los dispositivos son \textbf{modelos hipotéticos para este examen} y no corresponden a mediciones del curso ni a especificaciones de un fabricante particular. Durante la prueba no se realizan consultas conceptuales. No se solicitan ensayos físicos ni se acredita el PFI con esta evaluación.
+\end{tcolorbox}
+
+% =========================================================================
+% PROBLEMA P1
+% =========================================================================
+\section*{Problema P1 --- Amplificador operacional real (25 puntos)}
+
+Un amplificador \textbf{no inversor} tiene $R_f = 100\,\mathrm{k\Omega}$ conectada entre la salida $v_o$ y la entrada inversora ($-$), y $R_g = 10\,\mathrm{k\Omega}$ conectada entre la entrada inversora ($-$) y la referencia de $0\,\mathrm{V}$. Considere un modelo de op-amp hipotético con $f_T = 1.1\,\mathrm{MHz}$, $\mathrm{SR} = 0.40\,\mathrm{V/\mu s}$, rieles de alimentación $\pm 9\,\mathrm{V}$ y excursión lineal de salida permitida hasta $\pm 7\,\mathrm{V}$. Se desea obtener una \textbf{salida sinusoidal} de $4.0\,\mathrm{V}$ de amplitud pico a una frecuencia de $20\,\mathrm{kHz}$. Para este problema suponga un modelo dominante de un polo y ganancia de ruido igual a la ganancia de señal ($\text{noise gain} = A_{CL}$).
+
+\begin{center}
+    \begin{circuitikz}[>=stealth, thick, scale=0.88, transform shape]
+        \draw (0,0) node[op amp, yscale=-1] (op) {};
+        % Nota: yscale=-1 coloca entrada (+) arriba y (-) abajo para realimentacion limpia abajo
+        \draw (op.+) to[short, -o] ++(-1.8,0) node[left]{$v_i$};
+        \draw (op.out) to[short, *-o] ++(1.8,0) node[right]{$v_o$};
+        \draw (op.-) -- ++(-0.5,0.0) -- ++(0.0,-1.8) coordinate(ninv);
+        \draw (ninv) to[R, l=$R_g$] ++(0,-1.8) node[ground]{};
+        \node[left, font=\footnotesize] at ([xshift=-0.35cm, yshift=-0.9cm]ninv) {$10\,\mathrm{k\Omega}$};
+        \draw (ninv) to[short, *-] ++(0.6,0) to[R, l=$R_f$] ++(2.2,0) -| (op.out);
+        \node[below, font=\footnotesize] at ([xshift=1.7cm, yshift=-0.35cm]ninv) {$100\,\mathrm{k\Omega}$};
+        % Rieles
+        \draw (op.down) -- ++(0,0.6) node[above]{\footnotesize $+9\,\mathrm{V}$};
+        \draw (op.up) -- ++(0,-0.6) node[below]{\footnotesize $-9\,\mathrm{V}$};
+        % Nota de modelo
+        \node[draw=ucbblue!60, fill=neutralbg, rounded corners, font=\scriptsize, align=left] at (5.6, -0.5) {%
+            \textbf{Modelo hipotético:}\\
+            $f_T = 1.1\,\mathrm{MHz}$\\
+            $\mathrm{SR} = 0.40\,\mathrm{V/\mu s}$\\
+            Rieles: $\pm 9\,\mathrm{V}$\\
+            Excursión lineal máx.: $\pm 7\,\mathrm{V}$
+        };
+    \end{circuitikz}
+\end{center}
+
+\begin{enumerate}
+    \renewcommand{\labelenumi}{(\alph{enumi})}
+    \setlength{\itemsep}{2pt}
+    \item Calcule la ganancia ideal en lazo cerrado $A_{CL}$ y el valor pico de la entrada $v_i$ necesario. \hfill \textbf{(5 pts)}
+    \item Estime el ancho de banda de lazo cerrado $f_{BW}$ y determine si $20\,\mathrm{kHz}$ está por debajo de él. \hfill \textbf{(5 pts)}
+    \item Calcule el \textit{slew rate} mínimo requerido en $\mathrm{V/\mu s}$ y compárelo con el disponible. \hfill \textbf{(7 pts)}
+    \item Compruebe la excursión de salida y emita un dictamen conjunto de viabilidad. ¿Por qué superar el criterio de ancho de banda no basta? \hfill \textbf{(5 pts)}
+    \item Calcule el pico máximo de salida permitido \textbf{solo por SR} para esa frecuencia e indique una limitación adicional que el modelo no descarta. \hfill \textbf{(3 pts)}
+\end{enumerate}
+
+% =========================================================================
+% PROBLEMA P2
+% =========================================================================
+\section*{Problema P2 --- Acondicionamiento diferencial / In-Amp y CMRR (25 puntos)}
+
+Un acondicionador se modela en régimen lineal mediante:
+\[v_o = A_d v_d + A_{cm} v_{cm} + V_{\mathrm{offset}}, \qquad v_d = v_+ - v_-, \qquad v_{cm} = \frac{v_+ + v_-}{2}.\]
+Los datos son \textbf{hipotéticos}: $v_+ = 1.012\,\mathrm{V}$, $v_- = 0.988\,\mathrm{V}$ (ambos respecto a la referencia de $0\,\mathrm{V}$), $A_d = 100\,\mathrm{V/V}$, $A_{cm} = 0.020\,\mathrm{V/V}$ y $V_{\mathrm{offset}} = +0.010\,\mathrm{V}$.
+
+\begin{center}
+    \begin{tikzpicture}[>=stealth, thick, scale=0.92, transform shape]
+        \draw[fill=neutralbg, draw=ucbblue, rounded corners=2pt] (0,0) rectangle (4.2,2.4);
+        \node[align=center, font=\small\bfseries, text=ucbblue] at (2.1, 1.55) {Bloque Acondicionador\\(In-Amp genérico)};
+        \node[align=center, font=\scriptsize] at (2.1, 0.55) {$v_o = A_d v_d + A_{cm} v_{cm} + V_{\mathrm{offset}}$};
+        % Entradas
+        \draw[->] (-1.8, 1.8) node[left]{$v_+ = 1.012\,\mathrm{V}$} -- (0, 1.8) node[right, font=\footnotesize]{$+$};
+        \draw[->] (-1.8, 0.6) node[left]{$v_- = 0.988\,\mathrm{V}$} -- (0, 0.6) node[right, font=\footnotesize]{$-$};
+        % Salida
+        \draw[->] (4.2, 1.2) -- (6.0, 1.2) node[right]{$v_o$};
+        % Referencia
+        \draw (2.1, 0) -- (2.1, -0.55) node[ground]{};
+        \node[right, font=\scriptsize] at (2.25, -0.45) {Ref. $0\,\mathrm{V}$};
+        % Parámetros
+        \node[draw=black!40, fill=white, rounded corners, font=\scriptsize, align=left] at (8.5, 1.2) {%
+            $A_d = 100\,\mathrm{V/V}$\\
+            $A_{cm} = 0.020\,\mathrm{V/V}$\\
+            $V_{\mathrm{offset}} = +0.010\,\mathrm{V}$
+        };
+    \end{tikzpicture}
+\end{center}
+
+\begin{enumerate}
+    \renewcommand{\labelenumi}{(\alph{enumi})}
+    \setlength{\itemsep}{2pt}
+    \item Calcule $v_d$ en $\mathrm{mV}$ y $v_{cm}$ en $\mathrm{V}$. \hfill \textbf{(5 pts)}
+    \item Determine por separado la contribución diferencial, la contribución de modo común y la de \textit{offset} en $v_o$; indique el valor total de $v_o$. \hfill \textbf{(7 pts)}
+    \item Calcule el $\mathrm{CMRR}$ lineal y en decibelios ($\mathrm{dB}$). \hfill \textbf{(6 pts)}
+    \item Si ambas entradas aumentan $+0.50\,\mathrm{V}$ manteniendo $v_d$ constante, estime el cambio en la salida $\Delta v_o$. \hfill \textbf{(4 pts)}
+    \item Explique por qué el $\mathrm{CMRR}$ obtenido no puede presentarse como una medición física de los In-Amp construidos por el grupo. \hfill \textbf{(3 pts)}
+\end{enumerate}
+
+% =========================================================================
+% PROBLEMA P3
+% =========================================================================
+\section*{Problema P3 --- Diodo real y rectificación de precisión (25 puntos)}
+
+Considere dos circuitos de \textbf{media onda positiva}, conectados separadamente a la misma fuente de señal senoidal y con cargas resistivas $R_L$ hacia $0\,\mathrm{V}$:
+
+\begin{itemize}
+    \setlength{\itemsep}{1pt}
+    \item \textbf{Circuito D (convencional):} fuente $v_i \to$ ánodo (A) de diodo $D \to$ cátodo (K) conectado al nodo $v_{o,D} \to$ resistencia $R_L$ a tierra. Para este examen use un \textbf{umbral aproximado hipotético} $V_\gamma = 0.45\,\mathrm{V}$.
+    \item \textbf{Circuito P (superdiodo no inversor idealizado):} $v_i$ en entrada ($+$) del op-amp; entrada ($-$) conectada al nodo rectificado $v_{o,P}$; salida interna $v_a$ conectada al ánodo (A) del diodo $D$, cuyo cátodo (K) es el nodo $v_{o,P}$; resistencia $R_L$ desde $v_{o,P}$ a tierra. La alimentación del op-amp se supone suficiente para el análisis idealizado de ambos semiciclos.
+\end{itemize}
+
+\begin{center}
+    \begin{circuitikz}[>=stealth, thick, scale=0.85, transform shape]
+        % Circuito D (Convencional)
+        \node[font=\small\bfseries, text=ucbblue] at (1.8, 2.9) {Circuito D (Convencional)};
+        \draw (0,0) node[ground]{} to[sV] (0,2.0) -- (0.8,2.0) to[D, l=$D$] (3.0,2.0) to[short, *-o] (3.8,2.0) node[right]{$v_{o,D}$};
+        \node[left, font=\footnotesize] at (-0.5, 1.0) {$v_i(t)$};
+        \node[below, font=\scriptsize] at (1.45, 1.85) {A};
+        \node[below, font=\scriptsize] at (2.35, 1.85) {K};
+        \draw (3.0,2.0) to[R, l=$R_L$] (3.0,0) node[ground]{};
+
+        % Circuito P (Superdiodo)
+        \node[font=\small\bfseries, text=ucbblue] at (9.6, 2.9) {Circuito P (Superdiodo no inversor)};
+        \draw (7.8, 1.0) node[op amp] (op) {};
+        \draw (op.+) to[short, -o] ++(-1.2,0) node[left]{$v_i(t)$};
+        \draw (op.out) to[short, *-] ++(0.6,0) coordinate(va) node[above]{\footnotesize $v_a$} to[D, l=$D$] ++(2.2,0) coordinate(vo) to[short, *-o] ++(0.8,0) node[right]{$v_{o,P}$};
+        \node[below, font=\scriptsize] at ([xshift=0.65cm, yshift=-0.15cm]va) {A};
+        \node[below, font=\scriptsize] at ([xshift=1.55cm, yshift=-0.15cm]va) {K};
+        \draw (vo) to[R, l=$R_L$] ++(0,-1.8) node[ground]{};
+        \draw (op.-) -- ++(0,1.1) -| (vo);
+    \end{circuitikz}
+\end{center}
+
+\begin{enumerate}
+    \renewcommand{\labelenumi}{(\alph{enumi})}
+    \setlength{\itemsep}{2pt}
+    \item Para amplitudes \textbf{pico positivas} de entrada de $0.30\,\mathrm{V}$ y $1.00\,\mathrm{V}$, calcule los picos de salida del circuito D con el modelo dado. \hfill \textbf{(5 pts)}
+    \item Calcule los picos de rectificación ideal $\max(v_i, 0)$ y los esperados del circuito P idealizado. \hfill \textbf{(5 pts)}
+    \item Construya una tabla de estados para $v_i > 0$ y $v_i < 0$ del circuito P: estado del diodo, estado del lazo, $v_{o,P}$ y tendencia de $v_a$. \hfill \textbf{(8 pts)}
+    \item Justifique por qué no puede usarse $v_+ \approx v_-$ durante todo el período. \hfill \textbf{(4 pts)}
+    \item Indique \textbf{una limitación física} relevante del circuito P y explique por qué el valor $0.45\,\mathrm{V}$ no debe tratarse como una propiedad universal de todo diodo. \hfill \textbf{(3 pts)}
+\end{enumerate}
+
+% =========================================================================
+% PROBLEMA P4-A (SOLO VERSION A)
+% =========================================================================
+\section*{Problema P4-A --- Filtro activo pasa-bajos de segundo orden (25 puntos)}
+
+Un filtro pasa-bajos se describe por la función de transferencia \textbf{proporcionada}, con $s$ en $\mathrm{rad/s}$:
+\[H(s) = \frac{V_{\mathrm{out}}(s)}{V_{\mathrm{in}}(s)} = \frac{100}{s^2 + 20s + 100}.\]
+Utilice la forma canónica:
+\[H(s) = \frac{K\omega_0^2}{s^2 + (\omega_0/Q)s + \omega_0^2}.\]
+No es necesario derivar el circuito Sallen--Key ni diseñar resistencias o capacitores.
+
+\begin{center}
+    \begin{tikzpicture}[>=stealth, thick]
+        \draw[->] (-2.2, 0) node[left]{$V_{\mathrm{in}}(s)$} -- (0, 0);
+        \draw[fill=neutralbg, draw=ucbblue, rounded corners=2pt] (0, -0.75) rectangle (4.8, 0.75);
+        \node[align=center] at (2.4, 0) {$H(s) = \dfrac{100}{s^2 + 20s + 100}$};
+        \draw[->] (4.8, 0) -- (7.0, 0) node[right]{$V_{\mathrm{out}}(s)$};
+    \end{tikzpicture}
+\end{center}
+
+\begin{enumerate}
+    \renewcommand{\labelenumi}{(\alph{enumi})}
+    \setlength{\itemsep}{2pt}
+    \item Determine $K$, $\omega_0$, $f_0$ y $Q$, indicando sus unidades. \hfill \textbf{(8 pts)}
+    \item Calcule $H(j\omega_0)$, su magnitud $\vert{}H(j\omega_0)\vert{}$, la ganancia en $\mathrm{dB}$ y la fase en $\omega = \omega_0$. \hfill \textbf{(8 pts)}
+    \item ¿La frecuencia $f_0$ coincide aquí con la frecuencia de $-3\,\mathrm{dB}$? Justifique con un cálculo o relación válida. \hfill \textbf{(4 pts)}
+    \item Compare el $Q$ obtenido con el requisito $Q = 1/\sqrt{2}$ del filtro Butterworth de segundo orden. \hfill \textbf{(2 pts)}
+    \item Explique por qué caracterizar esta sección no equivale a demostrar el rechazo de $50\,\mathrm{Hz}$ de un filtro de cuarto orden ni la integración del Hito 3. \hfill \textbf{(3 pts)}
+\end{enumerate}
+
+\end{document}

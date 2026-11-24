@@ -1,0 +1,100 @@
+\documentclass[10pt, a4paper, landscape]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.4cm]{geometry}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342} $\mid$ Robótica}
+\chead{Matriz de Aceptación por Etapa y Equipo — Hito 3 (Visual 9)}
+\rhead{Propuesta Pendiente de Aprobación}
+\lfoot{Este documento NO concede permiso de operación física}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Matriz de Aceptación Técnica por Etapa (A01–G02) y Registro de Seguridad Separado}}\\[0.1cm]
+    \footnotesize\textbf{Regla de separación:} La aceptación técnica académica y la autorización de seguridad \texttt{GO/NO-GO} del laboratorio se registran en columnas y firmas independientes.
+\end{center}
+
+\section*{1. Matriz Maestra de Requisitos de Entrada, Evidencia y Seguridad (Etapas A–G)}
+
+\begingroup
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.35}
+% 4 columnas X: 0.95 + 1.15 + 1.05 + 0.85 = 4.00
+\noindent\begin{tabularx}{\textwidth}{|c|c|>{\hsize=0.95\hsize\raggedright\arraybackslash}X|>{\hsize=1.15\hsize\raggedright\arraybackslash}X|>{\hsize=1.05\hsize\raggedright\arraybackslash}X|>{\hsize=0.85\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{ID} & \textbf{Etapa} & \textbf{Requisito de Entrada} & \textbf{Evidencia Esperada} & \textbf{Aceptación Técnica} & \textbf{Condición de Seguridad} \\ \hline
+\textbf{A01} & A & Identificación y acceso documental. & Manifiesto completo, versiones y fuentes. & \texttt{confirmado / pendiente / incompatible} & \texttt{NO-GO} físico \\ \hline
+\textbf{B01} & B & Interfaz de lectura identificada. & 6 juntas, \texttt{timestamps}, 3 estados estacionarios, fuente. & Trazabilidad verificada / parcial (S1/S2). & Lectura autorizada (sin escritura) \\ \hline
+\textbf{C01} & C & Mismo $\mathbf{q}$, base, TCP y tiempo. & FK 3 posturas; $e_p, e_R$; repetición + fallo sintético. & Criterio académico aprobado o pendiente. & \texttt{NO-GO} físico \\ \hline
+\textbf{D00} & D & Contrato de interfaz documentado. & Formato y acuse/rechazo sin movimiento (si disponible). & Recepción $\neq$ ejecución física. & \texttt{NO-GO} hasta firma externa \\ \hline
+\textbf{D01} & D & \texttt{GO} externo y controles reales verificados. & Comando, $\mathbf{q}$ medido, estado final y logs. & Movimiento observado/verificado si aplica. & \textbf{\texttt{GO} específico y condicionado} \\ \hline
+\textbf{E01} & E & Poses generadas por FK válida. & Ramas Pieper/\texttt{atan2}, límites y residuos FK. & \texttt{IK\_VALIDADA\_OFFLINE} & \texttt{NO-GO} físico por sí misma \\ \hline
+\textbf{F01} & F & Frame, TCP y twist alineados. & FD lineal/angular, $e_{J_v}, e_{J_\omega}$, SVD escalado. & Criterio $J$/rango explícito. & \texttt{NO-GO} físico por sí misma \\ \hline
+\textbf{G01} & G & $\mathbf{q}_i, \mathbf{q}_f$, límites documentados y $T$. & Perfil LSPB y pruebas de fronteras/continuidad. & \texttt{LSPB\_VALIDO\_OFFLINE} & \texttt{NO-GO} físico por sí misma \\ \hline
+\textbf{G02} & G & Interfaz y \texttt{GO} físico verificados. & Aceptación controlador y \textit{tracking} sincronizado. & Aceptado / ejecutado verificado. & \textbf{\texttt{GO} específico} \\ \hline
+\end{tabularx}\par
+\endgroup
+
+\newpage
+\section*{2. Hoja de Registro de Aceptación por Equipo (Plantilla Operativa)}
+
+\noindent\textbf{Equipo:} \rule{3.5cm}{0.15mm} \hfill
+\textbf{Versión Criterios:} \rule{3.5cm}{0.15mm} \hfill
+\textbf{Fecha:} \rule{3.5cm}{0.15mm} \hfill
+\textbf{Revisor Docente:} \rule{4.5cm}{0.15mm}
+
+\vspace{0.2cm}
+\begingroup
+\tiny
+\setlength{\tabcolsep}{2.5pt}
+\renewcommand{\arraystretch}{1.6}
+% 9 columnas X: 0.90 + 0.90 + 1.00 + 0.95 + 1.05 + 1.00 + 0.95 + 1.15 + 1.10 = 9.00
+\noindent\begin{tabularx}{\textwidth}{|l|c|l|>{\hsize=0.90\hsize\raggedright\arraybackslash}X|>{\hsize=0.90\hsize\raggedright\arraybackslash}X|>{\hsize=1.00\hsize\raggedright\arraybackslash}X|>{\hsize=0.95\hsize\raggedright\arraybackslash}X|>{\hsize=1.05\hsize\raggedright\arraybackslash}X|>{\hsize=1.00\hsize\raggedright\arraybackslash}X|>{\hsize=0.95\hsize\raggedright\arraybackslash}X|>{\hsize=1.15\hsize\raggedright\arraybackslash}X|>{\hsize=1.10\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{ID Ensayo} & \textbf{Etapa} & \textbf{Ver.} & \textbf{Precondiciones} & \textbf{Fuente / Doc.} & \textbf{Prueba y Métrica} & \textbf{Umbral / Ver. Crit.} & \textbf{Resultado (Uds.)} & \textbf{Evidencia / Ruta} & \textbf{Estado Prueba} & \textbf{Resp. / Revisor / Sig. Decisión} & \textbf{GO / NO-GO (Autoridad Lab.)} \\ \hline
+A01- & A & & & & & & & & & & \texttt{NO-GO} \\[0.35cm] \hline
+B01- & B & & & & & & & & & & \texttt{NO-GO} \\[0.35cm] \hline
+C01- & C & & & & & & & & & & \texttt{NO-GO} \\[0.35cm] \hline
+D00- & D & & & & & & & & & & \texttt{NO-GO} \\[0.35cm] \hline
+D01- & D & & & & & & & & & & \texttt{[GO / NO-GO]} \\[0.35cm] \hline
+E01- & E & & & & & & & & & & \texttt{NO-GO} \\[0.35cm] \hline
+F01- & F & & & & & & & & & & \texttt{NO-GO} \\[0.35cm] \hline
+G01- & G & & & & & & & & & & \texttt{NO-GO} \\[0.35cm] \hline
+G02- & G & & & & & & & & & & \texttt{[GO / NO-GO]} \\[0.35cm] \hline
+\end{tabularx}\par
+\endgroup
+
+\vspace{0.3cm}
+\begin{tcolorbox}[colback=red!5, colframe=red!80!black, title=\textbf{Bloque de Firmas Independientes (Vacío por Defecto — Este Documento No Concede Permiso de Movimiento)}, left=2.5mm, right=2.5mm, top=1.5mm, bottom=1.5mm]
+    \footnotesize\raggedright
+    \textbf{1. Revisión Docente (Alcance Académico Exclusivamente):} \rule{6.5cm}{0.15mm} \hfill \textbf{Fecha:} \rule{3cm}{0.15mm}\\[0.28cm]
+    \textbf{2. Autoridad de Seguridad / \texttt{GO} del Laboratorio:} \rule{6.8cm}{0.15mm} \hfill \textbf{ID Aprobación:} \rule{3.5cm}{0.15mm}\\[0.28cm]
+    \textbf{3. Ventana Temporal y Condiciones Específicas del Ensayo Autorizado:} \rule{11.5cm}{0.15mm}\\[0.28cm]
+    \textbf{4. Registro de Revocación / Incidencia / Aborto:} \rule{13.5cm}{0.15mm}
+\end{tcolorbox}
+
+\end{document}

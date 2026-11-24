@@ -1,0 +1,174 @@
+\documentclass[10.5pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage[table, xcdraw]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{amsmath, amssymb}
+\usepackage[most]{tcolorbox}
+\usepackage{listings}
+\usepackage[margin=1.9cm]{geometry}
+\usepackage{fancyhdr}
+
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    backgroundcolor=\color{gray!5},
+    frame=single,
+    rulecolor=\color{gray!40},
+    showstringspaces=false,
+    breaklines=true,
+    breakatwhitespace=false,
+    columns=flexible,
+    literate=
+      {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+      {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+      {ñ}{{\~n}}1 {Ñ}{{\~N}}1
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\textbf{IMT-342} $\mid$ Robótica}
+\chead{Esquema de Resultados Reproducibles — Hito 3}
+\rhead{Contratos de Datos y Código Offline}
+\lfoot{Evidencia Trazable y Reproducible}
+\rfoot{Página \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{\textcolor{ucbblue}{Esquema de Resultados Reproducibles, Contratos CSV y Referencia Offline (Hito 3)}}
+\end{center}
+
+\section{Estructura Propuesta del Repositorio de Evidencias}
+Todo equipo debe organizar sus datos brutos, resultados, scripts y aprobaciones reales bajo una jerarquía reproducible. Si una magnitud no existe o no fue ejecutada, registrar \texttt{NA} junto con su razón en la bitácora; \textbf{nunca sustituir datos ausentes por cero}.
+
+\begin{lstlisting}
+hito3_evidence/
+  README.md                   # Pasos exactos de ejecucion y versiones de entorno
+  manifest.yaml               # Metadatos obligatorios del ensayo (ver Seccion 3)
+  tests/
+    A01_inventory.csv         # Inventario de controlador, RobotWare, ROS, URDF
+    B01_joint_states.csv      # Lecturas pasivas de 6 juntas (3 estados estacionarios)
+    C01_fk.csv                # Comparaciones FK (ep, eR y casos sinteticos de diagnostico)
+    E01_ik.csv                # Ramas IK candidatas, limites y residuos FK
+    F01_jacobian.csv          # Errores eJv, eJw, convergencia FD y SVD escalado
+    G01_lspb.csv              # Perfil LSPB offline, fronteras y extremos analiticos
+    D00_command_review.csv    # Revision de contrato de interfaz y acuse/rechazo sin mov.
+    D01_tracking.csv          # SOLAMENTE si hubo ejecucion fisica autorizada (GO)
+  scripts/                    # Codigos reproducibles versionados (offline)
+  logs/                       # Archivos brutos de consola, red y eventos de error
+  figures/                    # Graficas generadas desde los CSV anteriores
+  approvals/                  # Exclusivamente autorizaciones GO emitidas realmente
+\end{lstlisting}
+
+\section{Esquemas CSV Expandidos sin Ambigüedad}
+Los vectores no deben empaquetarse en una sola celda con corchetes; en CSV deben expandirse explícitamente a columnas escalares numeradas. Las marcas temporales deben escribirse en formato \texttt{ISO8601} con desplazamiento horario o como tiempo monotónico declarando dominio y origen. Las orientaciones deben declararse en matriz de rotación o cuaternión especificando el orden (\texttt{xyzw} vs. \texttt{wxyz}). No inventar \texttt{source\_feedback} si se desconoce.
+
+\subsection{Esquema \texttt{B01\_joint\_states.csv} (Estado Articular — Etapa B)}
+\begin{lstlisting}
+test_id,source,sample_index,timestamp_source,clock_domain,timestamp_receive,joint_name_1,joint_name_2,joint_name_3,joint_name_4,joint_name_5,joint_name_6,q_actual_1,q_actual_2,q_actual_3,q_actual_4,q_actual_5,q_actual_6,units,controller_state,flags,provenance_file
+\end{lstlisting}
+
+\subsection{Esquema \texttt{D01\_tracking.csv} (Consigna y Seguimiento — Solo si Autorizado)}
+\begin{lstlisting}
+test_id,timestamp,clock_domain,q_ref_1,q_ref_2,q_ref_3,q_ref_4,q_ref_5,q_ref_6,q_actual_1,q_actual_2,q_actual_3,q_actual_4,q_actual_5,q_actual_6,pose_ref_px,pose_ref_py,pose_ref_pz,pose_ref_rot_repr,pose_actual_px,pose_actual_py,pose_actual_pz,pose_actual_rot_repr,base_frame,tcp_id,source_command,source_feedback,ack_status,execution_status,safety_go_id,flags,pos_units,ang_units
+\end{lstlisting}
+
+\section{Plantilla Mínima de \texttt{manifest.yaml}}
+\begin{lstlisting}
+project: IMT-342_Hito3
+team: null
+test_id: null
+date: null                     # ISO8601
+robot_controller_robotware:
+  robot_model: ABB_IRB120
+  controller_model: null       # ej. IRC5 (verificar localmente)
+  robotware_version: null
+  options_verified: []
+ros_driver_commit:
+  ros_distro: null
+  driver_repo_commit: null
+urdf_hash: null
+dh_parameters_version: null
+frames:
+  base_frame: null
+  flange_frame: null
+  tcp_frame: null
+joints:
+  joint_order: []
+  signs: []
+  offsets: []
+units:
+  position: m
+  angle: rad
+  angular_velocity: rad/s
+timebase:
+  clock_domain: null
+  synchronization_method: null
+reference_source_independence:
+  reference_name: null
+  independent_of_own_urdf: null
+thresholds_version_approval:
+  criteria_version: null
+  approval_status: pending
+safety_status: NO-GO
+data_file_hashes: {}
+operator_reviewer:
+  operator: null
+  reviewer: null
+known_limitations: []
+\end{lstlisting}
+
+\section{Código Didáctico de Referencia Offline (Modelo Sintético 2R — No ABB)}
+\begin{tcolorbox}[colback=yellow!10, colframe=orange!85!black, left=2mm, right=2mm, top=1mm, bottom=1mm]
+    \footnotesize\raggedright
+    \textbf{Alcance estricto:} Este script utiliza Python 3 y \texttt{numpy} exclusivamente para referencia didáctica offline sobre un mecanismo planar 2R sintético. No implementa APIs de ROS ni control físico, ni constituye un validador final del ABB IRB120.
+\end{tcolorbox}
+
+\begin{lstlisting}[language=Python]
+import numpy as np
+
+a1, a2 = 1.0, 0.5  # modelo sintetico, NO ABB
+q = np.array([np.pi / 6, -np.pi / 4])
+qd = np.array([0.1, -0.2])
+
+def fk_2r(x):
+    u, v = x
+    return np.array([a1*np.cos(u) + a2*np.cos(u + v),
+                     a1*np.sin(u) + a2*np.sin(u + v)])
+
+def jac_2r(x):
+    u, v = x
+    return np.array([
+        [-a1*np.sin(u) - a2*np.sin(u + v), -a2*np.sin(u + v)],
+        [ a1*np.cos(u) + a2*np.cos(u + v),  a2*np.cos(u + v)],
+    ])
+
+J = jac_2r(q)
+print("p:", fk_2r(q))
+print("J:", J)
+print("v:", J @ qd)
+
+for h in (1e-2, 1e-3, 1e-4, 1e-5, 1e-6):
+    eye = np.eye(2)
+    J_fd = np.column_stack([
+        (fk_2r(q + h*eye[j]) - fk_2r(q - h*eye[j])) / (2*h)
+        for j in range(2)
+    ])
+    print("h:", h, "eJv_F:", np.linalg.norm(J - J_fd, ord="fro"))
+\end{lstlisting}
+
+\noindent\textbf{Validación analítica esperada:} $p \approx [1.34898832,\; 0.37059048]^T\;\mathrm{m}$, $J \approx \begin{bmatrix} -0.37059048 & 0.12940952 \\ 1.34898832 & 0.48296291 \end{bmatrix}\;\mathrm{m/rad}$, $v \approx [-0.06294095,\; 0.03830625]^T\;\mathrm{m/s}$. Los errores numéricos \texttt{eJv\_F} deben ejecutarse y documentarse en el entorno real del estudiante con versión de Python/\texttt{numpy} registrada en bitácora.
+
+\end{document}

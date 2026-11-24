@@ -1,0 +1,347 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{positioning}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.6cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\setlength{\headheight}{16pt}
+\setlength{\emergencystretch}{2em}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{docred}{RGB}{153, 0, 0}
+\definecolor{warnbg}{RGB}{254, 246, 246}
+\definecolor{neutralbg}{RGB}{246, 248, 251}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{\textcolor{docred}{CONFIDENCIAL DOCENTE}}}
+\chead{Solucionario Analítico y Rúbrica EC2}
+\rhead{W17-S01 -- 23/11/2026}
+\cfoot{\footnotesize Página \thepage\ de \pageref{LastPage} \quad|\quad NO ADJUNTAR AL CUADERNILLO ESTUDIANTIL}
+\renewcommand{\headrulewidth}{0.7pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\textbf{\textcolor{docred}{SOLUCIONARIO ANALÍTICO Y RÚBRICA --- CONFIDENCIAL DOCENTE}}}\\[0.08cm]
+    {\normalsize IMT-221: Circuitos Electrónicos II $\cdot$ Evaluación Escrita Individual EC2 $\cdot$ 23/11/2026}
+\end{center}
+
+\begin{tcolorbox}[colback=warnbg, colframe=docred, title=\textbf{Reglas de Corrección, Puntaje Parcial y Dictamen de Alcance}]
+    \footnotesize
+    \begin{itemize}
+        \setlength{\itemsep}{2pt}
+        \item \textbf{Puntaje parcial:} Valorar el método correcto aunque exista un error aritmético propagado; no duplicar penalización por un mismo error; exigir unidades cuando forman parte del criterio; aceptar caminos algebraicos equivalentes con supuestos consistentes. Nunca calificar resultados de banco inexistentes.
+        \item \textbf{Alcance vigente (decisión docente):} Evalúa hasta Lab 6 (P4-A si se ejerció nivel canónico; P4-B si solo nivel introductorio). Excluye PID, margen de fase de lazo de control, osciladores, clase AB, diseño térmico, Hito 3 de cuarto orden y PFI integrado.
+        \item \textbf{Escala interna:} Los 100 puntos (Versión A: 25/25/25/25; Versión B: 30/30/30/10) son internos al instrumento y \textbf{no} representan automáticamente una nueva ponderación global de EC2.
+        \item \textbf{Nota si se prohíbe calculadora:} Suministrar uniformemente $2\pi \approx 6.28$, $\log_{10}(2) \approx 0.3010$, $\log_{10}(5) \approx 0.6990$, $\sqrt{2} \approx 1.414$ y ajustar las tolerancias aritméticas en consecuencia.
+    \end{itemize}
+\end{tcolorbox}
+
+% =========================================================================
+% SOLUCIONARIO P1
+% =========================================================================
+\section*{Solucionario P1 --- Op-Amp Real (25 pts A / 30 pts B)}
+
+\textbf{Desarrollo analítico completo:}
+\begin{enumerate}
+    \renewcommand{\labelenumi}{(\alph{enumi})}
+    \setlength{\itemsep}{3pt}
+    \item \textbf{Ganancia en lazo cerrado y pico de entrada:} En la configuración no inversora idealizada con $R_f = 100\,\mathrm{k\Omega}$ y $R_g = 10\,\mathrm{k\Omega}$:
+    \begin{align}
+        A_{CL} &= 1 + \frac{R_f}{R_g} = 1 + \frac{100\,\mathrm{k\Omega}}{10\,\mathrm{k\Omega}} = 11\,\mathrm{V/V}, \\
+        V_{i,p} &= \frac{V_{o,p}}{A_{CL}} = \frac{4.0\,\mathrm{V}}{11} \approx 0.3636\,\mathrm{V} \approx 0.364\,\mathrm{V_p}.
+    \end{align}
+    \item \textbf{Ancho de banda en lazo cerrado:} Bajo el modelo dominante de un polo y $\text{noise gain} = A_{CL}$:
+    \begin{equation}
+        f_{BW} \approx \frac{f_T}{A_{CL}} = \frac{1.1 \times 10^6\,\mathrm{Hz}}{11} = 100\,\mathrm{kHz}.
+    \end{equation}
+    Como $f = 20\,\mathrm{kHz} < 100\,\mathrm{kHz}$, la frecuencia deseada está por debajo del ancho de banda estimado de pequeña señal. (Aclaración: $f < f_{BW}$ no garantiza ganancia exactamente plana ni desempeño de gran señal).
+    \item \textbf{Slew Rate requerido:} Para $v_o(t) = V_p \sin(2\pi f t)$, derivando respecto al tiempo:
+    \begin{align}
+        \frac{dv_o}{dt} &= 2\pi f V_p \cos(2\pi f t), \\
+        \mathrm{SR}_{\mathrm{req}} &= \max\left|\frac{dv_o}{dt}\right| = 2\pi f V_p = 2\pi (20 \times 10^3\,\mathrm{s^{-1}})(4.0\,\mathrm{V}) \nonumber \\
+        &= 502{,}655\,\mathrm{V/s} \approx 0.5027\,\mathrm{V/\mu s} \approx 0.503\,\mathrm{V/\mu s}.
+    \end{align}
+    Comparación: $\mathrm{SR}_{\mathrm{req}} = 0.503\,\mathrm{V/\mu s} > \mathrm{SR}_{\mathrm{disp}} = 0.40\,\mathrm{V/\mu s}$. El límite de SR se incumple.
+    \item \textbf{Excursión de salida y dictamen conjunto:} La salida solicitada oscila en $[-4.0\,\mathrm{V}, +4.0\,\mathrm{V}]$, dentro del límite lineal especificado de $\pm 7\,\mathrm{V}$ (y de los rieles $\pm 9\,\mathrm{V}$). \textbf{Dictamen:} La salida \textbf{no es viable sin distorsión de gran señal} debido a la limitación por \textit{slew rate}. Cumplir $f < f_{BW}$ no basta porque el GBW modela el comportamiento de pequeña señal, mientras que en gran señal la tasa máxima de cambio (SR) y los límites de excursión/corriente operan de manera independiente.
+    \item \textbf{Pico máximo permitido solo por SR a $20\,\mathrm{kHz}$:}
+    \begin{equation}
+        V_{p,\max,\mathrm{SR}} = \frac{\mathrm{SR}}{2\pi f} = \frac{0.40 \times 10^6\,\mathrm{V/s}}{2\pi (20 \times 10^3\,\mathrm{s^{-1}})} \approx 3.1831\,\mathrm{V} \approx 3.18\,\mathrm{V}.
+    \end{equation}
+    (Comprobación conceptual adicional: si se reduce $V_p$ a $2.0\,\mathrm{V}$, $\mathrm{SR}_{\mathrm{req}} \approx 0.251\,\mathrm{V/\mu s} < 0.40\,\mathrm{V/\mu s}$, eliminando ese impedimento sin certificar el hardware real).\\
+    \textbf{Limitaciones adicionales no descartadas por el modelo:} respuesta no perfectamente plana en banda, rango de entrada en modo común, capacidad de corriente de salida ante la carga, polos secundarios reales y efectos térmicos/dependencia con frecuencia.
+\end{enumerate}
+
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \begin{tabularx}{\textwidth}{@{}Xrr@{}}
+        \toprule
+        \textbf{Criterio de evaluación P1} & \textbf{Puntos A} & \textbf{Puntos B} \\
+        \midrule
+        (a) Ganancia en lazo cerrado $A_{CL}$ y pico de entrada $V_{i,p}$ & 5 & 6 \\
+        (b) Estimación de $f_{BW}$ por GBW y comparación con $20\,\mathrm{kHz}$ & 5 & 6 \\
+        (c) Derivación de $\mathrm{SR}_{\mathrm{req}}$, cálculo correcto y conversión a $\mathrm{V/\mu s}$ & 7 & 8 \\
+        (d) Verificación de excursión ($\pm 4\,\mathrm{V}$ vs. $\pm 7\,\mathrm{V}$) y dictamen conjunto fundamentado & 5 & 6 \\
+        (e) Cálculo de $V_{p,\max,\mathrm{SR}}$ y mención de una limitación adicional válida & 3 & 4 \\
+        \midrule
+        \textbf{Total Problema P1} & \textbf{25} & \textbf{30} \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\noindent\textbf{Errores diagnósticos frecuentes:} Confundir amplitud pico con pico a pico; omitir la conversión de $\mathrm{V/s}$ a $\mathrm{V/\mu s}$; declarar viable el circuito solo porque $f < f_{BW}$; confundir los rieles ($\pm 9\,\mathrm{V}$) con la excursión lineal garantizada ($\pm 7\,\mathrm{V}$).
+
+% =========================================================================
+% SOLUCIONARIO P2
+% =========================================================================
+\section*{Solucionario P2 --- Acondicionamiento Diferencial / In-Amp y CMRR (25 pts A / 30 pts B)}
+
+\textbf{Desarrollo analítico completo:}
+\begin{enumerate}
+    \renewcommand{\labelenumi}{(\alph{enumi})}
+    \setlength{\itemsep}{3pt}
+    \item \textbf{Señales diferencial y de modo común:}
+    \begin{align}
+        v_d &= v_+ - v_- = 1.012\,\mathrm{V} - 0.988\,\mathrm{V} = 0.024\,\mathrm{V} = 24\,\mathrm{mV}, \\
+        v_{cm} &= \frac{v_+ + v_-}{2} = \frac{1.012\,\mathrm{V} + 0.988\,\mathrm{V}}{2} = \frac{2.000\,\mathrm{V}}{2} = 1.000\,\mathrm{V}.
+    \end{align}
+    \item \textbf{Aportes individuales y salida total:}
+    \begin{align}
+        v_{o,\mathrm{dif}} &= A_d v_d = (100\,\mathrm{V/V})(0.024\,\mathrm{V}) = 2.400\,\mathrm{V}, \\
+        v_{o,\mathrm{cm}} &= A_{cm} v_{cm} = (0.020\,\mathrm{V/V})(1.000\,\mathrm{V}) = 0.020\,\mathrm{V}, \\
+        v_{o,\mathrm{off}} &= V_{\mathrm{offset}} = +0.010\,\mathrm{V}, \\
+        v_o &= 2.400\,\mathrm{V} + 0.020\,\mathrm{V} + 0.010\,\mathrm{V} = 2.430\,\mathrm{V}.
+    \end{align}
+    \item \textbf{CMRR lineal y en dB:} Con ambas ganancias en $\mathrm{V/V}$ y $A_{cm} \neq 0$:
+    \begin{align}
+        \mathrm{CMRR} &= \left|\frac{A_d}{A_{cm}}\right| = \frac{100}{0.020} = 5000, \\
+        \mathrm{CMRR}_{\mathrm{dB}} &= 20\log_{10}(5000) \approx 73.9794\,\mathrm{dB} \approx 73.98\,\mathrm{dB}.
+    \end{align}
+    \item \textbf{Perturbación de modo común:} Si $v_+' = v_+ + 0.50\,\mathrm{V}$ y $v_-' = v_- + 0.50\,\mathrm{V}$, entonces $\Delta v_d = 0\,\mathrm{V}$ y $\Delta v_{cm} = +0.50\,\mathrm{V}$. Suponiendo que el bloque permanece dentro de su régimen lineal y rango de modo común:
+    \begin{equation}
+        \Delta v_o = A_{cm}\Delta v_{cm} = (0.020\,\mathrm{V/V})(+0.50\,\mathrm{V}) = +0.010\,\mathrm{V} = +10\,\mathrm{mV}.
+    \end{equation}
+    \item \textbf{Interpretación de evidencia:} El valor $73.98\,\mathrm{dB}$ es un \textbf{resultado calculado a partir de un modelo hipotético}, no una medición física. Para declarar un CMRR medido en los In-Amp construidos por el grupo se requieren pruebas de banco verificables: esquema y tolerancias reales, inyección controlada de modo común manteniendo $v_d$ constante, instrumentación y referencia documentadas, verificación de linealidad y registro de datos experimentales.
+\end{enumerate}
+
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \begin{tabularx}{\textwidth}{@{}Xrr@{}}
+        \toprule
+        \textbf{Criterio de evaluación P2} & \textbf{Puntos A} & \textbf{Puntos B} \\
+        \midrule
+        (a) Cálculo de $v_d$ (en $\mathrm{mV}$) y $v_{cm}$ (en $\mathrm{V}$) & 5 & 6 \\
+        (b) Aportes diferencial, común y \textit{offset} desglosados + total $v_o$ & 7 & 8 \\
+        (c) Razón lineal $\mathrm{CMRR} = 5000$ y conversión correcta a $\mathrm{dB}$ ($20\log_{10}$) & 6 & 7 \\
+        (d) Estimación de $\Delta v_o = +0.010\,\mathrm{V}$ bajo hipótesis de régimen lineal & 4 & 5 \\
+        (e) Distinción explícita entre cálculo de modelo y medición física de hardware & 3 & 4 \\
+        \midrule
+        \textbf{Total Problema P2} & \textbf{25} & \textbf{30} \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\noindent\textbf{Errores diagnósticos frecuentes:} Invertir la definición de $v_d$ y $v_{cm}$; mezclar $\mathrm{mV}$ y $\mathrm{V}$ al multiplicar por $A_d$; utilizar logaritmo natural ($\ln$) o factor $10\log_{10}$ en lugar de $20\log_{10}$; afirmar que el CMRR fue ``medido''.
+
+% =========================================================================
+% SOLUCIONARIO P3
+% =========================================================================
+\section*{Solucionario P3 --- Diodo Real y Rectificación de Precisión (25 pts A / 30 pts B)}
+
+\textbf{Desarrollo analítico completo:}
+\begin{enumerate}
+    \renewcommand{\labelenumi}{(\alph{enumi})}
+    \setlength{\itemsep}{3pt}
+    \item \textbf{Picos de salida en el Circuito D (convencional):} Aplicando el modelo de umbral fijo $v_{o,D}(t) \approx \max\{v_i(t) - V_\gamma, 0\}$ con $V_\gamma = 0.45\,\mathrm{V}$:
+    \begin{itemize}
+        \item Para $V_{i,p} = 0.30\,\mathrm{V}$: $V_{o,D,\mathrm{pico}} = \max(0.30 - 0.45,\; 0) = \max(-0.15,\; 0) = \mathbf{0\,\mathrm{V}}$.
+        \item Para $V_{i,p} = 1.00\,\mathrm{V}$: $V_{o,D,\mathrm{pico}} = \max(1.00 - 0.45,\; 0) = \mathbf{0.55\,\mathrm{V}}$.
+    \end{itemize}
+    \item \textbf{Rectificación ideal y Circuito P idealizado:}
+    \begin{itemize}
+        \item Referencia ideal $v_{\mathrm{ref}} = \max(v_i, 0)$: picos de $\mathbf{0.30\,\mathrm{V}}$ y $\mathbf{1.00\,\mathrm{V}}$.
+        \item Circuito P idealizado (lazo cerrado válido en semiciclo positivo): picos de $\mathbf{0.30\,\mathrm{V}}$ y $\mathbf{1.00\,\mathrm{V}}$.
+    \end{itemize}
+    \item \textbf{Tabla de estados del Circuito P (superdiodo no inversor):}
+    \begin{center}
+        \footnotesize
+        \renewcommand{\arraystretch}{1.35}
+        \begin{tabularx}{\textwidth}{@{}c c c l X@{}}
+            \toprule
+            \textbf{Entrada} & \textbf{Estado diodo $D$} & \textbf{Estado del lazo} & \textbf{Salida $v_{o,P}$} & \textbf{Tendencia de la salida interna $v_a$} \\
+            \midrule
+            $v_i > 0$ & Conduce (ON) & Cerrado (realim. neg.) & $v_{o,P} \approx v_i$ & Se eleva sobre $v_{o,P}$ aprox. una caída de diodo: $v_a \approx v_{o,P} + v_D$. \\
+            $v_i < 0$ & Bloqueado (OFF) & Abierto & $v_{o,P} \approx 0\,\mathrm{V}$ (por $R_L$) & Impulsada hacia el límite negativo / saturación (según modelo real). \\
+            \bottomrule
+        \end{tabularx}
+    \end{center}
+    \item \textbf{Invalidez de $v_+ \approx v_-$ en todo el período:} La aproximación de cortocircuito virtual exige una trayectoria activa de realimentación negativa. Cuando $v_i < 0$, el diodo queda en polarización inversa y abre físicamente el lazo entre $v_a$ y $v_{o,P}$ ($v_-$), por lo que el op-amp no puede igualar $v_-$ a $v_+$.
+    \item \textbf{Limitación física y alcance de $V_\gamma = 0.45\,\mathrm{V}$:} Limitaciones físicas válidas para el circuito P incluyen \textbf{saturación interna de $v_a$ y tiempo de recuperación} al cruzar por cero, SR finito, GBW finito, rango de entrada en modo común o excursión de salida limitada (especialmente con fuentes simples o dispositivos no \textit{rail-to-rail}). El valor $0.45\,\mathrm{V}$ no es una propiedad universal porque la tensión directa real depende del tipo de semiconductor, fabricante, corriente de conducción y temperatura (curva exponencial continua).
+\end{enumerate}
+
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \begin{tabularx}{\textwidth}{@{}Xrr@{}}
+        \toprule
+        \textbf{Criterio de evaluación P3} & \textbf{Puntos A} & \textbf{Puntos B} \\
+        \midrule
+        (a) Cálculo de picos del rectificador convencional D ($0\,\mathrm{V}$ y $0.55\,\mathrm{V}$) & 5 & 6 \\
+        (b) Picos de rectificación ideal y del circuito P idealizado ($0.30\,\mathrm{V}$ y $1.00\,\mathrm{V}$) & 5 & 6 \\
+        (c) Tabla de estados completa para $v_i > 0$ y $v_i < 0$ (diodo, lazo, $v_{o,P}$, $v_a$) & 8 & 10 \\
+        (d) Justificación física de por qué falla $v_+ \approx v_-$ en lazo abierto & 4 & 5 \\
+        (e) Una limitación física relevante del circuito P + crítica al umbral universal $0.45\,\mathrm{V}$ & 3 & 3 \\
+        \midrule
+        \textbf{Total Problema P3} & \textbf{25} & \textbf{30} \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\noindent\textbf{Errores diagnósticos frecuentes:} Invertir la orientación del diodo; asumir realimentación cerrada durante el semiciclo negativo; equiparar el superdiodo real con un rectificador ideal sin restricciones; tratar $0.45\,\mathrm{V}$ (o $0.7\,\mathrm{V}$) como constante física universal.
+
+% =========================================================================
+% SOLUCIONARIO P4-A (SOLO VERSION A)
+% =========================================================================
+\section*{Solucionario P4-A --- Filtro de Segundo Orden (25 pts, SOLO Versión A)}
+
+\textbf{Desarrollo analítico completo:}
+\begin{enumerate}
+    \renewcommand{\labelenumi}{(\alph{enumi})}
+    \setlength{\itemsep}{3pt}
+    \item \textbf{Identificación de parámetros:} Comparando $H(s) = \dfrac{100}{s^2 + 20s + 100}$ con $H(s) = \dfrac{K\omega_0^2}{s^2 + (\omega_0/Q)s + \omega_0^2}$:
+    \begin{align}
+        \omega_0^2 &= 100\,\mathrm{(rad/s)^2} \implies \omega_0 = 10\,\mathrm{rad/s}, \\
+        f_0 &= \frac{\omega_0}{2\pi} = \frac{10}{2\pi} \approx 1.59155\,\mathrm{Hz} \approx 1.592\,\mathrm{Hz}, \\
+        K\omega_0^2 &= 100 \implies K = \frac{100}{100} = 1\;\text{(adimensional / }\mathrm{V/V}\text{)}, \\
+        \frac{\omega_0}{Q} &= 20\,\mathrm{rad/s} \implies Q = \frac{10}{20} = 0.5\;\text{(adimensional)}.
+    \end{align}
+    \item \textbf{Evaluación en $\omega = \omega_0 = 10\,\mathrm{rad/s}$:} Sustituyendo $s = j\omega_0 = j10$:
+    \begin{align}
+        H(j10) &= \frac{100}{(j10)^2 + 20(j10) + 100} = \frac{100}{-100 + j200 + 100} = \frac{100}{j200} = -j0.5, \\
+        |H(j10)| &= 0.5\,\mathrm{V/V}\; (= KQ), \\
+        G_{\mathrm{dB}}(\omega_0) &= 20\log_{10}(0.5) \approx -6.0206\,\mathrm{dB} \approx -6.02\,\mathrm{dB}, \\
+        \varphi(\omega_0) &= \arg(-j0.5) = -90^\circ \quad \text{(convención principal)}.
+    \end{align}
+    \item \textbf{Comparación entre $f_0$ y $f_{-3\mathrm{dB}}$:} \textbf{No coinciden.} En $f_0$ la magnitud ya cayó a $-6.02\,\mathrm{dB}$ (en vez de $-3.01\,\mathrm{dB}$). Con $x = \omega/\omega_0$, para $K=1$ y $Q=0.5$:
+    \begin{equation}
+        |H(jx)| = \frac{1}{\sqrt{(1-x^2)^2 + (2x)^2}} = \frac{1}{\sqrt{1 - 2x^2 + x^4 + 4x^2}} = \frac{1}{\sqrt{(1+x^2)^2}} = \frac{1}{1+x^2}.
+    \end{equation}
+    Igualando a $1/\sqrt{2}$ (punto $-3.0103\,\mathrm{dB}$):
+    \begin{equation}
+        \frac{1}{1+x^2} = \frac{1}{\sqrt{2}} \implies x = \sqrt{\sqrt{2}-1} \approx 0.6436 \implies f_{-3\mathrm{dB}} \approx 0.6436 \times 1.59155\,\mathrm{Hz} \approx 1.0245\,\mathrm{Hz}.
+    \end{equation}
+    \item \textbf{Comparación con Butterworth:} Un filtro Butterworth de segundo orden requiere $Q_B = 1/\sqrt{2} \approx 0.7071$. Como aquí $Q = 0.5 < 0.7071$, esta sección \textbf{no es Butterworth} (posee dos polos reales coincidentes y mayor atenuación alrededor de $f_0$).
+    \item \textbf{Sección vs. sistema Hito 3:} Caracterizar una sección de segundo orden no demuestra el Hito 3 porque este exige una cascada de cuarto orden (evaluando interacción de cargas/impedancias entre etapas, donde $H_{\mathrm{tot}} = H_1 H_2$ solo vale si no hay carga mutua significativa), preservación de la banda útil y verificación física medida del rechazo a $50\,\mathrm{Hz}$.
+\end{enumerate}
+
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \begin{tabularx}{\textwidth}{@{}Xr@{}}
+        \toprule
+        \textbf{Criterio de evaluación P4-A (Solo Versión A)} & \textbf{Puntos} \\
+        \midrule
+        (a) Identificación de $K$, $\omega_0$, $f_0$ y $Q$ con unidades & 8 \\
+        (b) Evaluación de $H(j\omega_0)$, magnitud, ganancia en $\mathrm{dB}$ y fase & 8 \\
+        (c) Argumento válido sobre $f_{-3\mathrm{dB}} \neq f_0$ (cálculo de $f_{-3\mathrm{dB}}$ o $-6.02\,\mathrm{dB}$ en $f_0$) & 4 \\
+        (d) Comparación explícita de $Q = 0.5$ frente a $Q_B = 1/\sqrt{2} \approx 0.707$ & 2 \\
+        (e) Diferencia entre sección de 2.\textsuperscript{o} orden y sistema/medición de Hito 3 (4.\textsuperscript{o} orden / $50\,\mathrm{Hz}$) & 3 \\
+        \midrule
+        \textbf{Total Problema P4-A} & \textbf{25} \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\noindent\textbf{Errores diagnósticos frecuentes:} Reportar $f_0 = 10\,\mathrm{Hz}$ sin dividir por $2\pi$; asumir $|H(j\omega_0)| = K$; equiparar $Q=0.5$ con Butterworth; confundir la fase del filtro con el margen de fase de un controlador PID (excluido).
+
+% --- VISUAL 5: GRAFICA BODE DOCENTE OPCIONAL ---
+\begin{center}
+    \begin{tikzpicture}[>=stealth]
+        \begin{axis}[
+            xmode=log,
+            xmin=0.1, xmax=10,
+            ymin=-42, ymax=4,
+            xlabel={Frecuencia normalizada $x = f / f_0$},
+            ylabel={Ganancia $G_{\mathrm{dB}}$ [dB]},
+            grid=both,
+            width=12cm,
+            height=5.4cm,
+            title={\small Visual 5 (Solo Docente): Bode Teórico de Magnitud para $K=1,\; Q=0.5$},
+            legend pos=south west,
+            legend style={font=\scriptsize}
+        ]
+        % Curva Q = 0.5 -> |H| = 1/(1+x^2) -> G_dB = -20*log10(1+x^2)
+        \addplot[ucbblue, very thick, samples=120, domain=0.1:10] {-20*log10(1 + x^2)};
+        \addlegendentry{Modelo teórico $Q=0.5$ ($|H|=1/(1+x^2)$)}
+        % Lineas de referencia -3.01 dB y -6.02 dB
+        \addplot[docred, dashed, domain=0.1:10] {-3.0103};
+        \addplot[black!60, dotted, thick, domain=0.1:10] {-6.0206};
+        % Marcadores verticales f_-3dB y f_0
+        \draw[docred, dashed] (axis cs:0.6436, -42) -- (axis cs:0.6436, -3.0103);
+        \draw[black!70, dotted, thick] (axis cs:1.0, -42) -- (axis cs:1.0, -6.0206);
+        % Puntos y etiquetas
+        \node[circle, fill=docred, inner sep=1.6pt] at (axis cs:0.6436, -3.0103) {};
+        \node[circle, fill=ucbblue, inner sep=1.6pt] at (axis cs:1.0, -6.0206) {};
+        \node[below left, font=\scriptsize, text=docred] at (axis cs:0.64, -3.5) {$f_{-3\mathrm{dB}} \approx 0.644\,f_0$ ($-3.01\,\mathrm{dB}$)};
+        \node[above right, font=\scriptsize, text=ucbblue] at (axis cs:1.02, -6.2) {$f_0$ ($-6.02\,\mathrm{dB}$)};
+        \end{axis}
+    \end{tikzpicture}
+    \\[0.05cm]
+    {\scriptsize\textit{Referencia de lectura:} Para P4-A ($f_0 \approx 1.592\,\mathrm{Hz}$), $f_{-3\mathrm{dB}} \approx 1.024\,\mathrm{Hz}$. Para P4-B ($f_0 = 10\,\mathrm{Hz}$), $f_{-3\mathrm{dB}} \approx 6.44\,\mathrm{Hz}$.}
+\end{center}
+
+% =========================================================================
+% SOLUCIONARIO P4-B (SOLO VERSION B)
+% =========================================================================
+\section*{Solucionario P4-B --- Interpretación Básica (10 pts, SOLO Versión B)}
+
+\textbf{Desarrollo analítico completo:}
+\begin{enumerate}
+    \renewcommand{\labelenumi}{(\alph{enumi})}
+    \setlength{\itemsep}{3pt}
+    \item \textbf{Banda pasante y tendencia:} En bajas frecuencias ($f \ll f_0$, p. ej. $1\,\mathrm{Hz}$) el filtro opera en banda pasante con ganancia aproximada de $1\,\mathrm{V/V}$ ($0\,\mathrm{dB}$). A frecuencias altas ($f \gg f_0$), la magnitud presenta atenuación creciente (comportamiento pasa-bajos).
+    \item \textbf{Conversión a decibelios:}
+    \begin{equation}
+        G_{\mathrm{dB}}(f_0) = 20\log_{10}(0.50) \approx -6.0206\,\mathrm{dB} \approx -6.02\,\mathrm{dB}.
+    \end{equation}
+    \item \textbf{Distinción entre $f_0$ y $f_{-3\mathrm{dB}}$ + requisitos de medición física:} Como con $Q = 0.5$ la ganancia en $f_0 = 10\,\mathrm{Hz}$ ya es de $-6.02\,\mathrm{dB}$, la caída de $-3\,\mathrm{dB}$ ocurre a una frecuencia inferior a $10\,\mathrm{Hz}$; por tanto, no se debe etiquetar automáticamente $f_0$ como frecuencia de corte a $-3\,\mathrm{dB}$. Para afirmar que se midió el desempeño físico hacen falta: identificación del circuito real y modelo de CI, fuente/estímulo lineal, nodos medidos, rieles de alimentación, instrumentación, condiciones de carga y registros experimentales reales.
+\end{enumerate}
+
+\begin{table}[htbp]
+    \centering
+    \footnotesize
+    \begin{tabularx}{\textwidth}{@{}Xr@{}}
+        \toprule
+        \textbf{Criterio de evaluación P4-B (Solo Versión B)} & \textbf{Puntos} \\
+        \midrule
+        (a) Identificación correcta de banda pasante y tendencia de atenuación a alta frecuencia & 3 \\
+        (b) Conversión correcta de $0.50\,\mathrm{V/V}$ a $-6.02\,\mathrm{dB}$ & 3 \\
+        (c) Justificación de $f_0 \neq f_{-3\mathrm{dB}}$ y requisitos mínimos de evidencia física medida & 4 \\
+        \midrule
+        \textbf{Total Problema P4-B} & \textbf{10} \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\noindent\textbf{Errores diagnósticos frecuentes:} Confundir $0.50\,\mathrm{V/V}$ (lineal) con $-0.5\,\mathrm{dB}$; interpretar el valor teórico ilustrativo del enunciado como si fuese una medición de laboratorio.
+
+\end{document}
