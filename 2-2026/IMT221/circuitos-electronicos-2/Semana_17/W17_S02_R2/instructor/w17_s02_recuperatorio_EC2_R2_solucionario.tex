@@ -1,0 +1,241 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.6cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\setlength{\headheight}{16pt}
+\setlength{\emergencystretch}{2em}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{docred}{RGB}{153, 0, 0}
+\definecolor{warnbg}{RGB}{254, 246, 246}
+\definecolor{neutralbg}{RGB}{246, 248, 251}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{\textcolor{docred}{CONFIDENCIAL DOCENTE}}}
+\chead{Solucionario Analítico y Rúbrica EC2 --- Versión R2}
+\rhead{W17-S02 -- 25/11/2026}
+\cfoot{\footnotesize Página \thepage\ de \pageref{LastPage} \quad|\quad NO ADJUNTAR AL CUADERNILLO ESTUDIANTIL}
+\renewcommand{\headrulewidth}{0.7pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\textbf{\textcolor{docred}{SOLUCIONARIO ANALÍTICO Y RÚBRICA --- CONFIDENCIAL DOCENTE}}}\\[0.08cm]
+    {\normalsize IMT-221: Circuitos Electrónicos II $\cdot$ Recuperatorio 2 EC2 (Versión R2) $\cdot$ 25/11/2026}
+\end{center}
+
+\begin{tcolorbox}[colback=warnbg, colframe=docred, title=\textbf{Política de Corrección, Puntaje Parcial y Control de Difusión}]
+    \footnotesize
+    \begin{itemize}
+        \setlength{\itemsep}{2pt}
+        \item \textbf{Control de difusión:} No incorporar al cuadernillo estudiantil ni compartir antes de aplicar R2. Todas las soluciones corresponden a datos hipotéticos; no son resultados medidos.
+        \item \textbf{Escala interna:} Total $25 + 25 + 25 + 25 = 100$ puntos internos del instrumento; no se define aquí el peso final de EC2.
+        \item \textbf{Métodos y puntaje parcial:} Aceptar métodos matemáticos equivalentes y razonamientos correctos con aproximaciones de redondeo razonables; diferenciar errores de modelado, conversiones de unidades, aritmética y justificación.
+        \item \textbf{No doble penalización:} Cuando un valor incorrecto calculado en un inciso se reutilice de manera coherente en incisos posteriores, evitar penalizaciones repetidas por la misma causa y conservar crédito por el método posterior.
+        \item \textbf{Integridad experimental:} Nunca inferir mediciones físicas a partir de tablas y modelos ficticios.
+    \end{itemize}
+\end{tcolorbox}
+
+% =========================================================================
+% SOLUCIÓN P1 (25 pts)
+% =========================================================================
+\section*{Solución P1 --- Diagnóstico de un acondicionador inversor (25 puntos)}
+
+\textbf{Datos:} $R_{\mathrm{in}} = 10\,\mathrm{k\Omega}$, $R_f = 40\,\mathrm{k\Omega}$, $V_{i,p} = 0.80\,\mathrm{V_p}$, $f_T = 1.0\,\mathrm{MHz}$, $\mathrm{SR} = 0.60\,\mathrm{V/\mu s}$, alimentación $\pm 6\,\mathrm{V}$, excursión lineal $\pm 3.5\,\mathrm{V}$, casos A ($10\,\mathrm{kHz}$) y B ($40\,\mathrm{kHz}$).
+
+\begin{enumerate}
+    \setlength{\itemsep}{2pt}
+    \item \textbf{Ganancia de señal, ganancia de ruido y amplitud de salida ideal:}
+    \begin{equation}
+        A_v = -\frac{R_f}{R_{\mathrm{in}}} = -\frac{40\,\mathrm{k\Omega}}{10\,\mathrm{k\Omega}} = -4, \qquad
+        \mathrm{NG} = 1 + \frac{R_f}{R_{\mathrm{in}}} = 1 + 4 = 5, \qquad
+        V_{o,p} = |{-4}| \times 0.80\,\mathrm{V_p} = 3.20\,\mathrm{V_p} \;\text{(invertida)}.
+    \end{equation}
+    \item \textbf{Ancho de banda estimado y comparación:}
+    \begin{equation}
+        f_{BW} \approx \frac{f_T}{\mathrm{NG}} = \frac{1.0\,\mathrm{MHz}}{5} = 200\,\mathrm{kHz}.
+    \end{equation}
+    Ambas frecuencias están por debajo: $10\,\mathrm{kHz} < 200\,\mathrm{kHz}$ y $40\,\mathrm{kHz} < 200\,\mathrm{kHz}$.
+    \item \textbf{Slew rate mínimo para A y B:} $\mathrm{SR}_{\mathrm{req}} = 2\pi f V_p$:
+    \begin{align}
+        \mathrm{SR}_{\mathrm{req,A}} &= 2\pi(10^{4}\,\mathrm{Hz})(3.20\,\mathrm{V}) \approx 201\,061.9\,\mathrm{V/s} \approx 0.20106\,\mathrm{V/\mu s}, \\
+        \mathrm{SR}_{\mathrm{req,B}} &= 2\pi(4\times 10^{4}\,\mathrm{Hz})(3.20\,\mathrm{V}) \approx 804\,247.7\,\mathrm{V/s} \approx 0.80425\,\mathrm{V/\mu s}.
+    \end{align}
+    \item \textbf{Evaluación conjunta:}
+    \begin{itemize}
+        \setlength{\itemsep}{1pt}
+        \item \textit{Excursión:} $3.20\,\mathrm{V_p} < 3.5\,\mathrm{V_p}$ (cumplen ambos; $\pm 6\,\mathrm{V}$ son rieles, no excursión lineal).
+        \item \textit{Ancho de banda estimado:} ambos por debajo de $200\,\mathrm{kHz}$.
+        \item \textit{Slew rate:} A ($0.201 < 0.600\,\mathrm{V/\mu s}$) cumple; B ($0.804 > 0.600\,\mathrm{V/\mu s}$) incumple.
+        \item \textit{Dictamen:} Solo \textbf{A} supera simultáneamente los tres chequeos. El cálculo aproximado de $f_{BW}$ no garantiza error de ganancia nulo ni excluye límites de carga, corriente o modo común.
+    \end{itemize}
+    \item \textbf{Frecuencia máxima permitida solo por SR:}
+    \begin{equation}
+        f_{\max,\mathrm{SR}} = \frac{\mathrm{SR}}{2\pi V_p} = \frac{0.60\times 10^{6}\,\mathrm{V/s}}{2\pi(3.20\,\mathrm{V})} \approx 29\,841.6\,\mathrm{Hz} \approx 29.84\,\mathrm{kHz}.
+    \end{equation}
+    Es un límite por SR \textbf{aislado}, no un máximo garantizado en circuito real.
+\end{enumerate}
+
+\vspace{3pt}\noindent{\footnotesize
+\begin{tabularx}{\textwidth}{@{}l r X@{}}
+    \toprule
+    \textbf{Criterio P1} & \textbf{Pts} & \textbf{Regla de puntaje parcial} \\
+    \midrule
+    1. $A_v$, $\mathrm{NG}$ y $V_{o,p}$ & 6 & $A_v$ con signo (2), $\mathrm{NG}$ (2), pico y signo físico (2) \\
+    2. $f_{BW}$ y comparaciones & 4 & Estimación (2), comparaciones A y B (2) \\
+    3. $\mathrm{SR}_{\mathrm{req}}$ en A y B & 6 & Ecuación y conversión (2), cada resultado (2 + 2) \\
+    4. Dictamen conjunto y reserva & 5 & Excursión (1), dictamen A/B (3), reserva razonada (1) \\
+    5. $f_{\max,\mathrm{SR}}$ & 4 & Fórmula (2), cálculo y unidad (2) \\
+    \midrule
+    \textbf{Total P1} & \textbf{25} & \\
+    \bottomrule
+\end{tabularx}}\vspace{3pt}
+
+\noindent{\footnotesize\textbf{Errores diagnósticos:} usar $\mathrm{NG}=4$ en BW; invertir criterio SR; tratar $\pm 6\,\mathrm{V}$ como excursión lineal; confundir $0.8\,\mathrm{V_p}$ con $0.8\,\mathrm{V_{pp}}$; considerar A como verificación de exactitud ideal.}
+
+% =========================================================================
+% SOLUCIÓN P2 (25 pts)
+% =========================================================================
+\section*{Solución P2 --- Identificación de un In-Amp mediante dos ensayos (25 puntos)}
+
+\begin{enumerate}
+    \setlength{\itemsep}{2pt}
+    \item \textbf{$v_d$ y $v_{cm}$ por ensayo:}
+    \begin{itemize}
+        \setlength{\itemsep}{1pt}
+        \item \textit{Ensayo D:} $v_d = (+0.005) - (-0.005) = +0.010\,\mathrm{V} = 10\,\mathrm{mV}$; $v_{cm} = (+0.005 - 0.005)/2 = 0\,\mathrm{V}$.
+        \item \textit{Ensayo C:} $v_d = 1.00 - 1.00 = 0\,\mathrm{V}$; $v_{cm} = (1.00 + 1.00)/2 = +1.00\,\mathrm{V}$.
+    \end{itemize}
+    \item \textbf{Identificación de $A_d$ y $A_{cm}$:} en D ($v_{cm}=0$), $v_o = A_d v_d$; en C ($v_d=0$), $v_o = A_{cm} v_{cm}$:
+    \begin{equation}
+        A_d = \frac{1.20\,\mathrm{V}}{0.010\,\mathrm{V}} = 120\,\mathrm{V/V}, \qquad
+        A_{cm} = \frac{0.012\,\mathrm{V}}{1.00\,\mathrm{V}} = 0.012\,\mathrm{V/V}.
+    \end{equation}
+    \item \textbf{CMRR lineal y en dB:}
+    \begin{equation}
+        \mathrm{CMRR} = \left|\frac{A_d}{A_{cm}}\right| = \frac{120}{0.012} = 10\,000, \qquad
+        \mathrm{CMRR}_{\mathrm{dB}} = 20\log_{10}(10\,000) = 80\,\mathrm{dB}.
+    \end{equation}
+    \item \textbf{Tercera condición ($v_+ = 0.805\,\mathrm{V}$, $v_- = 0.795\,\mathrm{V}$):} $v_d = 0.010\,\mathrm{V}$, $v_{cm} = 0.800\,\mathrm{V}$.
+    \begin{equation}
+        v_{o,d} = 120(0.010) = 1.200\,\mathrm{V}, \qquad
+        v_{o,cm} = 0.012(0.800) = 0.00960\,\mathrm{V}, \qquad
+        v_o = 1.200 + 0.00960 = 1.20960\,\mathrm{V}.
+    \end{equation}
+    \item \textbf{Condición experimental:} verificar ausencia de saturación y rango de modo común/excursión, efectuar pruebas controladas y repetibles con instrumentos reales, calibrar \textit{offset} y documentar montaje/condiciones; el cuadro hipotético no certifica equipos del curso.
+\end{enumerate}
+
+\vspace{3pt}\noindent{\footnotesize
+\begin{tabularx}{\textwidth}{@{}l r X@{}}
+    \toprule
+    \textbf{Criterio P2} & \textbf{Pts} & \textbf{Regla de puntaje parcial} \\
+    \midrule
+    1. $v_d$ y $v_{cm}$ en D y C & 5 & Ensayo D (3), ensayo C (2) \\
+    2. $A_d$ y $A_{cm}$ aislados & 6 & Identificación y cociente D (3), C (3) \\
+    3. CMRR lineal y dB & 6 & Razón (3), dB (3) \\
+    4. Tercera condición & 5 & Señales (1), aportes (2), total y unidad (2) \\
+    5. Condición experimental & 3 & Condición concreta y pertinente (3) \\
+    \midrule
+    \textbf{Total P2} & \textbf{25} & \\
+    \bottomrule
+\end{tabularx}}\vspace{3pt}
+
+\noindent{\footnotesize\textbf{Errores diagnósticos:} dividir $1.20\,\mathrm{V}$ por $5\,\mathrm{mV}$ en lugar de $10\,\mathrm{mV}$; interpretar $12\,\mathrm{mV}$ como \textit{offset}; confundir CMRR lineal con dB; tratar datos hipotéticos como mediciones.}
+
+% =========================================================================
+% SOLUCIÓN P3 (25 pts)
+% =========================================================================
+\newpage
+\section*{Solución P3 --- Interpretación de registros de dos rectificadores (25 puntos)}
+
+\begin{enumerate}
+    \setlength{\itemsep}{2pt}
+    \item \textbf{Referencia $v_{\mathrm{ref}} = \max(v_i, 0)$:} por filas (1 a 6): $0.00,\; 0.00,\; 0.00,\; 0.20,\; 0.60,\; 1.00\,\mathrm{V}$.
+    \item \textbf{Identificación de columnas:}
+    \begin{itemize}
+        \setlength{\itemsep}{1pt}
+        \item \textbf{Salida A:} rectificador convencional ($V_\gamma = 0.50\,\mathrm{V}$): en $+0.20\,\mathrm{V}$ da $0.00\,\mathrm{V}$ ($0.20 < 0.50$); en $+0.60\,\mathrm{V}$ da $0.10\,\mathrm{V}$; en $+1.00\,\mathrm{V}$ da $0.50\,\mathrm{V}$.
+        \item \textbf{Salida B:} superdiodo no ideal, próximo a $v_{\mathrm{ref}}$ en todo el semiciclo positivo ($0.18$, $0.57$, $0.96\,\mathrm{V}$).
+    \end{itemize}
+    \item \textbf{Error absoluto medio discreto $E_{\mathrm{MAE}} = \frac{1}{6}\sum |v_{o,i} - v_{\mathrm{ref},i}|$:}
+    \begin{align}
+        E_A &= \frac{0 + 0 + 0 + 0.20 + 0.50 + 0.50}{6} = \frac{1.20}{6} = 0.200\,\mathrm{V}, \\
+        E_B &= \frac{0 + 0.01 + 0 + 0.02 + 0.03 + 0.04}{6} = \frac{0.10}{6} \approx 0.01667\,\mathrm{V} \approx 0.0167\,\mathrm{V}.
+    \end{align}
+    B presenta un error medio discreto mucho menor que A en esta muestra hipotética.
+    \item \textbf{Estados del superdiodo y cortocircuito virtual:} para $v_i > 0$, el diodo conduce y cierra el lazo de realimentación negativa, logrando $v_o \approx v_i$ (en operación lineal). Para $v_i < 0$, el diodo se bloquea, el lazo se abre, $v_o \approx 0$ por la carga $R_L$ y $v_a$ tiende hacia saturación negativa. La relación $v_+ \approx v_-$ solo rige con lazo cerrado y operación lineal.
+    \item \textbf{Muestra 2 ($B = +0.01\,\mathrm{V}$ con $v_i = -0.20\,\mathrm{V}$):} puede deberse a \textit{offset}, corriente de fuga, referencia de cero incorrecta, ruido o error de lectura; la tabla sola no discrimina entre mecanismos y requiere inspeccionar esquema, alimentación, condiciones y repetición.
+\end{enumerate}
+
+\vspace{3pt}\noindent{\footnotesize
+\begin{tabularx}{\textwidth}{@{}l r X@{}}
+    \toprule
+    \textbf{Criterio P3} & \textbf{Pts} & \textbf{Regla de puntaje parcial} \\
+    \midrule
+    1. Seis valores $v_{\mathrm{ref}}$ & 4 & Consistencia por fila (sin doble penalización) \\
+    2. Identificación A/B & 5 & Asignación (2), al menos dos muestras justificadas (3) \\
+    3. $E_{\mathrm{MAE}}$ de A y B & 8 & Cálculo A (3), cálculo B (3), comparación con unidad (2) \\
+    4. Estados y $v_+ \approx v_-$ & 5 & Semiciclo positivo (2), negativo (2), cortocircuito virtual (1) \\
+    5. Muestra 2 y límite diagnóstico & 3 & Posibilidad coherente (1), incertidumbre y prueba adicional (2) \\
+    \midrule
+    \textbf{Total P3} & \textbf{25} & \\
+    \bottomrule
+\end{tabularx}}\vspace{3pt}
+
+\noindent{\footnotesize\textbf{Errores diagnósticos:} equiparar error discreto a integral continua; concluir que B es ideal por tener menor MAE; atribuir $+0.01\,\mathrm{V}$ necesariamente a conducción inversa del diodo; confundir $v_a$ y $v_o$.}
+
+% =========================================================================
+% SOLUCIÓN P4 (25 pts)
+% =========================================================================
+\section*{Solución P4 --- Revisión crítica de un filtro de segundo orden (25 puntos)}
+
+\begin{enumerate}
+    \setlength{\itemsep}{2pt}
+    \item \textbf{Expansión e identificación de parámetros:}
+    \begin{equation}
+        (1 + s/\omega_0)^2 = 1 + \frac{2s}{\omega_0} + \frac{s^2}{\omega_0^2}
+        \implies H(s) = \frac{\omega_0^2}{s^2 + 2\omega_0 s + \omega_0^2}.
+    \end{equation}
+    Comparando con $\dfrac{K\omega_0^2}{s^2 + (\omega_0/Q)s + \omega_0^2}$: $K = 1$, $\omega_0 = 20\pi\,\mathrm{rad/s} \implies f_0 = \dfrac{\omega_0}{2\pi} = 10\,\mathrm{Hz}$, y $\dfrac{\omega_0}{Q} = 2\omega_0 \implies Q = 0.5$.
+    \item \textbf{Conversión a dB en $10\,\mathrm{Hz}$ y $50\,\mathrm{Hz}$:}
+    \begin{align}
+        G(10\,\mathrm{Hz}) &= 20\log_{10}(0.500) = -6.0206\,\mathrm{dB}, \\
+        G(50\,\mathrm{Hz}) &= 20\log_{10}(0.0385) \approx -28.29\,\mathrm{dB} \quad (\text{con valor exacto } 1/26:\; -28.2995\,\mathrm{dB}).
+    \end{align}
+    \item \textbf{Evaluación de Afirmación I (falsa):} en $f_0 = 10\,\mathrm{Hz}$ la ganancia es $-6.02\,\mathrm{dB}$, \textbf{no} $-3\,\mathrm{dB}$; además $Q = 0.5 \neq 1/\sqrt{2} \approx 0.7071$ (Butterworth de 2.$^{\mathrm{o}}$ orden). El punto de $-3.0103\,\mathrm{dB}$ ocurre cuando $|H| = 1/(1+x^2) = 1/\sqrt{2}$, es decir $f_{-3\mathrm{dB}} = f_0\sqrt{\sqrt{2}-1} \approx 6.44\,\mathrm{Hz}$ (entre $5$ y $10\,\mathrm{Hz}$ según la tabla).
+    \item \textbf{Evaluación de Afirmación II (falsa):} $-28.3\,\mathrm{dB}$ \textbf{no} es menor que $-40\,\mathrm{dB}$ (el rechazo teórico es insuficiente); además, una sola sección ideal no demuestra una cascada de cuarto orden (efectos de carga entre etapas) ni sustituye la medición física con componentes y op-amps reales.
+\end{enumerate}
+
+\vspace{3pt}\noindent{\footnotesize
+\begin{tabularx}{\textwidth}{@{}l r X@{}}
+    \toprule
+    \textbf{Criterio P4} & \textbf{Pts} & \textbf{Regla de puntaje parcial} \\
+    \midrule
+    1. Expansión, $K$, $f_0$ y $Q$ & 7 & Expansión (2), $K$ (1), $f_0$ (2), $Q$ (2) \\
+    2. Magnitudes en dB ($10$ y $50\,\mathrm{Hz}$) & 6 & Expresión/unidades (2), cada frecuencia (2 + 2) \\
+    3. Evaluación de Afirmación I & 6 & Rechazo $-3\,\mathrm{dB}$ en $f_0$ (2), $Q$ Butterworth (2), corte distinto (2) \\
+    4. Evaluación de Afirmación II & 6 & Comparación numérica (2), cascada 4.$^{\mathrm{o}}$ orden (2), medición física (2) \\
+    \midrule
+    \textbf{Total P4} & \textbf{25} & \\
+    \bottomrule
+\end{tabularx}}\vspace{3pt}
+
+\noindent{\footnotesize\textbf{Errores diagnósticos:} expandir mal el cuadrado; afirmar $Q = 0.707$; interpretar $-28\,\mathrm{dB}$ como mayor rechazo que $-40\,\mathrm{dB}$; confundir tabla teórica con medición física; pedir margen de fase (excluido).}
+
+\end{document}

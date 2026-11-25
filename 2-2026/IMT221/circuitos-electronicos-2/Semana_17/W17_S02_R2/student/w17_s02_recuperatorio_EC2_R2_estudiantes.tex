@@ -1,0 +1,261 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, positioning}
+\usepackage[american]{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.6cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\setlength{\headheight}{16pt}
+\setlength{\emergencystretch}{2em}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{neutralbg}{RGB}{246, 248, 251}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{IMT-221 --- Circuitos Electrónicos II}}
+\chead{Recuperatorio 2 --- Examen Escrito EC2}
+\rhead{25/11/2026}
+\cfoot{\footnotesize Página \thepage\ de \pageref{LastPage} \quad|\quad Versión R2 -- Instrumento de 100 puntos}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\newcommand{\answerbox}[1]{%
+    \vspace{0.15cm}
+    \begin{tcolorbox}[colback=white, colframe=black!45, boxrule=0.5pt, arc=1mm, height=#1]
+        \hfill {\tiny\color{black!45} Desarrollo, unidades e interpretación}
+    \end{tcolorbox}
+}
+
+\begin{document}
+
+% --- CABECERA PARA ESTUDIANTES ---
+\begin{center}
+    {\large\textbf{\textcolor{ucbblue}{Universidad Católica Boliviana ``San Pablo'' --- Sede Tarija}}}\\[0.08cm]
+    {\Large\textbf{IMT-221 --- Circuitos Electrónicos II}}\\
+    {\normalsize\textbf{Recuperatorio 2 --- Evaluación Continua EC2} \quad$\cdot$\quad miércoles 25 de noviembre de 2026 \quad$\cdot$\quad \textbf{Versión R2}}
+\end{center}
+
+\begin{tcolorbox}[colback=neutralbg, colframe=ucbblue, boxrule=0.8pt, arc=1.5mm, left=6pt, right=6pt, top=5pt, bottom=5pt]
+    \small
+    \renewcommand{\arraystretch}{1.45}
+    \begin{tabularx}{\textwidth}{@{}lX lX@{}}
+        \textbf{Nombre y apellidos:} & \hrulefill \\
+        \textbf{Duración:} & \texttt{90 minutos} {\scriptsize(verificar igualdad con A)} & \textbf{Versión:} & \textbf{R2} \quad (Total: \textbf{100 puntos}, $4 \times 25$) \\
+        \textbf{Calculadora permitida:} & \texttt{Válida} {\scriptsize(misma política que A)} & \textbf{Formulario:} & Formulario EC2 suministrado \\
+    \end{tabularx}
+    \vspace{0.15cm}
+    \hrule
+    \vspace{0.15cm}
+    \footnotesize
+    \textbf{Instrucciones:} Resuelva individualmente. Muestre fórmulas seleccionadas, sustituciones, unidades y justificaciones. Los valores de amplificadores y las tablas de ensayos son \textbf{hipotéticos para esta prueba}; no representan resultados de laboratorio. Los problemas son independientes. No se solicita montaje ni simulación.
+\end{tcolorbox}
+
+% =========================================================================
+% PROBLEMA 1 (P1-R2)
+% =========================================================================
+\section*{Problema 1 --- Diagnóstico de un acondicionador inversor (25 puntos)}
+
+Se propone un amplificador \textbf{inversor} cuya entrada no inversora ($+$) se conecta a $0\,\mathrm{V}$. Una resistencia $R_{\mathrm{in}} = 10\,\mathrm{k\Omega}$ conecta la fuente $v_i$ a la entrada inversora ($-$), y $R_f = 40\,\mathrm{k\Omega}$ conecta la salida $v_o$ a esa misma entrada. La entrada es una senoide de amplitud $0.80\,\mathrm{V_p}$. Suponga un modelo hipotético de un polo dominante con $f_T = 1.0\,\mathrm{MHz}$, $\mathrm{SR} = 0.60\,\mathrm{V/\mu s}$, alimentación $\pm 6\,\mathrm{V}$ y excursión lineal permitida de salida $\pm 3.5\,\mathrm{V}$. Para el circuito inversor en régimen lineal use $A_v = -R_f/R_{\mathrm{in}}$; para estimar el ancho de banda use la \textbf{ganancia de ruido} $\mathrm{NG} = 1 + R_f/R_{\mathrm{in}}$. Se consideran dos usos posibles: \textbf{A, $10\,\mathrm{kHz}$}, y \textbf{B, $40\,\mathrm{kHz}$}.
+
+\begin{center}
+    \begin{circuitikz}[>=stealth, thick, scale=0.88, transform shape]
+        % op amp estándar: (-) arriba, (+) abajo; ideal para topología inversora
+        \draw (0,0) node[op amp] (op) {};
+        % Entrada (+) a tierra (0 V)
+        \draw (op.+) -- ++(-0.5,0) -- ++(0,-0.8) node[ground]{};
+        % Entrada inversora (-) desde v_i a través de R_in = 10 kOhm
+        \draw (op.-) -- ++(-0.4,0) coordinate(ninv) to[R, l_=$R_{\mathrm{in}}$] ++(-2.2,0) to[short, -o] ++(-0.5,0) node[left]{$v_i$};
+        \node[below, font=\footnotesize] at ([xshift=-1.1cm, yshift=-0.35cm]ninv) {$10\,\mathrm{k\Omega}$};
+        % Lazo de realimentación R_f = 40 kOhm desde ninv por arriba hasta salida
+        \draw (ninv) to[short, *-] ++(0,1.6) to[R, l=$R_f$] ++(2.8,0) -| (op.out);
+        \node[below, font=\footnotesize] at ([xshift=1.4cm, yshift=1.30cm]ninv) {$40\,\mathrm{k\Omega}$};
+        % Salida v_o
+        \draw (op.out) to[short, *-o] ++(1.4,0) node[right]{$v_o$};
+        % Rieles de alimentación (±6 V, separados del swing ±3.5 V)
+        \draw (op.up) -- ++(0,0.45) node[above]{\footnotesize $+6\,\mathrm{V}$};
+        \draw (op.down) -- ++(0,-0.55) node[below]{\footnotesize $-6\,\mathrm{V}$};
+        % Nota de modelo hipotético
+        \node[draw=ucbblue!60, fill=neutralbg, rounded corners, font=\scriptsize, align=left] at (5.4, 0.2) {%
+            \textbf{Modelo hipotético:}\\
+            $f_T = 1.0\,\mathrm{MHz}$\\
+            $\mathrm{SR} = 0.60\,\mathrm{V/\mu s}$\\
+            Alimentación: $\pm 6\,\mathrm{V}$\\
+            Excursión lineal máx.: $\pm 3.5\,\mathrm{V}$\\
+            Entrada: $0.80\,\mathrm{V_p}$ (A: $10\,\mathrm{kHz}$; B: $40\,\mathrm{kHz}$)
+        };
+    \end{circuitikz}
+\end{center}
+
+\begin{enumerate}
+    \setlength{\itemsep}{2pt}
+    \item Calcule la ganancia de señal con su signo, la \textbf{ganancia de ruido} y la amplitud de salida ideal solicitada. \hfill \textbf{(6 pts)}
+    \item Estime el ancho de banda de lazo cerrado y compare las dos frecuencias con ese valor. \hfill \textbf{(4 pts)}
+    \item Determine el $\mathrm{SR}$ mínimo para cada caso (A y B) en $\mathrm{V/\mu s}$. \hfill \textbf{(6 pts)}
+    \item Indique cuál de los dos casos supera simultáneamente los tres chequeos de \textbf{ancho de banda estimado}, \textbf{SR} y \textbf{excursión}. Justifique la decisión y explique por qué los chequeos no garantizan exactitud perfecta. \hfill \textbf{(5 pts)}
+    \item Sin cambiar la amplitud pico de salida prevista, determine la máxima frecuencia que permitiría el límite de $\mathrm{SR}$ por sí solo. \hfill \textbf{(4 pts)}
+\end{enumerate}
+
+% =========================================================================
+% PROBLEMA 2 (P2-R2)
+% =========================================================================
+\section*{Problema 2 --- Identificación de un In-Amp mediante dos ensayos (25 puntos)}
+
+Un acondicionador se representa mediante $v_o = A_d(v_+ - v_-) + A_{cm}(v_+ + v_-)/2$. Para este \textbf{modelo de examen}, el \textit{offset} se compensó y puede considerarse nulo. Todos los ensayos se realizan dentro del régimen lineal. Se obtienen estos datos \textbf{hipotéticos}:
+
+\begin{center}
+    \begin{minipage}[c]{0.52\textwidth}
+        \centering
+        \begin{tikzpicture}[>=stealth, thick, scale=0.86, transform shape]
+            \draw[fill=neutralbg, draw=ucbblue, rounded corners=2pt] (0,0) rectangle (4.0,2.2);
+            \node[align=center, font=\small\bfseries, text=ucbblue] at (2.0, 1.45) {Bloque Acondicionador\\(In-Amp genérico)};
+            \node[align=center, font=\scriptsize] at (2.0, 0.50) {$v_o = A_d v_d + A_{cm} v_{cm}$};
+            \draw[->] (-1.3, 1.65) node[left]{$v_+$} -- (0, 1.65) node[right, font=\footnotesize]{$+$};
+            \draw[->] (-1.3, 0.55) node[left]{$v_-$} -- (0, 0.55) node[right, font=\footnotesize]{$-$};
+            \draw[->] (4.0, 1.10) -- (5.3, 1.10) node[right]{$v_o$};
+            \draw (2.0, 0) -- (2.0, -0.5) node[ground]{};
+            \node[right, font=\scriptsize] at (2.15, -0.4) {Ref. $0\,\mathrm{V}$};
+        \end{tikzpicture}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[c]{0.45\textwidth}
+        \centering
+        \footnotesize
+        \begin{tabular}{@{}lrrr@{}}
+            \toprule
+            \textbf{Ensayo} & \textbf{$v_+$} & \textbf{$v_-$} & \textbf{$v_o$} \\
+            \midrule
+            D --- diferencial & $+5\,\mathrm{mV}$ & $-5\,\mathrm{mV}$ & $+1.20\,\mathrm{V}$ \\
+            C --- modo común & $+1.00\,\mathrm{V}$ & $+1.00\,\mathrm{V}$ & $+0.012\,\mathrm{V}$ \\
+            \bottomrule
+        \end{tabular}
+    \end{minipage}
+\end{center}
+
+\begin{enumerate}
+    \setlength{\itemsep}{2pt}
+    \item Halle $v_d$ y $v_{cm}$ para \textbf{cada ensayo}, incluyendo unidades. \hfill \textbf{(5 pts)}
+    \item A partir de los resultados, determine $A_d$ y $A_{cm}$. Muestre por qué cada ensayo permite identificar su ganancia correspondiente. \hfill \textbf{(6 pts)}
+    \item Calcule $\mathrm{CMRR}$ en escala lineal y en $\mathrm{dB}$. \hfill \textbf{(6 pts)}
+    \item En una tercera condición, $v_+ = 0.805\,\mathrm{V}$ y $v_- = 0.795\,\mathrm{V}$. Prediga la salida total e identifique cuánto corresponde a la señal diferencial y cuánto al modo común. \hfill \textbf{(5 pts)}
+    \item Indique una condición o comprobación experimental necesaria para trasladar estas conclusiones a un In-Amp físico. \hfill \textbf{(3 pts)}
+\end{enumerate}
+
+% =========================================================================
+% PROBLEMA 3 (P3-R2)
+% =========================================================================
+\section*{Problema 3 --- Interpretación de registros de dos rectificadores (25 puntos)}
+
+Se aplican valores instantáneos de entrada a dos rectificadores de media onda positiva con cargas hacia $0\,\mathrm{V}$. Uno es \textbf{convencional}, con un diodo de umbral hipotético $V_\gamma = 0.50\,\mathrm{V}$ según $v_o = \max(v_i - V_\gamma, 0)$; el otro es un \textbf{superdiodo no inversor} que se aproxima a la rectificación ideal, aunque no es perfecto. Se registran las siguientes \textbf{muestras hipotéticas con igual peso} (no son mediciones físicas ni salidas de LTspice). Las columnas A y B se presentan sin identificar:
+
+\begin{center}
+    \begin{minipage}[c]{0.44\textwidth}
+        \centering
+        \footnotesize
+        \begin{tabular}{@{}rrrr@{}}
+            \toprule
+            \textbf{Muestra} & \textbf{$v_i$ (V)} & \textbf{Salida A (V)} & \textbf{Salida B (V)} \\
+            \midrule
+            1 & $-0.60$ & $0.00$ & $0.00$ \\
+            2 & $-0.20$ & $0.00$ & $0.01$ \\
+            3 & $0.00$  & $0.00$ & $0.00$ \\
+            4 & $+0.20$ & $0.00$ & $0.18$ \\
+            5 & $+0.60$ & $0.10$ & $0.57$ \\
+            6 & $+1.00$ & $0.50$ & $0.96$ \\
+            \bottomrule
+        \end{tabular}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[c]{0.53\textwidth}
+        \centering
+        \begin{circuitikz}[>=stealth, thick, scale=0.78, transform shape]
+            \node[font=\footnotesize\bfseries, text=ucbblue] at (2.0, 2.35) {Esquema de referencia: superdiodo no inversor};
+            \draw (0.5, 0.7) node[op amp] (op) {};
+            \draw (op.+) to[short, -o] ++(-1.1,0) node[left]{$v_i$};
+            \draw (op.out) to[short, *-] ++(0.5,0) coordinate(va) node[above]{\footnotesize $v_a$} to[D, l=$D$] ++(2.0,0) coordinate(vo) to[short, *-o] ++(0.7,0) node[right]{$v_o$};
+            \node[below, font=\scriptsize] at ([xshift=0.55cm, yshift=-0.15cm]va) {A};
+            \node[below, font=\scriptsize] at ([xshift=1.45cm, yshift=-0.15cm]va) {K};
+            \draw (vo) to[R, l=$R_L$] ++(0,-1.6) node[ground]{};
+            \draw (op.-) -- ++(0,1.0) -| (vo);
+        \end{circuitikz}
+    \end{minipage}
+\end{center}
+
+\begin{enumerate}
+    \setlength{\itemsep}{2pt}
+    \item Complete los seis valores de referencia $v_{\mathrm{ref}} = \max(v_i, 0)$. \hfill \textbf{(4 pts)}
+    \item Identifique qué salida corresponde al rectificador convencional y cuál al superdiodo. Fundamente con \textbf{al menos dos muestras}. \hfill \textbf{(5 pts)}
+    \item Para cada salida calcule el error absoluto medio \textbf{discreto} $E_{\mathrm{MAE}} = \frac{1}{6}\sum_{i=1}^{6}|v_{o,i} - v_{\mathrm{ref},i}|$, expresado en voltios. Compare ambos errores. \hfill \textbf{(8 pts)}
+    \item Para el circuito superdiodo, explique qué sucede con el estado del diodo y la realimentación para entradas positivas y negativas, y por qué la relación $v_+ \approx v_-$ no vale para todo el ciclo. \hfill \textbf{(5 pts)}
+    \item En la muestra 2, B presenta $+0.01\,\mathrm{V}$ con entrada negativa. Proponga \textbf{una posible explicación técnica} e indique por qué esta tabla no basta para determinar una causa única. \hfill \textbf{(3 pts)}
+\end{enumerate}
+
+% =========================================================================
+% PROBLEMA 4 (P4-R2)
+% =========================================================================
+\section*{Problema 4 --- Revisión crítica de un filtro de segundo orden (25 puntos)}
+
+Una sección de filtro pasa-bajos tiene la \textbf{función de transferencia teórica}:
+\[H(s) = \frac{1}{(1 + s/\omega_0)^2}, \qquad \omega_0 = 20\pi\;\mathrm{rad/s}.\]
+
+Un estudiante obtiene la siguiente tabla ilustrativa, que corresponde al \textbf{modelo matemático}, no a mediciones físicas:
+
+\begin{center}
+    \begin{minipage}[c]{0.48\textwidth}
+        \centering
+        \begin{tikzpicture}[>=stealth, thick, scale=0.88, transform shape]
+            \draw[->] (-1.6, 0) node[left]{$V_{\mathrm{in}}(s)$} -- (0, 0);
+            \draw[fill=neutralbg, draw=ucbblue, rounded corners=2pt] (0, -0.75) rectangle (4.2, 0.75);
+            \node[align=center] at (2.1, 0) {$H(s) = \dfrac{1}{(1 + s/\omega_0)^2}$};
+            \draw[->] (4.2, 0) -- (5.8, 0) node[right]{$V_{\mathrm{out}}(s)$};
+        \end{tikzpicture}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[c]{0.48\textwidth}
+        \centering
+        \footnotesize
+        \begin{tabular}{@{}lrrrr@{}}
+            \toprule
+            \textbf{Frecuencia $f$ (Hz)} & 1 & 5 & 10 & 50 \\
+            \midrule
+            \textbf{Magnitud $|H(j2\pi f)|$ (V/V)} & $0.990$ & $0.800$ & $0.500$ & $0.0385$ \\
+            \bottomrule
+        \end{tabular}
+    \end{minipage}
+\end{center}
+
+En su informe escribe dos conclusiones:
+\begin{tcolorbox}[colback=neutralbg, colframe=ucbblue!60, boxrule=0.5pt, arc=1mm, left=6pt, right=6pt, top=4pt, bottom=4pt]
+    \footnotesize
+    \textbf{I.} ``La frecuencia natural es $10\,\mathrm{Hz}$; por tanto, la atenuación allí debe ser $-3\,\mathrm{dB}$ y la sección es Butterworth''.\\[2pt]
+    \textbf{II.} ``Como la tabla llega hasta $50\,\mathrm{Hz}$, esta única sección garantiza un rechazo menor que $-40\,\mathrm{dB}$ a $50\,\mathrm{Hz}$ en el circuito físico''.
+\end{tcolorbox}
+
+\begin{enumerate}
+    \setlength{\itemsep}{2pt}
+    \item Expanda el denominador y compare con la forma canónica $K\omega_0^2 / [s^2 + (\omega_0/Q)s + \omega_0^2]$ para hallar $K$, $f_0$ y $Q$. \hfill \textbf{(7 pts)}
+    \item Convierta a $\mathrm{dB}$ las magnitudes de la tabla a \textbf{$10\,\mathrm{Hz}$} y \textbf{$50\,\mathrm{Hz}$}. \hfill \textbf{(6 pts)}
+    \item Evalúe la afirmación I: identifique los errores y explique si $f_0$ coincide con $f_{-3\mathrm{dB}}$. Basta una justificación matemática o una comparación cuantitativa sólida. \hfill \textbf{(6 pts)}
+    \item Evalúe la afirmación II: determine si los resultados proporcionados cumplen el umbral teórico de $-40\,\mathrm{dB}$ a $50\,\mathrm{Hz}$ e indique por qué, aun si lo cumplieran, no demostrarían el desempeño físico ni el de una cascada de cuarto orden. \hfill \textbf{(6 pts)}
+\end{enumerate}
+
+\vspace{0.3cm}
+\begin{center}
+    \rule{0.72\textwidth}{0.4pt}\\[3pt]
+    {\small\textbf{Fin del examen. Verifique su identificación, operaciones, unidades y entrega de todas las hojas.}}
+\end{center}
+
+\end{document}
