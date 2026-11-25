@@ -1,0 +1,178 @@
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage{microtype}
+\usepackage[table]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{amsmath, amssymb}
+\usepackage[margin=1.75cm, top=2.0cm, bottom=1.9cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\renewcommand{\contentsname}{Índice}
+\renewcommand{\tablename}{Tabla}
+\renewcommand{\figurename}{Figura}
+\renewcommand{\refname}{Referencias}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{offcolor}{RGB}{235, 242, 250}
+\definecolor{readcolor}{RGB}{255, 248, 225}
+\definecolor{movcolor}{RGB}{253, 237, 236}
+\definecolor{alertred}{RGB}{170, 25, 25}
+\definecolor{warnamber}{RGB}{185, 110, 0}
+
+\AtEndDocument{\label{LastPage}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{16pt}
+\lhead{\small\textbf{IMT-221} $\mid$ Circuitos Electrónicos III}
+\chead{\small Hito 3 (I3) — Consigna de Informe IEEE (E1–E3)}
+\rhead{\small 25/11/2026}
+\lfoot{\footnotesize Universidad Católica Boliviana ``San Pablo'' — Sede Tarija}
+\rfoot{\footnotesize Página \thepage\ de \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\setlength{\parskip}{4pt plus 1pt minus 1pt}
+\setlength{\parindent}{0pt}
+
+\newcommand{\ucbbox}[4]{%
+  \vspace{4pt}\noindent
+  \fcolorbox{#1}{#2}{%
+    \parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule\relax}{%
+      \vspace{2pt}%
+      {\small\textbf{\textcolor{#1}{#3}}}\\[2pt]
+      {\footnotesize #4}%
+      \vspace{2pt}%
+    }%
+  }\vspace{4pt}%
+}
+
+\newcommand{\evtag}[1]{\texttt{#1}}
+
+\begin{document}
+
+% ============================================================================
+% ENCABEZADO INSTITUCIONAL (SIN PORTADA INDEPENDIENTE)
+% ============================================================================
+\begin{center}
+    {\large\textbf{\textcolor{ucbblue}{UNIVERSIDAD CATÓLICA BOLIVIANA ``SAN PABLO'' — SEDE TARIJA}}}\\[2pt]
+    {\small IMT-221 — Circuitos Electrónicos III $\mid$ Edición para estudiantes · 25/11/2026}\\[5pt]
+    \rule{\textwidth}{1.2pt}\\[5pt]
+    {\LARGE\textbf{\textcolor{ucbblue}{Hito 3 (I3): Requisitos Mínimos del Informe Técnico IEEE — E1, E2 y E3}}}\\[4pt]
+    \rule{\textwidth}{1.2pt}
+\end{center}
+
+\ucbbox{ucbblue}{offcolor}{Alcance del hito, entrega y plazo}{%
+    \textbf{Alcance del hito:} interruptor NMOS resistivo (E1) $\to$ driver BJT con entrada optoaislada mediante PC817 (E2) $\to$ conmutación de carga inductiva con recirculación (E3). \textbf{El puente H E4 queda fuera de este informe y de su rúbrica.}\\[2pt]
+    \textbf{Entrega y plazo:} utilizar la plataforma y fecha comunicadas oficialmente por el docente; este documento no establece una fecha ni cambia ponderaciones institucionales.
+}
+
+% ============================================================================
+% 1. QUÉ SE ENTREGA
+% ============================================================================
+\section{Qué se entrega}
+
+Un \textbf{único informe por grupo}, en \textbf{PDF con formato IEEE de dos columnas}, de \textbf{máximo 3 páginas de contenido total} (incluidas referencias y figuras; sin portada independiente), redactado de forma técnica, directa y verificable. No se aceptan capturas aisladas como sustituto del informe. Los integrantes deben identificar sus contribuciones en una línea breve al final.
+
+Adjuntar, en el mismo envío y con nombres identificables, los \textbf{archivos LTspice \texttt{.asc} o \texttt{.cir} de E1--E3 y sus registros \texttt{.log} cuando existan simulaciones ejecutadas}. Si una simulación no pudo ejecutarse, explicar el bloqueo y proporcionar el archivo de trabajo; \textbf{no declararla como realizada}. No adjuntar imágenes o documentos extensos que el evaluador deba reconstruir para comprender el informe. En el PDF debe quedar la evidencia mínima legible.
+
+\textbf{No se exige como requisito de este informe tener E3 energizado o medido.} La inspección del montaje, la autorización G3 y la eventual prueba física se realizarán posteriormente y por separado. Si existen medidas reales obtenidas con aprobación y seguridad, se pueden incluir claramente rotuladas.
+
+% ============================================================================
+% 2. ESTRUCTURA OBLIGATORIA (ORDEN IEEE)
+% ============================================================================
+\section{Estructura obligatoria (orden IEEE)}
+
+\begingroup
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.35}
+\noindent\begin{tabularx}{\textwidth}{|>{\hsize=0.55\hsize\raggedright\arraybackslash}X|>{\hsize=0.30\hsize\raggedright\arraybackslash}X|>{\hsize=2.15\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Sección} & \textbf{Extensión orientativa} & \textbf{Contenido mínimo que debe quedar visible} \\ \hline
+Título, autores y resumen & $1/5$ página & Título específico; integrantes; resumen de \textbf{70--100 palabras} que indique qué se diseñó, qué se simuló y qué se verificó realmente; 3--5 palabras clave \\ \hline
+\textbf{I. Introducción y objetivo} & $1/4$ página & Problema de excitar un MOSFET y pasar de carga resistiva a inductiva; objetivo de la cadena \textbf{E1$\to$E2$\to$E3} y límites del trabajo \\ \hline
+\textbf{II. Circuitos y metodología} & $3/4$ página & \textbf{Una figura legible} o figuras compactas con: E1 (\texttt{RL}, NMOS y gate); E2 (GPIO $\to$ \texttt{RLED} $\to$ PC817, separación \texttt{GND\_MCU/GND\_PWR}, 7805, Q0, Q1/Q2/QH/QL y gate del NMOS); E3 (misma E2, motor/bobina y diodo \texttt{DF}); identificar valores/piezas \textbf{efectivamente seleccionados} y explicar qué se conserva/cambia \\ \hline
+\textbf{III. Cálculo y simulación} & $3/4$ página & E1: $I_{\mathrm{ON}}$ y $P_{RL}$ con condiciones explícitas. E2: corriente LED del PC817, $V_{GS}$ previsto y justificación de conmutación/estado OFF; reconocer \texttt{VIN\_ISO} cargado. E3: datos de carga, trayectoria de recirculación al apagar, cálculo de corriente y energía $\frac{1}{2}LI^2$ \textbf{solo si $L$ es conocida}; justificación de selección o dato pendiente del diodo. \textbf{Una comparación compacta} \evtag{CALC} vs. \evtag{SIM} para E1--E3, si hay simulación ejecutada \\ \hline
+\textbf{IV. Resultados, limitaciones y seguridad} & $1/2$ página & \textbf{Una figura de formas de onda} relevante con ejes y unidades (por ejemplo \texttt{PWM}, $V_{GS}$, $V_{DS}$, corriente de carga, según datos disponibles); tabla breve de evidencia y estado G1/G2/G3; resultados \evtag{SIM}/\evtag{MED} separados; fallas y pendientes; no afirmar mediciones sin instrumento ni permisos sin firma \\ \hline
+\textbf{V. Conclusiones} & $1/5$ página & \textbf{2--3 conclusiones concretas}, basadas en resultados o limitaciones; qué está listo para inspección física posterior, y qué falta para G3 \\ \hline
+\textbf{Referencias} & Lo necesario & Datasheets \textbf{del componente real} (NMOS, PC817, BJT, 7805, motor y diodo cuando estén identificados), guía de laboratorio como fuente docente y otras fuentes realmente usadas, en referencias numeradas tipo IEEE \\ \hline
+\end{tabularx}
+\endgroup
+
+\vspace{2pt}
+{\footnotesize No es necesario reservar un bloque para E4, realimentación EC4 curricular, análisis térmico del puente H ni código de control del puente. El límite de \textbf{tres páginas} exige seleccionar evidencia relevante, no reducir la letra por debajo del estilo IEEE.}
+
+% ============================================================================
+% 3. MÍNIMOS TÉCNICOS QUE EL DOCENTE DEBE PODER ENCONTRAR
+% ============================================================================
+\section{Mínimos técnicos que el docente debe poder encontrar}
+
+\begin{itemize}
+    \setlength{\itemsep}{4pt}\setlength{\parskip}{0pt}
+    \item \textbf{E1 (carga resistiva).} Identificar modelo de NMOS, \texttt{VBUS}, \texttt{RL}, nivel de gate, \texttt{RG} y resistencia de apagado; calcular una corriente y potencia para un estado ON, sin confundir $V_{GS(\text{th})}$ con conducción garantizada. Mostrar al menos una evidencia \evtag{SIM} verificable o registrar el estado pendiente con causa.
+
+    \item \textbf{E2 (driver optoaislado).} Mostrar inequívocamente los \textbf{dos dominios sin tierra común}; detallar el LED PC817 y su resistencia, 7805 en el lado de potencia, receptor Q0 y driver BJT de carga/descarga de gate. Explicar qué ocurre con PWM LOW, PWM HIGH y PWM desconectado; incluir $V_{GS}$ y al menos un nodo del receptor (\texttt{OPTO\_N} o \texttt{VIN\_ISO}) en la simulación o declarar el bloqueo. \textbf{No asumir que \texttt{VIN\_ISO} equivale a $5\,\mathrm{V}$ ni que el aislamiento funciona si las tierras están unidas por sondas u otros cables.}
+
+    \item \textbf{E3 (carga inductiva).} Mostrar explícitamente qué se \textbf{retira} (\texttt{RL}) y qué se \textbf{instala} (motor/bobina y diodo de recirculación); en la topología \textit{low-side} unidireccional, \texttt{DF} lleva \textbf{cátodo a \texttt{+VBUS}} y \textbf{ánodo al drain}. Mostrar el camino de corriente ON y OFF y el efecto esperado en $V_{DS}$. Identificar carga real y datos conocidos; \textbf{no inventar inductancia ni corriente de bloqueo del motor}. Si el diodo o la protección no están dimensionados, registrarlos como \evtag{PEND} y explicar qué especificación falta antes de G3.
+
+    \item \textbf{Evidencia de avance.} Emplear etiquetas coherentes: \evtag{CALC} (calculado), \evtag{PRED} (predicho), \evtag{SIM} (ejecutado en simulador, con archivo), \evtag{MED} (medido con instrumento y montaje autorizado), \evtag{PEND} (aún no comprobado). Una foto de circuito armado no equivale a una medición ni a una firma G.
+\end{itemize}
+
+% ============================================================================
+% 4. TABLA COMPACTA OBLIGATORIA DE TRAZABILIDAD
+% ============================================================================
+\section{Tabla compacta obligatoria de trazabilidad}
+
+Incluir una tabla similar (se puede adaptar sin perder columnas):
+
+\begingroup
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.40}
+\noindent\begin{tabularx}{\textwidth}{|c|>{\hsize=0.95\hsize\raggedright\arraybackslash}X|>{\hsize=0.80\hsize\raggedright\arraybackslash}X|>{\hsize=1.15\hsize\raggedright\arraybackslash}X|>{\hsize=0.85\hsize\raggedright\arraybackslash}X|>{\hsize=1.00\hsize\raggedright\arraybackslash}X|>{\hsize=1.25\hsize\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{ucbblue!15}
+\textbf{Etapa} & \textbf{Esquema / BOM real} & \textbf{Cálculo} & \textbf{LTspice (\texttt{.asc/.cir} + resultado)} & \textbf{Medición real} & \textbf{Permiso G} & \textbf{Pendiente crítico} \\ \hline
+\textbf{E1} & \ldots & \evtag{CALC} / \evtag{PEND} & \evtag{SIM} / \evtag{PEND} & \evtag{MED} / \evtag{PEND} & G1 firmado / no & \ldots \\ \hline
+\textbf{E2} & \ldots & \evtag{CALC} / \evtag{PEND} & \evtag{SIM} / \evtag{PEND} & \evtag{MED} / \evtag{PEND} & G2 firmado / no & \ldots \\ \hline
+\textbf{E3} & \ldots & \evtag{CALC} / \evtag{PEND} & \evtag{SIM} / \evtag{PEND} & \evtag{MED} / \evtag{PEND} & G3 firmado / no & \ldots \\ \hline
+\end{tabularx}
+\endgroup
+
+\vspace{2pt}
+{\footnotesize Las celdas \evtag{MED} pueden ser \evtag{PEND} \textbf{sin que esto implique incumplimiento de un ensayo todavía no autorizado}. La nota documental se basa en la rúbrica adjunta; el ensayo práctico posterior tendrá su propia revisión docente.}
+
+% ============================================================================
+% 5. REGLAS PARA FIGURAS, CÁLCULOS Y ARCHIVOS
+% ============================================================================
+\section{Reglas para figuras, cálculos y archivos}
+
+\begin{itemize}
+    \setlength{\itemsep}{3pt}\setlength{\parskip}{0pt}
+    \item Numerar figuras y tablas; todas las figuras deben tener \textbf{pie, variables, unidades y explicación en el texto}. Evitar capturas ilegibles de todo el escritorio LTspice.
+    \item Cada cálculo debe declarar \textbf{datos de entrada, hipótesis, fórmula, resultado y unidad}. Si se usan datos ilustrativos, rotularlos como ejemplo y no como ficha de la pieza instalada.
+    \item Guardar capturas con $V_{GS}$ referido a \textit{source}; identificar referencia de tierra y evitar suponer que el PC817 permite medir simultáneamente ambas masas con sondas comunes.
+    \item No inventar \evtag{MED}, firma G, corriente de bloqueo, $L$ del motor, marca, modelo ni resultados de simulación. Registrar \evtag{PEND} y motivo si falta evidencia.
+    \item Nomenclatura sugerida: {\small\texttt{Grupo\#\#\_H3\_IEEE.pdf}}, {\small\texttt{Grupo\#\#\_E1.asc}}, {\small\texttt{Grupo\#\#\_E2.asc}}, {\small\texttt{Grupo\#\#\_E3.asc}} y los \texttt{.log} disponibles.
+\end{itemize}
+
+% ============================================================================
+% 6. CONDICIONES DE SEGURIDAD Y ALCANCE DE LA CALIFICACIÓN
+% ============================================================================
+\section{Condiciones de seguridad y alcance de la calificación}
+
+\ucbbox{alertred}{movcolor}{Regla obligatoria de seguridad y límite de entrega}{%
+    \textbf{No energizar E2 o E3 por presentar un informe o por obtener resultados favorables en LTspice.} La autorización G2/G3 exige inspección del hardware real, pinouts, fuentes, instrumentación, aislamientos, protección de corriente y condición OFF segura. En E3 deben verificarse motor real, diodo, corriente de arranque/bloqueo y protección antes del ensayo.\\[3pt]
+    \textbf{Esta entrega termina en E3 (Hito 3/I3).} No se solicita circuito, BOM, modelo ni construcción del puente H E4. La rúbrica documental no adjudica puntos por pruebas físicas aún no autorizadas.
+}
+
+\end{document}
