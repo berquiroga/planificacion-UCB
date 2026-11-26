@@ -1,0 +1,223 @@
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tgpagella}
+\usepackage{tgcursor}
+\usepackage[spanish, es-noshorthands]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, positioning, arrows.meta}
+\usepackage[american]{circuitikz}
+\usepackage[most]{tcolorbox}
+\usepackage[margin=1.6cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\setlength{\headheight}{16pt}
+\setlength{\emergencystretch}{2em}
+
+\definecolor{ucbblue}{RGB}{0, 51, 102}
+\definecolor{neutralbg}{RGB}{246, 248, 251}
+\definecolor{warnamber}{RGB}{180, 100, 0}
+\definecolor{amberbg}{RGB}{255, 250, 238}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{IMT-221 --- Circuitos Electrónicos II}}
+\chead{Práctica Autónoma Integradora (Caso P)}
+\rhead{W17-S03 -- 27/11/2026}
+\cfoot{\footnotesize Página \thepage\ de \pageref{LastPage} \quad|\quad Artefacto A1 --- Práctica P (100 puntos de autoevaluación, sin respuestas)}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+    {\large\textbf{\textcolor{ucbblue}{Universidad Católica Boliviana ``San Pablo'' --- Sede Tarija}}}\\[0.08cm]
+    {\Large\textbf{IMT-221 --- Circuitos Electrónicos II}}\\
+    {\normalsize\textbf{Práctica Autónoma Integradora (Caso P): Sensor Diferencial para Medida de Vibración}}
+\end{center}
+
+\begin{tcolorbox}[colback=neutralbg, colframe=ucbblue, boxrule=0.8pt, arc=1.5mm, left=6pt, right=6pt, top=5pt, bottom=5pt]
+    \footnotesize
+    \textbf{Instrucciones:} Caso único de \textbf{100 puntos de práctica, no calificable} (cuatro etapas de 25 puntos conectadas conceptual y funcionalmente). \textbf{Duración orientativa:} 90 minutos. Usar el \textbf{formulario EC2} ya distribuido y calculadora científica. Resuelva primero sin consultar el solucionario (A2). Cada etapa suministra su propio dato de referencia para no arrastrar un error anterior. \textbf{No hay simulaciones ni mediciones físicas reales en este caso.}
+\end{tcolorbox}
+
+% V1 — Diagrama general de bloques
+\begin{center}
+\begin{tikzpicture}[>=Stealth, thick, scale=0.84, transform shape,
+    blk/.style={draw=ucbblue, fill=neutralbg, rounded corners=2pt, minimum width=2.45cm, minimum height=1.05cm, align=center, font=\scriptsize\bfseries}]
+    \node[blk] (s)  at (0,0)    {1. Sensor\\diferencial};
+    \node[blk] (ia) at (3.2,0)  {2. Etapa\\In-Amp};
+    \node[blk] (oa) at (6.4,0)  {3. Etapa\\no inversora};
+    \node[blk] (rc) at (9.6,0)  {4. Rectificador\\(D o P)};
+    \node[blk] (sk) at (13.0,0) {5. Filtro\\Sallen--Key};
+    \draw[->] (s)  -- (ia);
+    \draw[->] (ia) -- (oa);
+    \draw[->] (oa) -- (rc);
+    \draw[->] (rc) -- (sk);
+    % Advertencia gráfica de inyección independiente para Bode
+    \node[draw=warnamber, fill=amberbg, rounded corners=2pt, font=\tiny, align=center, text width=4.6cm] (bode) at (11.3, -1.35) {%
+        \textbf{Prueba Bode independiente:} inyectar senoide pura directo a la entrada del filtro (NO aplicar $|H(j\omega)|$ al pico rectificado).
+    };
+    \draw[->, warnamber, dashed] (bode.north east) -- (sk.south);
+    \node[font=\tiny\itshape, text=black!65] at (4.5, -1.25) {V1: Arquitectura conceptual de bloques (no es cableado físico ni sistema validado).};
+\end{tikzpicture}
+\end{center}
+
+% =========================================================================
+% P1 — SENSOR / IN-AMP (25 PTS)
+% =========================================================================
+\section*{P1 --- Sensor diferencial e In-Amp (25 puntos)}
+
+Un sensor proporciona $v_+(t) = 0.800\,\mathrm{V} + 0.006\,\mathrm{V}\cdot\sin(2\pi\cdot 10\,t)$ y $v_-(t) = 0.800\,\mathrm{V} - 0.006\,\mathrm{V}\cdot\sin(2\pi\cdot 10\,t)$ respecto a la misma referencia de $0\,\mathrm{V}$. Un acondicionador hipotético opera linealmente con $A_d = 100\,\mathrm{V/V}$, $A_{cm} = 0.010\,\mathrm{V/V}$ y $V_{\mathrm{offset}} = 0$.
+
+% V2 — Diferencial y modo común
+\begin{center}
+    \begin{tikzpicture}[>=stealth, thick, scale=0.86, transform shape]
+        \draw[fill=neutralbg, draw=ucbblue, rounded corners=2pt] (0,0) rectangle (4.3,2.2);
+        \node[align=center, font=\small\bfseries, text=ucbblue] at (2.15, 1.45) {Bloque In-Amp (lineal)};
+        \node[align=center, font=\scriptsize] at (2.15, 0.55) {$v_o = A_d v_d + A_{cm} v_{cm} + V_{\mathrm{offset}}$};
+        \draw[->] (-2.2, 1.65) node[left, font=\scriptsize]{$v_+(t) = V_{cm} + \frac{V_{d,p}}{2}\sin(2\pi f t)$} -- (0, 1.65) node[right, font=\footnotesize]{$+$};
+        \draw[->] (-2.2, 0.55) node[left, font=\scriptsize]{$v_-(t) = V_{cm} - \frac{V_{d,p}}{2}\sin(2\pi f t)$} -- (0, 0.55) node[right, font=\footnotesize]{$-$};
+        \draw[->] (4.3, 1.1) -- (5.8, 1.1) node[right]{$v_o(t)$};
+        \draw (2.15, 0) -- (2.15, -0.5) node[ground]{};
+        \node[draw=black!40, fill=white, rounded corners, font=\scriptsize, align=left] at (8.3, 1.1) {%
+            $A_d = 100\,\mathrm{V/V}$\\
+            $A_{cm} = 0.010\,\mathrm{V/V}$\\
+            $V_{\mathrm{offset}} = 0\,\mathrm{V}$
+        };
+    \end{tikzpicture}
+\end{center}
+
+\begin{enumerate}
+    \setlength{\itemsep}{2pt}
+    \item Hallar $v_d(t)$ y $v_{cm}(t)$, indicando el pico diferencial y la componente común. \hfill \textbf{(7 pts)}
+    \item Obtener $v_o(t)$ separando componente senoidal y \textit{offset} común. \hfill \textbf{(8 pts)}
+    \item Calcular $\mathrm{CMRR}$ lineal y en $\mathrm{dB}$. \hfill \textbf{(6 pts)}
+    \item Explicar por qué $v_o(t)$ todavía no es una senoide de \textit{offset} nulo y qué precaución requiere analizar la siguiente etapa. \hfill \textbf{(4 pts)}
+\end{enumerate}
+
+\noindent{\footnotesize\textit{\textbf{Referencia independiente para P2:} se toma la componente AC de la salida del In-Amp, \textbf{sin offset}, de $1.20\,\mathrm{V_p}$ a $10\,\mathrm{Hz}$; la separación de DC es una hipótesis explícita del caso, no una etapa implementada.}}
+
+% =========================================================================
+% P2 — ETAPA NO INVERSORA Y LIMITACIONES (25 PTS)
+% =========================================================================
+\section*{P2 --- Etapa no inversora y limitaciones dinámicas (25 puntos)}
+
+Una etapa no inversora tiene $R_g = 10\,\mathrm{k\Omega}$ y $R_f = 10\,\mathrm{k\Omega}$. Modelo hipotético: $f_T = 100\,\mathrm{kHz}$, $\mathrm{SR} = 0.20\,\mathrm{V/\mu s}$, excursión lineal $\pm 3.0\,\mathrm{V}$ con rieles $\pm 5\,\mathrm{V}$. La entrada de referencia tiene $1.20\,\mathrm{V_p}$. Además de la operación nominal a $10\,\mathrm{Hz}$, se desea verificar una señal de igual amplitud a $10\,\mathrm{kHz}$ y otra a $20\,\mathrm{kHz}$ (pruebas independientes).
+
+% V3 — Op-amp no inversor
+\begin{center}
+    \begin{circuitikz}[>=stealth, thick, scale=0.85, transform shape]
+        \draw (0,0) node[op amp, yscale=-1] (op) {};
+        \draw (op.+) to[short, -o] ++(-1.6,0) node[left]{$v_i$ ($1.20\,\mathrm{V_p}$)};
+        \draw (op.out) to[short, *-o] ++(1.6,0) node[right]{$v_o$};
+        \draw (op.-) -- ++(-0.5,0) -- ++(0,-1.6) coordinate(ninv);
+        \draw (ninv) to[R, l=$R_g$] ++(0,-1.6) node[ground]{};
+        \node[left, font=\footnotesize] at ([xshift=-0.35cm, yshift=-0.8cm]ninv) {$10\,\mathrm{k\Omega}$};
+        \draw (ninv) to[short, *-] ++(0.6,0) to[R, l=$R_f$] ++(2.2,0) -| (op.out);
+        \node[below, font=\footnotesize] at ([xshift=1.7cm, yshift=-0.35cm]ninv) {$10\,\mathrm{k\Omega}$};
+        \draw (op.down) -- ++(0,0.5) node[above]{\footnotesize $+5\,\mathrm{V}$};
+        \draw (op.up) -- ++(0,-0.5) node[below]{\footnotesize $-5\,\mathrm{V}$};
+        \node[draw=ucbblue!60, fill=neutralbg, rounded corners, font=\scriptsize, align=left] at (5.6, -0.4) {%
+            \textbf{Modelo hipotético:}\\
+            $f_T = 100\,\mathrm{kHz}$, $\mathrm{SR} = 0.20\,\mathrm{V/\mu s}$\\
+            Rieles: $\pm 5\,\mathrm{V}$ $\mid$ Excursión: $\pm 3.0\,\mathrm{V}$\\
+            Pruebas: $10\,\mathrm{kHz}$ y $20\,\mathrm{kHz}$ (nominal: $10\,\mathrm{Hz}$)
+        };
+    \end{circuitikz}
+\end{center}
+
+\begin{enumerate}
+    \setlength{\itemsep}{2pt}
+    \item Hallar $A_v$, amplitud pico ideal de salida y excursión frente al límite. \hfill \textbf{(7 pts)}
+    \item Estimar $f_{BW}$ y comparar $10\,\mathrm{kHz}$ y $20\,\mathrm{kHz}$. \hfill \textbf{(5 pts)}
+    \item Calcular $\mathrm{SR}_{\mathrm{req}}$ para las dos pruebas de frecuencia, en $\mathrm{V/\mu s}$. \hfill \textbf{(8 pts)}
+    \item Indicar cuál de las dos pasa simultáneamente los chequeos y por qué no basta comprobar solo GBW. \hfill \textbf{(5 pts)}
+\end{enumerate}
+
+\noindent{\footnotesize\textit{\textbf{Referencia independiente para P3:} excitación sinusoidal de $0.80\,\mathrm{V_p}$ a $100\,\mathrm{Hz}$ sobre cada rectificador. No es necesario usar el resultado de P2.}}
+
+% =========================================================================
+% P3 — RECTIFICACIÓN (25 PTS)
+% =========================================================================
+\newpage
+\section*{P3 --- Rectificación convencional y de precisión (25 puntos)}
+
+Comparar un rectificador convencional ($V_\gamma = 0.50\,\mathrm{V}$) con un superdiodo idealizado de media onda positiva; $R_L$ conectado a $0\,\mathrm{V}$; la entrada para el ensayo es de $0.20\,\mathrm{V_p}$ y $0.80\,\mathrm{V_p}$ a $100\,\mathrm{Hz}$. El umbral y el comportamiento idealizado son \textbf{supuestos}.
+
+% V4 — Rectificador convencional vs. superdiodo
+\begin{center}
+    \begin{circuitikz}[>=stealth, thick, scale=0.83, transform shape]
+        \node[font=\small\bfseries, text=ucbblue] at (1.8, 2.85) {Circuito D (Convencional, $V_\gamma = 0.50\,\mathrm{V}$)};
+        \draw (0,0) node[ground]{} to[sV] (0,2.0) -- (0.8,2.0) to[D, l=$D_1$] (3.0,2.0) to[short, *-o] (3.8,2.0) node[right]{$v_{o,D}$};
+        \node[left, font=\footnotesize] at (-0.5, 1.0) {$v_i$};
+        \node[below, font=\scriptsize] at (1.45, 1.85) {A};
+        \node[below, font=\scriptsize] at (2.35, 1.85) {K};
+        \draw (3.0,2.0) to[R, l=$R_L$] (3.0,0) node[ground]{};
+
+        \node[font=\small\bfseries, text=ucbblue] at (9.6, 2.85) {Circuito P (Superdiodo no inversor)};
+        \draw (7.8, 1.0) node[op amp] (op) {};
+        \draw (op.+) to[short, -o] ++(-1.2,0) node[left]{$v_i$};
+        \draw (op.out) to[short, *-] ++(0.6,0) coordinate(va) node[above]{\footnotesize $v_a$} to[D, l=$D_2$] ++(2.2,0) coordinate(vo) to[short, *-o] ++(0.8,0) node[right]{$v_{o,P}$};
+        \node[below, font=\scriptsize] at ([xshift=0.65cm, yshift=-0.15cm]va) {A};
+        \node[below, font=\scriptsize] at ([xshift=1.55cm, yshift=-0.15cm]va) {K};
+        \draw (vo) to[R, l=$R_L$] ++(0,-1.8) node[ground]{};
+        \draw (op.-) -- ++(0,1.1) -| (vo);
+    \end{circuitikz}
+\end{center}
+
+\begin{enumerate}
+    \setlength{\itemsep}{2pt}
+    \item Calcular picos convencionales y de precisión para ambas amplitudes ($0.20\,\mathrm{V_p}$ y $0.80\,\mathrm{V_p}$). \hfill \textbf{(8 pts)}
+    \item Describir la secuencia de conducción/bloqueo y lazo abierto/cerrado del superdiodo en semiciclos positivo y negativo. \hfill \textbf{(7 pts)}
+    \item Para cinco muestras con $v_i = [-0.4,\; 0,\; +0.2,\; +0.6,\; +0.8]\,\mathrm{V}$, se toma $v_{o,D} = [0,\; 0,\; 0,\; 0.1,\; 0.3]\,\mathrm{V}$ y $v_{o,P} = [0,\; 0,\; 0.19,\; 0.58,\; 0.78]\,\mathrm{V}$. Calcular $E_{\mathrm{MAE}}$ de ambas y comparar. \hfill \textbf{(8 pts)}
+    \item Explicar por qué $v_a$ podría ser negativa aunque la salida rectificada sea aproximadamente $0\,\mathrm{V}$. \hfill \textbf{(2 pts)}
+\end{enumerate}
+
+\noindent{\footnotesize\textit{\textbf{Referencia independiente para P4:} se inyecta una senoide pura de $0.50\,\mathrm{V_p}$ directamente en la entrada del filtro, con independencia de los rectificadores anteriores.}}
+
+% =========================================================================
+% P4 — FILTRO PASA-BAJOS SALLEN-KEY CORREGIDO (25 PTS)
+% =========================================================================
+\section*{P4 --- Filtro pasa-bajos Sallen--Key de segundo orden (25 puntos)}
+
+Se plantea un filtro Sallen--Key seguidor unitario \textbf{corregido}: $R_1 = R_2 = 16\,\mathrm{k\Omega}$, $C_1 = C_2 = 1\,\mu\mathrm{F}$. Asumir op-amp ideal para las cuentas y trabajar con $f = f_0$ y $f = 50\,\mathrm{Hz}$.
+
+% V5 — Sallen-Key de ganancia unitaria CORREGIDO: (-) a v_o, (+) a nodo y, C1 de x a v_o, C2 de y a GND
+\begin{center}
+    \begin{circuitikz}[>=stealth, thick, scale=0.86, transform shape]
+        \draw (0,0) node[left]{$v_{\mathrm{in}}$} to[short, o-] (0.4,0)
+              to[R, l=$R_1$] (2.6,0) coordinate(nx) node[below=2pt]{\scriptsize $x$}
+              to[R, l=$R_2$] (4.8,0) coordinate(ny) node[above=2pt]{\scriptsize $y$};
+        \draw (ny) to[C, l_=$C_2$] (4.8,-2.0) node[ground]{};
+        % Op-amp con (+) arriba (conectado a y) y (-) abajo (realimentado directo a v_o)
+        \draw (7.0,-0.49) node[op amp, yscale=-1] (op) {};
+        \draw (ny) to[short, *-] (op.+);
+        \draw (op.out) to[short, *-o] ++(1.3,0) node[right]{$v_o$};
+        % Realimentación unitaria directa: (-) conectado a v_o (NO a tierra)
+        \draw (op.-) -- ++(0,-0.9) -| (op.out);
+        % Capacitor C1 desde nodo x hacia v_o
+        \draw (nx) to[short, *-] ++(0,1.5) to[C, l=$C_1$] ++(6.0,0) -| (op.out);
+        % Alimentación simbólica
+        \draw (op.down) -- ++(0,0.45) node[above]{\scriptsize $+V_{CC}$};
+        \draw (op.up) -- ++(0,-0.45) node[below]{\scriptsize $-V_{EE}$};
+        \node[font=\scriptsize, align=left] at (2.4, -1.6) {$R_1 = R_2 = 16\,\mathrm{k\Omega}$\\$C_1 = C_2 = 1\,\mu\mathrm{F}$};
+    \end{circuitikz}
+\end{center}
+
+\begin{enumerate}
+    \setlength{\itemsep}{2pt}
+    \item Escribir $H(s)$ y obtener $f_0$ y $Q$. \hfill \textbf{(9 pts)}
+    \item Calcular $f_{-3\mathrm{dB}}$ y explicar su relación con $f_0$. \hfill \textbf{(6 pts)}
+    \item Calcular la ganancia $G_{\mathrm{dB}}(f_0)$ y fase $\varphi(f_0)$; con la senoide de prueba ($0.50\,\mathrm{V_p}$), hallar $V_{o,p}(f_0)$. \hfill \textbf{(6 pts)}
+    \item Obtener $|H(50\,\mathrm{Hz})|$ y atenuación en $\mathrm{dB}$. ¿Una sola sección satisface $-40\,\mathrm{dB}$ a $50\,\mathrm{Hz}$? \hfill \textbf{(4 pts)}
+\end{enumerate}
+
+\end{document}
